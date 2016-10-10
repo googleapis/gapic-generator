@@ -112,6 +112,19 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     sampleBodyView.responseTypeName("");
     sampleBodyView.hasResponse(methodInfo.responseType() != null);
 
+    // authVarName is assigned before the fields in case there's a conflict in
+    // the symbol table.
+    String authVarName = "";
+    switch (sampleConfig.authType()) {
+      case API_KEY:
+        authVarName = "apiKey";
+        break;
+      default:
+        authVarName = "authClient";
+    }
+    sampleBodyView.authVarName(
+        symbolTable.getNewSymbol(sampleNamer.localVarName(Name.lowerCamel(authVarName))));
+
     List<SampleFieldView> fields = new ArrayList<>();
     for (FieldInfo field :
         context.getSampleConfig().methods().get(context.getMethodName()).fields().values()) {

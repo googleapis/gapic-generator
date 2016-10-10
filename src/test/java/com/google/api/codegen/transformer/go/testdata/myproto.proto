@@ -2,13 +2,18 @@ syntax = "proto3";
 
 package google.example.myproto.v1;
 
+import "singleservice.proto";
+
 service Gopher {
   rpc SimpleMethod(SimpleRequest) returns (SimpleResponse);
   rpc RetryMethod(SimpleRequest) returns (SimpleResponse);
   rpc PageStreamMethod(PageStreamRequest) returns (PageStreamResponse);
+
   rpc ServerStreamMethod(SimpleRequest) returns (stream SimpleResponse);
   rpc ClientStreamMethod(stream SimpleRequest) returns (SimpleResponse);
   rpc BidiStreamMethod(stream SimpleRequest) returns (stream SimpleResponse);
+
+  rpc FeedMonkey(SimpleRequest) returns (google.example.odd.v1.SpicyBanana);
 }
 
 service Guru {}

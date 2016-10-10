@@ -707,6 +707,60 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
+import com.google.api.services.adexchangebuyer.model.CreativeDealIds;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class AdExchangeBuyerExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The id for the account that will serve this creative.
+    int accountId = 0;  // TODO: Update placeholder value.
+
+    // The buyer-specific id for this creative.
+    String buyerCreativeId = "";  // TODO: Update placeholder value.
+
+    AdExchangeBuyer adExchangeBuyerService = createAdExchangeBuyerService();
+    AdExchangeBuyer.Creatives.ListDeals request = adExchangeBuyerService.creatives().listDeals(accountId, buyerCreativeId);
+
+    CreativeDealIds response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static AdExchangeBuyer createAdExchangeBuyerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See:
+    // https://foo.com/bar
+    //
+    // Authorize using the following scope:
+    //    https://www.googleapis.com/auth/adexchange.buyer
+    GoogleCredential credential = null;
+
+    return new AdExchangeBuyer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Ad Exchange Buyer API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/adexchangebuyer
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/adexchangebuyer/v1.4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.adexchangebuyer.AdExchangeBuyer;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 

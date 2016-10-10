@@ -48,8 +48,16 @@ public class GoGapicSurfaceTransformerTest {
     TestDataLocator locator = TestDataLocator.create(GoGapicSurfaceTransformerTest.class);
     model =
         CodegenTestUtil.readModel(
-            locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
-    service = model.getSymbolTable().getInterfaces().asList().get(0);
+            locator,
+            tempDir,
+            new String[] {"myproto.proto", "singleservice.proto"},
+            new String[] {"myproto.yaml"});
+    for (Interface serv : model.getSymbolTable().getInterfaces()) {
+      if (serv.getSimpleName().equals("Gopher")) {
+        service = serv;
+        break;
+      }
+    }
 
     ConfigProto configProto =
         CodegenTestUtil.readConfig(
@@ -87,11 +95,7 @@ public class GoGapicSurfaceTransformerTest {
   @Test
   public void testGetImportsPlain() {
     Method method = getMethod(context.getInterface(), "SimpleMethod");
-    transformer.generateApiMethods(
-        context,
-        Collections.singletonList(method),
-        PAGE_STREAM_IMPORTS,
-        GRPC_SERVER_STREAM_IMPORTS);
+    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("time");
   }
@@ -99,11 +103,7 @@ public class GoGapicSurfaceTransformerTest {
   @Test
   public void testGetImportsRetry() {
     Method method = getMethod(context.getInterface(), "RetryMethod");
-    transformer.generateApiMethods(
-        context,
-        Collections.singletonList(method),
-        PAGE_STREAM_IMPORTS,
-        GRPC_SERVER_STREAM_IMPORTS);
+    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("time");
   }
@@ -111,49 +111,45 @@ public class GoGapicSurfaceTransformerTest {
   @Test
   public void testGetImportsPageStream() {
     Method method = getMethod(context.getInterface(), "PageStreamMethod");
-    transformer.generateApiMethods(
-        context,
-        Collections.singletonList(method),
-        PAGE_STREAM_IMPORTS,
-        GRPC_SERVER_STREAM_IMPORTS);
+    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("math");
   }
 
   @Test
-  public void testGetImportsServerStream() {
+  public void testGetExampleImportsServerStream() {
     Method method = getMethod(context.getInterface(), "ServerStreamMethod");
-    transformer.generateApiMethods(
-        context,
-        Collections.singletonList(method),
-        PAGE_STREAM_IMPORTS,
-        GRPC_SERVER_STREAM_IMPORTS);
-    transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
+    transformer.addXExampleImports(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("io");
   }
 
   @Test
-  public void testGetImportsBidiStream() {
+  public void testGetExampleImportsBidiStream() {
     Method method = getMethod(context.getInterface(), "BidiStreamMethod");
-    transformer.generateApiMethods(
-        context,
-        Collections.singletonList(method),
-        PAGE_STREAM_IMPORTS,
-        GRPC_SERVER_STREAM_IMPORTS);
-    transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
+    transformer.addXExampleImports(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("io");
   }
 
   @Test
-  public void testGetImportsClientStream() {
+  public void testGetExampleImportsClientStream() {
     Method method = getMethod(context.getInterface(), "ClientStreamMethod");
-    transformer.generateApiMethods(
-        context,
-        Collections.singletonList(method),
-        PAGE_STREAM_IMPORTS,
-        GRPC_SERVER_STREAM_IMPORTS);
-    transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
+    transformer.addXExampleImports(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("io");
+  }
+
+  @Test
+  public void testExampleImports() {
+    transformer.addXExampleImports(context, context.getSupportedMethods());
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsEntry("golang.org/x/net/context", "");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsEntry("cloud.google.com/go/gopher/apiv1", "");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsEntry("google.golang.org/genproto/googleapis/example/myproto/v1", "myprotopb");
+
+    // Only shows up in response, not needed for example.
+    Truth.assertThat(context.getTypeTable().getImports())
+        .doesNotContainKey("google.golang.org/genproto/googleapis/example/odd/v1");
   }
 
   private Method getMethod(Interface service, String methodName) {

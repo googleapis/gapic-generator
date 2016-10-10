@@ -141,11 +141,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
     view.apiMethods(
-        generateApiMethods(
-            context,
-            context.getSupportedMethods(),
-            PAGE_STREAM_IMPORTS,
-            Collections.<String>emptyList()));
+        generateApiMethods(context, context.getSupportedMethods(), PAGE_STREAM_IMPORTS));
 
     // In Go, multiple methods share the same iterator type, one iterator type per resource type.
     // We have to dedupe the iterators.
@@ -170,9 +166,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return view.build();
   }
 
-  private static final ImmutableList<String> EXAMPLE_GRPC_SERVER_STREAM_IMPORTS =
-      ImmutableList.<String>of("io;;;");
-
   private StaticLangXExampleView generateExample(SurfaceTransformerContext context) {
     StaticLangXExampleView.Builder view = StaticLangXExampleView.newBuilder();
 
@@ -194,12 +187,16 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
     view.apiMethods(
         generateApiMethods(
-            context,
-            context.getSupportedMethods(),
-            Collections.<String>emptyList(),
-            EXAMPLE_GRPC_SERVER_STREAM_IMPORTS));
+            context, context.getSupportedMethods(), Collections.<String>emptyList()));
 
-    addXExampleImports(context);
+    // Examples are different from the API. In particular, we use short declaration
+    // and so we omit most type names. We only need
+    //   - Context, to initialize the client
+    //   - The VKit generated library, that's what the sample is for
+    //   - The input types of the methods, to initialize the requests
+    // So, we clear all imports; addXExampleImports will add back the ones we want.
+    context.getTypeTable().getImports().clear();
+    addXExampleImports(context, context.getSupportedMethods());
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
     return view.build();
@@ -241,19 +238,14 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @VisibleForTesting
   List<StaticLangApiMethodView> generateApiMethods(
-      SurfaceTransformerContext context,
-      List<Method> methods,
-      List<String> pageStreamImports,
-      List<String> grpcServerStreamImports) {
+      SurfaceTransformerContext context, List<Method> methods, List<String> pageStreamImports) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     boolean hasPageStreaming = false;
-    boolean hasGrpcServerStreaming = false;
     for (Method method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodTransformerContext methodContext = context.asMethodContext(method);
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
-        hasGrpcServerStreaming |= method.getResponseStreaming();
         apiMethods.add(
             apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext));
       } else if (methodConfig.isPageStreaming()) {
@@ -265,11 +257,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     if (hasPageStreaming) {
       for (String imp : pageStreamImports) {
-        context.getTypeTable().saveNicknameFor(imp);
-      }
-    }
-    if (hasGrpcServerStreaming) {
-      for (String imp : grpcServerStreamImports) {
         context.getTypeTable().saveNicknameFor(imp);
       }
     }
@@ -342,10 +329,24 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
   }
 
-  private void addXExampleImports(SurfaceTransformerContext context) {
+  private static final ImmutableList<String> EXAMPLE_GRPC_SERVER_STREAM_IMPORTS =
+      ImmutableList.<String>of("io;;;");
+
+  @VisibleForTesting
+  void addXExampleImports(SurfaceTransformerContext context, List<Method> methods) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor(context.getApiConfig().getPackageName() + ";;;");
-    typeTable.getImports().remove(EMPTY_PROTO_PKG);
+
+    boolean hasGrpcServerStreaming = false;
+    for (Method method : methods) {
+      typeTable.getAndSaveNicknameFor(method.getInputType());
+      hasGrpcServerStreaming |= method.getResponseStreaming();
+    }
+    if (hasGrpcServerStreaming) {
+      for (String imp : EXAMPLE_GRPC_SERVER_STREAM_IMPORTS) {
+        typeTable.saveNicknameFor(imp);
+      }
+    }
   }
 }
