@@ -184,15 +184,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
-      if (MethodConfig.isGrpcStreamingMethod(method)) {
-        // TODO(shinfan): Add unit test support for streaming methods.
-        continue;
-      }
       MethodTransformerContext methodContext = context.asMethodContext(method);
       MethodConfig methodConfig = methodContext.getMethodConfig();
-      if (methodConfig.isFlattening()) {
+      if (MethodConfig.isGrpcStreamingMethod(method)) {
+        testCaseViews.add(createTestCaseView(methodContext, testNameTable, null));
+      } else if (methodConfig.isFlattening()) {
         for (List<Field> paramFields : methodConfig.getFlattening().getFlatteningGroups()) {
-          testCaseViews.add(createTestCaseView(methodContext, paramFields, testNameTable));
+          testCaseViews.add(createTestCaseView(methodContext, testNameTable, paramFields));
         }
       } else {
         // TODO: Add support of non-flattening method
@@ -206,7 +204,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   // TODO: Convert to use TestMethodView.
   private GapicSurfaceTestCaseView createTestCaseView(
-      MethodTransformerContext methodContext, List<Field> paramFields, SymbolTable testNameTable) {
+      MethodTransformerContext methodContext, SymbolTable testNameTable, List<Field> paramFields) {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
     Method method = methodContext.getMethod();
@@ -215,32 +213,44 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     // This symbol table is used to produce unique variable names used in the initialization code.
     // Shared by both request and response views.
     SymbolTable initSymbolTable = new SymbolTable();
+    InitCodeView initCodeView;
+    if (methodConfig.isGrpcStreaming()) {
+      initCodeView =
+          initCodeTransformer.generateRequestObjectTestInitCode(
+              methodContext, initSymbolTable, valueGenerator);
+    } else {
+      initCodeView =
+          initCodeTransformer.generateFlatteningTestInitCode(
+              methodContext, paramFields, initSymbolTable, valueGenerator);
+    }
 
-    InitCodeView initCodeView =
-        initCodeTransformer.generateTestMethodInitCode(
-            methodContext, paramFields, initSymbolTable, valueGenerator);
-
+    
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     String responseTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
 
+    String surfaceMethodName = namer.getApiMethodName(method);
+
     ApiMethodType type = ApiMethodType.FlattenedMethod;
-    boolean isPageStreaming = methodConfig.isPageStreaming();
-    if (isPageStreaming) {
+    if (methodConfig.isPageStreaming()) {
       Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(
               method, methodContext.getTypeTable(), resourcesField);
       type = ApiMethodType.PagedFlattenedMethod;
+    } else if (methodConfig.isGrpcStreaming()) {
+      type = ApiMethodType.CallableMethod;
+      surfaceMethodName = namer.getCallableMethodName(method);
+      addGrpcStreamingTestImport(methodContext.getSurfaceTransformerContext());
     }
 
     List<GapicSurfaceTestAssertView> requestAssertViews =
         initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
-
+    
     return GapicSurfaceTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
-        .surfaceMethodName(namer.getApiMethodName(method))
+        .surfaceMethodName(surfaceMethodName)
         .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
         .requestTypeName(requestTypeName)
         .responseTypeName(responseTypeName)
@@ -250,6 +260,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .asserts(requestAssertViews)
         .mockResponse(createMockResponseView(methodContext, initSymbolTable))
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
+        .grpcStreamingType(methodConfig.getGrpcStreamingType())
         .build();
   }
 
@@ -392,11 +403,12 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     String responseTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+
     return MockGrpcMethodView.newBuilder()
         .name(methodContext.getNamer().getApiMethodName(method))
         .requestTypeName(requestTypeName)
         .responseTypeName(responseTypeName)
-        .isStreaming(method.getRequestStreaming() || method.getResponseStreaming())
+        .grpcStreamingType(methodContext.getMethodConfig().getGrpcStreamingType())
         .build();
   }
 
@@ -485,5 +497,12 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
     typeTable.saveNicknameFor("io.grpc.ServerServiceDefinition");
+  }
+
+  private void addGrpcStreamingTestImport(SurfaceTransformerContext context) {
+    ModelTypeTable typeTable = context.getTypeTable();
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingApiCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.testing.MockStreamObserver");
+    typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
   }
 }
