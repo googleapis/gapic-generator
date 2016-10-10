@@ -16,7 +16,6 @@ package com.google.api.codegen.discovery.transformer.java;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
@@ -138,10 +137,10 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
-    for (Entry<String, FieldInfo> field : methodInfo.fields().entrySet()) {
+    for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView = generateSampleField(field, sampleTypeTable, symbolTable);
       fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+      fieldVarNames.add(field.name());
     }
     sampleBodyView.fields(fields);
 
@@ -172,16 +171,16 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   }
 
   public SampleFieldView generateSampleField(
-      Entry<String, FieldInfo> field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
-    TypeInfo typeInfo = field.getValue().type();
+      FieldInfo field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
+    TypeInfo typeInfo = field.type();
     String defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
-    String example = field.getValue().example();
+    String example = field.example();
     return SampleFieldView.newBuilder()
-        .name(symbolTable.getNewSymbol(field.getKey()))
+        .name(symbolTable.getNewSymbol(field.name()))
         .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
         .defaultValue(defaultValue)
         .example(example)
-        .description(field.getValue().description())
+        .description(field.description())
         .build();
   }
 

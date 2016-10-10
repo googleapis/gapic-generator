@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.nodejs;
+package com.google.api.codegen.discovery.transformer.go;
 
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleTypeNameConverter;
@@ -21,26 +21,26 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 
-public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
+public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
 
   /**
-   * A map from primitive types in proto to NodeJS counterparts.
+   * A map from primitive types in proto to Go counterparts.
    */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
-          .put(Field.Kind.TYPE_BOOL, "boolean")
-          .put(Field.Kind.TYPE_INT32, "number")
-          .put(Field.Kind.TYPE_INT64, "number")
-          .put(Field.Kind.TYPE_UINT32, "number")
-          .put(Field.Kind.TYPE_UINT64, "number")
-          .put(Field.Kind.TYPE_FLOAT, "number")
-          .put(Field.Kind.TYPE_DOUBLE, "number")
-          .put(Field.Kind.TYPE_STRING, "String")
-          .put(Field.Kind.TYPE_ENUM, "String")
+          .put(Field.Kind.TYPE_BOOL, "bool")
+          .put(Field.Kind.TYPE_INT32, "int32")
+          .put(Field.Kind.TYPE_INT64, "int64")
+          .put(Field.Kind.TYPE_UINT32, "uint32")
+          .put(Field.Kind.TYPE_UINT64, "uint64")
+          .put(Field.Kind.TYPE_FLOAT, "float32")
+          .put(Field.Kind.TYPE_DOUBLE, "float64")
+          .put(Field.Kind.TYPE_STRING, "string")
+          .put(Field.Kind.TYPE_ENUM, "string")
           .build();
 
   /**
-   * A map from primitive types in proto to zero value in NodeJS
+   * A map from primitive types in proto to zero value in Go.
    */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
@@ -51,30 +51,32 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_UINT64, "0")
           .put(Field.Kind.TYPE_FLOAT, "0.0")
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
-          .put(Field.Kind.TYPE_STRING, "\'\'")
-          .put(Field.Kind.TYPE_ENUM, "\'\'")
+          .put(Field.Kind.TYPE_STRING, "\"\"")
+          .put(Field.Kind.TYPE_ENUM, "\"\"")
           .build();
 
-  public NodeJSSampleTypeNameConverter() {}
+  String packagePrefix;
+
+  public GoSampleTypeNameConverter(String packagePrefix) {
+    this.packagePrefix = packagePrefix;
+  }
 
   @Override
   public TypeName getServiceTypeName(String apiTypeName) {
-    return new TypeName(apiTypeName);
+    // N/A
+    return null;
   }
 
   @Override
   public TypeName getRequestTypeName(String apiTypeName, TypeInfo typeInfo) {
-    // N/A
-    return null;
+    return getTypeName(typeInfo);
   }
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
     if (typeInfo.isArray()) {
       TypeName elementTypeName = getTypeNameForElementType(typeInfo);
-      return new TypeName("", "", "%i[]", elementTypeName);
-    } else if (typeInfo.isMap()) {
-      throw new IllegalArgumentException("map type is unsupported in this context");
+      return new TypeName("", "", "[]%i{}", elementTypeName);
     }
     return getTypeNameForElementType(typeInfo);
   }
@@ -85,17 +87,27 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
     if (primitiveTypeName != null) {
       return new TypeName(primitiveTypeName);
     }
-    throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
+    if (typeInfo.kind() != Field.Kind.TYPE_MESSAGE) {
+      throw new IllegalArgumentException("unsupported type kind: " + typeInfo.kind());
+    }
+    if (typeInfo.isMap()) {
+      throw new IllegalArgumentException("map types are unsupported");
+    }
+    // TODO(garrettjones): Is this okay?
+    String localName = GoSampleNamer.getServicePackageName(packagePrefix);
+    return new TypeName(packagePrefix + ";;;", localName + "." + typeInfo.message().typeName());
   }
 
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
     // Don't call getTypeName; we don't need to import these.
     if (typeInfo.isArray()) {
-      return TypedValue.create(new TypeName("Array"), "[]");
+      return TypedValue.create(new TypeName("string"), "[]%s{}");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(typeInfo.kind())) {
-      return TypedValue.create(getTypeName(typeInfo), PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
+      return TypedValue.create(
+          new TypeName(PRIMITIVE_TYPE_MAP.get(typeInfo.kind())),
+          PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
     }
     throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
   }

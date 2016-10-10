@@ -1,0 +1,104 @@
+@snippet generate(class)
+  package main
+
+  // BEFORE RUNNING:
+  // ---------------
+  // 1. If not already done, enable the {@class.apiTitle}
+  //    and check the quota for your project at
+  //    https://console.developers.google.com/apis/api/{@class.apiName}
+  // 2. This sample uses Application Default Credentials for authentication.
+  //    If not already done, install the gcloud CLI from
+  //    https://cloud.google.com/sdk/ and run
+  //    `gcloud beta auth application-default login`
+  // 3. Install and update the Go dependencies by running `go get -u` in the
+  //    project directory.
+
+  import (
+    @join import : class.imports
+      {@import}
+    @end
+  )
+
+  {@mainFunc(class, class.body)}
+@end
+
+@private mainFunc(class, body)
+  func main() {
+    ctx := context.Background()
+
+    {@body.clientVarName}, err := google.DefaultClient(ctx, {@authScopeParamList(body.servicePackageName, body.authScopeConsts)})
+    if err != nil {
+      log.Fatal(err)
+    }
+
+    {@body.serviceVarName}, err := {@body.servicePackageName}.New({@body.clientVarName})
+    if err != nil {
+      log.Fatal(err)
+    }
+
+    @join field : body.fields if body.fields
+      @if field.description
+        @join line : util.getDocLines(field.description, 100)
+          // {@line}
+        @end
+
+
+      @end
+      {@field.name} := {@field.defaultValue}  // TODO: Update placeholder value.
+      @if field.example
+        // {@field.example}
+      @end
+
+    @end
+    @if body.hasRequestBody
+
+      {@body.requestBodyVarName} := {@body.requestBodyTypeName}{
+        @if body.methodVerb == "PATCH"
+          // TODO: Add desired fields of the request body to be changed. Only assigned
+          // fields will be changed:
+        @else
+          // TODO: Add desired fields of the request body to be changed.
+        @end
+      }
+    @end
+    @if body.hasMediaUpload
+
+      // TODO: Add desired media content for upload. For more information, see:
+      // https://godoc.org/google.golang.org/api/{@class.apiName}/{@class.apiVersion}
+
+    @end
+    @if body.isPageStreaming
+      {@body.requestVarName} := {@body.serviceVarName}.{@callChain(body.methodNameComponents)}({@paramList(body.fieldVarNames)})
+      if err := {@body.requestVarName}.Pages(ctx, func(page *{@body.responseTypeName}) error {
+        @if body.isResourceMap
+          # TODO(saicheems): Implement
+        @else
+          for _, {@body.resourceVarName} := range page.{@body.resourceFieldName} {
+            // TODO: Change code below to process each `{@body.resourceVarName}` resource:
+            fmt.Printf("%#v\n", {@body.resourceVarName})
+          }
+        @end
+      }); err != nil {
+        log.Fatal(err)
+      }
+    @end
+  }
+@end
+
+@private authScopeParamList(servicePackageName, authScopeConsts)
+  @join authScopeConst : authScopeConsts on ", "
+    {@servicePackageName}.{@authScopeConst}
+  @end
+@end
+
+@private callChain(methodNameComponents)
+  @join resource : methodNameComponents on "()."
+    {@resource}
+  @end
+@end
+
+@private paramList(fieldVarNames)
+  @join fieldVarName : fieldVarNames on ", "
+    {@fieldVarName}
+  @end
+@end

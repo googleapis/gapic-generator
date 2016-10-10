@@ -96,6 +96,16 @@ public abstract class SampleBodyView {
   @Nullable
   public abstract String authFuncName();
 
+  // Go specific section...
+  @Nullable
+  public abstract String servicePackageName();
+
+  @Nullable
+  public abstract String clientVarName();
+
+  @Nullable
+  public abstract List<String> authScopeConsts();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleBodyView.Builder();
   }
@@ -166,6 +176,12 @@ public abstract class SampleBodyView {
     public abstract Builder handlePageVarName(String val);
 
     public abstract Builder authFuncName(String val);
+
+    public abstract Builder servicePackageName(String val);
+
+    public abstract Builder clientVarName(String val);
+
+    public abstract Builder authScopeConsts(List<String> val);
 
     public abstract SampleBodyView build();
   }
