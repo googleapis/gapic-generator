@@ -224,7 +224,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
               methodContext, paramFields, initSymbolTable, valueGenerator);
     }
 
-    
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     String responseTypeName =
@@ -247,7 +246,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     List<GapicSurfaceTestAssertView> requestAssertViews =
         initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
-    
+
     return GapicSurfaceTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
         .surfaceMethodName(surfaceMethodName)
