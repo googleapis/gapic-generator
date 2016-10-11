@@ -298,12 +298,10 @@ LibraryServiceApi.prototype.matchBookFromArchivedBookName = function(archivedBoo
  *
  * var api = libraryV1.libraryServiceApi();
  * var shelf = {};
- * api.createShelf(shelf, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.createShelf(shelf).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.createShelf = function(
@@ -354,12 +352,10 @@ LibraryServiceApi.prototype.createShelf = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
  * var options = '';
- * api.getShelf(formattedName, options, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.getShelf(formattedName, options).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.getShelf = function(
@@ -427,7 +423,6 @@ LibraryServiceApi.prototype.getShelf = function(
  *     }
  * }
  * api.listShelves({flattenPages: false}, callback);
- * api.listShelves(function(err, response) {
  */
 LibraryServiceApi.prototype.listShelves = function(
     options,
@@ -461,10 +456,8 @@ LibraryServiceApi.prototype.listShelves = function(
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
- * api.deleteShelf(formattedName, function(err) {
- *     if (err) {
- *         console.error(err);
- *     }
+ * api.deleteShelf(formattedName).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.deleteShelf = function(
@@ -508,12 +501,10 @@ LibraryServiceApi.prototype.deleteShelf = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
  * var formattedOtherShelfName = api.shelfPath("[SHELF]");
- * api.mergeShelves(formattedName, formattedOtherShelfName, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.mergeShelves(formattedName, formattedOtherShelfName).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.mergeShelves = function(
@@ -559,12 +550,10 @@ LibraryServiceApi.prototype.mergeShelves = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
  * var book = {};
- * api.createBook(formattedName, book, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.createBook(formattedName, book).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.createBook = function(
@@ -617,12 +606,10 @@ LibraryServiceApi.prototype.createBook = function(
  * var api = libraryV1.libraryServiceApi();
  * var shelf = {};
  * var books = [];
- * api.publishSeries(shelf, books, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.publishSeries(shelf, books).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.publishSeries = function(
@@ -666,12 +653,10 @@ LibraryServiceApi.prototype.publishSeries = function(
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
- * api.getBook(formattedName, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.getBook(formattedName).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.getBook = function(
@@ -785,10 +770,8 @@ LibraryServiceApi.prototype.listBooks = function(
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
- * api.deleteBook(formattedName, function(err) {
- *     if (err) {
- *         console.error(err);
- *     }
+ * api.deleteBook(formattedName).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.deleteBook = function(
@@ -843,12 +826,10 @@ LibraryServiceApi.prototype.deleteBook = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
  * var book = {};
- * api.updateBook(formattedName, book, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.updateBook(formattedName, book).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.updateBook = function(
@@ -898,12 +879,10 @@ LibraryServiceApi.prototype.updateBook = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
  * var formattedOtherShelfName = api.shelfPath("[SHELF]");
- * api.moveBook(formattedName, formattedOtherShelfName, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.moveBook(formattedName, formattedOtherShelfName).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.moveBook = function(
@@ -974,7 +953,6 @@ LibraryServiceApi.prototype.moveBook = function(
  *     }
  * }
  * api.listStrings({flattenPages: false}, callback);
- * api.listStrings(function(err, response) {
  */
 LibraryServiceApi.prototype.listStrings = function(
     options,
@@ -1024,10 +1002,8 @@ LibraryServiceApi.prototype.listStrings = function(
  *     alignment : alignment
  * };
  * var comments = [commentsElement];
- * api.addComments(formattedName, comments, function(err) {
- *     if (err) {
- *         console.error(err);
- *     }
+ * api.addComments(formattedName, comments).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.addComments = function(
@@ -1068,12 +1044,10 @@ LibraryServiceApi.prototype.addComments = function(
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.archivedBookPath("[ARCHIVE_PATH]", "[BOOK]");
- * api.getBookFromArchive(formattedName, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.getBookFromArchive(formattedName).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.getBookFromArchive = function(
@@ -1117,10 +1091,8 @@ LibraryServiceApi.prototype.getBookFromArchive = function(
  * var indexName = 'default index';
  * var indexMapItem = '';
  * var indexMap = {'default_key' : indexMapItem,};
- * api.updateBookIndex(formattedName, indexName, indexMap, function(err) {
- *     if (err) {
- *         console.error(err);
- *     }
+ * api.updateBookIndex(formattedName, indexName, indexMap).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.updateBookIndex = function(
@@ -1241,12 +1213,10 @@ LibraryServiceApi.prototype.findRelatedBooks = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedResource = api.bookPath("[SHELF]", "[BOOK]");
  * var tag = '';
- * api.addTag(formattedResource, tag, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.addTag(formattedResource, tag).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.addTag = function(
@@ -1292,12 +1262,10 @@ LibraryServiceApi.prototype.addTag = function(
  * var api = libraryV1.libraryServiceApi();
  * var formattedResource = api.bookPath("[SHELF]", "[BOOK]");
  * var label = '';
- * api.addLabel(formattedResource, label, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.addLabel(formattedResource, label).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.addLabel = function(
