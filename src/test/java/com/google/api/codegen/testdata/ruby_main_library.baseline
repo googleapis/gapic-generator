@@ -541,6 +541,8 @@ module Library
       #   The books to publish in the series.
       # @param edition [Integer]
       #   The edition of the series
+      # @param review_copy [true, false]
+      #   If the book is in a pre-publish state
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -561,12 +563,14 @@ module Library
           shelf,
           books,
           edition: nil,
+          review_copy: nil,
           options: nil
         req = Google::Example::Library::V1::PublishSeriesRequest.new(
           shelf: shelf,
           books: books
         )
         req.edition = edition unless edition.nil?
+        req.review_copy = review_copy unless review_copy.nil?
         @publish_series.call(req, options)
       end
 
