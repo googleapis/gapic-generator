@@ -22,15 +22,16 @@ public abstract class SampleTransformerContext {
 
   public static SampleTransformerContext create(
       SampleConfig sampleConfig,
-      SampleTypeTable typeTable,
+      SampleTypeTable sampleTypeTable,
       SampleNamer sampleNamer,
       String methodName) {
-    return new AutoValue_SampleTransformerContext(sampleConfig, typeTable, sampleNamer, methodName);
+    return new AutoValue_SampleTransformerContext(
+        sampleConfig, sampleTypeTable, sampleNamer, methodName);
   }
 
   public abstract SampleConfig getSampleConfig();
 
-  public abstract SampleTypeTable getTypeTable();
+  public abstract SampleTypeTable getSampleTypeTable();
 
   public abstract SampleNamer getSampleNamer();
 
