@@ -47,6 +47,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract List<RequestObjectParamView> optionalRequestObjectParams();
 
+  public abstract List<RequestObjectParamView> optionalRequestObjectParamsNoPageToken();
+
   public abstract boolean hasReturnValue();
 
   public abstract String stubName();
@@ -82,6 +84,9 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder requiredRequestObjectParams(List<RequestObjectParamView> val);
 
     public abstract Builder optionalRequestObjectParams(List<RequestObjectParamView> val);
+
+    public abstract Builder optionalRequestObjectParamsNoPageToken(
+        List<RequestObjectParamView> val);
 
     public abstract Builder hasReturnValue(boolean val);
 
