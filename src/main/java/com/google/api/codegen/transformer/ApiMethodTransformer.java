@@ -47,12 +47,6 @@ import java.util.List;
 
 /** ApiMethodTransformer generates view objects from method definitions. */
 public class ApiMethodTransformer {
-  private InitCodeTransformer initCodeTransformer;
-
-  public ApiMethodTransformer() {
-    this.initCodeTransformer = new InitCodeTransformer();
-  }
-
   public StaticLangApiMethodView generatePagedFlattenedMethod(
       MethodTransformerContext context, ImmutableList<Field> fields) {
     return generatePagedFlattenedMethod(
@@ -335,7 +329,8 @@ public class ApiMethodTransformer {
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     methodViewBuilder.initCode(
-        initCodeTransformer.generateInitCode(context.cloneWithEmptyTypeTable(), fields));
+        InitCodeTransformer.generateInitCode(
+            createInitCodeContext(context.cloneWithEmptyTypeTable(), fields)));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod()))
@@ -375,7 +370,8 @@ public class ApiMethodTransformer {
             .throwsDocLines(namer.getThrowsDocLines())
             .build());
     methodViewBuilder.initCode(
-        initCodeTransformer.generateRequestObjectInitCode(context.cloneWithEmptyTypeTable()));
+        InitCodeTransformer.generateInitCode(
+            createInitCodeContext(context.cloneWithEmptyTypeTable(), null)));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -401,7 +397,8 @@ public class ApiMethodTransformer {
             .throwsDocLines(new ArrayList<String>())
             .build());
     methodViewBuilder.initCode(
-        initCodeTransformer.generateRequestObjectInitCode(context.cloneWithEmptyTypeTable()));
+        InitCodeTransformer.generateInitCode(
+            createInitCodeContext(context.cloneWithEmptyTypeTable(), null)));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -499,8 +496,9 @@ public class ApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
     apiMethod.initCode(
-        initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(), context.getMethodConfig().getRequiredFields()));
+        InitCodeTransformer.generateInitCode(
+            createInitCodeContext(
+                context.cloneWithEmptyTypeTable(), context.getMethodConfig().getRequiredFields())));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
@@ -763,5 +761,17 @@ public class ApiMethodTransformer {
     arrayKeyDocs.add(timeoutDoc.build());
 
     return arrayKeyDocs;
+  }
+
+  private InitCodeTransformerContext createInitCodeContext(
+      MethodTransformerContext context, Iterable<Field> fields) {
+    return InitCodeTransformerContext.newBuilder()
+        .methodContext(context)
+        .initObjectType(context.getMethod().getInputType())
+        .suggestedName(Name.from("request"))
+        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
+        .fields(fields)
+        .isFlattened(fields != null)
+        .build();
   }
 }

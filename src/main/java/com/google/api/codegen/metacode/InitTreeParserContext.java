@@ -44,10 +44,10 @@ public abstract class InitTreeParserContext {
   public abstract Map<String, InitValueConfig> initValueConfigMap();
 
   @Nullable
-  public abstract List<String> initFieldConfigStrings();
+  public abstract Iterable<String> initFieldConfigStrings();
 
   @Nullable
-  public abstract List<InitCodeNode> additionalSubTrees();
+  public abstract Iterable<InitCodeNode> additionalSubTrees();
 
   public static InitTreeParserContext.Builder newBuilder() {
     return new AutoValue_InitTreeParserContext.Builder();
@@ -67,9 +67,9 @@ public abstract class InitTreeParserContext {
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> val);
 
-    public abstract Builder initFieldConfigStrings(List<String> val);
+    public abstract Builder initFieldConfigStrings(Iterable<String> val);
 
-    public abstract Builder additionalSubTrees(List<InitCodeNode> val);
+    public abstract Builder additionalSubTrees(Iterable<InitCodeNode> val);
 
     public abstract InitTreeParserContext build();
   }

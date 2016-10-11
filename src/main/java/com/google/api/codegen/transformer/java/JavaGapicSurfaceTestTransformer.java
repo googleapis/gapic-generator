@@ -17,11 +17,17 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.InitCodeTransformerContext;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -140,10 +146,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       methodType = ApiMethodType.PagedFlattenedMethod;
     }
 
-    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
-    SymbolTable initSymbolTable = new SymbolTable();
     InitCodeView initCodeView =
-        initCodeTransformer.generateSmokeTestInitCode(context, initSymbolTable);
+        InitCodeTransformer.generateInitCode(createSmokeTestInitContext(context));
 
     return TestMethodView.newBuilder()
         .name(namer.getApiMethodName(method))
@@ -151,6 +155,17 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .type(methodType)
         .initCode(initCodeView)
         .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
+        .build();
+  }
+
+  private InitCodeTransformerContext createSmokeTestInitContext(MethodTransformerContext context) {
+    SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
+    return InitCodeTransformerContext.newBuilder()
+        .methodContext(context)
+        .initObjectType(testConfig.getMethod().getInputType())
+        .suggestedName(Name.from("request"))
+        .isFlattened(context.getMethodConfig().isFlattening())
+        .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
         .build();
   }
 
@@ -208,7 +223,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
     Method method = methodContext.getMethod();
-    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
 
     // This symbol table is used to produce unique variable names used in the initialization code.
     // Shared by both request and response views.
@@ -216,19 +230,18 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     InitCodeView initCodeView;
     if (methodConfig.isGrpcStreaming()) {
       initCodeView =
-          initCodeTransformer.generateRequestObjectTestInitCode(
-              methodContext, initSymbolTable, valueGenerator);
+          InitCodeTransformer.generateInitCode(
+              createRequestInitCodeContext(methodContext, initSymbolTable, null, false));
     } else {
       initCodeView =
-          initCodeTransformer.generateFlatteningTestInitCode(
-              methodContext, paramFields, initSymbolTable, valueGenerator);
+          InitCodeTransformer.generateInitCode(
+              createRequestInitCodeContext(methodContext, initSymbolTable, paramFields, true));
     }
 
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     String responseTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
-
     String surfaceMethodName = namer.getApiMethodName(method);
 
     ApiMethodType type = ApiMethodType.FlattenedMethod;
@@ -245,7 +258,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
 
     List<GapicSurfaceTestAssertView> requestAssertViews =
-        initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
+        InitCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
 
     return GapicSurfaceTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
@@ -318,16 +331,77 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private MockGrpcResponseView createMockResponseView(
       MethodTransformerContext methodContext, SymbolTable symbolTable) {
-    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =
-        initCodeTransformer.generateMockResponseObjectInitCode(
-            methodContext, symbolTable, valueGenerator);
+        InitCodeTransformer.generateInitCode(
+            createResponseInitCodeContext(methodContext, symbolTable));
 
     String typeName =
         methodContext
             .getTypeTable()
             .getAndSaveNicknameFor(methodContext.getMethod().getOutputType());
     return MockGrpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
+  }
+
+  private InitCodeTransformerContext createRequestInitCodeContext(
+      MethodTransformerContext context,
+      SymbolTable symbolTable,
+      Iterable<Field> fields,
+      boolean isFlattened) {
+    return InitCodeTransformerContext.newBuilder()
+        .methodContext(context)
+        .initObjectType(context.getMethod().getInputType())
+        .symbolTable(symbolTable)
+        .suggestedName(Name.from("request"))
+        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
+        .fields(fields)
+        .isFlattened(isFlattened)
+        .valueGenerator(valueGenerator)
+        .build();
+  }
+
+  private InitCodeTransformerContext createResponseInitCodeContext(
+      MethodTransformerContext context, SymbolTable symbolTable) {
+    ArrayList<Field> primitiveFields = new ArrayList<>();
+    for (Field field : context.getMethod().getOutputMessage().getFields()) {
+      if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
+        primitiveFields.add(field);
+      }
+    }
+    return InitCodeTransformerContext.newBuilder()
+        .methodContext(context)
+        .initObjectType(context.getMethod().getOutputType())
+        .symbolTable(symbolTable)
+        .suggestedName(Name.from("expected_response"))
+        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
+        .fields(primitiveFields)
+        .isFlattened(false)
+        .valueGenerator(valueGenerator)
+        .additionalNodes(createMockResponseAdditionalSubTrees(context))
+        .build();
+  }
+
+  private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(
+      MethodTransformerContext context) {
+    List<InitCodeNode> additionalSubTrees = new ArrayList<>();
+    if (context.getMethodConfig().isPageStreaming()) {
+      // Initialize one resource element if it is page-streaming.
+      PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
+      String resourceFieldName = config.getResourcesField().getSimpleName();
+      additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
+
+      // Set the initial value of the page token to empty, in order to indicate that no more pages
+      // are available
+      String responseTokenName = config.getResponseTokenField().getSimpleName();
+      additionalSubTrees.add(
+          InitCodeNode.createWithValue(responseTokenName, InitValueConfig.createWithValue("")));
+    }
+    if (context.getMethodConfig().isBundling()) {
+      // Initialize one bundling element if it is bundling.
+      BundlingConfig config = context.getMethodConfig().getBundling();
+      String subResponseFieldName = config.getSubresponseField().getSimpleName();
+      additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
+    }
+    return additionalSubTrees;
   }
 
   ///////////////////////////////////// Mock Service /////////////////////////////////////////

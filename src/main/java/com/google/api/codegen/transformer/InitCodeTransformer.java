@@ -51,106 +51,34 @@ import java.util.Map;
  * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
-
-  public InitCodeView generateInitCode(MethodTransformerContext context, Iterable<Field> fields) {
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(new SymbolTable())
-                .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-                .initFields(fields)
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewFlattened(context, rootNode);
-  }
-
-  public InitCodeView generateRequestObjectInitCode(MethodTransformerContext context) {
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(new SymbolTable())
-                .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewRequestObject(context, rootNode);
-  }
-
-  public InitCodeView generateFlatteningTestInitCode(
-      MethodTransformerContext context,
-      Iterable<Field> fields,
-      SymbolTable table,
-      TestValueGenerator valueGenerator) {
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(table)
-                .valueGenerator(valueGenerator)
-                .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-                .initFields(fields)
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewFlattened(context, rootNode);
-  }
-
-  public InitCodeView generateRequestObjectTestInitCode(
-      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(table)
-                .valueGenerator(valueGenerator)
-                .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewRequestObject(context, rootNode);
-  }
-
-  public InitCodeView generateMockResponseObjectInitCode(
-      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
-    ArrayList<Field> primitiveFields = new ArrayList<>();
-    for (Field field : context.getMethod().getOutputMessage().getFields()) {
-      if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(field);
-      }
+  /** Generates initialization code from the given InitCodeTransformerContext object. */
+  public static InitCodeView generateInitCode(InitCodeTransformerContext context) {
+    InitCodeNode rootNode = createRootNode(context);
+    MethodTransformerContext methodContext = context.methodContext();
+    if (context.isFlattened()) {
+      return buildInitCodeViewFlattened(methodContext, rootNode);
+    } else {
+      return buildInitCodeViewRequestObject(methodContext, rootNode);
     }
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(table)
-                .valueGenerator(valueGenerator)
-                .rootObjectType(context.getMethod().getOutputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .additionalSubTrees(createMockResponseAdditionalSubTrees(context))
-                .initFields(primitiveFields)
-                .suggestedName(Name.from("expected_response"))
-                .build());
-    return buildInitCodeViewRequestObject(context, rootNode);
   }
 
-  public InitCodeView generateSmokeTestInitCode(
-      MethodTransformerContext context, SymbolTable table) {
-    SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(table)
-                .rootObjectType(testConfig.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewFlattened(context, rootNode);
+  private static InitCodeNode createRootNode(InitCodeTransformerContext context) {
+    MethodTransformerContext methodContext = context.methodContext();
+    return InitCodeNode.createTree(
+        InitTreeParserContext.newBuilder()
+            .table(context.symbolTable())
+            .rootObjectType(context.initObjectType())
+            .initValueConfigMap(createCollectionMap(methodContext))
+            .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
+            .initFields(context.fields())
+            .suggestedName(context.suggestedName())
+            .valueGenerator(context.valueGenerator())
+            .additionalSubTrees(context.additionalNodes())
+            .build());
   }
 
-  public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
+  /** Generates assert views for the test of the tested method and its fields. */
+  public static List<GapicSurfaceTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<Field> fields) {
 
     InitCodeNode rootNode =
@@ -186,14 +114,14 @@ public class InitCodeTransformer {
     return assertViews;
   }
 
-  private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
+  private static GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
     return GapicSurfaceTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
         .actualValueGetter(actual)
         .build();
   }
 
-  private InitCodeView buildInitCodeViewFlattened(
+  private static InitCodeView buildInitCodeViewFlattened(
       MethodTransformerContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     List<InitCodeNode> argItems = new ArrayList<>(root.getChildren().values());
@@ -202,14 +130,14 @@ public class InitCodeTransformer {
     return buildInitCodeView(context, orderedItems, argItems);
   }
 
-  private InitCodeView buildInitCodeViewRequestObject(
+  private static InitCodeView buildInitCodeViewRequestObject(
       MethodTransformerContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     List<InitCodeNode> argItems = Lists.newArrayList(root);
     return buildInitCodeView(context, orderedItems, argItems);
   }
 
-  private InitCodeView buildInitCodeView(
+  private static InitCodeView buildInitCodeView(
       MethodTransformerContext context,
       Iterable<InitCodeNode> orderedItems,
       Iterable<InitCodeNode> argItems) {
@@ -234,31 +162,7 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private List<InitCodeNode> createMockResponseAdditionalSubTrees(
-      MethodTransformerContext context) {
-    List<InitCodeNode> additionalSubTrees = new ArrayList<>();
-    if (context.getMethodConfig().isPageStreaming()) {
-      // Initialize one resource element if it is page-streaming.
-      PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      String resourceFieldName = config.getResourcesField().getSimpleName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
-
-      // Set the initial value of the page token to empty, in order to indicate that no more pages
-      // are available
-      String responseTokenName = config.getResponseTokenField().getSimpleName();
-      additionalSubTrees.add(
-          InitCodeNode.createWithValue(responseTokenName, InitValueConfig.createWithValue("")));
-    }
-    if (context.getMethodConfig().isBundling()) {
-      // Initialize one bundling element if it is bundling.
-      BundlingConfig config = context.getMethodConfig().getBundling();
-      String subResponseFieldName = config.getSubresponseField().getSimpleName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
-    }
-    return additionalSubTrees;
-  }
-
-  private ImmutableMap<String, InitValueConfig> createCollectionMap(
+  private static ImmutableMap<String, InitValueConfig> createCollectionMap(
       MethodTransformerContext context) {
 
     ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
@@ -275,7 +179,7 @@ public class InitCodeTransformer {
     return mapBuilder.build();
   }
 
-  private List<InitCodeLineView> generateSurfaceInitCodeLines(
+  private static List<InitCodeLineView> generateSurfaceInitCodeLines(
       MethodTransformerContext context, Iterable<InitCodeNode> specItemNode) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeNode item : specItemNode) {
@@ -284,7 +188,7 @@ public class InitCodeTransformer {
     return surfaceLines;
   }
 
-  private InitCodeLineView generateSurfaceInitCodeLine(
+  private static InitCodeLineView generateSurfaceInitCodeLine(
       MethodTransformerContext context, InitCodeNode specItemNode) {
     switch (specItemNode.getLineType()) {
       case StructureInitLine:
@@ -300,7 +204,7 @@ public class InitCodeTransformer {
     }
   }
 
-  private InitCodeLineView generateSimpleInitCodeLine(
+  private static InitCodeLineView generateSimpleInitCodeLine(
       MethodTransformerContext context, InitCodeNode item) {
     SimpleInitCodeLineView.Builder surfaceLine = SimpleInitCodeLineView.newBuilder();
 
@@ -322,7 +226,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private InitCodeLineView generateStructureInitCodeLine(
+  private static InitCodeLineView generateStructureInitCodeLine(
       MethodTransformerContext context, InitCodeNode item) {
     StructureInitCodeLineView.Builder surfaceLine = StructureInitCodeLineView.newBuilder();
 
@@ -337,7 +241,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private InitCodeLineView generateListInitCodeLine(
+  private static InitCodeLineView generateListInitCodeLine(
       MethodTransformerContext context, InitCodeNode item) {
     ListInitCodeLineView.Builder surfaceLine = ListInitCodeLineView.newBuilder();
 
@@ -369,7 +273,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private InitCodeLineView generateMapInitCodeLine(
+  private static InitCodeLineView generateMapInitCodeLine(
       MethodTransformerContext context, InitCodeNode item) {
     MapInitCodeLineView.Builder surfaceLine = MapInitCodeLineView.newBuilder();
 
@@ -398,7 +302,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {
+  private static InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {
 
     InitValueConfig initValueConfig = item.getInitValueConfig();
     Field field = item.getField();
@@ -459,7 +363,7 @@ public class InitCodeTransformer {
     return formatFunctionArgs;
   }
 
-  private List<FieldSettingView> getFieldSettings(
+  private static List<FieldSettingView> getFieldSettings(
       MethodTransformerContext context, Iterable<InitCodeNode> childItems) {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();

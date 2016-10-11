@@ -239,7 +239,7 @@ public class InitCodeNode {
       subTrees = newSubTrees;
     }
     if (context.additionalSubTrees() != null) {
-      subTrees.addAll(context.additionalSubTrees());
+      subTrees.addAll(Lists.newArrayList(context.additionalSubTrees()));
     }
     return subTrees;
   }
