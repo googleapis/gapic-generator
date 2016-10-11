@@ -1,9 +1,9 @@
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -13,17 +13,17 @@
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -36,25 +36,24 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
 
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
+            // TODO: Change placeholder below to desired parameter value for the `Get` method:
 
-            // Required. The resource name of the log to delete.  Example:
-            // `"projects/my-project/logs/syslog"`.
-            string logName = "billingAccounts/{MY-BILLINGACCOUNT}/logs/{MY-LOG}";
+            // The name of the operation resource.
+            string name = "{MY-NAME}";
 
 
-            BillingAccountsResource.LogsResource.DeleteRequest request = loggingService.BillingAccounts.Logs.Delete(logName);
+            OperationsResource.GetRequest request = cloudResourceManagerService.Operations.Get(name);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
@@ -63,9 +62,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -75,17 +74,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -98,33 +97,160 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            Data.ListLogEntriesRequest requestBody = new Data.ListLogEntriesRequest();
+
+            // TODO: Change placeholder below to desired parameter value for the `Get` method:
+
+            // The resource name of the Organization to fetch, e.g. "organizations/1234".
+            string name = "organizations/{MY-ORGANIZATION}";
+
+
+            OrganizationsResource.GetRequest request = cloudResourceManagerService.Organizations.Get(name);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Organization response = request.Execute();
+            // Data.Organization response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudResourceManager.v1.Data;
+
+
+namespace CloudResourceManagerSample
+{
+    public class CloudResourceManagerServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+
+            // TODO: Change placeholder below to desired parameter value for the `GetIamPolicy` method:
+
+            // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+            // path. For example, a Project resource is specified as `projects/{project}`.
+            string resource = "organizations/{MY-ORGANIZATION}";
+
+
+            Data.GetIamPolicyRequest requestBody = new Data.GetIamPolicyRequest();
             // TODO: Assign values to desired properties of the `requestBody` object.
 
 
-            EntriesResource.ListRequest request = loggingService.Entries.List(requestBody);
+            OrganizationsResource.GetIamPolicyRequest request = cloudResourceManagerService.Organizations.GetIamPolicy(requestBody, resource);
 
-            Data.ListLogEntriesResponse response;
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudResourceManager.v1.Data;
+
+
+namespace CloudResourceManagerSample
+{
+    public class CloudResourceManagerServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            Data.SearchOrganizationsRequest requestBody = new Data.SearchOrganizationsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            OrganizationsResource.SearchRequest request = cloudResourceManagerService.Organizations.Search(requestBody);
+
+            Data.SearchOrganizationsResponse response;
             do
             {
                 // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
-                if (response.Entries == null)
+                if (response.Organizations == null)
                 {
                     continue;
                 }
-                foreach (Data.LogEntry logEntry in response.Entries)
+                foreach (Data.Organization organization in response.Organizations)
                 {
-                    // TODO: Change code below to process each `logEntry` resource:
-                    Console.WriteLine(logEntry);
+                    // TODO: Change code below to process each `organization` resource:
+                    Console.WriteLine(organization);
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -133,9 +259,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -145,17 +271,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -168,21 +294,29 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            Data.WriteLogEntriesRequest requestBody = new Data.WriteLogEntriesRequest();
+
+            // TODO: Change placeholder below to desired parameter value for the `SetIamPolicy` method:
+
+            // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+            // path. For example, a Project resource is specified as `projects/{project}`.
+            string resource = "organizations/{MY-ORGANIZATION}";
+
+
+            Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
             // TODO: Assign values to desired properties of the `requestBody` object.
 
 
-            EntriesResource.WriteRequest request = loggingService.Entries.Write(requestBody);
+            OrganizationsResource.SetIamPolicyRequest request = cloudResourceManagerService.Organizations.SetIamPolicy(requestBody, resource);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.WriteLogEntriesResponse response = request.Execute();
-            // Data.WriteLogEntriesResponse response = await request.ExecuteAsync();
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
@@ -191,9 +325,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -203,17 +337,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -226,220 +360,29 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-            MonitoredResourceDescriptorsResource.ListRequest request = loggingService.MonitoredResourceDescriptors.List();
-
-            Data.ListMonitoredResourceDescriptorsResponse response;
-            do
-            {
-                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-                response = request.Execute();
-                // response = await request.ExecuteAsync();
-
-                if (response.ResourceDescriptors == null)
-                {
-                    continue;
-                }
-                foreach (Data.MonitoredResourceDescriptor monitoredResourceDescriptor in response.ResourceDescriptors)
-                {
-                    // TODO: Change code below to process each `monitoredResourceDescriptor` resource:
-                    Console.WriteLine(monitoredResourceDescriptor);
-                }
-                request.PageToken = response.NextPageToken;
-            } while (response.NextPageToken != null);
-        }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Stackdriver Logging API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
-
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
-
-namespace LoggingSample
-{
-    public class LoggingServiceExample
-    {
-        public static void Main(string[] args)
-        {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
 
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
+            // TODO: Change placeholder below to desired parameter value for the `TestIamPermissions` method:
 
-            // Required. The resource name of the log to delete.  Example:
-            // `"projects/my-project/logs/syslog"`.
-            string logName = "organizations/{MY-ORGANIZATION}/logs/{MY-LOG}";
-
-
-            OrganizationsResource.LogsResource.DeleteRequest request = loggingService.Organizations.Logs.Delete(logName);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
-        }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Stackdriver Logging API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
-
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
+            // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+            // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+            string resource = "organizations/{MY-ORGANIZATION}";
 
 
-namespace LoggingSample
-{
-    public class LoggingServiceExample
-    {
-        public static void Main(string[] args)
-        {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
-
-            // Required. The resource name of the log to delete.  Example:
-            // `"projects/my-project/logs/syslog"`.
-            string logName = "projects/{MY-PROJECT}/logs/{MY-LOG}";
-
-
-            ProjectsResource.LogsResource.DeleteRequest request = loggingService.Projects.Logs.Delete(logName);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
-        }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Stackdriver Logging API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
-
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
-
-namespace LoggingSample
-{
-    public class LoggingServiceExample
-    {
-        public static void Main(string[] args)
-        {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Create` method:
-
-            // The resource name of the project in which to create the metric.
-            // Example: `"projects/my-project-id"`.
-            // The new metric must be provided in the request.
-            string parent = "projects/{MY-PROJECT}";
-
-
-            Data.LogMetric requestBody = new Data.LogMetric();
+            Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
             // TODO: Assign values to desired properties of the `requestBody` object.
 
 
-            ProjectsResource.MetricsResource.CreateRequest request = loggingService.Projects.Metrics.Create(requestBody, parent);
+            OrganizationsResource.TestIamPermissionsRequest request = cloudResourceManagerService.Organizations.TestIamPermissions(requestBody, resource);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.LogMetric response = request.Execute();
-            // Data.LogMetric response = await request.ExecuteAsync();
+            Data.TestIamPermissionsResponse response = request.Execute();
+            // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
@@ -448,9 +391,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -460,17 +403,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -483,7 +426,65 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            Data.Project requestBody = new Data.Project();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.CreateRequest request = cloudResourceManagerService.Projects.Create(requestBody);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudResourceManager.v1.Data;
+
+
+namespace CloudResourceManagerSample
+{
+    public class CloudResourceManagerServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
@@ -492,12 +493,11 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Delete` method:
 
-            // The resource name of the metric to delete.
-            // Example: `"projects/my-project-id/metrics/my-metric-id"`.
-            string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
+            // The Project ID (for example, `foo-bar-123`). Required.
+            string projectId = "{MY-PROJECT-ID}";
 
 
-            ProjectsResource.MetricsResource.DeleteRequest request = loggingService.Projects.Metrics.Delete(metricName);
+            ProjectsResource.DeleteRequest request = cloudResourceManagerService.Projects.Delete(projectId);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
@@ -510,9 +510,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -522,17 +522,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -545,7 +545,7 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
@@ -554,16 +554,15 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Get` method:
 
-            // The resource name of the desired metric.
-            // Example: `"projects/my-project-id/metrics/my-metric-id"`.
-            string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
+            // The Project ID (for example, `my-project-123`). Required.
+            string projectId = "{MY-PROJECT-ID}";
 
 
-            ProjectsResource.MetricsResource.GetRequest request = loggingService.Projects.Metrics.Get(metricName);
+            ProjectsResource.GetRequest request = cloudResourceManagerService.Projects.Get(projectId);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.LogMetric response = request.Execute();
-            // Data.LogMetric response = await request.ExecuteAsync();
+            Data.Project response = request.Execute();
+            // Data.Project response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
@@ -572,9 +571,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -584,17 +583,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -607,37 +606,95 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
 
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
+            // TODO: Change placeholder below to desired parameter value for the `GetIamPolicy` method:
 
-            // Required. The resource name containing the metrics.
-            // Example: `"projects/my-project-id"`.
-            string parent = "projects/{MY-PROJECT}";
+            // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+            // path. For example, a Project resource is specified as `projects/{project}`.
+            string resource = "{MY-RESOURCE}";
 
 
-            ProjectsResource.MetricsResource.ListRequest request = loggingService.Projects.Metrics.List(parent);
+            Data.GetIamPolicyRequest requestBody = new Data.GetIamPolicyRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
 
-            Data.ListLogMetricsResponse response;
+
+            ProjectsResource.GetIamPolicyRequest request = cloudResourceManagerService.Projects.GetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudResourceManager.v1.Data;
+
+
+namespace CloudResourceManagerSample
+{
+    public class CloudResourceManagerServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
+            // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            ProjectsResource.ListRequest request = cloudResourceManagerService.Projects.List();
+
+            Data.ListProjectsResponse response;
             do
             {
                 // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
-                if (response.Metrics == null)
+                if (response.Projects == null)
                 {
                     continue;
                 }
-                foreach (Data.LogMetric logMetric in response.Metrics)
+                foreach (Data.Project project in response.Projects)
                 {
-                    // TODO: Change code below to process each `logMetric` resource:
-                    Console.WriteLine(logMetric);
+                    // TODO: Change code below to process each `project` resource:
+                    Console.WriteLine(project);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -646,9 +703,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -658,17 +715,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -681,32 +738,29 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
 
-            // TODO: Change placeholder below to desired parameter value for the `Update` method:
+            // TODO: Change placeholder below to desired parameter value for the `SetIamPolicy` method:
 
-            // The resource name of the metric to update.
-            // Example: `"projects/my-project-id/metrics/my-metric-id"`.
-            // The updated metric must be provided in the request and have the
-            // same identifier that is specified in `metricName`.
-            // If the metric does not exist, it is created.
-            string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
+            // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+            // path. For example, a Project resource is specified as `projects/{project}`.
+            string resource = "{MY-RESOURCE}";
 
 
-            Data.LogMetric requestBody = new Data.LogMetric();
+            Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
             // TODO: Assign values to desired properties of the `requestBody` object.
 
 
-            ProjectsResource.MetricsResource.UpdateRequest request = loggingService.Projects.Metrics.Update(requestBody, metricName);
+            ProjectsResource.SetIamPolicyRequest request = cloudResourceManagerService.Projects.SetIamPolicy(requestBody, resource);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.LogMetric response = request.Execute();
-            // Data.LogMetric response = await request.ExecuteAsync();
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
@@ -715,9 +769,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -727,17 +781,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -750,30 +804,29 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
 
-            // TODO: Change placeholder below to desired parameter value for the `Create` method:
+            // TODO: Change placeholder below to desired parameter value for the `TestIamPermissions` method:
 
-            // Required. The resource in which to create the sink.
-            // Example: `"projects/my-project-id"`.
-            // The new sink must be provided in the request.
-            string parent = "projects/{MY-PROJECT}";
+            // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+            // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+            string resource = "{MY-RESOURCE}";
 
 
-            Data.LogSink requestBody = new Data.LogSink();
+            Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
             // TODO: Assign values to desired properties of the `requestBody` object.
 
 
-            ProjectsResource.SinksResource.CreateRequest request = loggingService.Projects.Sinks.Create(requestBody, parent);
+            ProjectsResource.TestIamPermissionsRequest request = cloudResourceManagerService.Projects.TestIamPermissions(requestBody, resource);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.LogSink response = request.Execute();
-            // Data.LogSink response = await request.ExecuteAsync();
+            Data.TestIamPermissionsResponse response = request.Execute();
+            // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
@@ -782,9 +835,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -794,17 +847,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -817,23 +870,24 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
 
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
+            // TODO: Change placeholder below to desired parameter value for the `Undelete` method:
 
-            // Required. The resource name of the sink to delete, including the parent
-            // resource and the sink identifier.  Example:
-            // `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
-            // does not exist.
-            string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
+            // The project ID (for example, `foo-bar-123`). Required.
+            string projectId = "{MY-PROJECT-ID}";
 
 
-            ProjectsResource.SinksResource.DeleteRequest request = loggingService.Projects.Sinks.Delete(sinkName);
+            Data.UndeleteProjectRequest requestBody = new Data.UndeleteProjectRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
+
+            ProjectsResource.UndeleteRequest request = cloudResourceManagerService.Projects.Undelete(requestBody, projectId);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Empty response = request.Execute();
@@ -846,9 +900,9 @@ namespace LoggingSample
 }
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Stackdriver Logging API
+// 1. If not already done, enable the Google Cloud Resource Manager API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
@@ -858,17 +912,17 @@ namespace LoggingSample
 //    https://www.nuget.org/profiles/google-apis-packages
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.Services;
 using System;
 using System.Threading.Tasks;
 
-using Data = Google.Apis.Logging.v2beta1.Data;
+using Data = Google.Apis.CloudResourceManager.v1.Data;
 
 
-namespace LoggingSample
+namespace CloudResourceManagerSample
 {
-    public class LoggingServiceExample
+    public class CloudResourceManagerServiceExample
     {
         public static void Main(string[] args)
         {
@@ -881,143 +935,7 @@ namespace LoggingSample
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
 
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
-            // Required. The resource name of the sink to return.
-            // Example: `"projects/my-project-id/sinks/my-sink-id"`.
-            string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
-
-
-            ProjectsResource.SinksResource.GetRequest request = loggingService.Projects.Sinks.Get(sinkName);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.LogSink response = request.Execute();
-            // Data.LogSink response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
-        }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Stackdriver Logging API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
-
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
-
-namespace LoggingSample
-{
-    public class LoggingServiceExample
-    {
-        public static void Main(string[] args)
-        {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
-
-            // Required. The cloud resource containing the sinks.
-            // Example: `"projects/my-logging-project"`.
-            string parent = "projects/{MY-PROJECT}";
-
-
-            ProjectsResource.SinksResource.ListRequest request = loggingService.Projects.Sinks.List(parent);
-
-            Data.ListSinksResponse response;
-            do
-            {
-                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-                response = request.Execute();
-                // response = await request.ExecuteAsync();
-
-                if (response.Sinks == null)
-                {
-                    continue;
-                }
-                foreach (Data.LogSink logSink in response.Sinks)
-                {
-                    // TODO: Change code below to process each `logSink` resource:
-                    Console.WriteLine(logSink);
-                }
-                request.PageToken = response.NextPageToken;
-            } while (response.NextPageToken != null);
-        }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Stackdriver Logging API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
-
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
-
-namespace LoggingSample
-{
-    public class LoggingServiceExample
-    {
-        public static void Main(string[] args)
-        {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Cloud Platform Sample",
@@ -1026,21 +944,19 @@ namespace LoggingSample
 
             // TODO: Change placeholder below to desired parameter value for the `Update` method:
 
-            // Required. The resource name of the sink to update, including the parent
-            // resource and the sink identifier.  If the sink does not exist, this method
-            // creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
-            string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
+            // The project ID (for example, `my-project-123`). Required.
+            string projectId = "{MY-PROJECT-ID}";
 
 
-            Data.LogSink requestBody = new Data.LogSink();
+            Data.Project requestBody = new Data.Project();
             // TODO: Assign values to desired properties of the `requestBody` object.
 
 
-            ProjectsResource.SinksResource.UpdateRequest request = loggingService.Projects.Sinks.Update(requestBody, sinkName);
+            ProjectsResource.UpdateRequest request = cloudResourceManagerService.Projects.Update(requestBody, projectId);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.LogSink response = request.Execute();
-            // Data.LogSink response = await request.ExecuteAsync();
+            Data.Project response = request.Execute();
+            // Data.Project response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
