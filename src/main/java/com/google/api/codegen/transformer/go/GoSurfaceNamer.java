@@ -213,4 +213,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
   public String getCreateStubFunctionName(Interface service) {
     return getGrpcClientTypeName(service).replace(".", ".New");
   }
+
+  @Override
+  public String getStaticLangStreamingReturnTypeName(Method method, MethodConfig methodConfig) {
+    // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
+    // neither camel or underscore.
+    return converter.getTypeName(method.getParent()).getNickname()
+        + "_"
+        + className(Name.upperCamel(method.getSimpleName()).join("client"));
+  }
 }

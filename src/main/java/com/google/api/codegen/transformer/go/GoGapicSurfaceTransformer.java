@@ -75,6 +75,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+  private final FeatureConfig featureConfig = new GoFeatureConfig();
   private final GapicCodePathMapper pathMapper;
 
   public GoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
@@ -94,12 +95,12 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(), namer, new FeatureConfig());
+              service, apiConfig, createTypeTable(), namer, featureConfig);
       models.add(generate(context));
 
       context =
           SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(), namer, new FeatureConfig());
+              service, apiConfig, createTypeTable(), namer, featureConfig);
       models.add(generateExample(context));
     }
     models.add(generatePackageInfo(model, apiConfig, namer));
@@ -195,7 +196,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     //   - The input types of the methods, to initialize the requests
     // So, we clear all imports; addXExampleImports will add back the ones we want.
     context.getTypeTable().getImports().clear();
-    addXExampleImports(context);
+    addXExampleImports(context, context.getSupportedMethods());
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
     return view.build();
@@ -239,17 +240,24 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   List<StaticLangApiMethodView> generateApiMethods(
       SurfaceTransformerContext context, List<Method> methods, List<String> pageStreamImports) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
+    boolean hasPageStreaming = false;
     for (Method method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodTransformerContext methodContext = context.asMethodContext(method);
 
-      if (methodConfig.isPageStreaming()) {
-        for (String imp : pageStreamImports) {
-          context.getTypeTable().saveNicknameFor(imp);
-        }
+      if (method.getRequestStreaming() || method.getResponseStreaming()) {
+        apiMethods.add(
+            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext));
+      } else if (methodConfig.isPageStreaming()) {
+        hasPageStreaming = true;
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
       } else {
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
+      }
+    }
+    if (hasPageStreaming) {
+      for (String imp : pageStreamImports) {
+        context.getTypeTable().saveNicknameFor(imp);
       }
     }
     return apiMethods;
@@ -321,13 +329,24 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
   }
 
+  private static final ImmutableList<String> EXAMPLE_GRPC_SERVER_STREAM_IMPORTS =
+      ImmutableList.<String>of("io;;;");
+
   @VisibleForTesting
-  void addXExampleImports(SurfaceTransformerContext context) {
+  void addXExampleImports(SurfaceTransformerContext context, List<Method> methods) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor(context.getApiConfig().getPackageName() + ";;;");
-    for (Method method : context.getSupportedMethods()) {
+
+    boolean hasGrpcServerStreaming = false;
+    for (Method method : methods) {
       typeTable.getAndSaveNicknameFor(method.getInputType());
+      hasGrpcServerStreaming |= method.getResponseStreaming();
+    }
+    if (hasGrpcServerStreaming) {
+      for (String imp : EXAMPLE_GRPC_SERVER_STREAM_IMPORTS) {
+        typeTable.saveNicknameFor(imp);
+      }
     }
   }
 }

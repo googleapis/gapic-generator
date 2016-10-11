@@ -18,6 +18,8 @@
 package library_test
 
 import (
+    "io"
+
     "cloud.google.com/go/library/apiv1"
     "golang.org/x/net/context"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
@@ -323,6 +325,94 @@ func ExampleClient_UpdateBookIndex() {
     err = c.UpdateBookIndex(ctx, req)
     if err != nil {
         // TODO: Handle error.
+    }
+}
+
+func StreamShelves() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.StreamShelvesRequest{
+        // TODO: Fill request struct fields.
+    }
+    stream, err := c.StreamShelves(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    for {
+        resp, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            // TODO: handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
+func StreamBooks() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.StreamBooksRequest{
+        // TODO: Fill request struct fields.
+    }
+    stream, err := c.StreamBooks(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    for {
+        resp, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            // TODO: handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
+func DiscussBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    stream, err := c.DiscussBook(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    go func() {
+        reqs := []*librarypb.DiscussBookRequest{
+            // TODO: Create requests.
+        }
+        for _, req := range reqs {
+            if err := stream.Send(req); err != nil {
+                // TODO: Handle error.
+            }
+        }
+        stream.CloseSend()
+    }()
+    for {
+        resp, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            // TODO: handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
     }
 }
 

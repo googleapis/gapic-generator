@@ -246,7 +246,6 @@ public class ApiMethodTransformer {
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     methodViewBuilder.isPageStreaming(false);
-    methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }
@@ -265,6 +264,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.stubName(namer.getStubName(context.getTargetInterface()));
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
+    methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
   }
 
   private void setListMethodFields(
@@ -431,6 +431,13 @@ public class ApiMethodTransformer {
       case Sync:
         methodViewBuilder.responseTypeName(syncNickname);
         break;
+      case GrpcStreaming:
+        String streamingReturnTypeFullName =
+            namer.getStaticLangStreamingReturnTypeName(
+                context.getMethod(), context.getMethodConfig());
+        String streamingNickname =
+            context.getTypeTable().getAndSaveNicknameFor(streamingReturnTypeFullName);
+        methodViewBuilder.responseTypeName(streamingNickname);
     }
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
@@ -545,6 +552,25 @@ public class ApiMethodTransformer {
     methodParams.add(optionalArgs.build());
 
     return methodParams;
+  }
+
+  public StaticLangApiMethodView generateGrpcStreamingRequestObjectMethod(
+      MethodTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(namer.getGrpcStreamingApiMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context
+            .getNamer()
+            .getGrpcStreamingApiMethodExampleName(context.getInterface(), context.getMethod()));
+    setRequestObjectMethodFields(
+        context, namer.getCallableMethodName(context.getMethod()), methodViewBuilder);
+    methodViewBuilder.isPageStreaming(false);
+    setStaticLangReturnFields(context, Synchronicity.GrpcStreaming, methodViewBuilder);
+
+    return methodViewBuilder.type(ApiMethodType.RequestObjectMethod).build();
   }
 
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(

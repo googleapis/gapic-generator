@@ -89,6 +89,9 @@ public class GoGapicSurfaceTransformerTest {
   private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
       ImmutableList.<String>of("math;;;");
 
+  private static final ImmutableList<String> GRPC_SERVER_STREAM_IMPORTS =
+      ImmutableList.<String>of("io;;;");
+
   @Test
   public void testGetImportsPlain() {
     Method method = getMethod(context.getInterface(), "SimpleMethod");
@@ -114,8 +117,29 @@ public class GoGapicSurfaceTransformerTest {
   }
 
   @Test
+  public void testGetExampleImportsServerStream() {
+    Method method = getMethod(context.getInterface(), "ServerStreamMethod");
+    transformer.addXExampleImports(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).containsKey("io");
+  }
+
+  @Test
+  public void testGetExampleImportsBidiStream() {
+    Method method = getMethod(context.getInterface(), "BidiStreamMethod");
+    transformer.addXExampleImports(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).containsKey("io");
+  }
+
+  @Test
+  public void testGetExampleImportsClientStream() {
+    Method method = getMethod(context.getInterface(), "ClientStreamMethod");
+    transformer.addXExampleImports(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("io");
+  }
+
+  @Test
   public void testExampleImports() {
-    transformer.addXExampleImports(context);
+    transformer.addXExampleImports(context, context.getSupportedMethods());
     Truth.assertThat(context.getTypeTable().getImports())
         .containsEntry("golang.org/x/net/context", "");
     Truth.assertThat(context.getTypeTable().getImports())
