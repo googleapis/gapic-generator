@@ -6,37 +6,22 @@
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -44,9 +29,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   storage.bucketAccessControls.delete(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -54,37 +54,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -99,6 +84,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -106,33 +105,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -151,6 +135,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -158,33 +156,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -199,6 +182,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -206,40 +203,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `patch` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body to be changed.
+      // TODO: Add desired properties of the request body. Only added properties
+      // will be changed.
     },
 
     auth: authClient
@@ -255,6 +238,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -262,37 +259,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `update` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -311,6 +293,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -318,33 +314,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `delete` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -352,9 +333,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   storage.buckets.delete(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -362,33 +358,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -403,6 +384,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -410,33 +405,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
     // A valid API project identifier.
-    project: '{MY-PROJECT}',
-
+    project: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -455,6 +435,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -462,33 +456,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // A valid API project identifier.
-    project: '{MY-PROJECT}',
-
+    project: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -516,6 +495,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
   storage.buckets.list(request, handlePage);
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -523,36 +516,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `patch` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body to be changed.
+      // TODO: Add desired properties of the request body. Only added properties
+      // will be changed.
     },
 
     auth: authClient
@@ -568,6 +547,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -575,33 +568,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `update` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -620,6 +598,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -627,28 +619,16 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
     resource: {
       // TODO: Add desired properties of the request body.
     },
@@ -659,9 +639,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   storage.channels.stop(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -669,37 +664,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -707,9 +687,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   storage.defaultObjectAccessControls.delete(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -717,37 +712,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -762,6 +742,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -769,33 +763,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -814,6 +793,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -821,33 +814,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -862,6 +840,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -869,40 +861,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `patch` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body to be changed.
+      // TODO: Add desired properties of the request body. Only added properties
+      // will be changed.
     },
 
     auth: authClient
@@ -918,6 +896,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -925,37 +917,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `update` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -974,6 +951,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -981,41 +972,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
+    object: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -1023,9 +999,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   storage.objectAccessControls.delete(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1033,41 +1024,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
+    object: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -1082,6 +1058,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1089,37 +1079,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `insert` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
-
+    object: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1138,6 +1113,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1145,37 +1134,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `list` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
-
+    object: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -1190,6 +1164,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1197,44 +1185,30 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `patch` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
+    object: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body to be changed.
+      // TODO: Add desired properties of the request body. Only added properties
+      // will be changed.
     },
 
     auth: authClient
@@ -1250,6 +1224,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1257,41 +1245,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `update` method:
-
     // Name of a bucket.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
+    object: '',  // TODO: Update placeholder value.
 
     // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
     // group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity: '{MY-ENTITY}',
-
+    entity: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1310,6 +1283,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1317,37 +1304,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `compose` method:
-
     // Name of the bucket in which to store the new object.
-    destinationBucket: '{MY-DESTINATION-BUCKET}',
+    destinationBucket: '',  // TODO: Update placeholder value.
 
     // Name of the new object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    destinationObject: '{MY-DESTINATION-OBJECT}',
-
+    destinationObject: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1370,6 +1342,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1377,46 +1363,31 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `copy` method:
-
     // Name of the bucket in which to find the source object.
-    sourceBucket: '{MY-SOURCE-BUCKET}',
+    sourceBucket: '',  // TODO: Update placeholder value.
 
-    // Name of the source object. For information about how to URL encode object names to be path safe, see
+    // Name of the source object. For information about how to URL encode object names to be path safe,
+    // see Encoding URI Path Parts.
+    sourceObject: '',  // TODO: Update placeholder value.
+
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+    // bucket value, if any.For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    sourceObject: '{MY-SOURCE-OBJECT}',
-
-    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
-    // value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
-    // Path Parts.
-    destinationBucket: '{MY-DESTINATION-BUCKET}',
+    destinationBucket: '',  // TODO: Update placeholder value.
 
     // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
     // object metadata's name value, if any.
-    destinationObject: '{MY-DESTINATION-OBJECT}',
-
+    destinationObject: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1439,6 +1410,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1446,37 +1431,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
     // Name of the bucket in which the object resides.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
-
+    object: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -1484,9 +1454,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   storage.objects.delete(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1494,37 +1479,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
     // Name of the bucket in which the object resides.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
-
+    object: '',  // TODO: Update placeholder value.
 
     // TODO: To download media content, use:
     //
@@ -1543,6 +1513,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1550,44 +1534,28 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
-    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
-    // value, if any.
-    bucket: '{MY-BUCKET}',
-
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+    // bucket value, if any.
+    bucket: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
     },
 
     media: {
-      // TODO: Change placeholders below to add desired media content for upload.
-      // For more information, see:
+      // TODO: Add desired media content for upload. See:
       // https://github.com/google/google-api-nodejs-client#media-uploads
-      mimeType: '{MY-MIME-TYPE}',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
+      mimeType: '',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
       body: {}
     },
 
@@ -1604,6 +1572,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1611,33 +1593,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // Name of the bucket in which to look for objects.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -1665,6 +1632,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
   storage.objects.list(request, handlePage);
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1672,40 +1653,26 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `patch` method:
-
     // Name of the bucket in which the object resides.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
-
+    object: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body to be changed.
+      // TODO: Add desired properties of the request body. Only added properties
+      // will be changed.
     },
 
     auth: authClient
@@ -1721,6 +1688,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1728,46 +1709,31 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `rewrite` method:
-
     // Name of the bucket in which to find the source object.
-    sourceBucket: '{MY-SOURCE-BUCKET}',
+    sourceBucket: '',  // TODO: Update placeholder value.
 
-    // Name of the source object. For information about how to URL encode object names to be path safe, see
-    // Encoding URI Path Parts.
-    sourceObject: '{MY-SOURCE-OBJECT}',
+    // Name of the source object. For information about how to URL encode object names to be path safe,
+    // see Encoding URI Path Parts.
+    sourceObject: '',  // TODO: Update placeholder value.
 
-    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
-    // value, if any.
-    destinationBucket: '{MY-DESTINATION-BUCKET}',
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+    // bucket value, if any.
+    destinationBucket: '',  // TODO: Update placeholder value.
 
     // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
     // object metadata's name value, if any. For information about how to URL encode object names to be
     // path safe, see Encoding URI Path Parts.
-    destinationObject: '{MY-DESTINATION-OBJECT}',
-
+    destinationObject: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1786,6 +1752,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1793,37 +1773,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `update` method:
-
     // Name of the bucket in which the object resides.
-    bucket: '{MY-BUCKET}',
+    bucket: '',  // TODO: Update placeholder value.
 
     // Name of the object. For information about how to URL encode object names to be path safe, see
     // Encoding URI Path Parts.
-    object: '{MY-OBJECT}',
-
+    object: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1846,6 +1811,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Cloud Storage JSON API
@@ -1853,33 +1832,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var storage = google.storage('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `watchAll` method:
-
     // Name of the bucket in which to look for objects.
-    bucket: '{MY-BUCKET}',
-
+    bucket: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1898,3 +1862,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
