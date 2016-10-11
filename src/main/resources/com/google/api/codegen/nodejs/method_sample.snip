@@ -9,7 +9,7 @@
 @snippet sampleCode(apiMethod)
     @if initializeRequestObject(apiMethod)
         {@initializeRequestObject(apiMethod)}
-        
+
     @end
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
@@ -115,16 +115,6 @@
     @end
 @end
 
-@private sampleMethodCallArgList(apiMethod)
-    @switch apiMethod.requiredRequestObjectParams.size.toString
-    @case "0"
-    @case "1"
-        {@apiMethod.initCode.fieldSettings.get(0).identifier}
-    @default
-        request
-    @end
-@end
-
 @private initCode(initCodeSpec)
     @join line : initCodeSpec.lines
         @switch line.lineType.toString
@@ -185,6 +175,18 @@
     @end
 @end
 
+@private sampleMethodCallArgList(apiMethod)
+    @switch apiMethod.requiredRequestObjectParams.size.toString
+    @case "0"
+    @case "1"
+        @let field = apiMethod.initCode.fieldSettings.get(0)
+            {{@field.requestFieldName}: {@field.identifier}}
+        @end
+    @default
+        request
+    @end
+@end
+
 @private initializeRequestObject(apiMethod)
     @switch apiMethod.requiredRequestObjectParams.size.toString
     @case "0"
@@ -194,6 +196,6 @@
         @join fieldSetting : apiMethod.initCode.fieldSettings on ", ".add(BREAK)
             {@""}    {@fieldSetting.requestFieldName}: {@fieldSetting.identifier}
         @end
-        }
+        };
     @end
 @end

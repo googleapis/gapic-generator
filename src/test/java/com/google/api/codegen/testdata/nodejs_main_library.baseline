@@ -280,7 +280,9 @@ LibraryServiceApi.prototype.matchBookFromArchivedBookName = function(archivedBoo
 /**
  * Creates a shelf, and returns the new Shelf.
  *
- * @param {Object} shelf
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {Object} request.shelf
  *   The shelf to create.
  *
  *   This object should have the same structure as [Shelf]{@link Shelf}
@@ -298,7 +300,7 @@ LibraryServiceApi.prototype.matchBookFromArchivedBookName = function(archivedBoo
  *
  * var api = libraryV1.libraryServiceApi();
  * var shelf = {};
- * api.createShelf(shelf, function(err, response) {
+ * api.createShelf({shelf: shelf}, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -306,7 +308,7 @@ LibraryServiceApi.prototype.matchBookFromArchivedBookName = function(archivedBoo
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.createShelf = function(shelf, options, callback) {
+LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -314,7 +316,6 @@ LibraryServiceApi.prototype.createShelf = function(shelf, options, callback) {
   if (options === undefined) {
     options = {};
   }
-  var request = { shelf: shelf };
   return this._createShelf(request, options, callback);
 };
 
@@ -327,18 +328,15 @@ LibraryServiceApi.prototype.createShelf = function(shelf, options, callback) {
  *   The name of the shelf to retrieve.
  * @param {string} request.options
  *   To test 'options' parameter name conflict.
- * @param {Object=} options
- *   Optional parameters. You can override the default settings for this call, e.g, timeout,
- *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- *
- *   In addition, options may contain the following optional parameters.
- * @param {Object=} options.message
+ * @param {Object=} request.message
  *   Field to verify that message-type query parameter gets flattened.
  *
  *   This object should have the same structure as [SomeMessage]{@link SomeMessage}
- * @param {Object=} options.stringBuilder
+ * @param {Object=} request.stringBuilder
  *   This object should have the same structure as [StringBuilder]{@link StringBuilder}
- *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
@@ -354,7 +352,7 @@ LibraryServiceApi.prototype.createShelf = function(shelf, options, callback) {
  * var request = {
  *     name: formattedName,
  *     options: options
- * }
+ * };
  * api.getShelf(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
@@ -370,12 +368,6 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
   }
   if (options === undefined) {
     options = {};
-  }
-  if ('message' in options) {
-    request.message = options.message;
-  }
-  if ('stringBuilder' in options) {
-    request.stringBuilder = options.stringBuilder;
   }
   return this._getShelf(request, options, callback);
 };
@@ -430,14 +422,15 @@ LibraryServiceApi.prototype.listShelves = function(options, callback) {
   if (options === undefined) {
     options = {};
   }
-  var request = {};
-  return this._listShelves(request, options, callback);
+  return this._listShelves({}, options, callback);
 };
 
 /**
  * Deletes a shelf.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the shelf to delete.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -451,13 +444,13 @@ LibraryServiceApi.prototype.listShelves = function(options, callback) {
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
- * api.deleteShelf(formattedName, function(err) {
+ * api.deleteShelf({name: formattedName}, function(err) {
  *     if (err) {
  *         console.error(err);
  *     }
  * });
  */
-LibraryServiceApi.prototype.deleteShelf = function(name, options, callback) {
+LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -465,7 +458,6 @@ LibraryServiceApi.prototype.deleteShelf = function(name, options, callback) {
   if (options === undefined) {
     options = {};
   }
-  var request = { name: name };
   return this._deleteShelf(request, options, callback);
 };
 
@@ -498,7 +490,7 @@ LibraryServiceApi.prototype.deleteShelf = function(name, options, callback) {
  * var request = {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
- * }
+ * };
  * api.mergeShelves(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
@@ -547,7 +539,7 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
  * var request = {
  *     name: formattedName,
  *     book: book
- * }
+ * };
  * api.createBook(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
@@ -580,14 +572,11 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
  *   The books to publish in the series.
  *
  *   This object should have the same structure as [Book]{@link Book}
+ * @param {number=} request.edition
+ *   The edition of the series
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- *
- *   In addition, options may contain the following optional parameters.
- * @param {number=} options.edition
- *   The edition of the series
- *
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
@@ -605,7 +594,7 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
  * var request = {
  *     shelf: shelf,
  *     books: books
- * }
+ * };
  * api.publishSeries(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
@@ -622,16 +611,15 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
   if (options === undefined) {
     options = {};
   }
-  if ('edition' in options) {
-    request.edition = options.edition;
-  }
   return this._publishSeries(request, options, callback);
 };
 
 /**
  * Gets a book.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the book to retrieve.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -647,7 +635,7 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
- * api.getBook(formattedName, function(err, response) {
+ * api.getBook({name: formattedName}, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -655,7 +643,7 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.getBook = function(name, options, callback) {
+LibraryServiceApi.prototype.getBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -663,29 +651,27 @@ LibraryServiceApi.prototype.getBook = function(name, options, callback) {
   if (options === undefined) {
     options = {};
   }
-  var request = { name: name };
   return this._getBook(request, options, callback);
 };
 
 /**
  * Lists books in a shelf.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the shelf whose books we'd like to list.
- * @param {Object=} options
- *   Optional parameters. You can override the default settings for this call, e.g, timeout,
- *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- *
- *   In addition, options may contain the following optional parameters.
- * @param {number=} options.pageSize
+ * @param {number=} request.pageSize
  *   The maximum number of resources contained in the underlying API
  *   response. If page streaming is performed per-resource, this
  *   parameter does not affect the return value. If page streaming is
  *   performed per-page, this determines the maximum number of
  *   resources in a page.
- * @param {string=} options.filter
+ * @param {string=} request.filter
  *   To test python built-in wrapping.
- *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object, ?string)=} callback
  *   When specified, the results are not streamed but this callback
  *   will be called with the response object representing [ListBooksResponse]{@link ListBooksResponse}.
@@ -703,7 +689,7 @@ LibraryServiceApi.prototype.getBook = function(name, options, callback) {
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
  * // Iterate over all elements.
- * api.listBooks(formattedName).on('data', function(element) {
+ * api.listBooks({name: formattedName}).on('data', function(element) {
  *     // doThingsWith(element)
  * });
  *
@@ -716,12 +702,12 @@ LibraryServiceApi.prototype.getBook = function(name, options, callback) {
  *     // doThingsWith(response)
  *     if (nextPageToken) {
  *         // fetch the next page.
- *         api.listBooks(formattedName, {pageToken: nextPageToken}, callback);
+ *         api.listBooks({name: formattedName}, {pageToken: nextPageToken}, callback);
  *     }
  * }
- * api.listBooks(formattedName, {flattenPages: false}, callback);
+ * api.listBooks({name: formattedName}, {flattenPages: false}, callback);
  */
-LibraryServiceApi.prototype.listBooks = function(name, options, callback) {
+LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -729,20 +715,15 @@ LibraryServiceApi.prototype.listBooks = function(name, options, callback) {
   if (options === undefined) {
     options = {};
   }
-  var request = { name: name };
-  if ('pageSize' in options) {
-    request.pageSize = options.pageSize;
-  }
-  if ('filter' in options) {
-    request.filter = options.filter;
-  }
   return this._listBooks(request, options, callback);
 };
 
 /**
  * Deletes a book.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the book to delete.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -756,13 +737,13 @@ LibraryServiceApi.prototype.listBooks = function(name, options, callback) {
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
- * api.deleteBook(formattedName, function(err) {
+ * api.deleteBook({name: formattedName}, function(err) {
  *     if (err) {
  *         console.error(err);
  *     }
  * });
  */
-LibraryServiceApi.prototype.deleteBook = function(name, options, callback) {
+LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -770,7 +751,6 @@ LibraryServiceApi.prototype.deleteBook = function(name, options, callback) {
   if (options === undefined) {
     options = {};
   }
-  var request = { name: name };
   return this._deleteBook(request, options, callback);
 };
 
@@ -785,20 +765,17 @@ LibraryServiceApi.prototype.deleteBook = function(name, options, callback) {
  *   The book to update with.
  *
  *   This object should have the same structure as [Book]{@link Book}
- * @param {Object=} options
- *   Optional parameters. You can override the default settings for this call, e.g, timeout,
- *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- *
- *   In addition, options may contain the following optional parameters.
- * @param {Object=} options.updateMask
+ * @param {Object=} request.updateMask
  *   A field mask to apply, rendered as an HTTP parameter.
  *
  *   This object should have the same structure as [google.protobuf.FieldMask]{@link external:"google.protobuf.FieldMask"}
- * @param {Object=} options.physicalMask
+ * @param {Object=} request.physicalMask
  *   To test Python import clash resolution.
  *
  *   This object should have the same structure as [FieldMask]{@link FieldMask}
- *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
@@ -814,7 +791,7 @@ LibraryServiceApi.prototype.deleteBook = function(name, options, callback) {
  * var request = {
  *     name: formattedName,
  *     book: book
- * }
+ * };
  * api.updateBook(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
@@ -830,12 +807,6 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
   }
   if (options === undefined) {
     options = {};
-  }
-  if ('updateMask' in options) {
-    request.updateMask = options.updateMask;
-  }
-  if ('physicalMask' in options) {
-    request.physicalMask = options.physicalMask;
   }
   return this._updateBook(request, options, callback);
 };
@@ -867,7 +838,7 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
  * var request = {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
- * }
+ * };
  * api.moveBook(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
@@ -890,19 +861,16 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
 /**
  * Lists a primitive resource. To test go page streaming.
  *
- * @param {Object=} options
- *   Optional parameters. You can override the default settings for this call, e.g, timeout,
- *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- *
- *   In addition, options may contain the following optional parameters.
- * @param {string=} options.name
- * @param {number=} options.pageSize
+ * @param {string=} request.name
+ * @param {number=} request.pageSize
  *   The maximum number of resources contained in the underlying API
  *   response. If page streaming is performed per-resource, this
  *   parameter does not affect the return value. If page streaming is
  *   performed per-page, this determines the maximum number of
  *   resources in a page.
- *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object, ?string)=} callback
  *   When specified, the results are not streamed but this callback
  *   will be called with the response object representing [ListStringsResponse]{@link ListStringsResponse}.
@@ -946,14 +914,7 @@ LibraryServiceApi.prototype.listStrings = function(options, callback) {
   if (options === undefined) {
     options = {};
   }
-  var request = {};
-  if ('name' in options) {
-    request.name = options.name;
-  }
-  if ('pageSize' in options) {
-    request.pageSize = options.pageSize;
-  }
-  return this._listStrings(request, options, callback);
+  return this._listStrings({}, options, callback);
 };
 
 /**
@@ -988,7 +949,7 @@ LibraryServiceApi.prototype.listStrings = function(options, callback) {
  * var request = {
  *     name: formattedName,
  *     comments: comments
- * }
+ * };
  * api.addComments(request, function(err) {
  *     if (err) {
  *         console.error(err);
@@ -1009,7 +970,9 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
 /**
  * Gets a book from an archive.
  *
- * @param {string} name
+ * @param {Object} request
+ *   Required request parameters. This request must contain the following parameters.
+ * @param {string} request.name
  *   The name of the book to retrieve.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
@@ -1025,7 +988,7 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.archivedBookPath("[ARCHIVE_PATH]", "[BOOK]");
- * api.getBookFromArchive(formattedName, function(err, response) {
+ * api.getBookFromArchive({name: formattedName}, function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -1033,7 +996,7 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.getBookFromArchive = function(name, options, callback) {
+LibraryServiceApi.prototype.getBookFromArchive = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1041,7 +1004,6 @@ LibraryServiceApi.prototype.getBookFromArchive = function(name, options, callbac
   if (options === undefined) {
     options = {};
   }
-  var request = { name: name };
   return this._getBookFromArchive(request, options, callback);
 };
 
@@ -1075,7 +1037,7 @@ LibraryServiceApi.prototype.getBookFromArchive = function(name, options, callbac
  *     name: formattedName,
  *     indexName: indexName,
  *     indexMap: indexMap
- * }
+ * };
  * api.updateBookIndex(request, function(err) {
  *     if (err) {
  *         console.error(err);
@@ -1098,18 +1060,15 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
  *   Required request parameters. This request must contain the following parameters.
  * @param {string[]} request.names
  * @param {string[]} request.shelves
- * @param {Object=} options
- *   Optional parameters. You can override the default settings for this call, e.g, timeout,
- *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- *
- *   In addition, options may contain the following optional parameters.
- * @param {number=} options.pageSize
+ * @param {number=} request.pageSize
  *   The maximum number of resources contained in the underlying API
  *   response. If page streaming is performed per-resource, this
  *   parameter does not affect the return value. If page streaming is
  *   performed per-page, this determines the maximum number of
  *   resources in a page.
- *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object, ?string)=} callback
  *   When specified, the results are not streamed but this callback
  *   will be called with the response object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
@@ -1130,7 +1089,7 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
  * var request = {
  *     names: names,
  *     shelves: shelves
- * }
+ * };
  * // Iterate over all elements.
  * api.findRelatedBooks(request).on('data', function(element) {
  *     // doThingsWith(element)
@@ -1157,9 +1116,6 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
   }
   if (options === undefined) {
     options = {};
-  }
-  if ('pageSize' in options) {
-    request.pageSize = options.pageSize;
   }
   return this._findRelatedBooks(request, options, callback);
 };
@@ -1193,7 +1149,7 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
  * var request = {
  *     resource: formattedResource,
  *     tag: tag
- * }
+ * };
  * api.addTag(request, function(err, response) {
  *     if (err) {
  *         console.error(err);
@@ -1242,7 +1198,7 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
  * var request = {
  *     resource: formattedResource,
  *     label: label
- * }
+ * };
  * api.addLabel(request, function(err, response) {
  *     if (err) {
  *         console.error(err);

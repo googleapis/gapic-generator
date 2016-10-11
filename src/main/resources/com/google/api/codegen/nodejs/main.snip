@@ -365,8 +365,7 @@
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
-       apiMethodView = context.getApiMethodView(service, method), \
-       initializedRequestObject = initializeRequestObject(apiMethodView)
+       apiMethodView = context.getApiMethodView(service, method)
     @if documentation
       /**
        {@documentation}
@@ -387,39 +386,22 @@
       if (options === undefined) {
         options = {};
       }
-      @if initializedRequestObject
-          {@initializedRequestObject}
-      @end
-      @join field : optionalParams
-        @let paramName = fieldParameterName(field)
-          if ('{@paramName}' in options) {
-            request.{@context.propertyName(field)} = options.{@paramName};
-          }
-        @end
-      @end
-      return this._{@methodName(method)}(request, options, callback);
+      return this._{@methodName(method)}({@requestObject(apiMethodView)}, options, callback);
     };
   @end
 @end
 
-@private initializeRequestObject(apiMethodView)
-    @switch apiMethodView.requiredRequestObjectParams.size.toString
-    @case "0"
-        var request = {};
-    @case "1"
-        @let name = apiMethodView.requiredRequestObjectParams.get(0).name
-            var request = { {@name}: {@name} };
-        @end
-    @default
+@private requestObject(apiMethodView)
+    @if apiMethodView.requiredRequestObjectParams.isEmpty
+        {}
+    @else
+        request
     @end
 @end
 
 @private methodRequestParameters(apiMethodView)
-    @switch apiMethodView.requiredRequestObjectParams.size.toString
-    @case "0"
-    @case "1"
-        {@apiMethodView.requiredRequestObjectParams.get(0).name}, {@""}
-    @default
+    @if apiMethodView.requiredRequestObjectParams.isEmpty
+    @else
         request, {@""}
     @end
 @end

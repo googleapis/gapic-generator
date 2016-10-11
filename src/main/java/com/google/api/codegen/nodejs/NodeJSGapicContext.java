@@ -241,25 +241,14 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * The type of parameter.
-   */
-  private enum ParamType {
-    OPTIONAL,
-    REQUIRED,
-    ENCAPSULATED_REQUIRED
-  }
-
-  /**
    * Returns a JSDoc comment string for the field as a parameter to a function.
    */
-  private String fieldParamComment(Field field, String paramComment, ParamType paramType) {
+  private String fieldParamComment(Field field, String paramComment, boolean isOptional) {
     String commentType = fieldTypeCardinalityComment(field);
     String fieldName = lowerUnderscoreToLowerCamel(field.getSimpleName());
-    if (paramType == ParamType.OPTIONAL) {
-      fieldName = "options." + fieldName;
+    fieldName = "request." + fieldName;
+    if (isOptional) {
       commentType = commentType + "=";
-    } else if (paramType == ParamType.ENCAPSULATED_REQUIRED) {
-      fieldName = "request." + fieldName;
     }
     return fieldComment(
         String.format("@param {%s} %s", commentType, fieldName), paramComment, field);
@@ -391,29 +380,19 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public List<String> methodComments(Interface service, Method msg) {
     MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(msg);
-    List<Field> requiredFields = Lists.newArrayList(config.getRequiredFields());
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
-    ParamType paramType = ParamType.REQUIRED;
-    if (requiredFields.size() > 1) {
+    if (config.getRequiredFields().iterator().hasNext()) {
       paramTypesBuilder.append(
           "@param {Object} request\n"
               + "  Required request parameters."
               + " This request must contain the following parameters.\n");
-      paramType = ParamType.ENCAPSULATED_REQUIRED;
     }
     for (Field field : config.getRequiredFields()) {
-      paramTypesBuilder.append(fieldParamComment(field, null, paramType));
+      paramTypesBuilder.append(fieldParamComment(field, null, false));
     }
-    paramTypesBuilder.append(
-        "@param {Object=} options\n"
-            + "  Optional parameters. You can override the default settings for this call, e.g, timeout,\n"
-            + "  retries, paginations, etc. See [gax.CallOptions]{@link "
-            + "https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.");
     Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
-      paramTypesBuilder.append(
-          "\n\n  In addition, options may contain the following optional parameters.\n");
       for (Field field : optionalParams) {
         if (config.isPageStreaming()
             && field.equals((config.getPageStreaming().getPageSizeField()))) {
@@ -425,12 +404,17 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
                       + "parameter does not affect the return value. If page streaming is\n"
                       + "performed per-page, this determines the maximum number of\n"
                       + "resources in a page.",
-                  ParamType.OPTIONAL));
+                  true));
         } else {
-          paramTypesBuilder.append(fieldParamComment(field, null, ParamType.OPTIONAL));
+          paramTypesBuilder.append(fieldParamComment(field, null, true));
         }
       }
     }
+    paramTypesBuilder.append(
+        "@param {Object=} options\n"
+            + "  Optional parameters. You can override the default settings for this call, e.g, timeout,\n"
+            + "  retries, paginations, etc. See [gax.CallOptions]{@link "
+            + "https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.");
     String paramTypes = paramTypesBuilder.toString();
 
     String returnType = returnTypeComment(msg, config);
