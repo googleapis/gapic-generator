@@ -281,7 +281,7 @@ LibraryServiceApi.prototype.matchBookFromArchivedBookName = function(archivedBoo
  * Creates a shelf, and returns the new Shelf.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {Object} request.shelf
  *   The shelf to create.
  *
@@ -323,7 +323,7 @@ LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
  * Gets a shelf.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the shelf to retrieve.
  * @param {string} request.options
@@ -412,7 +412,6 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
  *     }
  * }
  * api.listShelves({flattenPages: false}, callback);
- * api.listShelves(function(err, response) {
  */
 LibraryServiceApi.prototype.listShelves = function(options, callback) {
   if (options instanceof Function && callback === undefined) {
@@ -429,7 +428,7 @@ LibraryServiceApi.prototype.listShelves = function(options, callback) {
  * Deletes a shelf.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the shelf to delete.
  * @param {Object=} options
@@ -467,7 +466,7 @@ LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
  * `other_shelf_name`. Returns the updated shelf.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the shelf we're adding books to.
  * @param {string} request.otherShelfName
@@ -514,7 +513,7 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
  * Creates a book.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the shelf in which the book is created.
  * @param {Object} request.book
@@ -563,7 +562,7 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
  * Creates a series of books.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {Object} request.shelf
  *   The shelf in which the series is created.
  *
@@ -618,7 +617,7 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
  * Gets a book.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the book to retrieve.
  * @param {Object=} options
@@ -658,7 +657,7 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
  * Lists books in a shelf.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the shelf whose books we'd like to list.
  * @param {number=} request.pageSize
@@ -722,7 +721,7 @@ LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
  * Deletes a book.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the book to delete.
  * @param {Object=} options
@@ -758,7 +757,7 @@ LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
  * Updates a book.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the book to update.
  * @param {Object} request.book
@@ -815,7 +814,7 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
  * Moves a book to another shelf, and returns the new book.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the book to move.
  * @param {string} request.otherShelfName
@@ -861,6 +860,8 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
 /**
  * Lists a primitive resource. To test go page streaming.
  *
+ * @param {Object} request
+ *   The request object that will be sent.
  * @param {string=} request.name
  * @param {number=} request.pageSize
  *   The maximum number of resources contained in the underlying API
@@ -887,7 +888,7 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  * var api = libraryV1.libraryServiceApi();
  *
  * // Iterate over all elements.
- * api.listStrings().on('data', function(element) {
+ * api.listStrings({}).on('data', function(element) {
  *     // doThingsWith(element)
  * });
  *
@@ -900,13 +901,12 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  *     // doThingsWith(response)
  *     if (nextPageToken) {
  *         // fetch the next page.
- *         api.listStrings({pageToken: nextPageToken}, callback);
+ *         api.listStrings({}, {pageToken: nextPageToken}, callback);
  *     }
  * }
- * api.listStrings({flattenPages: false}, callback);
- * api.listStrings(function(err, response) {
+ * api.listStrings({}, {flattenPages: false}, callback);
  */
-LibraryServiceApi.prototype.listStrings = function(options, callback) {
+LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -914,14 +914,14 @@ LibraryServiceApi.prototype.listStrings = function(options, callback) {
   if (options === undefined) {
     options = {};
   }
-  return this._listStrings({}, options, callback);
+  return this._listStrings(request, options, callback);
 };
 
 /**
  * Adds comments to a book
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  * @param {Object[]} request.comments
  *   This object should have the same structure as [Comment]{@link Comment}
@@ -971,7 +971,7 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
  * Gets a book from an archive.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the book to retrieve.
  * @param {Object=} options
@@ -1011,7 +1011,7 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  * Updates the index of a book.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the book to update.
  * @param {string} request.indexName
@@ -1057,7 +1057,7 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
 
 /**
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string[]} request.names
  * @param {string[]} request.shelves
  * @param {number=} request.pageSize
@@ -1124,7 +1124,7 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
  * Adds a tag to the book. This RPC is a mixin.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.resource
  *   REQUIRED: The resource which the tag is being added to.
  *   Resource is usually specified as a path, such as,
@@ -1173,7 +1173,7 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
  * Adds a label to the entity.
  *
  * @param {Object} request
- *   Required request parameters. This request must contain the following parameters.
+ *   The request object that will be sent.
  * @param {string} request.resource
  *   REQUIRED: The resource which the label is being added to.
  *   Resource is usually specified as a path, such as,

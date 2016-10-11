@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.nodejs;
 
-import autovalue.shaded.com.google.common.common.collect.Lists;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -382,16 +381,14 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(msg);
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
-    if (config.getRequiredFields().iterator().hasNext()) {
+    Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
+    if (config.getRequiredFields().iterator().hasNext() || optionalParams.iterator().hasNext()) {
       paramTypesBuilder.append(
-          "@param {Object} request\n"
-              + "  Required request parameters."
-              + " This request must contain the following parameters.\n");
+          "@param {Object} request\n" + "  The request object that will be sent.\n");
     }
     for (Field field : config.getRequiredFields()) {
       paramTypesBuilder.append(fieldParamComment(field, null, false));
     }
-    Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
       for (Field field : optionalParams) {
         if (config.isPageStreaming()
@@ -433,16 +430,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       contentBuilder.append("\n" + returnType);
     }
     return convertToCommentedBlock(contentBuilder.toString());
-  }
-
-  /**
-   * Return a non-conflicting safe name if name is a JS reserved word.
-   */
-  public String wrapIfKeywordOrBuiltIn(String name) {
-    if (KEYWORD_BUILT_IN_SET.contains(name)) {
-      return name + "_";
-    }
-    return name;
   }
 
   /**
@@ -582,70 +569,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           .put(Type.TYPE_SFIXED32, "number")
           .put(Type.TYPE_STRING, "string")
           .put(Type.TYPE_BYTES, "string")
-          .build();
-
-  /**
-   * A set of ECMAScript 2016 reserved words. See
-   * https://tc39.github.io/ecma262/2016/#sec-reserved-words
-   */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
-      ImmutableSet.<String>builder()
-          .add(
-              "break",
-              "do",
-              "in",
-              "typeof",
-              "case",
-              "else",
-              "instanceof",
-              "var",
-              "catch",
-              "export",
-              "new",
-              "void",
-              "class",
-              "extends",
-              "return",
-              "while",
-              "const",
-              "finally",
-              "super",
-              "with",
-              "continue",
-              "for",
-              "switch",
-              "yield",
-              "debugger",
-              "function",
-              "this",
-              "default",
-              "if",
-              "throw",
-              "delete",
-              "import",
-              "try",
-              "let",
-              "static",
-              "enum",
-              "await",
-              "implements",
-              "package",
-              "protected",
-              "interface",
-              "private",
-              "public",
-              "null",
-              "true",
-              "false",
-              // common parameters passed to methods.
-              "options",
-              "callback",
-              // parameters used in CallOptions.
-              "timeout",
-              "retry",
-              "flattenPages",
-              "pageToken",
-              "isBundling")
           .build();
 
   private static final ImmutableSet<String> COMMON_PROTO_PATHS =

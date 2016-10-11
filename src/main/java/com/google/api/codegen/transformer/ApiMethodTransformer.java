@@ -505,6 +505,10 @@ public class ApiMethodTransformer {
         generateRequestObjectParams(context, context.getMethodConfig().getRequiredFields()));
     apiMethod.optionalRequestObjectParams(
         generateRequestObjectParams(context, context.getMethodConfig().getOptionalFields()));
+    Iterable<Field> filteredFields =
+        removePageTokenField(context, context.getMethodConfig().getOptionalFields());
+    apiMethod.optionalRequestObjectParamsNoPageToken(
+        generateRequestObjectParams(context, filteredFields));
 
     return apiMethod.build();
   }
@@ -568,6 +572,21 @@ public class ApiMethodTransformer {
       params.add(generateRequestObjectParam(context, field));
     }
     return params;
+  }
+
+  private Iterable<Field> removePageTokenField(
+      MethodTransformerContext context, Iterable<Field> fields) {
+    MethodConfig methodConfig = context.getMethodConfig();
+    List<Field> filtered = new ArrayList<>();
+    for (Field field : fields) {
+      if (methodConfig != null
+          && methodConfig.isPageStreaming()
+          && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
+        continue;
+      }
+      filtered.add(field);
+    }
+    return filtered;
   }
 
   private RequestObjectParamView generateRequestObjectParam(

@@ -73,7 +73,6 @@
             }
         }
         api.{@apiMethod.name}({flattenPages: false}, callback);
-        api.{@apiMethod.name}(function(err, response) {
     @end
 @end
 
@@ -178,6 +177,10 @@
 @private sampleMethodCallArgList(apiMethod)
     @switch apiMethod.requiredRequestObjectParams.size.toString
     @case "0"
+        @if apiMethod.optionalRequestObjectParamsNoPageToken.isEmpty
+        @else
+            {}
+        @end
     @case "1"
         @let field = apiMethod.initCode.fieldSettings.get(0)
             {{@field.requestFieldName}: {@field.identifier}}

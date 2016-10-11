@@ -351,12 +351,12 @@
 @end
 
 @private decorateSampleCodeSegment(apiMethodView)
-    @let coreSampleCode = sampleCode(apiMethodView), \
-         finalSampleCode = decorateSampleCode(apiMethodView, coreSampleCode)
-        @if finalSampleCode
-            {@finalSampleCode}
-        @end
+  @let coreSampleCode = sampleCode(apiMethodView), \
+      finalSampleCode = decorateSampleCode(apiMethodView, coreSampleCode)
+    @if finalSampleCode
+      {@finalSampleCode}
     @end
+  @end
 @end
 
 @private flattenedMethod(service, method)
@@ -392,20 +392,24 @@
 @end
 
 @private requestObject(apiMethodView)
-    @if apiMethodView.requiredRequestObjectParams.isEmpty
-        {}
+  @if apiMethodView.requiredRequestObjectParams.isEmpty
+    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
+      {}
     @else
-        request
+      request
     @end
+  @else
+    request
+  @end
 @end
 
 @private methodRequestParameters(apiMethodView)
-    @if apiMethodView.requiredRequestObjectParams.isEmpty
+  @if apiMethodView.requiredRequestObjectParams.isEmpty
+    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
     @else
-        request, {@""}
+      request, {@""}
     @end
-@end
-
-@private fieldParameterName(field)
-  {@context.wrapIfKeywordOrBuiltIn(context.propertyName(field))}
+  @else
+    request, {@""}
+  @end
 @end
