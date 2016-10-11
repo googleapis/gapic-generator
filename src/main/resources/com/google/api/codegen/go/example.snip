@@ -22,13 +22,22 @@
     }
 
     @join method : view.apiMethods
-        @if method.isPageStreaming
-            {@pageStreamingMethod(view, method)}
-        @else
-            @if method.hasReturnValue
-                {@simpleMethod(view, method)}
+        @switch method.grpcStreamingType
+        @case "BidiStreaming"
+            {@bidiStreamingMethod(view, method)}
+        @case "ClientStreaming"
+            {@requestStreamingMethod(view, method)}
+        @case "ServerStreaming"
+            {@responseStreamingMethod(view, method)}
+        @case "NonStreaming"
+            @if method.isPageStreaming
+                {@pageStreamingMethod(view, method)}
             @else
-                {@emptyReturnMethod(view, method)}
+                @if method.hasReturnValue
+                    {@simpleMethod(view, method)}
+                @else
+                    {@emptyReturnMethod(view, method)}
+                @end
             @end
         @end
 
@@ -37,9 +46,90 @@
 
 @end
 
+@private bidiStreamingMethod(view, method)
+    func {@method.exampleName}() {
+        {@methodInit(view, method)}
+        stream, err := c.{@method.name}(ctx)
+        if err != nil {
+            // TODO: Handle error.
+        }
+        go func() {
+            reqs := []{@method.apiRequestTypeName}{
+                // TODO: Create requests.
+            }
+            for _, req := range reqs {
+                if err := stream.Send(req); err != nil {
+                    // TODO: Handle error.
+                }
+            }
+            stream.CloseSend()
+        }()
+        for {
+            resp, err := stream.Recv()
+            if err == io.EOF {
+                break
+            }
+            if err != nil {
+                // TODO: handle error.
+            }
+            // TODO: Use resp.
+            _ = resp
+        }
+    }
+@end
+
+@private requestStreamingMethod(view, method)
+    func {@method.exampleName}() {
+        {@methodInit(view, method)}
+        stream, err := c.{@method.name}(ctx)
+        if err != nil {
+            // TODO: Handle error.
+        }
+        reqs := []{@method.apiRequestTypeName}{
+            // TODO: Create requests.
+        }
+        for _, req := range reqs {
+            if err := stream.Send(req); err != nil {
+                // TODO: Handle error.
+            }
+        }
+        resp, err := stream.CloseAndRecv()
+        if err != nil {
+            // TODO: Handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+@end
+
+@private responseStreamingMethod(view, method)
+    func {@method.exampleName}() {
+        {@methodInit(view, method)}
+
+        {@requestInit(view, method)}
+        stream, err := c.{@method.name}(ctx, req)
+        if err != nil {
+            // TODO: Handle error.
+        }
+        for {
+            resp, err := stream.Recv()
+            if err == io.EOF {
+                break
+            }
+            if err != nil {
+                // TODO: handle error.
+            }
+            // TODO: Use resp.
+            _ = resp
+        }
+    }
+@end
+
 @private simpleMethod(view, method)
     func {@method.exampleName}() {
         {@methodInit(view, method)}
+
+        {@requestInit(view, method)}
         resp, err := c.{@method.name}(ctx, req)
         if err != nil {
             // TODO: Handle error.
@@ -52,6 +142,8 @@
 @private emptyReturnMethod(view, method)
     func {@method.exampleName}() {
         {@methodInit(view, method)}
+
+        {@requestInit(view, method)}
         err = c.{@method.name}(ctx, req)
         if err != nil {
             // TODO: Handle error.
@@ -62,6 +154,8 @@
 @private pageStreamingMethod(view, method)
     func {@method.exampleName}() {
         {@methodInit(view, method)}
+
+        {@requestInit(view, method)}
         it := c.{@method.name}(ctx, req)
         for {
             resp, err := it.Next()
@@ -81,7 +175,9 @@
     if err != nil {
         // TODO: Handle error.
     }
+@end
 
+@private requestInit(view, method)
     req := {@method.apiRequestTypeConstructor}{
         // TODO: Fill request struct fields.
     }

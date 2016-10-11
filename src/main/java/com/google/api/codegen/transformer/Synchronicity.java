@@ -17,5 +17,6 @@ package com.google.api.codegen.transformer;
 /** Specifies synchronous or asynchronous. */
 public enum Synchronicity {
   Sync,
-  Async
+  Async,
+  GrpcStreaming
 }

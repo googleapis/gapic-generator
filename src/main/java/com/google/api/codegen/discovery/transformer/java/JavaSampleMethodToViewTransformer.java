@@ -27,8 +27,9 @@ import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransforme
 import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
 import com.google.api.codegen.discovery.transformer.SampleTypeTable;
-import com.google.api.codegen.discovery.viewmodel.SampleBodyView;
+import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
+import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -59,116 +60,115 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
   private SampleView createSampleView(SampleTransformerContext context) {
     addStaticImports(context);
-    SampleConfig sampleConfig = context.getSampleConfig();
-    SampleTypeTable sampleTypeTable = context.getTypeTable();
-
-    SampleBodyView sampleBodyView = createSampleBodyView(context);
-    // Imports must be collected last.
-    List<String> imports = new ArrayList<String>();
-    imports.addAll(sampleTypeTable.getImports().keySet());
-    return SampleView.newBuilder()
-        .templateFileName(TEMPLATE_FILENAME)
-        .outputPath(context.getMethodName() + ".frag.java")
-        .apiTitle(sampleConfig.apiTitle())
-        .apiName(sampleConfig.apiName())
-        .apiVersion(sampleConfig.apiVersion())
-        .className(context.getSampleNamer().getSampleClassName(sampleConfig.apiTypeName()))
-        .body(sampleBodyView)
-        .imports(imports)
-        .build();
-  }
-
-  public SampleBodyView createSampleBodyView(SampleTransformerContext context) {
-    SampleConfig sampleConfig = context.getSampleConfig();
-    MethodInfo methodInfo = sampleConfig.methods().get(context.getMethodName());
-    SampleNamer sampleNamer = context.getSampleNamer();
-    SampleTypeTable sampleTypeTable = context.getTypeTable();
+    SampleConfig config = context.getSampleConfig();
+    MethodInfo methodInfo = config.methods().get(context.getMethodName());
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
     SymbolTable symbolTable = SymbolTable.fromSeed(JavaTypeTable.RESERVED_IDENTIFIER_SET);
 
-    SampleBodyView.Builder sampleBodyView = SampleBodyView.newBuilder();
-    sampleBodyView.serviceVarName(
-        symbolTable.getNewSymbol(sampleNamer.getServiceVarName(sampleConfig.apiTypeName())));
-    sampleBodyView.serviceTypeName(
-        sampleTypeTable.getAndSaveNicknameForServiceType(sampleConfig.apiTypeName()));
-    sampleBodyView.methodVerb(methodInfo.verb());
-    sampleBodyView.methodNameComponents(methodInfo.nameComponents());
-    sampleBodyView.requestVarName(symbolTable.getNewSymbol(sampleNamer.getRequestVarName()));
+    SampleView.Builder builder = SampleView.newBuilder();
+
+    String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
+    String serviceTypeName = typeTable.getAndSaveNicknameForServiceType(config.apiTypeName());
+    String requestVarName = symbolTable.getNewSymbol(namer.getRequestVarName());
     // We don't store this type in the type table because its nickname is fully
     // qualified. If we use the getAndSaveNickname helper, the nickname returned
     // is always the last segment of the import path. Since the request type is
     // derived from the service type, skipping the type table can't cause any
     // issues.
-    sampleBodyView.requestTypeName(
-        sampleTypeTable
-            .getRequestTypeName(sampleConfig.apiTypeName(), methodInfo.requestType())
-            .getNickname());
-
-    sampleBodyView.requestBodyVarName("");
-    sampleBodyView.requestBodyTypeName("");
-    sampleBodyView.resourceFieldName("");
-    sampleBodyView.resourceGetterName("");
-    sampleBodyView.resourceVarName("");
-    sampleBodyView.resourceTypeName("");
-    sampleBodyView.isResourceMap(false);
-
-    if (methodInfo.isPageStreaming()) {
-      FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
-      if (fieldInfo == null) {
-        throw new IllegalArgumentException(
-            "method is page streaming, but the page streaming resource field is null.");
-      }
-      sampleBodyView.resourceFieldName("");
-      sampleBodyView.resourceGetterName(sampleNamer.getResourceGetterName(fieldInfo.name()));
-      String resourceTypeName = sampleTypeTable.getAndSaveNickNameForElementType(fieldInfo.type());
-      sampleBodyView.resourceTypeName(resourceTypeName);
-      String resourceVarName =
-          sampleNamer.getResourceVarName(fieldInfo.type().isMessage() ? resourceTypeName : "");
-      sampleBodyView.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
-      sampleBodyView.isResourceMap(fieldInfo.type().isMap());
-    }
-
-    sampleBodyView.responseVarName("");
-    sampleBodyView.responseTypeName("");
-    sampleBodyView.hasResponse(methodInfo.responseType() != null);
-    if (methodInfo.responseType() != null) {
-      sampleBodyView.responseVarName(symbolTable.getNewSymbol(sampleNamer.getResponseVarName()));
-      sampleBodyView.responseTypeName(
-          sampleTypeTable.getAndSaveNicknameFor(methodInfo.responseType()));
-    }
+    String requestTypeName =
+        typeTable.getRequestTypeName(config.apiTypeName(), methodInfo.requestType()).getNickname();
 
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
     for (Entry<String, FieldInfo> field : methodInfo.fields().entrySet()) {
-      SampleFieldView sampleFieldView = generateSampleField(field, sampleTypeTable, symbolTable);
+      SampleFieldView sampleFieldView = generateSampleField(field, typeTable, symbolTable);
       fields.add(sampleFieldView);
       fieldVarNames.add(sampleFieldView.name());
     }
-    sampleBodyView.fields(fields);
 
-    sampleBodyView.hasRequestBody(methodInfo.requestBodyType() != null);
-    if (methodInfo.requestBodyType() != null) {
-      String requestBodyVarName = symbolTable.getNewSymbol(sampleNamer.getRequestBodyVarName());
-      sampleBodyView.requestBodyVarName(requestBodyVarName);
-      sampleBodyView.requestBodyTypeName(
-          sampleTypeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
+    boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    if (hasRequestBody) {
+      String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
+      builder.requestBodyVarName(requestBodyVarName);
+      builder.requestBodyTypeName(typeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
       fieldVarNames.add(requestBodyVarName);
     }
-    sampleBodyView.fieldVarNames(fieldVarNames);
-    sampleBodyView.isPageStreaming(methodInfo.isPageStreaming());
 
-    sampleBodyView.hasMediaUpload(methodInfo.hasMediaUpload());
-    sampleBodyView.hasMediaDownload(methodInfo.hasMediaDownload());
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
+    }
 
-    sampleBodyView.authType(sampleConfig.authType());
-    sampleBodyView.authInstructionsUrl(sampleConfig.authInstructionsUrl());
-    sampleBodyView.authScopes(methodInfo.authScopes());
-    sampleBodyView.isAuthScopesSingular(methodInfo.authScopes().size() == 1);
+    boolean hasResponse = methodInfo.responseType() != null;
+    if (hasResponse) {
+      builder.responseVarName(symbolTable.getNewSymbol(namer.getResponseVarName()));
+      builder.responseTypeName(typeTable.getAndSaveNicknameFor(methodInfo.responseType()));
+    }
 
-    sampleBodyView.isResourceSetterInRequestBody(
-        methodInfo.isPageStreamingResourceSetterInRequestBody());
-    sampleBodyView.createServiceFuncName(
-        sampleNamer.createServiceFuncName(sampleConfig.apiTypeName()));
-    return sampleBodyView.build();
+    // Imports must be collected last.
+    List<String> imports = new ArrayList<String>();
+    imports.addAll(typeTable.getImports().keySet());
+
+    return builder
+        .templateFileName(TEMPLATE_FILENAME)
+        .outputPath(context.getMethodName() + ".frag.java")
+        .apiTitle(config.apiTitle())
+        .apiName(config.apiName())
+        .apiVersion(config.apiVersion())
+        .className(namer.getSampleClassName(config.apiTypeName()))
+        .imports(imports)
+        .auth(createSampleAuthView(context))
+        .serviceVarName(serviceVarName)
+        .serviceTypeName(serviceTypeName)
+        .methodVerb(methodInfo.verb())
+        .methodNameComponents(methodInfo.nameComponents())
+        .requestVarName(requestVarName)
+        .requestTypeName(requestTypeName)
+        .hasRequestBody(hasRequestBody)
+        .hasResponse(hasResponse)
+        .fields(fields)
+        .fieldVarNames(fieldVarNames)
+        .isPageStreaming(methodInfo.isPageStreaming())
+        .hasMediaUpload(methodInfo.hasMediaUpload())
+        .hasMediaDownload(methodInfo.hasMediaDownload())
+        .createServiceFuncName(namer.createServiceFuncName(config.apiTypeName()))
+        .build();
+  }
+
+  public SampleAuthView createSampleAuthView(SampleTransformerContext context) {
+    SampleConfig config = context.getSampleConfig();
+    MethodInfo methodInfo = config.methods().get(context.getMethodName());
+
+    return SampleAuthView.newBuilder()
+        .type(config.authType())
+        .instructionsUrl(config.authInstructionsUrl())
+        .scopes(methodInfo.authScopes())
+        .isScopesSingular(methodInfo.authScopes().size() == 1)
+        .build();
+  }
+
+  public SamplePageStreamingView createSamplePageStreamingView(
+      SampleTransformerContext context, SymbolTable symbolTable) {
+    MethodInfo methodInfo = context.getSampleConfig().methods().get(context.getMethodName());
+    FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
+    if (fieldInfo == null) {
+      throw new IllegalArgumentException("pageStreamingResourceField cannot be null");
+    }
+
+    SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
+
+    builder.resourceGetterName(namer.getResourceGetterName(fieldInfo.name()));
+    String resourceTypeName = typeTable.getAndSaveNickNameForElementType(fieldInfo.type());
+    builder.resourceElementTypeName(resourceTypeName);
+    String resourceVarName =
+        namer.getResourceVarName(fieldInfo.type().isMessage() ? resourceTypeName : "");
+    builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
+    builder.isResourceMap(fieldInfo.type().isMap());
+
+    builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
+    return builder.build();
   }
 
   public SampleFieldView generateSampleField(
@@ -187,7 +187,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
   private void addStaticImports(SampleTransformerContext context) {
     SampleConfig sampleConfig = context.getSampleConfig();
-    SampleTypeTable typeTable = context.getTypeTable();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
     typeTable.saveNicknameFor("com.google.api.client.googleapis.auth.oauth2.GoogleCredential");
     typeTable.saveNicknameFor("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport");
     typeTable.saveNicknameFor("com.google.api.client.http.HttpTransport");

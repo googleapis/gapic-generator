@@ -59,6 +59,9 @@ type CallOptions struct {
     AddComments []gax.CallOption
     GetBookFromArchive []gax.CallOption
     UpdateBookIndex []gax.CallOption
+    StreamShelves []gax.CallOption
+    StreamBooks []gax.CallOption
+    DiscussBook []gax.CallOption
     FindRelatedBooks []gax.CallOption
     AddTag []gax.CallOption
     AddLabel []gax.CallOption
@@ -106,6 +109,9 @@ func defaultCallOptions() *CallOptions {
         AddComments: retry[[2]string{"default", "non_idempotent"}],
         GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
         UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
+        StreamShelves: retry[[2]string{"default", "idempotent"}],
+        StreamBooks: retry[[2]string{"default", "idempotent"}],
+        DiscussBook: retry[[2]string{"default", "non_idempotent"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddTag: retry[[2]string{"default", "non_idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
@@ -513,6 +519,57 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookI
         return err
     }, c.CallOptions.UpdateBookIndex...)
     return err
+}
+
+// StreamShelves test server streaming
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *Client) StreamShelves(ctx context.Context, req *librarypb.StreamShelvesRequest) (librarypb.LibraryService_StreamShelvesClient, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp librarypb.LibraryService_StreamShelvesClient
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.StreamShelves(ctx, req)
+        return err
+    }, c.CallOptions.StreamShelves...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// StreamBooks test server streaming, non-paged responses.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *Client) StreamBooks(ctx context.Context, req *librarypb.StreamBooksRequest) (librarypb.LibraryService_StreamBooksClient, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp librarypb.LibraryService_StreamBooksClient
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.StreamBooks(ctx, req)
+        return err
+    }, c.CallOptions.StreamBooks...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// DiscussBook test bidi-streaming.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *Client) DiscussBook(ctx context.Context) (librarypb.LibraryService_DiscussBookClient, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp librarypb.LibraryService_DiscussBookClient
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.DiscussBook(ctx)
+        return err
+    }, c.CallOptions.DiscussBook...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 // FindRelatedBooks

@@ -91,6 +91,11 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    return typeNameConverter.getTypeNameInImplicitPackage(shortName);
+  }
+
+  @Override
   public TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
