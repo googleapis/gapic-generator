@@ -35,6 +35,8 @@ public abstract class PackageInfoView implements ViewModel {
 
   public abstract String packageName();
 
+  public abstract String handWrittenLocation();
+
   @Nullable
   public abstract String importPath();
 
@@ -61,6 +63,8 @@ public abstract class PackageInfoView implements ViewModel {
     public abstract Builder serviceDocs(List<ServiceDocView> val);
 
     public abstract Builder packageName(String val);
+
+    public abstract Builder handWrittenLocation(String val);
 
     public abstract Builder importPath(String val);
 
