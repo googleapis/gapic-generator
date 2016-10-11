@@ -324,7 +324,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           + " on 'data' event.\n"
           + "  When the callback is specified or streaming is suppressed through options,\n"
           + "  it will return a promise that resolves to the response object. The promise\n"
-          + "  has cancel method which cancels the ongoing API call.";
+          + "  has a method named \"cancel\" which cancels the ongoing API call.";
     }
 
     MessageType returnMessageType = method.getOutputMessage();
@@ -347,7 +347,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
     return callbackMessage
         + "\n@returns {Promise} - The promise which resolves to the response object.\n"
-        + "  The promise has cancel method which cancels the ongoing API call.";
+        + "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
   }
 
   /**
