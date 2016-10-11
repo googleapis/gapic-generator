@@ -32,6 +32,8 @@ public abstract class ApiCallSettingsView {
 
   public abstract String resourceTypeName();
 
+  public abstract String pagedListResponseTypeName();
+
   public abstract GrpcStreamingType grpcStreamingType();
 
   public boolean isStreaming() {
@@ -47,6 +49,8 @@ public abstract class ApiCallSettingsView {
   public abstract String grpcMethodConstant();
 
   public abstract String pageStreamingDescriptorName();
+
+  public abstract String pagedListResponseFactoryName();
 
   public abstract String bundlingDescriptorName();
 
@@ -84,6 +88,8 @@ public abstract class ApiCallSettingsView {
 
     public abstract Builder resourceTypeName(String val);
 
+    public abstract Builder pagedListResponseTypeName(String val);
+
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract Builder memberName(String val);
@@ -95,6 +101,8 @@ public abstract class ApiCallSettingsView {
     public abstract Builder grpcMethodConstant(String val);
 
     public abstract Builder pageStreamingDescriptorName(String val);
+
+    public abstract Builder pagedListResponseFactoryName(String val);
 
     public abstract Builder bundlingDescriptorName(String val);
 

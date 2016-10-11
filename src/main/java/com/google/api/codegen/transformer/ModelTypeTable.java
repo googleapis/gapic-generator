@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
@@ -33,6 +34,11 @@ public class ModelTypeTable implements ModelTypeFormatter {
     this.typeFormatter = new ModelTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;
     this.typeNameConverter = typeNameConverter;
+  }
+
+  @Override
+  public String getImplicitPackageFullNameFor(String shortName) {
+    return typeFormatter.getImplicitPackageFullNameFor(shortName);
   }
 
   @Override
@@ -83,6 +89,15 @@ public class ModelTypeTable implements ModelTypeFormatter {
   }
 
   /**
+   * Computes the nickname for the given container full name and inner type short name, adds the
+   * full inner type name to the static import set, and returns the nickname.
+   */
+  public String getAndSaveNicknameForInnerType(
+      String containerFullName, String innerTypeShortName) {
+    return typeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
+  }
+
+  /**
    * Computes the nickname for the given type, adds the full name to the import set,
    * and returns the nickname.
    */
@@ -124,10 +139,8 @@ public class ModelTypeTable implements ModelTypeFormatter {
     return typeNameConverter.getZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
-  /**
-   * Returns the imports accumulated so far.
-   */
-  public Map<String, String> getImports() {
+  /** Returns the imports accumulated so far. */
+  public Map<String, TypeAlias> getImports() {
     return typeTable.getImports();
   }
 }

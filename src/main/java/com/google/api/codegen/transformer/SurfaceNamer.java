@@ -21,6 +21,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -29,9 +30,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
-
 import io.grpc.Status;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,6 +88,30 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the class that implements snippets for a particular proto interface. */
   public String getApiSnippetsClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "ApiSnippets"));
+  }
+
+  /** The name of the class that contains paged list response wrappers. */
+  public String getPagedResponseWrappersClassName() {
+    return className(Name.upperCamel("PagedResponseWrappers"));
+  }
+
+  /**
+   * The name of the iterate method of the PagedListResponse type for a field, returning the
+   * resource type iterate method if available
+   */
+  public String getPagedResponseIterateMethod(FeatureConfig featureConfig, Field field) {
+    if (featureConfig.useResourceNameFormatOption(field)) {
+      String resourceName = ResourceNameUtil.getResourceName(field);
+      Name resourceNameName = Name.upperCamel(resourceName);
+      return publicMethodName(Name.from("iterate_all_as").join(resourceNameName));
+    } else {
+      return getPagedResponseIterateMethod();
+    }
+  }
+
+  /** The name of the iterate method of the PagedListResponse type for a field */
+  public String getPagedResponseIterateMethod() {
+    return publicMethodName(Name.from("iterate_all_elements"));
   }
 
   /**
@@ -347,6 +370,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_desc"));
   }
 
+  /** The page streaming factory name for the given method. */
+  public String getPagedListResponseFactoryName(Method method) {
+    return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedListResponseFactory"));
+  }
+
+  /** The name of the constant to hold the page streaming factory for the given method. */
+  public String getPagedListResponseFactoryConstName(Method method) {
+    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_fact"));
+  }
+
   /** The name of the constant to hold the bundling descriptor for the given method. */
   public String getBundlingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("bundling_desc"));
@@ -354,6 +387,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Adds the imports used in the implementation of page streaming descriptors. */
   public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
+    // do nothing
+  }
+
+  /** Adds the imports used in the implementation of paged list response factories. */
+  public void addPagedListResponseFactoryImports(ModelTypeTable typeTable) {
+    // do nothing
+  }
+
+  /** Adds the imports used in the implementation of paged list responses. */
+  public void addPagedListResponseImports(ModelTypeTable typeTable) {
     // do nothing
   }
 
@@ -628,32 +671,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The function name to get the given proto field as a list.
-   *
-   * @throws IllegalArgumentException if the field is not a repeated field.
-   */
-  public String getGetResourceListCallName(Field resourcesField) {
-    if (resourcesField.isRepeated()) {
-      return publicMethodName(Name.from("get", resourcesField.getSimpleName(), "list"));
-    } else {
-      throw new IllegalArgumentException(
-          "Non-repeated field "
-              + resourcesField.getSimpleName()
-              + " cannot be accessed as a list.");
-    }
-  }
-
-  /**
-   * Computes the nickname of the response type name for the given input and output types and
-   * resources field, saves it in the given type table, and returns it.
+   * Computes the nickname of the paged response type name for the given method and resources field,
+   * saves it in the given type table, and returns it.
    */
   public String getAndSavePagedResponseTypeName(
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputTypeName,
-      TypeRef outputTypeName,
-      Field resourcesField) {
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
+  }
+
+  public String getPagedResponseTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
+    return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeInnerName");
   }
 
   /**
@@ -661,50 +689,26 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * given type table, and returns it.
    */
   public String getAndSaveAsyncPagedResponseTypeName(
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputTypeName,
-      TypeRef outputTypeName,
-      Field resourcesField) {
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedAsyncResponseTypeName");
   }
 
   /**
-   * Computes the nickname of the response type name for the given resource type, as used by the caller, saves it in the
-   * given type table, and returns it.
+   * Computes the nickname of the response type name for the given resource type, as used by the
+   * caller, saves it in the given type table, and returns it.
    */
   public String getAndSaveCallerPagedResponseTypeName(
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputTypeName,
-      TypeRef outputTypeName,
-      Field resourcesField) {
-    return getAndSavePagedResponseTypeName(
-        featureConfig, typeTable, inputTypeName, outputTypeName, resourcesField);
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
+    return getAndSavePagedResponseTypeName(method, typeTable, resourcesField);
   }
 
   /**
-   * Computes the nickname of the response type name for the given resource type, as used by the caller, saves it in the
-   * given type table, and returns it.
+   * Computes the nickname of the response type name for the given resource type, as used by the
+   * caller, saves it in the given type table, and returns it.
    */
   public String getAndSaveCallerAsyncPagedResponseTypeName(
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputTypeName,
-      TypeRef outputTypeName,
-      Field resourcesField) {
-    return getAndSaveAsyncPagedResponseTypeName(
-        featureConfig, typeTable, inputTypeName, outputTypeName, resourcesField);
-  }
-
-  public String getAndSaveFieldTypeName(
-      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
-    return typeTable.getAndSaveNicknameFor(resourceField.getType());
-  }
-
-  public String getAndSaveElementFieldTypeName(
-      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
-    return typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
+    return getAndSaveAsyncPagedResponseTypeName(method, typeTable, resourcesField);
   }
 
   /**

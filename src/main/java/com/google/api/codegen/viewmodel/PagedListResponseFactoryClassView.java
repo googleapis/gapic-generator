@@ -17,47 +17,38 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class ListMethodDetailView {
+public abstract class PagedListResponseFactoryClassView {
+  public abstract String name();
+
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
 
   public abstract String resourceTypeName();
 
-  public abstract String resourceFieldName();
+  public abstract String pagedListResponseTypeName();
 
-  public abstract String iterateMethodName();
-
-  /**
-   * Distinct from resourceTypeName().
-   * Eg,
-   *   resourceTypeName: "Shelf"
-   *   responseObjectTypeName: "ListShelvesResponse"
-   */
-  public abstract String responseObjectTypeName();
-
-  public abstract String resourcesFieldGetFunction();
+  public abstract String pageStreamingDescriptorName();
 
   public static Builder newBuilder() {
-    return new AutoValue_ListMethodDetailView.Builder();
+    return new AutoValue_PagedListResponseFactoryClassView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder requestTypeName(String name);
 
-    public abstract Builder responseTypeName(String name);
+    public abstract Builder name(String val);
 
-    public abstract Builder resourceTypeName(String name);
+    public abstract Builder requestTypeName(String val);
 
-    public abstract Builder resourceFieldName(String name);
+    public abstract Builder responseTypeName(String val);
 
-    public abstract Builder iterateMethodName(String name);
+    public abstract Builder resourceTypeName(String val);
 
-    public abstract Builder responseObjectTypeName(String name);
+    public abstract Builder pagedListResponseTypeName(String val);
 
-    public abstract Builder resourcesFieldGetFunction(String name);
+    public abstract Builder pageStreamingDescriptorName(String val);
 
-    public abstract ListMethodDetailView build();
+    public abstract PagedListResponseFactoryClassView build();
   }
 }

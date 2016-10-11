@@ -14,29 +14,34 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.util.ImportType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class ImportTypeView {
-  public abstract String fullName();
+public abstract class PagedResponseIterateMethodView {
 
-  public abstract String nickname();
+  public abstract String overloadResourceTypeName();
 
-  public abstract ImportType type();
+  public abstract String overloadResourceTypeParseFunctionName();
+
+  public abstract String overloadResourceTypeIterateMethodName();
+
+  public abstract String iterateMethodName();
 
   public static Builder newBuilder() {
-    return new AutoValue_ImportTypeView.Builder().type(ImportType.SimpleImport);
+    return new AutoValue_PagedResponseIterateMethodView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder fullName(String fullName);
 
-    public abstract Builder nickname(String nickName);
+    public abstract Builder overloadResourceTypeName(String val);
 
-    public abstract Builder type(ImportType type);
+    public abstract Builder overloadResourceTypeParseFunctionName(String val);
 
-    public abstract ImportTypeView build();
+    public abstract Builder overloadResourceTypeIterateMethodName(String val);
+
+    public abstract Builder iterateMethodName(String val);
+
+    public abstract PagedResponseIterateMethodView build();
   }
 }

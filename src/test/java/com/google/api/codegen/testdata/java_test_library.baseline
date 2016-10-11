@@ -55,6 +55,10 @@ import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
+import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
@@ -243,7 +247,7 @@ public class LibraryServiceTest {
 
 
 
-    PagedListResponse<ListShelvesRequest, ListShelvesResponse, Shelf> pagedListResponse = api.listShelves();
+    ListShelvesPagedResponse pagedListResponse = api.listShelves();
 
     List<Shelf> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -412,7 +416,7 @@ public class LibraryServiceTest {
     ShelfName name = ShelfName.create("[SHELF_ID]");
     String filter = "filter-1274492040";
 
-    PagedListResponse<ListBooksRequest, ListBooksResponse, Book> pagedListResponse = api.listBooks(name, filter);
+    ListBooksPagedResponse pagedListResponse = api.listBooks(name, filter);
 
     List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -561,7 +565,7 @@ public class LibraryServiceTest {
 
 
 
-    PagedListResponse<ListStringsRequest, ListStringsResponse, String> pagedListResponse = api.listStrings();
+    ListStringsPagedResponse pagedListResponse = api.listStrings();
 
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
@@ -759,11 +763,14 @@ public class LibraryServiceTest {
     List<BookName> names = Arrays.asList(namesElement);
     List<ShelfName> shelves = new ArrayList<>();
 
-    PagedListResponse<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName> pagedListResponse = api.findRelatedBooks(names, shelves);
+    FindRelatedBooksPagedResponse pagedListResponse = api.findRelatedBooks(names, shelves);
 
-    List<BookName> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getNamesListAsResources().get(0), resources.get(0));
+    Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
+    List<BookName> resourcesAsBookName = Lists.newArrayList(pagedListResponse.iterateAllAsBookName());
+    Assert.assertEquals(1, resourcesAsBookName.size());
+    Assert.assertEquals(expectedResponse.getNamesListAsResources().get(0), resourcesAsBookName.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());

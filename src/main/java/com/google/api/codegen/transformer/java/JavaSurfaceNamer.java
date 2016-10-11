@@ -16,11 +16,10 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.ResourceNameUtil;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -74,6 +73,20 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public void addPagedListResponseFactoryImports(ModelTypeTable typeTable) {
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallable");
+  }
+
+  @Override
+  public void addPagedListResponseImports(ModelTypeTable typeTable) {
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallable");
+  }
+
+  @Override
   public void addBundlingDescriptorImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingDescriptor");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.RequestIssuer");
@@ -111,53 +124,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputType,
-      TypeRef outputType,
-      Field resourceField) {
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    // TODO(michaelbausor) make sure this uses the typeTable correctly
 
-    String inputTypeName = typeTable.getAndSaveNicknameForElementType(inputType);
-    String outputTypeName = typeTable.getAndSaveNicknameForElementType(outputType);
-
-    String resourceTypeName =
-        getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField);
-
-    return typeTable.getAndSaveNicknameForContainer(
-        "com.google.api.gax.core.PagedListResponse",
-        inputTypeName,
-        outputTypeName,
-        resourceTypeName);
+    String fullPackageWrapperName =
+        typeTable.getImplicitPackageFullNameFor(getPagedResponseWrappersClassName());
+    String pagedResponseShortName = getPagedResponseTypeInnerName(method, typeTable, resourceField);
+    return typeTable.getAndSaveNicknameForInnerType(fullPackageWrapperName, pagedResponseShortName);
   }
 
   @Override
-  public String getAndSaveFieldTypeName(
-      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
-    String resourceTypeName;
-    if (featureConfig.useResourceNameFormatOption(resourceField)) {
-      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
-      resourceTypeName =
-          typeTable.getAndSaveNicknameForTypedResourceName(
-              resourceField, resourceField.getType(), resourceShortName);
-    } else {
-      resourceTypeName = typeTable.getAndSaveNicknameFor(resourceField.getType());
-    }
-    return resourceTypeName;
-  }
-
-  @Override
-  public String getAndSaveElementFieldTypeName(
-      FeatureConfig featureConfig, ModelTypeTable typeTable, Field resourceField) {
-    String resourceTypeName;
-    if (featureConfig.useResourceNameFormatOption(resourceField)) {
-      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
-      resourceTypeName =
-          typeTable.getAndSaveNicknameForTypedResourceName(
-              resourceField, resourceField.getType().makeOptional(), resourceShortName);
-    } else {
-      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
-    }
-    return resourceTypeName;
+  public String getPagedResponseTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    return className(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
   }
 
   @Override

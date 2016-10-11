@@ -12,31 +12,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel;
+package com.google.api.codegen.viewmodel.testing;
 
-import com.google.api.codegen.util.ImportType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class ImportTypeView {
-  public abstract String fullName();
+public abstract class PageStreamingResponseView {
 
-  public abstract String nickname();
+  public abstract String resourcesVarName();
 
-  public abstract ImportType type();
+  public abstract String resourceTypeName();
+
+  public abstract String resourcesFieldGetterName();
+
+  public abstract String resourcesIterateMethod();
 
   public static Builder newBuilder() {
-    return new AutoValue_ImportTypeView.Builder().type(ImportType.SimpleImport);
+    return new AutoValue_PageStreamingResponseView.Builder();
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
-    public abstract Builder fullName(String fullName);
+  public abstract static class Builder {
 
-    public abstract Builder nickname(String nickName);
+    public abstract Builder resourcesVarName(String val);
 
-    public abstract Builder type(ImportType type);
+    public abstract Builder resourceTypeName(String val);
 
-    public abstract ImportTypeView build();
+    public abstract Builder resourcesFieldGetterName(String val);
+
+    public abstract Builder resourcesIterateMethod(String val);
+
+    public abstract PageStreamingResponseView build();
   }
 }
