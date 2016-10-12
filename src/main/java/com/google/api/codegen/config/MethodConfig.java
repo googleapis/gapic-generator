@@ -15,15 +15,20 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.BundlingConfigProto;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
-import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.SurfaceTreatmentProto;
+import com.google.api.codegen.TreatmentProto;
+import com.google.api.codegen.VisibilityProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.auto.value.AutoValue;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -38,27 +43,46 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-// TODO(garrettjones) consider using AutoValue in this class and related classes.
 /**
  * MethodConfig represents the code-gen config for a method, and includes the specification of
  * features like page streaming and parameter flattening.
  */
-public class MethodConfig {
+@AutoValue
+public abstract class MethodConfig {
+  public abstract Method getMethod();
 
-  private final Method method;
-  private final PageStreamingConfig pageStreaming;
-  private final GrpcStreamingConfig grpcStreaming;
-  private final FlatteningConfig flattening;
-  private final String retryCodesConfigName;
-  private final String retrySettingsConfigName;
-  private final Duration timeout;
-  private final Iterable<Field> requiredFields;
-  private final Iterable<Field> optionalFields;
-  private final BundlingConfig bundling;
-  private final boolean hasRequestObjectMethod;
-  private final ImmutableMap<String, String> fieldNamePatterns;
-  private final List<String> sampleCodeInitFields;
-  private final String rerouteToGrpcInterface;
+  @Nullable
+  public abstract PageStreamingConfig getPageStreaming();
+
+  @Nullable
+  public abstract GrpcStreamingConfig getGrpcStreaming();
+
+  @Nullable
+  public abstract FlatteningConfig getFlattening();
+
+  public abstract String getRetryCodesConfigName();
+
+  public abstract String getRetrySettingsConfigName();
+
+  public abstract Duration getTimeout();
+
+  public abstract Iterable<Field> getRequiredFields();
+
+  public abstract Iterable<Field> getOptionalFields();
+
+  @Nullable
+  public abstract BundlingConfig getBundling();
+
+  public abstract boolean hasRequestObjectMethod();
+
+  public abstract ImmutableMap<String, String> getFieldNamePatterns();
+
+  public abstract List<String> getSampleCodeInitFields();
+
+  @Nullable
+  public abstract String getRerouteToGrpcInterface();
+
+  public abstract VisibilityConfig getVisibility();
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -67,6 +91,7 @@ public class MethodConfig {
   @Nullable
   public static MethodConfig createMethodConfig(
       DiagCollector diagCollector,
+      String language,
       final MethodConfigProto methodConfigProto,
       Method method,
       ImmutableSet<String> retryCodesConfigNames,
@@ -187,15 +212,25 @@ public class MethodConfig {
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
 
-    String rerouteToGrpcInterface = methodConfigProto.getRerouteToGrpcInterface();
-    if (Strings.isNullOrEmpty(rerouteToGrpcInterface)) {
-      rerouteToGrpcInterface = null;
+    String rerouteToGrpcInterface =
+        Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
+
+    VisibilityConfig visibility = VisibilityConfig.PUBLIC;
+    for (SurfaceTreatmentProto surfaceTreatment : methodConfigProto.getSurfaceTreatmentsList()) {
+      if (!surfaceTreatment.getIncludeLanguagesList().contains(language)) {
+        continue;
+      }
+      for (TreatmentProto treatment : surfaceTreatment.getTreatmentsList()) {
+        if (treatment.getVisibility() != VisibilityProto.UNSET) {
+          visibility = VisibilityConfig.fromProto(treatment.getVisibility());
+        }
+      }
     }
 
     if (error) {
       return null;
     } else {
-      return new MethodConfig(
+      return new AutoValue_MethodConfig(
           method,
           pageStreaming,
           grpcStreaming,
@@ -203,45 +238,15 @@ public class MethodConfig {
           retryCodesName,
           retryParamsName,
           timeout,
-          bundling,
-          hasRequestObjectMethod,
           requiredFields,
           optionalFields,
+          bundling,
+          hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
-          rerouteToGrpcInterface);
+          rerouteToGrpcInterface,
+          visibility);
     }
-  }
-
-  private MethodConfig(
-      Method method,
-      PageStreamingConfig pageStreaming,
-      GrpcStreamingConfig grpcStreaming,
-      FlatteningConfig flattening,
-      String retryCodesConfigName,
-      String retrySettingsConfigName,
-      Duration timeout,
-      BundlingConfig bundling,
-      boolean hasRequestObjectMethod,
-      Iterable<Field> requiredFields,
-      Iterable<Field> optionalFields,
-      ImmutableMap<String, String> fieldNamePatterns,
-      List<String> sampleCodeInitFields,
-      String rerouteToGrpcInterface) {
-    this.method = method;
-    this.pageStreaming = pageStreaming;
-    this.grpcStreaming = grpcStreaming;
-    this.flattening = flattening;
-    this.retryCodesConfigName = retryCodesConfigName;
-    this.retrySettingsConfigName = retrySettingsConfigName;
-    this.timeout = timeout;
-    this.bundling = bundling;
-    this.hasRequestObjectMethod = hasRequestObjectMethod;
-    this.requiredFields = requiredFields;
-    this.optionalFields = optionalFields;
-    this.fieldNamePatterns = fieldNamePatterns;
-    this.sampleCodeInitFields = sampleCodeInitFields;
-    this.rerouteToGrpcInterface = rerouteToGrpcInterface;
   }
 
   /** Returns true if the method is a streaming method */
@@ -249,35 +254,20 @@ public class MethodConfig {
     return method.getRequestStreaming() || method.getResponseStreaming();
   }
 
-  /** Returns the method that this config corresponds to. */
-  public Method getMethod() {
-    return method;
-  }
-
   /** Returns true if this method has page streaming configured. */
   public boolean isPageStreaming() {
-    return pageStreaming != null;
-  }
-
-  /** Returns the page streaming configuration of the method. */
-  public PageStreamingConfig getPageStreaming() {
-    return pageStreaming;
+    return getPageStreaming() != null;
   }
 
   /** Returns true if this method has grpc streaming configured. */
   public boolean isGrpcStreaming() {
-    return grpcStreaming != null;
-  }
-
-  /** Returns the grpc streaming configuration of the method. */
-  public GrpcStreamingConfig getGrpcStreaming() {
-    return grpcStreaming;
+    return getGrpcStreaming() != null;
   }
 
   /** Returns the grpc streaming configuration of the method. */
   public GrpcStreamingType getGrpcStreamingType() {
     if (isGrpcStreaming()) {
-      return grpcStreaming.getType();
+      return getGrpcStreaming().getType();
     } else {
       return GrpcStreamingType.NonStreaming;
     }
@@ -285,69 +275,11 @@ public class MethodConfig {
 
   /** Returns true if this method has flattening configured. */
   public boolean isFlattening() {
-    return flattening != null;
-  }
-
-  /** Returns the flattening configuration of the method. */
-  public FlatteningConfig getFlattening() {
-    return flattening;
-  }
-
-  /** Returns the name of the retry codes config this method uses. */
-  public String getRetryCodesConfigName() {
-    return retryCodesConfigName;
-  }
-
-  /** Returns the name of the retry params config this method uses. */
-  public String getRetrySettingsConfigName() {
-    return retrySettingsConfigName;
-  }
-
-  /** Returns the default, non-retrying timeout for the method. */
-  public Duration getTimeout() {
-    return timeout;
+    return getFlattening() != null;
   }
 
   /** Returns true if this method has bundling configured. */
   public boolean isBundling() {
-    return bundling != null;
-  }
-
-  /** Returns the bundling configuration of the method. */
-  public BundlingConfig getBundling() {
-    return bundling;
-  }
-
-  /** Returns whether the generation of the method taking a request object is turned on. */
-  public boolean hasRequestObjectMethod() {
-    return hasRequestObjectMethod;
-  }
-
-  /** Returns the set of fields of the method that are always required. */
-  public Iterable<Field> getRequiredFields() {
-    return requiredFields;
-  }
-
-  /** Returns the set of fields of the method that are not always required. */
-  public Iterable<Field> getOptionalFields() {
-    return optionalFields;
-  }
-
-  /** Returns a map of fields to entity_name elements. */
-  public ImmutableMap<String, String> getFieldNamePatterns() {
-    return fieldNamePatterns;
-  }
-
-  /** Returns the field structure of fields that needs to be initialized in sample code. */
-  public List<String> getSampleCodeInitFields() {
-    return sampleCodeInitFields;
-  }
-
-  /**
-   * Returns the Interface that should be used for the GRPC call in place of the interface in which
-   * this method appears.
-   */
-  public String getRerouteToGrpcInterface() {
-    return rerouteToGrpcInterface;
+    return getBundling() != null;
   }
 }

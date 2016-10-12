@@ -69,8 +69,6 @@ public abstract class InterfaceConfig {
 
   public abstract ImmutableList<Field> getIamResources();
 
-  public abstract ImmutableSet<Method> getIamReplaceMethods();
-
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up method configurations
    * with specified methods in methodConfigMap. On errors, null will be returned, and diagnostics
@@ -78,7 +76,10 @@ public abstract class InterfaceConfig {
    */
   @Nullable
   public static InterfaceConfig createInterfaceConfig(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto, Interface iface) {
+      DiagCollector diagCollector,
+      String language,
+      InterfaceConfigProto interfaceConfigProto,
+      Interface iface) {
     ImmutableMap<String, CollectionConfig> collectionConfigs =
         createCollectionConfigs(diagCollector, interfaceConfigProto);
 
@@ -93,6 +94,7 @@ public abstract class InterfaceConfig {
       methodConfigMap =
           createMethodConfigMap(
               diagCollector,
+              language,
               interfaceConfigProto,
               iface,
               retryCodesDefinition.keySet(),
@@ -104,11 +106,8 @@ public abstract class InterfaceConfig {
         createSmokeTestConfig(diagCollector, iface, interfaceConfigProto);
 
     ImmutableList<Field> iamResources =
-        createIamResources(iface.getModel(), interfaceConfigProto.getIamResourcesList());
-
-    ImmutableSet<Method> iamReplaceMethods =
-        createIamReplaceMethods(
-            diagCollector, interfaceConfigProto.getIamReplaceMethodsList(), methodConfigMap);
+        createIamResources(
+            iface.getModel(), interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
 
     if (diagCollector.hasErrors()) {
       return null;
@@ -120,8 +119,7 @@ public abstract class InterfaceConfig {
           methodConfigMap,
           retryCodesDefinition,
           retrySettingsDefinition,
-          iamResources,
-          iamReplaceMethods);
+          iamResources);
     }
   }
 
@@ -216,6 +214,7 @@ public abstract class InterfaceConfig {
 
   private static ImmutableMap<String, MethodConfig> createMethodConfigMap(
       DiagCollector diagCollector,
+      String language,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
       ImmutableSet<String> retryCodesConfigNames,
@@ -235,6 +234,7 @@ public abstract class InterfaceConfig {
       MethodConfig methodConfig =
           MethodConfig.createMethodConfig(
               diagCollector,
+              language,
               methodConfigProto,
               method,
               retryCodesConfigNames,
@@ -324,28 +324,5 @@ public abstract class InterfaceConfig {
       fields.add(field);
     }
     return fields.build();
-  }
-
-  /** Creates the set of methods unused if IAM resource is enabled. */
-  private static ImmutableSet<Method> createIamReplaceMethods(
-      DiagCollector diagCollector,
-      List<String> methodNames,
-      ImmutableMap<String, MethodConfig> methodConfigMap) {
-    ImmutableSet.Builder<Method> methods = ImmutableSet.builder();
-    for (String methodName : methodNames) {
-      MethodConfig methodConfig = methodConfigMap.get(methodName);
-      if (methodConfig == null) {
-        diagCollector.addDiag(
-            Diag.error(SimpleLocation.TOPLEVEL, "method not found: %s", methodName));
-        continue;
-      }
-      methods.add(methodConfig.getMethod());
-    }
-
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    } else {
-      return methods.build();
-    }
   }
 }

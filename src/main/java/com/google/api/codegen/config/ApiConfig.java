@@ -99,7 +99,8 @@ public abstract class ApiConfig {
         continue;
       }
       InterfaceConfig interfaceConfig =
-          InterfaceConfig.createInterfaceConfig(diagCollector, interfaceConfigProto, iface);
+          InterfaceConfig.createInterfaceConfig(
+              diagCollector, configProto.getLanguage(), interfaceConfigProto, iface);
       if (interfaceConfig == null) {
         continue;
       }

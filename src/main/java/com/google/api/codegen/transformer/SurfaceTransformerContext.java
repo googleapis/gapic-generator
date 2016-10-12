@@ -19,6 +19,7 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -153,8 +154,7 @@ public abstract class SurfaceTransformerContext {
     supported &=
         getFeatureConfig().enableGrpcStreaming() || !MethodConfig.isGrpcStreamingMethod(method);
     supported &=
-        !getFeatureConfig().enableIamResource()
-            || !getInterfaceConfig().getIamReplaceMethods().contains(method);
+        getInterfaceConfig().getMethodConfig(method).getVisibility() != VisibilityConfig.DISABLED;
     return supported;
   }
 

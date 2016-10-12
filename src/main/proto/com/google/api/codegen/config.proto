@@ -115,11 +115,7 @@ message InterfaceConfigProto {
   // Definition for retry/backoff parameters
   repeated RetryParamsDefinitionProto retry_params_def = 31;
 
-  // IAM resources
-  repeated IamResourceProto iam_resources = 40;
-
-  // Methods that become unnecessary if iam_resources is used.
-  repeated string iam_replace_methods = 41;
+  ExperimentalFeatures experimental_features = 40;
 }
 
 message SmokeTestConfigProto {
@@ -194,6 +190,8 @@ message MethodConfigProto {
   // is contained in. This specifically supports the Pub/Sub IAM hack to route
   // IAM methods to IamPolicy for Pub/Sub.
   string reroute_to_grpc_interface = 12;
+
+  repeated SurfaceTreatmentProto surface_treatments = 20;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
@@ -321,10 +319,35 @@ message BundlingDescriptorProto {
   string subresponse_field = 3;
 }
 
+// ExperimentalFeatures contain special-case features that,
+// for lack of similar problems, we don't quite know how to properly
+// expose as a config.
+// Configs defined here should eventually be replaced with more general ones.
+message ExperimentalFeatures {
+  repeated IamResourceProto iam_resources = 1;
+}
+
 message IamResourceProto {
   // Fully qualified name of resource types. Eg, google.example.library.v1.Book.
   string type = 1;
 
   // The field containing the resource name.
   string field = 2;
+}
+
+message SurfaceTreatmentProto {
+  repeated string include_languages = 1;
+  repeated TreatmentProto treatments = 2;
+}
+
+message TreatmentProto {
+  oneof treatment {
+    VisibilityProto visibility = 1;
+  }
+}
+
+enum VisibilityProto {
+  UNSET = 0;
+  PUBLIC = 1;
+  DISABLED = 2;
 }
