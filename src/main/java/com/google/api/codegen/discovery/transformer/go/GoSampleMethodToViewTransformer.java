@@ -204,7 +204,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
     typeTable.saveNicknameFor("log;;;");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
-    typeTable.saveNicknameFor("google.golang.org/x/oauth2/google;;;");
+    typeTable.saveNicknameFor("golang.org/x/oauth2/google;;;");
     typeTable.saveNicknameFor(sampleConfig.packagePrefix() + ";;;");
   }
 }
