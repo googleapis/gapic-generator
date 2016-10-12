@@ -27,6 +27,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Api;
 import com.google.protobuf.Field;
 import com.google.protobuf.Field.Kind;
 import com.google.protobuf.Method;
@@ -425,6 +426,10 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
       Type responseType = apiary.getType(method.getResponseTypeUrl());
       Field resourceField = getFirstRepeatedField(responseType);
       String resourceTypeName = elementTypeName(responseType, resourceField, requestTypeName);
+      // used to handle inconsistency in page-streaming methods for Bigquery API
+      if (isBigqueryPageStreamingMethod(method)) {
+        resourceTypeName = resourceTypeName + "Data";
+      }
       pageStreamingInfo =
           PageStreamingInfo.create(
               CSharpContextCommon.s_underscoresToPascalCase(resourceField.getName()),
@@ -525,5 +530,17 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
       return result;
     }
     throw new IllegalArgumentException("Unknown type kind: " + kind);
+  }
+
+  // Handlers for Exceptional Inconsistencies
+  // ========================================
+
+  // used to handle inconsistency in page-streaming methods for Bigquery API
+  // remove if inconsistency is removed in client library
+  protected boolean isBigqueryPageStreamingMethod(Method method) {
+    Api api = getApi();
+    return api.getName().equals("bigquery")
+        && api.getVersion().equals("v2")
+        && isPageStreaming(method);
   }
 }
