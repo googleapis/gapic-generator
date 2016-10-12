@@ -19,6 +19,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
+import com.google.api.codegen.viewmodel.PagedListResponseFactoryClassView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -80,17 +81,10 @@ public class PageStreamingTransformer {
     TypeRef resourceType = resourceField.getType();
 
     desc.name(namer.getPageStreamingDescriptorConstName(method));
-    desc.typeName(
-        namer.getAndSavePagedResponseTypeName(
-            featureConfig,
-            typeTable,
-            method.getInputType(),
-            method.getOutputType(),
-            resourceField));
+    desc.typeName(namer.getAndSavePagedResponseTypeName(method, typeTable, resourceField));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    desc.resourceTypeName(
-        namer.getAndSaveElementFieldTypeName(featureConfig, typeTable, resourceField));
+    desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
 
     TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
@@ -116,5 +110,38 @@ public class PageStreamingTransformer {
         namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResourcesField()));
 
     return desc.build();
+  }
+
+  public List<PagedListResponseFactoryClassView> generateFactoryClasses(
+      SurfaceTransformerContext context) {
+    List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
+
+    context.getNamer().addPagedListResponseFactoryImports(context.getTypeTable());
+    for (Method method : context.getPageStreamingMethods()) {
+      factories.add(generateFactoryClass(context.asMethodContext(method)));
+    }
+
+    return factories;
+  }
+
+  private PagedListResponseFactoryClassView generateFactoryClass(MethodTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    Method method = context.getMethod();
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    Field resourceField = pageStreaming.getResourcesField();
+
+    PagedListResponseFactoryClassView.Builder factory =
+        PagedListResponseFactoryClassView.newBuilder();
+
+    factory.name(namer.getPagedListResponseFactoryConstName(method));
+    factory.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
+    factory.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
+    factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+    factory.pagedListResponseTypeName(
+        namer.getAndSavePagedResponseTypeName(method, typeTable, resourceField));
+    factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
+
+    return factory.build();
   }
 }

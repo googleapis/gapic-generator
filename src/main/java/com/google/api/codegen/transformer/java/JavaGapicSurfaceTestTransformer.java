@@ -27,6 +27,8 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.util.testing.JavaValueProducer;
@@ -42,6 +44,7 @@ import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
+import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestMethodView;
 import com.google.api.tools.framework.model.Field;
@@ -225,25 +228,24 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     String responseTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
-    List<GapicSurfaceTestAssertView> requestAssertViews =
-        initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
-    String resourceTypeName = "";
-    String resourcesFieldGetterName = "";
+
     String surfaceMethodName = namer.getApiMethodName(method);
+
     ApiMethodType type = ApiMethodType.FlattenedMethod;
     if (methodConfig.isPageStreaming()) {
       Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
-      resourceTypeName =
-          namer.getAndSaveElementFieldTypeName(
-              methodContext.getFeatureConfig(), methodContext.getTypeTable(), resourcesField);
-      resourcesFieldGetterName =
-          namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), resourcesField);
+      responseTypeName =
+          namer.getAndSavePagedResponseTypeName(
+              method, methodContext.getTypeTable(), resourcesField);
       type = ApiMethodType.PagedFlattenedMethod;
     } else if (methodConfig.isGrpcStreaming()) {
       type = ApiMethodType.CallableMethod;
       surfaceMethodName = namer.getCallableMethodName(method);
       addGrpcStreamingTestImport(methodContext.getSurfaceTransformerContext());
     }
+
+    List<GapicSurfaceTestAssertView> requestAssertViews =
+        initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
 
     return GapicSurfaceTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
@@ -253,13 +255,65 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .responseTypeName(responseTypeName)
         .initCode(initCodeView)
         .methodType(type)
-        .resourceTypeName(resourceTypeName)
-        .resourcesFieldGetterName(resourcesFieldGetterName)
+        .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
         .asserts(requestAssertViews)
         .mockResponse(createMockResponseView(methodContext, initSymbolTable))
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
         .build();
+  }
+
+  private List<PageStreamingResponseView> createPageStreamingResponseViews(
+      MethodTransformerContext methodContext) {
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    SurfaceNamer namer = methodContext.getNamer();
+
+    List<PageStreamingResponseView> pageStreamingResponseViews =
+        new ArrayList<PageStreamingResponseView>();
+
+    if (!methodConfig.isPageStreaming()) {
+      return pageStreamingResponseViews;
+    }
+
+    Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
+    String resourceTypeName =
+        methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
+    String resourcesFieldGetterName =
+        namer.getFieldGetFunctionName(
+            resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+
+    pageStreamingResponseViews.add(
+        PageStreamingResponseView.newBuilder()
+            .resourceTypeName(resourceTypeName)
+            .resourcesFieldGetterName(resourcesFieldGetterName)
+            .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
+            .resourcesVarName(namer.localVarName(Name.from("resources")))
+            .build());
+
+    if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesField)) {
+      String resourceName = ResourceNameUtil.getResourceName(resourcesField);
+      Name resourceNameName = Name.upperCamel(resourceName);
+      resourceTypeName =
+          methodContext
+              .getTypeTable()
+              .getAndSaveNicknameForTypedResourceName(
+                  resourcesField, resourcesField.getType().makeOptional(), resourceName);
+      resourcesFieldGetterName =
+          namer.getResourceNameFieldGetFunctionName(
+              resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+      pageStreamingResponseViews.add(
+          PageStreamingResponseView.newBuilder()
+              .resourceTypeName(resourceTypeName)
+              .resourcesFieldGetterName(resourcesFieldGetterName)
+              .resourcesIterateMethod(
+                  namer.getPagedResponseIterateMethod(
+                      methodContext.getFeatureConfig(), resourcesField))
+              .resourcesVarName(
+                  namer.localVarName(Name.from("resources_as").join(resourceNameName)))
+              .build());
+    }
+
+    return pageStreamingResponseViews;
   }
 
   private MockGrpcResponseView createMockResponseView(

@@ -14,18 +14,17 @@
  */
 package com.google.api.codegen.util.java;
 
+import com.google.api.codegen.util.TypeAlias;
 import com.google.common.truth.Truth;
-
-import org.junit.Test;
-
 import java.util.Map;
+import org.junit.Test;
 
 public class JavaTypeTableTest {
 
   @Test
   public void testImplicitPackageNameFiltering() {
     String implicitPackage = "foo.bar";
-    Map<String, String> imports;
+    Map<String, TypeAlias> imports;
     JavaTypeTable typeTable = new JavaTypeTable(implicitPackage);
     Truth.assertThat(typeTable.getAndSaveNicknameFor(implicitPackage + ".Baz")).isEqualTo("Baz");
 
@@ -37,6 +36,6 @@ public class JavaTypeTableTest {
 
     imports = typeTable.getImports();
     Truth.assertThat(imports.size()).isEqualTo(1);
-    Truth.assertThat(imports.get(implicitPackage + ".qux.Corge")).isEqualTo("Corge");
+    Truth.assertThat(imports.get(implicitPackage + ".qux.Corge").getNickname()).isEqualTo("Corge");
   }
 }

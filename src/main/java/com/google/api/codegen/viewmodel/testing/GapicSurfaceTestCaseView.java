@@ -18,7 +18,6 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
 @AutoValue
@@ -33,9 +32,7 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract String responseTypeName();
 
-  public abstract String resourceTypeName();
-
-  public abstract String resourcesFieldGetterName();
+  public abstract List<PageStreamingResponseView> pageStreamingResponseViews();
 
   public abstract MockGrpcResponseView mockResponse();
 
@@ -69,9 +66,7 @@ public abstract class GapicSurfaceTestCaseView {
 
     public abstract Builder responseTypeName(String val);
 
-    public abstract Builder resourceTypeName(String val);
-
-    public abstract Builder resourcesFieldGetterName(String val);
+    public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
 
     public abstract Builder methodType(ApiMethodType val);
 

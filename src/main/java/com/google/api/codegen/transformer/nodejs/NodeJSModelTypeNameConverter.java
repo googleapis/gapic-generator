@@ -78,6 +78,11 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    return typeNameConverter.getTypeNameInImplicitPackage(shortName);
+  }
+
+  @Override
   public TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
       return new TypeName("Object");

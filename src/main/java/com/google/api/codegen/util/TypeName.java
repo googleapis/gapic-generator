@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Represents a simple or complex type and keeps track of the aliases for the contributing types.
@@ -43,15 +42,22 @@ public class TypeName {
     this.innerTypeNames = Arrays.asList();
   }
 
+  /** Creates a type alias for a static inner type with the given fullName and nickname. */
+  public TypeName(String fullName, String nickname, String parentTypeName) {
+    this.topLevelAlias = TypeAlias.create(fullName, nickname, parentTypeName);
+    this.pattern = null;
+    this.innerTypeNames = Arrays.asList();
+  }
+
   /**
-   * Constructs a composite TypeName with a special string pattern to render the type, and a list
-   * of inner TypeName instances that parameterize the type.
+   * Constructs a composite TypeName with a special string pattern to render the type, and a list of
+   * inner TypeName instances that parameterize the type.
    *
    * @param fullName full name
    * @param nickname nickname
-   * @param pattern Use the pattern %s for self and %i for inner types, one for each inner type
-   *                in the order that they are provided. If this is null, then the type name of
-   *                the outer type is used, and inner type names are ignored.
+   * @param pattern Use the pattern %s for self and %i for inner types, one for each inner type in
+   *     the order that they are provided. If this is null, then the type name of the outer type is
+   *     used, and inner type names are ignored.
    * @param innerTypeNames
    */
   public TypeName(String fullName, String nickname, String pattern, TypeName... innerTypeNames) {

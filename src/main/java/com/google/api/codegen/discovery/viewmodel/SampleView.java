@@ -14,10 +14,13 @@
  */
 package com.google.api.codegen.discovery.viewmodel;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
 public abstract class SampleView implements ViewModel {
@@ -39,11 +42,65 @@ public abstract class SampleView implements ViewModel {
 
   public abstract String apiVersion();
 
+  @Nullable
   public abstract String className();
 
+  @Nullable
   public abstract List<String> imports();
 
-  public abstract SampleBodyView body();
+  public abstract SampleAuthView auth();
+
+  public abstract String serviceVarName();
+
+  @Nullable
+  public abstract String serviceTypeName();
+
+  public abstract String methodVerb();
+
+  public abstract List<String> methodNameComponents();
+
+  public abstract String requestVarName();
+
+  @Nullable
+  public abstract String requestTypeName();
+
+  public abstract boolean hasRequestBody();
+
+  @Nullable
+  public abstract String requestBodyVarName();
+
+  @Nullable
+  public abstract String requestBodyTypeName();
+
+  public abstract boolean hasResponse();
+
+  @Nullable
+  public abstract String responseVarName();
+
+  @Nullable
+  public abstract String responseTypeName();
+
+  public abstract List<SampleFieldView> fields();
+
+  @Nullable
+  public abstract List<String> fieldVarNames();
+
+  public abstract boolean isPageStreaming();
+
+  @Nullable
+  public abstract SamplePageStreamingView pageStreaming();
+
+  public abstract boolean hasMediaUpload();
+
+  public abstract boolean hasMediaDownload();
+
+  // Java specific section...
+  @Nullable
+  public abstract String createServiceFuncName();
+
+  // Node.js specific section...
+  @Nullable
+  public abstract String googleImportVarName();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
@@ -72,7 +129,47 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder imports(List<String> val);
 
-    public abstract Builder body(SampleBodyView val);
+    public abstract Builder auth(SampleAuthView val);
+
+    public abstract Builder serviceVarName(String val);
+
+    public abstract Builder serviceTypeName(String val);
+
+    public abstract Builder methodVerb(String val);
+
+    public abstract Builder methodNameComponents(List<String> val);
+
+    public abstract Builder requestVarName(String val);
+
+    public abstract Builder requestTypeName(String val);
+
+    public abstract Builder hasRequestBody(boolean val);
+
+    public abstract Builder requestBodyVarName(String val);
+
+    public abstract Builder requestBodyTypeName(String val);
+
+    public abstract Builder hasResponse(boolean val);
+
+    public abstract Builder responseVarName(String val);
+
+    public abstract Builder responseTypeName(String val);
+
+    public abstract Builder fields(List<SampleFieldView> val);
+
+    public abstract Builder fieldVarNames(List<String> val);
+
+    public abstract Builder isPageStreaming(boolean val);
+
+    public abstract Builder pageStreaming(SamplePageStreamingView val);
+
+    public abstract Builder hasMediaUpload(boolean val);
+
+    public abstract Builder hasMediaDownload(boolean val);
+
+    public abstract Builder createServiceFuncName(String val);
+
+    public abstract Builder googleImportVarName(String val);
 
     public abstract SampleView build();
   }

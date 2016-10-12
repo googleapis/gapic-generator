@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.util.ImportType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -22,8 +23,10 @@ public abstract class ImportTypeView {
 
   public abstract String nickname();
 
+  public abstract ImportType type();
+
   public static Builder newBuilder() {
-    return new AutoValue_ImportTypeView.Builder();
+    return new AutoValue_ImportTypeView.Builder().type(ImportType.SimpleImport);
   }
 
   @AutoValue.Builder
@@ -31,6 +34,8 @@ public abstract class ImportTypeView {
     public abstract Builder fullName(String fullName);
 
     public abstract Builder nickname(String nickName);
+
+    public abstract Builder type(ImportType type);
 
     public abstract ImportTypeView build();
   }

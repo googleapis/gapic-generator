@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +25,17 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class ImportTypeTransformer {
-  public List<ImportTypeView> generateImports(Map<String, String> imports) {
+
+  public List<ImportTypeView> generateImports(Map<String, TypeAlias> imports) {
     List<ImportTypeView> generatedImports = new ArrayList<>();
     for (String key : imports.keySet()) {
+      TypeAlias value = imports.get(key);
       generatedImports.add(
-          ImportTypeView.newBuilder().fullName(key).nickname(imports.get(key)).build());
+          ImportTypeView.newBuilder()
+              .fullName(key)
+              .nickname(value.getNickname())
+              .type(value.getImportType())
+              .build());
     }
     return generatedImports;
   }

@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -160,11 +160,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     Field resourceField = pageStreaming.getResourcesField();
     String callerResponseTypeName =
         namer.getAndSaveCallerAsyncPagedResponseTypeName(
-            methodContext.getFeatureConfig(),
-            methodContext.getTypeTable(),
-            methodContext.getMethod().getInputType(),
-            methodContext.getMethod().getOutputType(),
-            resourceField);
+            methodContext.getMethod(), methodContext.getTypeTable(), resourceField);
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -186,11 +182,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     Field resourceField = pageStreaming.getResourcesField();
     String callerResponseTypeName =
         namer.getAndSaveCallerPagedResponseTypeName(
-            methodContext.getFeatureConfig(),
-            methodContext.getTypeTable(),
-            methodContext.getMethod().getInputType(),
-            methodContext.getMethod().getOutputType(),
-            resourceField);
+            methodContext.getMethod(), methodContext.getTypeTable(), resourceField);
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)

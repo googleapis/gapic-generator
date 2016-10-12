@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -115,11 +117,16 @@ public class DiscoveryFragmentGeneratorApi {
     String overridesFilename = options.get(OVERRIDES_FILE);
     JsonNode overridesJson = null;
     if (!Strings.isNullOrEmpty(overridesFilename)) {
-      ObjectMapper mapper = new ObjectMapper();
-      overridesJson =
-          mapper.readTree(
-              com.google.common.io.Files.newReader(
-                  new File(overridesFilename), Charset.forName("UTF8")));
+      try {
+        BufferedReader reader =
+            com.google.common.io.Files.newReader(
+                new File(overridesFilename), Charset.forName("UTF8"));
+        ObjectMapper mapper = new ObjectMapper();
+        overridesJson = mapper.readTree(reader);
+      } catch (FileNotFoundException e) {
+        // Do nothing if the overrides file doesn't exist. Avoiding crashes for
+        // this scenario makes parts of the automation around samplegen simpler.
+      }
     }
 
     GeneratorProto generator = configProto.getGenerator();

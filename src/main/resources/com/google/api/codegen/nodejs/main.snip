@@ -350,13 +350,12 @@
   {@context.upperCamelToLowerCamel(method.getSimpleName())}
 @end
 
-@private decorateSampleCodeSegment(service, method)
-  @let apiMethod = context.getApiMethodView(service, method), \
-       coreSampleCode = sampleCode(apiMethod), \
-       finalSampleCode = decorateSampleCode(apiMethod, coreSampleCode)
-       @if finalSampleCode
-         {@finalSampleCode}
-       @end
+@private decorateSampleCodeSegment(apiMethodView)
+  @let coreSampleCode = sampleCode(apiMethodView), \
+      finalSampleCode = decorateSampleCode(apiMethodView, coreSampleCode)
+    @if finalSampleCode
+      {@finalSampleCode}
+    @end
   @end
 @end
 
@@ -365,25 +364,21 @@
        documentation = comments(context.methodComments(service, method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
-       optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
+       optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
+       apiMethodView = context.getApiMethodView(service, method)
     @if documentation
       /**
        {@documentation}
        *
        * @@example
        *
-       @join sampleLine : util.getDocLines({@decorateSampleCodeSegment(service, method)})
+       @join sampleLine : util.getDocLines({@decorateSampleCodeSegment(apiMethodView)})
          {@""}* {@sampleLine}
        @end
        */
     @end
 
-    {@serviceName}.prototype.{@methodName(method)} = function(
-        @join field : requiredParams
-          {@fieldParameterName(field)},
-        @end
-        options,
-        callback) {
+    {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options, callback) {
       if (options instanceof Function && callback === undefined) {
         callback = options;
         options = {};
@@ -391,23 +386,30 @@
       if (options === undefined) {
         options = {};
       }
-      var req = {
-        @join field : requiredParams on ",".add(BREAK)
-          {@context.propertyName(field)}: {@fieldParameterName(field)}
-        @end
-      };
-      @join field : optionalParams
-        @let paramName = fieldParameterName(field)
-          if ('{@paramName}' in options) {
-            req.{@context.propertyName(field)} = options.{@paramName};
-          }
-        @end
-      @end
-      return this._{@methodName(method)}(req, options, callback);
+      return this._{@methodName(method)}({@requestObject(apiMethodView)}, options, callback);
     };
   @end
 @end
 
-@private fieldParameterName(field)
-  {@context.wrapIfKeywordOrBuiltIn(context.propertyName(field))}
+@private requestObject(apiMethodView)
+  @if apiMethodView.requiredRequestObjectParams.isEmpty
+    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
+      {}
+    @else
+      request
+    @end
+  @else
+    request
+  @end
+@end
+
+@private methodRequestParameters(apiMethodView)
+  @if apiMethodView.requiredRequestObjectParams.isEmpty
+    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
+    @else
+      request, {@""}
+    @end
+  @else
+    request, {@""}
+  @end
 @end
