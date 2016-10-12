@@ -45,7 +45,7 @@ public abstract class ApiConfig {
   /**
    * Returns the location of the hand-written client, if any.
    */
-  public abstract String getHandWrittenLocation();
+  public abstract String getDomainLayerLocation();
 
   /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
@@ -65,7 +65,7 @@ public abstract class ApiConfig {
       return null;
     } else {
       return new AutoValue_ApiConfig(
-          interfaceConfigMap, settings.getPackageName(), settings.getHandWrittenLocation());
+          interfaceConfigMap, settings.getPackageName(), settings.getDomainLayerLocation());
     }
   }
 
@@ -82,8 +82,8 @@ public abstract class ApiConfig {
   public static ApiConfig createDummyApiConfig(
       ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
       String packageName,
-      String handWritten) {
-    return new AutoValue_ApiConfig(interfaceConfigMap, packageName, handWritten);
+      String domainLayerLocation) {
+    return new AutoValue_ApiConfig(interfaceConfigMap, packageName, domainLayerLocation);
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(

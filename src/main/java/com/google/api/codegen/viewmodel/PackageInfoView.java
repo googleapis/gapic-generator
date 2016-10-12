@@ -35,7 +35,7 @@ public abstract class PackageInfoView implements ViewModel {
 
   public abstract String packageName();
 
-  public abstract String handWrittenLocation();
+  public abstract String domainLayerLocation();
 
   @Nullable
   public abstract String importPath();
@@ -64,7 +64,7 @@ public abstract class PackageInfoView implements ViewModel {
 
     public abstract Builder packageName(String val);
 
-    public abstract Builder handWrittenLocation(String val);
+    public abstract Builder domainLayerLocation(String val);
 
     public abstract Builder importPath(String val);
 
