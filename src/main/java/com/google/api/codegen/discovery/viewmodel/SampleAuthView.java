@@ -14,41 +14,49 @@
  */
 package com.google.api.codegen.discovery.viewmodel;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
+import com.google.api.codegen.discovery.config.AuthType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class SampleFieldView {
+public abstract class SampleAuthView {
 
-  public abstract String name();
+  public abstract AuthType type();
+
+  public abstract String instructionsUrl();
+
+  public abstract List<String> scopes();
+
+  public abstract boolean isScopesSingular();
 
   @Nullable
-  public abstract String typeName();
+  public abstract String authFuncName();
 
-  public abstract String defaultValue();
-
-  public abstract String example();
-
-  public abstract String description();
+  @Nullable
+  public abstract String authVarName();
 
   public static Builder newBuilder() {
-    return new AutoValue_SampleFieldView.Builder();
+    return new AutoValue_SampleAuthView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
 
-    public abstract Builder name(String val);
+    public abstract Builder type(AuthType val);
 
-    public abstract Builder typeName(String val);
+    public abstract Builder instructionsUrl(String val);
 
-    public abstract Builder defaultValue(String val);
+    public abstract Builder scopes(List<String> val);
 
-    public abstract Builder example(String val);
+    public abstract Builder isScopesSingular(boolean val);
 
-    public abstract Builder description(String val);
+    public abstract Builder authFuncName(String val);
 
-    public abstract SampleFieldView build();
+    public abstract Builder authVarName(String val);
+
+    public abstract SampleAuthView build();
   }
 }
