@@ -128,7 +128,8 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
     try {
       sampleMethodToViewTransformer = SAMPLE_METHOD_TO_VIEW_TRANSFORMER_MAP.get(id).newInstance();
       typeNameGenerator = TYPE_NAME_GENERATOR_MAP.get(id).newInstance();
-    } catch (Exception e) {
+    } catch (InstantiationException | IllegalAccessException e) {
+      throw new RuntimeException(e);
     }
     if (sampleMethodToViewTransformer == null || typeNameGenerator == null) {
       throw new NotImplementedException("MainDiscoveryProviderFactory: invalid id \"" + id + "\"");
