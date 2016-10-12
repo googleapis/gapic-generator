@@ -63,7 +63,7 @@ public class ApiaryConfigToSampleConfigConverter {
    */
   public SampleConfig convert() {
     String apiName = apiaryConfig.getApiName();
-    String apiVersion = apiaryConfig.getApiVersion();
+    String apiVersion = typeNameGenerator.getApiVersion(apiaryConfig.getApiVersion());
     Map<String, MethodInfo> methods = new HashMap<String, MethodInfo>();
     for (Method method : this.methods) {
       methods.put(method.getName(), createMethod(method));

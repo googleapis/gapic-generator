@@ -23,6 +23,11 @@ import com.google.common.base.Strings;
 public class NodeJSTypeNameGenerator implements TypeNameGenerator {
 
   @Override
+  public String getApiVersion(String apiVersion) {
+    return apiVersion;
+  }
+
+  @Override
   public String getPackagePrefix(String apiName, String apiVersion) {
     // N/A
     return "";

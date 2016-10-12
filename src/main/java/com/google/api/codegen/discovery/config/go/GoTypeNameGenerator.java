@@ -15,6 +15,8 @@
 package com.google.api.codegen.discovery.config.go;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
@@ -22,6 +24,21 @@ import com.google.api.codegen.util.Name;
 import com.google.common.base.Strings;
 
 public class GoTypeNameGenerator implements TypeNameGenerator {
+
+  // Pattern used to rename some Go package versions.
+  private static final Pattern SUB_VERSION = Pattern.compile("^(.+)_(v[0-9.]+)$");
+
+  @Override
+  public String getApiVersion(String apiVersion) {
+    if (apiVersion.equals("alpha") || apiVersion.equals("beta")) {
+      return "v0." + apiVersion;
+    }
+    Matcher subVersion = SUB_VERSION.matcher(apiVersion);
+    if (subVersion.matches()) {
+      return subVersion.group(1) + "/" + subVersion.group(2);
+    }
+    return apiVersion;
+  }
 
   @Override
   public String getPackagePrefix(String apiName, String apiVersion) {

@@ -23,6 +23,14 @@ import java.util.List;
 public interface TypeNameGenerator {
 
   /**
+   * Returns the version of the API.
+   *
+   * Provided in case there is some common transformation on the API's version.
+   * For example: "alpha" to "v0.alpha"
+   */
+  public String getApiVersion(String apiVersion);
+
+  /**
    * Returns the package prefix for the API.
    */
   public String getPackagePrefix(String apiName, String apiVersion);
