@@ -70,13 +70,14 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
-    if (typeInfo.isArray()) {
+    if (typeInfo.isMap()) {
+      return new TypeName("Object");
+    } else if (typeInfo.isArray()) {
       TypeName elementTypeName = getTypeNameForElementType(typeInfo);
       return new TypeName("", "", "%i[]", elementTypeName);
-    } else if (typeInfo.isMap()) {
-      throw new IllegalArgumentException("map type is unsupported in this context");
+    } else {
+      return getTypeNameForElementType(typeInfo);
     }
-    return getTypeNameForElementType(typeInfo);
   }
 
   @Override
@@ -91,11 +92,17 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
     // Don't call getTypeName; we don't need to import these.
+    if (typeInfo.isMap()) {
+      return TypedValue.create(new TypeName("Object"), "{}");
+    }
     if (typeInfo.isArray()) {
       return TypedValue.create(new TypeName("Array"), "[]");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(typeInfo.kind())) {
       return TypedValue.create(getTypeName(typeInfo), PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
+    }
+    if (typeInfo.isMessage()) {
+      return TypedValue.create(getTypeName(typeInfo), "{}");
     }
     throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
   }

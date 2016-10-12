@@ -168,6 +168,9 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
    */
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
+    if (typeInfo.isMap()) {
+      return TypedValue.create(typeNameConverter.getTypeName("java.util.HashMap"), "new %s<>()");
+    }
     if (typeInfo.isArray()) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }

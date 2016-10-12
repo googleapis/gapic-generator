@@ -74,9 +74,18 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
+    if (typeInfo.isMessage()) {
+      String localName = GoSampleNamer.getServicePackageName(packagePrefix);
+      return new TypeName(packagePrefix + ";;;", localName + "." + typeInfo.message().typeName());
+    }
+    if (typeInfo.isMap()) {
+      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey());
+      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue());
+      return new TypeName("", "", "map[%s]%s", keyTypeName, valueTypeName);
+    }
     if (typeInfo.isArray()) {
       TypeName elementTypeName = getTypeNameForElementType(typeInfo);
-      return new TypeName("", "", "[]%i{}", elementTypeName);
+      return new TypeName("", "", "[]%i", elementTypeName);
     }
     return getTypeNameForElementType(typeInfo);
   }
@@ -87,22 +96,14 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
     if (primitiveTypeName != null) {
       return new TypeName(primitiveTypeName);
     }
-    if (typeInfo.kind() != Field.Kind.TYPE_MESSAGE) {
-      throw new IllegalArgumentException("unsupported type kind: " + typeInfo.kind());
-    }
-    if (typeInfo.isMap()) {
-      throw new IllegalArgumentException("map types are unsupported");
-    }
-    // TODO(garrettjones): Is this okay?
-    String localName = GoSampleNamer.getServicePackageName(packagePrefix);
-    return new TypeName(packagePrefix + ";;;", localName + "." + typeInfo.message().typeName());
+    throw new IllegalArgumentException("unsupported type kind: " + typeInfo.kind());
   }
 
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
     // Don't call getTypeName; we don't need to import these.
-    if (typeInfo.isArray()) {
-      return TypedValue.create(new TypeName("string"), "[]%s{}");
+    if (typeInfo.isMap() || typeInfo.isArray()) {
+      return TypedValue.create(getTypeName(typeInfo), "%s{}");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(typeInfo.kind())) {
       return TypedValue.create(
