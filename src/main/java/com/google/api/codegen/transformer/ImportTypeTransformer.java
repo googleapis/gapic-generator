@@ -57,11 +57,11 @@ public class ImportTypeTransformer {
     SurfaceNamer namer = context.getNamer();
     Set<String> fullNames = new TreeSet<>();
 
-    fullNames.add(getFileImports(context.getInterface(), namer, importFileType));
+    fullNames.add(getFileImport(context.getInterface(), namer, importFileType));
 
     for (Method method : context.getSupportedMethods()) {
       Interface targetInterface = context.asMethodContext(method).getTargetInterface();
-      fullNames.add(getFileImports(targetInterface, namer, importFileType));
+      fullNames.add(getFileImport(targetInterface, namer, importFileType));
     }
 
     List<ImportTypeView> imports = new ArrayList<>();
@@ -75,7 +75,7 @@ public class ImportTypeTransformer {
     return imports;
   }
 
-  private String getFileImports(
+  private String getFileImport(
       Interface service, SurfaceNamer namer, ImportFileType importFileType) {
     return importFileType == ImportFileType.SERVICE_FILE
         ? namer.getServiceFileImportFromService(service)
