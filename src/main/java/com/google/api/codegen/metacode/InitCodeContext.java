@@ -57,11 +57,11 @@ public abstract class InitCodeContext {
    */
   public abstract SymbolTable symbolTable();
 
-  @Nullable
   /**
-   * Contains the fields that requires init.
+   * Contains the fields that require init.
    * Must be set if the output type is FieldList.
-   * */
+   */
+  @Nullable
   public abstract Iterable<Field> initFields();
 
   /**
@@ -69,22 +69,22 @@ public abstract class InitCodeContext {
    */
   public abstract InitCodeOutputType outputType();
 
-  @Nullable
   /**
    *  Returns the value generator which is used to produce deterministically random unique
-   *  values for testing purpose.
+   *  values for testing purposes.
    */
+  @Nullable
   public abstract TestValueGenerator valueGenerator();
 
+  /** Returns init config strings. */
   @Nullable
-  /** Returns init config strings from user config file.*/
   public abstract Iterable<String> initFieldConfigStrings();
 
-  @Nullable
   /**
    * Allows additional InitCodeNode objects which will be placed into the generated subtrees.
    * This is currently used by smoke testing only.
    */
+  @Nullable
   public abstract Iterable<InitCodeNode> additionalInitCodeNodes();
 
   /**
