@@ -112,7 +112,7 @@ public abstract class DocConfig {
               InitCodeContext.newBuilder()
                   .initObjectType(method.getInputType())
                   .initFieldConfigStrings(methodConfig.getSampleCodeInitFields())
-                  .fields(fields)
+                  .initFields(fields)
                   .initValueConfigMap(initValueConfigMap.build())
                   .suggestedName(Name.from("request"))
                   .build());

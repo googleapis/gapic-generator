@@ -213,11 +213,11 @@ public class InitCodeNode {
             FieldStructureParser.parse(initFieldConfigString, context.initValueConfigMap()));
       }
     }
-    if (context.fields() != null) {
+    if (context.initFields() != null) {
       // Add items in fieldSet to newSubTrees in case they were not included in
       // sampleCodeInitFields, and to ensure the order is determined by initFields
       List<InitCodeNode> newSubTrees = new ArrayList<>();
-      for (Field field : context.fields()) {
+      for (Field field : context.initFields()) {
         String nameString = field.getSimpleName();
         InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
         if (initValueConfig == null) {
@@ -228,7 +228,7 @@ public class InitCodeNode {
       }
       // Filter subTrees using fieldSet
       Set<String> fieldSet = new HashSet<>();
-      for (Field field : context.fields()) {
+      for (Field field : context.initFields()) {
         fieldSet.add(field.getSimpleName());
       }
       for (InitCodeNode subTree : subTrees) {

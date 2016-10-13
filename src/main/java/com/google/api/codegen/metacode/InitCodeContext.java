@@ -21,11 +21,11 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValueConfig;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
-import com.google.api.tools.framework.model.*;
+import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
@@ -40,35 +40,57 @@ import java.util.Map;
 /** The context used for generating init code views */
 @AutoValue
 public abstract class InitCodeContext {
-  public enum InitCodeParamType {
-    RequestParam,
-    FlattenedParam,
+  public enum InitCodeOutputType {
+    SingleObject,
+    FieldList,
   }
 
+  /** The type of the output object. */
   public abstract TypeRef initObjectType();
 
+  /** The suggested name for the output object */
   public abstract Name suggestedName();
 
+  /**
+   * The symbol table used to store unique symbols used in the init code.
+   * Default to empty table.
+   * */
   public abstract SymbolTable symbolTable();
 
   @Nullable
-  public abstract MethodTransformerContext methodContext();
+  /**
+   * Contains the fields that requires init.
+   * Must be set if the output type is FieldList.
+   * */
+  public abstract Iterable<Field> initFields();
+
+  /**
+   * Returns the output type of the init code. Default to SingleObject.
+   */
+  public abstract InitCodeOutputType outputType();
 
   @Nullable
-  public abstract Iterable<Field> fields();
-
-  // Returns the param type of the init code. Default to RequestParam.
-  public abstract InitCodeParamType paramType();
-
-  @Nullable
+  /**
+   *  Returns the value generator which is used to produce deterministically random unique
+   *  values for testing purpose.
+   */
   public abstract TestValueGenerator valueGenerator();
 
   @Nullable
+  /** Returns init config strings from user config file.*/
   public abstract Iterable<String> initFieldConfigStrings();
 
   @Nullable
+  /**
+   * Allows additional InitCodeNode objects which will be placed into the generated subtrees.
+   * This is currently used by smoke testing only.
+   * */
   public abstract Iterable<InitCodeNode> additionalInitCodeNodes();
 
+  /**
+   * The map which stores init value config data.
+   * Default to empty map.
+   */
   public abstract ImmutableMap<String, InitValueConfig> initValueConfigMap();
 
   public static Builder newBuilder() {
@@ -76,7 +98,7 @@ public abstract class InitCodeContext {
     return new AutoValue_InitCodeContext.Builder()
         .symbolTable(new SymbolTable())
         .initValueConfigMap(emptyConfigMap.build())
-        .paramType(InitCodeParamType.RequestParam);
+        .outputType(InitCodeOutputType.SingleObject);
   }
 
   @AutoValue.Builder
@@ -87,11 +109,9 @@ public abstract class InitCodeContext {
 
     public abstract Builder symbolTable(SymbolTable table);
 
-    public abstract Builder methodContext(MethodTransformerContext name);
+    public abstract Builder initFields(Iterable<Field> fields);
 
-    public abstract Builder fields(Iterable<Field> fields);
-
-    public abstract Builder paramType(InitCodeParamType val);
+    public abstract Builder outputType(InitCodeOutputType val);
 
     public abstract Builder valueGenerator(TestValueGenerator generator);
 

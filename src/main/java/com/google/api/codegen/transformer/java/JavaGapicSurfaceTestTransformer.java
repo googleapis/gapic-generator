@@ -24,7 +24,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
-import com.google.api.codegen.metacode.InitCodeContext.InitCodeParamType;
+import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.transformer.ImportTypeTransformer;
@@ -73,11 +73,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String MOCK_SERVICE_IMPL_FILE = "java/mock_service_impl.snip";
 
   private final GapicCodePathMapper pathMapper;
+  private final InitCodeTransformer initCodeTransformer;
   private ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(new JavaValueProducer());
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
+    this.initCodeTransformer = new InitCodeTransformer();
   }
 
   @Override
@@ -148,7 +150,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
 
     InitCodeView initCodeView =
-        InitCodeTransformer.generateInitCode(createSmokeTestInitContext(context));
+        initCodeTransformer.generateInitCode(context, createSmokeTestInitContext(context));
 
     return TestMethodView.newBuilder()
         .name(namer.getApiMethodName(method))
@@ -161,15 +163,14 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private InitCodeContext createSmokeTestInitContext(MethodTransformerContext context) {
     SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
-    InitCodeParamType paramType =
+    InitCodeOutputType outputType =
         context.getMethodConfig().isFlattening()
-            ? InitCodeParamType.FlattenedParam
-            : InitCodeParamType.RequestParam;
+            ? InitCodeOutputType.FieldList
+            : InitCodeOutputType.SingleObject;
     return InitCodeContext.newBuilder()
-        .methodContext(context)
         .initObjectType(testConfig.getMethod().getInputType())
         .suggestedName(Name.from("request"))
-        .paramType(paramType)
+        .outputType(outputType)
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
         .build();
@@ -236,14 +237,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     InitCodeView initCodeView;
     if (methodConfig.isGrpcStreaming()) {
       initCodeView =
-          InitCodeTransformer.generateInitCode(
+          initCodeTransformer.generateInitCode(
+              methodContext,
               createRequestInitCodeContext(
-                  methodContext, initSymbolTable, null, InitCodeParamType.RequestParam));
+                  methodContext, initSymbolTable, null, InitCodeOutputType.SingleObject));
     } else {
       initCodeView =
-          InitCodeTransformer.generateInitCode(
+          initCodeTransformer.generateInitCode(
+              methodContext,
               createRequestInitCodeContext(
-                  methodContext, initSymbolTable, paramFields, InitCodeParamType.FlattenedParam));
+                  methodContext, initSymbolTable, paramFields, InitCodeOutputType.FieldList));
     }
 
     String requestTypeName =
@@ -266,7 +269,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
 
     List<GapicSurfaceTestAssertView> requestAssertViews =
-        InitCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
+        initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
 
     return GapicSurfaceTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
@@ -340,8 +343,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private MockGrpcResponseView createMockResponseView(
       MethodTransformerContext methodContext, SymbolTable symbolTable) {
     InitCodeView initCodeView =
-        InitCodeTransformer.generateInitCode(
-            createResponseInitCodeContext(methodContext, symbolTable));
+        initCodeTransformer.generateInitCode(
+            methodContext, createResponseInitCodeContext(methodContext, symbolTable));
 
     String typeName =
         methodContext
@@ -354,16 +357,15 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       MethodTransformerContext context,
       SymbolTable symbolTable,
       Iterable<Field> fields,
-      InitCodeParamType paramType) {
+      InitCodeOutputType outputType) {
     return InitCodeContext.newBuilder()
-        .methodContext(context)
         .initObjectType(context.getMethod().getInputType())
         .symbolTable(symbolTable)
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .fields(fields)
-        .paramType(paramType)
+        .initFields(fields)
+        .outputType(outputType)
         .valueGenerator(valueGenerator)
         .build();
   }
@@ -377,13 +379,12 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       }
     }
     return InitCodeContext.newBuilder()
-        .methodContext(context)
         .initObjectType(context.getMethod().getOutputType())
         .symbolTable(symbolTable)
         .suggestedName(Name.from("expected_response"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .fields(primitiveFields)
+        .initFields(primitiveFields)
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();

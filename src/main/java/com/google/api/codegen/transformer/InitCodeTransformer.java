@@ -16,7 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
-import com.google.api.codegen.metacode.InitCodeContext.InitCodeParamType;
+import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValueConfig;
@@ -47,11 +47,14 @@ import java.util.Map;
  * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
-  /** Generates initialization code from the given InitCodeContext object. */
-  public static InitCodeView generateInitCode(InitCodeContext context) {
-    InitCodeNode rootNode = InitCodeNode.createTree(context);
-    MethodTransformerContext methodContext = context.methodContext();
-    if (context.paramType() == InitCodeParamType.FlattenedParam) {
+  /**
+   * Generates initialization code from the given MethodTransformerContext and InitCodeContext
+   * objects.
+   * */
+  public InitCodeView generateInitCode(
+      MethodTransformerContext methodContext, InitCodeContext initCodeContext) {
+    InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
+    if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
       return buildInitCodeViewFlattened(methodContext, rootNode);
     } else {
       return buildInitCodeViewRequestObject(methodContext, rootNode);
@@ -59,15 +62,14 @@ public class InitCodeTransformer {
   }
 
   /** Generates assert views for the test of the tested method and its fields. */
-  public static List<GapicSurfaceTestAssertView> generateRequestAssertViews(
+  public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<Field> fields) {
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(
             InitCodeContext.newBuilder()
-                .methodContext(context)
                 .initObjectType(context.getMethod().getInputType())
-                .fields(fields)
+                .initFields(fields)
                 .initValueConfigMap(createCollectionMap(context))
                 .suggestedName(Name.from("request"))
                 .build());
@@ -95,7 +97,10 @@ public class InitCodeTransformer {
     return assertViews;
   }
 
-  /** Creates the InitValueConfig map which contains the collection config data. */
+  /**
+   * A utility method which creates the InitValueConfig map that contains the collection
+   * config data.
+   * */
   public static ImmutableMap<String, InitValueConfig> createCollectionMap(
       MethodTransformerContext context) {
     ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
@@ -111,14 +116,14 @@ public class InitCodeTransformer {
     return mapBuilder.build();
   }
 
-  private static GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
+  private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
     return GapicSurfaceTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
         .actualValueGetter(actual)
         .build();
   }
 
-  private static InitCodeView buildInitCodeViewFlattened(
+  private InitCodeView buildInitCodeViewFlattened(
       MethodTransformerContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     List<InitCodeNode> argItems = new ArrayList<>(root.getChildren().values());
@@ -127,14 +132,14 @@ public class InitCodeTransformer {
     return buildInitCodeView(context, orderedItems, argItems);
   }
 
-  private static InitCodeView buildInitCodeViewRequestObject(
+  private InitCodeView buildInitCodeViewRequestObject(
       MethodTransformerContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     List<InitCodeNode> argItems = Lists.newArrayList(root);
     return buildInitCodeView(context, orderedItems, argItems);
   }
 
-  private static InitCodeView buildInitCodeView(
+  private InitCodeView buildInitCodeView(
       MethodTransformerContext context,
       Iterable<InitCodeNode> orderedItems,
       Iterable<InitCodeNode> argItems) {
@@ -159,7 +164,7 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private static List<InitCodeLineView> generateSurfaceInitCodeLines(
+  private List<InitCodeLineView> generateSurfaceInitCodeLines(
       MethodTransformerContext context, Iterable<InitCodeNode> specItemNode) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeNode item : specItemNode) {
@@ -168,7 +173,7 @@ public class InitCodeTransformer {
     return surfaceLines;
   }
 
-  private static InitCodeLineView generateSurfaceInitCodeLine(
+  private InitCodeLineView generateSurfaceInitCodeLine(
       MethodTransformerContext context, InitCodeNode specItemNode) {
     switch (specItemNode.getLineType()) {
       case StructureInitLine:
@@ -184,7 +189,7 @@ public class InitCodeTransformer {
     }
   }
 
-  private static InitCodeLineView generateSimpleInitCodeLine(
+  private InitCodeLineView generateSimpleInitCodeLine(
       MethodTransformerContext context, InitCodeNode item) {
     SimpleInitCodeLineView.Builder surfaceLine = SimpleInitCodeLineView.newBuilder();
 
@@ -206,7 +211,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private static InitCodeLineView generateStructureInitCodeLine(
+  private InitCodeLineView generateStructureInitCodeLine(
       MethodTransformerContext context, InitCodeNode item) {
     StructureInitCodeLineView.Builder surfaceLine = StructureInitCodeLineView.newBuilder();
 
@@ -221,7 +226,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private static InitCodeLineView generateListInitCodeLine(
+  private InitCodeLineView generateListInitCodeLine(
       MethodTransformerContext context, InitCodeNode item) {
     ListInitCodeLineView.Builder surfaceLine = ListInitCodeLineView.newBuilder();
 
@@ -253,7 +258,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private static InitCodeLineView generateMapInitCodeLine(
+  private InitCodeLineView generateMapInitCodeLine(
       MethodTransformerContext context, InitCodeNode item) {
     MapInitCodeLineView.Builder surfaceLine = MapInitCodeLineView.newBuilder();
 
@@ -282,7 +287,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private static InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {
+  private InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {
 
     InitValueConfig initValueConfig = item.getInitValueConfig();
     Field field = item.getField();
@@ -343,7 +348,7 @@ public class InitCodeTransformer {
     return formatFunctionArgs;
   }
 
-  private static List<FieldSettingView> getFieldSettings(
+  private List<FieldSettingView> getFieldSettings(
       MethodTransformerContext context, Iterable<InitCodeNode> childItems) {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();
