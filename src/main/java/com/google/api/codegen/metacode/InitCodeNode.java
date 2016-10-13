@@ -238,8 +238,8 @@ public class InitCodeNode {
       }
       subTrees = newSubTrees;
     }
-    if (context.additionalNodes() != null) {
-      subTrees.addAll(Lists.newArrayList(context.additionalNodes()));
+    if (context.additionalInitCodeNodes() != null) {
+      subTrees.addAll(Lists.newArrayList(context.additionalInitCodeNodes()));
     }
     return subTrees;
   }

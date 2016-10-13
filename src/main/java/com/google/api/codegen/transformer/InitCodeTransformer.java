@@ -95,6 +95,22 @@ public class InitCodeTransformer {
     return assertViews;
   }
 
+  /** Creates the InitValueConfig map which contains the collection config data. */
+  public static ImmutableMap<String, InitValueConfig> createCollectionMap(
+      MethodTransformerContext context) {
+    ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
+    Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
+    for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
+      CollectionConfig collectionConfig = context.getCollectionConfig(fieldNamePattern.getValue());
+      String apiWrapperClassName =
+          context.getNamer().getApiWrapperClassName(context.getInterface());
+      InitValueConfig initValueConfig =
+          InitValueConfig.create(apiWrapperClassName, collectionConfig);
+      mapBuilder.put(fieldNamePattern.getKey(), initValueConfig);
+    }
+    return mapBuilder.build();
+  }
+
   private static GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
     return GapicSurfaceTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
@@ -264,21 +280,6 @@ public class InitCodeTransformer {
     surfaceLine.initEntries(entries);
 
     return surfaceLine.build();
-  }
-
-  public static ImmutableMap<String, InitValueConfig> createCollectionMap(
-      MethodTransformerContext context) {
-    ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
-    Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
-    for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
-      CollectionConfig collectionConfig = context.getCollectionConfig(fieldNamePattern.getValue());
-      String apiWrapperClassName =
-          context.getNamer().getApiWrapperClassName(context.getInterface());
-      InitValueConfig initValueConfig =
-          InitValueConfig.create(apiWrapperClassName, collectionConfig);
-      mapBuilder.put(fieldNamePattern.getKey(), initValueConfig);
-    }
-    return mapBuilder.build();
   }
 
   private static InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {

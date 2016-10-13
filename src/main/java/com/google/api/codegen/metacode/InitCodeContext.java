@@ -67,7 +67,7 @@ public abstract class InitCodeContext {
   public abstract Iterable<String> initFieldConfigStrings();
 
   @Nullable
-  public abstract Iterable<InitCodeNode> additionalNodes();
+  public abstract Iterable<InitCodeNode> additionalInitCodeNodes();
 
   public abstract ImmutableMap<String, InitValueConfig> initValueConfigMap();
 
@@ -97,7 +97,7 @@ public abstract class InitCodeContext {
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> configMap);
 
-    public abstract Builder additionalNodes(Iterable<InitCodeNode> additionalNodes);
+    public abstract Builder additionalInitCodeNodes(Iterable<InitCodeNode> additionalNodes);
 
     public abstract InitCodeContext build();
   }

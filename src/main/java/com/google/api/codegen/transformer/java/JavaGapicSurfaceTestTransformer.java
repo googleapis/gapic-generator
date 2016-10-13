@@ -385,7 +385,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .fields(primitiveFields)
         .valueGenerator(valueGenerator)
-        .additionalNodes(createMockResponseAdditionalSubTrees(context))
+        .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();
   }
 
