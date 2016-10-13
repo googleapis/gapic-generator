@@ -824,4 +824,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getRetryDefinitionName(String retryDefinitionKey) {
     return privateMethodName(Name.from(retryDefinitionKey));
   }
+
+  /** The name of the IAM resource getter function. */
+  public String getIamResourceGetterFunctionName(Field field) {
+    return getNotImplementedString("SurfaceNamer.getIamResourceGetterFunctionName");
+  }
+
+  /** The example name of the IAM resource getter function. */
+  public String getIamResourceGetterFunctionExampleName(Interface service, Field field) {
+    return getIamResourceGetterFunctionName(field);
+  }
+
+  /** The parameter name of the IAM resource. */
+  public String getIamResourceParamName(Field field) {
+    return localVarName(Name.upperCamel(field.getParent().getSimpleName()));
+  }
 }

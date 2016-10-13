@@ -24,6 +24,7 @@ import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.IamResourceTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -75,6 +76,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+  private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
   private final GapicCodePathMapper pathMapper;
 
@@ -143,6 +145,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.apiMethods(
         generateApiMethods(context, context.getSupportedMethods(), PAGE_STREAM_IMPORTS));
 
+    view.iamResources(iamResourceTransformer.generateIamResources(context));
+    if (!apiConfig.getInterfaceConfig(service).getIamResources().isEmpty()) {
+      context.getTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
+    }
+
     // In Go, multiple methods share the same iterator type, one iterator type per resource type.
     // We have to dedupe the iterators.
     Map<String, PageStreamingDescriptorClassView> iterators = new TreeMap<>();
@@ -188,6 +195,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.apiMethods(
         generateApiMethods(
             context, context.getSupportedMethods(), Collections.<String>emptyList()));
+    view.iamResources(iamResourceTransformer.generateIamResources(context));
 
     // Examples are different from the API. In particular, we use short declaration
     // and so we omit most type names. We only need

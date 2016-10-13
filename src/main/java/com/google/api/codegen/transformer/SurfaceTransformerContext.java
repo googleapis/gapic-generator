@@ -19,6 +19,7 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -149,10 +150,12 @@ public abstract class SurfaceTransformerContext {
   }
 
   private boolean isSupported(Method method) {
-    if (getFeatureConfig().enableGrpcStreaming()) {
-      return true;
-    }
-    return !MethodConfig.isGrpcStreamingMethod(method);
+    boolean supported = true;
+    supported &=
+        getFeatureConfig().enableGrpcStreaming() || !MethodConfig.isGrpcStreamingMethod(method);
+    supported &=
+        getInterfaceConfig().getMethodConfig(method).getVisibility() != VisibilityConfig.DISABLED;
+    return supported;
   }
 
   public List<Method> getPageStreamingMethods() {
