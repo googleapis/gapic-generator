@@ -293,19 +293,17 @@ LibraryServiceApi.prototype.matchBookFromArchivedBookName = function(archivedBoo
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
  * var api = libraryV1.libraryServiceApi();
  * var shelf = {};
- * api.createShelf({shelf: shelf}, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.createShelf({shelf: shelf}).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
@@ -341,8 +339,8 @@ LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -353,12 +351,10 @@ LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
  *     name: formattedName,
  *     options: options
  * };
- * api.getShelf(request, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.getShelf(request).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
@@ -383,12 +379,12 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
  *   will be called with the response object representing [ListShelvesResponse]{@link ListShelvesResponse}.
  *   The third item will be set if the response contains the token for the further results
  *   and can be reused to `pageToken` field in the options in the next request.
- * @returns {Stream|gax.EventEmitter}
+ * @returns {Stream|Promise}
  *   An object stream which emits an object representing
  *   [Shelf]{@link Shelf} on 'data' event.
  *   When the callback is specified or streaming is suppressed through options,
- *   it will return an event emitter to handle the call status and the callback
- *   will be called with the response object.
+ *   it will return a promise that resolves to the response object. The promise
+ *   has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -436,17 +432,15 @@ LibraryServiceApi.prototype.listShelves = function(options, callback) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF]");
- * api.deleteShelf({name: formattedName}, function(err) {
- *     if (err) {
- *         console.error(err);
- *     }
+ * api.deleteShelf({name: formattedName}).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
@@ -478,8 +472,8 @@ LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -490,12 +484,10 @@ LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * api.mergeShelves(request, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.mergeShelves(request).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) {
@@ -527,8 +519,8 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -539,12 +531,10 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
  *     name: formattedName,
  *     book: book
  * };
- * api.createBook(request, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.createBook(request).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.createBook = function(request, options, callback) {
@@ -580,10 +570,8 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [PublishSeriesResponse]{@link PublishSeriesResponse}
- * @returns {gax.BundleEventEmitter} - the event emitter to handle the call
- *   status. When isBundling: false is specified in the options, it still returns
- *   a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same
- *   as a gax.EventEmitter does.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -594,12 +582,10 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
  *     shelf: shelf,
  *     books: books
  * };
- * api.publishSeries(request, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.publishSeries(request).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.publishSeries = function(request, options, callback) {
@@ -627,19 +613,17 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
- * api.getBook({name: formattedName}, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.getBook({name: formattedName}).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.getBook = function(request, options, callback) {
@@ -676,12 +660,12 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
  *   will be called with the response object representing [ListBooksResponse]{@link ListBooksResponse}.
  *   The third item will be set if the response contains the token for the further results
  *   and can be reused to `pageToken` field in the options in the next request.
- * @returns {Stream|gax.EventEmitter}
+ * @returns {Stream|Promise}
  *   An object stream which emits an object representing
  *   [Book]{@link Book} on 'data' event.
  *   When the callback is specified or streaming is suppressed through options,
- *   it will return an event emitter to handle the call status and the callback
- *   will be called with the response object.
+ *   it will return a promise that resolves to the response object. The promise
+ *   has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -729,17 +713,15 @@ LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF]", "[BOOK]");
- * api.deleteBook({name: formattedName}, function(err) {
- *     if (err) {
- *         console.error(err);
- *     }
+ * api.deleteBook({name: formattedName}).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
@@ -779,8 +761,8 @@ LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -791,12 +773,10 @@ LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
  *     name: formattedName,
  *     book: book
  * };
- * api.updateBook(request, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.updateBook(request).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
@@ -826,8 +806,8 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -838,12 +818,10 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * api.moveBook(request, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.moveBook(request).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
@@ -877,11 +855,11 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  *   will be called with the response object representing [ListStringsResponse]{@link ListStringsResponse}.
  *   The third item will be set if the response contains the token for the further results
  *   and can be reused to `pageToken` field in the options in the next request.
- * @returns {Stream|gax.EventEmitter}
+ * @returns {Stream|Promise}
  *   An object stream which emits a string on 'data' event.
  *   When the callback is specified or streaming is suppressed through options,
- *   it will return an event emitter to handle the call status and the callback
- *   will be called with the response object.
+ *   it will return a promise that resolves to the response object. The promise
+ *   has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -930,8 +908,8 @@ LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -950,10 +928,8 @@ LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
  *     name: formattedName,
  *     comments: comments
  * };
- * api.addComments(request, function(err) {
- *     if (err) {
- *         console.error(err);
- *     }
+ * api.addComments(request).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.addComments = function(request, options, callback) {
@@ -981,19 +957,17 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.archivedBookPath("[ARCHIVE_PATH]", "[BOOK]");
- * api.getBookFromArchive({name: formattedName}, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.getBookFromArchive({name: formattedName}).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.getBookFromArchive = function(request, options, callback) {
@@ -1023,8 +997,8 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -1038,10 +1012,8 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  *     indexName: indexName,
  *     indexMap: indexMap
  * };
- * api.updateBookIndex(request, function(err) {
- *     if (err) {
- *         console.error(err);
- *     }
+ * api.updateBookIndex(request).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.updateBookIndex = function(request, options, callback) {
@@ -1074,11 +1046,11 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
  *   will be called with the response object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
  *   The third item will be set if the response contains the token for the further results
  *   and can be reused to `pageToken` field in the options in the next request.
- * @returns {Stream|gax.EventEmitter}
+ * @returns {Stream|Promise}
  *   An object stream which emits a string on 'data' event.
  *   When the callback is specified or streaming is suppressed through options,
- *   it will return an event emitter to handle the call status and the callback
- *   will be called with the response object.
+ *   it will return a promise that resolves to the response object. The promise
+ *   has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -1138,8 +1110,8 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [AddTagResponse]{@link AddTagResponse}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -1150,12 +1122,10 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
  *     resource: formattedResource,
  *     tag: tag
  * };
- * api.addTag(request, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.addTag(request).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.addTag = function(request, options, callback) {
@@ -1187,8 +1157,8 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [AddLabelResponse]{@link AddLabelResponse}
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
@@ -1199,12 +1169,10 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
  *     resource: formattedResource,
  *     label: label
  * };
- * api.addLabel(request, function(err, response) {
- *     if (err) {
- *         console.error(err);
- *         return;
- *     }
+ * api.addLabel(request).then(function(response) {
  *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  */
 LibraryServiceApi.prototype.addLabel = function(request, options, callback) {

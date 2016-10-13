@@ -114,17 +114,15 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
- *   status.
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
  * var api = exampleV1.noTemplatesApiServiceApi();
  *
- * api.increment(function(err) {
- *     if (err) {
- *         console.error(err);
- *     }
+ * api.increment().catch(function(err) {
+ *     console.error(err);
  * });
  */
 NoTemplatesAPIServiceApi.prototype.increment = function(options, callback) {
