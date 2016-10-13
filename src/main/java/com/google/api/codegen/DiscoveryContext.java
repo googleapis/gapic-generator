@@ -275,8 +275,8 @@ public abstract class DiscoveryContext extends CodegenContext {
   }
 
   public boolean isPageStreaming(Method method) {
-    // used to handle inconsistency in users list method for SQLAdmin API
-    // remove if inconsistency is resolved
+    // Used to handle inconsistency in users list method for SQLAdmin API.
+    // Remove if inconsistency is resolved.
     if (isSQLAdminUsersListMethod(method)) {
       return false;
     }
@@ -430,8 +430,8 @@ public abstract class DiscoveryContext extends CodegenContext {
   // Handlers for Exceptional Inconsistencies
   // ========================================
 
-  // used to handle inconsistency in list methods for Cloud Monitoring API
-  // remove if inconsistency is resolved in discovery docs
+  // Used to handle inconsistency in list methods for Cloud Monitoring API.
+  // Remove if inconsistency is resolved in discovery docs.
   protected boolean isCloudMonitoringListMethod(Method method) {
     Api api = getApi();
     return api.getName().equals("cloudmonitoring")
@@ -439,8 +439,8 @@ public abstract class DiscoveryContext extends CodegenContext {
         && isPageStreaming(method);
   }
 
-  // used to handle inconsistency in log entries list method for Logging API
-  // remove if inconsistency is resolved
+  // Used to handle inconsistency in log entries list method for Logging API.
+  // Remove if inconsistency is resolved.
   public boolean isLogEntriesListMethod(Method method) {
     Api api = getApi();
     return api.getName().equals("logging")
@@ -448,8 +448,8 @@ public abstract class DiscoveryContext extends CodegenContext {
         && method.getName().equals("logging.entries.list");
   }
 
-  // used to handle inconsistency in users list method for SQLAdmin API
-  // remove if inconsistency is resolved
+  // Used to handle inconsistency in users list method for SQLAdmin API.
+  // Remove if inconsistency is resolved.
   protected boolean isSQLAdminUsersListMethod(Method method) {
     Api api = getApi();
     return api.getName().equals("sqladmin")
@@ -457,8 +457,8 @@ public abstract class DiscoveryContext extends CodegenContext {
         && method.getName().equals("sql.users.list");
   }
 
-  // used to handle inconsistency in language detections and translations methods for Translate API
-  // remove if inconsistency is resolved
+  // Used to handle inconsistency in language detections and translations methods for Translate API.
+  // Remove if inconsistency is resolved.
   protected boolean isTranslateLanguageDetectionsOrTranslationsField(Method method, Field field) {
     if (method == null) {
       return false;

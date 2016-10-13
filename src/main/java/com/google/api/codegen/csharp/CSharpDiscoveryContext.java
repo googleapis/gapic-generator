@@ -426,7 +426,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
       Type responseType = apiary.getType(method.getResponseTypeUrl());
       Field resourceField = getFirstRepeatedField(responseType);
       String resourceTypeName = elementTypeName(responseType, resourceField, requestTypeName);
-      // used to handle inconsistency in page-streaming methods for Bigquery API
+      // Used to handle inconsistency in page-streaming methods for Bigquery API.
       if (isBigqueryPageStreamingMethod(method)) {
         resourceTypeName = resourceTypeName + "Data";
       }
@@ -535,8 +535,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   // Handlers for Exceptional Inconsistencies
   // ========================================
 
-  // used to handle inconsistency in page-streaming methods for Bigquery API
-  // remove if inconsistency is removed in client library
+  // Used to handle inconsistency in page-streaming methods for Bigquery API.
+  // Remove if inconsistency is removed in client library.
   protected boolean isBigqueryPageStreamingMethod(Method method) {
     Api api = getApi();
     return api.getName().equals("bigquery")
