@@ -54,7 +54,7 @@ public abstract class InitCodeContext {
   /**
    * The symbol table used to store unique symbols used in the init code.
    * Default to empty table.
-   * */
+   */
   public abstract SymbolTable symbolTable();
 
   @Nullable
@@ -84,7 +84,7 @@ public abstract class InitCodeContext {
   /**
    * Allows additional InitCodeNode objects which will be placed into the generated subtrees.
    * This is currently used by smoke testing only.
-   * */
+   */
   public abstract Iterable<InitCodeNode> additionalInitCodeNodes();
 
   /**
