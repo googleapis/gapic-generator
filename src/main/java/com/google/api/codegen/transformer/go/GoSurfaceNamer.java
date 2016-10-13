@@ -222,12 +222,12 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return exampleFunction(service, getIamResourceGetterFunctionName(field));
   }
 
-  private String exampleFunction(Interface service, String func) {
+  private String exampleFunction(Interface service, String functionName) {
     // We use "unsafe" string concatenation here.
     // Godoc expects the name to be in format "ExampleMyType_MyMethod";
     // it is the only place we have mixed camel and underscore names.
     return publicMethodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
         + "_"
-        + func;
+        + functionName;
   }
 }

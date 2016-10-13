@@ -21,7 +21,6 @@ import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.SurfaceTreatmentProto;
-import com.google.api.codegen.TreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -216,14 +215,12 @@ public abstract class MethodConfig {
         Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
-    for (SurfaceTreatmentProto surfaceTreatment : methodConfigProto.getSurfaceTreatmentsList()) {
-      if (!surfaceTreatment.getIncludeLanguagesList().contains(language)) {
+    for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
+      if (!treatment.getIncludeLanguagesList().contains(language)) {
         continue;
       }
-      for (TreatmentProto treatment : surfaceTreatment.getTreatmentsList()) {
-        if (treatment.getVisibility() != VisibilityProto.UNSET) {
-          visibility = VisibilityConfig.fromProto(treatment.getVisibility());
-        }
+      if (treatment.getVisibility() != VisibilityProto.UNSET) {
+        visibility = VisibilityConfig.fromProto(treatment.getVisibility());
       }
     }
 

@@ -331,6 +331,9 @@ message ExperimentalFeatures {
   repeated IamResourceProto iam_resources = 1;
 }
 
+// IamResourceProto describes an IAM resource, since client libraries might want to
+// integrate with external helpers.
+// It is experimental: We should find a general way to integrate with external code.
 message IamResourceProto {
   // Fully qualified name of resource types. Eg, google.example.library.v1.Book.
   string type = 1;
@@ -339,15 +342,14 @@ message IamResourceProto {
   string field = 2;
 }
 
+// SurfaceTreatmentProto describes treatments to the code generation
+// that are expected to be different for each language.
 message SurfaceTreatmentProto {
+  // The languages affected by this treatment.
   repeated string include_languages = 1;
-  repeated TreatmentProto treatments = 2;
-}
 
-message TreatmentProto {
-  oneof treatment {
-    VisibilityProto visibility = 1;
-  }
+  // The visibility of the surface.
+  VisibilityProto visibility = 2;
 }
 
 enum VisibilityProto {
