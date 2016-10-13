@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -28,11 +27,8 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
-
 import io.grpc.Status;
-
 import java.util.List;
 
 public class GoSurfaceNamer extends SurfaceNamer {
@@ -83,11 +79,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      FeatureConfig featureConfig,
-      ModelTypeTable typeTable,
-      TypeRef inputTypeName,
-      TypeRef outputTypeName,
-      Field resourcesField) {
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
     String typeName = converter.getTypeNameForElementType(resourcesField.getType()).getNickname();
     int dotIndex = typeName.indexOf('.');
     if (dotIndex >= 0) {
@@ -212,5 +204,14 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getCreateStubFunctionName(Interface service) {
     return getGrpcClientTypeName(service).replace(".", ".New");
+  }
+
+  @Override
+  public String getStaticLangStreamingReturnTypeName(Method method, MethodConfig methodConfig) {
+    // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
+    // neither camel or underscore.
+    return converter.getTypeName(method.getParent()).getNickname()
+        + "_"
+        + className(Name.upperCamel(method.getSimpleName()).join("client"));
   }
 }

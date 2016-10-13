@@ -193,7 +193,13 @@
                             }
                         @end
                     @end
-                    {@requestName()}.PageToken = {@responseName()}.NextPageToken;
+                    # used to handle inconsistency in Logging API and CloudResourceManager API
+                    # remove exceptional case if inconsistency is resolved
+                    @if context.isPageTokenInRequestBody(method)
+                      {@sample.requestFieldName}.PageToken = {@responseName()}.NextPageToken;
+                    @else
+                      {@requestName()}.PageToken = {@responseName()}.NextPageToken;
+                    @end
                 } while ({@responseName()}.NextPageToken != null);
             @end
         @else

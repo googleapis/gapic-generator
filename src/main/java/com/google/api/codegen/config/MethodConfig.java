@@ -29,11 +29,14 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+
+import org.joda.time.Duration;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
 
 // TODO(garrettjones) consider using AutoValue in this class and related classes.
 /**

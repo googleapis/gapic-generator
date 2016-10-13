@@ -25,9 +25,10 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -35,9 +36,11 @@ import java.util.TreeMap;
  */
 public class JavaTypeTable implements TypeTable {
   /**
-   * A bi-map from full names to short names indicating the import map.
+   * A bi-map from full names to type alias indicating the import map.
    */
-  private final BiMap<String, String> imports = HashBiMap.create();
+  private final BiMap<String, TypeAlias> imports = HashBiMap.create();
+
+  private final Set<String> usedNicknames = new HashSet<>();
 
   /**
    * A map from simple type name to a boolean, indicating whether its in java.lang or not. If a
@@ -81,6 +84,12 @@ public class JavaTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    String fullName = implicitPackageName + "." + shortName;
+    return new TypeName(fullName, shortName);
+  }
+
+  @Override
   public NamePath getNamePath(String fullName) {
     return NamePath.dotted(fullName);
   }
@@ -107,6 +116,18 @@ public class JavaTypeTable implements TypeTable {
   }
 
   @Override
+  public String getAndSaveNicknameForInnerType(
+      String containerFullName, String innerTypeShortName) {
+    int lastDotIndex = innerTypeShortName.lastIndexOf('.');
+    if (lastDotIndex != -1) {
+      throw new IllegalArgumentException("Cannot have qualified innerTypeShortName.");
+    }
+    String fullName = containerFullName + "." + innerTypeShortName;
+
+    return getAndSaveNicknameFor(new TypeName(fullName, innerTypeShortName, containerFullName));
+  }
+
+  @Override
   public String getAndSaveNicknameFor(TypeName typeName) {
     return typeName.getAndSaveNicknameIn(this);
   }
@@ -116,18 +137,20 @@ public class JavaTypeTable implements TypeTable {
     if (!alias.needsImport()) {
       return alias.getNickname();
     }
+
     // Derive a short name if possible
     if (imports.containsKey(alias.getFullName())) {
       // Short name already there.
-      return imports.get(alias.getFullName());
+      return imports.get(alias.getFullName()).getNickname();
     }
-    if (imports.containsValue(alias.getNickname())
+    if (usedNicknames.contains(alias.getNickname())
         || !alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
             && isImplicitImport(alias.getNickname())) {
       // Short name clashes, use long name.
       return alias.getFullName();
     }
-    imports.put(alias.getFullName(), alias.getNickname());
+    imports.put(alias.getFullName(), alias);
+    usedNicknames.add(alias.getNickname());
     return alias.getNickname();
   }
 
@@ -139,9 +162,9 @@ public class JavaTypeTable implements TypeTable {
   }
 
   @Override
-  public Map<String, String> getImports() {
+  public Map<String, TypeAlias> getImports() {
     // Clean up the imports.
-    Map<String, String> cleanedImports = new TreeMap<>();
+    Map<String, TypeAlias> cleanedImports = new TreeMap<>();
     // Imported type is in java.lang or in package, can be ignored.
     for (String imported : imports.keySet()) {
       if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)) {

@@ -147,15 +147,15 @@
     {@requestName()} := {@methodCall(method)}
     if err := {@requestName()}.Pages(ctx, func(page *{@context.getApi.getName}.{@responseType}) error {
       @if context.isMapField(responseTypeRef, resourceField.getName)
-        @let keyName = context.keyTypeName(resourceField), \
-             valueName = context.valueTypeName(resourceField)
+        @let keyName = unclashVar(context.keyTypeName(resourceField)), \
+             valueName = unclashVar(context.valueTypeName(resourceField))
           for {@keyName}, {@valueName} := range page.{@resources} {
             // {@TODO()} Change code below to process each ({@keyName}: {@valueName}) element:
             fmt.Printf("%v: %#v\n", {@keyName}, {@valueName})
           }
         @end
       @else
-        @let resourceName = context.elementTypeName(resourceField)
+        @let resourceName = unclashVar(context.elementTypeName(resourceField))
           for _, {@resourceName} := range page.{@resources} {
             // {@TODO()} Change code below to process each `{@resourceName}` resource:
             fmt.Printf("%#v\n", {@resourceName})
@@ -281,6 +281,7 @@
   @end
 @end
 
+# TODO(tcoffee): improve suffix generator in port to MVVM
 @private unclashVar(var)
   @if or(context.getApi.getName.equals(var), context.isReserved(var))
     {@var}2

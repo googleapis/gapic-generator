@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -24,10 +25,11 @@ public abstract class MockGrpcMethodView {
 
   public abstract String responseTypeName();
 
-  public abstract boolean isStreaming();
+  public abstract GrpcStreamingType grpcStreamingType();
 
   public static Builder newBuilder() {
-    return new AutoValue_MockGrpcMethodView.Builder();
+    return new AutoValue_MockGrpcMethodView.Builder()
+        .grpcStreamingType(GrpcStreamingType.NonStreaming);
   }
 
   @AutoValue.Builder
@@ -38,7 +40,7 @@ public abstract class MockGrpcMethodView {
 
     public abstract Builder responseTypeName(String val);
 
-    public abstract Builder isStreaming(boolean val);
+    public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract MockGrpcMethodView build();
   }

@@ -439,13 +439,17 @@ public abstract class DiscoveryContext extends CodegenContext {
         && isPageStreaming(method);
   }
 
-  // Used to handle inconsistency in log entries list method for Logging API.
+  // Used to handle inconsistency in log entries list method for Logging API
+  // and organizations search method for CloudResourceManager API.
   // Remove if inconsistency is resolved.
-  public boolean isLogEntriesListMethod(Method method) {
+  public boolean isPageTokenInRequestBody(Method method) {
     Api api = getApi();
     return api.getName().equals("logging")
-        && api.getVersion().equals("v2beta1")
-        && method.getName().equals("logging.entries.list");
+            && api.getVersion().equals("v2beta1")
+            && method.getName().equals("logging.entries.list")
+        || api.getName().equals("cloudresourcemanager")
+            && api.getVersion().equals("v1")
+            && method.getName().equals("cloudresourcemanager.organizations.search");
   }
 
   // Used to handle inconsistency in users list method for SQLAdmin API.

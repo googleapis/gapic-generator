@@ -19,7 +19,6 @@ import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.ImmutableSet;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ import java.util.TreeMap;
 
 public class GoTypeTable implements TypeTable {
 
-  private final TreeMap<String, String> imports = new TreeMap<>();
+  private final TreeMap<String, TypeAlias> imports = new TreeMap<>();
 
   @Override
   public TypeTable cloneEmpty() {
@@ -41,6 +40,11 @@ public class GoTypeTable implements TypeTable {
       return new TypeName(fullName);
     }
     return new TypeName(fullName, parts[3] + parts[1] + "." + parts[2]);
+  }
+
+  @Override
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    throw new UnsupportedOperationException("getTypeNameInImplicitPackage not supported by Go");
   }
 
   @Override
@@ -67,23 +71,23 @@ public class GoTypeTable implements TypeTable {
   public String getAndSaveNicknameFor(TypeAlias alias) {
     String[] parts = alias.getFullName().split(";", -1);
     if (parts.length == 4) {
-      imports.put(parts[0], parts[1]);
+      imports.put(parts[0], TypeAlias.create(parts[0], parts[1]));
     }
     return alias.getNickname();
   }
 
   @Override
-  public Map<String, String> getImports() {
+  public Map<String, TypeAlias> getImports() {
     return imports;
   }
 
-  public static List<String> formatImports(Map<String, String> imports) {
+  public static List<String> formatImports(Map<String, TypeAlias> imports) {
     List<String> standard = new ArrayList<>(imports.size());
     List<String> thirdParty = new ArrayList<>(imports.size());
 
-    for (Map.Entry<String, String> imp : imports.entrySet()) {
+    for (Map.Entry<String, TypeAlias> imp : imports.entrySet()) {
       String importPath = imp.getKey();
-      String packageRename = imp.getValue();
+      String packageRename = imp.getValue().getNickname();
       List<String> target = isStandardImport(importPath) ? standard : thirdParty;
       if (packageRename.equals("")) {
         target.add(String.format("\"%s\"", importPath));
@@ -104,6 +108,12 @@ public class GoTypeTable implements TypeTable {
     // TODO(pongad): Some packages in standard library have slashes,
     // we might have to special case them.
     return !importPath.contains("/");
+  }
+
+  @Override
+  public String getAndSaveNicknameForInnerType(
+      String containerFullName, String innerTypeShortName) {
+    throw new UnsupportedOperationException("getAndSaveNicknameForInnerType not supported by Go");
   }
 
   /**

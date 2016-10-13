@@ -79,7 +79,7 @@ public class InitCodeTransformer {
     return buildInitCodeViewRequestObject(context, rootNode);
   }
 
-  public InitCodeView generateTestMethodInitCode(
+  public InitCodeView generateFlatteningTestInitCode(
       MethodTransformerContext context,
       Iterable<Field> fields,
       SymbolTable table,
@@ -96,6 +96,21 @@ public class InitCodeTransformer {
                 .suggestedName(Name.from("request"))
                 .build());
     return buildInitCodeViewFlattened(context, rootNode);
+  }
+
+  public InitCodeView generateRequestObjectTestInitCode(
+      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
+    InitCodeNode rootNode =
+        InitCodeNode.createTree(
+            InitTreeParserContext.newBuilder()
+                .table(table)
+                .valueGenerator(valueGenerator)
+                .rootObjectType(context.getMethod().getInputType())
+                .initValueConfigMap(createCollectionMap(context))
+                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
+                .suggestedName(Name.from("request"))
+                .build());
+    return buildInitCodeViewRequestObject(context, rootNode);
   }
 
   public InitCodeView generateMockResponseObjectInitCode(
@@ -461,6 +476,8 @@ public class InitCodeTransformer {
 
       fieldSetting.identifier(getVariableName(context, item));
       fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));
+
+      fieldSetting.requestFieldName(context.getNamer().localVarName(item.getIdentifier()));
 
       allSettings.add(fieldSetting.build());
     }

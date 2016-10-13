@@ -141,13 +141,22 @@
             // {@doc}
         @end
 
-        @if method.isPageStreaming
-            {@pageStreamingMethod(view, method)}
-        @else
-            @if method.hasReturnValue
-                {@simpleMethod(view, method)}
+        @switch method.grpcStreamingType
+        @case "BidiStreaming"
+            {@noRequestStreamMethod(view, method)}
+        @case "ClientStreaming"
+            {@noRequestStreamMethod(view, method)}
+        @case "ServerStreaming"
+            {@simpleMethod(view, method)}
+        @case "NonStreaming"
+            @if method.isPageStreaming
+                {@pageStreamingMethod(view, method)}
             @else
-                {@emptyReturnMethod(view, method)}
+                @if method.hasReturnValue
+                    {@simpleMethod(view, method)}
+                @else
+                    {@emptyReturnMethod(view, method)}
+                @end
             @end
         @end
 
@@ -165,6 +174,24 @@
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
+            return err
+        }, c.CallOptions.{@method.name}...)
+        if err != nil {
+            return nil, err
+        }
+        return resp, nil
+    }
+@end
+
+# Used for bidi and request GRPC streaming.
+# The function is not accept a request, but otherwise the same with simpleMethod.
+@private noRequestStreamMethod(view, method)
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context) ({@method.responseTypeName}, error) {
+        {@mergeMetadata()}
+        var resp {@method.responseTypeName}
+        err := gax.Invoke(ctx, func(ctx context.Context) error {
+            var err error
+            resp, err = c.{@method.stubName}.{@method.name}(ctx)
             return err
         }, c.CallOptions.{@method.name}...)
         if err != nil {

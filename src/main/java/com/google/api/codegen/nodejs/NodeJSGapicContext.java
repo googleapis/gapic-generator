@@ -244,9 +244,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   private String fieldParamComment(Field field, String paramComment, boolean isOptional) {
     String commentType = fieldTypeCardinalityComment(field);
-    String fieldName = wrapIfKeywordOrBuiltIn(lowerUnderscoreToLowerCamel(field.getSimpleName()));
+    String fieldName = lowerUnderscoreToLowerCamel(field.getSimpleName());
+    fieldName = "request." + fieldName;
     if (isOptional) {
-      fieldName = "options." + fieldName;
       commentType = commentType + "=";
     }
     return fieldComment(
@@ -379,21 +379,17 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public List<String> methodComments(Interface service, Method msg) {
     MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(msg);
-
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
+    Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
+    if (config.getRequiredFields().iterator().hasNext() || optionalParams.iterator().hasNext()) {
+      paramTypesBuilder.append(
+          "@param {Object} request\n" + "  The request object that will be sent.\n");
+    }
     for (Field field : config.getRequiredFields()) {
       paramTypesBuilder.append(fieldParamComment(field, null, false));
     }
-    paramTypesBuilder.append(
-        "@param {Object=} options\n"
-            + "  Optional parameters. You can override the default settings for this call, e.g, timeout,\n"
-            + "  retries, paginations, etc. See [gax.CallOptions]{@link "
-            + "https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.");
-    Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
-      paramTypesBuilder.append(
-          "\n\n  In addition, options may contain the following optional parameters.\n");
       for (Field field : optionalParams) {
         if (config.isPageStreaming()
             && field.equals((config.getPageStreaming().getPageSizeField()))) {
@@ -411,6 +407,11 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         }
       }
     }
+    paramTypesBuilder.append(
+        "@param {Object=} options\n"
+            + "  Optional parameters. You can override the default settings for this call, e.g, timeout,\n"
+            + "  retries, paginations, etc. See [gax.CallOptions]{@link "
+            + "https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.");
     String paramTypes = paramTypesBuilder.toString();
 
     String returnType = returnTypeComment(msg, config);
@@ -429,16 +430,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       contentBuilder.append("\n" + returnType);
     }
     return convertToCommentedBlock(contentBuilder.toString());
-  }
-
-  /**
-   * Return a non-conflicting safe name if name is a JS reserved word.
-   */
-  public String wrapIfKeywordOrBuiltIn(String name) {
-    if (KEYWORD_BUILT_IN_SET.contains(name)) {
-      return name + "_";
-    }
-    return name;
   }
 
   /**
@@ -578,70 +569,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           .put(Type.TYPE_SFIXED32, "number")
           .put(Type.TYPE_STRING, "string")
           .put(Type.TYPE_BYTES, "string")
-          .build();
-
-  /**
-   * A set of ECMAScript 2016 reserved words. See
-   * https://tc39.github.io/ecma262/2016/#sec-reserved-words
-   */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
-      ImmutableSet.<String>builder()
-          .add(
-              "break",
-              "do",
-              "in",
-              "typeof",
-              "case",
-              "else",
-              "instanceof",
-              "var",
-              "catch",
-              "export",
-              "new",
-              "void",
-              "class",
-              "extends",
-              "return",
-              "while",
-              "const",
-              "finally",
-              "super",
-              "with",
-              "continue",
-              "for",
-              "switch",
-              "yield",
-              "debugger",
-              "function",
-              "this",
-              "default",
-              "if",
-              "throw",
-              "delete",
-              "import",
-              "try",
-              "let",
-              "static",
-              "enum",
-              "await",
-              "implements",
-              "package",
-              "protected",
-              "interface",
-              "private",
-              "public",
-              "null",
-              "true",
-              "false",
-              // common parameters passed to methods.
-              "options",
-              "callback",
-              // parameters used in CallOptions.
-              "timeout",
-              "retry",
-              "flattenPages",
-              "pageToken",
-              "isBundling")
           .build();
 
   private static final ImmutableSet<String> COMMON_PROTO_PATHS =

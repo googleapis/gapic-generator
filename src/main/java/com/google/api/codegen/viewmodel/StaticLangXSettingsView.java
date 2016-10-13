@@ -16,9 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -44,6 +42,8 @@ public abstract class StaticLangXSettingsView implements ViewModel {
   public abstract List<ApiCallSettingsView> unaryCallSettings();
 
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptors();
+
+  public abstract List<PagedListResponseFactoryClassView> pagedListResponseFactories();
 
   public abstract List<BundlingDescriptorClassView> bundlingDescriptors();
 
@@ -87,6 +87,8 @@ public abstract class StaticLangXSettingsView implements ViewModel {
 
     public abstract Builder pageStreamingDescriptors(
         List<PageStreamingDescriptorClassView> generateDescriptorClasses);
+
+    public abstract Builder pagedListResponseFactories(List<PagedListResponseFactoryClassView> val);
 
     public abstract Builder bundlingDescriptors(List<BundlingDescriptorClassView> val);
 

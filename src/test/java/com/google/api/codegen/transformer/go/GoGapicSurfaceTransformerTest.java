@@ -20,20 +20,19 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.gapic.PackageNameCodePathMapper;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.truth.Truth;
-
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.rules.TemporaryFolder;
 import org.junit.Test;
-
-import java.util.Collections;
+import org.junit.rules.TemporaryFolder;
 
 public class GoGapicSurfaceTransformerTest {
 
@@ -89,6 +88,9 @@ public class GoGapicSurfaceTransformerTest {
   private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
       ImmutableList.<String>of("math;;;");
 
+  private static final ImmutableList<String> GRPC_SERVER_STREAM_IMPORTS =
+      ImmutableList.<String>of("io;;;");
+
   @Test
   public void testGetImportsPlain() {
     Method method = getMethod(context.getInterface(), "SimpleMethod");
@@ -114,14 +116,41 @@ public class GoGapicSurfaceTransformerTest {
   }
 
   @Test
+  public void testGetExampleImportsServerStream() {
+    Method method = getMethod(context.getInterface(), "ServerStreamMethod");
+    transformer.addXExampleImports(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).containsKey("io");
+  }
+
+  @Test
+  public void testGetExampleImportsBidiStream() {
+    Method method = getMethod(context.getInterface(), "BidiStreamMethod");
+    transformer.addXExampleImports(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).containsKey("io");
+  }
+
+  @Test
+  public void testGetExampleImportsClientStream() {
+    Method method = getMethod(context.getInterface(), "ClientStreamMethod");
+    transformer.addXExampleImports(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("io");
+  }
+
+  @Test
   public void testExampleImports() {
-    transformer.addXExampleImports(context);
+    transformer.addXExampleImports(context, context.getSupportedMethods());
     Truth.assertThat(context.getTypeTable().getImports())
-        .containsEntry("golang.org/x/net/context", "");
+        .containsEntry(
+            "golang.org/x/net/context", TypeAlias.create("golang.org/x/net/context", ""));
     Truth.assertThat(context.getTypeTable().getImports())
-        .containsEntry("cloud.google.com/go/gopher/apiv1", "");
+        .containsEntry(
+            "cloud.google.com/go/gopher/apiv1",
+            TypeAlias.create("cloud.google.com/go/gopher/apiv1", ""));
     Truth.assertThat(context.getTypeTable().getImports())
-        .containsEntry("google.golang.org/genproto/googleapis/example/myproto/v1", "myprotopb");
+        .containsEntry(
+            "google.golang.org/genproto/googleapis/example/myproto/v1",
+            TypeAlias.create(
+                "google.golang.org/genproto/googleapis/example/myproto/v1", "myprotopb"));
 
     // Only shows up in response, not needed for example.
     Truth.assertThat(context.getTypeTable().getImports())

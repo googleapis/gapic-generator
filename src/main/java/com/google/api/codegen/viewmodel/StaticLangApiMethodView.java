@@ -87,8 +87,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangApiMethodView.Builder()
-        .grpcStreamingType(GrpcStreamingType.NonStreaming);
+    return new AutoValue_StaticLangApiMethodView.Builder();
   }
 
   @AutoValue.Builder
