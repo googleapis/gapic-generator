@@ -43,7 +43,7 @@ public abstract class ApiConfig {
   public abstract String getPackageName();
 
   /**
-   * Returns the location of the hand-written client, if any.
+   * Returns the location of the domain layer, if any.
    */
   public abstract String getDomainLayerLocation();
 
