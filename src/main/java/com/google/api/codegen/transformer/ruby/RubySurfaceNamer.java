@@ -26,6 +26,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import com.google.protobuf.DescriptorProtos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,5 +88,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getProtoFileImportFromService(Interface service) {
     return service.getFile().getSimpleName().replace(".proto", "_services_pb");
+  }
+
+  @Override
+  public String getProtoFileImportFromProtoElement(ProtoElement element) {
+    return element.getFile().getProto().getPackage().replace(".", "/")
+        + "/"
+        + element.getFile().getProto().getName().replace(".proto", "_pb");
   }
 }
