@@ -5,7 +5,7 @@
    * 1. If not already done, enable the {@class.apiTitle}
    *    and check the quota for your project at
    *    https://console.developers.google.com/apis/api/{@class.apiName}
-   @switch class.body.authType
+   @switch class.auth.type
    @case "APPLICATION_DEFAULT_CREDENTIALS"
      * 2. This sample uses Application Default Credentials for authentication.
      *    If not already done, install the gcloud CLI from
@@ -27,15 +27,15 @@
   @end
 
   public class {@class.className} {
-    {@mainFunc(class.body)}
+    {@mainFunc(class)}
 
-    {@createServiceFunc(class.body)}
+    {@createServiceFunc(class)}
   }
 @end
 
-@private mainFunc(body)
+@private mainFunc(class)
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    @join field : body.fields if body.fields
+    @join field : class.fields if class.fields
       @if field.description
         @join line : util.getDocLines(field.description, 100)
           // {@line}
@@ -49,89 +49,89 @@
       @end
 
     @end
-    @if body.hasRequestBody
-      @if body.methodVerb == "PATCH"
-        // TODO: Assign values to desired fields of `{@body.requestBodyVarName}`. Only assigned
+    @if class.hasRequestBody
+      @if class.methodVerb == "PATCH"
+        // TODO: Assign values to desired fields of `{@class.requestBodyVarName}`. Only assigned
         // fields will be changed:
       @else
-        // TODO: Assign values to desired fields of `{@body.requestBodyVarName}`:
+        // TODO: Assign values to desired fields of `{@class.requestBodyVarName}`:
       @end
 
-      {@body.requestBodyTypeName} {@body.requestBodyVarName} = new {@body.requestBodyTypeName}();
+      {@class.requestBodyTypeName} {@class.requestBodyVarName} = new {@class.requestBodyTypeName}();
 
     @end
-    @if body.hasMediaUpload
+    @if class.hasMediaUpload
       // TODO: Add desired media content for upload. See:
       // https://developers.google.com/api-client-library/java/google-api-java-client/media-upload
 
     @end
-    {@body.serviceTypeName} {@body.serviceVarName} = {@body.createServiceFuncName}();
-    {@body.requestTypeName} {@body.requestVarName} = {@body.serviceVarName}.{@callChain(body.methodNameComponents)}({@paramList(body.fieldVarNames)});
-    @if {@body.hasMediaDownload()}
+    {@class.serviceTypeName} {@class.serviceVarName} = {@class.createServiceFuncName}();
+    {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)});
+    @if {@class.hasMediaDownload()}
 
       // TODO: Download media content if desired. See:
       // https://developers.google.com/api-client-library/java/google-api-java-client/media-download
     @end
 
-    @if body.isPageStreaming
-      {@body.responseTypeName} {@body.responseVarName};
+    @if class.isPageStreaming
+      {@class.responseTypeName} {@class.responseVarName};
       do {
-        {@body.responseVarName} = {@body.requestVarName}.execute();
-        if ({@body.responseVarName}.{@body.resourceGetterName}() == null) {
+        {@class.responseVarName} = {@class.requestVarName}.execute();
+        if ({@class.responseVarName}.{@class.pageStreaming.resourceGetterName}() == null) {
           continue;
         }
-        @if body.isResourceMap
-          for ({@body.resourceTypeName} {@body.resourceVarName} : response.{@body.resourceGetterName}().entrySet()) {
-            // TODO: Change code below to process each `{@body.resourceVarName}` entry:
-            System.out.println({@body.resourceVarName}.getKey() + ": " + {@body.resourceVarName}.getValue());
+        @if class.pageStreaming.isResourceMap
+          for ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} : response.{@class.pageStreaming.resourceGetterName}().entrySet()) {
+            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` entry:
+            System.out.println({@class.pageStreaming.resourceVarName}.getKey() + ": " + {@class.pageStreaming.resourceVarName}.getValue());
           }
         @else
-          for ({@body.resourceTypeName} {@body.resourceVarName} : response.{@body.resourceGetterName}()) {
-            // TODO: Change code below to process each `{@body.resourceVarName}` resource:
-            System.out.println({@body.resourceVarName});
+          for ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} : response.{@class.pageStreaming.resourceGetterName}()) {
+            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
+            System.out.println({@class.pageStreaming.resourceVarName});
           }
         @end
-        @if body.isResourceSetterInRequestBody
-          {@body.requestBodyVarName}.setPageToken({@body.responseVarName()}.getNextPageToken());
+        @if class.pageStreaming.isResourceSetterInRequestBody
+          {@class.requestBodyVarName}.setPageToken({@class.responseVarName()}.getNextPageToken());
         @else
-          {@body.requestVarName}.setPageToken({@body.responseVarName()}.getNextPageToken());
+          {@class.requestVarName}.setPageToken({@class.responseVarName()}.getNextPageToken());
         @end
-      } while ({@body.responseVarName}.getNextPageToken() != null);
+      } while ({@class.responseVarName}.getNextPageToken() != null);
     @else
-      @if body.hasResponse
-        {@body.responseTypeName} {@body.responseVarName} = {@body.requestVarName}.execute();
+      @if class.hasResponse
+        {@class.responseTypeName} {@class.responseVarName} = {@class.requestVarName}.execute();
 
         // TODO: Change code below to process the `response` object:
-        System.out.println({@body.responseVarName});
+        System.out.println({@class.responseVarName});
       @else
-        {@body.requestVarName}.execute();
+        {@class.requestVarName}.execute();
       @end
     @end
   }
 @end
 
-@private createServiceFunc(body)
-  public static {@body.serviceTypeName} {@body.createServiceFuncName}() throws IOException, GeneralSecurityException {
+@private createServiceFunc(class)
+  public static {@class.serviceTypeName} {@class.createServiceFuncName}() throws IOException, GeneralSecurityException {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-    @switch body.authType
+    @switch class.auth.type
     @case "OAUTH_3L"
       // TODO: Change placeholder below to generate authentication credentials. See:
-      // {@body.authInstructionsUrl}
+      // {@class.auth.instructionsUrl}
       //
-      @if body.isAuthScopesSingular
+      @if class.auth.isScopesSingular
         // Authorize using the following scope:
       @else
         // Authorize using one of the following scopes:
       @end
-      @join scope : body.authScopes
+      @join scope : class.auth.scopes
         //    {@scope}
       @end
       GoogleCredential credential = null;
     @case "API_KEY"
       // TODO: Change placeholder below to generate authentication credentials. See:
-      // {@body.authInstructionsUrl}
+      // {@class.auth.instructionsUrl}
       GoogleCredential credential = null;
     @default
       GoogleCredential credential = GoogleCredential.getApplicationDefault();
@@ -141,7 +141,7 @@
       }
     @end
 
-    return new {@body.serviceTypeName}.Builder(httpTransport, jsonFactory, credential)
+    return new {@class.serviceTypeName}.Builder(httpTransport, jsonFactory, credential)
         .setApplicationName("Google Cloud Platform Sample")
         .build();
   }

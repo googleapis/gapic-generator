@@ -57,6 +57,11 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
           .build();
 
   @Override
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    throw new UnsupportedOperationException("getTypeName(String) not supported by Go");
+  }
+
+  @Override
   public TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
       TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());

@@ -252,6 +252,46 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 
+# TODO: Change placeholder below to desired parameter value for the `patch_app` method:
+
+# Part of `name`. Name of the application to update. Example: `apps/myapp`.
+apps_id = '{MY-APPS-ID}'
+
+
+request_body = Google::Apis::AppengineV1beta5::Application.new
+# TODO: Assign values to desired members of the `request_body` object to be changed.
+
+
+# Perform the call
+response = service.patch_app(apps_id, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Google App Engine Admin API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/appengine
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run
+#    `gcloud beta auth application-default login`
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+require 'googleauth'
+require 'google/apis/appengine_v1beta5'
+require 'json'
+
+service = Google::Apis::AppengineV1beta5::AppengineService.new
+
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
+# https://developers.google.com/identity/protocols/application-default-credentials
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
 # TODO: Change placeholders below to desired parameter values for the `delete_app_service` method:
 
 # Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.

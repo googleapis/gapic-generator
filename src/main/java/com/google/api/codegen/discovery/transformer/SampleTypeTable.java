@@ -14,12 +14,12 @@
  */
 package com.google.api.codegen.discovery.transformer;
 
-import java.util.Map;
-
 import com.google.api.codegen.discovery.config.TypeInfo;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.TypedValue;
+import java.util.Map;
 
 /**
  * Manages the imports for a set of fully-qualified type names.
@@ -83,7 +83,7 @@ public class SampleTypeTable implements SampleTypeNameConverter {
     typeTable.getAndSaveNicknameFor(fullName);
   }
 
-  public Map<String, String> getImports() {
+  public Map<String, TypeAlias> getImports() {
     return typeTable.getImports();
   }
 }

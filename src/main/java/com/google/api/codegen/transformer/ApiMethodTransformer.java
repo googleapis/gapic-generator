@@ -19,6 +19,7 @@ import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
@@ -147,8 +148,10 @@ public class ApiMethodTransformer {
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
 
     String getResourceListCallName =
-        namer.getGetResourceListCallName(
+        namer.getFieldGetFunctionName(
+            context.getFeatureConfig(),
             context.getMethodConfig().getPageStreaming().getResourcesField());
+
     UnpagedListCallableMethodDetailView unpagedListCallableDetails =
         UnpagedListCallableMethodDetailView.newBuilder()
             .resourceListGetFunction(getResourceListCallName)
@@ -246,7 +249,6 @@ public class ApiMethodTransformer {
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     methodViewBuilder.isPageStreaming(false);
-    methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }
@@ -265,6 +267,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.stubName(namer.getStubName(context.getTargetInterface()));
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
+    methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
   }
 
   private void setListMethodFields(
@@ -278,11 +281,21 @@ public class ApiMethodTransformer {
     String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getOutputType());
 
     Field resourceField = pageStreaming.getResourcesField();
-    String resourceTypeName =
-        context
-            .getNamer()
-            .getAndSaveElementFieldTypeName(
-                context.getFeatureConfig(), context.getTypeTable(), resourceField);
+
+    String resourceTypeName;
+
+    if (context.getFeatureConfig().useResourceNameFormatOption(resourceField)) {
+      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
+      resourceTypeName =
+          typeTable.getAndSaveNicknameForTypedResourceName(
+              resourceField, resourceField.getType().makeOptional(), resourceShortName);
+    } else {
+      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    }
+
+    String iterateMethodName =
+        context.getNamer().getPagedResponseIterateMethod(context.getFeatureConfig(), resourceField);
+
     String resourceFieldName = context.getNamer().getFieldName(pageStreaming.getResourcesField());
     String resourceFieldGetFunctionName =
         namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceField);
@@ -292,6 +305,7 @@ public class ApiMethodTransformer {
             .requestTypeName(requestTypeName)
             .responseTypeName(responseTypeName)
             .resourceTypeName(resourceTypeName)
+            .iterateMethodName(iterateMethodName)
             .resourceFieldName(resourceFieldName)
             .resourcesFieldGetFunction(resourceFieldGetFunctionName)
             .responseObjectTypeName(
@@ -302,20 +316,12 @@ public class ApiMethodTransformer {
       case Sync:
         methodViewBuilder.responseTypeName(
             namer.getAndSavePagedResponseTypeName(
-                context.getFeatureConfig(),
-                context.getTypeTable(),
-                context.getMethod().getInputType(),
-                context.getMethod().getOutputType(),
-                resourceField));
+                context.getMethod(), context.getTypeTable(), resourceField));
         break;
       case Async:
         methodViewBuilder.responseTypeName(
             namer.getAndSaveAsyncPagedResponseTypeName(
-                context.getFeatureConfig(),
-                context.getTypeTable(),
-                context.getMethod().getInputType(),
-                context.getMethod().getOutputType(),
-                resourceField));
+                context.getMethod(), context.getTypeTable(), resourceField));
         break;
     }
     methodViewBuilder.hasReturnValue(true);
@@ -431,6 +437,13 @@ public class ApiMethodTransformer {
       case Sync:
         methodViewBuilder.responseTypeName(syncNickname);
         break;
+      case GrpcStreaming:
+        String streamingReturnTypeFullName =
+            namer.getStaticLangStreamingReturnTypeName(
+                context.getMethod(), context.getMethodConfig());
+        String streamingNickname =
+            context.getTypeTable().getAndSaveNicknameFor(streamingReturnTypeFullName);
+        methodViewBuilder.responseTypeName(streamingNickname);
     }
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
@@ -505,6 +518,10 @@ public class ApiMethodTransformer {
         generateRequestObjectParams(context, context.getMethodConfig().getRequiredFields()));
     apiMethod.optionalRequestObjectParams(
         generateRequestObjectParams(context, context.getMethodConfig().getOptionalFields()));
+    Iterable<Field> filteredFields =
+        removePageTokenField(context, context.getMethodConfig().getOptionalFields());
+    apiMethod.optionalRequestObjectParamsNoPageToken(
+        generateRequestObjectParams(context, filteredFields));
 
     return apiMethod.build();
   }
@@ -547,6 +564,25 @@ public class ApiMethodTransformer {
     return methodParams;
   }
 
+  public StaticLangApiMethodView generateGrpcStreamingRequestObjectMethod(
+      MethodTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(namer.getGrpcStreamingApiMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context
+            .getNamer()
+            .getGrpcStreamingApiMethodExampleName(context.getInterface(), context.getMethod()));
+    setRequestObjectMethodFields(
+        context, namer.getCallableMethodName(context.getMethod()), methodViewBuilder);
+    methodViewBuilder.isPageStreaming(false);
+    setStaticLangReturnFields(context, Synchronicity.GrpcStreaming, methodViewBuilder);
+
+    return methodViewBuilder.type(ApiMethodType.RequestObjectMethod).build();
+  }
+
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(
       MethodTransformerContext context, Iterable<Field> fields) {
     List<DynamicLangDefaultableParamView> methodParams = new ArrayList<>();
@@ -570,6 +606,21 @@ public class ApiMethodTransformer {
     return params;
   }
 
+  private Iterable<Field> removePageTokenField(
+      MethodTransformerContext context, Iterable<Field> fields) {
+    MethodConfig methodConfig = context.getMethodConfig();
+    List<Field> filtered = new ArrayList<>();
+    for (Field field : fields) {
+      if (methodConfig != null
+          && methodConfig.isPageStreaming()
+          && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
+        continue;
+      }
+      filtered.add(field);
+    }
+    return filtered;
+  }
+
   private RequestObjectParamView generateRequestObjectParam(
       MethodTransformerContext context, Field field) {
     SurfaceNamer namer = context.getNamer();
@@ -582,11 +633,25 @@ public class ApiMethodTransformer {
         namer.getNotImplementedString(
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
 
-    if (namer.shouldImportRequestObjectParamType(field)) {
-      typeName = namer.getAndSaveFieldTypeName(featureConfig, typeTable, field);
-    }
-    if (namer.shouldImportRequestObjectParamElementType(field)) {
-      elementTypeName = namer.getAndSaveElementFieldTypeName(featureConfig, typeTable, field);
+    if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
+      String resourceName = ResourceNameUtil.getResourceName(field);
+      if (namer.shouldImportRequestObjectParamType(field)) {
+        typeName =
+            typeTable.getAndSaveNicknameForTypedResourceName(field, field.getType(), resourceName);
+      }
+      if (namer.shouldImportRequestObjectParamElementType(field)) {
+        // Use makeOptional to remove repeated property from type
+        elementTypeName =
+            typeTable.getAndSaveNicknameForTypedResourceName(
+                field, field.getType().makeOptional(), resourceName);
+      }
+    } else {
+      if (namer.shouldImportRequestObjectParamType(field)) {
+        typeName = typeTable.getAndSaveNicknameFor(field.getType());
+      }
+      if (namer.shouldImportRequestObjectParamElementType(field)) {
+        elementTypeName = typeTable.getAndSaveNicknameForElementType(field.getType());
+      }
     }
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, field);

@@ -24,6 +24,11 @@ public interface TypeNameConverter {
   TypeName getTypeName(String fullName);
 
   /**
+   * Maps the given short name to a TypeName, using the default package.
+   */
+  TypeName getTypeNameInImplicitPackage(String shortName);
+
+  /**
    * Maps the given fullName to a NamePath.
    */
   NamePath getNamePath(String fullName);

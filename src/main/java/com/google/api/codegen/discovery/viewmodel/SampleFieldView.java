@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.discovery.viewmodel;
 
+import javax.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -21,6 +23,7 @@ public abstract class SampleFieldView {
 
   public abstract String name();
 
+  @Nullable
   public abstract String typeName();
 
   public abstract String defaultValue();

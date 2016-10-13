@@ -285,24 +285,45 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase  {
   }
 
   @Override
-  public StreamObserver<StreamShelvesRequest> streamShelves(
-      StreamObserver<StreamShelvesResponse> responseObserver) {
-    System.err.println("Streaming method is not supported.");
-    return null;
+  public void streamShelves(StreamShelvesRequest request,
+    StreamObserver<StreamShelvesResponse> responseObserver) {
+    StreamShelvesResponse response = (StreamShelvesResponse) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
-  public StreamObserver<StreamBooksRequest> streamBooks(
-      StreamObserver<Book> responseObserver) {
-    System.err.println("Streaming method is not supported.");
-    return null;
+  public void streamBooks(StreamBooksRequest request,
+    StreamObserver<Book> responseObserver) {
+    Book response = (Book) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   @Override
   public StreamObserver<DiscussBookRequest> discussBook(
-      StreamObserver<Comment> responseObserver) {
-    System.err.println("Streaming method is not supported.");
-    return null;
+      final StreamObserver<Comment> responseObserver) {
+    final Comment response = (Comment) responses.remove();
+    StreamObserver<DiscussBookRequest> requestObserver =
+        new StreamObserver<DiscussBookRequest>() {
+      @Override
+      public void onNext(DiscussBookRequest value) {
+        responseObserver.onNext(response);
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        responseObserver.onError(t);
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onCompleted();
+      }
+    };
+    return requestObserver;
   }
 
   @Override

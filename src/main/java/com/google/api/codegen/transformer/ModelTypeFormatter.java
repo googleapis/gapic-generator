@@ -26,6 +26,11 @@ import com.google.api.tools.framework.model.TypeRef;
  */
 public interface ModelTypeFormatter {
   /**
+   * Get the full name for the given short name, using the default package.
+   */
+  String getImplicitPackageFullNameFor(String shortName);
+
+  /**
    * Get the full name for the given type.
    */
   String getFullNameFor(TypeRef type);

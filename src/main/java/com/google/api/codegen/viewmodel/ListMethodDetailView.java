@@ -26,6 +26,8 @@ public abstract class ListMethodDetailView {
 
   public abstract String resourceFieldName();
 
+  public abstract String iterateMethodName();
+
   /**
    * Distinct from resourceTypeName().
    * Eg,
@@ -49,6 +51,8 @@ public abstract class ListMethodDetailView {
     public abstract Builder resourceTypeName(String name);
 
     public abstract Builder resourceFieldName(String name);
+
+    public abstract Builder iterateMethodName(String name);
 
     public abstract Builder responseObjectTypeName(String name);
 

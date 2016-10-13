@@ -346,6 +346,58 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
   var request = {
 
+    // TODO: Change placeholder below to desired parameter value for the `patch` method:
+
+    // Part of `name`. Name of the application to update. Example: `apps/myapp`.
+    appsId: '{MY-APPS-ID}',
+
+
+    resource: {
+      // TODO: Add desired properties of the request body to be changed.
+    },
+
+    auth: authClient
+  };
+
+  appengine.apps.patch(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var appengine = google.appengine('v1beta5');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
     // TODO: Change placeholders below to desired parameter values for the `delete` method:
 
     // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.

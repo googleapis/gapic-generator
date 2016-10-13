@@ -15,6 +15,8 @@
 package com.google.api.codegen.util;
 
 import com.google.auto.value.AutoValue;
+import java.util.Comparator;
+import javax.annotation.Nullable;
 
 /**
  * TypeAlias represents an alias between a fully-qualified version of a name
@@ -34,7 +36,14 @@ public abstract class TypeAlias {
    * Creates a type alias with the given fullName and nickname.
    */
   public static TypeAlias create(String fullName, String nickname) {
-    return new AutoValue_TypeAlias(fullName, nickname);
+    return new AutoValue_TypeAlias(fullName, nickname, null, ImportType.SimpleImport);
+  }
+
+  /**
+   * Creates a type alias with the given fullName, nickname and parentName.
+   */
+  public static TypeAlias create(String fullName, String nickname, String parentName) {
+    return new AutoValue_TypeAlias(fullName, nickname, parentName, ImportType.StaticImport);
   }
 
   /**
@@ -48,11 +57,29 @@ public abstract class TypeAlias {
   public abstract String getNickname();
 
   /**
+   * The full name of the parent class of the type. If this is not an inner class, will be null.
+   */
+  @Nullable
+  public abstract String getParentFullName();
+
+  /** The import type of the TypeAlias. */
+  public abstract ImportType getImportType();
+
+  /**
    * Returns true if the alias needs to be imported to refer to it only
    * through the nickname. This will be false if the full name and nickname
    * are the same.
    */
   public boolean needsImport() {
     return !getFullName().equals(getNickname());
+  }
+
+  public static Comparator<TypeAlias> getNicknameComparator() {
+    return new Comparator<TypeAlias>() {
+      @Override
+      public int compare(TypeAlias o1, TypeAlias o2) {
+        return o1.getNickname().compareTo(o2.getNickname());
+      }
+    };
   }
 }

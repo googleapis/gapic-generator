@@ -21,6 +21,7 @@ import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
@@ -100,11 +101,7 @@ public class ApiCallableTransformer {
           context
               .getNamer()
               .getAndSavePagedResponseTypeName(
-                  context.getFeatureConfig(),
-                  typeTable,
-                  method.getInputType(),
-                  method.getOutputType(),
-                  pageStreaming.getResourcesField());
+                  method, typeTable, pageStreaming.getResourcesField());
 
       pagedApiCallableBuilder.requestTypeName(
           typeTable.getAndSaveNicknameFor(method.getInputType()));
@@ -159,8 +156,12 @@ public class ApiCallableTransformer {
     String notImplementedPrefix = "ApiCallableTransformer.generateApiCallableSettings - ";
     settings.resourceTypeName(
         namer.getNotImplementedString(notImplementedPrefix + "resourceTypeName"));
+    settings.pagedListResponseTypeName(
+        namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseTypeName"));
     settings.pageStreamingDescriptorName(
         namer.getNotImplementedString(notImplementedPrefix + "pageStreamingDescriptorName"));
+    settings.pagedListResponseFactoryName(
+        namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseFactoryName"));
     settings.bundlingDescriptorName(
         namer.getNotImplementedString(notImplementedPrefix + "bundlingDescriptorName"));
 
@@ -174,9 +175,14 @@ public class ApiCallableTransformer {
     } else if (methodConfig.isPageStreaming()) {
       namer.addPageStreamingCallSettingsImports(typeTable);
       settings.type(ApiCallableType.PagedApiCallable);
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
-      settings.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceType));
+      Field resourceField = methodConfig.getPageStreaming().getResourcesField();
+      settings.resourceTypeName(
+          typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+      settings.pagedListResponseTypeName(
+          namer.getAndSavePagedResponseTypeName(
+              context.getMethod(), context.getTypeTable(), resourceField));
       settings.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
+      settings.pagedListResponseFactoryName(namer.getPagedListResponseFactoryConstName(method));
     } else if (methodConfig.isBundling()) {
       namer.addBundlingCallSettingsImports(typeTable);
       settings.type(ApiCallableType.BundlingApiCallable);

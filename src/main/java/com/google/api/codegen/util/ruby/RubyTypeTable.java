@@ -14,44 +14,38 @@
  */
 package com.google.api.codegen.util.ruby;
 
+import com.google.api.codegen.util.DynamicLangTypeTable;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
-
 import java.util.Map;
 import java.util.TreeMap;
 
 /** The TypeTable for Ruby. */
 public class RubyTypeTable implements TypeTable {
-  /*
-   * A bi-map from full names to short names. In other languages this would indicate imports, but
-   * in ruby this only indicates types to their fully qualified types.
-   */
-  private final BiMap<String, String> imports = HashBiMap.create();
 
-  private final String implicitPackageName;
+  private final DynamicLangTypeTable dynamicTypeTable;
 
   public RubyTypeTable(String implicitPackageName) {
-    this.implicitPackageName = implicitPackageName;
+    dynamicTypeTable = new DynamicLangTypeTable(implicitPackageName, "::");
   }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new RubyTypeTable(implicitPackageName);
+    return new RubyTypeTable(dynamicTypeTable.getImplicitPackageName());
   }
 
   @Override
   public TypeName getTypeName(String fullName) {
-    int lastColonedIndex = fullName.lastIndexOf("::");
-    if (lastColonedIndex < 0) {
-      throw new IllegalArgumentException("expected fully qualified name");
-    }
-    String nickname = fullName.substring(lastColonedIndex + 2);
-    return new TypeName(fullName, nickname);
+    return dynamicTypeTable.getTypeName(fullName);
+  }
+
+  @Override
+  public TypeName getTypeNameInImplicitPackage(String shortName) {
+    return dynamicTypeTable.getTypeNameInImplicitPackage(shortName);
   }
 
   @Override
@@ -60,45 +54,40 @@ public class RubyTypeTable implements TypeTable {
   }
 
   @Override
-  public TypeName getContainerTypeName(String containerFullName, String... elementFullName) {
-    return getTypeName(containerFullName);
+  public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
+    return dynamicTypeTable.getContainerTypeName(containerFullName, elementFullNames);
   }
 
   @Override
   public String getAndSaveNicknameFor(String fullName) {
-    return getAndSaveNicknameFor(getTypeName(fullName));
+    return dynamicTypeTable.getAndSaveNicknameFor(fullName);
   }
 
   @Override
   public String getAndSaveNicknameFor(TypeName typeName) {
-    return typeName.getAndSaveNicknameIn(this);
+    return dynamicTypeTable.getAndSaveNicknameFor(typeName);
   }
 
   @Override
   public String getAndSaveNicknameFor(TypeAlias alias) {
-    if (!alias.needsImport()) {
-      return alias.getNickname();
-    }
-    // Derive a short name if possible
-    if (imports.containsKey(alias.getFullName())) {
-      // Short name already there.
-      return imports.get(alias.getFullName());
-    }
-    if (imports.containsValue(alias.getNickname())) {
-      // Short name clashes, use long name.
-      return alias.getFullName();
-    }
-    imports.put(alias.getFullName(), alias.getNickname());
-    return alias.getNickname();
+    return dynamicTypeTable.getAndSaveNicknameFor(alias);
   }
 
   @Override
-  public Map<String, String> getImports() {
-    return HashBiMap.create(new TreeMap<>(imports.inverse())).inverse();
+  public Map<String, TypeAlias> getImports() {
+    TreeMap<TypeAlias, String> inverseMap = new TreeMap<>(TypeAlias.getNicknameComparator());
+    inverseMap.putAll(dynamicTypeTable.getImportsBimap().inverse());
+    return HashBiMap.create(inverseMap).inverse();
   }
 
   public boolean hasImports() {
     return !getImports().isEmpty();
+  }
+
+  @Override
+  public String getAndSaveNicknameForInnerType(
+      String containerFullName, String innerTypeShortName) {
+    return dynamicTypeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
   }
 
   /**:

@@ -126,9 +126,9 @@
                 @end
             @end
 
-            # used to handle inconsistency in log entries list method for Logging API
-            # remove exceptional case if inconsistency is resolved
-            @if context.isLogEntriesListMethod(method)
+            # Used to handle inconsistency in Logging API and CloudResourceManager API.
+            # Remove exceptional case if inconsistency is resolved.
+            @if context.isPageTokenInRequestBody(method)
                 {@requestBodyName(method)}.pageToken = {@responseName()}.nextPageToken
             @else
                 {@requestName()} = {@resourcesObject}.{@methodName}_next(previous_request={@requestName()}, previous_response={@responseName()})

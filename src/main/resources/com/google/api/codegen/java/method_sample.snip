@@ -10,7 +10,7 @@
 
 @snippet pagedIterableMethodSampleCode(apiMethod)
   {@initCode(apiMethod.initCode)}
-  for ({@apiMethod.listMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}.iterateAllElements()) {
+  for ({@apiMethod.listMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}.{@apiMethod.listMethod.iterateMethodName}()) {
     // doThingsWith(element);
   }
 @end
@@ -19,7 +19,7 @@
   {@initCode(apiMethod.initCode)}
   ListenableFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod)};
   // Do something
-  for ({@apiMethod.listMethod.resourceTypeName} element : future.get().iterateAllElements()) {
+  for ({@apiMethod.listMethod.resourceTypeName} element : future.get().{@apiMethod.listMethod.iterateMethodName}()) {
     // doThingsWith(element);
   }
 @end

@@ -5,9 +5,7 @@
 
   package {@mockServiceImpl.packageName};
 
-  @join import : mockServiceImpl.imports
-    import {@import.fullName};
-  @end
+  {@importList(mockServiceImpl.imports)}
 
   @@javax.annotation.Generated("by GAPIC")
   public class {@mockServiceImpl.name} extends {@mockServiceImpl.grpcClassName}  {
@@ -40,20 +38,53 @@
 @end
 
 @private grpcMethod(method)
-  @@Override
-  @if method.isStreaming
-    public StreamObserver<{@method.requestTypeName}> {@method.name}(
-        StreamObserver<{@method.responseTypeName}> responseObserver) {
-      System.err.println("Streaming method is not supported.");
-      return null;
-    }
-  @else
-    public void {@method.name}({@method.requestTypeName} request,
-      StreamObserver<{@method.responseTypeName}> responseObserver) {
-      {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
-      requests.add(request);
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-    }
+  @switch method.grpcStreamingType
+  @case "NonStreaming"
+    {@simpleGrpcMethod(method)}
+  @case "ServerStreaming"
+    {@simpleGrpcMethod(method)}
+  @case "ClientStreaming"
+    {@streamingGrpcMethod(method)}
+  @case "BidiStreaming"
+    {@streamingGrpcMethod(method)}
+  @default
+    $unhandledCase: {@method.streamingType.toString}$
   @end
+@end
+
+@private simpleGrpcMethod(method)
+  @@Override
+  public void {@method.name}({@method.requestTypeName} request,
+    StreamObserver<{@method.responseTypeName}> responseObserver) {
+    {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
+    requests.add(request);
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
+  }
+@end
+
+@private streamingGrpcMethod(method)
+  @@Override
+  public StreamObserver<{@method.requestTypeName}> {@method.name}(
+      final StreamObserver<{@method.responseTypeName}> responseObserver) {
+    final {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
+    StreamObserver<{@method.requestTypeName}> requestObserver =
+        new StreamObserver<{@method.requestTypeName}>() {
+      @@Override
+      public void onNext({@method.requestTypeName} value) {
+        responseObserver.onNext(response);
+      }
+
+      @@Override
+      public void onError(Throwable t) {
+        responseObserver.onError(t);
+      }
+
+      @@Override
+      public void onCompleted() {
+        responseObserver.onCompleted();
+      }
+    };
+    return requestObserver;
+  }
 @end

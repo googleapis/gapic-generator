@@ -28,6 +28,11 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   }
 
   @Override
+  public String getImplicitPackageFullNameFor(String shortName) {
+    return typeNameConverter.getTypeNameInImplicitPackage(shortName).getFullName();
+  }
+
+  @Override
   public String getFullNameFor(TypeRef type) {
     return typeNameConverter.getTypeName(type).getFullName();
   }

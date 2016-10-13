@@ -4,9 +4,7 @@
   {@license()}
   package {@xsettingsClass.packageName};
 
-  @join import : xsettingsClass.imports
-    import {@import.fullName};
-  @end
+  {@importList(xsettingsClass.imports)}
 
   {@settingsDoc(xsettingsClass.doc)}
   @@javax.annotation.Generated("by GAPIC")
@@ -136,7 +134,8 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "PagedApiCallable"
       private final PageStreamingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.memberName};
+          {@settings.responseTypeName}, \
+          {@settings.pagedListResponseTypeName}> {@settings.memberName};
     @case "BundlingApiCallable"
       private final BundlingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
@@ -163,7 +162,8 @@
        }
     @case "PagedApiCallable"
       public PageStreamingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.settingsGetFunction}() {
+          {@settings.responseTypeName}, \
+          {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @case "BundlingApiCallable"
@@ -201,6 +201,7 @@
 
 @private descriptors(xsettingsClass)
   {@pageStreamingDescriptors(xsettingsClass)}
+  {@pagedListResponseFactories(xsettingsClass)}
   {@bundlingDescriptors(xsettingsClass)}
 @end
 
@@ -245,6 +246,22 @@
           @@Override
           public Iterable<{@desc.resourceTypeName}> extractResources({@desc.responseTypeName} payload) {
             return payload.{@desc.resourcesFieldGetFunction}();
+          }
+        };
+    {@""}
+  @end
+@end
+
+@private pagedListResponseFactories(xsettingsClass)
+  @join factory : xsettingsClass.pagedListResponseFactories
+    private static final PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}> {@factory.name} =
+        new PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
+          @@Override
+          public {@factory.pagedListResponseTypeName} createPagedListResponse(
+              UnaryApiCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
+              {@factory.requestTypeName} request,
+              CallContext context) {
+            return new {@factory.pagedListResponseTypeName}(callable, {@factory.pageStreamingDescriptorName}, request, context);
           }
         };
     {@""}
@@ -356,7 +373,8 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "PagedApiCallable"
       private final PageStreamingCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.memberName};
+          {@settings.responseTypeName}, \
+          {@settings.pagedListResponseTypeName}> {@settings.memberName};
     @case "BundlingApiCallable"
       private final BundlingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
@@ -419,7 +437,7 @@
       @case "PagedApiCallable"
         {@settings.memberName} = PageStreamingCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
-            {@settings.pageStreamingDescriptorName});
+            {@settings.pagedListResponseFactoryName});
       @case "BundlingApiCallable"
         {@settings.memberName} = BundlingCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
@@ -545,7 +563,7 @@
       }
     @case "PagedApiCallable"
       public PageStreamingCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.settingsGetFunction}() {
+          {@settings.responseTypeName}, {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @case "BundlingApiCallable"
