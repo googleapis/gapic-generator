@@ -40,8 +40,12 @@ public abstract class ApiConfig {
   /**
    * Returns the package name.
    */
-  @Nullable
   public abstract String getPackageName();
+
+  /**
+   * Returns the location of the domain layer, if any.
+   */
+  public abstract String getDomainLayerLocation();
 
   /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
@@ -52,10 +56,16 @@ public abstract class ApiConfig {
   public static ApiConfig createApiConfig(Model model, ConfigProto configProto) {
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(model.getDiagCollector(), configProto, model.getSymbolTable());
+    LanguageSettingsProto settings =
+        configProto.getLanguageSettings().get(configProto.getLanguage());
+    if (settings == null) {
+      settings = LanguageSettingsProto.getDefaultInstance();
+    }
     if (interfaceConfigMap == null) {
       return null;
     } else {
-      return new AutoValue_ApiConfig(interfaceConfigMap, getPackageName(configProto));
+      return new AutoValue_ApiConfig(
+          interfaceConfigMap, settings.getPackageName(), settings.getDomainLayerLocation());
     }
   }
 
@@ -64,24 +74,16 @@ public abstract class ApiConfig {
    */
   @VisibleForTesting
   public static ApiConfig createDummyApiConfig() {
-    return new AutoValue_ApiConfig(ImmutableMap.<String, InterfaceConfig>builder().build(), null);
+    return new AutoValue_ApiConfig(ImmutableMap.<String, InterfaceConfig>builder().build(), "", "");
   }
 
   /** Creates an ApiConfig with fixed content. Exposed for testing. */
   @VisibleForTesting
   public static ApiConfig createDummyApiConfig(
-      ImmutableMap<String, InterfaceConfig> interfaceConfigMap, String packageName) {
-    return new AutoValue_ApiConfig(interfaceConfigMap, packageName);
-  }
-
-  private static String getPackageName(ConfigProto configProto) {
-    Map<String, LanguageSettingsProto> settingsMap = configProto.getLanguageSettings();
-    String language = configProto.getLanguage();
-    if (settingsMap.containsKey(language)) {
-      return settingsMap.get(language).getPackageName();
-    } else {
-      return null;
-    }
+      ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
+      String packageName,
+      String domainLayerLocation) {
+    return new AutoValue_ApiConfig(interfaceConfigMap, packageName, domainLayerLocation);
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
