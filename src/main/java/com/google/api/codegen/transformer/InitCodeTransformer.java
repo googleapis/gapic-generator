@@ -50,7 +50,7 @@ public class InitCodeTransformer {
   /**
    * Generates initialization code from the given MethodTransformerContext and InitCodeContext
    * objects.
-   * */
+   */
   public InitCodeView generateInitCode(
       MethodTransformerContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
@@ -100,7 +100,7 @@ public class InitCodeTransformer {
   /**
    * A utility method which creates the InitValueConfig map that contains the collection
    * config data.
-   * */
+   */
   public static ImmutableMap<String, InitValueConfig> createCollectionMap(
       MethodTransformerContext context) {
     ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
