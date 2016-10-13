@@ -441,19 +441,6 @@ task verifyLicense << {
   }
 }
 
-//create a single Jar with all dependencies
-task fatJar(type: Jar) {
-	manifest {
-        attributes 'Implementation-Title': 'Gradle Jar File Example',
-        	'Implementation-Version': '0.1',
-        	'Main-Class': 'com.google.api.codegen.CodeGeneratorTool'
-    }
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA' 
-    with jar
-}
-
 test.dependsOn verifyLicense
 
 googleJavaFormat {
