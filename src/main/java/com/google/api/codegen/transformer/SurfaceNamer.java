@@ -799,6 +799,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
+  public String getServiceFileImportFromService(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getServiceFileImportFromService");
+  }
+
   public String getProtoFileImportFromService(Interface service) {
     return getNotImplementedString("SurfaceNamer.getProtoFileImportFromService");
   }

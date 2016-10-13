@@ -25,6 +25,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class ImportTypeTransformer {
+  private enum ImportFileType {
+    SERVICE_FILE,
+    PROTO_FILE
+  }
 
   public List<ImportTypeView> generateImports(Map<String, TypeAlias> imports) {
     List<ImportTypeView> generatedImports = new ArrayList<>();
@@ -40,15 +44,24 @@ public class ImportTypeTransformer {
     return generatedImports;
   }
 
+  public List<ImportTypeView> generateServiceFileImports(SurfaceTransformerContext context) {
+    return generateFileImports(context, ImportFileType.SERVICE_FILE);
+  }
+
   public List<ImportTypeView> generateProtoFileImports(SurfaceTransformerContext context) {
+    return generateFileImports(context, ImportFileType.PROTO_FILE);
+  }
+
+  private List<ImportTypeView> generateFileImports(
+      SurfaceTransformerContext context, ImportFileType importFileType) {
     SurfaceNamer namer = context.getNamer();
     Set<String> fullNames = new TreeSet<>();
 
-    fullNames.add(namer.getProtoFileImportFromService(context.getInterface()));
+    fullNames.add(getFileImports(context.getInterface(), namer, importFileType));
 
     for (Method method : context.getSupportedMethods()) {
       Interface targetInterface = context.asMethodContext(method).getTargetInterface();
-      fullNames.add(namer.getProtoFileImportFromService(targetInterface));
+      fullNames.add(getFileImports(targetInterface, namer, importFileType));
     }
 
     List<ImportTypeView> imports = new ArrayList<>();
@@ -60,5 +73,12 @@ public class ImportTypeTransformer {
     }
 
     return imports;
+  }
+
+  private String getFileImports(
+      Interface service, SurfaceNamer namer, ImportFileType importFileType) {
+    return importFileType == ImportFileType.SERVICE_FILE
+        ? namer.getServiceFileImportFromService(service)
+        : namer.getProtoFileImportFromService(service);
   }
 }

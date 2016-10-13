@@ -360,6 +360,12 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   public List<ImportTypeView> getServiceImports(Interface service) {
     ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return importTypeTransformer.generateServiceFileImports(context);
+  }
+
+  public List<ImportTypeView> getProtoImports(Interface service) {
+    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return importTypeTransformer.generateProtoFileImports(context);
   }
 
