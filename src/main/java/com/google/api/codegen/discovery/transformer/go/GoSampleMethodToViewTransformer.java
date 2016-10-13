@@ -53,12 +53,12 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
   }
 
   private SampleView createSampleView(SampleTransformerContext context) {
-    addStaticImports(context);
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
     SymbolTable symbolTable = SymbolTable.fromSeed(GoTypeTable.RESERVED_IDENTIFIER_SET);
+    addStaticImports(context, symbolTable);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
@@ -198,13 +198,19 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .build();
   }
 
-  private void addStaticImports(SampleTransformerContext context) {
+  private void addStaticImports(SampleTransformerContext context, SymbolTable symbolTable) {
     SampleConfig sampleConfig = context.getSampleConfig();
     SampleTypeTable typeTable = context.getSampleTypeTable();
 
+    // Since nearly any identifier can be shadowed in Go, we add every package
+    // name to the symbol table.
     typeTable.saveNicknameFor("log;;;");
+    symbolTable.getNewSymbol("log");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
+    symbolTable.getNewSymbol("context");
     typeTable.saveNicknameFor("golang.org/x/oauth2/google;;;");
+    symbolTable.getNewSymbol("google");
     typeTable.saveNicknameFor(sampleConfig.packagePrefix() + ";;;");
+    symbolTable.getNewSymbol("packagePrefix");
   }
 }
