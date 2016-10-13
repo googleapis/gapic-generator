@@ -18,20 +18,18 @@ import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.InitCode;
+import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeLine;
 import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.metacode.InitTreeParserContext;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.metacode.InputParameter;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.SymbolTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -108,14 +106,14 @@ public abstract class DocConfig {
             InitValueConfig.create(context.getApiWrapperName(service), collectionConfig);
         initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
       }
+
       InitCodeNode rootNode =
           InitCodeNode.createTree(
-              InitTreeParserContext.newBuilder()
-                  .table(new SymbolTable())
-                  .rootObjectType(method.getInputType())
-                  .initValueConfigMap(initValueConfigMap.build())
+              InitCodeContext.newBuilder()
+                  .initObjectType(method.getInputType())
                   .initFieldConfigStrings(methodConfig.getSampleCodeInitFields())
-                  .initFields(fields)
+                  .fields(fields)
+                  .initValueConfigMap(initValueConfigMap.build())
                   .suggestedName(Name.from("request"))
                   .build());
       List<InitCodeLine> initCodeLines = new ArrayList<>();

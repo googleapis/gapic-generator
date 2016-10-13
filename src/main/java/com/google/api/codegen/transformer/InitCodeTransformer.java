@@ -14,18 +14,14 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.codegen.config.CollectionConfig;
-import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.metacode.InitCodeContext;
+import com.google.api.codegen.metacode.InitCodeContext.InitCodeParamType;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.metacode.InitTreeParserContext;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ResourceNameUtil;
-import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
@@ -51,30 +47,15 @@ import java.util.Map;
  * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
-  /** Generates initialization code from the given InitCodeTransformerContext object. */
-  public static InitCodeView generateInitCode(InitCodeTransformerContext context) {
-    InitCodeNode rootNode = createRootNode(context);
+  /** Generates initialization code from the given InitCodeContext object. */
+  public static InitCodeView generateInitCode(InitCodeContext context) {
+    InitCodeNode rootNode = InitCodeNode.createTree(context);
     MethodTransformerContext methodContext = context.methodContext();
-    if (context.isFlattened()) {
+    if (context.paramType() == InitCodeParamType.FlattenedParam) {
       return buildInitCodeViewFlattened(methodContext, rootNode);
     } else {
       return buildInitCodeViewRequestObject(methodContext, rootNode);
     }
-  }
-
-  private static InitCodeNode createRootNode(InitCodeTransformerContext context) {
-    MethodTransformerContext methodContext = context.methodContext();
-    return InitCodeNode.createTree(
-        InitTreeParserContext.newBuilder()
-            .table(context.symbolTable())
-            .rootObjectType(context.initObjectType())
-            .initValueConfigMap(createCollectionMap(methodContext))
-            .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
-            .initFields(context.fields())
-            .suggestedName(context.suggestedName())
-            .valueGenerator(context.valueGenerator())
-            .additionalSubTrees(context.additionalNodes())
-            .build());
   }
 
   /** Generates assert views for the test of the tested method and its fields. */
@@ -83,11 +64,11 @@ public class InitCodeTransformer {
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(new SymbolTable())
-                .rootObjectType(context.getMethod().getInputType())
+            InitCodeContext.newBuilder()
+                .methodContext(context)
+                .initObjectType(context.getMethod().getInputType())
+                .fields(fields)
                 .initValueConfigMap(createCollectionMap(context))
-                .initFields(fields)
                 .suggestedName(Name.from("request"))
                 .build());
 
@@ -160,23 +141,6 @@ public class InitCodeTransformer {
             namer.getServiceFileName(
                 context.getInterface(), context.getApiConfig().getPackageName()))
         .build();
-  }
-
-  private static ImmutableMap<String, InitValueConfig> createCollectionMap(
-      MethodTransformerContext context) {
-
-    ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
-
-    Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
-    for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
-      CollectionConfig collectionConfig = context.getCollectionConfig(fieldNamePattern.getValue());
-      String apiWrapperClassName =
-          context.getNamer().getApiWrapperClassName(context.getInterface());
-      InitValueConfig initValueConfig =
-          InitValueConfig.create(apiWrapperClassName, collectionConfig);
-      mapBuilder.put(fieldNamePattern.getKey(), initValueConfig);
-    }
-    return mapBuilder.build();
   }
 
   private static List<InitCodeLineView> generateSurfaceInitCodeLines(
@@ -300,6 +264,21 @@ public class InitCodeTransformer {
     surfaceLine.initEntries(entries);
 
     return surfaceLine.build();
+  }
+
+  public static ImmutableMap<String, InitValueConfig> createCollectionMap(
+      MethodTransformerContext context) {
+    ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
+    Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
+    for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
+      CollectionConfig collectionConfig = context.getCollectionConfig(fieldNamePattern.getValue());
+      String apiWrapperClassName =
+          context.getNamer().getApiWrapperClassName(context.getInterface());
+      InitValueConfig initValueConfig =
+          InitValueConfig.create(apiWrapperClassName, collectionConfig);
+      mapBuilder.put(fieldNamePattern.getKey(), initValueConfig);
+    }
+    return mapBuilder.build();
   }
 
   private static InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {

@@ -18,6 +18,8 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.metacode.InitCodeContext;
+import com.google.api.codegen.metacode.InitCodeContext.InitCodeParamType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
@@ -763,15 +765,18 @@ public class ApiMethodTransformer {
     return arrayKeyDocs;
   }
 
-  private InitCodeTransformerContext createInitCodeContext(
+  private InitCodeContext createInitCodeContext(
       MethodTransformerContext context, Iterable<Field> fields) {
-    return InitCodeTransformerContext.newBuilder()
+    InitCodeParamType paramType =
+        fields != null ? InitCodeParamType.FlattenedParam : InitCodeParamType.RequestParam;
+    return InitCodeContext.newBuilder()
         .methodContext(context)
         .initObjectType(context.getMethod().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
+        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .fields(fields)
-        .isFlattened(fields != null)
+        .paramType(paramType)
         .build();
   }
 }
