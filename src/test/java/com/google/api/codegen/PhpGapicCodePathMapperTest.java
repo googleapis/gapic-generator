@@ -42,22 +42,23 @@ public class PhpGapicCodePathMapperTest {
 
     ApiConfig configWithGoogleCloud =
         ApiConfig.createDummyApiConfig(
-            ImmutableMap.<String, InterfaceConfig>builder().build(),
-            "Google\\Cloud\\Sample\\Package\\V1");
+            ImmutableMap.<String, InterfaceConfig>of(), "Google\\Cloud\\Sample\\Package\\V1", "");
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleCloud))
         .isEqualTo("prefix/Sample/Package/V1/suffix");
 
     ApiConfig configWithGoogleNonCloud =
         ApiConfig.createDummyApiConfig(
-            ImmutableMap.<String, InterfaceConfig>builder().build(),
-            "Google\\NonCloud\\Sample\\Package\\V1");
+            ImmutableMap.<String, InterfaceConfig>of(),
+            "Google\\NonCloud\\Sample\\Package\\V1",
+            "");
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleNonCloud))
         .isEqualTo("prefix/NonCloud/Sample/Package/V1/suffix");
 
     ApiConfig configWithAlphabet =
         ApiConfig.createDummyApiConfig(
-            ImmutableMap.<String, InterfaceConfig>builder().build(),
-            "Alphabet\\Google\\Cloud\\Sample\\Package\\V1");
+            ImmutableMap.<String, InterfaceConfig>of(),
+            "Alphabet\\Google\\Cloud\\Sample\\Package\\V1",
+            "");
     Truth.assertThat(pathMapper.getOutputPath(null, configWithAlphabet))
         .isEqualTo("prefix/Alphabet/Google/Cloud/Sample/Package/V1/suffix");
   }

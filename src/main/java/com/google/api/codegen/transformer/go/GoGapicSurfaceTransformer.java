@@ -224,6 +224,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         .serviceDocs(Collections.<ServiceDocView>emptyList())
         // TODO(pongad): GoContextCommon should be deleted after we convert Go discovery to MVMM.
         .packageDoc(new GoContextCommon().getWrappedCommentLines(doc))
+        .domainLayerLocation(apiConfig.getDomainLayerLocation())
         .build();
   }
 
