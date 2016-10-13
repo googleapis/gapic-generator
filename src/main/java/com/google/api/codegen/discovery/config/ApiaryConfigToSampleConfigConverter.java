@@ -30,7 +30,6 @@ import com.google.protobuf.Type;
 
 public class ApiaryConfigToSampleConfigConverter {
 
-  private static final String EMPTY_TYPE_URL = "Empty";
   private static final String KEY_FIELD_NAME = "key";
   private static final String VALUE_FIELD_NAME = "value";
   private static final String NEXT_PAGE_TOKEN_FIELD_NAME = "nextPageToken";
@@ -102,9 +101,8 @@ public class ApiaryConfigToSampleConfigConverter {
 
     TypeInfo requestType = createTypeInfo(method, true);
     TypeInfo responseType = null;
-    String responseTypeUrl = method.getResponseTypeUrl();
-    if (!responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
-        && !responseTypeUrl.equals(EMPTY_TYPE_URL)) {
+    String responseTypeUrl = typeNameGenerator.getResponseTypeUrl(method.getResponseTypeUrl());
+    if (!Strings.isNullOrEmpty(responseTypeUrl)) {
       responseType = createTypeInfo(method, false);
     }
 
@@ -217,7 +215,8 @@ public class ApiaryConfigToSampleConfigConverter {
     String typeName =
         isRequest
             ? typeNameGenerator.getRequestTypeName(methodNameComponents.get(method.getName()))
-            : typeNameGenerator.getMessageTypeName(method.getResponseTypeUrl());
+            : typeNameGenerator.getMessageTypeName(
+                typeNameGenerator.getResponseTypeUrl(method.getResponseTypeUrl()));
     String subpackage = typeNameGenerator.getSubpackage(isRequest);
     MessageTypeInfo messageTypeInfo =
         MessageTypeInfo.newBuilder()

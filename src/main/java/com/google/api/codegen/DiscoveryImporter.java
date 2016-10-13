@@ -47,6 +47,7 @@ public class DiscoveryImporter {
 
   public static final String REQUEST_FIELD_NAME = "request$";
   public static final String EMPTY_TYPE_NAME = "empty$";
+  public static final String EMPTY_TYPE_URL = "Empty";
   public static final String ELEMENTS_FIELD_NAME = "elements$";
   private static final String SYNTHETIC_NAME_PREFIX = "synthetic$";
 

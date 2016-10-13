@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
@@ -57,6 +58,17 @@ public class GoTypeNameGenerator implements TypeNameGenerator {
     String copy[] = methodNameComponents.toArray(new String[methodNameComponents.size() + 1]);
     copy[copy.length - 1] = "call";
     return Name.lowerCamel(copy).toUpperCamel();
+  }
+
+  @Override
+  public String getResponseTypeUrl(String responseTypeUrl) {
+    // Go client libraries return an empty struct if the responseTypeUrl is
+    // "Empty". If the responseTypeName is truly empty ("empty$"), nothing is
+    // returned.
+    if (responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)) {
+      return "";
+    }
+    return responseTypeUrl;
   }
 
   @Override

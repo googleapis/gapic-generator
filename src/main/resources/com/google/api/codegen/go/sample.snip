@@ -72,13 +72,13 @@
         @if class.pageStreaming.isResourceMap
           for {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName} := range {@class.pageStreaming.pageVarName}.{@class.pageStreaming.resourceFieldName} {
             // TODO: Change code below to process each ({@class.pageStreaming.resourceKeyVarName}: {@class.pageStreaming.resourceValueVarName}) element:
-            fmt.Printf("%v: %#v\n", {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName})
+            log.Printf("%v: %#v\n", {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName})
           }
           return nil
         @else
           for _, {@class.pageStreaming.resourceVarName} := range page.{@class.pageStreaming.resourceFieldName} {
             // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
-            fmt.Printf("%#v\n", {@class.pageStreaming.resourceVarName})
+            log.Printf("%#v\n", {@class.pageStreaming.resourceVarName})
           }
         @end
       }); err != nil {
@@ -97,7 +97,7 @@
         }
 
         // TODO: Change code below to process the `{@class.responseVarName}` object:
-        fmt.Printf("%#v\n", {@class.responseVarName})
+        log.Printf("%#v\n", {@class.responseVarName})
       @else
         if err := {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)}).Context({@class.contextVarName}).Do(); err != nil {
           log.Fatal(err)

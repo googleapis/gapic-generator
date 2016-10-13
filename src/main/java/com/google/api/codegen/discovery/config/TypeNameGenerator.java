@@ -50,6 +50,14 @@ public interface TypeNameGenerator {
   public String getRequestTypeName(List<String> methodNameComponents);
 
   /**
+   * Returns the responseTypeUrl or an empty string if the response is empty.
+   *
+   * Provided in case there is some common transformation on the
+   * responseTypeUrl.
+   */
+  public String getResponseTypeUrl(String responseTypeUrl);
+
+  /**
    * Returns the message's type name.
    *
    * Not fully qualified.
