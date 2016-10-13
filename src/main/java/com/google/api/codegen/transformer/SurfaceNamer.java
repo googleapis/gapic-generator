@@ -803,6 +803,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getProtoFileImportFromService");
   }
 
+  public String getProtoFileImportFromProtoElement(ProtoElement element) {
+    return getNotImplementedString("SurfaceNamer.getProtoFileImportFromProtoElement");
+  }
+
   /**
    * Returns the service name with common suffixes removed.
    *
