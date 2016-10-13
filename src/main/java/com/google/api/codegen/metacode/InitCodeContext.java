@@ -72,8 +72,10 @@ public abstract class InitCodeContext {
   public abstract ImmutableMap<String, InitValueConfig> initValueConfigMap();
 
   public static Builder newBuilder() {
+    ImmutableMap.Builder<String, InitValueConfig> emptyConfigMap = new ImmutableMap.Builder<>();
     return new AutoValue_InitCodeContext.Builder()
         .symbolTable(new SymbolTable())
+        .initValueConfigMap(emptyConfigMap.build())
         .paramType(InitCodeParamType.RequestParam);
   }
 
