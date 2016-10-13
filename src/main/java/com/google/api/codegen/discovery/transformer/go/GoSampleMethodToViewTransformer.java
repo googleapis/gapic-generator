@@ -199,7 +199,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
   }
 
   private void addStaticImports(SampleTransformerContext context, SymbolTable symbolTable) {
-    SampleConfig sampleConfig = context.getSampleConfig();
+    SampleConfig config = context.getSampleConfig();
     SampleTypeTable typeTable = context.getSampleTypeTable();
 
     // Since nearly any identifier can be shadowed in Go, we add every package
@@ -210,7 +210,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     symbolTable.getNewSymbol("context");
     typeTable.saveNicknameFor("golang.org/x/oauth2/google;;;");
     symbolTable.getNewSymbol("google");
-    typeTable.saveNicknameFor(sampleConfig.packagePrefix() + ";;;");
-    symbolTable.getNewSymbol("packagePrefix");
+    typeTable.saveNicknameFor(config.packagePrefix() + ";;;");
+    symbolTable.getNewSymbol(GoSampleNamer.getServicePackageName(config.packagePrefix()));
   }
 }
