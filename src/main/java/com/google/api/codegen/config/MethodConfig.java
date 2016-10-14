@@ -15,13 +15,12 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.BundlingConfigProto;
-import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -33,14 +32,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-
-import org.joda.time.Duration;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.Nullable;
+import org.joda.time.Duration;
 
 /**
  * MethodConfig represents the code-gen config for a method, and includes the specification of
@@ -183,6 +179,14 @@ public abstract class MethodConfig {
       Field requiredField = method.getInputMessage().lookupField(fieldName);
       if (requiredField != null) {
         builder.add(requiredField);
+        if (requiredField.getOneof() != null) {
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Oneof fields cannot be required: method = %s, oneof = %s, field = %s",
+              method.getFullName(),
+              requiredField.getOneof(),
+              fieldName);
+        }
       } else {
         Diag.error(
             SimpleLocation.TOPLEVEL,
