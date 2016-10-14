@@ -135,8 +135,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       throw new NotImplementedException("MainDiscoveryProviderFactory: invalid id \"" + id + "\"");
     }
 
-    ViewModelProvider.Builder viewModelProvider = ViewModelProvider.newBuilder();
-    return viewModelProvider
+    return ViewModelProvider.newBuilder()
         .setMethods(service.getApis(0).getMethodsList())
         .setApiaryConfig(apiaryConfig)
         .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
