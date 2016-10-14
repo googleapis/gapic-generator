@@ -17,6 +17,7 @@ package com.google.api.codegen.util.php;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * The NameFormatter for PHP.
@@ -24,7 +25,7 @@ import com.google.api.codegen.util.NamePath;
 public class PhpNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {
-    if (PhpTypeTable.KEYWORD_BUILT_IN_SET.contains(name)) {
+    if (KEYWORD_BUILT_IN_SET.contains(name)) {
       return name + "_";
     } else {
       return name;
@@ -33,7 +34,7 @@ public class PhpNameFormatter implements NameFormatter {
 
   @Override
   public String className(Name name) {
-    return name.toUpperCamel();
+    return wrapIfKeywordOrBuiltIn(name.toUpperCamel());
   }
 
   @Override
@@ -95,4 +96,87 @@ public class PhpNameFormatter implements NameFormatter {
   public String classFileNameBase(Name name) {
     return name.toOriginal();
   }
+
+  /**
+   * A set of PHP keywords and built-ins. keywords: http://php.net/manual/en/reserved.keywords.php
+   */
+  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+      ImmutableSet.<String>builder()
+          .add(
+              "__halt_compiler",
+              "abstract",
+              "and",
+              "array",
+              "as",
+              "break",
+              "callable",
+              "case",
+              "catch",
+              "class",
+              "clone",
+              "const",
+              "continue",
+              "declare",
+              "default",
+              "die",
+              "do",
+              "echo",
+              "else",
+              "elseif",
+              "empty",
+              "enddeclare",
+              "endfor",
+              "endforeach",
+              "endif",
+              "endswitch",
+              "endwhile",
+              "eval",
+              "exit",
+              "extends",
+              "final",
+              "finally",
+              "for",
+              "foreach",
+              "function",
+              "global",
+              "goto",
+              "if",
+              "implements",
+              "include",
+              "include_once",
+              "instanceof",
+              "insteadof",
+              "interface",
+              "isset",
+              "list",
+              "namespace",
+              "new",
+              "or",
+              "print",
+              "private",
+              "protected",
+              "public",
+              "require",
+              "require_once",
+              "return",
+              "static",
+              "switch",
+              "throw",
+              "trait",
+              "try",
+              "unset",
+              "use",
+              "var",
+              "while",
+              "xor",
+              "yield",
+              "__CLASS__",
+              "__DIR__",
+              "__FILE__",
+              "__FUNCTION__",
+              "__LINE__",
+              "__METHOD__",
+              "__NAMESPACE__",
+              "__TRAIT__")
+          .build();
 }

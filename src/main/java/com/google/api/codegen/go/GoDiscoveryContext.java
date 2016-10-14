@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.go;
 
-import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
@@ -51,7 +51,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   }
 
   public boolean isReserved(String name) {
-    return GoTypeTable.RESERVED_IDENTIFIER_SET.contains(name);
+    return GoNameFormatter.RESERVED_IDENTIFIER_SET.contains(name);
   }
 
   @Override
