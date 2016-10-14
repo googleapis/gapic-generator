@@ -62,12 +62,12 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
   private static final Map<String, Class<? extends SampleMethodToViewTransformer>>
       SAMPLE_METHOD_TO_VIEW_TRANSFORMER_MAP =
           ImmutableMap.of(
-              JAVA,
-              JavaSampleMethodToViewTransformer.class,
-              NODEJS,
-              NodeJSSampleMethodToViewTransformer.class);
+              JAVA, JavaSampleMethodToViewTransformer.class,
+              NODEJS, NodeJSSampleMethodToViewTransformer.class);
   private static final Map<String, Class<? extends TypeNameGenerator>> TYPE_NAME_GENERATOR_MAP =
-      ImmutableMap.of(JAVA, JavaTypeNameGenerator.class, NODEJS, NodeJSTypeNameGenerator.class);
+      ImmutableMap.of(
+          JAVA, JavaTypeNameGenerator.class,
+          NODEJS, NodeJSTypeNameGenerator.class);
 
   public static DiscoveryProvider defaultCreate(
       Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
