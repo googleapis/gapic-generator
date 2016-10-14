@@ -727,6 +727,8 @@ class LibraryServiceApi
      *     Optional.
      *     @type int $edition
      *          The edition of the series
+     *     @type bool $reviewCopy
+     *          If the book is in a pre-publish state
      *     @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
@@ -748,6 +750,9 @@ class LibraryServiceApi
         }
         if (isset($optionalArgs['edition'])) {
             $request->setEdition($optionalArgs['edition']);
+        }
+        if (isset($optionalArgs['reviewCopy'])) {
+            $request->setReviewCopy($optionalArgs['reviewCopy']);
         }
 
         $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(

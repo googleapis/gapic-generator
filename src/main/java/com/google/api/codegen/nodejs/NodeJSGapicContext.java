@@ -318,13 +318,13 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         resourceTypeName = "a " + jsTypeName(resourceType);
       }
       return callbackMessage
-          + "\n@returns {Stream|gax.EventEmitter}\n"
+          + "\n@returns {Stream|Promise}\n"
           + "  An object stream which emits "
           + resourceTypeName
           + " on 'data' event.\n"
           + "  When the callback is specified or streaming is suppressed through options,\n"
-          + "  it will return an event emitter to handle the call status and the callback\n"
-          + "  will be called with the response object.";
+          + "  it will return a promise that resolves to the response object. The promise\n"
+          + "  has a method named \"cancel\" which cancels the ongoing API call.";
     }
 
     MessageType returnMessageType = method.getOutputMessage();
@@ -345,18 +345,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               + linkForMessage(returnMessageType);
     }
 
-    String returnMessage =
-        "@returns {"
-            + (config.isBundling() ? "gax.BundleEventEmitter" : "gax.EventEmitter")
-            + "} - the event emitter to handle the call\n"
-            + "  status.";
-    if (config.isBundling()) {
-      returnMessage +=
-          " When isBundling: false is specified in the options, it still returns\n"
-              + "  a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same\n"
-              + "  as a gax.EventEmitter does.";
-    }
-    return callbackMessage + "\n" + returnMessage;
+    return callbackMessage
+        + "\n@returns {Promise} - The promise which resolves to the response object.\n"
+        + "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
   }
 
   /**

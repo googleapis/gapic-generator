@@ -50,6 +50,10 @@ interfaces:
     init_fields:
       - name%shelf="testShelf"
       - name%book="testBook"
+  experimental_features:
+    iam_resources:
+    - type: google.example.library.v1.Book
+      field: name
   methods:
   - name: CreateShelf
     flattening:
@@ -383,6 +387,10 @@ interfaces:
     field_name_patterns:
       resource: book
     timeout_millis: 60000
+    surface_treatments:
+    - include_languages:
+      - go
+      visibility: DISABLED
   - name: AddLabel
     flattening:
       groups:
@@ -399,3 +407,7 @@ interfaces:
       resource: book
     timeout_millis: 60000
     reroute_to_grpc_interface: google.tagger.v1.Labeler
+    surface_treatments:
+    - include_languages:
+      - go
+      visibility: DISABLED

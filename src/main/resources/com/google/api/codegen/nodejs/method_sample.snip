@@ -79,20 +79,16 @@
 @private methodCallSampleCodeWithReturnValue(apiMethod)
     @if sampleMethodCallArgList(apiMethod)
         api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod)}, function(err, response) {
-            if (err) {
-                console.error(err);
-                return;
-            }
+            {@sampleMethodCallArgList(apiMethod)}).then(function(response) {
             // doThingsWith(response)
+        }).catch(function(err) {
+            console.error(err);
         })
     @else
-        api.{@apiMethod.name}(function(err, response) {
-            if (err) {
-                console.error(err);
-                return;
-            }
+        api.{@apiMethod.name}().then(function(response) {
             // doThingsWith(response)
+        }).catch(function(err) {
+            console.error(err);
         })
     @end
 @end
@@ -100,16 +96,12 @@
 @private methodCallSampleCodeWithoutReturnValue(apiMethod)
     @if sampleMethodCallArgList(apiMethod)
         api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod)}, function(err) {
-            if (err) {
-                console.error(err);
-            }
+            {@sampleMethodCallArgList(apiMethod)}).catch(function(err) {
+            console.error(err);
         })
     @else
-        api.{@apiMethod.name}(function(err) {
-            if (err) {
-                console.error(err);
-            }
+        api.{@apiMethod.name}().catch(function(err) {
+            console.error(err);
         })
     @end
 @end

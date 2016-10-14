@@ -18,6 +18,8 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.metacode.InitCodeContext;
+import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
@@ -335,7 +337,8 @@ public class ApiMethodTransformer {
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     methodViewBuilder.initCode(
-        initCodeTransformer.generateInitCode(context.cloneWithEmptyTypeTable(), fields));
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(), createInitCodeContext(context, fields)));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod()))
@@ -375,7 +378,8 @@ public class ApiMethodTransformer {
             .throwsDocLines(namer.getThrowsDocLines())
             .build());
     methodViewBuilder.initCode(
-        initCodeTransformer.generateRequestObjectInitCode(context.cloneWithEmptyTypeTable()));
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(), createInitCodeContext(context, null)));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -401,7 +405,8 @@ public class ApiMethodTransformer {
             .throwsDocLines(new ArrayList<String>())
             .build());
     methodViewBuilder.initCode(
-        initCodeTransformer.generateRequestObjectInitCode(context.cloneWithEmptyTypeTable()));
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(), createInitCodeContext(context, null)));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -500,7 +505,8 @@ public class ApiMethodTransformer {
     apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(), context.getMethodConfig().getRequiredFields()));
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(context, context.getMethodConfig().getRequiredFields())));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
@@ -782,5 +788,19 @@ public class ApiMethodTransformer {
     arrayKeyDocs.add(timeoutDoc.build());
 
     return arrayKeyDocs;
+  }
+
+  private InitCodeContext createInitCodeContext(
+      MethodTransformerContext context, Iterable<Field> fields) {
+    InitCodeOutputType outputType =
+        fields != null ? InitCodeOutputType.FieldList : InitCodeOutputType.SingleObject;
+    return InitCodeContext.newBuilder()
+        .initObjectType(context.getMethod().getInputType())
+        .suggestedName(Name.from("request"))
+        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
+        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
+        .initFields(fields)
+        .outputType(outputType)
+        .build();
   }
 }

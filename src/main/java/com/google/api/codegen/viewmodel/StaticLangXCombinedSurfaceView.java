@@ -45,6 +45,8 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract List<RetryConfigDefinitionView> retryPairDefinitions();
 
+  public abstract List<IamResourceView> iamResources();
+
   public abstract List<StaticLangApiMethodView> apiMethods();
 
   public abstract String clientTypeName();
@@ -111,6 +113,8 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
     public abstract Builder pathTemplates(List<PathTemplateView> val);
 
     public abstract Builder retryPairDefinitions(List<RetryConfigDefinitionView> val);
+
+    public abstract Builder iamResources(List<IamResourceView> val);
 
     public abstract Builder serviceDoc(List<String> val);
 

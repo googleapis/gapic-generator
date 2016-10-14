@@ -63,9 +63,8 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
   public String typeDefaultValue(Type type, Field field, Method method) {
-    // used to handle inconsistency in language detections and translations methods for Translate
-    // API
-    // remove if inconsistency is resolved in discovery docs
+    // Used to handle inconsistency in language detections and translations methods for Translate
+    // API. Remove if inconsistency is resolved in discovery docs.
     if (isTranslateLanguageDetectionsOrTranslationsField(method, field)) {
       return stringLiteral("");
     }

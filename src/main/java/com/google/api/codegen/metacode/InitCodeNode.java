@@ -147,10 +147,10 @@ public class InitCodeNode {
   /*
    * Constructs a tree of objects to be initialized using the provided context, and returns the root
    */
-  public static InitCodeNode createTree(InitTreeParserContext context) {
+  public static InitCodeNode createTree(InitCodeContext context) {
     List<InitCodeNode> subTrees = buildSubTrees(context);
     InitCodeNode root = createWithChildren("root", InitCodeLineType.StructureInitLine, subTrees);
-    root.resolveNamesAndTypes(context, context.rootObjectType(), context.suggestedName(), null);
+    root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
     root.createInitCodeLines();
     return root;
   }
@@ -205,7 +205,7 @@ public class InitCodeNode {
     return oldConfig.withInitialCollectionValues(collectionValues);
   }
 
-  private static List<InitCodeNode> buildSubTrees(InitTreeParserContext context) {
+  private static List<InitCodeNode> buildSubTrees(InitCodeContext context) {
     List<InitCodeNode> subTrees = new ArrayList<>();
     if (context.initFieldConfigStrings() != null) {
       for (String initFieldConfigString : context.initFieldConfigStrings()) {
@@ -238,14 +238,14 @@ public class InitCodeNode {
       }
       subTrees = newSubTrees;
     }
-    if (context.additionalSubTrees() != null) {
-      subTrees.addAll(context.additionalSubTrees());
+    if (context.additionalInitCodeNodes() != null) {
+      subTrees.addAll(Lists.newArrayList(context.additionalInitCodeNodes()));
     }
     return subTrees;
   }
 
   private void resolveNamesAndTypes(
-      InitTreeParserContext context, TypeRef type, Name suggestedName, Field field) {
+      InitCodeContext context, TypeRef type, Name suggestedName, Field field) {
 
     for (InitCodeNode child : children.values()) {
       validateKeyValue(type, child.key);
@@ -256,7 +256,7 @@ public class InitCodeNode {
           getChildField(field, type, child.key));
     }
 
-    SymbolTable table = context.table();
+    SymbolTable table = context.symbolTable();
     TestValueGenerator valueGenerator = context.valueGenerator();
 
     validateType(lineType, type, children.keySet());
