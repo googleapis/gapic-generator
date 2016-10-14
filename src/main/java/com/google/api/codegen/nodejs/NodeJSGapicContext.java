@@ -424,6 +424,16 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
+   * Return a non-conflicting safe name if name is a JS reserved word.
+   */
+  public String wrapIfKeywordOrBuiltIn(String name) {
+    if (KEYWORD_BUILT_IN_SET.contains(name)) {
+      return name + "_";
+    }
+    return name;
+  }
+
+  /**
    * Returns the name of JS type for the given typeRef.
    */
   public String jsTypeName(TypeRef typeRef) {
@@ -560,6 +570,61 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           .put(Type.TYPE_SFIXED32, "number")
           .put(Type.TYPE_STRING, "string")
           .put(Type.TYPE_BYTES, "string")
+          .build();
+
+  /**
+   * A set of ECMAScript 2016 reserved words. See
+   * https://tc39.github.io/ecma262/2016/#sec-reserved-words
+   */
+  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+      ImmutableSet.<String>builder()
+          .add(
+              "break",
+              "do",
+              "in",
+              "typeof",
+              "case",
+              "else",
+              "instanceof",
+              "var",
+              "catch",
+              "export",
+              "new",
+              "void",
+              "class",
+              "extends",
+              "return",
+              "while",
+              "const",
+              "finally",
+              "super",
+              "with",
+              "continue",
+              "for",
+              "switch",
+              "yield",
+              "debugger",
+              "function",
+              "this",
+              "default",
+              "if",
+              "throw",
+              "delete",
+              "import",
+              "try",
+              "let",
+              "static",
+              "enum",
+              "await",
+              "implements",
+              "package",
+              "protected",
+              "interface",
+              "private",
+              "public",
+              "null",
+              "true",
+              "false")
           .build();
 
   private static final ImmutableSet<String> COMMON_PROTO_PATHS =

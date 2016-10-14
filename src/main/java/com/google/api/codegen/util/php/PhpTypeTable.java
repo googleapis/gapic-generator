@@ -105,7 +105,7 @@ public class PhpTypeTable implements TypeTable {
   /**
    * A set of PHP keywords and built-ins. keywords: http://php.net/manual/en/reserved.keywords.php
    */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+  public static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
       ImmutableSet.<String>builder()
           .add(
               "__halt_compiler",

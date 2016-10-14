@@ -188,6 +188,9 @@ var BOOK_PATH_TEMPLATE = new gax.PathTemplate(
 var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
     'archives/{archive_path=**}/books/{book}');
 
+var RETURN_PATH_TEMPLATE = new gax.PathTemplate(
+    'shelves/{shelf}/books/{book}/returns/{return}');
+
 /**
  * Returns a fully-qualified shelf resource name string.
  * @param {String} shelf
@@ -273,6 +276,51 @@ LibraryServiceApi.prototype.matchArchivePathFromArchivedBookName = function(arch
  */
 LibraryServiceApi.prototype.matchBookFromArchivedBookName = function(archivedBookName) {
   return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).book;
+};
+
+/**
+ * Returns a fully-qualified return resource name string.
+ * @param {String} shelf
+ * @param {String} book
+ * @param {String} return
+ * @returns {String}
+ */
+LibraryServiceApi.prototype.returnPath = function(shelf, book, return_) {
+  return RETURN_PATH_TEMPLATE.render({
+    shelf: shelf,
+    book: book,
+    return: return_
+  });
+};
+
+/**
+ * Parses the returnName from a return resource.
+ * @param {String} returnName
+ *   A fully-qualified path representing a return resources.
+ * @returns {String} - A string representing the shelf.
+ */
+LibraryServiceApi.prototype.matchShelfFromReturnName = function(returnName) {
+  return RETURN_PATH_TEMPLATE.match(returnName).shelf;
+};
+
+/**
+ * Parses the returnName from a return resource.
+ * @param {String} returnName
+ *   A fully-qualified path representing a return resources.
+ * @returns {String} - A string representing the book.
+ */
+LibraryServiceApi.prototype.matchBookFromReturnName = function(returnName) {
+  return RETURN_PATH_TEMPLATE.match(returnName).book;
+};
+
+/**
+ * Parses the returnName from a return resource.
+ * @param {String} returnName
+ *   A fully-qualified path representing a return resources.
+ * @returns {String} - A string representing the return.
+ */
+LibraryServiceApi.prototype.matchReturnFromReturnName = function(returnName) {
+  return RETURN_PATH_TEMPLATE.match(returnName).return;
 };
 
 // Service calls

@@ -45,6 +45,10 @@ interfaces:
     entity_name: book
   - name_pattern: archives/{archive_path=**}/books/{book}
     entity_name: archived_book
+  # To test the case that entity name / variable which happens to be
+  # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
+  - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
+    entity_name: return
   smoke_test:
     method: GetBook
     init_fields:
