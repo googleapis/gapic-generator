@@ -25,7 +25,8 @@ import com.google.common.collect.ImmutableSet;
 public class PhpNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {
-    if (KEYWORD_BUILT_IN_SET.contains(name)) {
+    // PHP keywords are case-insensitive.
+    if (KEYWORD_BUILT_IN_SET.contains(name.toLowerCase())) {
       return name + "_";
     } else {
       return name;
