@@ -47,30 +47,7 @@ public class FlatteningConfig {
         Field parameterField = method.getInputMessage().lookupField(parameter);
         if (parameterField != null) {
           parametersBuilder.add(parameterField);
-          Oneof oneof = parameterField.getOneof();
-          if (oneof != null) {
-            diagCollector.addDiag(
-                Diag.warning(
-                    SimpleLocation.TOPLEVEL,
-                    "Oneof field flattened: method = %s, message type = %s, oneof = %s, field = %s",
-                    method.getFullName(),
-                    method.getInputMessage().getFullName(),
-                    oneof.getName(),
-                    parameter));
-            if (seenOneofs.contains(oneof)) {
-              diagCollector.addDiag(
-                  Diag.error(
-                      SimpleLocation.TOPLEVEL,
-                      "Multiple oneof fields flattened: method = %s, message type = %s, "
-                          + "oneof = %s, field = %s",
-                      method.getFullName(),
-                      method.getInputMessage().getFullName(),
-                      oneof.getName(),
-                      parameter));
-            } else {
-              seenOneofs.add(oneof);
-            }
-          }
+          validateOneof(parameterField, method, seenOneofs, diagCollector);
         } else {
           diagCollector.addDiag(
               Diag.error(
@@ -88,6 +65,35 @@ public class FlatteningConfig {
       return null;
     }
     return new FlatteningConfig(flatteningGroupsBuilder.build());
+  }
+
+  private static void validateOneof(
+      Field field, Method method, Set<Oneof> seenOneofs, DiagCollector diagCollector) {
+    Oneof oneof = field.getOneof();
+    if (oneof != null) {
+      diagCollector.addDiag(
+          Diag.warning(
+              SimpleLocation.TOPLEVEL,
+              "Oneof field flattened: method = %s, message type = %s, oneof = %s, field = %s",
+              method.getFullName(),
+              method.getInputMessage().getFullName(),
+              oneof.getName(),
+              field.getSimpleName()));
+      if (seenOneofs.contains(oneof)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Multiple oneof fields flattened: method = %s, message type = %s, "
+                    + "oneof = %s, field = %s",
+                method.getFullName(),
+                method.getInputMessage().getFullName(),
+                oneof.getName(),
+                field.getSimpleName()));
+
+      } else {
+        seenOneofs.add(oneof);
+      }
+    }
   }
 
   private FlatteningConfig(ImmutableList<ImmutableList<Field>> flatteningGroups) {
