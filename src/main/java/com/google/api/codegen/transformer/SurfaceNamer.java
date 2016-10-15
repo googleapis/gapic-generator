@@ -799,6 +799,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
+  public String getServiceFileImportFromService(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getServiceFileImportFromService");
+  }
+
   public String getProtoFileImportFromService(Interface service) {
     return getNotImplementedString("SurfaceNamer.getProtoFileImportFromService");
   }
@@ -823,5 +827,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /* The name of a retry definition */
   public String getRetryDefinitionName(String retryDefinitionKey) {
     return privateMethodName(Name.from(retryDefinitionKey));
+  }
+
+  /** The name of the IAM resource getter function. */
+  public String getIamResourceGetterFunctionName(Field field) {
+    return getNotImplementedString("SurfaceNamer.getIamResourceGetterFunctionName");
+  }
+
+  /** The example name of the IAM resource getter function. */
+  public String getIamResourceGetterFunctionExampleName(Interface service, Field field) {
+    return getIamResourceGetterFunctionName(field);
+  }
+
+  /** The parameter name of the IAM resource. */
+  public String getIamResourceParamName(Field field) {
+    return localVarName(Name.upperCamel(field.getParent().getSimpleName()));
   }
 }

@@ -610,7 +610,8 @@ class LibraryServiceApi(object):
             self,
             shelf,
             books,
-            edition=0,
+            edition=None,
+            review_copy=None,
             options=None):
         """
         Creates a series of books.
@@ -627,6 +628,7 @@ class LibraryServiceApi(object):
           shelf (:class:`google.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
           books (list[:class:`google.example.library.v1.library_pb2.Book`]): The books to publish in the series.
           edition (int): The edition of the series
+          review_copy (bool): If the book is in a pre-publish state
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -640,7 +642,8 @@ class LibraryServiceApi(object):
         request = library_pb2.PublishSeriesRequest(
             shelf=shelf,
             books=books,
-            edition=edition)
+            edition=edition,
+            review_copy=review_copy)
         return self._publish_series(request, options)
 
     def get_book(

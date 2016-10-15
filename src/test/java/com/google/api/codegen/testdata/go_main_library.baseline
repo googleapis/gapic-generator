@@ -23,13 +23,13 @@ import (
     "runtime"
     "time"
 
+    "cloud.google.com/go/iam"
     gax "github.com/googleapis/gax-go"
     "golang.org/x/net/context"
     "google.golang.org/api/iterator"
     "google.golang.org/api/option"
     "google.golang.org/api/transport"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
-    taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
     "google.golang.org/grpc/metadata"
@@ -64,8 +64,6 @@ type CallOptions struct {
     StreamBooks []gax.CallOption
     DiscussBook []gax.CallOption
     FindRelatedBooks []gax.CallOption
-    AddTag []gax.CallOption
-    AddLabel []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -114,8 +112,6 @@ func defaultCallOptions() *CallOptions {
         StreamBooks: retry[[2]string{"default", "idempotent"}],
         DiscussBook: retry[[2]string{"default", "non_idempotent"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
-        AddTag: retry[[2]string{"default", "non_idempotent"}],
-        AddLabel: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -126,7 +122,6 @@ type Client struct {
 
     // The gRPC API client.
     client librarypb.LibraryServiceClient
-    labelerClient taggerpb.LabelerClient
 
     // The call options for this service.
     CallOptions *CallOptions
@@ -159,7 +154,6 @@ func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error
         CallOptions: defaultCallOptions(),
 
         client: librarypb.NewLibraryServiceClient(conn),
-        labelerClient: taggerpb.NewLabelerClient(conn),
     }
     c.SetGoogleClientInfo("gax", gax.Version)
     return c, nil
@@ -232,6 +226,10 @@ func LibraryReturnPath(shelf, book, return_ string) string {
     return path
 }
 
+
+func (c *Client) BookIAM(book *librarypb.Book) *iam.Handle {
+    return iam.InternalNewHandle(c.Connection(), book.Name)
+}
 
 // CreateShelf creates a shelf, and returns the new Shelf.
 func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
@@ -620,38 +618,6 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
 
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
     return it
-}
-
-// AddTag adds a tag to the book. This RPC is a mixin.
-func (c *Client) AddTag(ctx context.Context, req *taggerpb.AddTagRequest) (*taggerpb.AddTagResponse, error) {
-    md, _ := metadata.FromContext(ctx)
-    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
-    var resp *taggerpb.AddTagResponse
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
-        var err error
-        resp, err = c.client.AddTag(ctx, req)
-        return err
-    }, c.CallOptions.AddTag...)
-    if err != nil {
-        return nil, err
-    }
-    return resp, nil
-}
-
-// AddLabel adds a label to the entity.
-func (c *Client) AddLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*taggerpb.AddLabelResponse, error) {
-    md, _ := metadata.FromContext(ctx)
-    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
-    var resp *taggerpb.AddLabelResponse
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
-        var err error
-        resp, err = c.labelerClient.AddLabel(ctx, req)
-        return err
-    }, c.CallOptions.AddLabel...)
-    if err != nil {
-        return nil, err
-    }
-    return resp, nil
 }
 
 

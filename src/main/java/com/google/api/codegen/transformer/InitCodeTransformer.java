@@ -14,18 +14,14 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.codegen.config.CollectionConfig;
-import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.metacode.InitCodeContext;
+import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.metacode.InitTreeParserContext;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ResourceNameUtil;
-import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
@@ -51,115 +47,30 @@ import java.util.Map;
  * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
-
-  public InitCodeView generateInitCode(MethodTransformerContext context, Iterable<Field> fields) {
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(new SymbolTable())
-                .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-                .initFields(fields)
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewFlattened(context, rootNode);
-  }
-
-  public InitCodeView generateRequestObjectInitCode(MethodTransformerContext context) {
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(new SymbolTable())
-                .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewRequestObject(context, rootNode);
-  }
-
-  public InitCodeView generateFlatteningTestInitCode(
-      MethodTransformerContext context,
-      Iterable<Field> fields,
-      SymbolTable table,
-      TestValueGenerator valueGenerator) {
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(table)
-                .valueGenerator(valueGenerator)
-                .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-                .initFields(fields)
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewFlattened(context, rootNode);
-  }
-
-  public InitCodeView generateRequestObjectTestInitCode(
-      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(table)
-                .valueGenerator(valueGenerator)
-                .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewRequestObject(context, rootNode);
-  }
-
-  public InitCodeView generateMockResponseObjectInitCode(
-      MethodTransformerContext context, SymbolTable table, TestValueGenerator valueGenerator) {
-    ArrayList<Field> primitiveFields = new ArrayList<>();
-    for (Field field : context.getMethod().getOutputMessage().getFields()) {
-      if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(field);
-      }
+  /**
+   * Generates initialization code from the given MethodTransformerContext and InitCodeContext
+   * objects.
+   */
+  public InitCodeView generateInitCode(
+      MethodTransformerContext methodContext, InitCodeContext initCodeContext) {
+    InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
+    if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
+      return buildInitCodeViewFlattened(methodContext, rootNode);
+    } else {
+      return buildInitCodeViewRequestObject(methodContext, rootNode);
     }
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(table)
-                .valueGenerator(valueGenerator)
-                .rootObjectType(context.getMethod().getOutputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .additionalSubTrees(createMockResponseAdditionalSubTrees(context))
-                .initFields(primitiveFields)
-                .suggestedName(Name.from("expected_response"))
-                .build());
-    return buildInitCodeViewRequestObject(context, rootNode);
   }
 
-  public InitCodeView generateSmokeTestInitCode(
-      MethodTransformerContext context, SymbolTable table) {
-    SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(table)
-                .rootObjectType(testConfig.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
-                .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
-                .suggestedName(Name.from("request"))
-                .build());
-    return buildInitCodeViewFlattened(context, rootNode);
-  }
-
+  /** Generates assert views for the test of the tested method and its fields. */
   public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<Field> fields) {
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(
-            InitTreeParserContext.newBuilder()
-                .table(new SymbolTable())
-                .rootObjectType(context.getMethod().getInputType())
-                .initValueConfigMap(createCollectionMap(context))
+            InitCodeContext.newBuilder()
+                .initObjectType(context.getMethod().getInputType())
                 .initFields(fields)
+                .initValueConfigMap(createCollectionMap(context))
                 .suggestedName(Name.from("request"))
                 .build());
 
@@ -184,6 +95,25 @@ public class InitCodeTransformer {
       assertViews.add(createAssertView(expectedValueIdentifier, getterMethod));
     }
     return assertViews;
+  }
+
+  /**
+   * A utility method which creates the InitValueConfig map that contains the collection
+   * config data.
+   */
+  public static ImmutableMap<String, InitValueConfig> createCollectionMap(
+      MethodTransformerContext context) {
+    ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
+    Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
+    for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
+      CollectionConfig collectionConfig = context.getCollectionConfig(fieldNamePattern.getValue());
+      String apiWrapperClassName =
+          context.getNamer().getApiWrapperClassName(context.getInterface());
+      InitValueConfig initValueConfig =
+          InitValueConfig.create(apiWrapperClassName, collectionConfig);
+      mapBuilder.put(fieldNamePattern.getKey(), initValueConfig);
+    }
+    return mapBuilder.build();
   }
 
   private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
@@ -232,47 +162,6 @@ public class InitCodeTransformer {
             namer.getServiceFileName(
                 context.getInterface(), context.getApiConfig().getPackageName()))
         .build();
-  }
-
-  private List<InitCodeNode> createMockResponseAdditionalSubTrees(
-      MethodTransformerContext context) {
-    List<InitCodeNode> additionalSubTrees = new ArrayList<>();
-    if (context.getMethodConfig().isPageStreaming()) {
-      // Initialize one resource element if it is page-streaming.
-      PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      String resourceFieldName = config.getResourcesField().getSimpleName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
-
-      // Set the initial value of the page token to empty, in order to indicate that no more pages
-      // are available
-      String responseTokenName = config.getResponseTokenField().getSimpleName();
-      additionalSubTrees.add(
-          InitCodeNode.createWithValue(responseTokenName, InitValueConfig.createWithValue("")));
-    }
-    if (context.getMethodConfig().isBundling()) {
-      // Initialize one bundling element if it is bundling.
-      BundlingConfig config = context.getMethodConfig().getBundling();
-      String subResponseFieldName = config.getSubresponseField().getSimpleName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
-    }
-    return additionalSubTrees;
-  }
-
-  private ImmutableMap<String, InitValueConfig> createCollectionMap(
-      MethodTransformerContext context) {
-
-    ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
-
-    Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
-    for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
-      CollectionConfig collectionConfig = context.getCollectionConfig(fieldNamePattern.getValue());
-      String apiWrapperClassName =
-          context.getNamer().getApiWrapperClassName(context.getInterface());
-      InitValueConfig initValueConfig =
-          InitValueConfig.create(apiWrapperClassName, collectionConfig);
-      mapBuilder.put(fieldNamePattern.getKey(), initValueConfig);
-    }
-    return mapBuilder.build();
   }
 
   private List<InitCodeLineView> generateSurfaceInitCodeLines(
