@@ -69,7 +69,7 @@ public class NodeJSNameFormatter implements NameFormatter {
 
   @Override
   public String staticFunctionName(Name name) {
-    return name.toLowerCamel();
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
   }
 
   @Override

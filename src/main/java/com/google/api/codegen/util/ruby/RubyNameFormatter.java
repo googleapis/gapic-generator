@@ -24,14 +24,22 @@ import com.google.common.collect.ImmutableSet;
  */
 public class RubyNameFormatter implements NameFormatter {
 
+  private String wrapIfKeywordOrBuiltIn(String name) {
+    if (KEYWORD_BUILT_IN_SET.contains(name)) {
+      return name + "_";
+    } else {
+      return name;
+    }
+  }
+
   @Override
   public String className(Name name) {
-    return name.toUpperCamel();
+    return wrapIfKeywordOrBuiltIn(name.toUpperCamel());
   }
 
   @Override
   public String localVarName(Name name) {
-    return name.toLowerUnderscore();
+    return wrapIfKeywordOrBuiltIn(name.toLowerUnderscore());
   }
 
   @Override
@@ -41,7 +49,7 @@ public class RubyNameFormatter implements NameFormatter {
 
   @Override
   public String publicFieldName(Name name) {
-    return name.toLowerUnderscore();
+    return wrapIfKeywordOrBuiltIn(name.toLowerUnderscore());
   }
 
   @Override
@@ -51,22 +59,22 @@ public class RubyNameFormatter implements NameFormatter {
 
   @Override
   public String publicMethodName(Name name) {
-    return name.toLowerUnderscore();
+    return wrapIfKeywordOrBuiltIn(name.toLowerUnderscore());
   }
 
   @Override
   public String privateMethodName(Name name) {
-    return name.toLowerUnderscore();
+    return wrapIfKeywordOrBuiltIn(name.toLowerUnderscore());
   }
 
   @Override
   public String staticFunctionName(Name name) {
-    return name.toLowerUnderscore();
+    return wrapIfKeywordOrBuiltIn(name.toLowerUnderscore());
   }
 
   @Override
   public String inittedConstantName(Name name) {
-    return name.toUpperCamel();
+    return wrapIfKeywordOrBuiltIn(name.toUpperCamel());
   }
 
   @Override
