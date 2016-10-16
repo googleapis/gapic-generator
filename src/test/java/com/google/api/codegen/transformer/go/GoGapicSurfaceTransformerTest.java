@@ -27,7 +27,9 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.truth.Truth;
+
 import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
