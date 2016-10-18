@@ -267,17 +267,25 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangApiMethodView getExampleApiMethod(List<StaticLangApiMethodView> methods) {
-    StaticLangApiMethodView exampleApiMethod = null;
-    for (StaticLangApiMethodView method : methods) {
-      if (method.type().equals(ApiMethodType.FlattenedMethod)) {
-        exampleApiMethod = method;
-        break;
-      }
+    StaticLangApiMethodView exampleApiMethod =
+        searchExampleMethod(methods, ApiMethodType.FlattenedMethod);
+    if (exampleApiMethod == null) {
+      exampleApiMethod = searchExampleMethod(methods, ApiMethodType.PagedFlattenedMethod);
     }
     if (exampleApiMethod == null) {
-      throw new RuntimeException("Could not find flattened method to use as an example method");
+      throw new RuntimeException("Could not find method to use as an example method");
     }
     return exampleApiMethod;
+  }
+
+  private StaticLangApiMethodView searchExampleMethod(List<StaticLangApiMethodView> methods,
+      ApiMethodType methodType) {
+    for (StaticLangApiMethodView method : methods) {
+      if (method.type().equals(methodType)) {
+        return method;
+      }
+    }
+    return null;
   }
 
   private StaticLangXSettingsView generateXSettings(
