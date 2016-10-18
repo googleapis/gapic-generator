@@ -17,12 +17,11 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
-
 import java.util.List;
 
 /**
- * A ModelToViewTransformer transforms a Model into a list of
- * ViewModel instances that can be rendered by a template engine.
+ * A ModelToViewTransformer transforms a Model into a list of ViewModel instances that can be
+ * rendered by a template engine.
  */
 public interface ModelToViewTransformer {
   List<ViewModel> transform(Model model, ApiConfig apiConfig);

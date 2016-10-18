@@ -23,14 +23,11 @@ import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegme
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.WildcardSegment;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Class representing a CollectionPattern that will be output to the collection config section
- */
+/** Class representing a CollectionPattern that will be output to the collection config section */
 public class CollectionPattern {
 
   public static CollectionPattern create(FieldSegment fieldSegment) {
@@ -105,9 +102,7 @@ public class CollectionPattern {
     return PathSegment.toSyntax(templatizedSubpath).substring(1);
   }
 
-  /**
-   * Returns a list of CollectionPattern objects.
-   */
+  /** Returns a list of CollectionPattern objects. */
   public static List<CollectionPattern> getCollectionPatternsFromMethod(Method method) {
     List<CollectionPattern> collectionPatterns = new LinkedList<CollectionPattern>();
     HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);

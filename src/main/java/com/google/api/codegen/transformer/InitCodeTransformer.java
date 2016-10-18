@@ -98,8 +98,8 @@ public class InitCodeTransformer {
   }
 
   /**
-   * A utility method which creates the InitValueConfig map that contains the collection
-   * config data.
+   * A utility method which creates the InitValueConfig map that contains the collection config
+   * data.
    */
   public static ImmutableMap<String, InitValueConfig> createCollectionMap(
       MethodTransformerContext context) {

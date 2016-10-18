@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -34,6 +31,8 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Transforms a Method and SampleConfig into the standard discovery surface for
@@ -41,7 +40,7 @@ import com.google.protobuf.Method;
  */
 public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
-  private final static String TEMPLATE_FILENAME = "java/sample.snip";
+  private static final String TEMPLATE_FILENAME = "java/sample.snip";
 
   public JavaSampleMethodToViewTransformer() {}
 

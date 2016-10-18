@@ -18,18 +18,14 @@ import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.gapic.PackageNameCodePathMapper;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
-import com.google.common.collect.ImmutableList;
 import com.google.common.truth.Truth;
-
 import java.util.Collections;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;

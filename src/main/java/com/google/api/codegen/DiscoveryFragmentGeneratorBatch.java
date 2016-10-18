@@ -23,7 +23,6 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Message;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;

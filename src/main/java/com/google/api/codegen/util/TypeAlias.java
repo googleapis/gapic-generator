@@ -19,46 +19,34 @@ import java.util.Comparator;
 import javax.annotation.Nullable;
 
 /**
- * TypeAlias represents an alias between a fully-qualified version of a name
- * (the "fullName") and a short version of a name (the "nickname").
+ * TypeAlias represents an alias between a fully-qualified version of a name (the "fullName") and a
+ * short version of a name (the "nickname").
  */
 @AutoValue
 public abstract class TypeAlias {
 
-  /**
-   * Creates a TypeAlias where the fullName and nickname are the same.
-   */
+  /** Creates a TypeAlias where the fullName and nickname are the same. */
   public static TypeAlias create(String name) {
     return create(name, name);
   }
 
-  /**
-   * Creates a type alias with the given fullName and nickname.
-   */
+  /** Creates a type alias with the given fullName and nickname. */
   public static TypeAlias create(String fullName, String nickname) {
     return new AutoValue_TypeAlias(fullName, nickname, null, ImportType.SimpleImport);
   }
 
-  /**
-   * Creates a type alias with the given fullName, nickname and parentName.
-   */
+  /** Creates a type alias with the given fullName, nickname and parentName. */
   public static TypeAlias create(String fullName, String nickname, String parentName) {
     return new AutoValue_TypeAlias(fullName, nickname, parentName, ImportType.StaticImport);
   }
 
-  /**
-   * The full name of the alias.
-   */
+  /** The full name of the alias. */
   public abstract String getFullName();
 
-  /**
-   * The nickname of the alias.
-   */
+  /** The nickname of the alias. */
   public abstract String getNickname();
 
-  /**
-   * The full name of the parent class of the type. If this is not an inner class, will be null.
-   */
+  /** The full name of the parent class of the type. If this is not an inner class, will be null. */
   @Nullable
   public abstract String getParentFullName();
 
@@ -66,9 +54,8 @@ public abstract class TypeAlias {
   public abstract ImportType getImportType();
 
   /**
-   * Returns true if the alias needs to be imported to refer to it only
-   * through the nickname. This will be false if the full name and nickname
-   * are the same.
+   * Returns true if the alias needs to be imported to refer to it only through the nickname. This
+   * will be false if the full name and nickname are the same.
    */
   public boolean needsImport() {
     return !getFullName().equals(getNickname());

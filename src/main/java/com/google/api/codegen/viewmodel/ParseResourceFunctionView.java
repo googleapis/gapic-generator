@@ -35,7 +35,7 @@ public abstract class ParseResourceFunctionView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder entityName(String val);
 
     public abstract Builder name(String val);

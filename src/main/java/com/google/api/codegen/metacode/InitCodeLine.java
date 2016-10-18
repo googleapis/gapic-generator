@@ -16,9 +16,7 @@ package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.util.Name;
 
-/**
- * InitCodeLine represents the creation of a variable with an initialized value.
- */
+/** InitCodeLine represents the creation of a variable with an initialized value. */
 public interface InitCodeLine {
   public Name getIdentifier();
 

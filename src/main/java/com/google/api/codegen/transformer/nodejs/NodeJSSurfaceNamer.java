@@ -28,12 +28,9 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
-
 import java.util.List;
 
-/**
- * The SurfaceNamer for NodeJS.
- */
+/** The SurfaceNamer for NodeJS. */
 public class NodeJSSurfaceNamer extends SurfaceNamer {
   public NodeJSSurfaceNamer(String implicitPackageName) {
     super(

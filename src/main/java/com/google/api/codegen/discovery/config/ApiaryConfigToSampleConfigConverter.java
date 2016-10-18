@@ -14,12 +14,6 @@
  */
 package com.google.api.codegen.discovery.config;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.common.base.Strings;
@@ -27,6 +21,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class ApiaryConfigToSampleConfigConverter {
 
@@ -57,9 +56,7 @@ public class ApiaryConfigToSampleConfigConverter {
     }
   }
 
-  /**
-   * Converts the class' configuration into a SampleConfig.
-   */
+  /** Converts the class' configuration into a SampleConfig. */
   public SampleConfig convert() {
     String apiName = apiaryConfig.getApiName();
     String apiVersion = typeNameGenerator.getApiVersion(apiaryConfig.getApiVersion());
@@ -80,9 +77,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .build();
   }
 
-  /**
-   * Creates a method.
-   */
+  /** Creates a method. */
   private MethodInfo createMethod(Method method) {
     // The order of fields must be preserved, so we use an ImmutableMap.
     ImmutableMap.Builder<String, FieldInfo> fields = new ImmutableMap.Builder<>();
@@ -142,9 +137,7 @@ public class ApiaryConfigToSampleConfigConverter {
     return methodInfo;
   }
 
-  /**
-   * Creates a field.
-   */
+  /** Creates a field. */
   private FieldInfo createFieldInfo(Field field, Type containerType, Method method) {
     String example = "";
     TypeInfo typeInfo = createTypeInfo(field, method);
@@ -170,9 +163,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .build();
   }
 
-  /**
-   * Creates the type of a field.
-   */
+  /** Creates the type of a field. */
   private TypeInfo createTypeInfo(Field field, Method method) {
     boolean isMap =
         apiaryConfig.getAdditionalProperties(method.getResponseTypeUrl(), field.getName()) != null;
@@ -205,11 +196,10 @@ public class ApiaryConfigToSampleConfigConverter {
   /**
    * Creates the type of a method's request and response messages.
    *
-   * Serves as a wrapper over createMessageInfo that produces a message type
-   * which contains only the type's name. The semantics of the method name
-   * change if the message is the request or response type. For a request type,
-   * typeName is some combination of the methodNameComponents, and for a
-   * response type, typeName is parsed from the configuration.
+   * <p>Serves as a wrapper over createMessageInfo that produces a message type which contains only
+   * the type's name. The semantics of the method name change if the message is the request or
+   * response type. For a request type, typeName is some combination of the methodNameComponents,
+   * and for a response type, typeName is parsed from the configuration.
    */
   private TypeInfo createTypeInfo(Method method, boolean isRequest) {
     String typeName =
@@ -238,9 +228,9 @@ public class ApiaryConfigToSampleConfigConverter {
   /**
    * Creates a message type from a type and a field.
    *
-   * If deep is false, the fields of the message are not explored or generated.
-   * Since there is no detection and defense against cycles, only set deep to
-   * true if the fields of the message are important.
+   * <p>If deep is false, the fields of the message are not explored or generated. Since there is no
+   * detection and defense against cycles, only set deep to true if the fields of the message are
+   * important.
    */
   private MessageTypeInfo createMessageTypeInfo(
       Field field, Method method, ApiaryConfig apiaryConfig, boolean deep) {
@@ -262,8 +252,8 @@ public class ApiaryConfigToSampleConfigConverter {
   /**
    * Returns true if method is page streaming.
    *
-   * The heuristic implemented checks if there is some field "nextPageToken"
-   * within the method's response type, and returns true if so.
+   * <p>The heuristic implemented checks if there is some field "nextPageToken" within the method's
+   * response type, and returns true if so.
    */
   private boolean isPageStreaming(Method method) {
     Type type = apiaryConfig.getType(method.getResponseTypeUrl());
@@ -283,8 +273,8 @@ public class ApiaryConfigToSampleConfigConverter {
   /**
    * Returns the resource field of a page streaming response type.
    *
-   * The heuristic implemented returns the first field within type that has a
-   * repeated cardinality.
+   * <p>The heuristic implemented returns the first field within type that has a repeated
+   * cardinality.
    */
   private Field getPageStreamingResourceField(Type type) {
     // We assume the first field with repeated cardinality is the right one.

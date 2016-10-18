@@ -41,7 +41,7 @@ public abstract class SettingsDocView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder serviceAddress(String val);
 
     public abstract Builder servicePort(Integer val);

@@ -25,27 +25,20 @@ public abstract class FieldInfo {
   /**
    * Returns the field's name.
    *
-   * Always lower camel case.
-   * For example: "projectId"
+   * <p>Always lower camel case. For example: "projectId"
    */
   @JsonProperty("name")
   public abstract String name();
 
-  /**
-   * Returns the field's type.
-   */
+  /** Returns the field's type. */
   @JsonProperty("type")
   public abstract TypeInfo type();
 
-  /**
-   * Returns the example value of the field, or empty string if none.
-   */
+  /** Returns the example value of the field, or empty string if none. */
   @JsonProperty("example")
   public abstract String example();
 
-  /**
-   * Returns the description of the field.
-   */
+  /** Returns the description of the field. */
   @JsonProperty("description")
   public abstract String description();
 
@@ -54,7 +47,7 @@ public abstract class FieldInfo {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     @JsonProperty("name")
     public abstract Builder name(String val);

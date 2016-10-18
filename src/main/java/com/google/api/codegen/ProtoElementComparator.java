@@ -15,12 +15,9 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.ProtoElement;
-
 import java.util.Comparator;
 
-/**
- * A comparator for ProtoElements for, e.g., ensuring determinism in test output.
- */
+/** A comparator for ProtoElements for, e.g., ensuring determinism in test output. */
 public class ProtoElementComparator implements Comparator<ProtoElement> {
 
   @Override

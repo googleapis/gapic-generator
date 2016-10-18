@@ -17,7 +17,6 @@ package com.google.api.codegen.metacode;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
-
 import java.util.Map;
 
 /**

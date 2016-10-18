@@ -20,9 +20,7 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-
 import java.util.ArrayList;
-
 import javax.annotation.Nullable;
 
 /**

@@ -14,10 +14,6 @@
  */
 package com.google.api.codegen.discovery;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.NotImplementedException;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
@@ -43,6 +39,8 @@ import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Method;
+import java.util.Map;
+import org.apache.commons.lang3.NotImplementedException;
 
 /*
  * Creates DiscoveryProvider instances based on an ID.

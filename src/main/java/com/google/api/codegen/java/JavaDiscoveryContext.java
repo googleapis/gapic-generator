@@ -26,19 +26,13 @@ import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 import java.util.List;
 
-/**
- * A DiscoveryContext specialized for Java.
- */
+/** A DiscoveryContext specialized for Java. */
 public class JavaDiscoveryContext extends DiscoveryContext implements JavaContext {
 
-  /**
-   * The prefix for Java API client libraries.
-   */
+  /** The prefix for Java API client libraries. */
   private static final String JAVA_SERVICE_TYPE_PREFIX = "com.google.api.services.";
 
-  /**
-   * A map from primitive field types used by DiscoveryImporter to Java counterparts.
-   */
+  /** A map from primitive field types used by DiscoveryImporter to Java counterparts. */
   private static final ImmutableMap<Field.Kind, String> FIELD_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_UNKNOWN, "java.lang.Object")
@@ -54,18 +48,14 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .put(Field.Kind.TYPE_ENUM, "java.lang.String")
           .build();
 
-  /**
-   * A map from types to renamed counterparts in Java client libraries.
-   */
+  /** A map from types to renamed counterparts in Java client libraries. */
   private static final ImmutableMap<String, String> RENAMED_TYPE_MAP =
       ImmutableMap.<String, String>builder()
           .put("storage.model.Object", "storage.model.StorageObject")
           .put("SQLAdmin.Instances.Import", "SQLAdmin.Instances.SQLAdminImport")
           .build();
 
-  /**
-   * A map from unboxed Java primitive type name to corresponding class reference.
-   */
+  /** A map from unboxed Java primitive type name to corresponding class reference. */
   private static final ImmutableMap<String, Class<?>> PRIMITIVE_CLASS_MAP =
       ImmutableMap.<String, Class<?>>builder()
           .put("boolean", boolean.class)
@@ -81,9 +71,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .build();
 
   // TODO(tcoffee): revisit default capitalization behavior based on wider survey of APIs
-  /**
-   * A map from inferred API package names to renamed counterparts in Java client libraries.
-   */
+  /** A map from inferred API package names to renamed counterparts in Java client libraries. */
   private static final ImmutableMap<String, String> RENAMED_PACKAGE_MAP =
       ImmutableMap.<String, String>builder()
           .put("Clouddebugger", "CloudDebugger")
@@ -95,9 +83,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .put("Sqladmin", "SQLAdmin")
           .build();
 
-  /**
-   * A set of names of APIs whose package paths include their version number.
-   */
+  /** A set of names of APIs whose package paths include their version number. */
   private static final ImmutableSet<String> VERSIONED_PACKAGE_SET =
       ImmutableSet.<String>builder()
           .add("clouddebugger")
@@ -110,9 +96,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
 
   private JavaContextCommon javaCommon;
 
-  /**
-   * Constructs the Java discovery context.
-   */
+  /** Constructs the Java discovery context. */
   public JavaDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
   }
@@ -239,9 +223,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
     return basicTypeNameBoxed(field);
   }
 
-  /**
-   * Returns a name for a map field's entry's type.
-   */
+  /** Returns a name for a map field's entry's type. */
   public String entryTypeName(Field field) {
     Type items = getApiaryConfig().getType(field.getTypeUrl());
     return String.format(
@@ -251,16 +233,14 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
         typeName(items, getField(items, "value")));
   }
 
-  /**
-   * Returns the Java representation of a basic-typed field's type, in boxed form.
-   */
+  /** Returns the Java representation of a basic-typed field's type, in boxed form. */
   public String basicTypeNameBoxed(Field field) {
     return javaCommon.boxedTypeName(basicTypeName(field));
   }
 
   /**
-   * Returns the Java representation of a basic-typed field's type. If the type is a Java
-   * primitive, basicTypeName returns it in unboxed form.
+   * Returns the Java representation of a basic-typed field's type. If the type is a Java primitive,
+   * basicTypeName returns it in unboxed form.
    */
   public String basicTypeName(Field field) {
     String result = FIELD_TYPE_MAP.get(field.getKind());

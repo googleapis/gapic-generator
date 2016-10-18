@@ -41,7 +41,7 @@ public abstract class IamResourceView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder resourceGetterFunctionName(String value);
 
     public abstract Builder exampleName(String value);

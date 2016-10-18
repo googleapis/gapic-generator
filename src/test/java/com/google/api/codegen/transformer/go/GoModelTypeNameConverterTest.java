@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.util.TypeName;
 import com.google.common.truth.Truth;
-
 import org.junit.Test;
 
 public class GoModelTypeNameConverterTest {

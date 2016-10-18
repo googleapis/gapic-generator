@@ -74,9 +74,7 @@ public class LanguageGenerator {
     return Character.toUpperCase(string.charAt(0)) + string.substring(1);
   }
 
-  /**
-   * Returns true if it is a Google Cloud API.
-   */
+  /** Returns true if it is a Google Cloud API. */
   private static boolean isApiGoogleCloud(List<String> nameComponents) {
     int size = nameComponents.size();
     return size >= 3

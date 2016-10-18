@@ -23,13 +23,9 @@ import com.google.api.tools.framework.snippet.Doc;
  */
 interface RubySnippetSet<Element> {
 
-  /**
-   * Generates the result filename for the generated document
-   */
+  /** Generates the result filename for the generated document */
   Doc generateFilename(Element iface);
 
-  /**
-   * Generates the result class, and a set of accumulated types to be imported.
-   */
+  /** Generates the result class, and a set of accumulated types to be imported. */
   Doc generateClass(Element iface);
 }

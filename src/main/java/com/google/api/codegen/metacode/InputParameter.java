@@ -17,9 +17,7 @@ package com.google.api.codegen.metacode;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 
-/**
- * InputParameter represents an input parameter for a method call.
- */
+/** InputParameter represents an input parameter for a method call. */
 @AutoValue
 public abstract class InputParameter {
   public abstract TypeRef getType();

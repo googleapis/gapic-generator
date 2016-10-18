@@ -14,14 +14,14 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.go.GoContextCommon;
-import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -35,7 +35,6 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
@@ -55,9 +54,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
-
 import io.grpc.Status.Code;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -233,9 +230,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return new ModelTypeTable(new GoTypeTable(), new GoModelTypeNameConverter());
   }
 
-  /**
-   * Returns the doc comments of Go for the proto elements.
-   */
+  /** Returns the doc comments of Go for the proto elements. */
   public static List<String> doc(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of();

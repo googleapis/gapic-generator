@@ -21,9 +21,7 @@ import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.TypedValue;
 import java.util.Map;
 
-/**
- * Manages the imports for a set of fully-qualified type names.
- */
+/** Manages the imports for a set of fully-qualified type names. */
 public class SampleTypeTable implements SampleTypeNameConverter {
 
   private TypeTable typeTable;

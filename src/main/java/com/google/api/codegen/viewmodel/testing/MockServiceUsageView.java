@@ -27,7 +27,7 @@ public abstract class MockServiceUsageView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder className(String modifier);
 
     public abstract Builder varName(String name);

@@ -17,14 +17,12 @@ package com.google.api.codegen.ruby;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
-
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * RubyApiaryNameMap maps discovery names (found in the discovery docs) to user-friendly names
