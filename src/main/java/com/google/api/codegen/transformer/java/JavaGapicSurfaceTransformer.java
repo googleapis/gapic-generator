@@ -278,8 +278,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return exampleApiMethod;
   }
 
-  private StaticLangApiMethodView searchExampleMethod(List<StaticLangApiMethodView> methods,
-      ApiMethodType methodType) {
+  private StaticLangApiMethodView searchExampleMethod(
+      List<StaticLangApiMethodView> methods, ApiMethodType methodType) {
     for (StaticLangApiMethodView method : methods) {
       if (method.type().equals(methodType)) {
         return method;

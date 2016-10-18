@@ -21,9 +21,19 @@
 @end
 
 @private serviceDoc(xapiClass)
-  @let coreSampleCode = syncMethodSampleCode(xapiClass.doc.exampleApiMethod), \
-       decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
-    {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+  @switch xapiClass.doc.exampleApiMethod.type
+  @case "FlattenedMethod"
+    @let coreSampleCode = syncMethodSampleCode(xapiClass.doc.exampleApiMethod), \
+         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+    @end
+  @case "PagedFlattenedMethod"
+    @let coreSampleCode = pagedIterableMethodSampleCode(xapiClass.doc.exampleApiMethod), \
+         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+    @end
+  @default
+    $unhandledCase: {@xapiClass.doc.exampleApiMethod.type}$
   @end
 @end
 
