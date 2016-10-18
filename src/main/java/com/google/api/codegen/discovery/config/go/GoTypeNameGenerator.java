@@ -43,7 +43,6 @@ public class GoTypeNameGenerator implements TypeNameGenerator {
 
   @Override
   public String getPackagePrefix(String apiName, String apiVersion) {
-    // TODO Auto-generated method stub
     return "google.golang.org/api/" + apiName + "/" + apiVersion;
   }
 

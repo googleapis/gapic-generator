@@ -51,6 +51,21 @@ public class GoSampleNamer extends SampleNamer {
     return localName;
   }
 
+  /**
+   * Returns the constant form of given an authScope URL.
+   *
+   * For example: DriveScope
+   */
+  public static String getAuthScopeConst(String authScope) {
+    int slash = authScope.lastIndexOf('/');
+    if (slash < 0) {
+      throw new IllegalArgumentException(
+          String.format("malformed scope, cannot find slash: %s", authScope));
+    }
+    authScope = authScope.substring(slash + 1).replace('.', '_').replace('-', '_');
+    return Name.from(authScope, "scope").toUpperCamel();
+  }
+
   @Override
   public String getResponseVarName() {
     return "resp";

@@ -64,6 +64,8 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
     String clientVarName = symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("c")));
 
+    // TODO(saicheems): Consider refactoring static GoSampleNamer calls so there
+    // isn't Go specific logic in the transformer.
     String servicePackageName = GoSampleNamer.getServicePackageName(config.packagePrefix());
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(servicePackageName));
     List<String> methodNameComponents = new ArrayList<String>();
@@ -71,10 +73,11 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       methodNameComponents.add(namer.publicFieldName(Name.lowerCamel(nameComponent)));
     }
     String requestVarName = symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("req")));
-    // For this and other type name assignments, we don't go through the symbol
-    // table for some minor conveniences in the sample template. Since all types
-    // we care about are imported with the package in addStaticImports we don't
-    // have to worry about missing imports.
+    // For this and other type name assignments, we don't use TypeTable logic to
+    // add to the import list. The main issue is that the TypeTable returns
+    // fully qualified references ("logging.LogEntry"), and we don't always need
+    // the fully qualified type. Since all imports are added in
+    // addStaticImports, skipping the TypeTable can't result in missing imports.
     String requestTypeName = methodInfo.requestType().message().typeName();
 
     List<SampleFieldView> fields = new ArrayList<>();
@@ -137,13 +140,12 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
   private SampleAuthView createSampleAuthView(SampleTransformerContext context) {
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
-    SampleNamer namer = context.getSampleNamer();
 
     List<String> scopeConsts = new ArrayList<>();
-    // Pull the last scope and reconstruct it into a Go constant.
+    // Pull the last scope and reconstruct it as a Go constant.
     // For example: "https://www.googleapis.com/auth/cloud-platform" to "CloudPlatform"
     if (methodInfo.authScopes().size() > 0) {
-      scopeConsts.add(namer.getAuthScopeConst(methodInfo.authScopes().get(0)));
+      scopeConsts.add(GoSampleNamer.getAuthScopeConst(methodInfo.authScopes().get(0)));
     }
 
     return SampleAuthView.newBuilder()
@@ -204,6 +206,8 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
     // Since nearly any identifier can be shadowed in Go, we add every package
     // name to the symbol table.
+    // GoTypeTable expects imports to be of the format:
+    // "{packagePath};{localName};{typeName};{pointer}"
     typeTable.saveNicknameFor("log;;;");
     symbolTable.getNewSymbol("log");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
