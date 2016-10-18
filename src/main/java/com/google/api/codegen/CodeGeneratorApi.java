@@ -27,12 +27,16 @@ import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.gapic.ResourceNameFormatProto;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
+
+import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,10 +111,23 @@ public class CodeGeneratorApi extends ToolDriverBase {
           createProviderFactory(model, factory);
       List<GapicProvider<? extends Object>> providers =
           providerFactory.create(model, apiConfig, id);
+      String outputFile = options.get(OUTPUT_FILE);
+      Map<String, Doc> outputFiles = Maps.newHashMap();
       for (GapicProvider<? extends Object> provider : providers) {
-        Map<String, Doc> docs = provider.generate();
-        ToolUtil.writeFiles(docs, options.get(OUTPUT_FILE));
+        outputFiles.putAll(provider.generate());
       }
+      writeCodeGenOutput(outputFiles, outputFile);
+    }
+  }
+
+  @VisibleForTesting
+  public static void writeCodeGenOutput(Map<String, Doc> outputFiles, String outputFile)
+      throws IOException {
+    // TODO: Support zip output.
+    if (outputFile.endsWith(".jar")) {
+      ToolUtil.writeJar(outputFiles, outputFile);
+    } else {
+      ToolUtil.writeFiles(outputFiles, outputFile);
     }
   }
 

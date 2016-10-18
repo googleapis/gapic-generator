@@ -375,6 +375,66 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.Application;
+import com.google.api.services.appengine.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class AppengineExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Part of `name`. Name of the application to update. Example: `apps/myapp`.
+    String appsId = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`. Only assigned
+    // fields will be changed:
+    Application requestBody = new Application();
+
+    Appengine appengineService = createAppengineService();
+    Appengine.Apps.Patch request = appengineService.apps().patch(appsId, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Appengine createAppengineService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Appengine.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google Cloud Platform Sample")
+        .build();
+  }
+}
+/**
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
 import com.google.api.services.appengine.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;

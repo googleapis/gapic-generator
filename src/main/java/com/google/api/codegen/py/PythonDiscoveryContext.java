@@ -109,9 +109,8 @@ public class PythonDiscoveryContext extends DiscoveryContext {
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
   public String typeDefaultValue(Type type, Field field, Method method) {
-    // used to handle inconsistency in language detections and translations methods for Translate
-    // API
-    // remove if inconsistency is resolved in discovery docs
+    // Used to handle inconsistency in language detections and translations methods for Translate
+    // API. Remove if inconsistency is resolved in discovery docs.
     if (isTranslateLanguageDetectionsOrTranslationsField(method, field)) {
       return stringLiteral("");
     }
@@ -173,8 +172,8 @@ public class PythonDiscoveryContext extends DiscoveryContext {
 
   @Override
   public boolean hasRequestField(Method method) {
-    // used to handle inconsistency in list methods for Cloud Monitoring API
-    // remove if inconsistency is resolved in discovery docs
+    // Used to handle inconsistency in list methods for Cloud Monitoring API.
+    // Remove if inconsistency is resolved in discovery docs.
     if (isCloudMonitoringListMethod(method)) {
       return false;
     }
@@ -183,8 +182,8 @@ public class PythonDiscoveryContext extends DiscoveryContext {
 
   @Override
   public List<String> getMethodParams(Method method) {
-    // used to handle inconsistency in list methods for Cloud Monitoring API
-    // remove if inconsistency is resolved in discovery docs
+    // Used to handle inconsistency in list methods for Cloud Monitoring API.
+    // Remove if inconsistency is resolved in discovery docs.
     if (isCloudMonitoringListMethod(method)) {
       return getMost(getApiaryConfig().getMethodParams(method.getName()));
     }

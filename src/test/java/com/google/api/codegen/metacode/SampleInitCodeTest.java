@@ -23,7 +23,6 @@ import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.setup.StandardSetup;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.truth.Truth;
 import java.util.ArrayList;
@@ -61,11 +60,10 @@ public class SampleInitCodeTest {
     method = interfaze.getMethods().get(0);
   }
 
-  private InitTreeParserContext.Builder getContextBuilder() {
-    return InitTreeParserContext.newBuilder()
-        .table(new SymbolTable())
-        .rootObjectType(method.getInputType())
-        .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
+  private InitCodeContext.Builder getContextBuilder() {
+    return InitCodeContext.newBuilder()
+        .symbolTable(new SymbolTable())
+        .initObjectType(method.getInputType())
         .suggestedName(Name.from("request"));
   }
 
@@ -186,12 +184,12 @@ public class SampleInitCodeTest {
     expectedCollectionValues.put("entity1", "test1");
     expectedCollectionValues.put("entity2", "test2");
 
-    InitCodeNode actualStructure =
-        InitCodeNode.createTree(
-            getContextBuilder()
-                .initFieldConfigStrings(fieldSpecs)
-                .initValueConfigMap(initValueMap)
-                .build());
+    InitCodeContext context =
+        getContextBuilder()
+            .initFieldConfigStrings(fieldSpecs)
+            .initValueConfigMap(initValueMap)
+            .build();
+    InitCodeNode actualStructure = InitCodeNode.createTree(context);
     Truth.assertThat(actualStructure.getChildren().isEmpty()).isFalse();
     InitCodeNode actualFormattedFieldNode = actualStructure.getChildren().get("formatted_field");
     Truth.assertThat(actualFormattedFieldNode.getInitValueConfig()).isNotNull();
@@ -387,12 +385,12 @@ public class SampleInitCodeTest {
     InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
     initValueMap.put("formatted_field", initValueConfig);
 
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            getContextBuilder()
-                .initFieldConfigStrings(fieldSpecs)
-                .initValueConfigMap(initValueMap)
-                .build());
+    InitCodeContext context =
+        getContextBuilder()
+            .initFieldConfigStrings(fieldSpecs)
+            .initValueConfigMap(initValueMap)
+            .build();
+    InitCodeNode rootNode = InitCodeNode.createTree(context);
     List<String> actualKeyList = new ArrayList<>();
     for (InitCodeNode node : rootNode.listInInitializationOrder()) {
       actualKeyList.add(node.getKey());

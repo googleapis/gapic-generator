@@ -33,7 +33,7 @@ apply plugin: "signing"
 sourceCompatibility = 1.7
 
 group = "com.google.api"
-version = "0.0.2-SNAPSHOT"
+version = "0.0.2"
 
 def protoVersion = "3.0.0-beta-3"
 
@@ -402,7 +402,7 @@ task showJavaFormatterPath << {
 //   ./gradlew runConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runConfigGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.config.ConfigGeneratorTool'
+  main = 'com.google.api.codegen.configgen.ConfigGeneratorTool'
   if (project.hasProperty('clargs')) {
     args = clargs.split(',').toList()
   }
@@ -440,6 +440,7 @@ task verifyLicense << {
     throw new IllegalStateException("Above files do not have licenses")
   }
 }
+
 test.dependsOn verifyLicense
 
 googleJavaFormat {

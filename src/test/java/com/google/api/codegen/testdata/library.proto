@@ -347,8 +347,13 @@ message PublishSeriesRequest {
   // The books to publish in the series.
   repeated Book books = 2;
 
-  // The edition of the series
-  uint32 edition = 3;
+  oneof versioning {
+    // The edition of the series
+    uint32 edition = 3;
+
+    // If the book is in a pre-publish state
+    bool review_copy = 4;
+  }
 }
 
 // Response message for LibraryService.PublishSeries.

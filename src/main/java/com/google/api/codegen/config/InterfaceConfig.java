@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.CollectionConfigProto;
+import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
@@ -23,10 +24,15 @@ import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.api.tools.framework.model.TypeRef;
+import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -46,13 +52,22 @@ import javax.annotation.Nullable;
  * InterfaceConfig represents the code-gen config for an API interface, and includes the
  * configuration for methods and resource names.
  */
-public class InterfaceConfig {
-  private final List<MethodConfig> methodConfigs;
-  private final SmokeTestConfig smokeTestConfig;
-  private final ImmutableMap<String, CollectionConfig> collectionConfigs;
-  private final ImmutableMap<String, MethodConfig> methodConfigMap;
-  private final ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition;
-  private final ImmutableMap<String, RetrySettings> retrySettingsDefinition;
+@AutoValue
+public abstract class InterfaceConfig {
+  public abstract List<MethodConfig> getMethodConfigs();
+
+  @Nullable
+  public abstract SmokeTestConfig getSmokeTestConfig();
+
+  abstract ImmutableMap<String, CollectionConfig> collectionConfigs();
+
+  abstract ImmutableMap<String, MethodConfig> getMethodConfigMap();
+
+  public abstract ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition();
+
+  public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
+
+  public abstract ImmutableList<Field> getIamResources();
 
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up method configurations
@@ -61,7 +76,10 @@ public class InterfaceConfig {
    */
   @Nullable
   public static InterfaceConfig createInterfaceConfig(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto, Interface iface) {
+      DiagCollector diagCollector,
+      String language,
+      InterfaceConfigProto interfaceConfigProto,
+      Interface iface) {
     ImmutableMap<String, CollectionConfig> collectionConfigs =
         createCollectionConfigs(diagCollector, interfaceConfigProto);
 
@@ -76,6 +94,7 @@ public class InterfaceConfig {
       methodConfigMap =
           createMethodConfigMap(
               diagCollector,
+              language,
               interfaceConfigProto,
               iface,
               retryCodesDefinition.keySet(),
@@ -86,16 +105,21 @@ public class InterfaceConfig {
     SmokeTestConfig smokeTestConfig =
         createSmokeTestConfig(diagCollector, iface, interfaceConfigProto);
 
+    ImmutableList<Field> iamResources =
+        createIamResources(
+            iface.getModel(), interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
+
     if (diagCollector.hasErrors()) {
       return null;
     } else {
-      return new InterfaceConfig(
+      return new AutoValue_InterfaceConfig(
           methodConfigs,
           smokeTestConfig,
           collectionConfigs,
           methodConfigMap,
           retryCodesDefinition,
-          retrySettingsDefinition);
+          retrySettingsDefinition,
+          iamResources);
     }
   }
 
@@ -190,6 +214,7 @@ public class InterfaceConfig {
 
   private static ImmutableMap<String, MethodConfig> createMethodConfigMap(
       DiagCollector diagCollector,
+      String language,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
       ImmutableSet<String> retryCodesConfigNames,
@@ -209,6 +234,7 @@ public class InterfaceConfig {
       MethodConfig methodConfig =
           MethodConfig.createMethodConfig(
               diagCollector,
+              language,
               methodConfigProto,
               method,
               retryCodesConfigNames,
@@ -236,64 +262,27 @@ public class InterfaceConfig {
     return methodConfigs;
   }
 
-  private InterfaceConfig(
-      List<MethodConfig> methodConfigs,
-      SmokeTestConfig smokeTestConfig,
-      ImmutableMap<String, CollectionConfig> collectionConfigs,
-      ImmutableMap<String, MethodConfig> methodConfigMap,
-      ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition,
-      ImmutableMap<String, RetrySettings> retryParamsDefinition) {
-    this.methodConfigs = methodConfigs;
-    this.smokeTestConfig = smokeTestConfig;
-    this.collectionConfigs = collectionConfigs;
-    this.methodConfigMap = methodConfigMap;
-    this.retryCodesDefinition = retryCodesDefinition;
-    this.retrySettingsDefinition = retryParamsDefinition;
-  }
-
-  /**
-   * Returns the list of MethodConfigs.
-   */
-  public List<MethodConfig> getMethodConfigs() {
-    return methodConfigs;
-  }
-
-  /**
-   * Returns the SmokeTestConfig.
-   */
-  public SmokeTestConfig getSmokeTestConfig() {
-    return smokeTestConfig;
-  }
-
   public CollectionConfig getCollectionConfig(String entityName) {
-    return collectionConfigs.get(entityName);
+    return collectionConfigs().get(entityName);
   }
 
   /**
    * Returns the list of CollectionConfigs.
    */
   public Collection<CollectionConfig> getCollectionConfigs() {
-    return collectionConfigs.values();
+    return collectionConfigs().values();
   }
 
   /**
    * Returns the MethodConfig for the given method.
    */
   public MethodConfig getMethodConfig(Method method) {
-    MethodConfig methodConfig = methodConfigMap.get(method.getSimpleName());
+    MethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
     if (methodConfig == null) {
       throw new IllegalArgumentException(
           "no method config for method '" + method.getFullName() + "'");
     }
     return methodConfig;
-  }
-
-  public ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition() {
-    return retryCodesDefinition;
-  }
-
-  public ImmutableMap<String, RetrySettings> getRetrySettingsDefinition() {
-    return retrySettingsDefinition;
   }
 
   /**
@@ -312,5 +301,28 @@ public class InterfaceConfig {
       }
     }
     return targetInterface;
+  }
+
+  /** Creates a list of fields that can be turned into IAM resources */
+  private static ImmutableList<Field> createIamResources(
+      Model model, List<IamResourceProto> resources) {
+    ImmutableList.Builder<Field> fields = ImmutableList.builder();
+    for (IamResourceProto resource : resources) {
+      TypeRef type = model.getSymbolTable().lookupType(resource.getType());
+      if (type == null) {
+        throw new IllegalArgumentException("type not found: " + resource.getType());
+      }
+      if (!type.isMessage()) {
+        throw new IllegalArgumentException("type must be a message: " + type);
+      }
+      Field field = type.getMessageType().lookupField(resource.getField());
+      if (field == null) {
+        throw new IllegalArgumentException(
+            String.format(
+                "type %s does not have field %s", resource.getType(), resource.getField()));
+      }
+      fields.add(field);
+    }
+    return fields.build();
   }
 }
