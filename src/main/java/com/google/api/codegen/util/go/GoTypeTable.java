@@ -14,15 +14,16 @@
  */
 package com.google.api.codegen.util.go;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class GoTypeTable implements TypeTable {
 
@@ -107,6 +108,9 @@ public class GoTypeTable implements TypeTable {
   private static boolean isStandardImport(String importPath) {
     // TODO(pongad): Some packages in standard library have slashes,
     // we might have to special case them.
+    if (importPath.equals("net/http")) {
+      return true;
+    }
     return !importPath.contains("/");
   }
 

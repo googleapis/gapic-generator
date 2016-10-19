@@ -18,16 +18,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -39,13 +35,11 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
   if err := storageService.BucketAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
     log.Fatal(err)
@@ -66,21 +60,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -92,13 +81,11 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
   resp, err := storageService.BucketAccessControls.Get(bucket, entity).Context(ctx).Do()
   if err != nil {
@@ -106,7 +93,7 @@ func main() {
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -123,21 +110,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -149,20 +131,19 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
-  rb := storage.BucketAccessControl{
+  rb := &storage.BucketAccessControl{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.BucketAccessControls.Insert(bucket, &rb).Context(ctx).Do()
+  resp, err := storageService.BucketAccessControls.Insert(bucket, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -179,21 +160,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -205,8 +181,7 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   resp, err := storageService.BucketAccessControls.List(bucket).Context(ctx).Do()
   if err != nil {
@@ -214,7 +189,7 @@ func main() {
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -231,21 +206,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -257,25 +227,24 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
-  rb := storage.BucketAccessControl{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &storage.BucketAccessControl{
+    // TODO: Add desired fields of the request body to be changed. Only assigned
+    // fields will be changed.
   }
 
-  resp, err := storageService.BucketAccessControls.Patch(bucket, entity, &rb).Context(ctx).Do()
+  resp, err := storageService.BucketAccessControls.Patch(bucket, entity, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -292,21 +261,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -318,25 +282,23 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
-  rb := storage.BucketAccessControl{
+  rb := &storage.BucketAccessControl{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.BucketAccessControls.Update(bucket, entity, &rb).Context(ctx).Do()
+  resp, err := storageService.BucketAccessControls.Update(bucket, entity, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -357,16 +319,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -378,8 +336,7 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   if err := storageService.Buckets.Delete(bucket).Context(ctx).Do(); err != nil {
     log.Fatal(err)
@@ -400,21 +357,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -426,8 +378,7 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   resp, err := storageService.Buckets.Get(bucket).Context(ctx).Do()
   if err != nil {
@@ -435,7 +386,7 @@ func main() {
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -452,21 +403,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -478,20 +424,19 @@ func main() {
   }
 
   // A valid API project identifier.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
-  rb := storage.Bucket{
+  rb := &storage.Bucket{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.Buckets.Insert(project, &rb).Context(ctx).Do()
+  resp, err := storageService.Buckets.Insert(project, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -508,21 +453,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -534,14 +474,13 @@ func main() {
   }
 
   // A valid API project identifier.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := storageService.Buckets.List(project)
   if err := req.Pages(ctx, func(page *storage.Buckets) error {
     for _, bucket := range page.Items {
       // TODO: Change code below to process each `bucket` resource:
-      fmt.Printf("%#v\n", bucket)
+      log.Printf("%#v\n", bucket)
     }
     return nil
   }); err != nil {
@@ -563,21 +502,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -589,20 +523,20 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
-  rb := storage.Bucket{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &storage.Bucket{
+    // TODO: Add desired fields of the request body to be changed. Only assigned
+    // fields will be changed.
   }
 
-  resp, err := storageService.Buckets.Patch(bucket, &rb).Context(ctx).Do()
+  resp, err := storageService.Buckets.Patch(bucket, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -619,21 +553,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -645,20 +574,19 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
-  rb := storage.Bucket{
+  rb := &storage.Bucket{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.Buckets.Update(bucket, &rb).Context(ctx).Do()
+  resp, err := storageService.Buckets.Update(bucket, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -679,16 +607,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -699,12 +623,11 @@ func main() {
     log.Fatal(err)
   }
 
-
-  rb := storage.Channel{
+  rb := &storage.Channel{
     // TODO: Add desired fields of the request body.
   }
 
-  if err := storageService.Channels.Stop(&rb).Context(ctx).Do(); err != nil {
+  if err := storageService.Channels.Stop(rb).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -727,16 +650,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -748,13 +667,11 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
   if err := storageService.DefaultObjectAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
     log.Fatal(err)
@@ -775,21 +692,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -801,13 +713,11 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
   resp, err := storageService.DefaultObjectAccessControls.Get(bucket, entity).Context(ctx).Do()
   if err != nil {
@@ -815,7 +725,7 @@ func main() {
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -832,21 +742,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -858,20 +763,19 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
-  rb := storage.ObjectAccessControl{
+  rb := &storage.ObjectAccessControl{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.DefaultObjectAccessControls.Insert(bucket, &rb).Context(ctx).Do()
+  resp, err := storageService.DefaultObjectAccessControls.Insert(bucket, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -888,21 +792,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -914,8 +813,7 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   resp, err := storageService.DefaultObjectAccessControls.List(bucket).Context(ctx).Do()
   if err != nil {
@@ -923,7 +821,7 @@ func main() {
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -940,21 +838,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -966,25 +859,24 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
-  rb := storage.ObjectAccessControl{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &storage.ObjectAccessControl{
+    // TODO: Add desired fields of the request body to be changed. Only assigned
+    // fields will be changed.
   }
 
-  resp, err := storageService.DefaultObjectAccessControls.Patch(bucket, entity, &rb).Context(ctx).Do()
+  resp, err := storageService.DefaultObjectAccessControls.Patch(bucket, entity, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1001,21 +893,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1027,25 +914,23 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
-  rb := storage.ObjectAccessControl{
+  rb := &storage.ObjectAccessControl{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.DefaultObjectAccessControls.Update(bucket, entity, &rb).Context(ctx).Do()
+  resp, err := storageService.DefaultObjectAccessControls.Update(bucket, entity, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1066,16 +951,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1087,18 +968,15 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
   if err := storageService.ObjectAccessControls.Delete(bucket, object, entity).Context(ctx).Do(); err != nil {
     log.Fatal(err)
@@ -1119,21 +997,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1145,18 +1018,15 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
   resp, err := storageService.ObjectAccessControls.Get(bucket, object, entity).Context(ctx).Do()
   if err != nil {
@@ -1164,7 +1034,7 @@ func main() {
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1181,21 +1051,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1207,25 +1072,23 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
-  rb := storage.ObjectAccessControl{
+  rb := &storage.ObjectAccessControl{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.ObjectAccessControls.Insert(bucket, object, &rb).Context(ctx).Do()
+  resp, err := storageService.ObjectAccessControls.Insert(bucket, object, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1242,21 +1105,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1268,13 +1126,11 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
   resp, err := storageService.ObjectAccessControls.List(bucket, object).Context(ctx).Do()
   if err != nil {
@@ -1282,7 +1138,7 @@ func main() {
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1299,21 +1155,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1325,30 +1176,28 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
-  rb := storage.ObjectAccessControl{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &storage.ObjectAccessControl{
+    // TODO: Add desired fields of the request body to be changed. Only assigned
+    // fields will be changed.
   }
 
-  resp, err := storageService.ObjectAccessControls.Patch(bucket, object, entity, &rb).Context(ctx).Do()
+  resp, err := storageService.ObjectAccessControls.Patch(bucket, object, entity, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1365,21 +1214,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1391,30 +1235,27 @@ func main() {
   }
 
   // Name of a bucket.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
   // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "{MY-ENTITY}"
-  // TODO: Change placeholder value above.
+  entity := ""  // TODO: Update placeholder value.
 
-  rb := storage.ObjectAccessControl{
+  rb := &storage.ObjectAccessControl{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.ObjectAccessControls.Update(bucket, object, entity, &rb).Context(ctx).Do()
+  resp, err := storageService.ObjectAccessControls.Update(bucket, object, entity, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1431,21 +1272,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1457,27 +1293,25 @@ func main() {
   }
 
   // Name of the bucket in which to store the new object.
-  destinationBucket := "{MY-DESTINATION-BUCKET}"
-  // TODO: Change placeholder value above.
+  destinationBucket := ""  // TODO: Update placeholder value.
 
   // Name of the new object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  destinationObject := "{MY-DESTINATION-OBJECT}"
-  // TODO: Change placeholder value above.
+  destinationObject := ""  // TODO: Update placeholder value.
 
-  rb := storage.ComposeRequest{
+  rb := &storage.ComposeRequest{
     // TODO: Add desired fields of the request body.
   }
 
   // TODO: Use `Download` in place of `Do` below to download media content. For more information, see:
   // https://godoc.org/google.golang.org/api/storage/v1#ObjectsComposeCall.Download
-  resp, err := storageService.Objects.Compose(destinationBucket, destinationObject, &rb).Context(ctx).Do()
+  resp, err := storageService.Objects.Compose(destinationBucket, destinationObject, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1494,21 +1328,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1520,38 +1349,34 @@ func main() {
   }
 
   // Name of the bucket in which to find the source object.
-  sourceBucket := "{MY-SOURCE-BUCKET}"
-  // TODO: Change placeholder value above.
+  sourceBucket := ""  // TODO: Update placeholder value.
 
-  // Name of the source object. For information about how to URL encode object names to be path safe, see
+  // Name of the source object. For information about how to URL encode object names to be path safe,
+  // see Encoding URI Path Parts.
+  sourceObject := ""  // TODO: Update placeholder value.
+
+  // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+  // bucket value, if any.For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  sourceObject := "{MY-SOURCE-OBJECT}"
-  // TODO: Change placeholder value above.
-
-  // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
-  // value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
-  // Path Parts.
-  destinationBucket := "{MY-DESTINATION-BUCKET}"
-  // TODO: Change placeholder value above.
+  destinationBucket := ""  // TODO: Update placeholder value.
 
   // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
   // object metadata's name value, if any.
-  destinationObject := "{MY-DESTINATION-OBJECT}"
-  // TODO: Change placeholder value above.
+  destinationObject := ""  // TODO: Update placeholder value.
 
-  rb := storage.Object{
+  rb := &storage.Object{
     // TODO: Add desired fields of the request body.
   }
 
   // TODO: Use `Download` in place of `Do` below to download media content. For more information, see:
   // https://godoc.org/google.golang.org/api/storage/v1#ObjectsCopyCall.Download
-  resp, err := storageService.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, &rb).Context(ctx).Do()
+  resp, err := storageService.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1572,16 +1397,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1593,13 +1414,11 @@ func main() {
   }
 
   // Name of the bucket in which the object resides.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
   if err := storageService.Objects.Delete(bucket, object).Context(ctx).Do(); err != nil {
     log.Fatal(err)
@@ -1620,21 +1439,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1646,13 +1460,11 @@ func main() {
   }
 
   // Name of the bucket in which the object resides.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
   // TODO: Use `Download` in place of `Do` below to download media content. For more information, see:
   // https://godoc.org/google.golang.org/api/storage/v1#ObjectsGetCall.Download
@@ -1662,7 +1474,7 @@ func main() {
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1679,21 +1491,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1704,25 +1511,24 @@ func main() {
     log.Fatal(err)
   }
 
-  // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
-  // value, if any.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+  // bucket value, if any.
+  bucket := ""  // TODO: Update placeholder value.
 
-  rb := storage.Object{
+  rb := &storage.Object{
     // TODO: Add desired fields of the request body.
   }
 
   // TODO: Add desired media content for upload. For more information, see:
   // https://godoc.org/google.golang.org/api/storage/v1
 
-  resp, err := storageService.Objects.Insert(bucket, &rb).Context(ctx).Do()
+  resp, err := storageService.Objects.Insert(bucket, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1739,21 +1545,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1765,14 +1566,13 @@ func main() {
   }
 
   // Name of the bucket in which to look for objects.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   req := storageService.Objects.List(bucket)
   if err := req.Pages(ctx, func(page *storage.Objects) error {
     for _, object := range page.Items {
       // TODO: Change code below to process each `object` resource:
-      fmt.Printf("%#v\n", object)
+      log.Printf("%#v\n", object)
     }
     return nil
   }); err != nil {
@@ -1794,21 +1594,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1820,25 +1615,24 @@ func main() {
   }
 
   // Name of the bucket in which the object resides.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
-  rb := storage.Object{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &storage.Object{
+    // TODO: Add desired fields of the request body to be changed. Only assigned
+    // fields will be changed.
   }
 
-  resp, err := storageService.Objects.Patch(bucket, object, &rb).Context(ctx).Do()
+  resp, err := storageService.Objects.Patch(bucket, object, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1855,21 +1649,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1881,36 +1670,32 @@ func main() {
   }
 
   // Name of the bucket in which to find the source object.
-  sourceBucket := "{MY-SOURCE-BUCKET}"
-  // TODO: Change placeholder value above.
+  sourceBucket := ""  // TODO: Update placeholder value.
 
-  // Name of the source object. For information about how to URL encode object names to be path safe, see
-  // Encoding URI Path Parts.
-  sourceObject := "{MY-SOURCE-OBJECT}"
-  // TODO: Change placeholder value above.
+  // Name of the source object. For information about how to URL encode object names to be path safe,
+  // see Encoding URI Path Parts.
+  sourceObject := ""  // TODO: Update placeholder value.
 
-  // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
-  // value, if any.
-  destinationBucket := "{MY-DESTINATION-BUCKET}"
-  // TODO: Change placeholder value above.
+  // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+  // bucket value, if any.
+  destinationBucket := ""  // TODO: Update placeholder value.
 
   // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
   // object metadata's name value, if any. For information about how to URL encode object names to be
   // path safe, see Encoding URI Path Parts.
-  destinationObject := "{MY-DESTINATION-OBJECT}"
-  // TODO: Change placeholder value above.
+  destinationObject := ""  // TODO: Update placeholder value.
 
-  rb := storage.Object{
+  rb := &storage.Object{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, &rb).Context(ctx).Do()
+  resp, err := storageService.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1927,21 +1712,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1953,27 +1733,25 @@ func main() {
   }
 
   // Name of the bucket in which the object resides.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
   // Name of the object. For information about how to URL encode object names to be path safe, see
   // Encoding URI Path Parts.
-  object := "{MY-OBJECT}"
-  // TODO: Change placeholder value above.
+  object := ""  // TODO: Update placeholder value.
 
-  rb := storage.Object{
+  rb := &storage.Object{
     // TODO: Add desired fields of the request body.
   }
 
   // TODO: Use `Download` in place of `Do` below to download media content. For more information, see:
   // https://godoc.org/google.golang.org/api/storage/v1#ObjectsUpdateCall.Download
-  resp, err := storageService.Objects.Update(bucket, object, &rb).Context(ctx).Do()
+  resp, err := storageService.Objects.Update(bucket, object, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
 package main
 
@@ -1990,21 +1768,16 @@ package main
 //    project directory.
 
 import (
-  "fmt"
   "log"
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storage/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -2016,18 +1789,17 @@ func main() {
   }
 
   // Name of the bucket in which to look for objects.
-  bucket := "{MY-BUCKET}"
-  // TODO: Change placeholder value above.
+  bucket := ""  // TODO: Update placeholder value.
 
-  rb := storage.Channel{
+  rb := &storage.Channel{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storageService.Objects.WatchAll(bucket, &rb).Context(ctx).Do()
+  resp, err := storageService.Objects.WatchAll(bucket, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
   // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
+  log.Printf("%#v\n", resp)
 }
