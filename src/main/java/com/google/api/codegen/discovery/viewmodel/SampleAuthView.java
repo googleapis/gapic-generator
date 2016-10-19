@@ -38,6 +38,15 @@ public abstract class SampleAuthView {
   @Nullable
   public abstract String authVarName();
 
+  /**
+   * Returns a list of fully-qualified scope constants.
+   *
+   * Go specific.
+   * For example: [logging.ReadScope, logging.WriteScope]
+   */
+  @Nullable
+  public abstract List<String> scopeConsts();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleAuthView.Builder();
   }
@@ -56,6 +65,8 @@ public abstract class SampleAuthView {
     public abstract Builder authFuncName(String val);
 
     public abstract Builder authVarName(String val);
+
+    public abstract Builder scopeConsts(List<String> val);
 
     public abstract SampleAuthView build();
   }
