@@ -6,6 +6,7 @@ package google.example.library.v1;
 
 import "field_mask.proto";
 import "google/api/annotations.proto";
+import "google/longrunning/operations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/any.proto";
@@ -152,6 +153,10 @@ service LibraryService {
   }
 
   // AddLabel intentionally left out to test the reroute_to_grpc_interface feature
+
+  rpc GetBigBook(GetBookRequest) returns (google.longrunning.Operation) {
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:big" };
+  }
 }
 
 // A single book in the library.

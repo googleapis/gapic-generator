@@ -59,6 +59,7 @@ import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBook
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
+import com.google.longrunning.Operation;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
@@ -824,6 +825,32 @@ public class LibraryServiceTest {
 
     Assert.assertEquals(formattedResource, actualRequest.getResource());
     Assert.assertEquals(label, actualRequest.getLabel());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBigBookTest() {
+    String name2 = "name2-1052831874";
+    boolean done = true;
+    Operation expectedResponse = Operation.newBuilder()
+      .setName(name2)
+      .setDone(done)
+      .build();
+    List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    mockLibraryService.setResponses(expectedResponses);
+
+    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+
+    Operation actualResponse =
+        api.getBigBook(name);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
   }
 
 }

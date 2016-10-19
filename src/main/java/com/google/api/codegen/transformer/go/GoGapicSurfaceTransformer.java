@@ -14,12 +14,13 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.go.GoContextCommon;
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.go.GoContextCommon;
+import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -78,6 +79,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
+  private final ServiceMessages serviceMessages = new ServiceMessages();
   private final GapicCodePathMapper pathMapper;
 
   public GoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
@@ -111,6 +113,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
       ImmutableList.<String>of("math;;;", "google.golang.org/api/iterator;;;");
+  private static final ImmutableList<String> LRO_IMPORTS =
+      ImmutableList.<String>of("cloud.google.com/go/longrunning;;;");
 
   private StaticLangXCombinedSurfaceView generate(SurfaceTransformerContext context) {
     StaticLangXCombinedSurfaceView.Builder view = StaticLangXCombinedSurfaceView.newBuilder();
@@ -143,7 +147,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
     view.apiMethods(
-        generateApiMethods(context, context.getSupportedMethods(), PAGE_STREAM_IMPORTS));
+        generateApiMethods(
+            context, context.getSupportedMethods(), PAGE_STREAM_IMPORTS, LRO_IMPORTS));
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
     if (!apiConfig.getInterfaceConfig(service).getIamResources().isEmpty()) {
@@ -194,7 +199,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
     view.apiMethods(
         generateApiMethods(
-            context, context.getSupportedMethods(), Collections.<String>emptyList()));
+            context,
+            context.getSupportedMethods(),
+            Collections.<String>emptyList(),
+            Collections.<String>emptyList()));
     view.iamResources(iamResourceTransformer.generateIamResources(context));
 
     // Examples are different from the API. In particular, we use short declaration
@@ -247,9 +255,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @VisibleForTesting
   List<StaticLangApiMethodView> generateApiMethods(
-      SurfaceTransformerContext context, List<Method> methods, List<String> pageStreamImports) {
+      SurfaceTransformerContext context,
+      List<Method> methods,
+      List<String> pageStreamImports,
+      List<String> lroImports) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     boolean hasPageStreaming = false;
+    boolean hasLro = false;
     for (Method method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodTransformerContext methodContext = context.asMethodContext(method);
@@ -261,11 +273,17 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         hasPageStreaming = true;
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
       } else {
+        hasLro |= serviceMessages.isLongRunningOperationType(method.getOutputType());
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
       }
     }
     if (hasPageStreaming) {
       for (String imp : pageStreamImports) {
+        context.getTypeTable().saveNicknameFor(imp);
+      }
+    }
+    if (hasLro) {
+      for (String imp : lroImports) {
         context.getTypeTable().saveNicknameFor(imp);
       }
     }
@@ -324,6 +342,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
+  private static final String LRO_PROTO_PKG = "google.golang.org/genproto/googleapis/longrunning";
 
   private void addXApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
@@ -336,10 +355,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("google.golang.org/api/option;;;");
     typeTable.saveNicknameFor("google.golang.org/api/transport;;;");
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
+    typeTable.getImports().remove(LRO_PROTO_PKG);
   }
 
   private static final ImmutableList<String> EXAMPLE_GRPC_SERVER_STREAM_IMPORTS =
       ImmutableList.<String>of("io;;;");
+  private static final ImmutableList<String> EXAMPLE_LRO_IMPORTS =
+      ImmutableList.<String>of("github.com/golang/protobuf/ptypes;;;");
 
   @VisibleForTesting
   void addXExampleImports(SurfaceTransformerContext context, List<Method> methods) {
@@ -348,12 +370,19 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor(context.getApiConfig().getPackageName() + ";;;");
 
     boolean hasGrpcServerStreaming = false;
+    boolean hasLro = false;
     for (Method method : methods) {
       typeTable.getAndSaveNicknameFor(method.getInputType());
       hasGrpcServerStreaming |= method.getResponseStreaming();
+      hasLro |= serviceMessages.isLongRunningOperationType(method.getOutputType());
     }
     if (hasGrpcServerStreaming) {
       for (String imp : EXAMPLE_GRPC_SERVER_STREAM_IMPORTS) {
+        typeTable.saveNicknameFor(imp);
+      }
+    }
+    if (hasLro) {
+      for (String imp : EXAMPLE_LRO_IMPORTS) {
         typeTable.saveNicknameFor(imp);
       }
     }

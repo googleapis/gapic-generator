@@ -24,6 +24,7 @@ import (
     "time"
 
     "cloud.google.com/go/iam"
+    "cloud.google.com/go/longrunning"
     gax "github.com/googleapis/gax-go"
     "golang.org/x/net/context"
     "google.golang.org/api/iterator"
@@ -63,6 +64,7 @@ type CallOptions struct {
     StreamBooks []gax.CallOption
     DiscussBook []gax.CallOption
     FindRelatedBooks []gax.CallOption
+    GetBigBook []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -111,6 +113,7 @@ func defaultCallOptions() *CallOptions {
         StreamBooks: retry[[2]string{"default", "idempotent"}],
         DiscussBook: retry[[2]string{"default", "non_idempotent"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
+        GetBigBook: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -604,6 +607,22 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
 
     it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
     return it
+}
+
+// GetBigBook
+func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*longrunning.Operation, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp *longrunningpb.Operation
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetBigBook(ctx, req)
+        return err
+    }, c.CallOptions.GetBigBook...)
+    if err != nil {
+        return nil, err
+    }
+    return longrunning.InternalNewOperation(c.Connection(), resp), nil
 }
 
 

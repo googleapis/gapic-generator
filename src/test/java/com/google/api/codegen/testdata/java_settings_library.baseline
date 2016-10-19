@@ -69,6 +69,7 @@ import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBook
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
+import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.tagger.v1.AddLabelRequest;
 import com.google.tagger.v1.AddLabelResponse;
@@ -163,6 +164,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   private final PageStreamingCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
   private final SimpleCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final SimpleCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
+  private final SimpleCallSettings<GetBookRequest, Operation> getBigBookSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -319,6 +321,13 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
+   * Returns the object with the settings used for calls to getBigBook.
+   */
+  public SimpleCallSettings<GetBookRequest, Operation> getBigBookSettings() {
+    return getBigBookSettings;
+  }
+
+  /**
    * Returns the default service address.
    */
   public static String getDefaultServiceAddress() {
@@ -390,6 +399,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     findRelatedBooksSettings = settingsBuilder.findRelatedBooksSettings().build();
     addTagSettings = settingsBuilder.addTagSettings().build();
     addLabelSettings = settingsBuilder.addLabelSettings().build();
+    getBigBookSettings = settingsBuilder.getBigBookSettings().build();
   }
 
   private static final PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
@@ -660,6 +670,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     private final PageStreamingCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
     private final SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
+    private final SimpleCallSettings.Builder<GetBookRequest, Operation> getBigBookSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -749,6 +760,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       addLabelSettings = SimpleCallSettings.newBuilder(LabelerGrpc.METHOD_ADD_LABEL);
 
+      getBigBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BIG_BOOK);
+
       unaryMethodSettingsBuilders = ImmutableList.<UnaryApiCallSettings.Builder>of(
           createShelfSettings,
           getShelfSettings,
@@ -768,7 +781,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           updateBookIndexSettings,
           findRelatedBooksSettings,
           addTagSettings,
-          addLabelSettings
+          addLabelSettings,
+          getBigBookSettings
       );
     }
 
@@ -858,6 +872,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.getBigBookSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
       return builder;
     }
 
@@ -886,6 +904,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       findRelatedBooksSettings = settings.findRelatedBooksSettings.toBuilder();
       addTagSettings = settings.addTagSettings.toBuilder();
       addLabelSettings = settings.addLabelSettings.toBuilder();
+      getBigBookSettings = settings.getBigBookSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryApiCallSettings.Builder>of(
           createShelfSettings,
@@ -906,7 +925,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           updateBookIndexSettings,
           findRelatedBooksSettings,
           addTagSettings,
-          addLabelSettings
+          addLabelSettings,
+          getBigBookSettings
       );
     }
 
@@ -1114,6 +1134,13 @@ public class LibraryServiceSettings extends ServiceApiSettings {
      */
     public SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings() {
       return addLabelSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getBigBook.
+     */
+    public SimpleCallSettings.Builder<GetBookRequest, Operation> getBigBookSettings() {
+      return getBigBookSettings;
     }
 
     @Override

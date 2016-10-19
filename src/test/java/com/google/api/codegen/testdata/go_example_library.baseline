@@ -21,6 +21,7 @@ import (
     "io"
 
     "cloud.google.com/go/library/apiv1"
+    "github.com/golang/protobuf/ptypes"
     "golang.org/x/net/context"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
 )
@@ -452,6 +453,28 @@ func ExampleClient_FindRelatedBooks() {
         // TODO: Use resp.
         _ = resp
     }
+}
+
+func ExampleClient_GetBigBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetBookRequest{
+        // TODO: Fill request struct fields.
+    }
+    op, err := c.GetBigBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    var resp ptypes.DynamicAny // resp can also be concrete protobuf-generated types.
+    if err := op.Wait(&resp); err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
 }
 
 

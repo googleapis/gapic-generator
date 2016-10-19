@@ -14,12 +14,12 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
@@ -73,7 +73,6 @@ public class ApiMethodTransformer {
     methodViewBuilder.exampleName(
         namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
-    methodViewBuilder.isPageStreaming(true);
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Sync, methodViewBuilder);
 
@@ -97,7 +96,6 @@ public class ApiMethodTransformer {
     methodViewBuilder.name(namer.getAsyncApiMethodName(context.getMethod()));
     methodViewBuilder.exampleName(namer.getAsyncApiMethodExampleName(context.getMethod()));
     setListMethodFields(context, Synchronicity.Async, methodViewBuilder);
-    methodViewBuilder.isPageStreaming(true);
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Async, methodViewBuilder);
 
@@ -116,7 +114,6 @@ public class ApiMethodTransformer {
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setRequestObjectMethodFields(
         context, namer.getPagedCallableMethodName(context.getMethod()), methodViewBuilder);
-    methodViewBuilder.isPageStreaming(true);
 
     return methodViewBuilder.type(ApiMethodType.PagedRequestObjectMethod).build();
   }
@@ -132,7 +129,6 @@ public class ApiMethodTransformer {
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(
         context, namer.getPagedCallableName(context.getMethod()), methodViewBuilder);
-    methodViewBuilder.isPageStreaming(true);
 
     return methodViewBuilder.type(ApiMethodType.PagedCallableMethod).build();
   }
@@ -162,7 +158,6 @@ public class ApiMethodTransformer {
 
     methodViewBuilder.responseTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
-    methodViewBuilder.isPageStreaming(false);
 
     return methodViewBuilder.type(ApiMethodType.UnpagedListCallableMethod).build();
   }
@@ -189,7 +184,6 @@ public class ApiMethodTransformer {
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Async, methodViewBuilder);
     setStaticLangReturnFields(context, Synchronicity.Async, methodViewBuilder);
-    methodViewBuilder.isPageStreaming(false);
 
     return methodViewBuilder.type(type).build();
   }
@@ -210,7 +204,6 @@ public class ApiMethodTransformer {
     methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
     methodViewBuilder.exampleName(
         namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
-    methodViewBuilder.isPageStreaming(false);
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
     setFlattenedMethodFields(
         context, fields, additionalParams, Synchronicity.Sync, methodViewBuilder);
@@ -229,7 +222,6 @@ public class ApiMethodTransformer {
         context.getNamer().getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setRequestObjectMethodFields(
         context, namer.getCallableMethodName(context.getMethod()), methodViewBuilder);
-    methodViewBuilder.isPageStreaming(false);
     setStaticLangReturnFields(context, Synchronicity.Sync, methodViewBuilder);
 
     return methodViewBuilder.type(ApiMethodType.RequestObjectMethod).build();
@@ -248,9 +240,6 @@ public class ApiMethodTransformer {
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
     methodViewBuilder.responseTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
-    methodViewBuilder.hasReturnValue(
-        !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
-    methodViewBuilder.isPageStreaming(false);
 
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }
@@ -270,6 +259,11 @@ public class ApiMethodTransformer {
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
     methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
+
+    ServiceMessages messages = new ServiceMessages();
+    methodViewBuilder.isLongRunning(
+        messages.isLongRunningOperationType(context.getMethod().getOutputType()));
+    methodViewBuilder.hasReturnValue(!messages.isEmptyType(context.getMethod().getOutputType()));
   }
 
   private void setListMethodFields(
@@ -326,7 +320,6 @@ public class ApiMethodTransformer {
                 context.getMethod(), context.getTypeTable(), resourceField));
         break;
     }
-    methodViewBuilder.hasReturnValue(true);
   }
 
   private void setFlattenedMethodFields(
@@ -450,8 +443,6 @@ public class ApiMethodTransformer {
             context.getTypeTable().getAndSaveNicknameFor(streamingReturnTypeFullName);
         methodViewBuilder.responseTypeName(streamingNickname);
     }
-    methodViewBuilder.hasReturnValue(
-        !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
   }
 
   private List<PathTemplateCheckView> generatePathTemplateChecks(
@@ -583,7 +574,6 @@ public class ApiMethodTransformer {
             .getGrpcStreamingApiMethodExampleName(context.getInterface(), context.getMethod()));
     setRequestObjectMethodFields(
         context, namer.getCallableMethodName(context.getMethod()), methodViewBuilder);
-    methodViewBuilder.isPageStreaming(false);
     setStaticLangReturnFields(context, Synchronicity.GrpcStreaming, methodViewBuilder);
 
     return methodViewBuilder.type(ApiMethodType.RequestObjectMethod).build();

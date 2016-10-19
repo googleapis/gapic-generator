@@ -155,11 +155,16 @@
         @case "ServerStreaming"
             {@simpleMethod(view, method)}
         @case "NonStreaming"
-            @if method.isPageStreaming
+            @switch method.type
+            @case "PagedRequestObjectMethod"
                 {@pageStreamingMethod(view, method)}
-            @else
+            @case "RequestObjectMethod"
                 @if method.hasReturnValue
-                    {@simpleMethod(view, method)}
+                    @if method.isLongRunning
+                        {@lroMethod(view, method)}
+                    @else
+                        {@simpleMethod(view, method)}
+                    @end
                 @else
                     {@emptyReturnMethod(view, method)}
                 @end
@@ -186,6 +191,22 @@
             return nil, err
         }
         return resp, nil
+    }
+@end
+
+@private lroMethod(view, method)
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) (*longrunning.Operation, error) {
+        {@mergeMetadata()}
+        var resp {@method.responseTypeName}
+        err := gax.Invoke(ctx, func(ctx context.Context) error {
+            var err error
+            resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
+            return err
+        }, c.CallOptions.{@method.name}...)
+        if err != nil {
+            return nil, err
+        }
+        return longrunning.InternalNewOperation(c.Connection(), resp), nil
     }
 @end
 

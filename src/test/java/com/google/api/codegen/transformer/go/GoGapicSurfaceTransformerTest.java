@@ -90,31 +90,48 @@ public class GoGapicSurfaceTransformerTest {
   private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
       ImmutableList.<String>of("math;;;");
 
-  private static final ImmutableList<String> GRPC_SERVER_STREAM_IMPORTS =
-      ImmutableList.<String>of("io;;;");
+  private static final ImmutableList<String> LRO_IMPORTS =
+      ImmutableList.<String>of("cloud.google.com/go/longrunning;;;");
 
   @Test
   public void testGetImportsPlain() {
     Method method = getMethod(context.getInterface(), "SimpleMethod");
-    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
+    transformer.generateApiMethods(
+        context, Collections.singletonList(method), PAGE_STREAM_IMPORTS, LRO_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("time");
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
   }
 
   @Test
   public void testGetImportsRetry() {
     Method method = getMethod(context.getInterface(), "RetryMethod");
-    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
+    transformer.generateApiMethods(
+        context, Collections.singletonList(method), PAGE_STREAM_IMPORTS, LRO_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("time");
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
   }
 
   @Test
   public void testGetImportsPageStream() {
     Method method = getMethod(context.getInterface(), "PageStreamMethod");
-    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
+    transformer.generateApiMethods(
+        context, Collections.singletonList(method), PAGE_STREAM_IMPORTS, LRO_IMPORTS);
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("math");
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
+  }
+
+  @Test
+  public void testGetImportsLro() {
+    Method method = getMethod(context.getInterface(), "LroMethod");
+    transformer.generateApiMethods(
+        context, Collections.singletonList(method), PAGE_STREAM_IMPORTS, LRO_IMPORTS);
+    transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("math");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsKey("cloud.google.com/go/longrunning");
   }
 
   @Test
@@ -136,6 +153,14 @@ public class GoGapicSurfaceTransformerTest {
     Method method = getMethod(context.getInterface(), "ClientStreamMethod");
     transformer.addXExampleImports(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("io");
+  }
+
+  @Test
+  public void testGetExampleImportsLro() {
+    Method method = getMethod(context.getInterface(), "LroMethod");
+    transformer.addXExampleImports(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsKey("github.com/golang/protobuf/ptypes");
   }
 
   @Test
