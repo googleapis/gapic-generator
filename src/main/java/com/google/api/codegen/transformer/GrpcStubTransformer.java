@@ -62,7 +62,8 @@ public class GrpcStubTransformer {
 
     List<String> methodNames = new ArrayList<>();
     for (Method method : methods) {
-      methodNames.add(namer.getApiMethodName(method));
+      methodNames.add(
+          namer.getApiMethodName(method, context.getMethodConfig(method).getVisibility()));
     }
     stub.methodNames(methodNames);
 
