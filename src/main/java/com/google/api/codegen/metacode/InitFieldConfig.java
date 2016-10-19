@@ -71,7 +71,10 @@ public abstract class InitFieldConfig {
   }
 
   private static String parseValueString(String valueString, String stringToHash) {
-    String randomValue = Integer.toString(Math.abs(stringToHash.hashCode()));
-    return valueString.replace(randomValueToken, randomValue);
+    if (valueString.contains(randomValueToken)) {
+      String randomValue = Integer.toString(Math.abs(stringToHash.hashCode()));
+      valueString = valueString.replace(randomValueToken, randomValue);
+    }
+    return valueString;
   }
 }
