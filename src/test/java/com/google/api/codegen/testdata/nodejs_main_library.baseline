@@ -58,6 +58,12 @@ var PAGE_DESCRIPTORS = {
       'names')
 };
 
+var STREAM_DESCRIPTORS = {
+  streamShelves: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
+  streamBooks: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
+  discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING)
+};
+
 /**
  * The scopes needed to make gRPC calls to all of the methods defined in
  * this service.
@@ -125,7 +131,9 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
       clientConfig,
       PAGE_DESCRIPTORS,
       bundleDescriptors,
-      {'x-goog-api-client': googleApiClient});
+      {'x-goog-api-client': googleApiClient},
+      STREAM_DESCRIPTORS
+  );
 
   var libraryServiceStub = gaxGrpc.createStub(
       servicePath,
@@ -149,6 +157,9 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'addComments',
     'getBookFromArchive',
     'updateBookIndex',
+    'streamShelves',
+    'streamBooks',
+    'discussBook',
     'findRelatedBooks',
     'addTag'
   ];
@@ -1027,6 +1038,89 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
     options = {};
   }
   return this._updateBookIndex(request, options, callback);
+};
+
+/**
+ * Test server streaming
+ * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+ *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @returns {Stream}
+ *   An object stream which emits [StreamShelvesResponse]{@link StreamShelvesResponse} on 'data' event.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ *
+ * api.streamShelves().on('data', function(response) {
+ *     // doThingsWith(response)
+ * });
+ */
+LibraryServiceApi.prototype.streamShelves = function(options) {
+  if (options === undefined) {
+    options = {};
+  }
+  return this._streamShelves({}, options);
+};
+
+/**
+ * Test server streaming, non-paged responses.
+ * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.name
+ *   The name of the shelf whose books we'd like to list.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @returns {Stream}
+ *   An object stream which emits [Book]{@link Book} on 'data' event.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ * var name = '';
+ * api.streamBooks({name: name}).on('data', function(response) {
+ *     // doThingsWith(response)
+ * });
+ */
+LibraryServiceApi.prototype.streamBooks = function(request, options) {
+  if (options === undefined) {
+    options = {};
+  }
+  return this._streamBooks(request, options);
+};
+
+/**
+ * Test bidi-streaming.
+ * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+ *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @returns {Stream}
+ *   An object stream which is both readable and writable. It accepts objects
+ *   representing [DiscussBookRequest]{@link DiscussBookRequest} for write() method, and
+ *   will emit objects representing [Comment]{@link Comment} on 'data' event asynchronously.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ *
+ * var stream = api.discussBook().on('data', function(response) {
+ *     // doThingsWith(response);
+ * });
+ * // Write request objects.
+ * stream.write({});
+ */
+LibraryServiceApi.prototype.discussBook = function(options) {
+  if (options === undefined) {
+    options = {};
+  }
+  return this._discussBook(options);
 };
 
 /**

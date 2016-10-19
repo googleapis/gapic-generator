@@ -11,6 +11,20 @@
         {@initializeRequestObject(apiMethod)}
 
     @end
+    @switch apiMethod.grpcStreamingType.toString
+    @case "NonStreaming"
+        {@nonStreamingSampleCode(apiMethod)}
+    @case "ServerStreaming"
+        {@methodCallReturningStream(apiMethod, "response")}
+    @case "ClientStreaming"
+        {@clientStreamingSampleCode(apiMethod)}
+    @case "BidiStreaming"
+        {@bidiStreamingSampleCode(apiMethod)}
+    @end
+@end
+
+
+@private nonStreamingSampleCode(apiMethod)
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
         {@optionalArrayMethodSampleCode(apiMethod)}
@@ -19,6 +33,35 @@
     @default
         $unhandledCase: {@apiMethod.type.toString}$
     @end
+@end
+
+@private methodCallReturningStream(apiMethod, elementVarName)
+    {@methodCallSampleCode(apiMethod)}.on('data', function({@elementVarName}) {
+        // doThingsWith({@elementVarName})
+    });
+@end
+
+@private clientStreamingSampleCode(apiMethod)
+    var stream = api.{@apiMethod.name}(function(err, response) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        // doThingsWith(response)
+    });
+    {@sampleWriteStreamingRequest(apiMethod)}
+@end
+
+@private bidiStreamingSampleCode(apiMethod)
+    var stream = api.{@apiMethod.name}().on('data', function(response) {
+        // doThingsWith(response);
+    });
+    {@sampleWriteStreamingRequest(apiMethod)}
+@end
+
+@private sampleWriteStreamingRequest(apiMethod)
+    // Write request objects.
+    stream.write({@sampleMethodCallArgList(apiMethod)});
 @end
 
 @private optionalArrayMethodSampleCode(apiMethod)
@@ -31,9 +74,7 @@
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod)
     // Iterate over all elements.
-    {@methodCallSampleCode(apiMethod)}.on('data', function(element) {
-        // doThingsWith(element)
-    });
+    {@methodCallReturningStream(apiMethod, "element")}
 
     // Or obtain the paged response through the callback.
     {@methodCallSampleCodeForPagedResponse(apiMethod)}

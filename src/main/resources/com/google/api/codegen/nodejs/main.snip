@@ -131,6 +131,14 @@
         @end
       };
     @end
+    @if context.filterStreamingMethods(service)
+
+      var STREAM_DESCRIPTORS = {
+        @join method : context.filterStreamingMethods(service) on {@", "}.add(BREAK)
+          {@methodName(method)}: new gax.StreamDescriptor({@streamType(method)})
+        @end
+      };
+    @end
 
     /**
      * The scopes needed to make gRPC calls to all of the methods defined in
@@ -141,6 +149,18 @@
         '{@auth_scope}'
       @end
     ];
+  @end
+@end
+
+@private streamType(method)
+  @if method.getRequestStreaming()
+    @if method.getResponseStreaming()
+      gax.StreamType.BIDI_STREAMING
+    @else
+      gax.StreamType.CLIENT_STREAMING
+    @end
+  @else
+    gax.StreamType.SERVER_STREAMING
   @end
 @end
 
@@ -160,7 +180,13 @@
         @else
           null,
         @end
-        {'x-goog-api-client': googleApiClient});
+        {'x-goog-api-client': googleApiClient},
+        @if context.filterStreamingMethods(service)
+          STREAM_DESCRIPTORS
+        @else
+          null
+        @end
+    );
   @end
 @end
 
@@ -378,32 +404,72 @@
        */
     @end
 
-    {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options, callback) {
-      if (options instanceof Function && callback === undefined) {
-        callback = options;
-        options = {};
-      }
+    {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options{@callbackParams(apiMethodView)}) {
+      @switch apiMethodView.grpcStreamingType.toString
+      @case "ClientStreaming"
+        {@handleCallback()}
+      @case "NonStreaming"
+        {@handleCallback()}
+      @default
+      @end
       if (options === undefined) {
         options = {};
       }
-      return this._{@methodName(method)}({@requestObject(apiMethodView)}, options, callback);
+      return this._{@methodName(method)}({@requestObject(apiMethodView)}options{@callbackParams(apiMethodView)});
     };
   @end
 @end
 
+@private handleCallback()
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+@end
+
+@private callbackParams(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ClientStreaming"
+    , callback
+  @case "NonStreaming"
+    , callback
+  @default
+  @end
+@end
+
 @private requestObject(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ServerStreaming"
+    {@requestObjectInternal(apiMethodView)}
+  @case "NonStreaming"
+    {@requestObjectInternal(apiMethodView)}
+  @default
+  @end
+@end
+
+@private requestObjectInternal(apiMethodView)
   @if apiMethodView.requiredRequestObjectParams.isEmpty
     @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
-      {}
+      {}, {@""}
     @else
-      request
+      request, {@""}
     @end
   @else
-    request
+    request, {@""}
   @end
 @end
 
 @private methodRequestParameters(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ServerStreaming"
+    {@methodRequestParametersInternal(apiMethodView)}
+  @case "NonStreaming"
+    {@methodRequestParametersInternal(apiMethodView)}
+  @default
+  @end
+@end
+
+@private methodRequestParametersInternal(apiMethodView)
   @if apiMethodView.requiredRequestObjectParams.isEmpty
     @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
     @else

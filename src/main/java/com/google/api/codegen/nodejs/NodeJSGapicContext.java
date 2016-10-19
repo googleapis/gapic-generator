@@ -44,9 +44,11 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.Collections;
@@ -65,6 +67,11 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   public NodeJSGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
     namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
+  }
+
+  @Override
+  protected boolean isSupported(Method method) {
+    return true;
   }
 
   // Snippet Helpers
@@ -325,6 +332,20 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           + "  When the callback is specified or streaming is suppressed through options,\n"
           + "  it will return a promise that resolves to the response object. The promise\n"
           + "  has a method named \"cancel\" which cancels the ongoing API call.";
+    } else if (method.getRequestStreaming() && method.getResponseStreaming()) {
+      return "@returns {Stream}\n"
+          + "  An object stream which is both readable and writable. It accepts objects\n"
+          + "  representing "
+          + linkForMessage(method.getInputType().getMessageType())
+          + " for write() method, and\n"
+          + "  will emit objects representing "
+          + linkForMessage(method.getOutputType().getMessageType())
+          + " on 'data' event asynchronously.";
+    } else if (method.getResponseStreaming()) {
+      return "@returns {Stream}\n"
+          + "  An object stream which emits "
+          + linkForMessage(method.getOutputType().getMessageType())
+          + " on 'data' event.";
     }
 
     MessageType returnMessageType = method.getOutputMessage();
@@ -345,6 +366,13 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               + linkForMessage(returnMessageType);
     }
 
+    if (method.getRequestStreaming()) {
+      return callbackMessage
+          + "\n@returns {Stream} - A writable stream which accepts objects representing\n"
+          + "  "
+          + linkForMessage(method.getInputType().getMessageType())
+          + " for write() method.";
+    }
     return callbackMessage
         + "\n@returns {Promise} - The promise which resolves to the response object.\n"
         + "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
@@ -364,6 +392,17 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return builder.build();
   }
 
+  public Iterable<Method> filterStreamingMethods(Interface service) {
+    return Iterables.filter(
+        getSupportedMethods(service),
+        new Predicate<Method>() {
+          @Override
+          public boolean apply(Method method) {
+            return method.getResponseStreaming() || method.getRequestStreaming();
+          }
+        });
+  }
+
   /**
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
@@ -372,29 +411,32 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(msg);
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
-    Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
-    if (config.getRequiredFields().iterator().hasNext() || optionalParams.iterator().hasNext()) {
-      paramTypesBuilder.append(
-          "@param {Object} request\n" + "  The request object that will be sent.\n");
-    }
-    for (Field field : config.getRequiredFields()) {
-      paramTypesBuilder.append(fieldParamComment(field, null, false));
-    }
-    if (optionalParams.iterator().hasNext()) {
-      for (Field field : optionalParams) {
-        if (config.isPageStreaming()
-            && field.equals((config.getPageStreaming().getPageSizeField()))) {
-          paramTypesBuilder.append(
-              fieldParamComment(
-                  field,
-                  "The maximum number of resources contained in the underlying API\n"
-                      + "response. If page streaming is performed per-resource, this\n"
-                      + "parameter does not affect the return value. If page streaming is\n"
-                      + "performed per-page, this determines the maximum number of\n"
-                      + "resources in a page.",
-                  true));
-        } else {
-          paramTypesBuilder.append(fieldParamComment(field, null, true));
+    if (!msg.getRequestStreaming()) {
+      Iterable<Field> optionalParams =
+          removePageTokenFromFields(config.getOptionalFields(), config);
+      if (config.getRequiredFields().iterator().hasNext() || optionalParams.iterator().hasNext()) {
+        paramTypesBuilder.append(
+            "@param {Object} request\n" + "  The request object that will be sent.\n");
+      }
+      for (Field field : config.getRequiredFields()) {
+        paramTypesBuilder.append(fieldParamComment(field, null, false));
+      }
+      if (optionalParams.iterator().hasNext()) {
+        for (Field field : optionalParams) {
+          if (config.isPageStreaming()
+              && field.equals((config.getPageStreaming().getPageSizeField()))) {
+            paramTypesBuilder.append(
+                fieldParamComment(
+                    field,
+                    "The maximum number of resources contained in the underlying API\n"
+                        + "response. If page streaming is performed per-resource, this\n"
+                        + "parameter does not affect the return value. If page streaming is\n"
+                        + "performed per-page, this determines the maximum number of\n"
+                        + "resources in a page.",
+                    true));
+          } else {
+            paramTypesBuilder.append(fieldParamComment(field, null, true));
+          }
         }
       }
     }
