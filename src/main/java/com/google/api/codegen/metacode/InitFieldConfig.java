@@ -23,6 +23,8 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class InitFieldConfig {
+  private static String randomValueToken = "$RANDOM";
+
   public abstract String fieldPath();
 
   @Nullable
@@ -43,7 +45,7 @@ public abstract class InitFieldConfig {
     if (equalsParts.length > 2) {
       throw new IllegalArgumentException("Inconsistent: found multiple '=' characters");
     } else if (equalsParts.length == 2) {
-      value = equalsParts[1];
+      value = parseValueString(equalsParts[1]);
     }
 
     String[] fieldSpecs = equalsParts[0].split("[%]");
@@ -66,5 +68,10 @@ public abstract class InitFieldConfig {
 
   public boolean hasFormattedInitValue() {
     return entityName() != null && value() != null;
+  }
+
+  private static String parseValueString(String valueString) {
+    String randomValue = Integer.toString(Math.abs(valueString.hashCode()));
+    return valueString.replace(randomValueToken, randomValue);
   }
 }

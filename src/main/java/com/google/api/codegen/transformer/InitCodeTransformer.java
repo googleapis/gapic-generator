@@ -41,6 +41,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * InitCodeTransformer generates initialization code for a given method and then transforms it to a
@@ -98,8 +99,8 @@ public class InitCodeTransformer {
   }
 
   /**
-   * A utility method which creates the InitValueConfig map that contains the collection
-   * config data.
+   * A utility method which creates the InitValueConfig map that contains the collection config
+   * data.
    */
   public static ImmutableMap<String, InitValueConfig> createCollectionMap(
       MethodTransformerContext context) {
@@ -288,38 +289,25 @@ public class InitCodeTransformer {
   }
 
   private InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {
-
     InitValueConfig initValueConfig = item.getInitValueConfig();
     Field field = item.getField();
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(item.getField())
+    if (context.getFeatureConfig().useResourceNameFormatOption(field)
         && !item.getType().isRepeated()) {
       // For a repeated type, we want to use a SimpleInitValueView
-
-      ResourceNameInitValueView.Builder initValue = ResourceNameInitValueView.newBuilder();
-
-      initValue.resourceTypeName(ResourceNameUtil.getResourceName(field));
-
-      List<String> varList =
-          Lists.newArrayList(ResourceNameUtil.getResourceNamePathTemplate(field).vars());
-      initValue.formatArgs(getFormatFunctionArgs(varList, initValueConfig));
-
-      return initValue.build();
+      return ResourceNameInitValueView.newBuilder()
+          .resourceTypeName(ResourceNameUtil.getResourceName(field))
+          .formatArgs(getFormatFunctionArgs(context, field, initValueConfig))
+          .build();
     } else if (initValueConfig.hasFormattingConfig()) {
-      FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
-
-      initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
-      initValue.formatFunctionName(
-          context.getNamer().getFormatFunctionName(initValueConfig.getCollectionConfig()));
-
-      List<String> varList =
-          Lists.newArrayList(initValueConfig.getCollectionConfig().getNameTemplate().vars());
-      initValue.formatArgs(getFormatFunctionArgs(varList, initValueConfig));
-
-      return initValue.build();
+      return FormattedInitValueView.newBuilder()
+          .apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()))
+          .formatFunctionName(
+              context.getNamer().getFormatFunctionName(initValueConfig.getCollectionConfig()))
+          .formatArgs(getFormatFunctionArgs(context, field, initValueConfig))
+          .build();
     } else {
       SimpleInitValueView.Builder initValue = SimpleInitValueView.newBuilder();
-
       if (initValueConfig.hasSimpleInitialValue()) {
         initValue.initialValue(
             context
@@ -329,15 +317,27 @@ public class InitCodeTransformer {
         initValue.initialValue(
             context.getTypeTable().getZeroValueAndSaveNicknameFor(item.getType()));
       }
-
       return initValue.build();
     }
   }
 
   private static List<String> getFormatFunctionArgs(
-      List<String> varList, InitValueConfig initValueConfig) {
+      MethodTransformerContext context, Field field, InitValueConfig initValueConfig) {
     List<String> formatFunctionArgs = new ArrayList<>();
-    for (String entityName : varList) {
+
+    Set<String> entityNames;
+    boolean shouldUseCollectionConfigEntityNames =
+        !context.getFeatureConfig().useResourceNameFormatOption(field)
+            || initValueConfig.hasFormattingConfigInitialValues();
+    if (shouldUseCollectionConfigEntityNames) {
+      // Use entity names from collection config since formatting value configuration uses
+      // collection config entity names as keys.
+      entityNames = initValueConfig.getCollectionConfig().getNameTemplate().vars();
+    } else {
+      // Use resource names as default format args if there is no formatting value configuration.
+      entityNames = ResourceNameUtil.getResourceNamePathTemplate(field).vars();
+    }
+    for (String entityName : entityNames) {
       String entityValue = "\"[" + Name.from(entityName).toUpperUnderscore() + "]\"";
       if (initValueConfig.hasFormattingConfigInitialValues()
           && initValueConfig.getCollectionValues().containsKey(entityName)) {
