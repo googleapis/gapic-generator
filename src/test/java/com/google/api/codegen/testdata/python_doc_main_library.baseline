@@ -115,73 +115,73 @@ class LibraryServiceApi(object):
     )
 
     _SHELF_PATH_TEMPLATE = path_template.PathTemplate(
-        'shelves/{shelf}')
+        'shelves/{shelf_id}')
     _BOOK_PATH_TEMPLATE = path_template.PathTemplate(
-        'shelves/{shelf}/books/{book}')
+        'shelves/{shelf_id}/books/{book_id}')
     _ARCHIVED_BOOK_PATH_TEMPLATE = path_template.PathTemplate(
-        'archives/{archive_path=**}/books/{book}')
+        'archives/{archive_path=**}/books/{book_id}')
 
     @classmethod
-    def shelf_path(cls, shelf):
+    def shelf_path(cls, shelf_id):
         """Returns a fully-qualified shelf resource name string."""
         return cls._SHELF_PATH_TEMPLATE.render({
-            'shelf': shelf,
+            'shelf_id': shelf_id,
         })
 
     @classmethod
-    def book_path(cls, shelf, book):
+    def book_path(cls, shelf_id, book_id):
         """Returns a fully-qualified book resource name string."""
         return cls._BOOK_PATH_TEMPLATE.render({
-            'shelf': shelf,
-            'book': book,
+            'shelf_id': shelf_id,
+            'book_id': book_id,
         })
 
     @classmethod
-    def archived_book_path(cls, archive_path, book):
+    def archived_book_path(cls, archive_path, book_id):
         """Returns a fully-qualified archived_book resource name string."""
         return cls._ARCHIVED_BOOK_PATH_TEMPLATE.render({
             'archive_path': archive_path,
-            'book': book,
+            'book_id': book_id,
         })
 
     @classmethod
-    def match_shelf_from_shelf_name(cls, shelf_name):
-        """Parses the shelf from a shelf resource.
+    def match_shelf_id_from_shelf_name(cls, shelf_name):
+        """Parses the shelf_id from a shelf resource.
 
         Args:
           shelf_name (string): A fully-qualified path representing a shelf
             resource.
 
         Returns:
-          A string representing the shelf.
+          A string representing the shelf_id.
         """
-        return cls._SHELF_PATH_TEMPLATE.match(shelf_name).get('shelf')
+        return cls._SHELF_PATH_TEMPLATE.match(shelf_name).get('shelf_id')
 
     @classmethod
-    def match_shelf_from_book_name(cls, book_name):
-        """Parses the shelf from a book resource.
+    def match_shelf_id_from_book_name(cls, book_name):
+        """Parses the shelf_id from a book resource.
 
         Args:
           book_name (string): A fully-qualified path representing a book
             resource.
 
         Returns:
-          A string representing the shelf.
+          A string representing the shelf_id.
         """
-        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('shelf')
+        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('shelf_id')
 
     @classmethod
-    def match_book_from_book_name(cls, book_name):
-        """Parses the book from a book resource.
+    def match_book_id_from_book_name(cls, book_name):
+        """Parses the book_id from a book resource.
 
         Args:
           book_name (string): A fully-qualified path representing a book
             resource.
 
         Returns:
-          A string representing the book.
+          A string representing the book_id.
         """
-        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('book')
+        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('book_id')
 
     @classmethod
     def match_archive_path_from_archived_book_name(cls, archived_book_name):
@@ -197,17 +197,17 @@ class LibraryServiceApi(object):
         return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('archive_path')
 
     @classmethod
-    def match_book_from_archived_book_name(cls, archived_book_name):
-        """Parses the book from a archived_book resource.
+    def match_book_id_from_archived_book_name(cls, archived_book_name):
+        """Parses the book_id from a archived_book resource.
 
         Args:
           archived_book_name (string): A fully-qualified path representing a archived_book
             resource.
 
         Returns:
-          A string representing the book.
+          A string representing the book_id.
         """
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('book')
+        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('book_id')
 
     def __init__(
             self,
@@ -393,7 +393,7 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.shelf_path('[SHELF]')
+          >>> name = api.shelf_path('[SHELF_ID]')
           >>> options_ = ''
           >>> response = api.get_shelf(name, options_)
 
@@ -471,7 +471,7 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.shelf_path('[SHELF]')
+          >>> name = api.shelf_path('[SHELF_ID]')
           >>> api.delete_shelf(name)
 
         Args:
@@ -500,8 +500,8 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.shelf_path('[SHELF]')
-          >>> other_shelf_name = api.shelf_path('[SHELF]')
+          >>> name = api.shelf_path('[SHELF_ID]')
+          >>> other_shelf_name = api.shelf_path('[SHELF_ID]')
           >>> response = api.merge_shelves(name, other_shelf_name)
 
         Args:
@@ -534,7 +534,7 @@ class LibraryServiceApi(object):
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> from google.example.library.v1 import library_pb2
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.shelf_path('[SHELF]')
+          >>> name = api.shelf_path('[SHELF_ID]')
           >>> book = library_pb2.Book()
           >>> response = api.create_book(name, book)
 
@@ -606,7 +606,7 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> response = api.get_book(name)
 
         Args:
@@ -638,7 +638,7 @@ class LibraryServiceApi(object):
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> from google.gax import CallOptions, INITIAL_PAGE
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.shelf_path('[SHELF]')
+          >>> name = api.shelf_path('[SHELF_ID]')
           >>>
           >>> # Iterate over all results
           >>> for element in api.list_books(name):
@@ -688,7 +688,7 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> api.delete_book(name)
 
         Args:
@@ -718,7 +718,7 @@ class LibraryServiceApi(object):
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> from google.example.library.v1 import library_pb2
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> book = library_pb2.Book()
           >>> response = api.update_book(name, book)
 
@@ -759,8 +759,8 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.book_path('[SHELF]', '[BOOK]')
-          >>> other_shelf_name = api.shelf_path('[SHELF]')
+          >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>> other_shelf_name = api.shelf_path('[SHELF_ID]')
           >>> response = api.move_book(name, other_shelf_name)
 
         Args:
@@ -843,7 +843,7 @@ class LibraryServiceApi(object):
           >>> from google.cloud.gapic.example.library.v1 import enums
           >>> from google.example.library.v1 import library_pb2
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> comment = ''
           >>> stage = enums.Comment.Stage.UNSET
           >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -876,7 +876,7 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.archived_book_path('[ARCHIVE_PATH]', '[BOOK]')
+          >>> name = api.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
           >>> response = api.get_book_from_archive(name)
 
         Args:
@@ -907,7 +907,7 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> index_name = ''
           >>> index_map_item = ''
           >>> index_map = {'default_key': index_map_item}
@@ -1088,7 +1088,7 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> resource = api.book_path('[SHELF]', '[BOOK]')
+          >>> resource = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> tag = ''
           >>> response = api.add_tag(resource, tag)
 
@@ -1120,7 +1120,7 @@ class LibraryServiceApi(object):
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
-          >>> resource = api.book_path('[SHELF]', '[BOOK]')
+          >>> resource = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> label = ''
           >>> response = api.add_label(resource, label)
 
