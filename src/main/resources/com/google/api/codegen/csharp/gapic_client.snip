@@ -298,6 +298,9 @@
 @end
 
 @private implClient(api, settings)
+    /// <summary>
+    /// {@api.grpcServiceName} client wrapper implementation, for convenient use.
+    /// </summary>
     public sealed partial class {@api.implName} : {@api.name}
     {
         private readonly ClientHelper _clientHelper;
@@ -305,6 +308,11 @@
             private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
         @end
 
+        /// <summary>
+        /// Constructs a client wrapper for the {@api.grpcServiceName} service, with the specified gRPC client and settings.
+        /// </summary>
+        /// <param name="grpcClient">The underlying gRPC client.</param>
+        /// <param name="settings">The base <see cref="{@settings.name}"/> used within this client </param>
         public {@api.implName}({@api.grpcTypeName} grpcClient, {@settings.name} settings)
         {
             this.GrpcClient = grpcClient;
@@ -452,6 +460,9 @@
         public partial class {@method.listMethod.requestTypeName} : IPageRequest { }
         public partial class {@method.listMethod.responseTypeName} : IPageResponse<{@method.listMethod.resourceTypeName}>
         {
+            /// <summary>
+            /// Returns an enumerator that iterates through the resources in this response.
+            /// </summary>
             public IEnumerator<{@method.listMethod.resourceTypeName}> GetEnumerator() => {@method.listMethod.resourcesFieldGetFunction}.GetEnumerator();
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
