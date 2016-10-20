@@ -31,6 +31,7 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
@@ -147,16 +148,13 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
 
     List<String> scopeConsts = new ArrayList<>();
-    // Pull scopes and reconstruct them as Go constants.
-    // For example: "https://www.googleapis.com/auth/cloud-platform" to "CloudPlatform"
-    // If the sample uses ADC auth, only add the first scope. Otherwise, add all
-    // of them.
+    // Pull scopes and reconstruct them as Go constants if the sample.
+    // For example: "https://www.googleapis.com/auth/cloud-platform" to
+    // "CloudPlatformScope"
     if (config.authType() != AuthType.APPLICATION_DEFAULT_CREDENTIALS) {
       for (String scope : methodInfo.authScopes()) {
         scopeConsts.add(GoSampleNamer.getAuthScopeConst(scope));
       }
-    } else if (methodInfo.authScopes().size() > 0) {
-      scopeConsts.add(GoSampleNamer.getAuthScopeConst(methodInfo.authScopes().get(0)));
     }
 
     return SampleAuthView.newBuilder()
@@ -219,22 +217,30 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     // name to the symbol table.
     // GoTypeTable expects imports to be of the format:
     // "{packagePath};{localName};{typeName};{pointer}"
-    typeTable.saveNicknameFor("log;;;");
-    symbolTable.getNewSymbol("log");
-    typeTable.saveNicknameFor("golang.org/x/net/context;;;");
-    symbolTable.getNewSymbol("context");
+
+    if (config.methods().get(context.getMethodName()).responseType() != null) {
+      saveNicknameAndSymbolFor("fmt;;;", "fmt", typeTable, symbolTable);
+    }
+    saveNicknameAndSymbolFor("log;;;", "log", typeTable, symbolTable);
+    saveNicknameAndSymbolFor("golang.org/x/net/context;;;", "context", typeTable, symbolTable);
     switch (config.authType()) {
       case APPLICATION_DEFAULT_CREDENTIALS:
-        typeTable.saveNicknameFor("golang.org/x/oauth2/google;;;");
-        symbolTable.getNewSymbol("google");
+        saveNicknameAndSymbolFor("golang.org/x/oauth2/google;;;", "google", typeTable, symbolTable);
         break;
       default:
-        typeTable.saveNicknameFor("errors;;;");
-        symbolTable.getNewSymbol("errors");
-        typeTable.saveNicknameFor("net/http;;;");
-        symbolTable.getNewSymbol("http");
+        saveNicknameAndSymbolFor("errors;;;", "errors", typeTable, symbolTable);
+        saveNicknameAndSymbolFor("net/http;;;", "http", typeTable, symbolTable);
     }
-    typeTable.saveNicknameFor(config.packagePrefix() + ";;;");
-    symbolTable.getNewSymbol(GoSampleNamer.getServicePackageName(config.packagePrefix()));
+    saveNicknameAndSymbolFor(
+        config.packagePrefix() + ";;;",
+        GoSampleNamer.getServicePackageName(config.packagePrefix()),
+        typeTable,
+        symbolTable);
+  }
+
+  private void saveNicknameAndSymbolFor(
+      String fullName, String shortName, SampleTypeTable typeTable, SymbolTable symbolTable) {
+    typeTable.saveNicknameFor(fullName);
+    symbolTable.getNewSymbol(shortName);
   }
 }
