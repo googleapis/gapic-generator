@@ -165,65 +165,65 @@ public class LibraryServiceApi implements AutoCloseable {
   private final UnaryApiCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
 
   private static final PathTemplate SHELF_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}");
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
 
   private static final PathTemplate BOOK_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}");
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}/books/{book_id}");
 
   private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("archives/{archive_path=**}/books/{book}");
+      PathTemplate.createWithoutUrlEncoding("archives/{archive_path=**}/books/{book_id}");
 
   /**
    * Formats a string containing the fully-qualified path to represent
    * a shelf resource.
    */
-  public static final String formatShelfName(String shelf) {
+  public static final String formatShelfName(String shelfId) {
     return SHELF_PATH_TEMPLATE.instantiate(
-        "shelf", shelf);
+        "shelf_id", shelfId);
   }
 
   /**
    * Formats a string containing the fully-qualified path to represent
    * a book resource.
    */
-  public static final String formatBookName(String shelf, String book) {
+  public static final String formatBookName(String shelfId, String bookId) {
     return BOOK_PATH_TEMPLATE.instantiate(
-        "shelf", shelf,
-        "book", book);
+        "shelf_id", shelfId,
+        "book_id", bookId);
   }
 
   /**
    * Formats a string containing the fully-qualified path to represent
    * a archived_book resource.
    */
-  public static final String formatArchivedBookName(String archivePath, String book) {
+  public static final String formatArchivedBookName(String archivePath, String bookId) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
         "archive_path", archivePath,
-        "book", book);
+        "book_id", bookId);
   }
 
   /**
-   * Parses the shelf from the given fully-qualified path which
+   * Parses the shelf_id from the given fully-qualified path which
    * represents a shelf resource.
    */
-  public static final String parseShelfFromShelfName(String shelfName) {
-    return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf");
+  public static final String parseShelfIdFromShelfName(String shelfName) {
+    return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
   }
 
   /**
-   * Parses the shelf from the given fully-qualified path which
+   * Parses the shelf_id from the given fully-qualified path which
    * represents a book resource.
    */
-  public static final String parseShelfFromBookName(String bookName) {
-    return BOOK_PATH_TEMPLATE.parse(bookName).get("shelf");
+  public static final String parseShelfIdFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("shelf_id");
   }
 
   /**
-   * Parses the book from the given fully-qualified path which
+   * Parses the book_id from the given fully-qualified path which
    * represents a book resource.
    */
-  public static final String parseBookFromBookName(String bookName) {
-    return BOOK_PATH_TEMPLATE.parse(bookName).get("book");
+  public static final String parseBookIdFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("book_id");
   }
 
   /**
@@ -235,11 +235,11 @@ public class LibraryServiceApi implements AutoCloseable {
   }
 
   /**
-   * Parses the book from the given fully-qualified path which
+   * Parses the book_id from the given fully-qualified path which
    * represents a archivedBook resource.
    */
-  public static final String parseBookFromArchivedBookName(String archivedBookName) {
-    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book");
+  public static final String parseBookIdFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book_id");
   }
 
   /**
@@ -1418,7 +1418,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1453,7 +1453,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1485,7 +1485,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1896,7 +1896,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagResponse response = libraryServiceApi.addTag(formattedResource, tag);
    * }
@@ -1925,7 +1925,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -1949,7 +1949,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -1972,7 +1972,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelResponse response = libraryServiceApi.addLabel(formattedResource, label);
    * }
@@ -2001,7 +2001,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
    *     .setResource(formattedResource)
@@ -2025,7 +2025,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
    *     .setResource(formattedResource)

@@ -704,57 +704,57 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Path template for a shelf resource. Parameters:
         /// <list type="bullet">
-        /// <item><description>shelf</description></item>
+        /// <item><description>shelfId</description></item>
         /// </list>
         /// </summary>
-        public static PathTemplate ShelfTemplate { get; } = new PathTemplate("shelves/{shelf}");
+        public static PathTemplate ShelfTemplate { get; } = new PathTemplate("shelves/{shelf_id}");
 
         /// <summary>
         /// Creates a shelf resource name from its component IDs.
         /// </summary>
-        /// <param name="shelfId">The shelf ID.</param>
+        /// <param name="shelfIdId">The shelfId ID.</param>
         /// <returns>
         /// The full shelf resource name.
         /// </returns>
-        public static string FormatShelfName(string shelfId) => ShelfTemplate.Expand(shelfId);
+        public static string FormatShelfName(string shelfIdId) => ShelfTemplate.Expand(shelfIdId);
 
         /// <summary>
         /// Path template for a book resource. Parameters:
         /// <list type="bullet">
-        /// <item><description>shelf</description></item>
-        /// <item><description>book</description></item>
+        /// <item><description>shelfId</description></item>
+        /// <item><description>bookId</description></item>
         /// </list>
         /// </summary>
-        public static PathTemplate BookTemplate { get; } = new PathTemplate("shelves/{shelf}/books/{book}");
+        public static PathTemplate BookTemplate { get; } = new PathTemplate("shelves/{shelf_id}/books/{book_id}");
 
         /// <summary>
         /// Creates a book resource name from its component IDs.
         /// </summary>
-        /// <param name="shelfId">The shelf ID.</param>
-        /// <param name="bookId">The book ID.</param>
+        /// <param name="shelfIdId">The shelfId ID.</param>
+        /// <param name="bookIdId">The bookId ID.</param>
         /// <returns>
         /// The full book resource name.
         /// </returns>
-        public static string FormatBookName(string shelfId, string bookId) => BookTemplate.Expand(shelfId, bookId);
+        public static string FormatBookName(string shelfIdId, string bookIdId) => BookTemplate.Expand(shelfIdId, bookIdId);
 
         /// <summary>
         /// Path template for a archived_book resource. Parameters:
         /// <list type="bullet">
         /// <item><description>archivePath</description></item>
-        /// <item><description>book</description></item>
+        /// <item><description>bookId</description></item>
         /// </list>
         /// </summary>
-        public static PathTemplate ArchivedBookTemplate { get; } = new PathTemplate("archives/{archive_path=**}/books/{book}");
+        public static PathTemplate ArchivedBookTemplate { get; } = new PathTemplate("archives/{archive_path=**}/books/{book_id}");
 
         /// <summary>
         /// Creates a archived_book resource name from its component IDs.
         /// </summary>
         /// <param name="archivePathId">The archivePath ID.</param>
-        /// <param name="bookId">The book ID.</param>
+        /// <param name="bookIdId">The bookId ID.</param>
         /// <returns>
         /// The full archived_book resource name.
         /// </returns>
-        public static string FormatArchivedBookName(string archivePathId, string bookId) => ArchivedBookTemplate.Expand(archivePathId, bookId);
+        public static string FormatArchivedBookName(string archivePathId, string bookIdId) => ArchivedBookTemplate.Expand(archivePathId, bookIdId);
 
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.

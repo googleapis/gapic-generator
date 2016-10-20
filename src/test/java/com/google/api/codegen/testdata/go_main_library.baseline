@@ -37,9 +37,9 @@ import (
 )
 
 var (
-    libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}")
-    libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
-    libraryArchivedBookPathTemplate = gax.MustCompilePathTemplate("archives/{archive_path=**}/books/{book}")
+    libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}")
+    libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}/books/{book_id}")
+    libraryArchivedBookPathTemplate = gax.MustCompilePathTemplate("archives/{archive_path=**}/books/{book_id}")
 )
 
 // CallOptions contains the retry settings for each method of Client.
@@ -183,9 +183,9 @@ func (c *Client) SetGoogleClientInfo(name, version string) {
 }
 
 // LibraryShelfPath returns the path for the shelf resource.
-func LibraryShelfPath(shelf string) string {
+func LibraryShelfPath(shelfId string) string {
     path, err := libraryShelfPathTemplate.Render(map[string]string{
-        "shelf": shelf,
+        "shelf_id": shelfId,
     })
     if err != nil {
         panic(err)
@@ -194,10 +194,10 @@ func LibraryShelfPath(shelf string) string {
 }
 
 // LibraryBookPath returns the path for the book resource.
-func LibraryBookPath(shelf, book string) string {
+func LibraryBookPath(shelfId, bookId string) string {
     path, err := libraryBookPathTemplate.Render(map[string]string{
-        "shelf": shelf,
-        "book": book,
+        "shelf_id": shelfId,
+        "book_id": bookId,
     })
     if err != nil {
         panic(err)
@@ -206,10 +206,10 @@ func LibraryBookPath(shelf, book string) string {
 }
 
 // LibraryArchivedBookPath returns the path for the archived book resource.
-func LibraryArchivedBookPath(archivePath, book string) string {
+func LibraryArchivedBookPath(archivePath, bookId string) string {
     path, err := libraryArchivedBookPathTemplate.Render(map[string]string{
         "archive_path": archivePath,
-        "book": book,
+        "book_id": bookId,
     })
     if err != nil {
         panic(err)

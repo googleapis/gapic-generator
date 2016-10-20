@@ -103,73 +103,73 @@ module Library
       ].freeze
 
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}"
+        "shelves/{shelf_id}"
       )
 
       private_constant :SHELF_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}/books/{book}"
+        "shelves/{shelf_id}/books/{book_id}"
       )
 
       private_constant :BOOK_PATH_TEMPLATE
 
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive_path=**}/books/{book}"
+        "archives/{archive_path=**}/books/{book_id}"
       )
 
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
       # Returns a fully-qualified shelf resource name string.
-      # @param shelf [String]
+      # @param shelf_id [String]
       # @return [String]
-      def self.shelf_path shelf
+      def self.shelf_path shelf_id
         SHELF_PATH_TEMPLATE.render(
-          :"shelf" => shelf
+          :"shelf_id" => shelf_id
         )
       end
 
       # Returns a fully-qualified book resource name string.
-      # @param shelf [String]
-      # @param book [String]
+      # @param shelf_id [String]
+      # @param book_id [String]
       # @return [String]
-      def self.book_path shelf, book
+      def self.book_path shelf_id, book_id
         BOOK_PATH_TEMPLATE.render(
-          :"shelf" => shelf,
-          :"book" => book
+          :"shelf_id" => shelf_id,
+          :"book_id" => book_id
         )
       end
 
       # Returns a fully-qualified archived_book resource name string.
       # @param archive_path [String]
-      # @param book [String]
+      # @param book_id [String]
       # @return [String]
-      def self.archived_book_path archive_path, book
+      def self.archived_book_path archive_path, book_id
         ARCHIVED_BOOK_PATH_TEMPLATE.render(
           :"archive_path" => archive_path,
-          :"book" => book
+          :"book_id" => book_id
         )
       end
 
-      # Parses the shelf from a shelf resource.
+      # Parses the shelf_id from a shelf resource.
       # @param shelf_name [String]
       # @return [String]
-      def self.match_shelf_from_shelf_name shelf_name
-        SHELF_PATH_TEMPLATE.match(shelf_name)["shelf"]
+      def self.match_shelf_id_from_shelf_name shelf_name
+        SHELF_PATH_TEMPLATE.match(shelf_name)["shelf_id"]
       end
 
-      # Parses the shelf from a book resource.
+      # Parses the shelf_id from a book resource.
       # @param book_name [String]
       # @return [String]
-      def self.match_shelf_from_book_name book_name
-        BOOK_PATH_TEMPLATE.match(book_name)["shelf"]
+      def self.match_shelf_id_from_book_name book_name
+        BOOK_PATH_TEMPLATE.match(book_name)["shelf_id"]
       end
 
-      # Parses the book from a book resource.
+      # Parses the book_id from a book resource.
       # @param book_name [String]
       # @return [String]
-      def self.match_book_from_book_name book_name
-        BOOK_PATH_TEMPLATE.match(book_name)["book"]
+      def self.match_book_id_from_book_name book_name
+        BOOK_PATH_TEMPLATE.match(book_name)["book_id"]
       end
 
       # Parses the archive_path from a archived_book resource.
@@ -179,11 +179,11 @@ module Library
         ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["archive_path"]
       end
 
-      # Parses the book from a archived_book resource.
+      # Parses the book_id from a archived_book resource.
       # @param archived_book_name [String]
       # @return [String]
-      def self.match_book_from_archived_book_name archived_book_name
-        ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["book"]
+      def self.match_book_id_from_archived_book_name archived_book_name
+        ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["book_id"]
       end
 
       # @param service_path [String]
@@ -387,7 +387,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   options = ''
       #   response = library_service_api.get_shelf(formatted_name, options)
 
@@ -456,7 +456,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   library_service_api.delete_shelf(formatted_name)
 
       def delete_shelf \
@@ -487,8 +487,8 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
-      #   formatted_other_shelf_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
+      #   formatted_other_shelf_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   response = library_service_api.merge_shelves(formatted_name, formatted_other_shelf_name)
 
       def merge_shelves \
@@ -520,7 +520,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   book = Book.new
       #   response = library_service_api.create_book(formatted_name, book)
 
@@ -591,7 +591,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_service_api.get_book(formatted_name)
 
       def get_book \
@@ -630,7 +630,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #
       #   # Iterate over all results.
       #   library_service_api.list_books(formatted_name).each do |element|
@@ -672,7 +672,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   library_service_api.delete_book(formatted_name)
 
       def delete_book \
@@ -706,7 +706,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   book = Book.new
       #   response = library_service_api.update_book(formatted_name, book)
 
@@ -742,8 +742,8 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
-      #   formatted_other_shelf_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_other_shelf_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   response = library_service_api.move_book(formatted_name, formatted_other_shelf_name)
 
       def move_book \
@@ -822,7 +822,7 @@ module Library
       #   Stage = Google::Example::Library::V1::Comment::Stage
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   comment = ''
       #   stage = Stage::UNSET
       #   alignment = Alignment::CHAR
@@ -859,7 +859,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.archived_book_path("[ARCHIVE_PATH]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
       #   response = library_service_api.get_book_from_archive(formatted_name)
 
       def get_book_from_archive \
@@ -889,7 +889,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   index_name = "default index"
       #   index_map_item = ''
       #   index_map = { "default_key" => index_map_item }
@@ -980,7 +980,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_resource = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_resource = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   tag = ''
       #   response = library_service_api.add_tag(formatted_resource, tag)
 
@@ -1014,7 +1014,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_resource = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_resource = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   label = ''
       #   response = library_service_api.add_label(formatted_resource, label)
 
