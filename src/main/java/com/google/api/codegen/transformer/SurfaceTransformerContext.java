@@ -137,12 +137,28 @@ public abstract class SurfaceTransformerContext {
         getFeatureConfig());
   }
 
-  /** Returns a list of simple RPC methods. */
+  /** Returns a list of supported methods, configured by FeatureConfig. */
   public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
       if (isSupported(method)) {
+        methods.add(method);
+      }
+    }
+    return methods;
+  }
+
+  /**
+   * Returns a list of methods with samples, similar to getSupportedMethods,
+   * but also filter out private methods.
+   */
+  public List<Method> getPublicMethods() {
+    List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
+    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
+      Method method = methodConfig.getMethod();
+      VisibilityConfig visibility = getInterfaceConfig().getMethodConfig(method).getVisibility();
+      if (isSupported(method) && visibility == VisibilityConfig.PUBLIC) {
         methods.add(method);
       }
     }

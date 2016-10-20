@@ -61,7 +61,6 @@ public abstract class MethodTransformerContext {
 
   public abstract Method getMethod();
 
-  @Nullable
   public abstract MethodConfig getMethodConfig();
 
   public abstract FeatureConfig getFeatureConfig();

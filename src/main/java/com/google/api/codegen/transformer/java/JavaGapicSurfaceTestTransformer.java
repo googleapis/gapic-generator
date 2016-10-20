@@ -153,7 +153,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         initCodeTransformer.generateInitCode(context, createSmokeTestInitContext(context));
 
     return TestMethodView.newBuilder()
-        .name(namer.getApiMethodName(method))
+        .name(namer.getApiMethodName(method, context.getMethodConfig().getVisibility()))
         .responseTypeName(context.getTypeTable().getAndSaveNicknameFor(method.getOutputType()))
         .type(methodType)
         .initCode(initCodeView)
@@ -253,7 +253,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     String responseTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
-    String surfaceMethodName = namer.getApiMethodName(method);
+    String surfaceMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
 
     ApiMethodType type = ApiMethodType.FlattenedMethod;
     if (methodConfig.isPageStreaming()) {
@@ -488,7 +488,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
 
     return MockGrpcMethodView.newBuilder()
-        .name(methodContext.getNamer().getApiMethodName(method))
+        .name(
+            methodContext
+                .getNamer()
+                .getApiMethodName(method, methodContext.getMethodConfig().getVisibility()))
         .requestTypeName(requestTypeName)
         .responseTypeName(responseTypeName)
         .grpcStreamingType(methodContext.getMethodConfig().getGrpcStreamingType())

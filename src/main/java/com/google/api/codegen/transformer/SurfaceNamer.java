@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
@@ -475,8 +476,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the surface method which can call the given API method. */
-  public String getApiMethodName(Method method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName()));
+  public String getApiMethodName(Method method, VisibilityConfig visibility) {
+    return visibility.methodName(this, Name.upperCamel(method.getSimpleName()));
   }
 
   /** The name of the async surface method which can call the given API method. */
@@ -486,7 +487,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the example for the method. */
   public String getApiMethodExampleName(Interface interfaze, Method method) {
-    return getApiMethodName(method);
+    return getApiMethodName(method, VisibilityConfig.PUBLIC);
   }
 
   public String getAsyncApiMethodExampleName(Method method) {
@@ -494,13 +495,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the GRPC streaming surface method which can call the given API method. */
-  public String getGrpcStreamingApiMethodName(Method method) {
-    return getApiMethodName(method);
+  public String getGrpcStreamingApiMethodName(Method method, VisibilityConfig visibility) {
+    return getApiMethodName(method, visibility);
   }
 
   /** The name of the example of the GRPC streaming surface method which can call the given API method. */
   public String getGrpcStreamingApiMethodExampleName(Interface interfaze, Method method) {
-    return getGrpcStreamingApiMethodName(method);
+    return getGrpcStreamingApiMethodName(method, VisibilityConfig.PUBLIC);
   }
 
   /**
@@ -540,6 +541,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** Provides the doc lines for the given proto element in the current language. */
   public List<String> getDocLines(ProtoElement element) {
     return getDocLines(DocumentationUtil.getDescription(element));
+  }
+
+  /** Provides the doc lines for the given method element in the current language. */
+  public List<String> getDocLines(Method method, MethodConfig methodConfig) {
+    return getDocLines(method);
   }
 
   /** The doc lines that declare what exception(s) are thrown for an API method. */
