@@ -84,20 +84,13 @@ public class GoGapicSurfaceTransformerTest {
             apiConfig,
             GoGapicSurfaceTransformer.createTypeTable(),
             namer,
-            new FeatureConfig());
+            new GoFeatureConfig());
   }
-
-  private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
-      ImmutableList.<String>of("math;;;");
-
-  private static final ImmutableList<String> LRO_IMPORTS =
-      ImmutableList.<String>of("cloud.google.com/go/longrunning;;;");
 
   @Test
   public void testGetImportsPlain() {
     Method method = getMethod(context.getInterface(), "SimpleMethod");
-    transformer.generateApiMethods(
-        context, Collections.singletonList(method), PAGE_STREAM_IMPORTS, LRO_IMPORTS);
+    transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("time");
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
@@ -106,8 +99,7 @@ public class GoGapicSurfaceTransformerTest {
   @Test
   public void testGetImportsRetry() {
     Method method = getMethod(context.getInterface(), "RetryMethod");
-    transformer.generateApiMethods(
-        context, Collections.singletonList(method), PAGE_STREAM_IMPORTS, LRO_IMPORTS);
+    transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("time");
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
@@ -116,8 +108,7 @@ public class GoGapicSurfaceTransformerTest {
   @Test
   public void testGetImportsPageStream() {
     Method method = getMethod(context.getInterface(), "PageStreamMethod");
-    transformer.generateApiMethods(
-        context, Collections.singletonList(method), PAGE_STREAM_IMPORTS, LRO_IMPORTS);
+    transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("math");
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
@@ -126,8 +117,7 @@ public class GoGapicSurfaceTransformerTest {
   @Test
   public void testGetImportsLro() {
     Method method = getMethod(context.getInterface(), "LroMethod");
-    transformer.generateApiMethods(
-        context, Collections.singletonList(method), PAGE_STREAM_IMPORTS, LRO_IMPORTS);
+    transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("math");
     Truth.assertThat(context.getTypeTable().getImports())
