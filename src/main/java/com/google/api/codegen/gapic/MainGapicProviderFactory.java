@@ -45,6 +45,7 @@ import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
@@ -67,10 +68,10 @@ public class MainGapicProviderFactory
 
   /** Create the GapicProviders based on the given id */
   public static List<GapicProvider<? extends Object>> defaultCreate(
-      Model model, ApiConfig apiConfig, String id) {
+      Model model, ApiConfig apiConfig, GapicGeneratorConfig generatorConfig) {
 
+    String id = generatorConfig.id();
     // Please keep the following IDs in alphabetical order
-
     if (id.equals(CLIENT_CONFIG)) {
       GapicProvider<? extends Object> provider =
           CommonGapicProvider.<Interface>newBuilder()
@@ -133,20 +134,24 @@ public class MainGapicProviderFactory
               .setModelToViewTransformer(new JavaGapicSurfaceTransformer(javaPathMapper))
               .build();
 
-      GapicCodePathMapper javaTestPathMapper =
-          CommonGapicCodePathMapper.newBuilder()
-              .setPrefix("src/test/java")
-              .setShouldAppendPackage(true)
-              .build();
-      GapicProvider<? extends Object> testProvider =
-          ViewModelGapicProvider.newBuilder()
-              .setModel(model)
-              .setApiConfig(apiConfig)
-              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-              .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaTestPathMapper))
-              .build();
-
-      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, testProvider);
+      ArrayList<GapicProvider<? extends Object>> providers = new ArrayList<>();
+      providers.add(mainProvider);
+      if (!generatorConfig.disableTestGenerator()) {
+        GapicCodePathMapper javaTestPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix("src/test/java")
+                .setShouldAppendPackage(true)
+                .build();
+        GapicProvider<? extends Object> testProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaTestPathMapper))
+                .build();
+        providers.add(testProvider);
+      }
+      return providers;
 
     } else if (id.equals(NODEJS) || id.equals(NODEJS_DOC)) {
       GapicCodePathMapper nodeJSPathMapper = new NodeJSCodePathMapper();
@@ -327,7 +332,8 @@ public class MainGapicProviderFactory
 
   /** Create the GapicProviders based on the given id */
   @Override
-  public List<GapicProvider<? extends Object>> create(Model model, ApiConfig apiConfig, String id) {
-    return defaultCreate(model, apiConfig, id);
+  public List<GapicProvider<? extends Object>> create(
+      Model model, ApiConfig apiConfig, GapicGeneratorConfig generatorConfig) {
+    return defaultCreate(model, apiConfig, generatorConfig);
   }
 }

@@ -14,18 +14,28 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.config.ApiConfig;
-import com.google.api.tools.framework.model.Model;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
-
-/**
- * A factory for GapicProviders which perform code generation.
+/*
+ * A context class which stores config data used by MainGapicProviderFactory.
  */
-public interface GapicProviderFactory<ProviderT> {
-  /**
-   * Create the provider from the given model, apiConfig, and generatorConfig.
-   */
-  public List<ProviderT> create(
-      Model model, ApiConfig apiConfig, GapicGeneratorConfig generatorConfig);
+@AutoValue
+public abstract class GapicGeneratorConfig {
+
+  public abstract boolean disableTestGenerator();
+
+  public abstract String id();
+
+  public static Builder newBuilder() {
+    return new AutoValue_GapicGeneratorConfig.Builder().disableTestGenerator(false);
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder disableTestGenerator(boolean val);
+
+    public abstract Builder id(String val);
+
+    public abstract GapicGeneratorConfig build();
+  }
 }

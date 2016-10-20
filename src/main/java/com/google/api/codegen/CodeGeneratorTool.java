@@ -66,6 +66,12 @@ public class CodeGeneratorTool {
             .hasArg()
             .argName("OUTPUT-DIRECTORY")
             .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("disable_test_gen")
+            .desc("Disable test suit generation of the client library.")
+            .argName("DISABLE-TEST-GEN")
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -78,7 +84,8 @@ public class CodeGeneratorTool {
             cl.getOptionValue("descriptor_set"),
             cl.getOptionValues("service_yaml"),
             cl.getOptionValues("gapic_yaml"),
-            cl.getOptionValue("output", ""));
+            cl.getOptionValue("output", ""),
+            cl.hasOption("disable_test_gen"));
     System.exit(exitCode);
   }
 
@@ -86,12 +93,14 @@ public class CodeGeneratorTool {
       String descriptorSet,
       String[] apiConfigs,
       String[] generatorConfigs,
-      String outputDirectory) {
+      String outputDirectory,
+      boolean disableTestGen) {
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
+    options.set(CodeGeneratorApi.DISABLE_TEST_GEN, disableTestGen);
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
     return codeGen.run();
   }
