@@ -106,7 +106,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder()
             .id(idForFactory)
-            .artifactsFilter(new ArrayList<String>())
+            .enabledArtifacts(new ArrayList<String>())
             .build();
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig);
@@ -142,7 +142,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder()
             .id(idForFactory)
-            .artifactsFilter(new ArrayList<String>())
+            .enabledArtifacts(new ArrayList<String>())
             .build();
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig);
