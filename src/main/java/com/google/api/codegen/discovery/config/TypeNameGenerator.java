@@ -20,6 +20,20 @@ import java.util.List;
 public interface TypeNameGenerator {
 
   /**
+   * Returns the language formatted method name components.
+   *
+   * <p>For example: "myapi.foo.get" to ["Foo", "Get"]
+   */
+  public List<String> getMethodNameComponents(List<String> nameComponents);
+
+  /**
+   * Sets the apiName and apiVersion used for name lookups.
+   *
+   * <p>Only used in Ruby to filter method and type names from apiary_names.yaml
+   */
+  public void setApiNameAndVersion(String apiName, String apiVersion);
+
+  /**
    * Returns the version of the API.
    *
    * <p>Provided in case there is some common transformation on the API's version. For example:

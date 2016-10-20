@@ -20,13 +20,24 @@ import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class JavaTypeNameGenerator implements TypeNameGenerator {
 
   private static final String PACKAGE_PREFIX = "com.google.api.services";
   private static final String NON_REQUEST_SUBPACKAGE = "model";
+
+  @Override
+  public List<String> getMethodNameComponents(List<String> nameComponents) {
+    // Don't edit the original object.
+    LinkedList<String> copy = new LinkedList<String>(nameComponents);
+    copy.removeFirst();
+    return copy;
+  }
+
+  @Override
+  public void setApiNameAndVersion(String apiName, String apiVersion) {}
 
   @Override
   public String getApiVersion(String apiVersion) {
@@ -46,7 +57,8 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
 
   @Override
   public String getRequestTypeName(List<String> methodNameComponents) {
-    List<String> copy = new ArrayList<>(methodNameComponents);
+    LinkedList<String> copy = new LinkedList<>(methodNameComponents);
+    copy.removeFirst();
     for (int i = 0; i < copy.size(); i++) {
       copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
     }

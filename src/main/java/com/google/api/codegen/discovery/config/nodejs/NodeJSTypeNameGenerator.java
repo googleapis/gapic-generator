@@ -18,9 +18,21 @@ import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.common.base.Strings;
+import java.util.LinkedList;
 import java.util.List;
 
 public class NodeJSTypeNameGenerator implements TypeNameGenerator {
+
+  @Override
+  public List<String> getMethodNameComponents(List<String> nameComponents) {
+    // Don't edit the original object.
+    LinkedList<String> copy = new LinkedList<>(nameComponents);
+    copy.removeFirst();
+    return copy;
+  }
+
+  @Override
+  public void setApiNameAndVersion(String apiName, String apiVersion) {}
 
   @Override
   public String getApiVersion(String apiVersion) {
