@@ -331,6 +331,10 @@ module Library
           @library_service_stub.method(:add_tag),
           defaults["add_tag"]
         )
+        @get_big_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_big_book),
+          defaults["get_big_book"]
+        )
         @add_label = Google::Gax.create_api_call(
           @labeler_stub.method(:add_label),
           defaults["add_label"]
@@ -1027,6 +1031,31 @@ module Library
           label: label
         )
         @add_label.call(req, options)
+      end
+
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Longrunning::Operation]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1/library_service_api"
+      #
+      #   LibraryServiceApi = Library::V1::LibraryServiceApi
+      #
+      #   library_service_api = LibraryServiceApi.new
+      #   name = ''
+      #   response = library_service_api.get_big_book(name)
+
+      def get_big_book \
+          name,
+          options: nil
+        req = Google::Example::Library::V1::GetBookRequest.new(
+          name: name
+        )
+        @get_big_book.call(req, options)
       end
     end
   end

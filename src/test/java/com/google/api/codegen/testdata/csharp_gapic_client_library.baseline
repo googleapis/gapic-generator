@@ -68,6 +68,7 @@ namespace Google.Example.Library.V1
             UpdateBookIndexSettings = existing.UpdateBookIndexSettings;
             FindRelatedBooksSettings = existing.FindRelatedBooksSettings;
             AddTagSettings = existing.AddTagSettings;
+            GetBigBookSettings = existing.GetBigBookSettings;
         }
 
         /// <summary>
@@ -660,6 +661,35 @@ namespace Google.Example.Library.V1
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
         public CallSettings AddTagSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <see cref="LibraryServiceClient.GetBigBook"/> and <see cref="LibraryServiceClient.GetBigBookAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.GetBigBook"/> and
+        /// <see cref="LibraryServiceClient.GetBigBookAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings GetBigBookSettings { get; set; } = CallSettings.FromCallTiming(
             CallTiming.FromRetry(new RetrySettings(
                 retryBackoff: GetDefaultRetryBackoff(),
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
@@ -2227,6 +2257,62 @@ namespace Google.Example.Library.V1
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<Operation> GetBigBookAsync(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<Operation> GetBigBookAsync(
+            string name,
+            CancellationToken cancellationToken) => GetBigBookAsync(
+                name,
+                CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual Operation GetBigBook(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
     /// <summary>
@@ -2253,6 +2339,7 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<UpdateBookIndexRequest, Empty> _callUpdateBookIndex;
         private readonly ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> _callFindRelatedBooks;
         private readonly ApiCall<AddTagRequest, AddTagResponse> _callAddTag;
+        private readonly ApiCall<GetBookRequest, Operation> _callGetBigBook;
 
         /// <summary>
         /// Constructs a client wrapper for the LibraryService service, with the specified gRPC client and settings.
@@ -2300,6 +2387,8 @@ namespace Google.Example.Library.V1
                 GrpcClient.FindRelatedBooksAsync, GrpcClient.FindRelatedBooks, effectiveSettings.FindRelatedBooksSettings);
             _callAddTag = _clientHelper.BuildApiCall<AddTagRequest, AddTagResponse>(
                 GrpcClient.AddTagAsync, GrpcClient.AddTag, effectiveSettings.AddTagSettings);
+            _callGetBigBook = _clientHelper.BuildApiCall<GetBookRequest, Operation>(
+                GrpcClient.GetBigBookAsync, GrpcClient.GetBigBook, effectiveSettings.GetBigBookSettings);
         }
 
         /// <summary>
@@ -3462,6 +3551,48 @@ namespace Google.Example.Library.V1
                 {
                     Resource = resource,
                     Tag = tag,
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override Task<Operation> GetBigBookAsync(
+            string name,
+            CallSettings callSettings = null) => _callGetBigBook.Async(
+                new GetBookRequest
+                {
+                    Name = name,
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override Operation GetBigBook(
+            string name,
+            CallSettings callSettings = null) => _callGetBigBook.Sync(
+                new GetBookRequest
+                {
+                    Name = name,
                 },
                 callSettings);
 

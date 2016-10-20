@@ -53,6 +53,7 @@ import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBook
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
+import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.tagger.v1.AddLabelRequest;
@@ -163,6 +164,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
   private final UnaryApiCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final UnaryApiCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
+  private final UnaryApiCallable<GetBookRequest, Operation> getBigBookCallable;
 
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
@@ -301,6 +303,7 @@ public class LibraryServiceApi implements AutoCloseable {
         UnaryApiCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
     this.addTagCallable = UnaryApiCallable.create(settings.addTagSettings(), this.channel, this.executor);
     this.addLabelCallable = UnaryApiCallable.create(settings.addLabelSettings(), this.channel, this.executor);
+    this.getBigBookCallable = UnaryApiCallable.create(settings.getBigBookSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -2039,6 +2042,72 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public final UnaryApiCallable<AddLabelRequest, AddLabelResponse> addLabelCallable() {
     return addLabelCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   Operation response = libraryServiceApi.getBigBook(name);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Operation getBigBook(BookName name) {
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setNameWithResource(name)
+        .build();
+    return getBigBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setNameWithResource(name)
+   *     .build();
+   *   Operation response = libraryServiceApi.getBigBook(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Operation getBigBook(GetBookRequest request) {
+    return getBigBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setNameWithResource(name)
+   *     .build();
+   *   ListenableFuture&lt;Operation&gt; future = libraryServiceApi.getBigBookCallable().futureCall(request);
+   *   // Do something
+   *   Operation response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryApiCallable<GetBookRequest, Operation> getBigBookCallable() {
+    return getBigBookCallable;
   }
 
   /**

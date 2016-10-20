@@ -411,3 +411,16 @@ interfaces:
     - include_languages:
       - go
       visibility: PRIVATE
+  - name: GetBigBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      resource: book
+    timeout_millis: 60000

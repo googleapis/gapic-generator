@@ -150,7 +150,8 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'getBookFromArchive',
     'updateBookIndex',
     'findRelatedBooks',
-    'addTag'
+    'addTag',
+    'getBigBook'
   ];
   libraryServiceStubMethods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
@@ -1186,6 +1187,42 @@ LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
     options = {};
   }
   return this._addLabel(request, options, callback);
+};
+
+/**
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.name
+ *   The name of the book to retrieve.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [google.longrunning.Operation]{@link external:"google.longrunning.Operation"}
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ * var name = '';
+ * api.getBigBook({name: name}).then(function(response) {
+ *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceApi.prototype.getBigBook = function(request, options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+  return this._getBigBook(request, options, callback);
 };
 
 function LibraryServiceApiBuilder(gaxGrpc) {
