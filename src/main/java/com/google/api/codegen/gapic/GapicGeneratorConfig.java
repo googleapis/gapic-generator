@@ -15,24 +15,35 @@
 package com.google.api.codegen.gapic;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 /*
  * A context class which stores config data used by MainGapicProviderFactory.
  */
 @AutoValue
 public abstract class GapicGeneratorConfig {
+  public static final String ARTIFACT_SURFACE = "surface";
+  public static final String ARTIFACT_TEST = "test";
 
-  public abstract boolean disableTestGenerator();
+  public abstract List<String> artifactsFilter();
 
   public abstract String id();
 
+  public boolean enableSurfaceGenerator() {
+    return artifactsFilter().isEmpty() || artifactsFilter().contains(ARTIFACT_SURFACE);
+  }
+
+  public boolean enableTestGenerator() {
+    return artifactsFilter().isEmpty() || artifactsFilter().contains(ARTIFACT_TEST);
+  }
+
   public static Builder newBuilder() {
-    return new AutoValue_GapicGeneratorConfig.Builder().disableTestGenerator(false);
+    return new AutoValue_GapicGeneratorConfig.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder disableTestGenerator(boolean val);
+    public abstract Builder artifactsFilter(List<String> val);
 
     public abstract Builder id(String val);
 

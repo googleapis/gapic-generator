@@ -104,7 +104,10 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     ApiConfig apiConfig = ApiConfig.createDummyApiConfig();
 
     GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder().id(idForFactory).build();
+        GapicGeneratorConfig.newBuilder()
+            .id(idForFactory)
+            .artifactsFilter(new ArrayList<String>())
+            .build();
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig);
     List<Object[]> testArgs = new ArrayList<>();
@@ -137,7 +140,10 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     }
 
     GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder().id(idForFactory).build();
+        GapicGeneratorConfig.newBuilder()
+            .id(idForFactory)
+            .artifactsFilter(new ArrayList<String>())
+            .build();
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig);
     GapicProvider<? extends Object> testedProvider = null;

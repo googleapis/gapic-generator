@@ -15,14 +15,12 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.tools.ToolOptions;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-
-import com.google.common.collect.Lists;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
 // containing the YAMLs, descriptor set, and output)
@@ -68,9 +66,13 @@ public class CodeGeneratorTool {
             .build());
     options.addOption(
         Option.builder()
-            .longOpt("disable_test_gen")
-            .desc("Disable test suit generation of the client library.")
-            .argName("DISABLE-TEST-GEN")
+            .longOpt("enabled_artifacts")
+            .desc(
+                "Optional. Artifacts enabled for the generator. "
+                    + "Currently support 'surface' and 'test'.")
+            .hasArg()
+            .argName("ENABLED_ARTIFACTS")
+            .required(false)
             .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
@@ -85,7 +87,7 @@ public class CodeGeneratorTool {
             cl.getOptionValues("service_yaml"),
             cl.getOptionValues("gapic_yaml"),
             cl.getOptionValue("output", ""),
-            cl.hasOption("disable_test_gen"));
+            cl.getOptionValues("enabled_artifacts"));
     System.exit(exitCode);
   }
 
@@ -94,13 +96,13 @@ public class CodeGeneratorTool {
       String[] apiConfigs,
       String[] generatorConfigs,
       String outputDirectory,
-      boolean disableTestGen) {
+      String[] filterArtifacts) {
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
-    options.set(CodeGeneratorApi.DISABLE_TEST_GEN, disableTestGen);
+    options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(filterArtifacts));
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
     return codeGen.run();
   }
