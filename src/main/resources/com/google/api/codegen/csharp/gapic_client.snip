@@ -57,7 +57,7 @@
         {
             GaxPreconditions.CheckNotNull(existing, nameof(existing));
             @join call : settings.callSettings
-                {@call.memberName} = existing.{@call.memberName}?.Clone();
+                {@call.memberName} = existing.{@call.memberName};
             @end
         }
         
@@ -93,16 +93,15 @@
             /// The "{@retry.name}" retry backoff for <see cref="{@api.name}"/> RPC methods is defined as:
             /// <list type="bullet">
             /// <item><description>Initial delay: {@retry.initialRetryDelay.getMillis} milliseconds</description></item>
-            /// <item><description>Delay multiplier: {@retry.retryDelayMultiplier}</description></item>
             /// <item><description>Maximum delay: {@retry.maxRetryDelay.getMillis} milliseconds</description></item>
+            /// <item><description>Delay multiplier: {@retry.retryDelayMultiplier}</description></item>
             /// </list>
             /// </remarks>
-            public static BackoffSettings {@retry.retryBackoffMethodName}() => new BackoffSettings
-            {
-                Delay = TimeSpan.FromMilliseconds({@retry.initialRetryDelay.getMillis}),
-                DelayMultiplier = {@retry.retryDelayMultiplier},
-                MaxDelay = TimeSpan.FromMilliseconds({@retry.maxRetryDelay.getMillis}),
-            };
+            public static BackoffSettings {@retry.retryBackoffMethodName}() => new BackoffSettings(
+                delay: TimeSpan.FromMilliseconds({@retry.initialRetryDelay.getMillis}),
+                maxDelay: TimeSpan.FromMilliseconds({@retry.maxRetryDelay.getMillis}),
+                delayMultiplier: {@retry.retryDelayMultiplier}
+            );
             
             /// <summary>
             /// "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods.
@@ -118,12 +117,11 @@
             /// <item><description>Maximum timeout: {@retry.maxRpcTimeout.getMillis} milliseconds</description></item>
             /// </list>
             /// </remarks>
-            public static BackoffSettings {@retry.timeoutBackoffMethodName}() => new BackoffSettings
-            {
-                Delay = TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.getMillis}),
-                DelayMultiplier = {@retry.rpcTimeoutMultiplier},
-                MaxDelay = TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.getMillis}),
-            };
+            public static BackoffSettings {@retry.timeoutBackoffMethodName}() => new BackoffSettings(
+                delay: TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.getMillis}),
+                maxDelay: TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.getMillis}),
+                delayMultiplier: {@retry.rpcTimeoutMultiplier}
+            );
 
         @end
         @join call : settings.callSettings
@@ -154,16 +152,13 @@
             /// </list>
             /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
             /// </remarks>
-            public CallSettings {@call.memberName} { get; set; } = new CallSettings
-            {
-                Timing = CallTiming.FromRetry(new RetrySettings
-                {
-                    RetryBackoff = {@call.retryParamsView.retryBackoffMethodName}(),
-                    TimeoutBackoff = {@call.retryParamsView.timeoutBackoffMethodName}(),
-                    RetryFilter = {@call.retryCodesView.retryFilterMethodName},
-                    TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
-                }),
-            };
+            public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
+                CallTiming.FromRetry(new RetrySettings(
+                    retryBackoff: {@call.retryParamsView.retryBackoffMethodName}(),
+                    timeoutBackoff: {@call.retryParamsView.timeoutBackoffMethodName}(),
+                    totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
+                    retryFilter: {@call.retryCodesView.retryFilterMethodName}
+                )));
 
         @end
         /// <summary>
@@ -303,6 +298,9 @@
 @end
 
 @private implClient(api, settings)
+    /// <summary>
+    /// {@api.grpcServiceName} client wrapper implementation, for convenient use.
+    /// </summary>
     public sealed partial class {@api.implName} : {@api.name}
     {
         private readonly ClientHelper _clientHelper;
@@ -310,6 +308,11 @@
             private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
         @end
 
+        /// <summary>
+        /// Constructs a client wrapper for the {@api.grpcServiceName} service, with the specified gRPC client and settings.
+        /// </summary>
+        /// <param name="grpcClient">The underlying gRPC client.</param>
+        /// <param name="settings">The base <see cref="{@settings.name}"/> used within this client </param>
         public {@api.implName}({@api.grpcTypeName} grpcClient, {@settings.name} settings)
         {
             this.GrpcClient = grpcClient;
@@ -394,7 +397,7 @@
         public virtual {@method.responseTypeName} {@method.name}(
             {@objectParams(method.methodParams)}) => {@method.name}(
                 {@objectArgs(method.forwardingMethodParams)},
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
     @end
 @end
 
@@ -457,7 +460,12 @@
         public partial class {@method.listMethod.requestTypeName} : IPageRequest { }
         public partial class {@method.listMethod.responseTypeName} : IPageResponse<{@method.listMethod.resourceTypeName}>
         {
+            /// <summary>
+            /// Returns an enumerator that iterates through the resources in this response.
+            /// </summary>
             public IEnumerator<{@method.listMethod.resourceTypeName}> GetEnumerator() => {@method.listMethod.resourcesFieldGetFunction}.GetEnumerator();
+
+            <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 

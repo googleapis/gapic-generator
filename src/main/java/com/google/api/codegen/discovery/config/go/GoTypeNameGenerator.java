@@ -12,43 +12,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.config.nodejs;
+package com.google.api.codegen.discovery.config.go;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
+import com.google.api.codegen.util.Name;
 import com.google.common.base.Strings;
 
-public class NodeJSTypeNameGenerator implements TypeNameGenerator {
+public class GoTypeNameGenerator implements TypeNameGenerator {
+
+  // Pattern used to rename some Go package versions.
+  private static final Pattern SUB_VERSION = Pattern.compile("^(.+)_(v[0-9.]+)$");
 
   @Override
   public String getApiVersion(String apiVersion) {
+    if (apiVersion.equals("alpha") || apiVersion.equals("beta")) {
+      return "v0." + apiVersion;
+    }
+    Matcher subVersion = SUB_VERSION.matcher(apiVersion);
+    if (subVersion.matches()) {
+      return subVersion.group(1) + "/" + subVersion.group(2);
+    }
     return apiVersion;
   }
 
   @Override
   public String getPackagePrefix(String apiName, String apiVersion) {
-    // N/A
-    return "";
+    return "google.golang.org/api/" + apiName + "/" + apiVersion;
   }
 
   @Override
   public String getApiTypeName(String apiName) {
-    return apiName;
-  }
-
-  @Override
-  public String getRequestTypeName(List<String> methodNameComponents) {
     // N/A
     return "";
   }
 
   @Override
+  public String getRequestTypeName(List<String> methodNameComponents) {
+    String copy[] = methodNameComponents.toArray(new String[methodNameComponents.size() + 1]);
+    copy[copy.length - 1] = "call";
+    return Name.lowerCamel(copy).toUpperCamel();
+  }
+
+  @Override
   public String getResponseTypeUrl(String responseTypeUrl) {
-    if (responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
-        || responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_URL)) {
+    // Go client libraries return an empty struct if the responseTypeUrl is
+    // "Empty". If the responseTypeName is truly empty ("empty$"), nothing is
+    // returned.
+    if (responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)) {
       return "";
     }
     return responseTypeUrl;
@@ -56,8 +72,9 @@ public class NodeJSTypeNameGenerator implements TypeNameGenerator {
 
   @Override
   public String getMessageTypeName(String messageTypeName) {
-    // N/A
-    return "";
+    // Avoid cases like "DatasetList.Datasets"
+    String pieces[] = messageTypeName.split("\\.");
+    return pieces[pieces.length - 1];
   }
 
   @Override
@@ -77,6 +94,6 @@ public class NodeJSTypeNameGenerator implements TypeNameGenerator {
     if (Strings.isNullOrEmpty(def)) {
       return "";
     }
-    return String.format("'%s'", def);
+    return String.format("\"%s\"", def);
   }
 }

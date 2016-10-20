@@ -12,16 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.java;
+package com.google.api.codegen.discovery.transformer.go;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
-import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
@@ -30,53 +28,57 @@ import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
 
-/*
- * Transforms a Method and SampleConfig into the standard discovery surface for
- * Java.
- */
-public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
+public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
-  private final static String TEMPLATE_FILENAME = "java/sample.snip";
+  private final static String TEMPLATE_FILENAME = "go/sample.snip";
 
-  public JavaSampleMethodToViewTransformer() {}
+  public GoSampleMethodToViewTransformer() {}
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
-            new JavaTypeTable(""), new JavaSampleTypeNameConverter(sampleConfig.packagePrefix()));
-    JavaSampleNamer javaSampleNamer = new JavaSampleNamer();
+            new GoTypeTable(), new GoSampleTypeNameConverter(sampleConfig.packagePrefix()));
+    GoSampleNamer goSampleNamer = new GoSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(
-            sampleConfig, sampleTypeTable, javaSampleNamer, method.getName());
+            sampleConfig, sampleTypeTable, goSampleNamer, method.getName());
     return createSampleView(context);
   }
 
   private SampleView createSampleView(SampleTransformerContext context) {
-    addStaticImports(context);
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(JavaTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(GoTypeTable.RESERVED_IDENTIFIER_SET);
+    addStaticImports(context, symbolTable);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
-    String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
-    String serviceTypeName = typeTable.getAndSaveNicknameForServiceType(config.apiTypeName());
-    String requestVarName = symbolTable.getNewSymbol(namer.getRequestVarName());
-    // We don't store this type in the type table because its nickname is fully
-    // qualified. If we use the getAndSaveNickname helper, the nickname returned
-    // is always the last segment of the import path. Since the request type is
-    // derived from the service type, skipping the type table can't cause any
-    // issues.
-    String requestTypeName =
-        typeTable.getRequestTypeName(config.apiTypeName(), methodInfo.requestType()).getNickname();
+    String clientVarName = symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("c")));
+
+    // TODO(saicheems): Consider refactoring static GoSampleNamer calls so there
+    // isn't Go specific logic in the transformer.
+    String servicePackageName = GoSampleNamer.getServicePackageName(config.packagePrefix());
+    String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(servicePackageName));
+    List<String> methodNameComponents = new ArrayList<String>();
+    for (String nameComponent : methodInfo.nameComponents()) {
+      methodNameComponents.add(namer.publicFieldName(Name.lowerCamel(nameComponent)));
+    }
+    String requestVarName = symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("req")));
+    // For this and other type name assignments, we don't use TypeTable logic to
+    // add to the import list. The main issue is that the TypeTable returns
+    // fully qualified references ("logging.LogEntry"), and we don't always need
+    // the fully qualified type. Since all imports are added in
+    // addStaticImports, skipping the TypeTable can't result in missing imports.
+    String requestTypeName = methodInfo.requestType().message().typeName();
 
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
@@ -90,7 +92,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
-      builder.requestBodyTypeName(typeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
+      builder.requestBodyTypeName(methodInfo.requestBodyType().message().typeName());
       fieldVarNames.add(requestBodyVarName);
     }
 
@@ -101,26 +103,25 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     boolean hasResponse = methodInfo.responseType() != null;
     if (hasResponse) {
       builder.responseVarName(symbolTable.getNewSymbol(namer.getResponseVarName()));
-      builder.responseTypeName(typeTable.getAndSaveNicknameFor(methodInfo.responseType()));
+      // This response type is only used in page streaming functions.
+      builder.responseTypeName(methodInfo.responseType().message().typeName());
     }
 
     // Imports must be collected last.
-    List<String> imports = new ArrayList<String>();
-    imports.addAll(typeTable.getImports().keySet());
+    List<String> imports = new ArrayList<>();
+    imports.addAll(GoTypeTable.formatImports(typeTable.getImports()));
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
-        .outputPath(context.getMethodName() + ".frag.java")
+        .outputPath(context.getMethodName() + ".frag.go")
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
-        .className(namer.getSampleClassName(config.apiTypeName()))
         .imports(imports)
         .auth(createSampleAuthView(context))
         .serviceVarName(serviceVarName)
-        .serviceTypeName(serviceTypeName)
         .methodVerb(methodInfo.verb())
-        .methodNameComponents(methodInfo.nameComponents())
+        .methodNameComponents(methodNameComponents)
         .requestVarName(requestVarName)
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)
@@ -130,7 +131,9 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
-        .createServiceFuncName(namer.createServiceFuncName(config.apiTypeName()))
+        .servicePackageName(servicePackageName)
+        .clientVarName(clientVarName)
+        .contextVarName(symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("ctx"))))
         .build();
   }
 
@@ -138,11 +141,19 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
 
+    List<String> scopeConsts = new ArrayList<>();
+    // Pull the last scope and reconstruct it as a Go constant.
+    // For example: "https://www.googleapis.com/auth/cloud-platform" to "CloudPlatform"
+    if (methodInfo.authScopes().size() > 0) {
+      scopeConsts.add(GoSampleNamer.getAuthScopeConst(methodInfo.authScopes().get(0)));
+    }
+
     return SampleAuthView.newBuilder()
         .type(config.authType())
         .instructionsUrl(config.authInstructionsUrl())
         .scopes(methodInfo.authScopes())
         .isScopesSingular(methodInfo.authScopes().size() == 1)
+        .scopeConsts(scopeConsts)
         .build();
   }
 
@@ -151,50 +162,59 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     MethodInfo methodInfo = context.getSampleConfig().methods().get(context.getMethodName());
     FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
     SampleNamer namer = context.getSampleNamer();
-    SampleTypeTable typeTable = context.getSampleTypeTable();
     if (fieldInfo == null) {
       throw new IllegalArgumentException("pageStreamingResourceField cannot be null");
     }
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
-    builder.resourceGetterName(namer.getResourceGetterName(fieldInfo.name()));
-    String resourceTypeName = typeTable.getAndSaveNickNameForElementType(fieldInfo.type());
-    builder.resourceElementTypeName(resourceTypeName);
-    String resourceVarName =
-        namer.getResourceVarName(fieldInfo.type().isMessage() ? resourceTypeName : "");
-    builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
+    builder.resourceFieldName(namer.publicFieldName(Name.lowerCamel(fieldInfo.name())));
+    if (fieldInfo.type().isMap()) {
+      // Assume that the value in the map is a message.
+      if (!fieldInfo.type().mapValue().isMessage()) {
+        throw new IllegalArgumentException("expected map value to be a message");
+      }
+      builder.resourceKeyVarName(
+          symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("name"))));
+      String resourceValueVarName =
+          namer.localVarName(Name.upperCamel(fieldInfo.type().mapValue().message().typeName()));
+      builder.resourceValueVarName(symbolTable.getNewSymbol(resourceValueVarName));
+    } else {
+      String resourceVarName =
+          namer.getResourceVarName(
+              fieldInfo.type().isMessage() ? fieldInfo.type().message().typeName() : "");
+      builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
+    }
     builder.isResourceMap(fieldInfo.type().isMap());
-
-    builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
+    builder.pageVarName(symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("page"))));
     return builder.build();
   }
 
   private SampleFieldView createSampleFieldView(
-      FieldInfo field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
-    TypeInfo typeInfo = field.type();
-    String defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+      FieldInfo field, SampleTypeTable typeTable, SymbolTable symbolTable) {
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
-        .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
-        .defaultValue(defaultValue)
+        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
         .example(field.example())
         .description(field.description())
         .build();
   }
 
-  private void addStaticImports(SampleTransformerContext context) {
-    SampleConfig sampleConfig = context.getSampleConfig();
+  private void addStaticImports(SampleTransformerContext context, SymbolTable symbolTable) {
+    SampleConfig config = context.getSampleConfig();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    typeTable.saveNicknameFor("com.google.api.client.googleapis.auth.oauth2.GoogleCredential");
-    typeTable.saveNicknameFor("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport");
-    typeTable.saveNicknameFor("com.google.api.client.http.HttpTransport");
-    typeTable.saveNicknameFor("com.google.api.client.json.jackson2.JacksonFactory");
-    typeTable.saveNicknameFor("com.google.api.client.json.JsonFactory");
-    typeTable.saveNicknameFor("java.io.IOException");
-    typeTable.saveNicknameFor("java.security.GeneralSecurityException");
-    if (sampleConfig.authType() == AuthType.APPLICATION_DEFAULT_CREDENTIALS) {
-      typeTable.saveNicknameFor("java.util.Arrays");
-    }
+
+    // Since nearly any identifier can be shadowed in Go, we add every package
+    // name to the symbol table.
+    // GoTypeTable expects imports to be of the format:
+    // "{packagePath};{localName};{typeName};{pointer}"
+    typeTable.saveNicknameFor("log;;;");
+    symbolTable.getNewSymbol("log");
+    typeTable.saveNicknameFor("golang.org/x/net/context;;;");
+    symbolTable.getNewSymbol("context");
+    typeTable.saveNicknameFor("golang.org/x/oauth2/google;;;");
+    symbolTable.getNewSymbol("google");
+    typeTable.saveNicknameFor(config.packagePrefix() + ";;;");
+    symbolTable.getNewSymbol(GoSampleNamer.getServicePackageName(config.packagePrefix()));
   }
 }

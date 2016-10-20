@@ -69,7 +69,8 @@ public class ApiMethodTransformer {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
         namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
@@ -108,7 +109,8 @@ public class ApiMethodTransformer {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
         namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
@@ -201,7 +203,8 @@ public class ApiMethodTransformer {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
         namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
@@ -217,7 +220,8 @@ public class ApiMethodTransformer {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(namer.getApiMethodName(context.getMethod()));
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
         context.getNamer().getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setRequestObjectMethodFields(
@@ -334,7 +338,7 @@ public class ApiMethodTransformer {
             context.cloneWithEmptyTypeTable(), createInitCodeContext(context, fields)));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
-            .mainDocLines(namer.getDocLines(context.getMethod()))
+            .mainDocLines(namer.getDocLines(context.getMethod(), context.getMethodConfig()))
             .paramDocs(getMethodParamDocs(context, fields, additionalParams))
             .throwsDocLines(namer.getThrowsDocLines())
             .returnsDocLines(
@@ -364,7 +368,7 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
-            .mainDocLines(namer.getDocLines(context.getMethod()))
+            .mainDocLines(namer.getDocLines(context.getMethod(), context.getMethodConfig()))
             .paramDocs(
                 Arrays.<ParamDocView>asList(
                     getRequestObjectParamDoc(context, context.getMethod().getInputType())))
@@ -393,7 +397,8 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, String callableName, Builder methodViewBuilder) {
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
-            .mainDocLines(context.getNamer().getDocLines(context.getMethod()))
+            .mainDocLines(
+                context.getNamer().getDocLines(context.getMethod(), context.getMethodConfig()))
             .paramDocs(new ArrayList<ParamDocView>())
             .throwsDocLines(new ArrayList<String>())
             .build());
@@ -466,7 +471,10 @@ public class ApiMethodTransformer {
             context.getNamer().getPathTemplateName(context.getInterface(), collectionConfig));
         check.paramName(context.getNamer().getVariableName(field));
         check.allowEmptyString(shouldAllowEmpty(context, field));
-        check.validationMessageContext(context.getNamer().getApiMethodName(context.getMethod()));
+        check.validationMessageContext(
+            context
+                .getNamer()
+                .getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
         pathTemplateChecks.add(check.build());
       }
     }
@@ -501,7 +509,8 @@ public class ApiMethodTransformer {
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
-    apiMethod.name(namer.getApiMethodName(context.getMethod()));
+    apiMethod.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     apiMethod.requestTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
@@ -526,7 +535,8 @@ public class ApiMethodTransformer {
   private ApiMethodDocView generateOptionalArrayMethodDoc(MethodTransformerContext context) {
     ApiMethodDocView.Builder docBuilder = ApiMethodDocView.newBuilder();
 
-    docBuilder.mainDocLines(context.getNamer().getDocLines(context.getMethod()));
+    docBuilder.mainDocLines(
+        context.getNamer().getDocLines(context.getMethod(), context.getMethodConfig()));
     List<ParamDocView> paramDocs =
         getMethodParamDocs(
             context,
@@ -567,7 +577,9 @@ public class ApiMethodTransformer {
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
     setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(namer.getGrpcStreamingApiMethodName(context.getMethod()));
+    methodViewBuilder.name(
+        namer.getGrpcStreamingApiMethodName(
+            context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
         context
             .getNamer()

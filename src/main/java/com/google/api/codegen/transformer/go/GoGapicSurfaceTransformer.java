@@ -194,7 +194,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.clientTypeName(namer.getApiWrapperClassName(service));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
-    view.apiMethods(generateApiMethods(context, context.getSupportedMethods()));
+    view.apiMethods(generateApiMethods(context, context.getPublicMethods()));
     view.iamResources(iamResourceTransformer.generateIamResources(context));
 
     // Examples are different from the API. In particular, we use short declaration
@@ -204,7 +204,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     //   - The input types of the methods, to initialize the requests
     // So, we clear all imports; addXExampleImports will add back the ones we want.
     context.getTypeTable().getImports().clear();
-    addXExampleImports(context, context.getSupportedMethods());
+    addXExampleImports(context, context.getPublicMethods());
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
     return view.build();

@@ -16,6 +16,7 @@
 // Generated code. DO NOT EDIT!
 
 using Google.Api.Gax;
+using Google.Api.Gax.Grpc;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -23,6 +24,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UpdateBookIndexRequest.Types;
@@ -147,26 +149,27 @@ namespace Google.Example.Library.V1.Snippets
 
             // Make the request
             IPagedAsyncEnumerable<ListShelvesResponse,Shelf> response =
-                await libraryServiceClient.ListShelvesAsync();
+                libraryServiceClient.ListShelvesAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (Shelf item in response)
+            await response.ForEachAsync((Shelf item) =>
             {
                 // Do something with each item
-                Console.Writeline(item);
-            }
+                Console.WriteLine(item);
+            });
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
             int pageSize = 10;
-            foreach (FixedSizePage<Shelf> page in response.AsPages().WithFixedSize(pageSize))
+            IAsyncEnumerable<FixedSizePage<Shelf>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<Shelf> page) =>
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (Shelf item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
-            }
+            });
             // End snippet
         }
 
@@ -185,7 +188,7 @@ namespace Google.Example.Library.V1.Snippets
             foreach (Shelf item in response)
             {
                 // Do something with each item
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
@@ -193,10 +196,10 @@ namespace Google.Example.Library.V1.Snippets
             foreach (FixedSizePage<Shelf> page in response.AsPages().WithFixedSize(pageSize))
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (Shelf item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
             }
             // End snippet
@@ -346,26 +349,27 @@ namespace Google.Example.Library.V1.Snippets
             string filter = "";
             // Make the request
             IPagedAsyncEnumerable<ListBooksResponse,Book> response =
-                await libraryServiceClient.ListBooksAsync(formattedName, filter);
+                libraryServiceClient.ListBooksAsync(formattedName, filter);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (Book item in response)
+            await response.ForEachAsync((Book item) =>
             {
                 // Do something with each item
-                Console.Writeline(item);
-            }
+                Console.WriteLine(item);
+            });
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
             int pageSize = 10;
-            foreach (FixedSizePage<Book> page in response.AsPages().WithFixedSize(pageSize))
+            IAsyncEnumerable<FixedSizePage<Book>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<Book> page) =>
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (Book item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
-            }
+            });
             // End snippet
         }
 
@@ -385,7 +389,7 @@ namespace Google.Example.Library.V1.Snippets
             foreach (Book item in response)
             {
                 // Do something with each item
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
@@ -393,10 +397,10 @@ namespace Google.Example.Library.V1.Snippets
             foreach (FixedSizePage<Book> page in response.AsPages().WithFixedSize(pageSize))
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (Book item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
             }
             // End snippet
@@ -522,26 +526,27 @@ namespace Google.Example.Library.V1.Snippets
 
             // Make the request
             IPagedAsyncEnumerable<ListStringsResponse,string> response =
-                await libraryServiceClient.ListStringsAsync();
+                libraryServiceClient.ListStringsAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            await response.ForEachAsync((string item) =>
             {
                 // Do something with each item
-                Console.Writeline(item);
-            }
+                Console.WriteLine(item);
+            });
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
             int pageSize = 10;
-            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (string item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
-            }
+            });
             // End snippet
         }
 
@@ -560,7 +565,7 @@ namespace Google.Example.Library.V1.Snippets
             foreach (string item in response)
             {
                 // Do something with each item
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
@@ -568,10 +573,10 @@ namespace Google.Example.Library.V1.Snippets
             foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (string item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
             }
             // End snippet
@@ -694,26 +699,27 @@ namespace Google.Example.Library.V1.Snippets
             IEnumerable<string> shelves = new List<string>();
             // Make the request
             IPagedAsyncEnumerable<FindRelatedBooksResponse,string> response =
-                await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
+                libraryServiceClient.FindRelatedBooksAsync(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            await response.ForEachAsync((string item) =>
             {
                 // Do something with each item
-                Console.Writeline(item);
-            }
+                Console.WriteLine(item);
+            });
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
             int pageSize = 10;
-            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (string item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
-            }
+            });
             // End snippet
         }
 
@@ -736,7 +742,7 @@ namespace Google.Example.Library.V1.Snippets
             foreach (string item in response)
             {
                 // Do something with each item
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
@@ -744,10 +750,10 @@ namespace Google.Example.Library.V1.Snippets
             foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (string item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
             }
             // End snippet

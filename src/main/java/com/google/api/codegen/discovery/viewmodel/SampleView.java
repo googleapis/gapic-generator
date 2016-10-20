@@ -43,9 +43,6 @@ public abstract class SampleView implements ViewModel {
   public abstract String apiVersion();
 
   @Nullable
-  public abstract String className();
-
-  @Nullable
   public abstract List<String> imports();
 
   public abstract SampleAuthView auth();
@@ -96,11 +93,24 @@ public abstract class SampleView implements ViewModel {
 
   // Java specific section...
   @Nullable
+  public abstract String className();
+
+  @Nullable
   public abstract String createServiceFuncName();
 
   // Node.js specific section...
   @Nullable
   public abstract String googleImportVarName();
+
+  // Go specific section...
+  @Nullable
+  public abstract String servicePackageName();
+
+  @Nullable
+  public abstract String clientVarName();
+
+  @Nullable
+  public abstract String contextVarName();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
@@ -124,8 +134,6 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder apiName(String val);
 
     public abstract Builder apiVersion(String val);
-
-    public abstract Builder className(String val);
 
     public abstract Builder imports(List<String> val);
 
@@ -167,9 +175,17 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder hasMediaDownload(boolean val);
 
+    public abstract Builder className(String val);
+
     public abstract Builder createServiceFuncName(String val);
 
     public abstract Builder googleImportVarName(String val);
+
+    public abstract Builder servicePackageName(String val);
+
+    public abstract Builder clientVarName(String val);
+
+    public abstract Builder contextVarName(String val);
 
     public abstract SampleView build();
   }

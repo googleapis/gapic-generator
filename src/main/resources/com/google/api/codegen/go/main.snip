@@ -21,8 +21,8 @@
 
     // {@view.callOptionsTypeName} contains the retry settings for each method of {@view.clientTypeName}.
     type {@view.callOptionsTypeName} struct {
-        @join apiMethod : view.apiMethods
-            {@apiMethod.name} []gax.CallOption
+        @join settings : view.callSettings
+            {@settings.methodName} []gax.CallOption
         @end
     }
 
@@ -186,7 +186,7 @@
             var err error
             resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
             return err
-        }, c.CallOptions.{@method.name}...)
+        }, c.CallOptions.{@method.settingsGetterName}...)
         if err != nil {
             return nil, err
         }
@@ -220,7 +220,7 @@
             var err error
             resp, err = c.{@method.stubName}.{@method.name}(ctx)
             return err
-        }, c.CallOptions.{@method.name}...)
+        }, c.CallOptions.{@method.settingsGetterName}...)
         if err != nil {
             return nil, err
         }
@@ -235,7 +235,7 @@
             var err error
             _, err = c.{@method.stubName}.{@method.name}(ctx, req)
             return err
-        }, c.CallOptions.{@method.name}...)
+        }, c.CallOptions.{@method.settingsGetterName}...)
         return err
     }
 @end
@@ -257,7 +257,7 @@
                 var err error
                 resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
                 return err
-            }, c.CallOptions.{@method.name}...)
+            }, c.CallOptions.{@method.settingsGetterName}...)
             if err != nil {
                 return "", err
             }

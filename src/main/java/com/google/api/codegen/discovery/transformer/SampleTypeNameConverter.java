@@ -21,6 +21,7 @@ import com.google.api.codegen.util.TypedValue;
 /**
  * Maps Type instances to TypeName instances.
  */
+// TODO(saicheems): Rename this, it's responsible for more than type names.
 public interface SampleTypeNameConverter {
 
   /**

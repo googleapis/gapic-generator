@@ -72,8 +72,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleAuthView sampleAuthView = createSampleAuthView(context, symbolTable);
 
     List<SampleFieldView> fields = new ArrayList<>();
-    for (FieldInfo field :
-        context.getSampleConfig().methods().get(context.getMethodName()).fields().values()) {
+    for (FieldInfo field : methodInfo.fields().values()) {
       fields.add(
           SampleFieldView.newBuilder()
               .name(field.name())
