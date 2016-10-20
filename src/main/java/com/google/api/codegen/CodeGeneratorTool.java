@@ -69,7 +69,7 @@ public class CodeGeneratorTool {
             .longOpt("enabled_artifacts")
             .desc(
                 "Optional. Artifacts enabled for the generator. "
-                    + "Currently support 'surface' and 'test'.")
+                    + "Currently supports 'surface' and 'test'.")
             .hasArg()
             .argName("ENABLED_ARTIFACTS")
             .required(false)
