@@ -114,7 +114,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
       GapicGeneratorConfig generatorConfig =
           GapicGeneratorConfig.newBuilder()
               .id(id)
-              .artifactsFilter(options.get(ENABLED_ARTIFACTS))
+              .enabledArtifacts(options.get(ENABLED_ARTIFACTS))
               .build();
 
       List<GapicProvider<? extends Object>> providers =

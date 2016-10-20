@@ -96,13 +96,13 @@ public class CodeGeneratorTool {
       String[] apiConfigs,
       String[] generatorConfigs,
       String outputDirectory,
-      String[] filterArtifacts) {
+      String[] enabledArtifacts) {
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
-    options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(filterArtifacts));
+    options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(enabledArtifacts));
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
     return codeGen.run();
   }

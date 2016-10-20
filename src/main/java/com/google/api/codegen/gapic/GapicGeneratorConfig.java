@@ -25,16 +25,16 @@ public abstract class GapicGeneratorConfig {
   public static final String ARTIFACT_SURFACE = "surface";
   public static final String ARTIFACT_TEST = "test";
 
-  public abstract List<String> artifactsFilter();
+  public abstract List<String> enabledArtifacts();
 
   public abstract String id();
 
   public boolean enableSurfaceGenerator() {
-    return artifactsFilter().isEmpty() || artifactsFilter().contains(ARTIFACT_SURFACE);
+    return enabledArtifacts().isEmpty() || enabledArtifacts().contains(ARTIFACT_SURFACE);
   }
 
   public boolean enableTestGenerator() {
-    return artifactsFilter().isEmpty() || artifactsFilter().contains(ARTIFACT_TEST);
+    return enabledArtifacts().isEmpty() || enabledArtifacts().contains(ARTIFACT_TEST);
   }
 
   public static Builder newBuilder() {
@@ -43,7 +43,7 @@ public abstract class GapicGeneratorConfig {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder artifactsFilter(List<String> val);
+    public abstract Builder enabledArtifacts(List<String> val);
 
     public abstract Builder id(String val);
 
