@@ -149,10 +149,11 @@ public abstract class SurfaceTransformerContext {
     return methods;
   }
 
-  /** Returns a list of methods with samples, similar to getSupportedMethods,
-   *  but also filter out private methods.
+  /**
+   * Returns a list of methods with samples, similar to getSupportedMethods,
+   * but also filter out private methods.
    */
-  public List<Method> getMethodsWithSamples() {
+  public List<Method> getPublicMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
