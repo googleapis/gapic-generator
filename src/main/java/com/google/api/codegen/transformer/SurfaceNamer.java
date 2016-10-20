@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -22,7 +23,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -96,14 +96,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return className(Name.upperCamel("PagedResponseWrappers"));
   }
 
+  /** The name of the generated resource type class from the entity name. */
+  public String getResourceTypeClassName(String entityName) {
+    return className(Name.from(entityName).join("name"));
+  }
+
   /**
    * The name of the iterate method of the PagedListResponse type for a field, returning the
    * resource type iterate method if available
    */
-  public String getPagedResponseIterateMethod(FeatureConfig featureConfig, Field field) {
-    if (featureConfig.useResourceNameFormatOption(field)) {
-      String resourceName = ResourceNameUtil.getResourceName(field);
-      Name resourceNameName = Name.upperCamel(resourceName);
+  public String getPagedResponseIterateMethod(
+      FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+      Name resourceNameName = Name.upperCamel(fieldConfig.getEntityName());
       return publicMethodName(Name.from("iterate_all_as").join(resourceNameName));
     } else {
       return getPagedResponseIterateMethod();
@@ -195,12 +200,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to set the given proto field. */
-  public String getFieldSetFunctionName(FeatureConfig featureConfig, Field field) {
-    if (featureConfig.useResourceNameFormatOption(field)) {
+  public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    Field field = fieldConfig.getField();
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
       return getResourceNameFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
     } else {
-      return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getFieldSetFunctionName(field);
     }
+  }
+
+  /** The function name to set the given proto field. */
+  public String getFieldSetFunctionName(Field field) {
+    return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
   /** The function name to set a field having the given type and name. */
@@ -225,12 +236,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to get the given proto field. */
-  public String getFieldGetFunctionName(FeatureConfig featureConfig, Field field) {
-    if (featureConfig.useResourceNameFormatOption(field)) {
+  public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    Field field = fieldConfig.getField();
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
       return getResourceNameFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
     } else {
-      return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getFieldGetFunctionName(field);
     }
+  }
+
+  /** The function name to get the given proto field. */
+  public String getFieldGetFunctionName(Field field) {
+    return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
   /** The function name to get a field having the given type and name. */

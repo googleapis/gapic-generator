@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.gax.protobuf.ValidationException;

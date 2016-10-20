@@ -103,7 +103,7 @@ public class ApiCallableTransformer {
           context
               .getNamer()
               .getAndSavePagedResponseTypeName(
-                  method, typeTable, pageStreaming.getResourcesField());
+                  method, typeTable, pageStreaming.getResourcesFieldConfig().getField());
 
       pagedApiCallableBuilder.requestTypeName(
           typeTable.getAndSaveNicknameFor(method.getInputType()));
@@ -178,7 +178,7 @@ public class ApiCallableTransformer {
     } else if (methodConfig.isPageStreaming()) {
       namer.addPageStreamingCallSettingsImports(typeTable);
       settings.type(ApiCallableType.PagedApiCallable);
-      Field resourceField = methodConfig.getPageStreaming().getResourcesField();
+      Field resourceField = methodConfig.getPageStreaming().getResourcesFieldConfig().getField();
       settings.resourceTypeName(
           typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
       settings.pagedListResponseTypeName(

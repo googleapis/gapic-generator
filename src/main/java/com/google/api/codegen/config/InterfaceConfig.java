@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -36,17 +35,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
-import org.joda.time.Duration;
-
 import io.grpc.Status;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-
 import javax.annotation.Nullable;
+import org.joda.time.Duration;
 
 /**
  * InterfaceConfig represents the code-gen config for an API interface, and includes the

@@ -50,6 +50,8 @@ interfaces:
     init_fields:
       - name%shelf_id="testShelf-$RANDOM"
       - name%book_id="testBook"
+    flattened_parameters:
+      - name
   experimental_features:
     iam_resources:
     - type: google.example.library.v1.Book
@@ -85,6 +87,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 2000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
   - name: ListShelves
@@ -112,6 +115,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 4000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
   - name: MergeShelves
@@ -127,6 +131,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 5000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
       other_shelf_name: shelf
@@ -143,6 +148,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 6000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
   - name: PublishSeries
@@ -183,6 +189,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 8000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: ListBooks
@@ -204,6 +211,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
   - name: DeleteBook
@@ -218,6 +226,7 @@ interfaces:
     timeout_millis: 10000
     # leaving commented out to test the default
     #request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: UpdateBook
@@ -238,6 +247,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: MoveBook
@@ -253,6 +263,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
       other_shelf_name: shelf
@@ -284,6 +295,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: true
+    resource_name_treatment: VALIDATE
     field_name_patterns:
       name: book
     sample_code_init_fields:
@@ -301,6 +313,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: archived_book
   - name: UpdateBookIndex
@@ -315,6 +328,7 @@ interfaces:
     - index_name
     - index_map
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
@@ -367,6 +381,11 @@ interfaces:
     retry_params_name: default
     timeout_millis: 3000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
+    # TODO(michaelbausor): support field name patterns for repeated fields
+    #field_name_patterns:
+    #  names: book
+    #  shelves: shelf
     sample_code_init_fields:
     - names[0]
     # TODO(michaelbausor): support %-entity notation for list elements
@@ -382,6 +401,7 @@ interfaces:
     - resource
     - tag
     request_object_method: true
+    resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -401,6 +421,7 @@ interfaces:
     - resource
     - label
     request_object_method: true
+    resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -419,6 +440,7 @@ interfaces:
     required_fields:
     - name
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:

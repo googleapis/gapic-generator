@@ -46,7 +46,8 @@ public class PageStreamingTransformer {
         descriptor.requestPageSizeFieldName(pageStreaming.getPageSizeField().getSimpleName());
       }
       descriptor.responseTokenFieldName(pageStreaming.getResponseTokenField().getSimpleName());
-      descriptor.resourcesFieldName(pageStreaming.getResourcesField().getSimpleName());
+      descriptor.resourcesFieldName(
+          pageStreaming.getResourcesFieldConfig().getField().getSimpleName());
       descriptor.methodName(Name.upperCamel(method.getSimpleName()).toLowerCamel());
 
       descriptors.add(descriptor.build());
@@ -77,7 +78,7 @@ public class PageStreamingTransformer {
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
-    Field resourceField = pageStreaming.getResourcesField();
+    Field resourceField = pageStreaming.getResourcesFieldConfig().getField();
     TypeRef resourceType = resourceField.getType();
 
     desc.name(namer.getPageStreamingDescriptorConstName(method));
@@ -97,17 +98,17 @@ public class PageStreamingTransformer {
         context.getTypeTable().getZeroValueAndSaveNicknameFor(resourceType.makeOptional()));
 
     desc.requestTokenSetFunction(
-        namer.getFieldSetFunctionName(featureConfig, pageStreaming.getRequestTokenField()));
+        namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
     if (pageStreaming.hasPageSizeField()) {
       desc.requestPageSizeSetFunction(
-          namer.getFieldSetFunctionName(featureConfig, pageStreaming.getPageSizeField()));
+          namer.getFieldSetFunctionName(pageStreaming.getPageSizeField()));
       desc.requestPageSizeGetFunction(
-          namer.getFieldGetFunctionName(featureConfig, pageStreaming.getPageSizeField()));
+          namer.getFieldGetFunctionName(pageStreaming.getPageSizeField()));
     }
     desc.responseTokenGetFunction(
-        namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResponseTokenField()));
+        namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
     desc.resourcesFieldGetFunction(
-        namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResourcesField()));
+        namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResourcesFieldConfig()));
 
     return desc.build();
   }
@@ -129,7 +130,7 @@ public class PageStreamingTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    Field resourceField = pageStreaming.getResourcesField();
+    Field resourceField = pageStreaming.getResourcesFieldConfig().getField();
 
     PagedListResponseFactoryClassView.Builder factory =
         PagedListResponseFactoryClassView.newBuilder();
