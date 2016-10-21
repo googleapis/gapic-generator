@@ -101,14 +101,8 @@ public abstract class PageStreamingConfig {
               method.getOutputType().getMessageType().getFullName(),
               resourcesFieldName));
       resourcesFieldConfig = null;
-    } else if (ResourceNameUtil.hasResourceName(resourcesField)) {
-      resourcesFieldConfig =
-          FieldConfig.createFieldConfig(
-              resourcesField,
-              ResourceNameTreatment.STATIC_TYPES,
-              ResourceNameUtil.getResourceName(resourcesField));
     } else {
-      resourcesFieldConfig = FieldConfig.createMessageFieldConfig(resourcesField);
+      resourcesFieldConfig = ResourceNameUtil.createFieldConfig(resourcesField);
     }
 
     if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {

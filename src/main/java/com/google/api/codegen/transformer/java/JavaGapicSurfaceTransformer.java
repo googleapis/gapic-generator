@@ -250,7 +250,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       PagedResponseIterateMethodView.Builder iterateMethod =
           PagedResponseIterateMethodView.newBuilder();
 
-      String resourceShortName = resourceFieldConfig.getEntityName();
+      String resourceShortName =
+          context.getNamer().getResourceTypeClassName(resourceFieldConfig.getEntityName());
       String resourceTypeName =
           context
               .getTypeTable()

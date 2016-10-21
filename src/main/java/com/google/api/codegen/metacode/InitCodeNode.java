@@ -16,6 +16,7 @@ package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.Field;
@@ -441,7 +442,7 @@ public class InitCodeNode {
         if (field.getSimpleName().equals(key)) {
           FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
           if (fieldConfig == null) {
-            fieldConfig = FieldConfig.createMessageFieldConfig(field);
+            fieldConfig = ResourceNameUtil.createFieldConfig(field);
           }
           return fieldConfig;
         }

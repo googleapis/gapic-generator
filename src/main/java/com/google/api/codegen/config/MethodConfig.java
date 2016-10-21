@@ -188,6 +188,7 @@ public abstract class MethodConfig {
     for (String fieldName : requiredFieldNames) {
       Field requiredField = method.getInputMessage().lookupField(fieldName);
       if (requiredField != null) {
+        
         FieldConfig fieldConfig = FieldConfig.createMessageFieldConfig(requiredField);
         String entityName = fieldNamePatterns.get(fieldName);
         if (entityName != null) {
