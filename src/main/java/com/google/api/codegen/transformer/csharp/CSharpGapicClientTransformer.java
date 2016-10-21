@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
@@ -45,7 +46,6 @@ import com.google.api.codegen.viewmodel.StaticLangXApiView;
 import com.google.api.codegen.viewmodel.StaticLangXCommonView;
 import com.google.api.codegen.viewmodel.StaticLangXSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -235,33 +235,33 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       MethodTransformerContext methodContext = context.asMethodContext(method);
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
-          for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             apiMethods.add(
                 apiMethodTransformer.generatePagedFlattenedAsyncMethod(
-                    methodContext, fields, pagedMethodAdditionalParams));
+                    methodContext, flatteningGroup, pagedMethodAdditionalParams));
             apiMethods.add(
                 apiMethodTransformer.generatePagedFlattenedMethod(
-                    methodContext, fields, pagedMethodAdditionalParams));
+                    methodContext, flatteningGroup, pagedMethodAdditionalParams));
           }
         }
       } else {
         if (methodConfig.isFlattening()) {
-          for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedAsyncMethod(
                     methodContext,
-                    fields,
+                    flatteningGroup,
                     csharpCommonTransformer.callSettingsParam(),
                     ApiMethodType.FlattenedAsyncCallSettingsMethod));
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedAsyncMethod(
                     methodContext,
-                    fields,
+                    flatteningGroup,
                     csharpCommonTransformer.cancellationTokenParam(),
                     ApiMethodType.FlattenedAsyncCancellationTokenMethod));
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedMethod(
-                    methodContext, fields, csharpCommonTransformer.callSettingsParam()));
+                    methodContext, flatteningGroup, csharpCommonTransformer.callSettingsParam()));
           }
         }
       }

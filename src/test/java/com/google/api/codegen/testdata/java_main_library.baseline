@@ -18,6 +18,7 @@ import com.google.api.gax.grpc.StreamingApiCallable;
 import com.google.api.gax.grpc.UnaryApiCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
@@ -1519,7 +1520,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   Book response = libraryServiceApi.getBookFromArchive(name);
    * }
    * </code></pre>
@@ -1527,7 +1528,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Book getBookFromArchive(BookName name) {
+  public final Book getBookFromArchive(ArchivedBookName name) {
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
         .setNameWithResource(name)
@@ -1542,7 +1543,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
@@ -1564,7 +1565,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
@@ -1783,10 +1784,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
-   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
-   *   for (BookName element : libraryServiceApi.findRelatedBooks(names, shelves).iterateAllAsBookName()) {
+   *   String namesElement = "";
+   *   List&lt;String&gt; names = Arrays.asList(namesElement);
+   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
+   *   for (String element : libraryServiceApi.findRelatedBooks(names, shelves).iterateAllElements()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1796,11 +1797,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param shelves
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final FindRelatedBooksPagedResponse findRelatedBooks(List<BookName> names, List<ShelfName> shelves) {
+  public final FindRelatedBooksPagedResponse findRelatedBooks(List<String> names, List<String> shelves) {
     FindRelatedBooksRequest request =
         FindRelatedBooksRequest.newBuilder()
-        .addAllNamesWithResources(names)
-        .addAllShelvesWithResources(shelves)
+        .addAllNames(names)
+        .addAllShelves(shelves)
         .build();
     return findRelatedBooks(request);
   }
@@ -1812,14 +1813,14 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
-   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   String namesElement = "";
+   *   List&lt;String&gt; names = Arrays.asList(namesElement);
+   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithResources(names)
-   *     .addAllShelvesWithResources(shelves)
+   *     .addAllNames(names)
+   *     .addAllShelves(shelves)
    *     .build();
-   *   for (BookName element : libraryServiceApi.findRelatedBooks(request).iterateAllAsBookName()) {
+   *   for (String element : libraryServiceApi.findRelatedBooks(request).iterateAllElements()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1840,16 +1841,16 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
-   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   String namesElement = "";
+   *   List&lt;String&gt; names = Arrays.asList(namesElement);
+   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithResources(names)
-   *     .addAllShelvesWithResources(shelves)
+   *     .addAllNames(names)
+   *     .addAllShelves(shelves)
    *     .build();
    *   ListenableFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (BookName element : future.get().iterateAllAsBookName()) {
+   *   for (String element : future.get().iterateAllElements()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1866,16 +1867,16 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
-   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   String namesElement = "";
+   *   List&lt;String&gt; names = Arrays.asList(namesElement);
+   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithResources(names)
-   *     .addAllShelvesWithResources(shelves)
+   *     .addAllNames(names)
+   *     .addAllShelves(shelves)
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryServiceApi.findRelatedBooksCallable().call(request);
-   *     for (BookName element : response.getNamesListAsResources()) {
+   *     for (String element : response.getNamesList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();

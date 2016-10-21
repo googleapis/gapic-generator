@@ -132,6 +132,9 @@ message SmokeTestConfigProto {
 
   // A list describing the name and the value of the init fields.
   repeated string init_fields = 2;
+
+  // A list of the flattened parameters in the method to test.
+  repeated string flattened_parameters = 3;
 }
 
 message CollectionConfigProto {
@@ -200,6 +203,9 @@ message MethodConfigProto {
   string reroute_to_grpc_interface = 12;
 
   repeated SurfaceTreatmentProto surface_treatments = 20;
+
+  // Set the resource name treatment for fields
+  ResourceNameTreatment resource_name_treatment = 15;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
@@ -217,6 +223,23 @@ message FlatteningGroupProto {
   // The list of parameters to include in this flattening group. Each
   // parameter must be a field of the request message.
   repeated string parameters = 1;
+
+  // Map flattening parameters listed in parameters field to a resource name
+  // treatment. This is used to override the resource_name_treament setting in
+  // MethodConfigProto.
+  map<string, ResourceNameTreatment> parameter_resource_name_treatment = 2;
+}
+
+// The ResourceNameTreatment enum can be used to specify how to treat the
+// resource name formats defined in the field_name_patterns
+// and response_field_name_patterns fields. NONE: the collection configs will
+// not be used by the generated code. VALIDATE: string fields will be
+// validated by the client against the specified resource name formats.
+// STATIC_TYPES: the client will use generated types for resource names.
+enum ResourceNameTreatment {
+  NONE = 0;
+  VALIDATE = 1;
+  STATIC_TYPES = 2;
 }
 
 // `PageStreamingConfigProto` describes information for generating a method which

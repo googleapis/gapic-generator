@@ -175,7 +175,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   public List<String> getReturnDocLines(
       SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+      TypeRef resourceType =
+          methodConfig.getPageStreaming().getResourcesFieldConfig().getField().getType();
       String resourceTypeName =
           context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
       switch (synchronicity) {
