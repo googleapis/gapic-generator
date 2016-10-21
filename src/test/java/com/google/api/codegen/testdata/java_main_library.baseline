@@ -1456,7 +1456,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1467,7 +1467,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setNameWithResource(name)
    *     .addAllComments(comments)
    *     .build();
    *   libraryServiceApi.addComments(request);
@@ -1488,7 +1488,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1499,7 +1499,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setNameWithResource(name)
    *     .addAllComments(comments)
    *     .build();
    *   ListenableFuture&lt;Void&gt; future = libraryServiceApi.addCommentsCallable().futureCall(request);
@@ -1542,7 +1542,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
@@ -1564,7 +1564,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
@@ -1812,12 +1812,12 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
-   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   String namesElement = "";
+   *   List&lt;String&gt; names = Arrays.asList(namesElement);
+   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithResources(names)
-   *     .addAllShelvesWithResources(shelves)
+   *     .addAllNames(names)
+   *     .addAllShelves(shelves)
    *     .build();
    *   for (BookName element : libraryServiceApi.findRelatedBooks(request).iterateAllAsBookName()) {
    *     // doThingsWith(element);
@@ -1840,12 +1840,12 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
-   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   String namesElement = "";
+   *   List&lt;String&gt; names = Arrays.asList(namesElement);
+   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithResources(names)
-   *     .addAllShelvesWithResources(shelves)
+   *     .addAllNames(names)
+   *     .addAllShelves(shelves)
    *     .build();
    *   ListenableFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
@@ -1866,12 +1866,12 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
-   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
-   *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
+   *   String namesElement = "";
+   *   List&lt;String&gt; names = Arrays.asList(namesElement);
+   *   List&lt;String&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithResources(names)
-   *     .addAllShelvesWithResources(shelves)
+   *     .addAllNames(names)
+   *     .addAllShelves(shelves)
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryServiceApi.findRelatedBooksCallable().call(request);
@@ -1928,10 +1928,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName resource = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
+   *     .setResourceWithResource(resource)
    *     .setTag(tag)
    *     .build();
    *   AddTagResponse response = libraryServiceApi.addTag(request);
@@ -1952,10 +1952,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName resource = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
+   *     .setResourceWithResource(resource)
    *     .setTag(tag)
    *     .build();
    *   ListenableFuture&lt;AddTagResponse&gt; future = libraryServiceApi.addTagCallable().futureCall(request);
@@ -2004,10 +2004,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName resource = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
-   *     .setResource(formattedResource)
+   *     .setResourceWithResource(resource)
    *     .setLabel(label)
    *     .build();
    *   AddLabelResponse response = libraryServiceApi.addLabel(request);
@@ -2028,10 +2028,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedResource = LibraryServiceApi.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   BookName resource = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
-   *     .setResource(formattedResource)
+   *     .setResourceWithResource(resource)
    *     .setLabel(label)
    *     .build();
    *   ListenableFuture&lt;AddLabelResponse&gt; future = libraryServiceApi.addLabelCallable().futureCall(request);

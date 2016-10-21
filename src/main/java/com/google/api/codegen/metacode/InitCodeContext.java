@@ -14,28 +14,16 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.CollectionConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** The context used for generating init code views */
 @AutoValue
@@ -58,8 +46,8 @@ public abstract class InitCodeContext {
   public abstract SymbolTable symbolTable();
 
   /**
-   * Contains the fields that require init.
-   * Must be set if the output type is FieldList.
+   * Contains the field configs for fields that require init. Must be set if the output type is
+   * FieldList.
    */
   @Nullable
   public abstract Iterable<Field> initFields();
@@ -93,11 +81,14 @@ public abstract class InitCodeContext {
    */
   public abstract ImmutableMap<String, InitValueConfig> initValueConfigMap();
 
+  /** A map of fields to field configs. Defaults to the empty map. */
+  public abstract ImmutableMap<String, FieldConfig> fieldConfigMap();
+
   public static Builder newBuilder() {
-    ImmutableMap.Builder<String, InitValueConfig> emptyConfigMap = new ImmutableMap.Builder<>();
     return new AutoValue_InitCodeContext.Builder()
         .symbolTable(new SymbolTable())
-        .initValueConfigMap(emptyConfigMap.build())
+        .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
+        .fieldConfigMap(ImmutableMap.<String, FieldConfig>of())
         .outputType(InitCodeOutputType.SingleObject);
   }
 
@@ -118,6 +109,8 @@ public abstract class InitCodeContext {
     public abstract Builder initFieldConfigStrings(Iterable<String> configStrings);
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> configMap);
+
+    public abstract Builder fieldConfigMap(ImmutableMap<String, FieldConfig> fieldConfigMap);
 
     public abstract Builder additionalInitCodeNodes(Iterable<InitCodeNode> additionalNodes);
 

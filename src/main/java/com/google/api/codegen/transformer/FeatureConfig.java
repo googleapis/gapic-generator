@@ -14,8 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.util.ResourceNameUtil;
-import com.google.api.tools.framework.model.Field;
+import com.google.api.codegen.config.FieldConfig;
 
 public class FeatureConfig {
 
@@ -25,11 +24,11 @@ public class FeatureConfig {
   }
 
   /**
-   * Returns true if resourceNameTypesEnabled() is true, and the field provided has a resource name
-   * format option.
+   * Returns true if resourceNameTypesEnabled() is true, and the field config provided has a
+   * resource name format option, and is configured to use it.
    */
-  public boolean useResourceNameFormatOption(Field field) {
-    return resourceNameTypesEnabled() && ResourceNameUtil.hasResourceName(field);
+  public boolean useResourceNameFormatOption(FieldConfig fieldConfig) {
+    return resourceNameTypesEnabled() && fieldConfig != null && fieldConfig.useResourceNameType();
   }
 
   /** Returns true if mixin APIs are supported. */

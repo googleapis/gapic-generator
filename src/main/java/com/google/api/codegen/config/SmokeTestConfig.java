@@ -14,24 +14,23 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.SmokeTestConfigProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.auto.value.AutoValue;
 import java.util.List;
 
 /** SmokeTestConfig represents the smoke test configuration for a method. */
-public class SmokeTestConfig {
-  private final Method method;
-  private final List<String> initFieldConfigStrings;
+@AutoValue
+public abstract class SmokeTestConfig {
+  public abstract Method getMethod();
 
-  private SmokeTestConfig(Method method, List<String> initFieldConfigStrings) {
-    this.method = method;
-    this.initFieldConfigStrings = initFieldConfigStrings;
-  }
+  public abstract List<String> getInitFieldConfigStrings();
+
+  public abstract List<String> getFlattenedParameters();
 
   public static SmokeTestConfig createSmokeTestConfig(
       Interface service, SmokeTestConfigProto smokeTestConfigProto, DiagCollector diagCollector) {
@@ -42,22 +41,16 @@ public class SmokeTestConfig {
         break;
       }
     }
+
     if (testedMethod != null) {
-      return new SmokeTestConfig(testedMethod, smokeTestConfigProto.getInitFieldsList());
+      return new AutoValue_SmokeTestConfig(
+          testedMethod,
+          smokeTestConfigProto.getInitFieldsList(),
+          smokeTestConfigProto.getFlattenedParametersList());
     } else {
       diagCollector.addDiag(
           Diag.error(SimpleLocation.TOPLEVEL, "The configured smoke test method does not exist."));
       return null;
     }
-  }
-
-  /** Returns a list of initialized fields configuration. */
-  public List<String> getInitFieldConfigStrings() {
-    return initFieldConfigStrings;
-  }
-
-  /** Returns the method that is used in the smoke test. */
-  public Method getMethod() {
-    return method;
   }
 }

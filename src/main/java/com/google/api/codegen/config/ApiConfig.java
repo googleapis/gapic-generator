@@ -23,17 +23,13 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
+import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
-
-import java.util.Map;
-
 import javax.annotation.Nullable;
 
-/**
- * ApiConfig represents the code-gen config for an API library.
- */
-@com.google.auto.value.AutoValue
+/** ApiConfig represents the code-gen config for an API library. */
+@AutoValue
 public abstract class ApiConfig {
   abstract ImmutableMap<String, InterfaceConfig> getInterfaceConfigMap();
 

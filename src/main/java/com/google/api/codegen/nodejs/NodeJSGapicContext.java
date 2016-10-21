@@ -48,10 +48,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.Collections;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 /**
@@ -78,7 +76,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public ApiMethodView getApiMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    MethodTransformerContext methodContext = context.asMethodContext(method);
+    MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
     ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
 
     return apiMethodTransformer.generateDynamicLangApiMethod(methodContext);
@@ -97,7 +95,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   public GrpcStubView getStubForMethod(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+    Interface targetInterface = context.asDynamicMethodContext(method).getTargetInterface();
     return grpcStubTransformer.generateGrpcStub(
         context, targetInterface, Collections.singletonList(method));
   }
@@ -307,7 +305,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               + ".\n"
               + "  The third item will be set if the response contains the token for the further results\n"
               + "  and can be reused to `pageToken` field in the options in the next request.";
-      TypeRef resourceType = config.getPageStreaming().getResourcesField().getType();
+      TypeRef resourceType =
+          config.getPageStreaming().getResourcesFieldConfig().getField().getType();
       String resourceTypeName;
       if (resourceType.isMessage()) {
         resourceTypeName =

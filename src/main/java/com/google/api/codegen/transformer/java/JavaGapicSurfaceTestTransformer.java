@@ -18,6 +18,8 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.BundlingConfig;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
@@ -35,7 +37,6 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.util.testing.JavaValueProducer;
@@ -59,6 +60,8 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -122,8 +125,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(service);
+
+    Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    FlatteningConfig flatteningGroup =
+        getFlatteningGroup(
+            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     MethodTransformerContext methodContext =
-        context.asMethodContext(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+        context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView testClass =
         SmokeTestClassView.newBuilder()
@@ -163,17 +171,37 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private InitCodeContext createSmokeTestInitContext(MethodTransformerContext context) {
     SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
-    InitCodeOutputType outputType =
-        context.getMethodConfig().isFlattening()
-            ? InitCodeOutputType.FieldList
-            : InitCodeOutputType.SingleObject;
+    InitCodeOutputType outputType;
+    ImmutableMap<String, FieldConfig> fieldConfigMap;
+    if (context.getMethodConfig().isFlattening()) {
+      outputType = InitCodeOutputType.FieldList;
+      fieldConfigMap =
+          FieldConfig.transformToMap(
+              context.getFlatteningConfig().getFlattenedFieldConfigs().values());
+    } else {
+      outputType = InitCodeOutputType.SingleObject;
+      fieldConfigMap = null;
+    }
     return InitCodeContext.newBuilder()
         .initObjectType(testConfig.getMethod().getInputType())
         .suggestedName(Name.from("request"))
         .outputType(outputType)
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
+        .fieldConfigMap(fieldConfigMap)
         .build();
+  }
+
+  private FlatteningConfig getFlatteningGroup(
+      MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
+    for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+      if (Iterables.elementsEqual(
+          flatteningGroup.getParameterList(), smokeTestConfig.getFlattenedParameters())) {
+        return flatteningGroup;
+      }
+    }
+    throw new IllegalArgumentException(
+        "Parameter list in smoke test config did not correspond to any flattened method.");
   }
 
   ///////////////////////////////////// Unit Test /////////////////////////////////////////
@@ -206,13 +234,21 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
-      MethodTransformerContext methodContext = context.asMethodContext(method);
-      MethodConfig methodConfig = methodContext.getMethodConfig();
+      MethodConfig methodConfig = context.getMethodConfig(method);
       if (MethodConfig.isGrpcStreamingMethod(method)) {
-        testCaseViews.add(createTestCaseView(methodContext, testNameTable, null));
+        MethodTransformerContext methodContext = context.asRequestMethodContext(method);
+        testCaseViews.add(
+            createTestCaseView(
+                methodContext, testNameTable, methodConfig.getRequiredFieldConfigs()));
       } else if (methodConfig.isFlattening()) {
-        for (List<Field> paramFields : methodConfig.getFlattening().getFlatteningGroups()) {
-          testCaseViews.add(createTestCaseView(methodContext, testNameTable, paramFields));
+        for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+          MethodTransformerContext methodContext =
+              context.asFlattenedMethodContext(method, flatteningGroup);
+          testCaseViews.add(
+              createTestCaseView(
+                  methodContext,
+                  testNameTable,
+                  flatteningGroup.getFlattenedFieldConfigs().values()));
         }
       } else {
         // TODO: Add support of non-flattening method
@@ -226,7 +262,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   // TODO: Convert to use TestMethodView.
   private GapicSurfaceTestCaseView createTestCaseView(
-      MethodTransformerContext methodContext, SymbolTable testNameTable, List<Field> paramFields) {
+      MethodTransformerContext methodContext,
+      SymbolTable testNameTable,
+      Iterable<FieldConfig> paramFieldConfigs) {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
     Method method = methodContext.getMethod();
@@ -240,13 +278,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
           initCodeTransformer.generateInitCode(
               methodContext,
               createRequestInitCodeContext(
-                  methodContext, initSymbolTable, null, InitCodeOutputType.SingleObject));
+                  methodContext,
+                  initSymbolTable,
+                  paramFieldConfigs,
+                  InitCodeOutputType.SingleObject));
     } else {
       initCodeView =
           initCodeTransformer.generateInitCode(
               methodContext,
               createRequestInitCodeContext(
-                  methodContext, initSymbolTable, paramFields, InitCodeOutputType.FieldList));
+                  methodContext, initSymbolTable, paramFieldConfigs, InitCodeOutputType.FieldList));
     }
 
     String requestTypeName =
@@ -257,7 +298,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     ApiMethodType type = ApiMethodType.FlattenedMethod;
     if (methodConfig.isPageStreaming()) {
-      Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
+      Field resourcesField = methodConfig.getPageStreaming().getResourcesFieldConfig().getField();
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(
               method, methodContext.getTypeTable(), resourcesField);
@@ -269,7 +310,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
 
     List<GapicSurfaceTestAssertView> requestAssertViews =
-        initCodeTransformer.generateRequestAssertViews(methodContext, paramFields);
+        initCodeTransformer.generateRequestAssertViews(methodContext, paramFieldConfigs);
 
     return GapicSurfaceTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
@@ -299,7 +340,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       return pageStreamingResponseViews;
     }
 
-    Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
+    FieldConfig resourcesFieldConfig = methodConfig.getPageStreaming().getResourcesFieldConfig();
+    Field resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
     String resourcesFieldGetterName =
@@ -314,8 +356,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .resourcesVarName(namer.localVarName(Name.from("resources")))
             .build());
 
-    if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesField)) {
-      String resourceName = ResourceNameUtil.getResourceName(resourcesField);
+    if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
+      String resourceName = resourcesFieldConfig.getEntityName();
       Name resourceNameName = Name.upperCamel(resourceName);
       resourceTypeName =
           methodContext
@@ -331,7 +373,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .resourcesFieldGetterName(resourcesFieldGetterName)
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
-                      methodContext.getFeatureConfig(), resourcesField))
+                      methodContext.getFeatureConfig(), resourcesFieldConfig))
               .resourcesVarName(
                   namer.localVarName(Name.from("resources_as").join(resourceNameName)))
               .build());
@@ -356,7 +398,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private InitCodeContext createRequestInitCodeContext(
       MethodTransformerContext context,
       SymbolTable symbolTable,
-      Iterable<Field> fields,
+      Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType outputType) {
     return InitCodeContext.newBuilder()
         .initObjectType(context.getMethod().getInputType())
@@ -364,7 +406,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(fields)
+        .initFields(FieldConfig.transformToFields(fieldConfigs))
+        .fieldConfigMap(FieldConfig.transformToMap(fieldConfigs))
         .outputType(outputType)
         .valueGenerator(valueGenerator)
         .build();
@@ -396,7 +439,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      String resourceFieldName = config.getResourcesField().getSimpleName();
+      String resourceFieldName = config.getResourcesFieldConfig().getField().getSimpleName();
       additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
 
       // Set the initial value of the page token to empty, in order to indicate that no more pages
@@ -474,7 +517,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private List<MockGrpcMethodView> createGrpcMethodViews(SurfaceTransformerContext context) {
     ArrayList<MockGrpcMethodView> testCaseViews = new ArrayList<>();
     for (Method method : context.getInterface().getMethods()) {
-      MethodTransformerContext methodContext = context.asMethodContext(method);
+      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
       testCaseViews.add(createGrpcMethodView(methodContext));
     }
     return testCaseViews;

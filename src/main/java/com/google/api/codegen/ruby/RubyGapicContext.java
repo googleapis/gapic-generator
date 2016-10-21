@@ -161,7 +161,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     String classInfo = rubyTypeName(method.getOutputType());
 
     if (config.isPageStreaming()) {
-      String resourceType = rubyTypeName(config.getPageStreaming().getResourcesField().getType());
+      String resourceType =
+          rubyTypeName(config.getPageStreaming().getResourcesFieldConfig().getField().getType());
       return "@return [Google::Gax::PagedEnumerable<"
           + resourceType
           + ">]\n"
@@ -346,7 +347,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
   public OptionalArrayMethodView getMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    MethodTransformerContext methodContext = context.asMethodContext(method);
+    MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
     ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
     return methodTransformer.generateDynamicLangApiMethod(methodContext);
   }

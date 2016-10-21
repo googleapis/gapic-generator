@@ -23,7 +23,9 @@ import java.util.List;
 public class ResourceNameUtil {
 
   public static String getResourceName(Field field) {
-    return field.getProto().getOptions().getExtension(ResourceNameFormatProto.formatName);
+    String resourceName =
+        field.getProto().getOptions().getExtension(ResourceNameFormatProto.formatName);
+    return Name.upperCamel(resourceName).toLowerUnderscore();
   }
 
   public static boolean hasResourceName(Field field) {

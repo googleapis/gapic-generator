@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -25,7 +26,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -125,7 +125,8 @@ public abstract class SurfaceTransformerContext {
     return getInterfaceConfig().getCollectionConfig(entityName);
   }
 
-  public MethodTransformerContext asMethodContext(Method method) {
+  public MethodTransformerContext asFlattenedMethodContext(
+      Method method, FlatteningConfig flatteningConfig) {
     return MethodTransformerContext.create(
         this,
         getInterface(),
@@ -134,6 +135,33 @@ public abstract class SurfaceTransformerContext {
         getNamer(),
         method,
         getMethodConfig(method),
+        flatteningConfig,
+        getFeatureConfig());
+  }
+
+  public MethodTransformerContext asRequestMethodContext(Method method) {
+    return MethodTransformerContext.create(
+        this,
+        getInterface(),
+        getApiConfig(),
+        getTypeTable(),
+        getNamer(),
+        method,
+        getMethodConfig(method),
+        null,
+        getFeatureConfig());
+  }
+
+  public MethodTransformerContext asDynamicMethodContext(Method method) {
+    return MethodTransformerContext.create(
+        this,
+        getInterface(),
+        getApiConfig(),
+        getTypeTable(),
+        getNamer(),
+        method,
+        getMethodConfig(method),
+        null,
         getFeatureConfig());
   }
 
