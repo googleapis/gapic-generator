@@ -31,7 +31,6 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
@@ -148,7 +147,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
 
     List<String> scopeConsts = new ArrayList<>();
-    // Pull scopes and reconstruct them as Go constants if the sample.
+    // Pull scopes and reconstruct them as Go constants in the sample.
     // For example: "https://www.googleapis.com/auth/cloud-platform" to
     // "CloudPlatformScope"
     if (config.authType() != AuthType.APPLICATION_DEFAULT_CREDENTIALS) {
