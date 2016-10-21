@@ -39,17 +39,17 @@ interfaces:
     max_rpc_timeout_millis: 3000
     total_timeout_millis: 30000
   collections:
-  - name_pattern: shelves/{shelf}
+  - name_pattern: shelves/{shelf_id}
     entity_name: shelf
-  - name_pattern: shelves/{shelf}/books/{book}
+  - name_pattern: shelves/{shelf_id}/books/{book_id}
     entity_name: book
-  - name_pattern: archives/{archive_path=**}/books/{book}
+  - name_pattern: archives/{archive_path=**}/books/{book_id}
     entity_name: archived_book
   smoke_test:
     method: GetBook
     init_fields:
-      - name%shelf="testShelf"
-      - name%book="testBook"
+      - name%shelf_id="testShelf-$RANDOM"
+      - name%book_id="testBook"
   experimental_features:
     iam_resources:
     - type: google.example.library.v1.Book
@@ -411,3 +411,16 @@ interfaces:
     - include_languages:
       - go
       visibility: PRIVATE
+  - name: GetBigBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      resource: book
+    timeout_millis: 60000

@@ -28,6 +28,8 @@ import java.util.List;
  */
 public class ServiceMessages {
 
+  private static final String LRO_TYPE = "google.longrunning.Operation";
+
   /**
    * Returns true if the message is the empty message.
    */
@@ -38,6 +40,10 @@ public class ServiceMessages {
   public static boolean s_isEmptyType(TypeRef type) {
     return type.isMessage()
         && type.getMessageType().getFullName().equals(Empty.getDescriptor().getFullName());
+  }
+
+  public boolean isLongRunningOperationType(TypeRef type) {
+    return type.isMessage() && type.getMessageType().getFullName().equals(LRO_TYPE);
   }
 
   /**

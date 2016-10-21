@@ -24,7 +24,8 @@ import java.util.List;
  */
 public interface GapicProviderFactory<ProviderT> {
   /**
-   * Create the provider from the given model, apiConfig, and id.
+   * Create the provider from the given model, apiConfig, and generatorConfig.
    */
-  public List<ProviderT> create(Model model, ApiConfig apiConfig, String id);
+  public List<ProviderT> create(
+      Model model, ApiConfig apiConfig, GapicGeneratorConfig generatorConfig);
 }

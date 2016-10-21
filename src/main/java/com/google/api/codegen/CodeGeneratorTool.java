@@ -15,14 +15,12 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.tools.ToolOptions;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-
-import com.google.common.collect.Lists;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
 // containing the YAMLs, descriptor set, and output)
@@ -66,6 +64,16 @@ public class CodeGeneratorTool {
             .hasArg()
             .argName("OUTPUT-DIRECTORY")
             .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("enabled_artifacts")
+            .desc(
+                "Optional. Artifacts enabled for the generator. "
+                    + "Currently supports 'surface' and 'test'.")
+            .hasArg()
+            .argName("ENABLED_ARTIFACTS")
+            .required(false)
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -78,7 +86,8 @@ public class CodeGeneratorTool {
             cl.getOptionValue("descriptor_set"),
             cl.getOptionValues("service_yaml"),
             cl.getOptionValues("gapic_yaml"),
-            cl.getOptionValue("output", ""));
+            cl.getOptionValue("output", ""),
+            cl.getOptionValues("enabled_artifacts"));
     System.exit(exitCode);
   }
 
@@ -86,12 +95,14 @@ public class CodeGeneratorTool {
       String descriptorSet,
       String[] apiConfigs,
       String[] generatorConfigs,
-      String outputDirectory) {
+      String outputDirectory,
+      String[] enabledArtifacts) {
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
+    options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(enabledArtifacts));
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
     return codeGen.run();
   }
