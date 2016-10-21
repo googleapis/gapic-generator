@@ -275,6 +275,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       exampleApiMethod = searchExampleMethod(methods, ApiMethodType.PagedFlattenedMethod);
     }
     if (exampleApiMethod == null) {
+      exampleApiMethod = searchExampleMethod(methods, ApiMethodType.RequestObjectMethod);
+    }
+    if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
     }
     return exampleApiMethod;
