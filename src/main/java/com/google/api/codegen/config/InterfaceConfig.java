@@ -58,7 +58,7 @@ public abstract class InterfaceConfig {
   private static final String SERVICE_ADDRESS_PARAM = "service_address";
   private static final String SCOPES_PARAM = "scopes";
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
-      ImmutableSet.<String>builder().add(SERVICE_ADDRESS_PARAM).add(SCOPES_PARAM).build();
+      ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
 
   public abstract List<MethodConfig> getMethodConfigs();
 
