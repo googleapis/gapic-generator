@@ -7,7 +7,7 @@
   /**
    * A client to {@packageInfo.serviceTitle}.
    *
-   * The interfaces provided are listed below, along with a usage sample
+   * The interfaces provided are listed below, along with usage samples.
    *
   @join xapiClassDoc : packageInfo.serviceDocs
     {@serviceShortDoc(xapiClassDoc)}
@@ -30,21 +30,23 @@
   @end
   # The join above doesn't properly add a newline on the end, so we need to force it
   {@""}
-  {@""} *
+   *
    * Service Description: {@xapiClassDoc.firstLine}
   @if xapiClassDoc.remainingLines
     @join commentLine : xapiClassDoc.remainingLines
       {@""} * {@commentLine}
     @end
   @end
-   *
-   * Sample for {@xapiClassDoc.apiClassName}:
-   * <pre>
-   * <code>
-  @join sampleLine : util.getDocLines(exampleMethodSampleCode)
-    {@""} * {@sampleLine}
+  @if xapiClassDoc.hasDefaultInstance
+    {@""} *
+     * Sample for {@xapiClassDoc.apiClassName}:
+     * <pre>
+     * <code>
+    @join sampleLine : util.getDocLines(exampleMethodSampleCode)
+      {@""} * {@sampleLine}
+    @end
+     * </code>
+     * </pre>
+     *
   @end
-   * </code>
-   * </pre>
-   *
 @end
