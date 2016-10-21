@@ -22,6 +22,7 @@ import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -177,9 +178,6 @@ public abstract class MethodConfig {
 
     boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
 
-    // Default to STATIC_TYPES, so we use resource names when they are available
-    final ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
-
     final ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
 
@@ -188,12 +186,15 @@ public abstract class MethodConfig {
     for (String fieldName : requiredFieldNames) {
       Field requiredField = method.getInputMessage().lookupField(fieldName);
       if (requiredField != null) {
-        
-        FieldConfig fieldConfig = FieldConfig.createMessageFieldConfig(requiredField);
-        String entityName = fieldNamePatterns.get(fieldName);
-        if (entityName != null) {
+        FieldConfig fieldConfig;
+        if (ResourceNameUtil.hasResourceName(requiredField)) {
+          fieldConfig = ResourceNameUtil.createFieldConfig(requiredField);
+        } else if (fieldNamePatterns.containsKey(fieldName)) {
           fieldConfig =
-              FieldConfig.createFieldConfig(requiredField, resourceNameTreatment, entityName);
+              FieldConfig.createFieldConfig(
+                  requiredField, ResourceNameTreatment.VALIDATE, fieldNamePatterns.get(fieldName));
+        } else {
+          fieldConfig = FieldConfig.createMessageFieldConfig(requiredField);
         }
         builder.add(fieldConfig);
       } else {
@@ -222,15 +223,25 @@ public abstract class MethodConfig {
                 new Function<Field, FieldConfig>() {
                   @Override
                   public FieldConfig apply(Field field) {
-                    FieldConfig fieldConfig = FieldConfig.createMessageFieldConfig(field);
-                    String entityName = fieldNamePatterns.get(field.getSimpleName());
-                    if (entityName != null) {
-                      FieldConfig.createFieldConfig(field, resourceNameTreatment, entityName);
+                    FieldConfig fieldConfig;
+                    if (ResourceNameUtil.hasResourceName(field)) {
+                      fieldConfig = ResourceNameUtil.createFieldConfig(field);
+                    } else if (fieldNamePatterns.containsKey(field.getSimpleName())) {
+                      fieldConfig =
+                          FieldConfig.createFieldConfig(
+                              field,
+                              ResourceNameTreatment.VALIDATE,
+                              fieldNamePatterns.get(field.getSimpleName()));
+                    } else {
+                      fieldConfig = FieldConfig.createMessageFieldConfig(field);
                     }
                     return fieldConfig;
                   }
                 })
             .toList();
+
+    // Default to STATIC_TYPES, so we use resource names when they are available
+    ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());

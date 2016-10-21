@@ -32,7 +32,7 @@ public class ResourceNameUtil {
       return FieldConfig.createMessageFieldConfig(field);
     }
   }
-  
+
   public static String getResourceName(Field field) {
     String resourceName =
         field.getProto().getOptions().getExtension(ResourceNameFormatProto.formatName);
