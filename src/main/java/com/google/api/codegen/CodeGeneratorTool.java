@@ -102,7 +102,10 @@ public class CodeGeneratorTool {
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
-    options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(enabledArtifacts));
+
+    if (enabledArtifacts != null) {
+      options.set(CodeGeneratorApi.ENABLED_ARTIFACTS, Lists.newArrayList(enabledArtifacts));
+    }
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
     return codeGen.run();
   }
