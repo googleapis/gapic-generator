@@ -21,74 +21,74 @@
   // AUTO-GENERATED DOCUMENTATION AND CLASS
   /**
    * Settings class to configure an instance of {@@link {@doc.apiClassName}}.
-   *
-   * <p>The default instance has everything set to sensible defaults:
-   *
-   * <ul>
-   * <li>The default service address ({@doc.serviceAddress}) and default port ({@doc.servicePort})
-   * are used.
-   * <li>Credentials are acquired automatically through Application Default Credentials.
-   * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
-   * </ul>
-   *
-   * <p>The builder of this class is recursive, so contained classes are themselves builders.
-   * When build() is called, the tree of builders is called to create the complete settings
-   * object. For example, to set the total timeout of {@doc.exampleApiMethodName} to 30 seconds:
-   *
-   * <pre>
-   * <code>
-   * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
-   *     {@doc.settingsClassName}.defaultBuilder();
-   * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettingsBuilder()
-   *     .setTotalTimeout(Duration.standardSeconds(30));
-   * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
-   * </code>
-   * </pre>
+  @if doc.hasDefaultInstance
+    {@""} *
+     * <p>The default instance has everything set to sensible defaults:
+     *
+     * <ul>
+     * <li>The default service address ({@doc.serviceAddress}) and default port ({@doc.servicePort})
+     * are used.
+     * <li>Credentials are acquired automatically through Application Default Credentials.
+     * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+     * </ul>
+     *
+     * <p>The builder of this class is recursive, so contained classes are themselves builders.
+     * When build() is called, the tree of builders is called to create the complete settings
+     * object. For example, to set the total timeout of {@doc.exampleApiMethodName} to 30 seconds:
+     *
+     * <pre>
+     * <code>
+     * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
+     *     {@doc.settingsClassName}.defaultBuilder();
+     * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettingsBuilder()
+     *     .setTotalTimeout(Duration.standardSeconds(30));
+     * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
+     * </code>
+     * </pre>
+  @end
    */
 @end
 
 @private constants(xsettingsClass)
-  /**
-   * The default address of the service.
-   */
-  private static final String DEFAULT_SERVICE_ADDRESS = "{@xsettingsClass.serviceAddress}";
+  @if xsettingsClass.hasDefaultServiceAddress
+    /**
+     * The default address of the service.
+     */
+    private static final String DEFAULT_SERVICE_ADDRESS = "{@xsettingsClass.serviceAddress}";
+    {@""}
+  @end
 
   /**
    * The default port of the service.
    */
   private static final int DEFAULT_SERVICE_PORT = {@xsettingsClass.servicePort};
 
-  /**
-   * The default scopes of the service.
-   */
-  private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
-      @join scope : {@xsettingsClass.authScopes}
-        .add("{@scope}")
-      @end
-      .build();
-
-  /**
-   * The default connection settings of the service.
-   */
-  public static final ConnectionSettings DEFAULT_CONNECTION_SETTINGS =
-      ConnectionSettings.newBuilder()
-          .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-          .setPort(DEFAULT_SERVICE_PORT)
-          .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
-          .build();
+  @if xsettingsClass.hasDefaultServiceScopes
+    /**
+     * The default scopes of the service.
+     */
+    private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+        @join scope : {@xsettingsClass.authScopes}
+          .add("{@scope}")
+        @end
+        .build();
+    {@""}
+  @end
   {@""}
 @end
 
 @private members(xsettingsClass)
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
-  /**
-   * Returns the default service address.
-   */
-  public static String getDefaultServiceAddress() {
-    return DEFAULT_SERVICE_ADDRESS;
-  }
+  @if xsettingsClass.hasDefaultServiceAddress
+    /**
+     * Returns the default service address.
+     */
+    public static String getDefaultServiceAddress() {
+      return DEFAULT_SERVICE_ADDRESS;
+    }
 
+  @end
   /**
    * Returns the default service port.
    */
@@ -96,13 +96,15 @@
     return DEFAULT_SERVICE_PORT;
   }
 
-  /**
-   * Returns the default service scopes.
-   */
-  public static ImmutableList<String> getDefaultServiceScopes() {
-    return DEFAULT_SERVICE_SCOPES;
-  }
+  @if xsettingsClass.hasDefaultServiceScopes
+    /**
+     * Returns the default service scopes.
+     */
+    public static ImmutableList<String> getDefaultServiceScopes() {
+      return DEFAULT_SERVICE_SCOPES;
+    }
 
+  @end
   /**
    * Returns a builder for this class with recommended defaults.
    */
@@ -428,7 +430,9 @@
 
 @private builderConstructors(xsettingsClass)
   private Builder() {
-    super(DEFAULT_CONNECTION_SETTINGS);
+    @if xsettingsClass.hasDefaultInstance
+      super(s_getDefaultConnectionSettingsBuilder().build());
+    @end
 
     @join settings : xsettingsClass.callSettings
       @switch settings.type.toString
@@ -499,9 +503,20 @@
 @end
 
 @private builderMethods(xsettingsClass)
+  private static ConnectionSettings.Builder s_getDefaultConnectionSettingsBuilder() {
+    return ConnectionSettings.newBuilder()
+      @if xsettingsClass.hasDefaultServiceAddress
+        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+      @end
+      .setPort(DEFAULT_SERVICE_PORT)
+      @if xsettingsClass.hasDefaultServiceScopes
+        .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
+      @end
+      ;
+    }
   @@Override
-  protected ConnectionSettings getDefaultConnectionSettings() {
-    return DEFAULT_CONNECTION_SETTINGS;
+  protected ConnectionSettings.Builder getDefaultConnectionSettingsBuilder() {
+    return s_getDefaultConnectionSettingsBuilder();
   }
   @@Override
   public Builder provideExecutorWith(ScheduledExecutorService executor, boolean shouldAutoClose) {

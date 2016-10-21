@@ -132,15 +132,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       .add("https://www.googleapis.com/auth/library")
       .build();
 
-  /**
-   * The default connection settings of the service.
-   */
-  public static final ConnectionSettings DEFAULT_CONNECTION_SETTINGS =
-      ConnectionSettings.newBuilder()
-          .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-          .setPort(DEFAULT_SERVICE_PORT)
-          .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
-          .build();
 
   private final SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings;
@@ -703,7 +694,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     }
 
     private Builder() {
-      super(DEFAULT_CONNECTION_SETTINGS);
+      super(s_getDefaultConnectionSettingsBuilder().build());
 
       createShelfSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_CREATE_SHELF);
 
@@ -930,9 +921,16 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       );
     }
 
+    private static ConnectionSettings.Builder s_getDefaultConnectionSettingsBuilder() {
+      return ConnectionSettings.newBuilder()
+        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+        .setPort(DEFAULT_SERVICE_PORT)
+        .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
+        ;
+      }
     @Override
-    protected ConnectionSettings getDefaultConnectionSettings() {
-      return DEFAULT_CONNECTION_SETTINGS;
+    protected ConnectionSettings.Builder getDefaultConnectionSettingsBuilder() {
+      return s_getDefaultConnectionSettingsBuilder();
     }
     @Override
     public Builder provideExecutorWith(ScheduledExecutorService executor, boolean shouldAutoClose) {

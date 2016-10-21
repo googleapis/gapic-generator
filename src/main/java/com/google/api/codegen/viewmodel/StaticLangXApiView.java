@@ -55,6 +55,8 @@ public abstract class StaticLangXApiView implements ViewModel {
   @Nullable // Used in C#
   public abstract List<StaticLangApiMethodView> apiMethodsImpl();
 
+  public abstract boolean hasDefaultInstance();
+
   public abstract List<ImportTypeView> imports();
 
   @Override
@@ -98,6 +100,8 @@ public abstract class StaticLangXApiView implements ViewModel {
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
     public abstract Builder apiMethodsImpl(List<StaticLangApiMethodView> val);
+
+    public abstract Builder hasDefaultInstance(boolean val);
 
     public abstract Builder imports(List<ImportTypeView> val);
 

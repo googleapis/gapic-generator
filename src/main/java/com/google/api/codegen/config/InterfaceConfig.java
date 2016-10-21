@@ -54,6 +54,12 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class InterfaceConfig {
+
+  private static final String SERVICE_ADDRESS_PARAM = "service_address";
+  private static final String SCOPES_PARAM = "scopes";
+  private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
+      ImmutableSet.<String>builder().add(SERVICE_ADDRESS_PARAM).add(SCOPES_PARAM).build();
+
   public abstract List<MethodConfig> getMethodConfigs();
 
   @Nullable
@@ -68,6 +74,8 @@ public abstract class InterfaceConfig {
   public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
 
   public abstract ImmutableList<Field> getIamResources();
+
+  public abstract ImmutableList<String> getRequiredConstructorParams();
 
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up method configurations
@@ -109,6 +117,15 @@ public abstract class InterfaceConfig {
         createIamResources(
             iface.getModel(), interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
 
+    ImmutableList<String> requiredConstructorParams =
+        ImmutableList.<String>copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
+    for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
+      if (!CONSTRUCTOR_PARAMS.contains(param)) {
+        diagCollector.addDiag(
+            Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
+      }
+    }
+
     if (diagCollector.hasErrors()) {
       return null;
     } else {
@@ -119,7 +136,8 @@ public abstract class InterfaceConfig {
           methodConfigMap,
           retryCodesDefinition,
           retrySettingsDefinition,
-          iamResources);
+          iamResources,
+          requiredConstructorParams);
     }
   }
 
@@ -283,6 +301,18 @@ public abstract class InterfaceConfig {
           "no method config for method '" + method.getFullName() + "'");
     }
     return methodConfig;
+  }
+
+  public boolean hasDefaultServiceAddress() {
+    return !getRequiredConstructorParams().contains(SERVICE_ADDRESS_PARAM);
+  }
+
+  public boolean hasDefaultServiceScopes() {
+    return !getRequiredConstructorParams().contains(SCOPES_PARAM);
+  }
+
+  public boolean hasDefaultInstance() {
+    return getRequiredConstructorParams().size() == 0;
   }
 
   /**
