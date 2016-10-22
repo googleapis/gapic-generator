@@ -38,7 +38,6 @@ var DEFAULT_SERVICE_PORT = 443;
 
 var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
-
 var PAGE_DESCRIPTORS = {
   listShelves: new gax.PageDescriptor(
       'pageToken',
@@ -108,7 +107,6 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'gax/' + gax.version,
     'nodejs/' + process.version].join(' ');
 
-
   var bundleDescriptors = {
     publishSeries: new gax.BundleDescriptor(
         'books',
@@ -119,12 +117,11 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
         'bookNames',
         gax.createByteLengthFunction(grpcClients.libraryServiceClient.google.example.library.v1.Book))
   };
+
   var defaults = gaxGrpc.constructSettings(
       'google.example.library.v1.LibraryService',
       configData,
       clientConfig,
-      PAGE_DESCRIPTORS,
-      bundleDescriptors,
       {'x-goog-api-client': googleApiClient});
 
   var libraryServiceStub = gaxGrpc.createStub(
@@ -158,7 +155,8 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
       libraryServiceStub.then(function(libraryServiceStub) {
         return libraryServiceStub[methodName].bind(libraryServiceStub);
       }),
-      defaults[methodName]);
+      defaults[methodName],
+      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName]);
   }.bind(this));
 
   var labelerStub = gaxGrpc.createStub(
@@ -174,7 +172,8 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
       labelerStub.then(function(labelerStub) {
         return labelerStub[methodName].bind(labelerStub);
       }),
-      defaults[methodName]);
+      defaults[methodName],
+      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName]);
   }.bind(this));
 }
 
