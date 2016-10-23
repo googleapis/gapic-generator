@@ -31,11 +31,46 @@
 @end
 
 @private optionalArrayMethodSampleCode(apiMethod)
+  @switch apiMethod.grpcStreamingType.toString
+    @case "NonStreaming"
+        {@optionalArrayMethodSampleCodeNonStreaming(apiMethod)}
+    @case "ServerStreaming"
+        {@optionalArrayMethodSampleCodeServerStreaming(apiMethod)}
+    @case "ClientStreaming"
+        {@optionalArrayMethodSampleCodeClientStreaming(apiMethod)}
+    @case "BidiStreaming"
+        {@optionalArrayMethodSampleCodeBidiStreaming(apiMethod)}
+  @end
+@end
+
+@private optionalArrayMethodSampleCodeNonStreaming(apiMethod)
   @if apiMethod.hasReturnValue
     response = {@methodCallSampleCode(apiMethod)}
   @else
     {@methodCallSampleCode(apiMethod)}
   @end
+@end
+
+@private optionalArrayMethodSampleCodeServerStreaming(apiMethod)
+  {@methodCallSampleCode(apiMethod)}.each do |element|
+    @# Process element.
+  end
+@end
+
+@private optionalArrayMethodSampleCodeClientStreaming(apiMethod)
+  requests = [request]
+  @if apiMethod.hasReturnValue
+    response = {@apiMethod.apiVariableName}.{@apiMethod.name}(requests)
+  @else
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(requests)
+  @end
+@end
+
+@private optionalArrayMethodSampleCodeBidiStreaming(apiMethod)
+  requests = [request]
+  {@apiMethod.apiVariableName}.{@apiMethod.name}(requests).each do |element|
+    @# Process element.
+  end
 @end
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod)

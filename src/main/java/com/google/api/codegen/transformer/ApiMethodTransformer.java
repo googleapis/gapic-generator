@@ -502,10 +502,13 @@ public class ApiMethodTransformer {
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
+    Iterable<Field> fields =
+        context.getMethod().getRequestStreaming()
+            ? null
+            : context.getMethodConfig().getRequiredFields();
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(),
-            createInitCodeContext(context, context.getMethodConfig().getRequiredFields())));
+            context.cloneWithEmptyTypeTable(), createInitCodeContext(context, fields)));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
@@ -528,6 +531,7 @@ public class ApiMethodTransformer {
         removePageTokenField(context, context.getMethodConfig().getOptionalFields());
     apiMethod.optionalRequestObjectParamsNoPageToken(
         generateRequestObjectParams(context, filteredFields));
+    apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     return apiMethod.build();
   }
