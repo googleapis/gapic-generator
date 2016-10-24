@@ -31,6 +31,7 @@ import (
     "google.golang.org/api/option"
     "google.golang.org/api/transport"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
+    longrunningpb "google.golang.org/genproto/googleapis/longrunning"
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
@@ -224,6 +225,7 @@ func LibraryArchivedBookPath(archivePath, bookId string) string {
 func (c *Client) BookIAM(book *librarypb.Book) *iam.Handle {
     return iam.InternalNewHandle(c.Connection(), book.Name)
 }
+
 
 // CreateShelf creates a shelf, and returns the new Shelf.
 func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {

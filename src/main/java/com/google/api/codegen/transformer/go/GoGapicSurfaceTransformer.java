@@ -317,7 +317,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
-  private static final String LRO_PROTO_PKG = "google.golang.org/genproto/googleapis/longrunning";
 
   @VisibleForTesting
   void addXApiImports(SurfaceTransformerContext context, Collection<Method> methods) {
@@ -331,7 +330,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("google.golang.org/api/option;;;");
     typeTable.saveNicknameFor("google.golang.org/api/transport;;;");
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
-    typeTable.getImports().remove(LRO_PROTO_PKG);
     addContextImports(context, ImportContext.CLIENT, methods);
   }
 
