@@ -18,7 +18,6 @@ package com.google.api.codegen.util;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,17 +35,13 @@ public class CommonAcronyms {
           .add("SQL")
           .build();
 
-  /**
-   * Represents the notion of whether a name piece is normal or an upper-case acronym.
-   */
+  /** Represents the notion of whether a name piece is normal or an upper-case acronym. */
   public enum NamePieceCasingType {
     NORMAL,
     UPPER_ACRONYM;
   }
 
-  /**
-   * Represents a name piece plus its NamePieceCasingType.
-   */
+  /** Represents a name piece plus its NamePieceCasingType. */
   public static class SubNamePiece {
     private final String namePieceString;
     private final NamePieceCasingType type;

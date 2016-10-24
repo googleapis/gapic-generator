@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -57,7 +56,7 @@ public abstract class PageStreamingDescriptorClassView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder name(String val);
 

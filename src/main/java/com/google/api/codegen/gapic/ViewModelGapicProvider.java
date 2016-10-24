@@ -22,7 +22,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
-
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;

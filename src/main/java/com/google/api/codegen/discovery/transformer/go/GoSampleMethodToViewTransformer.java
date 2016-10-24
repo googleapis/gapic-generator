@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer.go;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -34,10 +31,12 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
-  private final static String TEMPLATE_FILENAME = "go/sample.snip";
+  private static final String TEMPLATE_FILENAME = "go/sample.snip";
 
   public GoSampleMethodToViewTransformer() {}
 

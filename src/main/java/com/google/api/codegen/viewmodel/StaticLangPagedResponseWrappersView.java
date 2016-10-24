@@ -44,7 +44,7 @@ public abstract class StaticLangPagedResponseWrappersView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder packageName(String val);

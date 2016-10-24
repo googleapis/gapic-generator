@@ -32,7 +32,7 @@ public abstract class FieldSettingView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder fieldSetFunction(String val);
 
     public abstract Builder identifier(String val);

@@ -20,15 +20,11 @@ import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
-/**
- * Creates default string from path patterns.
- */
+/** Creates default string from path patterns. */
 public class DefaultString {
 
   @AutoValue
@@ -83,11 +79,10 @@ public class DefaultString {
   }
 
   /**
-   * Does the same thing as {@link #getPlaceholder(String, String)}, but uses a
-   * no-brace and lower-case format and returns an empty string for unrecognized
-   * patterns.
+   * Does the same thing as {@link #getPlaceholder(String, String)}, but uses a no-brace and
+   * lower-case format and returns an empty string for unrecognized patterns.
    *
-   * For example: "projects/my-project/logs/my-log"
+   * <p>For example: "projects/my-project/logs/my-log"
    */
   public static String getNonTrivialPlaceholder(String pattern) {
     if (pattern != null) {
@@ -113,9 +108,7 @@ public class DefaultString {
 
   private static final String WILDCARD_PATTERN = "[^/]*";
 
-  /**
-   * Returns a default string from `pattern`, or null if the pattern is not supported.
-   */
+  /** Returns a default string from `pattern`, or null if the pattern is not supported. */
   @VisibleForTesting
   static String forPattern(String pattern, String placeholderFormat, boolean placeholderUpperCase) {
     // We only care about patterns that have alternating literal and wildcard like
@@ -174,7 +167,7 @@ public class DefaultString {
   /**
    * Returns whether the pattern represented by the list is in a form we expect.
    *
-   * A valid pattern must have the same number of literals and wildcards, alternating, and starts
+   * <p>A valid pattern must have the same number of literals and wildcards, alternating, and starts
    * with a literal. Literals must consists of only letters.
    */
   private static boolean validElems(ImmutableList<Elem> elems) {

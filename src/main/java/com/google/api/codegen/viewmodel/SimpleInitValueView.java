@@ -30,7 +30,7 @@ public abstract class SimpleInitValueView implements InitValueView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder initialValue(String val);
 
     public abstract SimpleInitValueView build();

@@ -14,15 +14,14 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.common.base.Strings;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.google.common.base.Strings;
 
 /**
  * A utility class used to get and store unique symbols.
  *
- * If a symbol is already used, the table will try to append an index number onto the end of it.
+ * <p>If a symbol is already used, the table will try to append an index number onto the end of it.
  * The index will keep increasing until an unused symbol is found.
  */
 public class SymbolTable {
@@ -32,11 +31,11 @@ public class SymbolTable {
   /**
    * Returns a new SymbolTable seeded with all the words in seed.
    *
-   * For example, if seed is {"int"}, a subsequent call to {@link
-   * #getNewSymbol(String)} for "int" will return "int2".
+   * <p>For example, if seed is {"int"}, a subsequent call to {@link #getNewSymbol(String)} for
+   * "int" will return "int2".
    *
-   * The behavior of the returned SymbolTable is guaranteed if used with
-   * {@link #getNewSymbol(String)}, but not with {@link #getNewSymbol(Name)}.
+   * <p>The behavior of the returned SymbolTable is guaranteed if used with {@link
+   * #getNewSymbol(String)}, but not with {@link #getNewSymbol(Name)}.
    */
   public static SymbolTable fromSeed(Set<String> seed) {
     SymbolTable symbolTable = new SymbolTable();
@@ -49,7 +48,7 @@ public class SymbolTable {
   /**
    * Returns a unique name, with a numeric suffix in case of conflicts.
    *
-   * Not guaranteed to work as expected if used in combination with {@link
+   * <p>Not guaranteed to work as expected if used in combination with {@link
    * #getNewSymbol(String)}.
    */
   public Name getNewSymbol(Name desiredName) {
@@ -64,8 +63,7 @@ public class SymbolTable {
   /**
    * Returns a unique name, with a numeric suffix in case of conflicts.
    *
-   * Not guaranteed to work as expected if used in combination with {@link
-   * #getNewSymbol(Name)}.
+   * <p>Not guaranteed to work as expected if used in combination with {@link #getNewSymbol(Name)}.
    */
   public String getNewSymbol(String desiredName) {
     String suffix = getAndSaveSuffix(desiredName);
@@ -75,9 +73,8 @@ public class SymbolTable {
   /**
    * Returns the next numeric suffix that makes desiredName unique.
    *
-   * Stores the joined desiredName/suffix in an internal map.
-   * For example, if "foo" is passed, "" is returned. If "foo" is passed again,
-   * "2" is returned, and then "3" and so on.
+   * <p>Stores the joined desiredName/suffix in an internal map. For example, if "foo" is passed, ""
+   * is returned. If "foo" is passed again, "2" is returned, and then "3" and so on.
    */
   private String getAndSaveSuffix(String desiredName) {
     if (!symbolTable.contains(desiredName)) {

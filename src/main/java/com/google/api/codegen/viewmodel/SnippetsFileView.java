@@ -45,7 +45,7 @@ public abstract class SnippetsFileView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder outputPath(String val);

@@ -21,15 +21,12 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.List;
 import java.util.Map;
 
 public class ClientConfigGapicContext extends GapicContext {
 
-  /**
-   * Constructs the client config codegen context.
-   */
+  /** Constructs the client config codegen context. */
   public ClientConfigGapicContext(Model model, ApiConfig config) {
     super(model, config);
   }

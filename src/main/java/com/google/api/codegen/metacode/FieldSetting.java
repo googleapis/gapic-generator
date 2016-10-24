@@ -19,8 +19,8 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 
 /**
- * Represents the notion of a field on a structure being set with the value of a
- * previously-declared identifier.
+ * Represents the notion of a field on a structure being set with the value of a previously-declared
+ * identifier.
  */
 @AutoValue
 public abstract class FieldSetting {
@@ -30,23 +30,15 @@ public abstract class FieldSetting {
     return new AutoValue_FieldSetting(type, fieldName, identifier, initValueConfig);
   }
 
-  /**
-   * Returns the type of the field being set.
-   */
+  /** Returns the type of the field being set. */
   public abstract TypeRef getType();
 
-  /**
-   * Returns the name of the field in the containing structure.
-   */
+  /** Returns the name of the field in the containing structure. */
   public abstract Name getFieldName();
 
-  /**
-   * Returns the name of the identifier being set on the field.
-   */
+  /** Returns the name of the identifier being set on the field. */
   public abstract Name getIdentifier();
 
-  /**
-   * Returns the InitValueConfig for the original identifier.
-   */
+  /** Returns the InitValueConfig for the original identifier. */
   public abstract InitValueConfig getInitValueConfig();
 }

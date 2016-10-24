@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
 @AutoValue
@@ -58,7 +57,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder type(ApiMethodType val);
 
     public abstract Builder apiClassName(String val);

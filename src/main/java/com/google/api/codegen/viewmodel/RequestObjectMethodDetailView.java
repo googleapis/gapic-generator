@@ -27,7 +27,7 @@ public abstract class RequestObjectMethodDetailView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder accessModifier(String modifier);
 
     public abstract Builder callableMethodName(String name);

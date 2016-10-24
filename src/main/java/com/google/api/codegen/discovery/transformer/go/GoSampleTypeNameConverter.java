@@ -23,9 +23,7 @@ import com.google.protobuf.Field;
 
 public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
 
-  /**
-   * A map from primitive types in proto to Go counterparts.
-   */
+  /** A map from primitive types in proto to Go counterparts. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "bool")
@@ -39,9 +37,7 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_ENUM, "string")
           .build();
 
-  /**
-   * A map from primitive types in proto to zero value in Go.
-   */
+  /** A map from primitive types in proto to zero value in Go. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "false")

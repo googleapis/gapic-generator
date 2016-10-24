@@ -20,8 +20,8 @@ import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * CommonSnippetSetRunner takes the view model as input and then uses the
- * Snippet Set templating engine to generate an output document.
+ * CommonSnippetSetRunner takes the view model as input and then uses the Snippet Set templating
+ * engine to generate an output document.
  */
 public class CommonSnippetSetRunner {
 

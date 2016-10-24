@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -41,7 +40,7 @@ public abstract class SimpleParamDocView implements ParamDocView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder paramName(String val);
 
     public abstract Builder typeName(String val);

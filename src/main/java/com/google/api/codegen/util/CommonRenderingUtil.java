@@ -18,14 +18,10 @@ import com.google.common.base.Splitter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Utility class to process text in the templates.
- */
+/** Utility class to process text in the templates. */
 public class CommonRenderingUtil {
 
-  /**
-   * Returns the input text split on newlines.
-   */
+  /** Returns the input text split on newlines. */
   public static List<String> getDocLines(String text) {
     // TODO: Convert markdown to language-specific doc format.
     // https://github.com/googleapis/toolkit/issues/331
@@ -39,7 +35,7 @@ public class CommonRenderingUtil {
   /**
    * Returns the input text split on newlines and maxWidth.
    *
-   * maxWidth includes the ending newline.
+   * <p>maxWidth includes the ending newline.
    */
   public static List<String> getDocLines(String text, int maxWidth) {
     maxWidth = maxWidth - 1;
@@ -58,9 +54,7 @@ public class CommonRenderingUtil {
     return lines;
   }
 
-  /**
-   * Returns the index on which to insert a newline given maxWidth.
-   */
+  /** Returns the index on which to insert a newline given maxWidth. */
   private static int lineWrapIndex(String line, int maxWidth) {
     for (int i = maxWidth; i > 0; i--) {
       if (isLineWrapChar(line.charAt(i))) {
@@ -78,7 +72,7 @@ public class CommonRenderingUtil {
   /**
    * Returns true if c is a character that should be wrapped on.
    *
-   * The set includes whitespace characters, '(', and '['.
+   * <p>The set includes whitespace characters, '(', and '['.
    */
   private static boolean isLineWrapChar(char c) {
     return Character.isWhitespace(c) || "([".indexOf(c) >= 0;

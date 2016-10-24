@@ -18,12 +18,10 @@ import com.google.api.codegen.configgen.ConfigGeneratorApi;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
-
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import org.junit.Test;
 
 public class ConfigGenerationTest extends ConfigBaselineTestCase {

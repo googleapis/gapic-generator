@@ -15,17 +15,13 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
-
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/**
- * C# code generator baseline tests.
- */
+/** C# code generator baseline tests. */
 @RunWith(Parameterized.class)
 public class CSharpCodeGeneratorTest extends GapicTestBase {
 
@@ -37,8 +33,8 @@ public class CSharpCodeGeneratorTest extends GapicTestBase {
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the
-   * first element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the first
+   * element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {

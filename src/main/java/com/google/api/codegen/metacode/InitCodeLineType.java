@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
-/**
- * InitCodeLineType represents one of the types of InitCodeLine.
- */
+/** InitCodeLineType represents one of the types of InitCodeLine. */
 public enum InitCodeLineType {
   StructureInitLine,
   ListInitLine,

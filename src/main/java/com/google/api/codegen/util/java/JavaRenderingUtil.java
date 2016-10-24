@@ -17,18 +17,13 @@ package com.google.api.codegen.util.java;
 import com.google.common.base.Splitter;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Utility class for Java to process text in the templates.
- */
+/** Utility class for Java to process text in the templates. */
 public class JavaRenderingUtil {
-  /**
-   * Escaper for formatting javadoc strings.
-   */
+  /** Escaper for formatting javadoc strings. */
   private static final Escaper JAVADOC_ESCAPER =
       Escapers.builder()
           .addEscape('&', "&amp;")

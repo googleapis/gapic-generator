@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
 @AutoValue
@@ -34,7 +33,7 @@ public abstract class ResourceNameInitValueView implements InitValueView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder resourceTypeName(String val);
 

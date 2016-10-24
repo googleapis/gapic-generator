@@ -15,7 +15,6 @@
 package com.google.api.codegen.metacode;
 
 import com.google.auto.value.AutoValue;
-
 import javax.annotation.Nullable;
 
 /*

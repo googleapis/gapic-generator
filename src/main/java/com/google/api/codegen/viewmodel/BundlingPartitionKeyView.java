@@ -29,7 +29,7 @@ public abstract class BundlingPartitionKeyView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder separatorLiteral(String val);
 

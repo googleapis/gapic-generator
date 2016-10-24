@@ -15,17 +15,14 @@
 package com.google.api.codegen.ruby;
 
 import com.google.api.Service;
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.DiscoveryContext;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryContext;
-
-/**
- * A DiscoveryContext specialized for Ruby.
- */
+/** A DiscoveryContext specialized for Ruby. */
 public class RubyDiscoveryContext extends DiscoveryContext implements RubyContext {
 
   private static final RubyApiaryNameMap apiaryNameMap = new RubyApiaryNameMap();
@@ -98,10 +95,7 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       throw new IllegalArgumentException(
           String.format(
               "Ruby name not found: %s::%s::%s::%s",
-              getApi().getName(),
-              getApi().getVersion(),
-              method.getName(),
-              param));
+              getApi().getName(), getApi().getVersion(), method.getName(), param));
     }
     return rename;
   }
@@ -116,9 +110,7 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       throw new IllegalArgumentException(
           String.format(
               "Ruby name not found: %s::%s::%s",
-              getApi().getName(),
-              getApi().getVersion(),
-              method.getName()));
+              getApi().getName(), getApi().getVersion(), method.getName()));
     }
     return name;
   }

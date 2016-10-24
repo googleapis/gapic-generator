@@ -16,10 +16,8 @@ package com.google.api.codegen.discovery;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
-
-import org.junit.Test;
-
 import java.util.Map;
+import org.junit.Test;
 
 public class DefaultStringTest {
   @Test

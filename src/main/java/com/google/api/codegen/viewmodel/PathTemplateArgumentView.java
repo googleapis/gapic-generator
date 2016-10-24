@@ -27,7 +27,7 @@ public abstract class PathTemplateArgumentView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder name(String val);
 
     public abstract Builder templateKey(String val);

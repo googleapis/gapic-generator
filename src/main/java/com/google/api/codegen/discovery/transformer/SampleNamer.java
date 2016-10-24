@@ -19,39 +19,29 @@ import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.common.base.Strings;
 
-/**
- * Provides language-specific names for variables and classes.
- */
+/** Provides language-specific names for variables and classes. */
 public class SampleNamer extends NameFormatterDelegator {
 
   public SampleNamer(NameFormatter nameFormatter) {
     super(nameFormatter);
   }
 
-  /**
-   * Returns the class name of the sample.
-   */
+  /** Returns the class name of the sample. */
   public String getSampleClassName(String apiTypeName) {
     return className(Name.upperCamel(apiTypeName, "Example"));
   }
 
-  /**
-   * Returns the variable name of the service.
-   */
+  /** Returns the variable name of the service. */
   public String getServiceVarName(String apiTypeName) {
     return localVarName(Name.upperCamel(apiTypeName, "Service"));
   }
 
-  /**
-   * Returns the variable name for a field.
-   */
+  /** Returns the variable name for a field. */
   public String getFieldVarName(String fieldName) {
     return localVarName(Name.lowerCamel(fieldName));
   }
 
-  /**
-   * Returns the resource getter method name for a resource field.
-   */
+  /** Returns the resource getter method name for a resource field. */
   public String getResourceGetterName(String fieldName) {
     return publicMethodName(Name.lowerCamel("get", fieldName));
   }
@@ -59,7 +49,7 @@ public class SampleNamer extends NameFormatterDelegator {
   /**
    * Returns the variable name for a resource field.
    *
-   * If resourceTypeName is an empty string, "item" is returned.
+   * <p>If resourceTypeName is an empty string, "item" is returned.
    */
   public String getResourceVarName(String resourceTypeName) {
     if (Strings.isNullOrEmpty(resourceTypeName)) {
@@ -68,30 +58,22 @@ public class SampleNamer extends NameFormatterDelegator {
     return localVarName(Name.upperCamel(resourceTypeName));
   }
 
-  /**
-   * Returns the variable name of the request.
-   */
+  /** Returns the variable name of the request. */
   public String getRequestVarName() {
     return localVarName(Name.lowerCamel("request"));
   }
 
-  /**
-   * Returns the variable name of the request body.
-   */
+  /** Returns the variable name of the request body. */
   public String getRequestBodyVarName() {
     return localVarName(Name.lowerCamel("requestBody"));
   }
 
-  /**
-   * Returns the variable name of the response.
-   */
+  /** Returns the variable name of the response. */
   public String getResponseVarName() {
     return localVarName(Name.lowerCamel("response"));
   }
 
-  /**
-   * Returns the name of the createService function.
-   */
+  /** Returns the name of the createService function. */
   public String createServiceFuncName(String apiTypeName) {
     return publicMethodName(Name.upperCamel("Create", apiTypeName, "Service"));
   }
