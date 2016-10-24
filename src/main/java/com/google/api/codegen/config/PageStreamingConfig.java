@@ -112,9 +112,7 @@ public abstract class PageStreamingConfig {
         requestTokenField, pageSizeField, responseTokenField, resourcesFieldConfig);
   }
 
-  /**
-   * Returns whether there is a field for page size.
-   */
+  /** Returns whether there is a field for page size. */
   public boolean hasPageSizeField() {
     return getPageSizeField() != null;
   }

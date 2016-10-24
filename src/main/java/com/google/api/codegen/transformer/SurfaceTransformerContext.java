@@ -101,7 +101,7 @@ public abstract class SurfaceTransformerContext {
   /**
    * Returns the MethodConfig object of the given gRPC method.
    *
-   * If the method is a gRPC re-route method, returns the MethodConfig of the original method.
+   * <p>If the method is a gRPC re-route method, returns the MethodConfig of the original method.
    */
   public MethodConfig getMethodConfig(Method method) {
     Interface originalInterface = getInterface();
@@ -178,8 +178,8 @@ public abstract class SurfaceTransformerContext {
   }
 
   /**
-   * Returns a list of methods with samples, similar to getSupportedMethods,
-   * but also filter out private methods.
+   * Returns a list of methods with samples, similar to getSupportedMethods, but also filter out
+   * private methods.
    */
   public List<Method> getPublicMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());

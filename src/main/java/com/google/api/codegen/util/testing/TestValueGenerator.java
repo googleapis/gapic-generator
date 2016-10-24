@@ -16,7 +16,6 @@ package com.google.api.codegen.util.testing;
 
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
-
 import java.util.HashMap;
 
 /**

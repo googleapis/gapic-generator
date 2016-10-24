@@ -52,9 +52,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-/**
- * A GapicContext specialized for NodeJS.
- */
+/** A GapicContext specialized for NodeJS. */
 public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   private GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
 
@@ -71,8 +69,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   /**
    * Return ApiMethodView for sample gen.
    *
-   * NOTE: Temporary solution to use MVVM with just sample gen. This class
-   *       will eventually go away when code gen also converts to MVVM.
+   * <p>NOTE: Temporary solution to use MVVM with just sample gen. This class will eventually go
+   * away when code gen also converts to MVVM.
    */
   public ApiMethodView getApiMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
@@ -85,8 +83,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   /**
    * Return GrpcStubViews for mixins.
    *
-   * NOTE: Temporary solution to use MVVM with just sample gen. This class
-   *       will eventually go away when code gen also converts to MVVM.
+   * <p>NOTE: Temporary solution to use MVVM with just sample gen. This class will eventually go
+   * away when code gen also converts to MVVM.
    */
   public List<GrpcStubView> getStubs(Interface service) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
@@ -125,9 +123,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return Joiner.on(".").join(names.build());
   }
 
-  /**
-   * Return comments lines for a given proto element, extracted directly from the proto doc
-   */
+  /** Return comments lines for a given proto element, extracted directly from the proto doc */
   public List<String> defaultComments(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of();
@@ -136,9 +132,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         JSDocCommentFixer.jsdocify(DocumentationUtil.getScopedDescription(element)));
   }
 
-  /**
-   * The package name of the grpc module for the API.
-   */
+  /** The package name of the grpc module for the API. */
   public String grpcClientName(Interface service) {
     return "grpc-" + service.getFile().getFullName().replace('.', '-');
   }
@@ -147,9 +141,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return NodeJSUtils.isGcloud(getApiConfig());
   }
 
-  /**
-   * The namespace (full package name) for the service.
-   */
+  /** The namespace (full package name) for the service. */
   public String getNamespace(Interface service) {
     String fullName = service.getFullName();
     int slash = fullName.lastIndexOf('.');
@@ -157,10 +149,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * The name for the module for this vkit module. This assumes that the service's
-   * full name will be in the format of 'google.some.apiname.version.ServiceName',
-   * and extracts the 'apiname' and 'version' part and combine them to lower-camelcased
-   * style (like pubsubV1).
+   * The name for the module for this vkit module. This assumes that the service's full name will be
+   * in the format of 'google.some.apiname.version.ServiceName', and extracts the 'apiname' and
+   * 'version' part and combine them to lower-camelcased style (like pubsubV1).
    */
   public String getModuleName(Interface service) {
     List<String> names = Splitter.on(".").splitToList(service.getFullName());
@@ -168,18 +159,16 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * Returns the major version part in the API namespace. This assumes that the service's
-   * full name will be in the format of 'google.some.apiname.version.ServiceName', and
-   * extracts the 'version' part.
+   * Returns the major version part in the API namespace. This assumes that the service's full name
+   * will be in the format of 'google.some.apiname.version.ServiceName', and extracts the 'version'
+   * part.
    */
   public String getApiVersion(Interface service) {
     List<String> names = Splitter.on(".").splitToList(service.getFullName());
     return names.get(names.size() - 2);
   }
 
-  /**
-   * Returns the filename for documenting messages.
-   */
+  /** Returns the filename for documenting messages. */
   public String getDocFilename(ProtoFile file) {
     String filePath = file.getSimpleName().replace(".proto", ".js");
     if (isExternalFile(file)) {
@@ -194,9 +183,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * Returns true if the proto file is external to the current package.
-   * Currently, it only checks the file path and thinks it is external if
-   * the file is well-known common protos.
+   * Returns true if the proto file is external to the current package. Currently, it only checks
+   * the file path and thinks it is external if the file is well-known common protos.
    */
   public boolean isExternalFile(ProtoFile file) {
     String filePath = file.getSimpleName();
@@ -217,9 +205,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     }
   }
 
-  /**
-   * Returns type information for a field in JSDoc style.
-   */
+  /** Returns type information for a field in JSDoc style. */
   private String fieldTypeCardinalityComment(Field field) {
     TypeRef type = field.getType();
 
@@ -237,9 +223,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return String.format("%s%s", typeComment, cardinalityComment);
   }
 
-  /**
-   * Returns a JSDoc comment string for the field as a parameter to a function.
-   */
+  /** Returns a JSDoc comment string for the field as a parameter to a function. */
   private String fieldParamComment(Field field, String paramComment, boolean isOptional) {
     String commentType = fieldTypeCardinalityComment(field);
     String fieldName = lowerUnderscoreToLowerCamel(field.getSimpleName());
@@ -251,9 +235,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         String.format("@param {%s} %s", commentType, fieldName), paramComment, field);
   }
 
-  /**
-   * Returns a JSDoc comment string for the field as an attribute of a message.
-   */
+  /** Returns a JSDoc comment string for the field as an attribute of a message. */
   public List<String> fieldPropertyComment(Field field) {
     String commentType = fieldTypeCardinalityComment(field);
     String fieldName = propertyName(field);
@@ -287,9 +269,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return comment + "\n";
   }
 
-  /**
-   * Return JSDoc callback comment and return type comment for the given method.
-   */
+  /** Return JSDoc callback comment and return type comment for the given method. */
   @Nullable
   private String returnTypeComment(Method method, MethodConfig config) {
     if (config.isPageStreaming()) {
@@ -348,9 +328,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         + "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
   }
 
-  /**
-   * Return the list of messages within element which should be documented in Node.JS.
-   */
+  /** Return the list of messages within element which should be documented in Node.JS. */
   public ImmutableList<MessageType> filterDocumentingMessages(ProtoContainerElement element) {
     ImmutableList.Builder<MessageType> builder = ImmutableList.builder();
     for (MessageType msg : element.getMessages()) {
@@ -421,9 +399,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return convertToCommentedBlock(contentBuilder.toString());
   }
 
-  /**
-   * Returns the name of JS type for the given typeRef.
-   */
+  /** Returns the name of JS type for the given typeRef. */
   public String jsTypeName(TypeRef typeRef) {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
@@ -441,9 +417,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     }
   }
 
-  /**
-   * Returns the name of the JS type name for arguejs parameter definitions.
-   */
+  /** Returns the name of the JS type name for arguejs parameter definitions. */
   public String getFieldType(Field field) {
     TypeRef typeRef = field.getType();
     if (typeRef.isMap()) {
@@ -466,9 +440,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     }
   }
 
-  /**
-   * Returns the JSDoc format of link to the element.
-   */
+  /** Returns the JSDoc format of link to the element. */
   public String linkForMessage(ProtoElement element) {
     if (isExternalFile(element.getFile())) {
       String fullName = element.getFullName();
@@ -479,9 +451,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     }
   }
 
-  /**
-   * Returns the JavaScript representation of the function to return the byte length.
-   */
+  /** Returns the JavaScript representation of the function to return the byte length. */
   public String getByteLengthFunction(Interface service, Method method, TypeRef typeRef) {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
@@ -519,9 +489,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   // Constants
   // =========
 
-  /**
-   * A map from primitive types to its default value.
-   */
+  /** A map from primitive types to its default value. */
   private static final ImmutableMap<Type, String> DEFAULT_VALUE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "false")

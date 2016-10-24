@@ -14,12 +14,11 @@
  */
 package com.google.api.codegen.discovery.transformer.go;
 
-import java.util.List;
-
 import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.common.base.Splitter;
+import java.util.List;
 
 public class GoSampleNamer extends SampleNamer {
 
@@ -35,8 +34,8 @@ public class GoSampleNamer extends SampleNamer {
   /**
    * Returns the package name of the service.
    *
-   * Only intended for use in Go.
-   * For example: "google.golang.org/api/logging/v2beta1" returns "logging"
+   * <p>Only intended for use in Go. For example: "google.golang.org/api/logging/v2beta1" returns
+   * "logging"
    */
   public static String getServicePackageName(String packagePrefix) {
     List<String> split = Splitter.on('/').splitToList(packagePrefix);
@@ -54,7 +53,7 @@ public class GoSampleNamer extends SampleNamer {
   /**
    * Returns the constant form of given an authScope URL.
    *
-   * For example: DriveScope
+   * <p>For example: DriveScope
    */
   public static String getAuthScopeConst(String authScope) {
     int slash = authScope.lastIndexOf('/');

@@ -17,7 +17,6 @@ package com.google.api.codegen;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.protobuf.Api;
-
 import java.util.ArrayList;
 
 /**
@@ -26,9 +25,7 @@ import java.util.ArrayList;
  */
 public class InterfaceView implements InputElementView<Interface> {
 
-  /**
-   * Gets the interfaces for the apis in the service config.
-   */
+  /** Gets the interfaces for the apis in the service config. */
   @Override
   public Iterable<Interface> getElementIterable(Model model) {
     ArrayList<Interface> interfaces = new ArrayList<>();

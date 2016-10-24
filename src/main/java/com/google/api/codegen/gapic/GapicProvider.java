@@ -15,7 +15,6 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.tools.framework.snippet.Doc;
-
 import java.util.List;
 import java.util.Map;
 
@@ -25,20 +24,15 @@ import java.util.Map;
  */
 public interface GapicProvider<InputElementT> {
 
-  /**
-   * Returns the snippet files that this provider will use for code generation.
-   */
+  /** Returns the snippet files that this provider will use for code generation. */
   List<String> getSnippetFileNames();
 
-  /**
-   * Runs code generation and returns a map from relative file paths to
-   * generated Doc.
-   */
+  /** Runs code generation and returns a map from relative file paths to generated Doc. */
   Map<String, Doc> generate();
 
   /**
-   * Runs code generation for a single snippet and returns a map from relative
-   * file paths to generated Doc.
+   * Runs code generation for a single snippet and returns a map from relative file paths to
+   * generated Doc.
    */
   Map<String, Doc> generate(String snippetFileName);
 }

@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import javax.annotation.Nullable;
 
 // View of both api and settings for static language.
 // ViewModel members delegate to api.
@@ -45,7 +44,7 @@ public abstract class StaticLangXCommonView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder api(StaticLangXApiView val);
 
     public abstract Builder settings(StaticLangXSettingsView val);

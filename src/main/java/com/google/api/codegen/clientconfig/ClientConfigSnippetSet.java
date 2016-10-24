@@ -16,18 +16,12 @@ package com.google.api.codegen.clientconfig;
 
 import com.google.api.tools.framework.snippet.Doc;
 
-/**
- * Entry points for a client config snippet set.
- */
+/** Entry points for a client config snippet set. */
 interface ClientConfigSnippetSet<Element> {
 
-  /**
-   * Generates the result filename for the generated document.
-   */
+  /** Generates the result filename for the generated document. */
   Doc generateFilename(Element service);
 
-  /**
-   * Generates the body of the config for the service interface.
-   */
+  /** Generates the body of the config for the service interface. */
   Doc generateBody(Element service);
 }

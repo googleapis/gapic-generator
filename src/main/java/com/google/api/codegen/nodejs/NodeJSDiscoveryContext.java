@@ -14,17 +14,15 @@
  */
 package com.google.api.codegen.nodejs;
 
+import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
-import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
-/**
- * A DiscoveryContext specialized for NodeJS.
- */
+/** A DiscoveryContext specialized for NodeJS. */
 public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSContext {
 
   public NodeJSDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {

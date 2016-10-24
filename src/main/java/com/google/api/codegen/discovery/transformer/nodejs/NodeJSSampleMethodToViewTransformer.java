@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer.nodejs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -33,10 +30,12 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
-  private final static String TEMPLATE_FILENAME = "nodejs/sample.snip";
+  private static final String TEMPLATE_FILENAME = "nodejs/sample.snip";
 
   public NodeJSSampleMethodToViewTransformer() {}
 

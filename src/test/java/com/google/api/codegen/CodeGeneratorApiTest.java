@@ -20,14 +20,11 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.collect.Maps;
 import java.io.File;
 import java.util.Map;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-/**
- * Code generator unit tests.
- */
+/** Code generator unit tests. */
 public class CodeGeneratorApiTest {
   @Rule public TemporaryFolder tempDir = new TemporaryFolder();
 

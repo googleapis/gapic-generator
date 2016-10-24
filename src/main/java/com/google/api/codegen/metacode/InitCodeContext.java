@@ -40,8 +40,7 @@ public abstract class InitCodeContext {
   public abstract Name suggestedName();
 
   /**
-   * The symbol table used to store unique symbols used in the init code.
-   * Default to empty table.
+   * The symbol table used to store unique symbols used in the init code. Default to empty table.
    */
   public abstract SymbolTable symbolTable();
 
@@ -51,14 +50,12 @@ public abstract class InitCodeContext {
   @Nullable
   public abstract Iterable<Field> initFields();
 
-  /**
-   * Returns the output type of the init code. Default to SingleObject.
-   */
+  /** Returns the output type of the init code. Default to SingleObject. */
   public abstract InitCodeOutputType outputType();
 
   /**
-   *  Returns the value generator which is used to produce deterministically random unique
-   *  values for testing purposes.
+   * Returns the value generator which is used to produce deterministically random unique values for
+   * testing purposes.
    */
   @Nullable
   public abstract TestValueGenerator valueGenerator();
@@ -68,16 +65,13 @@ public abstract class InitCodeContext {
   public abstract Iterable<String> initFieldConfigStrings();
 
   /**
-   * Allows additional InitCodeNode objects which will be placed into the generated subtrees.
-   * This is currently used by smoke testing only.
+   * Allows additional InitCodeNode objects which will be placed into the generated subtrees. This
+   * is currently used by smoke testing only.
    */
   @Nullable
   public abstract Iterable<InitCodeNode> additionalInitCodeNodes();
 
-  /**
-   * The map which stores init value config data.
-   * Default to empty map.
-   */
+  /** The map which stores init value config data. Default to empty map. */
   public abstract ImmutableMap<String, InitValueConfig> initValueConfigMap();
 
   /** A map of field names to field configs. Defaults to the empty map. */

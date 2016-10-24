@@ -20,14 +20,14 @@ import com.google.auto.value.AutoValue;
 import java.util.Map;
 
 /**
- * Contains the set of information required to produce a code sample from a
- * discovery document.
+ * Contains the set of information required to produce a code sample from a discovery document.
  *
- * Supports serialization to/from JSON to accommodate overrides for any value.
- * A generated SampleConfig will contain some language specific type information
- * that is intended to be pieced together at a later stage of generation.
+ * <p>Supports serialization to/from JSON to accommodate overrides for any value. A generated
+ * SampleConfig will contain some language specific type information that is intended to be pieced
+ * together at a later stage of generation.
  *
- * For example, in Java:
+ * <p>For example, in Java:
+ *
  * <pre>{
  *  "apiTypeName": "HelloWorld"
  *  "packagePrefix": "foo.google.bar.helloworld.v1"
@@ -42,11 +42,11 @@ import java.util.Map;
  *      }
  *    }
  *  }
- *}</pre>
- * The generated API type name might be
- * {@code "foo.google.bar.helloworld.v1.HelloWorld"}, and the generated
- * request type name might be
- * {@code "foo.google.bar.helloworld.v1.model.ListWorldsRequest"}.
+ * }</pre>
+ *
+ * The generated API type name might be {@code "foo.google.bar.helloworld.v1.HelloWorld"}, and the
+ * generated request type name might be {@code
+ * "foo.google.bar.helloworld.v1.model.ListWorldsRequest"}.
  */
 @AutoValue
 @JsonDeserialize(builder = AutoValue_SampleConfig.Builder.class)
@@ -55,8 +55,7 @@ public abstract class SampleConfig {
   /**
    * Returns the API's title.
    *
-   * A printable representation of the API's title.
-   * For example: "Ad Exchange Buyer API"
+   * <p>A printable representation of the API's title. For example: "Ad Exchange Buyer API"
    */
   @JsonProperty("apiTitle")
   public abstract String apiTitle();
@@ -64,50 +63,39 @@ public abstract class SampleConfig {
   /**
    * Returns the API's name.
    *
-   * For example: "adexchangebuyer"
+   * <p>For example: "adexchangebuyer"
    */
   @JsonProperty("apiName")
   public abstract String apiName();
 
-  /**
-   * Returns the API's version.
-   */
+  /** Returns the API's version. */
   @JsonProperty("apiVersion")
   public abstract String apiVersion();
 
   /**
    * Returns the API's type name.
    *
-   * The type name of the message in the target language, but not
-   * fully-qualified. To produce a fully qualified name, it may be necessary to
-   * use {@link #packagePrefix()}}.
+   * <p>The type name of the message in the target language, but not fully-qualified. To produce a
+   * fully qualified name, it may be necessary to use {@link #packagePrefix()}}.
    *
-   * For example: "Adexchangebuyer"
+   * <p>For example: "Adexchangebuyer"
    */
   @JsonProperty("apiTypeName")
   public abstract String apiTypeName();
 
-  /**
-   * Returns the language specific package prefix for API types.
-   */
+  /** Returns the language specific package prefix for API types. */
   @JsonProperty("packagePrefix")
   public abstract String packagePrefix();
 
-  /**
-   * Returns a map of method names to methods.
-   */
+  /** Returns a map of method names to methods. */
   @JsonProperty("methods")
   public abstract Map<String, MethodInfo> methods();
 
-  /**
-   * Returns the API's authentication type.
-   */
+  /** Returns the API's authentication type. */
   @JsonProperty("authType")
   public abstract AuthType authType();
 
-  /**
-   * Returns the authentication instructions URL.
-   */
+  /** Returns the authentication instructions URL. */
   @JsonProperty("authInstructionsUrl")
   public abstract String authInstructionsUrl();
 
@@ -116,7 +104,7 @@ public abstract class SampleConfig {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     @JsonProperty("apiTitle")
     public abstract Builder apiTitle(String val);

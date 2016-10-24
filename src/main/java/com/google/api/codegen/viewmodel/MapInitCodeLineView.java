@@ -16,7 +16,6 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
 @AutoValue
@@ -38,7 +37,7 @@ public abstract class MapInitCodeLineView implements InitCodeLineView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder lineType(InitCodeLineType val);
 
     public abstract Builder keyTypeName(String val);

@@ -14,12 +14,11 @@
  */
 package com.google.api.codegen.discovery.config.nodejs;
 
-import java.util.List;
-
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.common.base.Strings;
+import java.util.List;
 
 public class NodeJSTypeNameGenerator implements TypeNameGenerator {
 

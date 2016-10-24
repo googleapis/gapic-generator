@@ -15,20 +15,17 @@
 package com.google.api.codegen.csharp;
 
 import com.google.common.base.Splitter;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
 /**
- * A class that provides helper methods for snippet files generating C# code to get data and
- * perform data transformations that are difficult or messy to do in the snippets themselves.
+ * A class that provides helper methods for snippet files generating C# code to get data and perform
+ * data transformations that are difficult or messy to do in the snippets themselves.
  */
 public class CSharpContextCommon {
 
-  /**
-   * The set of namespaces which need to be imported.
-   */
+  /** The set of namespaces which need to be imported. */
   // TODO(jonskeet): Handle naming collisions.
   private final TreeSet<String> imports = new TreeSet<>();
 

@@ -26,14 +26,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 
-/**
- * Maps SampleConfig and TypeInfo instances to Java specific TypeName instances.
- */
+/** Maps SampleConfig and TypeInfo instances to Java specific TypeName instances. */
 class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
 
-  /**
-   * A map from primitive types in proto to Java counterparts.
-   */
+  /** A map from primitive types in proto to Java counterparts. */
   private static final ImmutableMap<Field.Kind, String> PRIMIVITVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "boolean")
@@ -47,9 +43,7 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_ENUM, "java.lang.String")
           .build();
 
-  /**
-   * A map from primitive types in proto to zero value in Java.
-   */
+  /** A map from primitive types in proto to zero value in Java. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "false")
@@ -76,9 +70,7 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     return typeNameConverter.getTypeName(Joiner.on('.').join(packagePrefix, apiTypeName));
   }
 
-  /**
-   * Returns packagePrefix with subpackage appended if not empty.
-   */
+  /** Returns packagePrefix with subpackage appended if not empty. */
   private String packagePrefix(String subpackage) {
     if (!Strings.isNullOrEmpty(subpackage)) {
       return new StringBuilder(packagePrefix).append('.').append(subpackage).toString();
@@ -163,9 +155,7 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     }
   }
 
-  /**
-   * Returns the zero value for typeInfo.
-   */
+  /** Returns the zero value for typeInfo. */
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
     if (typeInfo.isMap()) {

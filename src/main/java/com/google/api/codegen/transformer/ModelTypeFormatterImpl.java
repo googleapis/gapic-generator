@@ -17,9 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
-/**
- * Default implementation of ModelTypeFormatter.
- */
+/** Default implementation of ModelTypeFormatter. */
 public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   private ModelTypeNameConverter typeNameConverter;
 

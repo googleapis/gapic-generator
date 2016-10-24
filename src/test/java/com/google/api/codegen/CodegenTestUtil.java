@@ -22,13 +22,11 @@ import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Message;
-
-import org.junit.rules.TemporaryFolder;
-
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.junit.rules.TemporaryFolder;
 
 public class CodegenTestUtil {
 

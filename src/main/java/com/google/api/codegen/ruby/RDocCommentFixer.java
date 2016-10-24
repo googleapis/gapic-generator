@@ -16,17 +16,12 @@ package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.CommentPatterns;
 import com.google.common.base.Splitter;
-
 import java.util.regex.Matcher;
 
-/**
- * Utility class for formatting source comments to follow RDoc style.
- */
+/** Utility class for formatting source comments to follow RDoc style. */
 public class RDocCommentFixer {
 
-  /**
-   * Returns a Sphinx-formatted comment string.
-   */
+  /** Returns a Sphinx-formatted comment string. */
   public static String rdocify(String comment) {
     comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("+");
     comment = rdocifyProtoMarkdownLinks(comment);
@@ -58,9 +53,7 @@ public class RDocCommentFixer {
     return result;
   }
 
-  /**
-   * Returns a string with all proto markdown links formatted to RDoc style.
-   */
+  /** Returns a string with all proto markdown links formatted to RDoc style. */
   private static String rdocifyProtoMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(comment);
@@ -74,9 +67,7 @@ public class RDocCommentFixer {
     return sb.toString();
   }
 
-  /**
-   * Returns a string with all cloud markdown links formatted to Sphinx style.
-   */
+  /** Returns a string with all cloud markdown links formatted to Sphinx style. */
   private static String rdocifyCloudMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);
@@ -91,9 +82,7 @@ public class RDocCommentFixer {
     return sb.toString();
   }
 
-  /**
-   * Returns a string with all cloud markdown links formatted to Sphinx style.
-   */
+  /** Returns a string with all cloud markdown links formatted to Sphinx style. */
   private static String rdocifyAbsoluteMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.ABSOLUTE_LINK_PATTERN.matcher(comment);

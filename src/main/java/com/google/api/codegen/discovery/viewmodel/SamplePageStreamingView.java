@@ -14,9 +14,8 @@
  */
 package com.google.api.codegen.discovery.viewmodel;
 
-import javax.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SamplePageStreamingView {
@@ -55,7 +54,7 @@ public abstract class SamplePageStreamingView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract SamplePageStreamingView build();
 

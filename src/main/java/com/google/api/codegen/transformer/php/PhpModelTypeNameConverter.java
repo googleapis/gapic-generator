@@ -28,9 +28,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
-  /**
-   * A map from primitive types in proto to PHP counterparts.
-   */
+  /** A map from primitive types in proto to PHP counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "bool")
@@ -50,9 +48,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_BYTES, "string")
           .build();
 
-  /**
-   * A map from primitive types in proto to zero value in PHP
-   */
+  /** A map from primitive types in proto to zero value in PHP */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "false")
@@ -174,9 +170,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
     }
   }
 
-  /**
-   * Gets the PHP package for the given proto file.
-   */
+  /** Gets the PHP package for the given proto file. */
   private static String getPhpPackage(ProtoFile file) {
     return file.getProto().getPackage().replaceAll("\\.", "\\\\");
   }

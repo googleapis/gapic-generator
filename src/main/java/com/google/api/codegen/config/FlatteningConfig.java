@@ -30,7 +30,6 @@ public abstract class FlatteningConfig {
 
   @Nullable
   public abstract String getFlatteningName();
-
   /**
    * Creates an instance of FlatteningConfig based on a FlatteningGroupProto, linking it up with the
    * provided method.

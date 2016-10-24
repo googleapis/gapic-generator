@@ -16,7 +16,6 @@ package com.google.api.codegen;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.MainDiscoveryProviderFactory;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
@@ -26,7 +25,6 @@ import com.google.common.io.Files;
 import com.google.protobuf.Api;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Method;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
@@ -37,9 +35,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/**
- * Base class for code generator baseline tests.
- */
+/** Base class for code generator baseline tests. */
 public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase {
 
   private static final Pattern BASELINE_PATTERN = Pattern.compile("(\\w+)\\[(\\w+)\\]");

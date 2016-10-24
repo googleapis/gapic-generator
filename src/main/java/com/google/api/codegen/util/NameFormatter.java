@@ -15,77 +15,53 @@
 package com.google.api.codegen.util;
 
 /**
- * A NameFormatter formats Name objects in using the casing scheme for
- * a particular type of identifier in a particular programming language.
+ * A NameFormatter formats Name objects in using the casing scheme for a particular type of
+ * identifier in a particular programming language.
  */
 public interface NameFormatter {
 
-  /**
-   * Formats the name as a class name.
-   */
+  /** Formats the name as a class name. */
   String className(Name name);
 
-  /**
-   * Formats the name as a public field name.
-   */
+  /** Formats the name as a public field name. */
   String publicFieldName(Name name);
 
-  /**
-   * Formats the name as a private field name.
-   */
+  /** Formats the name as a private field name. */
   String privateFieldName(Name name);
 
-  /**
-   * Formats the name as a local variable name.
-   */
+  /** Formats the name as a local variable name. */
   String localVarName(Name name);
 
-  /**
-   * Formats the name as a reference to a variable name.
-   */
+  /** Formats the name as a reference to a variable name. */
   String varReference(Name name);
 
-  /**
-   * Formats the name as a public method name.
-   */
+  /** Formats the name as a public method name. */
   String publicMethodName(Name name);
 
-  /**
-   * Formats the name as a private method name.
-   */
+  /** Formats the name as a private method name. */
   String privateMethodName(Name name);
 
-  /**
-   * Formats the name as a static function name.
-   */
+  /** Formats the name as a static function name. */
   String staticFunctionName(Name name);
 
   /**
    * Formats the name as a constant which requires initialization.
    *
-   * It may seem odd that the initialization aspect needs to be distinguished,
-   * but this is relevant in PHP, where constants with non-trivial initialization
-   * have to be initialized on first use instead of at declaration time.
+   * <p>It may seem odd that the initialization aspect needs to be distinguished, but this is
+   * relevant in PHP, where constants with non-trivial initialization have to be initialized on
+   * first use instead of at declaration time.
    */
   String inittedConstantName(Name name);
 
-  /**
-   * Formats the name as a key name, to be used as a key in a map or hash table.
-   */
+  /** Formats the name as a key name, to be used as a key in a map or hash table. */
   String keyName(Name name);
 
-  /**
-   * Formats the name path as a qualified name.
-   */
+  /** Formats the name path as a qualified name. */
   String qualifiedName(NamePath namePath);
 
-  /**
-   * Formats the name of a package file path.
-   */
+  /** Formats the name of a package file path. */
   String packageFilePathPiece(Name name);
 
-  /**
-   *  Formats the base file name.
-   */
+  /** Formats the base file name. */
   String classFileNameBase(Name name);
 }

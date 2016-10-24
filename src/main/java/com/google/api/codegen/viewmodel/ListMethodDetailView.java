@@ -29,10 +29,8 @@ public abstract class ListMethodDetailView {
   public abstract String iterateMethodName();
 
   /**
-   * Distinct from resourceTypeName().
-   * Eg,
-   *   resourceTypeName: "Shelf"
-   *   responseObjectTypeName: "ListShelvesResponse"
+   * Distinct from resourceTypeName(). Eg, resourceTypeName: "Shelf" responseObjectTypeName:
+   * "ListShelvesResponse"
    */
   public abstract String responseObjectTypeName();
 
@@ -43,7 +41,7 @@ public abstract class ListMethodDetailView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder requestTypeName(String name);
 
     public abstract Builder responseTypeName(String name);

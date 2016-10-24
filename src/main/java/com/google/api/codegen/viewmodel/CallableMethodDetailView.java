@@ -27,7 +27,7 @@ public abstract class CallableMethodDetailView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder callableName(String name);
 
     public abstract Builder genericAwareResponseType(String name);

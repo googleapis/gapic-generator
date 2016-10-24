@@ -16,10 +16,8 @@ package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.auto.value.AutoValue;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Nullable;
 
 /** InitValueConfig configures the initial value of an initialized variable. */

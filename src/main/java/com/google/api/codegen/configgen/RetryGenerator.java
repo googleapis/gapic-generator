@@ -17,9 +17,7 @@ package com.google.api.codegen.configgen;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.aspects.http.model.MethodKind;
 import com.google.api.tools.framework.model.Method;
-
 import io.grpc.Status;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;

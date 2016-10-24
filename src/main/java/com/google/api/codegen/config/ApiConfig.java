@@ -33,14 +33,10 @@ import javax.annotation.Nullable;
 public abstract class ApiConfig {
   abstract ImmutableMap<String, InterfaceConfig> getInterfaceConfigMap();
 
-  /**
-   * Returns the package name.
-   */
+  /** Returns the package name. */
   public abstract String getPackageName();
 
-  /**
-   * Returns the location of the domain layer, if any.
-   */
+  /** Returns the location of the domain layer, if any. */
   public abstract String getDomainLayerLocation();
 
   /**
@@ -65,9 +61,7 @@ public abstract class ApiConfig {
     }
   }
 
-  /**
-   * Creates an ApiConfig with no content. Exposed for testing.
-   */
+  /** Creates an ApiConfig with no content. Exposed for testing. */
   @VisibleForTesting
   public static ApiConfig createDummyApiConfig() {
     return new AutoValue_ApiConfig(ImmutableMap.<String, InterfaceConfig>builder().build(), "", "");
@@ -112,9 +106,7 @@ public abstract class ApiConfig {
     }
   }
 
-  /**
-   * Returns the InterfaceConfig for the given API interface.
-   */
+  /** Returns the InterfaceConfig for the given API interface. */
   public InterfaceConfig getInterfaceConfig(Interface iface) {
     return getInterfaceConfigMap().get(iface.getFullName());
   }

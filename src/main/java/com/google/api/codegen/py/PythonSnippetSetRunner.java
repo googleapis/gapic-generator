@@ -20,12 +20,9 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.List;
 
-/**
- * A PythonProvider provides general Python code generation logic.
- */
+/** A PythonProvider provides general Python code generation logic. */
 public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
   private PythonSnippetSetInputInitializer<ElementT> initializer;

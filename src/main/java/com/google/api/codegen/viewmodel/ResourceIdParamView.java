@@ -29,7 +29,7 @@ public abstract class ResourceIdParamView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder name(String val);
 
     public abstract Builder docName(String val);

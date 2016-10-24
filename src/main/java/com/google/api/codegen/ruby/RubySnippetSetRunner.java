@@ -22,9 +22,7 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
-/**
- * A RubyProvider provides general Ruby code generation logic.
- */
+/** A RubyProvider provides general Ruby code generation logic. */
 public class RubySnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
   private final String resourceRoot;

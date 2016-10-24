@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
 @AutoValue
@@ -26,9 +25,7 @@ public abstract class InitCodeView {
 
   public abstract List<FieldSettingView> fieldSettings();
 
-  /**
-   * Used to hold information about the types used in method samples.
-   */
+  /** Used to hold information about the types used in method samples. */
   public abstract List<ImportTypeView> imports();
 
   /**
@@ -41,7 +38,7 @@ public abstract class InitCodeView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder lines(List<InitCodeLineView> val);
 
     public abstract Builder topLevelLines(List<InitCodeLineView> val);

@@ -279,16 +279,12 @@ public abstract class InterfaceConfig {
     return collectionConfigs().get(entityName);
   }
 
-  /**
-   * Returns the list of CollectionConfigs.
-   */
+  /** Returns the list of CollectionConfigs. */
   public Collection<CollectionConfig> getCollectionConfigs() {
     return collectionConfigs().values();
   }
 
-  /**
-   * Returns the MethodConfig for the given method.
-   */
+  /** Returns the MethodConfig for the given method. */
   public MethodConfig getMethodConfig(Method method) {
     MethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
     if (methodConfig == null) {

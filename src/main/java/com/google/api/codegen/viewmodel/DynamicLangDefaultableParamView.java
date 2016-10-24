@@ -27,7 +27,7 @@ public abstract class DynamicLangDefaultableParamView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder name(String name);
 
     public abstract Builder defaultValue(String value);

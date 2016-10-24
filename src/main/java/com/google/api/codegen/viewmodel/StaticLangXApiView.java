@@ -16,7 +16,6 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -72,7 +71,7 @@ public abstract class StaticLangXApiView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder packageName(String val);

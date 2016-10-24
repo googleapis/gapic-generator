@@ -15,12 +15,9 @@
 package com.google.api.codegen.metacode;
 
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
-/**
- * InitCode represents the lines of code necessary to compose a structure.
- */
+/** InitCode represents the lines of code necessary to compose a structure. */
 @AutoValue
 public abstract class InitCode {
   public static InitCode create(List<InitCodeLine> lines, List<FieldSetting> argFields) {

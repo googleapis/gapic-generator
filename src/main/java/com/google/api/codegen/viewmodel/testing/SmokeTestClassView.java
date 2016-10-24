@@ -18,7 +18,6 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
 @AutoValue

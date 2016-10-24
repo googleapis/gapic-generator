@@ -26,9 +26,8 @@ public abstract class MessageTypeInfo {
   /**
    * Returns the message's type name.
    *
-   * The type name of the message in the target language, but not
-   * fully-qualified. To produce a fully-qualified name, properties from
-   * SampleConfig or MethodInfo may be necessary.
+   * <p>The type name of the message in the target language, but not fully-qualified. To produce a
+   * fully-qualified name, properties from SampleConfig or MethodInfo may be necessary.
    */
   @JsonProperty("typeName")
   public abstract String typeName();
@@ -36,16 +35,13 @@ public abstract class MessageTypeInfo {
   /**
    * Returns the message's subpackage, or empty string if none.
    *
-   * If the message's fully qualified type name sits under a subpackage, append
-   * this value to the packagePrefix to derive the full package path.
-   * For example: "model"
+   * <p>If the message's fully qualified type name sits under a subpackage, append this value to the
+   * packagePrefix to derive the full package path. For example: "model"
    */
   @JsonProperty("subpackage")
   public abstract String subpackage();
 
-  /**
-   * Returns a map of field names to fields.
-   */
+  /** Returns a map of field names to fields. */
   @JsonProperty("fields")
   public abstract Map<String, FieldInfo> fields();
 
@@ -54,7 +50,7 @@ public abstract class MessageTypeInfo {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     @JsonProperty("typeName")
     public abstract Builder typeName(String val);
