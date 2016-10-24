@@ -31,6 +31,7 @@ public class ApiaryConfigToSampleConfigConverter {
 
   private static final String KEY_FIELD_NAME = "key";
   private static final String VALUE_FIELD_NAME = "value";
+  private static final String PAGE_TOKEN_FIELD_NAME = "pageToken";
   private static final String NEXT_PAGE_TOKEN_FIELD_NAME = "nextPageToken";
 
   private final List<Method> methods;
@@ -260,14 +261,22 @@ public class ApiaryConfigToSampleConfigConverter {
     if (type == null) {
       return false;
     }
-    // If the response type contains a field named "nextPageToken", we can
-    // safely assume that the method is page streaming.
+
+    // If the response type contains the fields "nextPageToken" and "pageToken",
+    // we can safely assume that the method is page streaming.
+    boolean hasNextPageToken = false;
     for (Field field : type.getFieldsList()) {
       if (field.getName().equals(NEXT_PAGE_TOKEN_FIELD_NAME)) {
-        return true;
+        hasNextPageToken = true;
       }
     }
-    return false;
+    boolean hasPageToken = false;
+    for (Field field : type.getFieldsList()) {
+      if (field.getName().equals(PAGE_TOKEN_FIELD_NAME)) {
+        hasPageToken = true;
+      }
+    }
+    return hasNextPageToken && hasPageToken;
   }
 
   /**
