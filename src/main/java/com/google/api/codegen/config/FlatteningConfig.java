@@ -28,6 +28,9 @@ import javax.annotation.Nullable;
 public abstract class FlatteningConfig {
   public abstract ImmutableMap<String, FieldConfig> getFlattenedFieldConfigs();
 
+  @Nullable
+  public abstract String getFlatteningName();
+
   /**
    * Creates an instance of FlatteningConfig based on a FlatteningGroupProto, linking it up with the
    * provided method.
@@ -55,7 +58,8 @@ public abstract class FlatteningConfig {
       return null;
     }
 
-    return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build());
+    return new AutoValue_FlatteningConfig(
+        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningName());
   }
 
   public FieldConfig getFieldConfig(String fieldSimpleName) {

@@ -61,7 +61,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -195,13 +194,12 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private FlatteningConfig getFlatteningGroup(
       MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
     for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-      if (Iterables.elementsEqual(
-          flatteningGroup.getParameterList(), smokeTestConfig.getFlattenedParameters())) {
+      if (flatteningGroup.getFlatteningName().equals(smokeTestConfig.getFlatteningName())) {
         return flatteningGroup;
       }
     }
     throw new IllegalArgumentException(
-        "Parameter list in smoke test config did not correspond to any flattened method.");
+        "Flattening name in smoke test config did not correspond to any flattened method.");
   }
 
   ///////////////////////////////////// Unit Test /////////////////////////////////////////
