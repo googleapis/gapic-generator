@@ -29,10 +29,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -204,37 +201,26 @@ public abstract class MethodConfig {
     }
     Set<FieldConfig> requiredFieldConfigs = builder.build();
 
-    List<FieldConfig> optionalFieldConfigs =
-        FluentIterable.from(method.getInputType().getMessageType().getFields())
-            .filter(
-                new Predicate<Field>() {
-                  @Override
-                  public boolean apply(Field input) {
-                    return !(methodConfigProto
-                        .getRequiredFieldsList()
-                        .contains(input.getSimpleName()));
-                  }
-                })
-            .transform(
-                new Function<Field, FieldConfig>() {
-                  @Override
-                  public FieldConfig apply(Field field) {
-                    FieldConfig fieldConfig;
-                    if (ResourceNameUtil.hasResourceName(field)) {
-                      fieldConfig = ResourceNameUtil.createFieldConfig(field);
-                    } else if (fieldNamePatterns.containsKey(field.getSimpleName())) {
-                      fieldConfig =
-                          FieldConfig.createFieldConfig(
-                              field,
-                              ResourceNameTreatment.VALIDATE,
-                              fieldNamePatterns.get(field.getSimpleName()));
-                    } else {
-                      fieldConfig = FieldConfig.createDefaultFieldConfig(field);
-                    }
-                    return fieldConfig;
-                  }
-                })
-            .toList();
+    ImmutableList.Builder<FieldConfig> optionalFieldConfigsBuilder = ImmutableList.builder();
+    for (Field field : method.getInputType().getMessageType().getFields()) {
+      if (methodConfigProto.getRequiredFieldsList().contains(field.getSimpleName())) {
+        continue;
+      }
+      FieldConfig fieldConfig;
+      if (ResourceNameUtil.hasResourceName(field)) {
+        fieldConfig = ResourceNameUtil.createFieldConfig(field);
+      } else if (fieldNamePatterns.containsKey(field.getSimpleName())) {
+        fieldConfig =
+            FieldConfig.createFieldConfig(
+                field,
+                ResourceNameTreatment.VALIDATE,
+                fieldNamePatterns.get(field.getSimpleName()));
+      } else {
+        fieldConfig = FieldConfig.createDefaultFieldConfig(field);
+      }
+      optionalFieldConfigsBuilder.add(fieldConfig);
+    }
+    List<FieldConfig> optionalFieldConfigs = optionalFieldConfigsBuilder.build();
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
