@@ -67,7 +67,7 @@ public abstract class FlatteningConfig {
   }
 
   public Iterable<Field> getFlattenedFields() {
-    return FieldConfig.transformToFields(getFlattenedFieldConfigs().values());
+    return FieldConfig.toFieldIterable(getFlattenedFieldConfigs().values());
   }
 
   public Iterable<String> getParameterList() {

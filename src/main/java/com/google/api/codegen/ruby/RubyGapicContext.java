@@ -161,8 +161,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     String classInfo = rubyTypeName(method.getOutputType());
 
     if (config.isPageStreaming()) {
-      String resourceType =
-          rubyTypeName(config.getPageStreaming().getResourcesFieldConfig().getField().getType());
+      String resourceType = rubyTypeName(config.getPageStreaming().getResourcesField().getType());
       return "@return [Google::Gax::PagedEnumerable<"
           + resourceType
           + ">]\n"

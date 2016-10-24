@@ -305,8 +305,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
               + ".\n"
               + "  The third item will be set if the response contains the token for the further results\n"
               + "  and can be reused to `pageToken` field in the options in the next request.";
-      TypeRef resourceType =
-          config.getPageStreaming().getResourcesFieldConfig().getField().getType();
+      TypeRef resourceType = config.getPageStreaming().getResourcesField().getType();
       String resourceTypeName;
       if (resourceType.isMessage()) {
         resourceTypeName =

@@ -101,11 +101,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return Name.from(entityName).join("name");
   }
 
-  /** The class name of the generated resource type from the entity name. */
-  public String getResourceTypeClassName(String entityName) {
-    return className(getResourceTypeName(entityName));
-  }
-
   /**
    * The name of the iterate method of the PagedListResponse type for a field, returning the
    * resource type iterate method if available
@@ -113,8 +108,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getPagedResponseIterateMethod(
       FeatureConfig featureConfig, FieldConfig fieldConfig) {
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      Name resourceNameName = getResourceTypeName(fieldConfig.getEntityName());
-      return publicMethodName(Name.from("iterate_all_as").join(resourceNameName));
+      Name resourceName = getResourceTypeName(fieldConfig.getEntityName());
+      return publicMethodName(Name.from("iterate_all_as").join(resourceName));
     } else {
       return getPagedResponseIterateMethod();
     }
@@ -737,6 +732,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getAndSaveCallerAsyncPagedResponseTypeName(
       Method method, ModelTypeTable typeTable, Field resourcesField) {
     return getAndSaveAsyncPagedResponseTypeName(method, typeTable, resourcesField);
+  }
+
+  /** The class name of the generated resource type from the entity name. */
+  public String getAndSaveResourceTypeName(
+      ModelTypeTable typeTable, ProtoElement elem, TypeRef type, String entityName) {
+    String resourceClassName = className(getResourceTypeName(entityName));
+    return typeTable.getAndSaveNicknameForTypedResourceName(elem, type, resourceClassName);
   }
 
   /**

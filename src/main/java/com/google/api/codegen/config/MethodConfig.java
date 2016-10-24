@@ -318,10 +318,10 @@ public abstract class MethodConfig {
   }
 
   public Iterable<Field> getRequiredFields() {
-    return FieldConfig.transformToFields(getRequiredFieldConfigs());
+    return FieldConfig.toFieldIterable(getRequiredFieldConfigs());
   }
 
   public Iterable<Field> getOptionalFields() {
-    return FieldConfig.transformToFields(getOptionalFieldConfigs());
+    return FieldConfig.toFieldIterable(getOptionalFieldConfigs());
   }
 }

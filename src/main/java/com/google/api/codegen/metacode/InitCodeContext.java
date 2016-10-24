@@ -45,7 +45,9 @@ public abstract class InitCodeContext {
    */
   public abstract SymbolTable symbolTable();
 
-  /** Contains the fields that require init. Must be set if the output type is FieldList. */
+  /**
+   * Contains the fields that require initialization. Must be set if the output type is FieldList.
+   */
   @Nullable
   public abstract Iterable<Field> initFields();
 

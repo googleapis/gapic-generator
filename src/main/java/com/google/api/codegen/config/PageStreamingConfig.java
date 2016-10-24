@@ -122,4 +122,8 @@ public abstract class PageStreamingConfig {
   public Field getResourcesField() {
     return getResourcesFieldConfig().getField();
   }
+
+  public String getResourcesFieldName() {
+    return getResourcesField().getSimpleName();
+  }
 }

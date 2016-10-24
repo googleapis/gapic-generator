@@ -238,8 +238,7 @@ public class PythonGapicContext extends GapicContext {
       return "Returns:"
           + "\n  A :class:`google.gax.PageIterator` instance. By default, this"
           + "\n  is an iterable of "
-          + fieldTypeComment(
-              config.getPageStreaming().getResourcesFieldConfig().getField(), importHandler)
+          + fieldTypeComment(config.getPageStreaming().getResourcesField(), importHandler)
           + " instances."
           + "\n  This object can also be configured to iterate over the pages"
           + "\n  of the response through the `CallOptions` parameter.";

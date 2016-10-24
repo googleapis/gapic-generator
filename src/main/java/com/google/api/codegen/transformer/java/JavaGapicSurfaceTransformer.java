@@ -220,8 +220,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private StaticLangPagedResponseView generatePagedResponseWrapper(
       MethodTransformerContext context, ModelTypeTable typeTable) {
     Method method = context.getMethod();
-    Field resourceField =
-        context.getMethodConfig().getPageStreaming().getResourcesFieldConfig().getField();
+    Field resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
 
     StaticLangPagedResponseView.Builder pagedResponseWrapper =
         StaticLangPagedResponseView.newBuilder();
@@ -250,13 +249,14 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       PagedResponseIterateMethodView.Builder iterateMethod =
           PagedResponseIterateMethodView.newBuilder();
 
-      String resourceShortName =
-          context.getNamer().getResourceTypeClassName(resourceFieldConfig.getEntityName());
       String resourceTypeName =
           context
-              .getTypeTable()
-              .getAndSaveNicknameForTypedResourceName(
-                  resourceField, resourceField.getType().makeOptional(), resourceShortName);
+              .getNamer()
+              .getAndSaveResourceTypeName(
+                  context.getTypeTable(),
+                  resourceField,
+                  resourceField.getType().makeOptional(),
+                  resourceFieldConfig.getEntityName());
       iterateMethod.overloadResourceTypeName(resourceTypeName);
       iterateMethod.overloadResourceTypeParseFunctionName(
           context.getNamer().publicMethodName(Name.from("parse")));
@@ -438,9 +438,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodTransformerContext methodContext =
+            MethodTransformerContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(apiMethodTransformer.generatePagedFlattenedMethod(methodContext));
+            apiMethods.add(
+                apiMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
           }
         }
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(requestMethodContext));

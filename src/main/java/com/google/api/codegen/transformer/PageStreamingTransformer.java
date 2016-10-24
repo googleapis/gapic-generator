@@ -46,8 +46,7 @@ public class PageStreamingTransformer {
         descriptor.requestPageSizeFieldName(pageStreaming.getPageSizeField().getSimpleName());
       }
       descriptor.responseTokenFieldName(pageStreaming.getResponseTokenField().getSimpleName());
-      descriptor.resourcesFieldName(
-          pageStreaming.getResourcesFieldConfig().getField().getSimpleName());
+      descriptor.resourcesFieldName(pageStreaming.getResourcesFieldName());
       descriptor.methodName(Name.upperCamel(method.getSimpleName()).toLowerCamel());
 
       descriptors.add(descriptor.build());
@@ -78,7 +77,7 @@ public class PageStreamingTransformer {
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
-    Field resourceField = pageStreaming.getResourcesFieldConfig().getField();
+    Field resourceField = pageStreaming.getResourcesField();
     TypeRef resourceType = resourceField.getType();
 
     desc.name(namer.getPageStreamingDescriptorConstName(method));
@@ -130,7 +129,7 @@ public class PageStreamingTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    Field resourceField = pageStreaming.getResourcesFieldConfig().getField();
+    Field resourceField = pageStreaming.getResourcesField();
 
     PagedListResponseFactoryClassView.Builder factory =
         PagedListResponseFactoryClassView.newBuilder();

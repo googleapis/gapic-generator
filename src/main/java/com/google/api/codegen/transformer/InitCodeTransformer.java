@@ -35,7 +35,6 @@ import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
-import com.google.api.tools.framework.model.Field;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -65,13 +64,13 @@ public class InitCodeTransformer {
   public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
 
-    ImmutableMap<String, FieldConfig> fieldConfigMap = FieldConfig.transformToMap(fieldConfigs);
+    ImmutableMap<String, FieldConfig> fieldConfigMap = FieldConfig.toFieldConfigMap(fieldConfigs);
 
     InitCodeNode rootNode =
         InitCodeNode.createTree(
             InitCodeContext.newBuilder()
                 .initObjectType(context.getMethod().getInputType())
-                .initFields(FieldConfig.transformToFields(fieldConfigs))
+                .initFields(FieldConfig.toFieldIterable(fieldConfigs))
                 .initValueConfigMap(createCollectionMap(context))
                 .suggestedName(Name.from("request"))
                 .fieldConfigMap(fieldConfigMap)
@@ -196,15 +195,17 @@ public class InitCodeTransformer {
       MethodTransformerContext context, InitCodeNode item) {
     SimpleInitCodeLineView.Builder surfaceLine = SimpleInitCodeLineView.newBuilder();
 
+    SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
 
     if (context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())) {
-      String resourceName =
-          context.getNamer().getResourceTypeClassName(item.getFieldConfig().getEntityName());
       surfaceLine.typeName(
-          typeTable.getAndSaveNicknameForTypedResourceName(
-              item.getFieldConfig().getField(), item.getType(), resourceName));
+          namer.getAndSaveResourceTypeName(
+              typeTable,
+              item.getFieldConfig().getField(),
+              item.getType(),
+              item.getFieldConfig().getEntityName()));
     } else {
       surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
     }
@@ -241,12 +242,12 @@ public class InitCodeTransformer {
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-      Field field = fieldConfig.getField();
-      String resourceName =
-          context.getNamer().getResourceTypeClassName(fieldConfig.getEntityName());
       surfaceLine.elementTypeName(
-          typeTable.getAndSaveNicknameForTypedResourceName(
-              field, item.getType().makeOptional(), resourceName));
+          namer.getAndSaveResourceTypeName(
+              typeTable,
+              item.getFieldConfig().getField(),
+              item.getType().makeOptional(),
+              item.getFieldConfig().getEntityName()));
     } else {
       surfaceLine.elementTypeName(
           typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
@@ -295,6 +296,7 @@ public class InitCodeTransformer {
 
   private InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {
 
+    SurfaceNamer namer = context.getNamer();
     InitValueConfig initValueConfig = item.getInitValueConfig();
     FieldConfig fieldConfig = item.getFieldConfig();
 
@@ -305,7 +307,8 @@ public class InitCodeTransformer {
       ResourceNameInitValueView.Builder initValue = ResourceNameInitValueView.newBuilder();
 
       String entityName = fieldConfig.getEntityName();
-      initValue.resourceTypeName(context.getNamer().getResourceTypeClassName(entityName));
+      Name resourceName = namer.getResourceTypeName(entityName);
+      initValue.resourceTypeName(namer.className(resourceName));
 
       List<String> varList =
           Lists.newArrayList(context.getCollectionConfig(entityName).getNameTemplate().vars());

@@ -57,9 +57,9 @@ public abstract class FieldConfig {
       DiagCollector diagCollector,
       MethodConfigProto methodConfigProto,
       Method method,
-      String parameter) {
+      String parameterName) {
 
-    Field parameterField = method.getInputMessage().lookupField(parameter);
+    Field parameterField = method.getInputMessage().lookupField(parameterName);
     if (parameterField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -67,12 +67,12 @@ public abstract class FieldConfig {
               "Field missing for flattening: method = %s, message type = %s, field = %s",
               method.getFullName(),
               method.getInputMessage().getFullName(),
-              parameter));
+              parameterName));
       return null;
     }
 
     ResourceNameTreatment treatment = ResourceNameTreatment.NONE;
-    String entityName = methodConfigProto.getFieldNamePatterns().get(parameter);
+    String entityName = methodConfigProto.getFieldNamePatterns().get(parameterName);
 
     if (ResourceNameUtil.hasResourceName(parameterField)) {
       treatment = ResourceNameTreatment.STATIC_TYPES;
@@ -96,7 +96,7 @@ public abstract class FieldConfig {
     return getResourceNameTreatment() == ResourceNameTreatment.VALIDATE;
   }
 
-  public static Function<FieldConfig, Field> selectFieldFunction() {
+  private static Function<FieldConfig, Field> selectFieldFunction() {
     return new Function<FieldConfig, Field>() {
       @Override
       public Field apply(FieldConfig fieldConfig) {
@@ -105,7 +105,7 @@ public abstract class FieldConfig {
     };
   }
 
-  public static Function<FieldConfig, String> selectFieldLongNameFunction() {
+  private static Function<FieldConfig, String> selectFieldLongNameFunction() {
     return new Function<FieldConfig, String>() {
       @Override
       public String apply(FieldConfig fieldConfig) {
@@ -114,11 +114,11 @@ public abstract class FieldConfig {
     };
   }
 
-  public static Iterable<Field> transformToFields(Iterable<FieldConfig> fieldConfigs) {
+  public static Iterable<Field> toFieldIterable(Iterable<FieldConfig> fieldConfigs) {
     return Iterables.transform(fieldConfigs, selectFieldFunction());
   }
 
-  public static ImmutableMap<String, FieldConfig> transformToMap(
+  public static ImmutableMap<String, FieldConfig> toFieldConfigMap(
       Iterable<FieldConfig> fieldConfigs) {
     return Maps.uniqueIndex(fieldConfigs, selectFieldLongNameFunction());
   }

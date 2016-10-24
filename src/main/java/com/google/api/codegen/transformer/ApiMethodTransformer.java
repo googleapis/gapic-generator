@@ -272,11 +272,12 @@ public class ApiMethodTransformer {
     String resourceTypeName;
 
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
-      String resourceClassName =
-          namer.getResourceTypeClassName(resourceFieldConfig.getEntityName());
       resourceTypeName =
-          typeTable.getAndSaveNicknameForTypedResourceName(
-              resourceField, resourceField.getType().makeOptional(), resourceClassName);
+          namer.getAndSaveResourceTypeName(
+              typeTable,
+              resourceField,
+              resourceField.getType().makeOptional(),
+              resourceFieldConfig.getEntityName());
     } else {
       resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
     }
@@ -650,16 +651,16 @@ public class ApiMethodTransformer {
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-      String resourceName = namer.getResourceTypeClassName(fieldConfig.getEntityName());
       if (namer.shouldImportRequestObjectParamType(field)) {
         typeName =
-            typeTable.getAndSaveNicknameForTypedResourceName(field, field.getType(), resourceName);
+            namer.getAndSaveResourceTypeName(
+                typeTable, field, field.getType(), fieldConfig.getEntityName());
       }
       if (namer.shouldImportRequestObjectParamElementType(field)) {
         // Use makeOptional to remove repeated property from type
         elementTypeName =
-            typeTable.getAndSaveNicknameForTypedResourceName(
-                field, field.getType().makeOptional(), resourceName);
+            namer.getAndSaveResourceTypeName(
+                typeTable, field, field.getType().makeOptional(), fieldConfig.getEntityName());
       }
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {
@@ -811,9 +812,9 @@ public class ApiMethodTransformer {
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(FieldConfig.transformToFields(fieldConfigs))
+        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
         .outputType(initCodeOutputType)
-        .fieldConfigMap(FieldConfig.transformToMap(fieldConfigs))
+        .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .build();
   }
 }

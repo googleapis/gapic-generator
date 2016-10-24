@@ -160,7 +160,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             methodContext, csharpCommonTransformer.pagedMethodAdditionalParams());
     SurfaceNamer namer = methodContext.getNamer();
     PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
-    Field resourceField = pageStreaming.getResourcesFieldConfig().getField();
+    Field resourceField = pageStreaming.getResourcesField();
     String callerResponseTypeName =
         namer.getAndSaveCallerAsyncPagedResponseTypeName(
             methodContext.getMethod(), methodContext.getTypeTable(), resourceField);
@@ -182,7 +182,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             methodContext, csharpCommonTransformer.pagedMethodAdditionalParams());
     SurfaceNamer namer = methodContext.getNamer();
     PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
-    Field resourceField = pageStreaming.getResourcesFieldConfig().getField();
+    Field resourceField = pageStreaming.getResourcesField();
     String callerResponseTypeName =
         namer.getAndSaveCallerPagedResponseTypeName(
             methodContext.getMethod(), methodContext.getTypeTable(), resourceField);

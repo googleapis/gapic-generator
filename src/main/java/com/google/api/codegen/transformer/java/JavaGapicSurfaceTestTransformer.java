@@ -175,7 +175,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     if (context.getMethodConfig().isFlattening()) {
       outputType = InitCodeOutputType.FieldList;
       fieldConfigMap =
-          FieldConfig.transformToMap(
+          FieldConfig.toFieldConfigMap(
               context.getFlatteningConfig().getFlattenedFieldConfigs().values());
     } else {
       outputType = InitCodeOutputType.SingleObject;
@@ -296,7 +296,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     ApiMethodType type = ApiMethodType.FlattenedMethod;
     if (methodConfig.isPageStreaming()) {
-      Field resourcesField = methodConfig.getPageStreaming().getResourcesFieldConfig().getField();
+      Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(
               method, methodContext.getTypeTable(), resourcesField);
@@ -355,14 +355,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .build());
 
     if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
-      String resourceClassName =
-          namer.getResourceTypeClassName(resourcesFieldConfig.getEntityName());
       Name resourceName = namer.getResourceTypeName(resourcesFieldConfig.getEntityName());
       resourceTypeName =
           methodContext
-              .getTypeTable()
-              .getAndSaveNicknameForTypedResourceName(
-                  resourcesField, resourcesField.getType().makeOptional(), resourceClassName);
+              .getNamer()
+              .getAndSaveResourceTypeName(
+                  methodContext.getTypeTable(),
+                  resourcesField,
+                  resourcesField.getType().makeOptional(),
+                  resourcesFieldConfig.getEntityName());
+
       resourcesFieldGetterName =
           namer.getResourceNameFieldGetFunctionName(
               resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
@@ -404,8 +406,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(FieldConfig.transformToFields(fieldConfigs))
-        .fieldConfigMap(FieldConfig.transformToMap(fieldConfigs))
+        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+        .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .outputType(outputType)
         .valueGenerator(valueGenerator)
         .build();
@@ -437,7 +439,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
       PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      String resourceFieldName = config.getResourcesFieldConfig().getField().getSimpleName();
+      String resourceFieldName = config.getResourcesFieldName();
       additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
 
       // Set the initial value of the page token to empty, in order to indicate that no more pages
