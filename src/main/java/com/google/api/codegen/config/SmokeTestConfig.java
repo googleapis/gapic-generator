@@ -46,7 +46,7 @@ public abstract class SmokeTestConfig {
       return new AutoValue_SmokeTestConfig(
           testedMethod,
           smokeTestConfigProto.getInitFieldsList(),
-          smokeTestConfigProto.getFlatteningName());
+          smokeTestConfigProto.getFlatteningGroupName());
     } else {
       diagCollector.addDiag(
           Diag.error(SimpleLocation.TOPLEVEL, "The configured smoke test method does not exist."));

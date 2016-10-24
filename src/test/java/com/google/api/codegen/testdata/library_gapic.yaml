@@ -50,7 +50,7 @@ interfaces:
     init_fields:
       - name%shelf_id="testShelf-$RANDOM"
       - name%book_id="testBook"
-    flattening_name: get_book
+    flattening_group_name: get_book_1
   experimental_features:
     iam_resources:
     - type: google.example.library.v1.Book
@@ -176,9 +176,9 @@ interfaces:
   - name: GetBook
     flattening:
       groups:
-      - parameters:
+      - flattening_group_name: get_book_1
+        parameters:
         - name
-        flattening_name: get_book
     required_fields:
       - name
     retry_codes_name: idempotent

@@ -58,7 +58,7 @@ public abstract class FlatteningConfig {
     }
 
     return new AutoValue_FlatteningConfig(
-        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningName());
+        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
   }
 
   public FieldConfig getFieldConfig(String fieldSimpleName) {
