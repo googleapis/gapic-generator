@@ -96,12 +96,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return className(Name.upperCamel("PagedResponseWrappers"));
   }
 
-  /** The name of the generated resource type class from the entity name. */
+  /** The name of the generated resource type from the entity name. */
   public Name getResourceTypeName(String entityName) {
     return Name.from(entityName).join("name");
   }
 
-  /** The name of the generated resource type class from the entity name. */
+  /** The class name of the generated resource type from the entity name. */
   public String getResourceTypeClassName(String entityName) {
     return className(getResourceTypeName(entityName));
   }

@@ -29,7 +29,7 @@ public class ResourceNameUtil {
       return FieldConfig.createFieldConfig(
           field, ResourceNameTreatment.STATIC_TYPES, getResourceName(field));
     } else {
-      return FieldConfig.createMessageFieldConfig(field);
+      return FieldConfig.createDefaultFieldConfig(field);
     }
   }
 

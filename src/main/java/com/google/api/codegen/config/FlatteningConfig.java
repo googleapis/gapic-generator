@@ -23,17 +23,17 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 
-/** FlatteningGroupConfig represents a specific flattening configuration for a method. */
+/** FlatteningConfig represents a specific flattening configuration for a method. */
 @AutoValue
 public abstract class FlatteningConfig {
   public abstract ImmutableMap<String, FieldConfig> getFlattenedFieldConfigs();
 
   /**
-   * Creates an instance of FlatteningConfig based on FlatteningConfigProto, linking it up with the
+   * Creates an instance of FlatteningConfig based on a FlatteningGroupProto, linking it up with the
    * provided method.
    */
   @Nullable
-  public static FlatteningConfig createFlatteningGroup(
+  public static FlatteningConfig createFlattening(
       DiagCollector diagCollector,
       MethodConfigProto methodConfigProto,
       FlatteningGroupProto flatteningGroup,
@@ -56,10 +56,6 @@ public abstract class FlatteningConfig {
     }
 
     return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build());
-  }
-
-  public static FlatteningConfig createEmptyFlatteningGroup() {
-    return new AutoValue_FlatteningConfig(ImmutableMap.<String, FieldConfig>of());
   }
 
   public FieldConfig getFieldConfig(String fieldSimpleName) {

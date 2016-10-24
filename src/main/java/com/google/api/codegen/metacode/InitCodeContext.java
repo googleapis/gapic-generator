@@ -45,10 +45,7 @@ public abstract class InitCodeContext {
    */
   public abstract SymbolTable symbolTable();
 
-  /**
-   * Contains the field configs for fields that require init. Must be set if the output type is
-   * FieldList.
-   */
+  /** Contains the fields that require init. Must be set if the output type is FieldList. */
   @Nullable
   public abstract Iterable<Field> initFields();
 
@@ -81,7 +78,7 @@ public abstract class InitCodeContext {
    */
   public abstract ImmutableMap<String, InitValueConfig> initValueConfigMap();
 
-  /** A map of fields to field configs. Defaults to the empty map. */
+  /** A map of field names to field configs. Defaults to the empty map. */
   public abstract ImmutableMap<String, FieldConfig> fieldConfigMap();
 
   public static Builder newBuilder() {

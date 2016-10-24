@@ -28,6 +28,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import javax.annotation.Nullable;
 
+/** FieldConfig represents a configuration for a Field, derived from the GAPIC config. */
 @AutoValue
 public abstract class FieldConfig {
   public abstract Field getField();
@@ -37,17 +38,17 @@ public abstract class FieldConfig {
   @Nullable
   public abstract String getEntityName();
 
-  @Nullable
   public static FieldConfig createFieldConfig(
-      Field field, ResourceNameTreatment resourceNameTreatment, String resourceName) {
-    if (resourceNameTreatment != ResourceNameTreatment.NONE && resourceName == null) {
+      Field field, ResourceNameTreatment resourceNameTreatment, String entityName) {
+    if (resourceNameTreatment != ResourceNameTreatment.NONE && entityName == null) {
       throw new IllegalArgumentException(
           "resourceName may only be null if resourceNameTreatment is NONE");
     }
-    return new AutoValue_FieldConfig(field, resourceNameTreatment, resourceName);
+    return new AutoValue_FieldConfig(field, resourceNameTreatment, entityName);
   }
 
-  public static FieldConfig createMessageFieldConfig(Field field) {
+  /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
+  public static FieldConfig createDefaultFieldConfig(Field field) {
     return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null);
   }
 
@@ -57,12 +58,8 @@ public abstract class FieldConfig {
       MethodConfigProto methodConfigProto,
       Method method,
       String parameter) {
-    boolean failed = false;
 
     Field parameterField = method.getInputMessage().lookupField(parameter);
-    String entityName = methodConfigProto.getFieldNamePatterns().get(parameter);
-
-    ResourceNameTreatment treatment = ResourceNameTreatment.NONE;
     if (parameterField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -71,21 +68,23 @@ public abstract class FieldConfig {
               method.getFullName(),
               method.getInputMessage().getFullName(),
               parameter));
-      failed = true;
-    } else if (ResourceNameUtil.hasResourceName(parameterField)) {
-      entityName = ResourceNameUtil.getResourceName(parameterField);
+      return null;
+    }
+
+    ResourceNameTreatment treatment = ResourceNameTreatment.NONE;
+    String entityName = methodConfigProto.getFieldNamePatterns().get(parameter);
+
+    if (ResourceNameUtil.hasResourceName(parameterField)) {
       treatment = ResourceNameTreatment.STATIC_TYPES;
+      entityName = ResourceNameUtil.getResourceName(parameterField);
     } else if (entityName != null) {
       treatment = ResourceNameTreatment.VALIDATE;
     }
 
-    if (failed) {
-      return null;
-    }
     return createFieldConfig(parameterField, treatment, entityName);
   }
 
-  public boolean hasResourceName() {
+  public boolean hasEntityName() {
     return getEntityName() != null;
   }
 

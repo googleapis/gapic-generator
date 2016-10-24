@@ -454,8 +454,8 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
     for (FieldConfig fieldConfig : fieldConfigs) {
-      if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-        // Don't generate a path template check when using a ResourceName type instead of a string
+      if (!fieldConfig.useValidation()) {
+        // Don't generate a path template check if fieldConfig is not configured to use validation.
         continue;
       }
       Field field = fieldConfig.getField();

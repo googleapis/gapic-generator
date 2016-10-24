@@ -74,8 +74,6 @@ public abstract class MethodConfig {
 
   public abstract boolean hasRequestObjectMethod();
 
-  public abstract ResourceNameTreatment getResourceNameTreatment();
-
   public abstract ImmutableMap<String, String> getFieldNamePatterns();
 
   public abstract List<String> getSampleCodeInitFields();
@@ -127,9 +125,7 @@ public abstract class MethodConfig {
 
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening =
-          createFlattening(
-              diagCollector, methodConfigProto, methodConfigProto.getFlattening(), method);
+      flattening = createFlattening(diagCollector, methodConfigProto, method);
       if (flattening == null) {
         error = true;
       }
@@ -194,7 +190,7 @@ public abstract class MethodConfig {
               FieldConfig.createFieldConfig(
                   requiredField, ResourceNameTreatment.VALIDATE, fieldNamePatterns.get(fieldName));
         } else {
-          fieldConfig = FieldConfig.createMessageFieldConfig(requiredField);
+          fieldConfig = FieldConfig.createDefaultFieldConfig(requiredField);
         }
         builder.add(fieldConfig);
       } else {
@@ -233,15 +229,12 @@ public abstract class MethodConfig {
                               ResourceNameTreatment.VALIDATE,
                               fieldNamePatterns.get(field.getSimpleName()));
                     } else {
-                      fieldConfig = FieldConfig.createMessageFieldConfig(field);
+                      fieldConfig = FieldConfig.createDefaultFieldConfig(field);
                     }
                     return fieldConfig;
                   }
                 })
             .toList();
-
-    // Default to STATIC_TYPES, so we use resource names when they are available
-    ResourceNameTreatment resourceNameTreatment = ResourceNameTreatment.STATIC_TYPES;
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
@@ -275,7 +268,6 @@ public abstract class MethodConfig {
           optionalFieldConfigs,
           bundling,
           hasRequestObjectMethod,
-          resourceNameTreatment,
           fieldNamePatterns,
           sampleCodeInitFields,
           rerouteToGrpcInterface,
@@ -285,15 +277,12 @@ public abstract class MethodConfig {
 
   @Nullable
   private static ImmutableList<FlatteningConfig> createFlattening(
-      DiagCollector diagCollector,
-      MethodConfigProto methodConfigProto,
-      FlatteningConfigProto flattening,
-      Method method) {
+      DiagCollector diagCollector, MethodConfigProto methodConfigProto, Method method) {
     boolean missing = false;
     ImmutableList.Builder<FlatteningConfig> flatteningGroupsBuilder = ImmutableList.builder();
-    for (FlatteningGroupProto flatteningGroup : flattening.getGroupsList()) {
+    for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
       FlatteningConfig groupConfig =
-          FlatteningConfig.createFlatteningGroup(
+          FlatteningConfig.createFlattening(
               diagCollector, methodConfigProto, flatteningGroup, method);
       if (groupConfig == null) {
         missing = true;
