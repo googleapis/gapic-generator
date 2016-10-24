@@ -45,7 +45,6 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String exampleName();
 
-  @Nullable // Used in C#
   public abstract String callableName();
 
   public abstract String settingsGetterName();
