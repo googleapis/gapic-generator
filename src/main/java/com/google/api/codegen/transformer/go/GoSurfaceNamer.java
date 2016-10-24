@@ -115,6 +115,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getCallableName(Method method) {
+    return publicMethodName(Name.upperCamel(method.getSimpleName()));
+  }
+
+  @Override
   public String getApiWrapperClassName(Interface service) {
     return className(clientNamePrefix(service).join("client"));
   }
