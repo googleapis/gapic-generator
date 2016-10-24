@@ -24,12 +24,14 @@ import (
     "time"
 
     "cloud.google.com/go/iam"
+    "cloud.google.com/go/longrunning"
     gax "github.com/googleapis/gax-go"
     "golang.org/x/net/context"
     "google.golang.org/api/iterator"
     "google.golang.org/api/option"
     "google.golang.org/api/transport"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
+    longrunningpb "google.golang.org/genproto/googleapis/longrunning"
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
@@ -65,6 +67,7 @@ type CallOptions struct {
     DiscussBook []gax.CallOption
     FindRelatedBooks []gax.CallOption
     AddLabel []gax.CallOption
+    GetBigBook []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -114,6 +117,7 @@ func defaultCallOptions() *CallOptions {
         DiscussBook: retry[[2]string{"default", "non_idempotent"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
+        GetBigBook: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -221,6 +225,7 @@ func LibraryArchivedBookPath(archivePath, bookId string) string {
 func (c *Client) BookIAM(book *librarypb.Book) *iam.Handle {
     return iam.InternalNewHandle(c.Connection(), book.Name)
 }
+
 
 // CreateShelf creates a shelf, and returns the new Shelf.
 func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
@@ -625,6 +630,22 @@ func (c *Client) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*
         return nil, err
     }
     return resp, nil
+}
+
+// GetBigBook
+func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*longrunning.Operation, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp *longrunningpb.Operation
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetBigBook(ctx, req)
+        return err
+    }, c.CallOptions.GetBigBook...)
+    if err != nil {
+        return nil, err
+    }
+    return longrunning.InternalNewOperation(c.Connection(), resp), nil
 }
 
 

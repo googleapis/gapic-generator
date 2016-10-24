@@ -60,7 +60,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract boolean hasReturnValue();
 
-  public abstract boolean isPageStreaming();
+  public abstract boolean isLongRunning();
 
   public abstract List<RequestObjectParamView> requestObjectParams();
 
@@ -124,7 +124,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder hasReturnValue(boolean hasReturnValue);
 
-    public abstract Builder isPageStreaming(boolean isPageStreaming);
+    public abstract Builder isLongRunning(boolean isLongRunning);
 
     public abstract Builder requestObjectParams(List<RequestObjectParamView> requestObjectParams);
 

@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.Service;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
 import com.google.api.tools.framework.model.Diag;
@@ -102,8 +103,13 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     Model model = Model.create(Service.getDefaultInstance());
     ApiConfig apiConfig = ApiConfig.createDummyApiConfig();
 
+    GapicGeneratorConfig generatorConfig =
+        GapicGeneratorConfig.newBuilder()
+            .id(idForFactory)
+            .enabledArtifacts(new ArrayList<String>())
+            .build();
     List<GapicProvider<? extends Object>> providers =
-        MainGapicProviderFactory.defaultCreate(model, apiConfig, idForFactory);
+        MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig);
     List<Object[]> testArgs = new ArrayList<>();
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {
@@ -133,8 +139,13 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
       return null;
     }
 
+    GapicGeneratorConfig generatorConfig =
+        GapicGeneratorConfig.newBuilder()
+            .id(idForFactory)
+            .enabledArtifacts(new ArrayList<String>())
+            .build();
     List<GapicProvider<? extends Object>> providers =
-        MainGapicProviderFactory.defaultCreate(model, apiConfig, idForFactory);
+        MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig);
     GapicProvider<? extends Object> testedProvider = null;
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {

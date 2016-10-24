@@ -6,12 +6,18 @@
   // 1. If not already done, enable the {@class.apiTitle}
   //    and check the quota for your project at
   //    https://console.developers.google.com/apis/api/{@class.apiName}
-  // 2. This sample uses Application Default Credentials for authentication.
-  //    If not already done, install the gcloud CLI from
-  //    https://cloud.google.com/sdk/ and run
-  //    `gcloud beta auth application-default login`
-  // 3. Install and update the Go dependencies by running `go get -u` in the
-  //    project directory.
+  @switch class.auth.type
+  @case "APPLICATION_DEFAULT_CREDENTIALS"
+    // 2. This sample uses Application Default Credentials for authentication.
+    //    If not already done, install the gcloud CLI from
+    //    https://cloud.google.com/sdk/ and run
+    //    `gcloud beta auth application-default login`
+    // 3. Install and update the Go dependencies by running `go get -u` in the
+    //    project directory.
+  @default
+    // 2. Install and update the Go dependencies by running `go get -u` in the
+    //    project directory.
+  @end
 
   import (
     @join import : class.imports
@@ -20,13 +26,22 @@
   )
 
   {@mainFunc(class)}
+  @if class.auth.type != "APPLICATION_DEFAULT_CREDENTIALS"
+
+    {@getClientFunc(class)}
+  @end
 @end
 
 @private mainFunc(class)
   func main() {
     {@class.contextVarName} := context.Background()
 
-    {@class.clientVarName}, err := google.DefaultClient({@class.contextVarName}{@authScopeParamList(class.servicePackageName, class.auth.scopeConsts)})
+    @switch class.auth.type
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+      {@class.clientVarName}, err := google.DefaultClient({@class.contextVarName}, {@class.servicePackageName}.CloudPlatformScope)
+    @default
+      {@class.clientVarName}, err := {@class.getClientFuncName}({@class.contextVarName})
+    @end
     if err != nil {
       log.Fatal(err)
     }
@@ -72,13 +87,13 @@
         @if class.pageStreaming.isResourceMap
           for {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName} := range {@class.pageStreaming.pageVarName}.{@class.pageStreaming.resourceFieldName} {
             // TODO: Change code below to process each ({@class.pageStreaming.resourceKeyVarName}: {@class.pageStreaming.resourceValueVarName}) element:
-            log.Printf("%v: %#v\n", {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName})
+            fmt.Printf("%v: %#v\n", {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName})
           }
           return nil
         @else
           for _, {@class.pageStreaming.resourceVarName} := range page.{@class.pageStreaming.resourceFieldName} {
             // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
-            log.Printf("%#v\n", {@class.pageStreaming.resourceVarName})
+            fmt.Printf("%#v\n", {@class.pageStreaming.resourceVarName})
           }
           return nil
         @end
@@ -98,7 +113,7 @@
         }
 
         // TODO: Change code below to process the `{@class.responseVarName}` object:
-        log.Printf("%#v\n", {@class.responseVarName})
+        fmt.Printf("%#v\n", {@class.responseVarName})
       @else
         if err := {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)}).Context({@class.contextVarName}).Do(); err != nil {
           log.Fatal(err)
@@ -108,10 +123,23 @@
   }
 @end
 
-@private authScopeParamList(servicePackageName, authScopeConsts)
-  @join authScopeConst : authScopeConsts
-    , {@servicePackageName}.{@authScopeConst}
-  @end
+@private getClientFunc(class)
+  func {@class.getClientFuncName}({@class.contextVarName} context.Context) (*http.Client, error) {
+    // TODO: Change placeholder below to get authentication credentials. See:
+    // {@class.auth.instructionsUrl}
+    @if class.auth.type != "API_KEY"
+      //
+      @if class.auth.isScopesSingular
+        // Authorize using the following scope:
+      @else
+        // Authorize using the following scopes:
+      @end
+      @join scopeConst : class.auth.scopeConsts
+        //    {@class.servicePackageName}.{@scopeConst}
+      @end
+    @end
+    return nil, errors.New("not implemented")
+  }
 @end
 
 @private callChain(methodNameComponents)

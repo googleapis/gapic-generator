@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -152,6 +153,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       }
     }
     xapiClass.apiMethodsImpl(methodsImpl);
+    xapiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
 
     // must be done as the last step to catch all imports
     xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
@@ -187,6 +189,10 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
     xsettingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
+    xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
+    xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
 
     // must be done as the last step to catch all imports
     xsettingsClass.imports(
@@ -276,6 +282,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterface()));
     settingsDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterface()));
     settingsDoc.settingsBuilderVarName(namer.getApiSettingsBuilderVarName(context.getInterface()));
+    settingsDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     return settingsDoc.build();
   }
 }

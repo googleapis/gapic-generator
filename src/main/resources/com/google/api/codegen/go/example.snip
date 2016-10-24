@@ -38,6 +38,7 @@
             //TODO: Use the IAM policy
             _ = policy
         }
+
     @end
 
     @join method : view.apiMethods
@@ -49,11 +50,16 @@
         @case "ServerStreaming"
             {@responseStreamingMethod(view, method)}
         @case "NonStreaming"
-            @if method.isPageStreaming
+            @switch method.type
+            @case "PagedRequestObjectMethod"
                 {@pageStreamingMethod(view, method)}
-            @else
+            @case "RequestObjectMethod"
                 @if method.hasReturnValue
-                    {@simpleMethod(view, method)}
+                    @if method.isLongRunning
+                        {@lroMethod(view, method)}
+                    @else
+                        {@simpleMethod(view, method)}
+                    @end
                 @else
                     {@emptyReturnMethod(view, method)}
                 @end
@@ -155,6 +161,24 @@
         }
         // TODO: Use resp.
         _ = resp
+    }
+@end
+
+@private lroMethod(view, method)
+    func {@method.exampleName}() {
+        {@methodInit(view, method)}
+
+        {@requestInit(view, method)}
+        op, err := c.{@method.name}(ctx, req)
+        if err != nil {
+            // TODO: Handle error.
+        }
+
+        var resp ptypes.DynamicAny // resp can also be concrete protobuf-generated types.
+        if err := op.Wait(ctx, &resp); err != nil {
+            // TODO: Handle error.
+        }
+        // TODO: Use resp.
     }
 @end
 

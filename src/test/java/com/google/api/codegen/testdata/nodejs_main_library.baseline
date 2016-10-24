@@ -38,7 +38,6 @@ var DEFAULT_SERVICE_PORT = 443;
 
 var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
-
 var PAGE_DESCRIPTORS = {
   listShelves: new gax.PageDescriptor(
       'pageToken',
@@ -114,7 +113,6 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'gax/' + gax.version,
     'nodejs/' + process.version].join(' ');
 
-
   var bundleDescriptors = {
     publishSeries: new gax.BundleDescriptor(
         'books',
@@ -125,15 +123,12 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
         'bookNames',
         gax.createByteLengthFunction(grpcClients.libraryServiceClient.google.example.library.v1.Book))
   };
+
   var defaults = gaxGrpc.constructSettings(
       'google.example.library.v1.LibraryService',
       configData,
       clientConfig,
-      PAGE_DESCRIPTORS,
-      bundleDescriptors,
-      {'x-goog-api-client': googleApiClient},
-      STREAM_DESCRIPTORS
-  );
+      {'x-goog-api-client': googleApiClient});
 
   var libraryServiceStub = gaxGrpc.createStub(
       servicePath,
@@ -161,14 +156,16 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'streamBooks',
     'discussBook',
     'findRelatedBooks',
-    'addTag'
+    'addTag',
+    'getBigBook'
   ];
   libraryServiceStubMethods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
       libraryServiceStub.then(function(libraryServiceStub) {
         return libraryServiceStub[methodName].bind(libraryServiceStub);
       }),
-      defaults[methodName]);
+      defaults[methodName],
+      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] ||STREAM_DESCRIPTORS[methodName]);
   }.bind(this));
 
   var labelerStub = gaxGrpc.createStub(
@@ -184,7 +181,8 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
       labelerStub.then(function(labelerStub) {
         return labelerStub[methodName].bind(labelerStub);
       }),
-      defaults[methodName]);
+      defaults[methodName],
+      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] ||STREAM_DESCRIPTORS[methodName]);
   }.bind(this));
 }
 
@@ -201,7 +199,7 @@ var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
 
 /**
  * Returns a fully-qualified shelf resource name string.
- * @param {String} shelf_id
+ * @param {String} shelfId
  * @returns {String}
  */
 LibraryServiceApi.prototype.shelfPath = function(shelfId) {
@@ -222,8 +220,8 @@ LibraryServiceApi.prototype.matchShelfIdFromShelfName = function(shelfName) {
 
 /**
  * Returns a fully-qualified book resource name string.
- * @param {String} shelf_id
- * @param {String} book_id
+ * @param {String} shelfId
+ * @param {String} bookId
  * @returns {String}
  */
 LibraryServiceApi.prototype.bookPath = function(shelfId, bookId) {
@@ -255,8 +253,8 @@ LibraryServiceApi.prototype.matchBookIdFromBookName = function(bookName) {
 
 /**
  * Returns a fully-qualified archived_book resource name string.
- * @param {String} archive_path
- * @param {String} book_id
+ * @param {String} archivePath
+ * @param {String} bookId
  * @returns {String}
  */
 LibraryServiceApi.prototype.archivedBookPath = function(archivePath, bookId) {
@@ -1280,6 +1278,42 @@ LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
     options = {};
   }
   return this._addLabel(request, options, callback);
+};
+
+/**
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.name
+ *   The name of the book to retrieve.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [google.longrunning.Operation]{@link external:"google.longrunning.Operation"}
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * api.getBigBook({name: formattedName}).then(function(response) {
+ *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceApi.prototype.getBigBook = function(request, options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+  return this._getBigBook(request, options, callback);
 };
 
 function LibraryServiceApiBuilder(gaxGrpc) {

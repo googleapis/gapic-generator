@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -164,6 +165,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
     xapiClass.apiMethods(methods);
+    xapiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
 
     // must be done as the last step to catch all imports
     xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
@@ -273,6 +275,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       exampleApiMethod = searchExampleMethod(methods, ApiMethodType.PagedFlattenedMethod);
     }
     if (exampleApiMethod == null) {
+      exampleApiMethod = searchExampleMethod(methods, ApiMethodType.RequestObjectMethod);
+    }
+    if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
     }
     return exampleApiMethod;
@@ -316,6 +321,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
     xsettingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
+    xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
+    xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
 
     // must be done as the last step to catch all imports
     xsettingsClass.imports(
@@ -411,6 +420,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterface()));
     settingsDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterface()));
     settingsDoc.settingsBuilderVarName(namer.getApiSettingsBuilderVarName(context.getInterface()));
+    settingsDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     return settingsDoc.build();
   }
 

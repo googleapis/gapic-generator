@@ -348,6 +348,9 @@ class LibraryServiceApi(object):
         self._add_label = api_callable.create_api_call(
             self.labeler_stub.AddLabel,
             settings=defaults['add_label'])
+        self._get_big_book = api_callable.create_api_call(
+            self.library_service_stub.GetBigBook,
+            settings=defaults['get_big_book'])
 
     # Service calls
     def create_shelf(
@@ -1140,4 +1143,32 @@ class LibraryServiceApi(object):
             resource=resource,
             label=label)
         self._add_label(request, options)
+
+    def get_big_book(
+            self,
+            name,
+            options=None):
+        """
+
+        Example:
+          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> api = library_service_api.LibraryServiceApi()
+          >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>> response = api.get_big_book(name)
+
+        Args:
+          name (string): The name of the book to retrieve.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Returns:
+          A :class:`google.longrunning.operations_pb2.Operation` instance.
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+          :exc:`ValueError` if the parameters are invalid.
+        """
+        request = library_pb2.GetBookRequest(
+            name=name)
+        return self._get_big_book(request, options)
 

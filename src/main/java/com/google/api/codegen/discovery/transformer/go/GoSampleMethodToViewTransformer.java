@@ -17,6 +17,7 @@ package com.google.api.codegen.discovery.transformer.go;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -107,6 +108,10 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       builder.responseTypeName(methodInfo.responseType().message().typeName());
     }
 
+    if (config.authType() != AuthType.APPLICATION_DEFAULT_CREDENTIALS) {
+      builder.getClientFuncName(namer.privateMethodName(Name.lowerCamel("getClient")));
+    }
+
     // Imports must be collected last.
     List<String> imports = new ArrayList<>();
     imports.addAll(GoTypeTable.formatImports(typeTable.getImports()));
@@ -142,10 +147,13 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
 
     List<String> scopeConsts = new ArrayList<>();
-    // Pull the last scope and reconstruct it as a Go constant.
-    // For example: "https://www.googleapis.com/auth/cloud-platform" to "CloudPlatform"
-    if (methodInfo.authScopes().size() > 0) {
-      scopeConsts.add(GoSampleNamer.getAuthScopeConst(methodInfo.authScopes().get(0)));
+    // Pull scopes and reconstruct them as Go constants in the sample.
+    // For example: "https://www.googleapis.com/auth/cloud-platform" to
+    // "CloudPlatformScope"
+    if (config.authType() != AuthType.APPLICATION_DEFAULT_CREDENTIALS) {
+      for (String scope : methodInfo.authScopes()) {
+        scopeConsts.add(GoSampleNamer.getAuthScopeConst(scope));
+      }
     }
 
     return SampleAuthView.newBuilder()
@@ -208,13 +216,30 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     // name to the symbol table.
     // GoTypeTable expects imports to be of the format:
     // "{packagePath};{localName};{typeName};{pointer}"
-    typeTable.saveNicknameFor("log;;;");
-    symbolTable.getNewSymbol("log");
-    typeTable.saveNicknameFor("golang.org/x/net/context;;;");
-    symbolTable.getNewSymbol("context");
-    typeTable.saveNicknameFor("golang.org/x/oauth2/google;;;");
-    symbolTable.getNewSymbol("google");
-    typeTable.saveNicknameFor(config.packagePrefix() + ";;;");
-    symbolTable.getNewSymbol(GoSampleNamer.getServicePackageName(config.packagePrefix()));
+
+    if (config.methods().get(context.getMethodName()).responseType() != null) {
+      saveNicknameAndSymbolFor("fmt;;;", "fmt", typeTable, symbolTable);
+    }
+    saveNicknameAndSymbolFor("log;;;", "log", typeTable, symbolTable);
+    saveNicknameAndSymbolFor("golang.org/x/net/context;;;", "context", typeTable, symbolTable);
+    switch (config.authType()) {
+      case APPLICATION_DEFAULT_CREDENTIALS:
+        saveNicknameAndSymbolFor("golang.org/x/oauth2/google;;;", "google", typeTable, symbolTable);
+        break;
+      default:
+        saveNicknameAndSymbolFor("errors;;;", "errors", typeTable, symbolTable);
+        saveNicknameAndSymbolFor("net/http;;;", "http", typeTable, symbolTable);
+    }
+    saveNicknameAndSymbolFor(
+        config.packagePrefix() + ";;;",
+        GoSampleNamer.getServicePackageName(config.packagePrefix()),
+        typeTable,
+        symbolTable);
+  }
+
+  private void saveNicknameAndSymbolFor(
+      String fullName, String shortName, SampleTypeTable typeTable, SymbolTable symbolTable) {
+    typeTable.saveNicknameFor(fullName);
+    symbolTable.getNewSymbol(shortName);
   }
 }

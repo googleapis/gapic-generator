@@ -34,6 +34,8 @@ public abstract class SettingsDocView {
 
   public abstract String settingsBuilderVarName();
 
+  public abstract boolean hasDefaultInstance();
+
   public static Builder newBuilder() {
     return new AutoValue_SettingsDocView.Builder();
   }
@@ -55,6 +57,8 @@ public abstract class SettingsDocView {
     public abstract Builder settingsClassName(String val);
 
     public abstract Builder settingsBuilderVarName(String val);
+
+    public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
 
     public abstract SettingsDocView build();
   }

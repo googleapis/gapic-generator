@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -37,6 +38,8 @@ public abstract class ServiceDocView {
 
   public abstract String settingsClassName();
 
+  public abstract boolean hasDefaultInstance();
+
   public static Builder newBuilder() {
     return new AutoValue_ServiceDocView.Builder();
   }
@@ -56,6 +59,8 @@ public abstract class ServiceDocView {
     public abstract Builder settingsVarName(String val);
 
     public abstract Builder settingsClassName(String val);
+
+    public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
 
     public abstract ServiceDocView build();
   }

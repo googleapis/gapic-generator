@@ -38,6 +38,11 @@ var DEFAULT_SERVICE_PORT = 443;
 
 var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
+var PAGE_DESCRIPTORS = {
+};
+
+var STREAM_DESCRIPTORS = {
+};
 
 /**
  * The scopes needed to make gRPC calls to all of the methods defined in
@@ -74,15 +79,14 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
     'gax/' + gax.version,
     'nodejs/' + process.version].join(' ');
 
+  var bundleDescriptors = {
+  };
+
   var defaults = gaxGrpc.constructSettings(
       'google.cloud.example.v1.NoTemplatesAPIService',
       configData,
       clientConfig,
-      null,
-      null,
-      {'x-goog-api-client': googleApiClient},
-      null
-  );
+      {'x-goog-api-client': googleApiClient});
 
   var noTemplatesApiServiceStub = gaxGrpc.createStub(
       servicePath,
@@ -97,7 +101,8 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
       noTemplatesApiServiceStub.then(function(noTemplatesApiServiceStub) {
         return noTemplatesApiServiceStub[methodName].bind(noTemplatesApiServiceStub);
       }),
-      defaults[methodName]);
+      defaults[methodName],
+      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] ||STREAM_DESCRIPTORS[methodName]);
   }.bind(this));
 }
 

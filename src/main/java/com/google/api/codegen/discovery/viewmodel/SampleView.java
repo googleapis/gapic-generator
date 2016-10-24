@@ -110,6 +110,9 @@ public abstract class SampleView implements ViewModel {
   public abstract String clientVarName();
 
   @Nullable
+  public abstract String getClientFuncName();
+
+  @Nullable
   public abstract String contextVarName();
 
   public static Builder newBuilder() {
@@ -184,6 +187,8 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder servicePackageName(String val);
 
     public abstract Builder clientVarName(String val);
+
+    public abstract Builder getClientFuncName(String val);
 
     public abstract Builder contextVarName(String val);
 
