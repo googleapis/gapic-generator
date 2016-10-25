@@ -397,16 +397,14 @@
             {@optionalParameterValues(optionalParams)},
           @end
           options: nil
-        req = {@inputTypeName}.new(
-          {
+        req = {@inputTypeName}.new({
             @if requiredParams
               {@namedParameters(requiredParams)}
             @end
             @if optionalParams
               {@namedParameters(optionalParams)}
             @end
-          }.delete_if { |_, v| v.nil? }
-        )
+        }.delete_if { |_, v| v.nil? })
         @@{@methodName}.call(req, options)
       end
     @else
