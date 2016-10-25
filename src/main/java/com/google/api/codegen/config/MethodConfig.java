@@ -35,7 +35,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nullable;
 import org.joda.time.Duration;
 
@@ -171,56 +170,16 @@ public abstract class MethodConfig {
 
     boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
 
-    final ImmutableMap<String, String> fieldNamePatterns =
+    ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
 
-    List<String> requiredFieldNames = methodConfigProto.getRequiredFieldsList();
-    ImmutableSet.Builder<FieldConfig> builder = ImmutableSet.builder();
-    for (String fieldName : requiredFieldNames) {
-      Field requiredField = method.getInputMessage().lookupField(fieldName);
-      if (requiredField != null) {
-        FieldConfig fieldConfig;
-        if (ResourceNameUtil.hasResourceName(requiredField)) {
-          fieldConfig = ResourceNameUtil.createFieldConfig(requiredField);
-        } else if (fieldNamePatterns.containsKey(fieldName)) {
-          fieldConfig =
-              FieldConfig.createFieldConfig(
-                  requiredField, ResourceNameTreatment.VALIDATE, fieldNamePatterns.get(fieldName));
-        } else {
-          fieldConfig = FieldConfig.createDefaultFieldConfig(requiredField);
-        }
-        builder.add(fieldConfig);
-      } else {
-        Diag.error(
-            SimpleLocation.TOPLEVEL,
-            "Required field '%s' not found (in method %s)",
-            fieldName,
-            method.getFullName());
-        error = true;
-      }
-    }
-    Set<FieldConfig> requiredFieldConfigs = builder.build();
+    Iterable<FieldConfig> requiredFieldConfigs =
+        createRequiredFieldNameConfigs(
+            method, fieldNamePatterns, methodConfigProto.getRequiredFieldsList());
 
-    ImmutableList.Builder<FieldConfig> optionalFieldConfigsBuilder = ImmutableList.builder();
-    for (Field field : method.getInputType().getMessageType().getFields()) {
-      if (methodConfigProto.getRequiredFieldsList().contains(field.getSimpleName())) {
-        continue;
-      }
-      FieldConfig fieldConfig;
-      if (ResourceNameUtil.hasResourceName(field)) {
-        fieldConfig = ResourceNameUtil.createFieldConfig(field);
-      } else if (fieldNamePatterns.containsKey(field.getSimpleName())) {
-        fieldConfig =
-            FieldConfig.createFieldConfig(
-                field,
-                ResourceNameTreatment.VALIDATE,
-                fieldNamePatterns.get(field.getSimpleName()));
-      } else {
-        fieldConfig = FieldConfig.createDefaultFieldConfig(field);
-      }
-      optionalFieldConfigsBuilder.add(fieldConfig);
-    }
-    List<FieldConfig> optionalFieldConfigs = optionalFieldConfigsBuilder.build();
+    Iterable<FieldConfig> optionalFieldConfigs =
+        createOptionalFieldNameConfigs(
+            method, fieldNamePatterns, methodConfigProto.getRequiredFieldsList());
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
@@ -281,6 +240,56 @@ public abstract class MethodConfig {
     }
 
     return flatteningGroupsBuilder.build();
+  }
+
+  private static Iterable<FieldConfig> createRequiredFieldNameConfigs(
+      Method method,
+      ImmutableMap<String, String> fieldNamePatterns,
+      List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldConfig> builder = ImmutableList.builder();
+    for (String fieldName : requiredFieldNames) {
+      Field requiredField = method.getInputMessage().lookupField(fieldName);
+      if (requiredField != null) {
+        builder.add(getFieldConfig(fieldNamePatterns, requiredField));
+      } else {
+        Diag.error(
+            SimpleLocation.TOPLEVEL,
+            "Required field '%s' not found (in method %s)",
+            fieldName,
+            method.getFullName());
+        return null;
+      }
+    }
+    return builder.build();
+  }
+
+  private static Iterable<FieldConfig> createOptionalFieldNameConfigs(
+      Method method,
+      ImmutableMap<String, String> fieldNamePatterns,
+      List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldConfig> optionalFieldConfigsBuilder = ImmutableList.builder();
+    for (Field field : method.getInputType().getMessageType().getFields()) {
+      if (requiredFieldNames.contains(field.getSimpleName())) {
+        continue;
+      }
+      optionalFieldConfigsBuilder.add(getFieldConfig(fieldNamePatterns, field));
+    }
+    return optionalFieldConfigsBuilder.build();
+  }
+
+  private static FieldConfig getFieldConfig(
+      ImmutableMap<String, String> fieldNamePatterns, Field field) {
+    FieldConfig fieldConfig;
+    if (ResourceNameUtil.hasResourceName(field)) {
+      fieldConfig = ResourceNameUtil.createFieldConfig(field);
+    } else if (fieldNamePatterns.containsKey(field.getSimpleName())) {
+      fieldConfig =
+          FieldConfig.createFieldConfig(
+              field, ResourceNameTreatment.VALIDATE, fieldNamePatterns.get(field.getSimpleName()));
+    } else {
+      fieldConfig = FieldConfig.createDefaultFieldConfig(field);
+    }
+    return fieldConfig;
   }
 
   /** Returns true if the method is a streaming method */

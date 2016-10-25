@@ -454,9 +454,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       } else {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodTransformerContext methodContext =
+            MethodTransformerContext flattenedMethodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
-            apiMethods.add(apiMethodTransformer.generateFlattenedMethod(methodContext));
+            apiMethods.add(apiMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
           }
         }
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(requestMethodContext));
