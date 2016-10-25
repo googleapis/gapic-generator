@@ -98,7 +98,7 @@ public abstract class FieldConfig {
       entityName = null;
     }
 
-    validate(treatment, entityName, messageConfigs, parameterField);
+    validate(messageConfigs, parameterField, treatment, entityName);
 
     return createFieldConfig(parameterField, treatment, entityName);
   }
@@ -141,11 +141,14 @@ public abstract class FieldConfig {
     return getResourceNameTreatment() == ResourceNameTreatment.VALIDATE;
   }
 
+  /*
+   * Check that the provided resource name treatment and entityName are valid for the provided field.
+   */
   public static void validate(
-      ResourceNameTreatment treatment,
-      String entityName,
       ResourceNameMessageConfigs messageConfigs,
-      Field field) {
+      Field field,
+      ResourceNameTreatment treatment,
+      String entityName) {
     switch (treatment) {
       case NONE:
         break;

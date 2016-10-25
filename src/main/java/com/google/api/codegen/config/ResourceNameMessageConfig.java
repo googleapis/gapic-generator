@@ -20,6 +20,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 
+/** Configuration of the resource name types for fields of a single message. */
 @AutoValue
 public abstract class ResourceNameMessageConfig {
 

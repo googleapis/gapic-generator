@@ -46,9 +46,9 @@ public abstract class PageStreamingConfig {
   @Nullable
   public static PageStreamingConfig createPageStreaming(
       DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
       MethodConfigProto methodConfigProto,
-      Method method,
-      ResourceNameMessageConfigs messageConfigs) {
+      Method method) {
     PageStreamingConfigProto pageStreaming = methodConfigProto.getPageStreaming();
     String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
     Field requestTokenField =

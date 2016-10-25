@@ -96,7 +96,6 @@ public abstract class ApiConfig {
       SymbolTable symbolTable) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap =
         ImmutableMap.<String, InterfaceConfig>builder();
-
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface iface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (iface == null || !iface.isReachable()) {

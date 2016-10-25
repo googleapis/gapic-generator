@@ -22,6 +22,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 
+/** Configuration of the resource name types for all message field. */
 @AutoValue
 public abstract class ResourceNameMessageConfigs {
 
@@ -70,17 +71,6 @@ public abstract class ResourceNameMessageConfigs {
     }
     return getResourceNameOrNullForField(messageSimpleName, fieldSimpleName);
   }
-
-  /*
-  public FieldConfig createFieldConfig(Field field) {
-    if (fieldHasResourceName(field)) {
-      return FieldConfig.createFieldConfig(
-          field, ResourceNameTreatment.STATIC_TYPES, getFieldResourceName(field));
-    } else {
-      return FieldConfig.createDefaultFieldConfig(field);
-    }
-  }
-  */
 
   private String getResourceNameOrNullForField(String messageSimpleName, String fieldSimpleName) {
     ResourceNameMessageConfig messageResourceTypeConfig =

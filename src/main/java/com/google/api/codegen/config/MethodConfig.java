@@ -102,7 +102,7 @@ public abstract class MethodConfig {
         .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming =
           PageStreamingConfig.createPageStreaming(
-              diagCollector, methodConfigProto, method, messageConfigs);
+              diagCollector, messageConfigs, methodConfigProto, method);
       if (pageStreaming == null) {
         error = true;
       }
@@ -320,7 +320,7 @@ public abstract class MethodConfig {
       entityName = null;
     }
 
-    FieldConfig.validate(treatment, entityName, messageConfigs, field);
+    FieldConfig.validate(messageConfigs, field, treatment, entityName);
 
     return FieldConfig.createFieldConfig(field, treatment, entityName);
   }
