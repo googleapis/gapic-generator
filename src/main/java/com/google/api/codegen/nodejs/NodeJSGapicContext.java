@@ -16,6 +16,7 @@ package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
@@ -377,6 +378,22 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
             return method.getResponseStreaming() || method.getRequestStreaming();
           }
         });
+  }
+
+  public Iterable<String> validDescriptorsNames(Interface service) {
+    ImmutableList.Builder<String> builder = ImmutableList.builder();
+    List<Method> methods = getSupportedMethods(service);
+    InterfaceConfig ifaceConfig = getApiConfig().getInterfaceConfig(service);
+    if (messages().filterPageStreamingMethods(ifaceConfig, methods).iterator().hasNext()) {
+      builder.add("PAGE_DESCRIPTORS");
+    }
+    if (messages().filterBundlingMethods(ifaceConfig, methods).iterator().hasNext()) {
+      builder.add("bundleDescriptors");
+    }
+    if (filterStreamingMethods(service).iterator().hasNext()) {
+      builder.add("STREAM_DESCRIPTORS");
+    }
+    return builder.build();
   }
 
   /**

@@ -114,26 +114,30 @@
     var DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
 
     var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
+    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
 
-    var PAGE_DESCRIPTORS = {
-      @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
-        @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
-              requestToken = context.propertyName(pageStreaming.getRequestTokenField()), \
-              responseToken = context.propertyName(pageStreaming.getResponseTokenField()), \
-              resources = context.propertyName(pageStreaming.getResourcesField())
-            {@methodName(method)}: new gax.PageDescriptor(
-                '{@requestToken}',
-                '{@responseToken}',
-                '{@resources}')
+      var PAGE_DESCRIPTORS = {
+        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
+          @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
+                requestToken = context.propertyName(pageStreaming.getRequestTokenField()), \
+                responseToken = context.propertyName(pageStreaming.getResponseTokenField()), \
+                resources = context.propertyName(pageStreaming.getResourcesField())
+              {@methodName(method)}: new gax.PageDescriptor(
+                  '{@requestToken}',
+                  '{@responseToken}',
+                  '{@resources}')
+          @end
         @end
-      @end
-    };
+      };
+    @end
+    @if context.filterStreamingMethods(service)
 
-    var STREAM_DESCRIPTORS = {
-      @join method : context.filterStreamingMethods(service) on {@", "}.add(BREAK)
-        {@methodName(method)}: new gax.StreamDescriptor({@streamType(method)})
-      @end
-    };
+      var STREAM_DESCRIPTORS = {
+        @join method : context.filterStreamingMethods(service) on {@", "}.add(BREAK)
+          {@methodName(method)}: new gax.StreamDescriptor({@streamType(method)})
+        @end
+      };
+    @end
 
     /**
      * The scopes needed to make gRPC calls to all of the methods defined in
@@ -219,26 +223,28 @@
         CODE_GEN_NAME_VERSION,
         'gax/' + gax.version,
         'nodejs/' + process.version].join(' ');
+      @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
 
-      var bundleDescriptors = {
-        @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
-          @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
-            {@methodName(method)}: new gax.BundleDescriptor(
-                '{@bundling.getBundledField().getSimpleName()}',
-                [
-                  @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
-                    '{@context.fieldSelectorName(fieldSelector)}'
+        var bundleDescriptors = {
+          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
+            @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
+              {@methodName(method)}: new gax.BundleDescriptor(
+                  '{@bundling.getBundledField().getSimpleName()}',
+                  [
+                    @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
+                      '{@context.fieldSelectorName(fieldSelector)}'
+                    @end
+                  ],
+                  @if bundling.hasSubresponseField()
+                    '{@context.propertyName(bundling.getSubresponseField())}',
+                  @else
+                    null,
                   @end
-                ],
-                @if bundling.hasSubresponseField()
-                  '{@context.propertyName(bundling.getSubresponseField())}',
-                @else
-                  null,
-                @end
-                {@context.getByteLengthFunction(service, method, bundling.getBundledField().getType())})
+                  {@context.getByteLengthFunction(service, method, bundling.getBundledField().getType())})
+            @end
           @end
-        @end
-      };
+        };
+      @end
 
       {@constructDefaults(service)}
 
@@ -259,10 +265,20 @@
               return {@stub.name}[methodName].bind({@stub.name});
             }),
             defaults[methodName],
-            PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] ||STREAM_DESCRIPTORS[methodName]);
+            {@getDescriptors(service)});
         }.bind(this));
       @end
     }
+  @end
+@end
+
+@private getDescriptors(service)
+  @if context.validDescriptorsNames(service)
+    @join descriptor : context.validDescriptorsNames(service) on {@" || "}
+      {@descriptor}[methodName]
+    @end
+  @else
+    null
   @end
 @end
 
