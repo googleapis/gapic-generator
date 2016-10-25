@@ -34,16 +34,17 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
-  public CSharpSurfaceNamer(String implicitPackageName) {
+  public CSharpSurfaceNamer(String packageName) {
     super(
         new CSharpNameFormatter(),
-        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(implicitPackageName)),
-        new CSharpTypeTable(implicitPackageName));
+        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName)),
+        new CSharpTypeTable(packageName),
+        packageName);
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
-    return packageName + "." + getApiWrapperClassName(service);
+  public String getFullyQualifiedApiWrapperClassName(Interface service) {
+    return getPackageName() + "." + getApiWrapperClassName(service);
   }
 
   @Override
@@ -93,6 +94,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return privateMethodName(identifier);
+  }
+
+  @Override
+  public String getExamplePackageName() {
+    return getPackageName() + ".Snippets";
   }
 
   @Override

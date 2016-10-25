@@ -1,19 +1,16 @@
 @extends "java/common.snip"
 
-@snippet generate(xsettingsClass)
-  {@license()}
-  package {@xsettingsClass.packageName};
+@snippet generate(settingsFile)
+  {@renderFileHeader(settingsFile.fileHeader)}
 
-  {@importList(xsettingsClass.imports)}
-
-  {@settingsDoc(xsettingsClass.doc)}
+  {@settingsDoc(settingsFile.settings.doc)}
   @@javax.annotation.Generated("by GAPIC")
-  public class {@xsettingsClass.name} extends ServiceApiSettings {
-    {@constants(xsettingsClass)}
-    {@members(xsettingsClass)}
-    {@constructors(xsettingsClass)}
-    {@descriptors(xsettingsClass)}
-    {@innerBuilderClass(xsettingsClass)}
+  public class {@settingsFile.settings.name} extends ServiceApiSettings {
+    {@constants(settingsFile.settings)}
+    {@members(settingsFile.settings)}
+    {@constructors(settingsFile.settings)}
+    {@descriptors(settingsFile.settings)}
+    {@innerBuilderClass(settingsFile.settings)}
   }
 @end
 

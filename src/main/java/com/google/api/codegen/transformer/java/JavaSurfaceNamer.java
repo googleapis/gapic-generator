@@ -34,11 +34,12 @@ import java.util.List;
 /** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
 
-  public JavaSurfaceNamer(String implicitPackageName) {
+  public JavaSurfaceNamer(String packageName) {
     super(
         new JavaNameFormatter(),
-        new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(implicitPackageName)),
-        new JavaTypeTable(implicitPackageName));
+        new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(packageName)),
+        new JavaTypeTable(packageName),
+        packageName);
   }
 
   @Override
@@ -138,7 +139,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
-    return packageName + "." + getApiWrapperClassName(service);
+  public String getFullyQualifiedApiWrapperClassName(Interface service) {
+    return getPackageName() + "." + getApiWrapperClassName(service);
   }
 }
