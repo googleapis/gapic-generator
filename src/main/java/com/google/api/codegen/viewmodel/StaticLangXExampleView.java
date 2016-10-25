@@ -48,7 +48,7 @@ public abstract class StaticLangXExampleView implements ViewModel {
   public abstract String clientTypeName();
 
   /** Imports for the example */
-  public abstract List<String> imports();
+  public abstract List<ImportTypeView> imports();
 
   /** Methods to make examples for */
   public abstract List<StaticLangApiMethodView> apiMethods();
@@ -77,7 +77,7 @@ public abstract class StaticLangXExampleView implements ViewModel {
 
     public abstract Builder clientTypeName(String val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
