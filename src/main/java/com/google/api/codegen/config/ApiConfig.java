@@ -39,6 +39,9 @@ public abstract class ApiConfig {
   /** Returns the location of the domain layer, if any. */
   public abstract String getDomainLayerLocation();
 
+  @Nullable
+  public abstract ResourceNameMessageConfigs getResourceNameMessageConfigs();
+
   /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
    * with specified interfaces in interfaceConfigMap. On errors, null will be returned, and
@@ -46,8 +49,12 @@ public abstract class ApiConfig {
    */
   @Nullable
   public static ApiConfig createApiConfig(Model model, ConfigProto configProto) {
+    ResourceNameMessageConfigs messageConfigs =
+        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
+            model.getDiagCollector(), configProto);
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
-        createInterfaceConfigMap(model.getDiagCollector(), configProto, model.getSymbolTable());
+        createInterfaceConfigMap(
+            model.getDiagCollector(), configProto, messageConfigs, model.getSymbolTable());
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
     if (settings == null) {
@@ -57,14 +64,18 @@ public abstract class ApiConfig {
       return null;
     } else {
       return new AutoValue_ApiConfig(
-          interfaceConfigMap, settings.getPackageName(), settings.getDomainLayerLocation());
+          interfaceConfigMap,
+          settings.getPackageName(),
+          settings.getDomainLayerLocation(),
+          messageConfigs);
     }
   }
 
   /** Creates an ApiConfig with no content. Exposed for testing. */
   @VisibleForTesting
   public static ApiConfig createDummyApiConfig() {
-    return new AutoValue_ApiConfig(ImmutableMap.<String, InterfaceConfig>builder().build(), "", "");
+    return new AutoValue_ApiConfig(
+        ImmutableMap.<String, InterfaceConfig>builder().build(), "", "", null);
   }
 
   /** Creates an ApiConfig with fixed content. Exposed for testing. */
@@ -72,14 +83,20 @@ public abstract class ApiConfig {
   public static ApiConfig createDummyApiConfig(
       ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
       String packageName,
-      String domainLayerLocation) {
-    return new AutoValue_ApiConfig(interfaceConfigMap, packageName, domainLayerLocation);
+      String domainLayerLocation,
+      ResourceNameMessageConfigs messageConfigs) {
+    return new AutoValue_ApiConfig(
+        interfaceConfigMap, packageName, domainLayerLocation, messageConfigs);
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
-      DiagCollector diagCollector, ConfigProto configProto, SymbolTable symbolTable) {
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      ResourceNameMessageConfigs messageConfigs,
+      SymbolTable symbolTable) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap =
         ImmutableMap.<String, InterfaceConfig>builder();
+
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface iface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (iface == null || !iface.isReachable()) {
@@ -92,7 +109,11 @@ public abstract class ApiConfig {
       }
       InterfaceConfig interfaceConfig =
           InterfaceConfig.createInterfaceConfig(
-              diagCollector, configProto.getLanguage(), interfaceConfigProto, iface);
+              diagCollector,
+              configProto.getLanguage(),
+              interfaceConfigProto,
+              iface,
+              messageConfigs);
       if (interfaceConfig == null) {
         continue;
       }

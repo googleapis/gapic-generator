@@ -16,7 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
-import com.google.api.codegen.util.ResourceNameUtil;
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -45,7 +45,10 @@ public abstract class PageStreamingConfig {
    */
   @Nullable
   public static PageStreamingConfig createPageStreaming(
-      DiagCollector diagCollector, MethodConfigProto methodConfigProto, Method method) {
+      DiagCollector diagCollector,
+      MethodConfigProto methodConfigProto,
+      Method method,
+      ResourceNameMessageConfigs messageConfigs) {
     PageStreamingConfigProto pageStreaming = methodConfigProto.getPageStreaming();
     String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
     Field requestTokenField =
@@ -102,7 +105,17 @@ public abstract class PageStreamingConfig {
               resourcesFieldName));
       resourcesFieldConfig = null;
     } else {
-      resourcesFieldConfig = ResourceNameUtil.createFieldConfig(resourcesField);
+      if (methodConfigProto.getResourceNameTreatment() == ResourceNameTreatment.STATIC_TYPES
+          && messageConfigs != null
+          && messageConfigs.fieldHasResourceName(resourcesField)) {
+        resourcesFieldConfig =
+            FieldConfig.createFieldConfig(
+                resourcesField,
+                ResourceNameTreatment.STATIC_TYPES,
+                messageConfigs.getFieldResourceName(resourcesField));
+      } else {
+        resourcesFieldConfig = FieldConfig.createDefaultFieldConfig(resourcesField);
+      }
     }
 
     if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {
