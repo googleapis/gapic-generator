@@ -48,7 +48,8 @@ public class ApiCallableTransformer {
       if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }
-      callableMembers.addAll(generateStaticLangApiCallables(context.asMethodContext(method)));
+      callableMembers.addAll(
+          generateStaticLangApiCallables(context.asRequestMethodContext(method)));
     }
 
     return callableMembers;
@@ -58,7 +59,7 @@ public class ApiCallableTransformer {
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
 
     for (Method method : context.getSupportedMethods()) {
-      settingsMembers.addAll(generateApiCallableSettings(context.asMethodContext(method)));
+      settingsMembers.addAll(generateApiCallableSettings(context.asRequestMethodContext(method)));
     }
 
     return settingsMembers;

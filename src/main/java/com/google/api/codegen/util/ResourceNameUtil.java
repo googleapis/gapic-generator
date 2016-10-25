@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ResourceNameTreatment;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.tools.framework.model.Field;
 import com.google.gapic.Format;
@@ -22,8 +24,19 @@ import java.util.List;
 
 public class ResourceNameUtil {
 
+  public static FieldConfig createFieldConfig(Field field) {
+    if (hasResourceName(field)) {
+      return FieldConfig.createFieldConfig(
+          field, ResourceNameTreatment.STATIC_TYPES, getResourceName(field));
+    } else {
+      return FieldConfig.createDefaultFieldConfig(field);
+    }
+  }
+
   public static String getResourceName(Field field) {
-    return field.getProto().getOptions().getExtension(ResourceNameFormatProto.formatName);
+    String resourceName =
+        field.getProto().getOptions().getExtension(ResourceNameFormatProto.formatName);
+    return Name.upperCamel(resourceName).toLowerUnderscore();
   }
 
   public static boolean hasResourceName(Field field) {

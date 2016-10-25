@@ -320,7 +320,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
   public OptionalArrayMethodView getMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    MethodTransformerContext methodContext = context.asMethodContext(method);
+    MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
     ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
     return methodTransformer.generateDynamicLangApiMethod(methodContext);
   }

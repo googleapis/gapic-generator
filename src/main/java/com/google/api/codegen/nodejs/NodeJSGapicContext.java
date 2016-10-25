@@ -81,7 +81,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public ApiMethodView getApiMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    MethodTransformerContext methodContext = context.asMethodContext(method);
+    MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
     ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
 
     return apiMethodTransformer.generateDynamicLangApiMethod(methodContext);
@@ -100,7 +100,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   public GrpcStubView getStubForMethod(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+    Interface targetInterface = context.asDynamicMethodContext(method).getTargetInterface();
     return grpcStubTransformer.generateGrpcStub(
         context, targetInterface, Collections.singletonList(method));
   }

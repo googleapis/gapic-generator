@@ -246,7 +246,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (Method method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodTransformerContext methodContext = context.asMethodContext(method);
+      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
         apiMethods.add(

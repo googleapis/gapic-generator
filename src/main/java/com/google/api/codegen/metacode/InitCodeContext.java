@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -43,7 +44,9 @@ public abstract class InitCodeContext {
    */
   public abstract SymbolTable symbolTable();
 
-  /** Contains the fields that require init. Must be set if the output type is FieldList. */
+  /**
+   * Contains the fields that require initialization. Must be set if the output type is FieldList.
+   */
   @Nullable
   public abstract Iterable<Field> initFields();
 
@@ -71,11 +74,14 @@ public abstract class InitCodeContext {
   /** The map which stores init value config data. Default to empty map. */
   public abstract ImmutableMap<String, InitValueConfig> initValueConfigMap();
 
+  /** A map of field names to field configs. Defaults to the empty map. */
+  public abstract ImmutableMap<String, FieldConfig> fieldConfigMap();
+
   public static Builder newBuilder() {
-    ImmutableMap.Builder<String, InitValueConfig> emptyConfigMap = new ImmutableMap.Builder<>();
     return new AutoValue_InitCodeContext.Builder()
         .symbolTable(new SymbolTable())
-        .initValueConfigMap(emptyConfigMap.build())
+        .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
+        .fieldConfigMap(ImmutableMap.<String, FieldConfig>of())
         .outputType(InitCodeOutputType.SingleObject);
   }
 
@@ -96,6 +102,8 @@ public abstract class InitCodeContext {
     public abstract Builder initFieldConfigStrings(Iterable<String> configStrings);
 
     public abstract Builder initValueConfigMap(Map<String, InitValueConfig> configMap);
+
+    public abstract Builder fieldConfigMap(ImmutableMap<String, FieldConfig> fieldConfigMap);
 
     public abstract Builder additionalInitCodeNodes(Iterable<InitCodeNode> additionalNodes);
 
