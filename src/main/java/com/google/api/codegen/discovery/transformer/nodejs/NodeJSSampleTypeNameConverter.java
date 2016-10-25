@@ -23,9 +23,7 @@ import com.google.protobuf.Field;
 
 public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
 
-  /**
-   * A map from primitive types in proto to NodeJS counterparts.
-   */
+  /** A map from primitive types in proto to NodeJS counterparts. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "boolean")
@@ -39,9 +37,7 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_ENUM, "String")
           .build();
 
-  /**
-   * A map from primitive types in proto to zero value in NodeJS
-   */
+  /** A map from primitive types in proto to zero value in NodeJS */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "false")

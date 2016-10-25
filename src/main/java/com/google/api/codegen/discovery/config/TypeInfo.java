@@ -24,48 +24,33 @@ import javax.annotation.Nullable;
 @JsonDeserialize(builder = AutoValue_TypeInfo.Builder.class)
 public abstract class TypeInfo {
 
-  /**
-   * Returns this type's kind.
-   */
+  /** Returns this type's kind. */
   @JsonProperty("kind")
   public abstract Field.Kind kind();
 
-  /**
-   * Returns true if this type is a map.
-   */
+  /** Returns true if this type is a map. */
   @JsonProperty("isMap")
   public abstract boolean isMap();
 
-  /**
-   * Returns the type for the key of a map type, and null if this type is not a map.
-   */
+  /** Returns the type for the key of a map type, and null if this type is not a map. */
   @JsonProperty("mapKey")
   @Nullable
   public abstract TypeInfo mapKey();
 
-  /**
-   * Returns the type for the value of a map type, and null if this type is not a
-   * map.
-   */
+  /** Returns the type for the value of a map type, and null if this type is not a map. */
   @Nullable
   @JsonProperty("mapValue")
   public abstract TypeInfo mapValue();
 
-  /**
-   * Returns true if this type is an array.
-   */
+  /** Returns true if this type is an array. */
   @JsonProperty("isArray")
   public abstract boolean isArray();
 
-  /**
-   * Returns true if this type is a message.
-   */
+  /** Returns true if this type is a message. */
   @JsonProperty("isMessage")
   public abstract boolean isMessage();
 
-  /**
-   * Returns the type for a message, and null if this type is not a message.
-   */
+  /** Returns the type for a message, and null if this type is not a message. */
   @JsonProperty("message")
   @Nullable
   public abstract MessageTypeInfo message();
@@ -75,7 +60,7 @@ public abstract class TypeInfo {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     @JsonProperty("kind")
     public abstract Builder kind(Field.Kind val);

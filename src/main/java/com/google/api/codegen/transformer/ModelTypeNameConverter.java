@@ -19,40 +19,30 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
-/**
- * ModelTypeNameConverter maps TypeRef instances to TypeName instances.
- */
+/** ModelTypeNameConverter maps TypeRef instances to TypeName instances. */
 public interface ModelTypeNameConverter {
-  /**
-   * Provides a TypeName for the given TypeRef.
-   */
+  /** Provides a TypeName for the given TypeRef. */
   TypeName getTypeName(TypeRef type);
 
-  /**
-   * Provides a TypeName for the element type of the given TypeRef.
-   */
+  /** Provides a TypeName for the element type of the given TypeRef. */
   TypeName getTypeNameForElementType(TypeRef type);
 
   /** Provides a TypeName for the given ProtoElement and ResourceName type */
   TypeName getTypeNameForTypedResourceName(
       ProtoElement field, TypeRef type, String typedResourceShortName);
 
-  /**
-   * Provides a TypeName for the given ProtoElement.
-   */
+  /** Provides a TypeName for the given ProtoElement. */
   TypeName getTypeName(ProtoElement elem);
 
   /** Provides a TypeName for the given short name, using the default package. */
   TypeName getTypeNameInImplicitPackage(String shortName);
 
   /**
-   * Provides a TypedValue containing the zero value of the given
-   * type, plus the TypeName of the type.
+   * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
+   * type.
    */
   TypedValue getZeroValue(TypeRef type);
 
-  /**
-   * Renders the given value if it is a primitive type.
-   */
+  /** Renders the given value if it is a primitive type. */
   String renderPrimitiveValue(TypeRef type, String value);
 }

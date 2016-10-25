@@ -19,7 +19,6 @@ import com.google.api.codegen.viewmodel.IamResourceView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.TypeRef;
-
 import java.util.ArrayList;
 import java.util.List;
 

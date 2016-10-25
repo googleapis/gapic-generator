@@ -32,7 +32,7 @@ public abstract class PathTemplateCheckView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder pathTemplateName(String val);
 
     public abstract Builder paramName(String val);

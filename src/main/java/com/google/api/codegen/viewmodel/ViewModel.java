@@ -14,10 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
-/**
- * Represents a node of a view model that can be rendered by a template
- * engine.
- */
+/** Represents a node of a view model that can be rendered by a template engine. */
 public interface ViewModel {
 
   String resourceRoot();

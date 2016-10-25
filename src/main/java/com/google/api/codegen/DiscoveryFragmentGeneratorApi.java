@@ -14,20 +14,6 @@
  */
 package com.google.api.codegen;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.discovery.DiscoveryProvider;
@@ -48,10 +34,19 @@ import com.google.inject.TypeLiteral;
 import com.google.protobuf.Api;
 import com.google.protobuf.Message;
 import com.google.protobuf.Method;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Nullable;
 
-/**
- * Main class for the discovery doc fragment generator.
- */
+/** Main class for the discovery doc fragment generator. */
 public class DiscoveryFragmentGeneratorApi {
   public static final Option<String> DISCOVERY_DOC =
       ToolOptions.createOption(
@@ -88,9 +83,7 @@ public class DiscoveryFragmentGeneratorApi {
   private final ToolOptions options;
   private final String dataPath;
 
-  /**
-   * Constructs a discovery doc fragment generator API based on given options.
-   */
+  /** Constructs a discovery doc fragment generator API based on given options. */
   public DiscoveryFragmentGeneratorApi(ToolOptions options) {
     this.options = options;
     this.dataPath = getDataPath();

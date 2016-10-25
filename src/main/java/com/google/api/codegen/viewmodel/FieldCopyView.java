@@ -28,7 +28,7 @@ public abstract class FieldCopyView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder fieldSetFunction(String val);
 
     public abstract Builder fieldGetFunction(String val);

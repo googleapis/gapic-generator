@@ -20,13 +20,10 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.protobuf.Api;
 import com.google.protobuf.Method;
-
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * Common DiscoveryProvider which runs code generation.
- */
+/** Common DiscoveryProvider which runs code generation. */
 public class CommonDiscoveryProvider implements DiscoveryProvider {
   private final DiscoveryContext context;
   private final SnippetSetRunner.Generator<Method> generator;

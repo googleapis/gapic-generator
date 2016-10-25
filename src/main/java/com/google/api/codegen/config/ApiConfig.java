@@ -25,26 +25,17 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
-
-import java.util.Map;
-
 import javax.annotation.Nullable;
 
-/**
- * ApiConfig represents the code-gen config for an API library.
- */
+/** ApiConfig represents the code-gen config for an API library. */
 @com.google.auto.value.AutoValue
 public abstract class ApiConfig {
   abstract ImmutableMap<String, InterfaceConfig> getInterfaceConfigMap();
 
-  /**
-   * Returns the package name.
-   */
+  /** Returns the package name. */
   public abstract String getPackageName();
 
-  /**
-   * Returns the location of the domain layer, if any.
-   */
+  /** Returns the location of the domain layer, if any. */
   public abstract String getDomainLayerLocation();
 
   /**
@@ -69,9 +60,7 @@ public abstract class ApiConfig {
     }
   }
 
-  /**
-   * Creates an ApiConfig with no content. Exposed for testing.
-   */
+  /** Creates an ApiConfig with no content. Exposed for testing. */
   @VisibleForTesting
   public static ApiConfig createDummyApiConfig() {
     return new AutoValue_ApiConfig(ImmutableMap.<String, InterfaceConfig>builder().build(), "", "");
@@ -116,9 +105,7 @@ public abstract class ApiConfig {
     }
   }
 
-  /**
-   * Returns the InterfaceConfig for the given API interface.
-   */
+  /** Returns the InterfaceConfig for the given API interface. */
   public InterfaceConfig getInterfaceConfig(Interface iface) {
     return getInterfaceConfigMap().get(iface.getFullName());
   }

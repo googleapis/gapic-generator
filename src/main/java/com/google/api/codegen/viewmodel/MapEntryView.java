@@ -29,7 +29,7 @@ public abstract class MapEntryView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder key(String key);
 
     public abstract Builder valueString(String value);

@@ -20,12 +20,9 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.TreeSet;
 
-/**
- * A CSharpProvider provides general CSharp code generation logic.
- */
+/** A CSharpProvider provides general CSharp code generation logic. */
 public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
   private final String resourceRoot;

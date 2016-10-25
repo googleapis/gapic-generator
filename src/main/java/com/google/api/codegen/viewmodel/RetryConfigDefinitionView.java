@@ -16,7 +16,6 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.gax.core.RetrySettings;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
 
 @AutoValue
@@ -33,7 +32,7 @@ public abstract class RetryConfigDefinitionView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder name(Name val);
 
@@ -45,7 +44,7 @@ public abstract class RetryConfigDefinitionView {
   }
 
   @AutoValue
-  public static abstract class Name implements Comparable<Name> {
+  public abstract static class Name implements Comparable<Name> {
     public abstract String retrySettingsConfigName();
 
     public abstract String retryCodesConfigName();

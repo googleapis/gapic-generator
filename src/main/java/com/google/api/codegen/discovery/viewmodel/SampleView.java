@@ -14,13 +14,11 @@
  */
 package com.google.api.codegen.discovery.viewmodel;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SampleView implements ViewModel {
@@ -120,7 +118,7 @@ public abstract class SampleView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder templateFileName(String val);
 

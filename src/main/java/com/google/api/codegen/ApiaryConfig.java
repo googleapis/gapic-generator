@@ -14,13 +14,6 @@
  */
 package com.google.api.codegen;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nullable;
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
@@ -29,32 +22,30 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Table;
 import com.google.protobuf.Field;
 import com.google.protobuf.Type;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
- * ApiaryConfig contains additional information about discovery docs parsed by
- * {@link DiscoveryImporter} that do not easily fit into {@link com.google.api.Service} itself.
+ * ApiaryConfig contains additional information about discovery docs parsed by {@link
+ * DiscoveryImporter} that do not easily fit into {@link com.google.api.Service} itself.
  */
 public class ApiaryConfig {
-  /**
-   * Maps method name to an ordered list of parameters that the method takes.
-   */
+  /** Maps method name to an ordered list of parameters that the method takes. */
   private final ListMultimap<String, String> methodParams =
       ArrayListMultimap.<String, String>create();
 
-  /**
-   * Maps (type name, field name) to textual description of that field.
-   */
+  /** Maps (type name, field name) to textual description of that field. */
   private final Table<String, String, String> fieldDescription =
       HashBasedTable.<String, String, String>create();
 
-  /**
-   * Maps method name to its HTTP method kind.
-   */
+  /** Maps method name to its HTTP method kind. */
   private final Map<String, String> fieldHttpMethod = new HashMap<String, String>();
 
-  /**
-   * Maps method name to an ordered list of resources comprising the method namespace.
-   */
+  /** Maps method name to an ordered list of resources comprising the method namespace. */
   private final ListMultimap<String, String> resources = ArrayListMultimap.<String, String>create();
 
   /**
@@ -65,9 +56,9 @@ public class ApiaryConfig {
       HashBasedTable.<String, String, Boolean>create();
 
   /**
-   * Specifies the format of each field. A pair (type name, field name) is in this table if the
-   * type of the field is "string" and specific format is given in the discovery doc. The format is
-   * one of {"int64", "uint64", "byte", "date", "date-time"}. Note: other string formats from the
+   * Specifies the format of each field. A pair (type name, field name) is in this table if the type
+   * of the field is "string" and specific format is given in the discovery doc. The format is one
+   * of {"int64", "uint64", "byte", "date", "date-time"}. Note: other string formats from the
    * discovery doc are encoded as types in the Service.
    */
   private final Table<String, String, String> stringFormat =
@@ -80,24 +71,16 @@ public class ApiaryConfig {
   private final Table<String, String, String> pattern =
       HashBasedTable.<String, String, String>create();
 
-  /**
-   * Records whether or not the method allows media upload.
-   */
+  /** Records whether or not the method allows media upload. */
   private final Set<String> mediaUpload = new HashSet<>();
 
-  /**
-   * Records whether or not the method allows media download.
-   */
+  /** Records whether or not the method allows media download. */
   private final Set<String> mediaDownload = new HashSet<>();
 
-  /**
-   * Maps type name to type (from {@link DiscoveryImporter}).
-   */
+  /** Maps type name to type (from {@link DiscoveryImporter}). */
   private final Map<String, Type> types = new HashMap<>();
 
-  /**
-   * Maps (type, field name) to field.
-   */
+  /** Maps (type, field name) to field. */
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
 
   /*
@@ -116,29 +99,22 @@ public class ApiaryConfig {
   private String apiVersion;
 
   /**
-   * Maps method name to set of auth scope URLs, e.g., https://www.googleapis.com/auth/cloud-platform.
+   * Maps method name to set of auth scope URLs, e.g.,
+   * https://www.googleapis.com/auth/cloud-platform.
    */
   private final ListMultimap<String, String> authScopes =
       ArrayListMultimap.<String, String>create();
 
-  /**
-   * The service canonical name, or name if no canonical name.
-   */
+  /** The service canonical name, or name if no canonical name. */
   private String serviceCanonicalName;
 
-  /**
-   * The service version string.
-   */
+  /** The service version string. */
   private String serviceVersion;
 
-  /**
-   * The auth instructions URL.
-   */
+  /** The auth instructions URL. */
   private String authInstructionsUrl;
 
-  /**
-   * Maps API names to an AuthType override.
-   */
+  /** Maps API names to an AuthType override. */
   private Map<String, AuthType> authOverrides = new HashMap<>();
 
   /**
@@ -148,9 +124,7 @@ public class ApiaryConfig {
   private static final String CLOUD_PLATFORM_SCOPE =
       "https://www.googleapis.com/auth/cloud-platform";
 
-  /**
-   * Returns the auth type supported by the service.
-   */
+  /** Returns the auth type supported by the service. */
   public AuthType getAuthType() {
     String key = getServiceCanonicalName();
     if (!Strings.isNullOrEmpty(key) && authOverrides.containsKey(key)) {
@@ -263,73 +237,53 @@ public class ApiaryConfig {
     this.authInstructionsUrl = authInstructionsUrl;
   }
 
-  /**
-   * @return the ordered list of parameters accepted by the given method
-   */
+  /** @return the ordered list of parameters accepted by the given method */
   public List<String> getMethodParams(String methodName) {
     return methodParams.get(methodName);
   }
 
-  /**
-   * @return the textual description corresponding to the given type name and field name
-   */
+  /** @return the textual description corresponding to the given type name and field name */
   public String getDescription(String typeName, String fieldName) {
     return fieldDescription.get(typeName, fieldName);
   }
 
-  /**
-   * @return the HTTP method kind corresponding to the given type name and field name
-   */
+  /** @return the HTTP method kind corresponding to the given type name and field name */
   public String getHttpMethod(String methodName) {
     return fieldHttpMethod.get(methodName);
   }
 
-  /**
-   * @return the ordered list of resources comprising the namespace of the given method
-   */
+  /** @return the ordered list of resources comprising the namespace of the given method */
   public List<String> getResources(String methodName) {
     return resources.get(methodName);
   }
 
-  /**
-   * @return true if the given type name and field name appear as "additionalProperties"
-   */
+  /** @return true if the given type name and field name appear as "additionalProperties" */
   @Nullable
   public Boolean getAdditionalProperties(String typeName, String fieldName) {
     return additionalProperties.get(typeName, fieldName);
   }
 
-  /**
-   * @return the string format corresponding to the given type name and field name
-   */
+  /** @return the string format corresponding to the given type name and field name */
   public String getStringFormat(String typeName, String fieldName) {
     return stringFormat.get(typeName, fieldName);
   }
 
-  /**
-   * @return type with given name
-   */
+  /** @return type with given name */
   public Type getType(String typeName) {
     return types.get(typeName);
   }
 
-  /**
-   * @return field of given type with given field name
-   */
+  /** @return field of given type with given field name */
   public Field getField(Type type, String fieldName) {
     return fields.get(type, fieldName);
   }
 
-  /**
-   * @return true if method has any auth scopes
-   */
+  /** @return true if method has any auth scopes */
   public boolean hasAuthScopes(String methodName) {
     return authScopes.containsKey(methodName);
   }
 
-  /**
-   * @return list of auth scopes for method of given name
-   */
+  /** @return list of auth scopes for method of given name */
   public List<String> getAuthScopes(String methodName) {
     return authScopes.get(methodName);
   }

@@ -14,23 +14,15 @@
  */
 package com.google.api.codegen.util;
 
-/**
- * A TypeNameConverter maps Strings to TypeName instances.
- */
+/** A TypeNameConverter maps Strings to TypeName instances. */
 public interface TypeNameConverter {
-  /**
-   * Maps the given fullName to a TypeName.
-   */
+  /** Maps the given fullName to a TypeName. */
   TypeName getTypeName(String fullName);
 
-  /**
-   * Maps the given short name to a TypeName, using the default package.
-   */
+  /** Maps the given short name to a TypeName, using the default package. */
   TypeName getTypeNameInImplicitPackage(String shortName);
 
-  /**
-   * Maps the given fullName to a NamePath.
-   */
+  /** Maps the given fullName to a NamePath. */
   NamePath getNamePath(String fullName);
 
   /** Creates a TypeName for the container type and element type. */

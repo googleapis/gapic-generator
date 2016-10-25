@@ -14,15 +14,14 @@
  */
 package com.google.api.codegen.discovery.config.java;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.api.client.util.Strings;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JavaTypeNameGenerator implements TypeNameGenerator {
 

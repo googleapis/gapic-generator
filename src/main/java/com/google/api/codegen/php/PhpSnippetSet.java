@@ -16,23 +16,17 @@ package com.google.api.codegen.php;
 
 import com.google.api.tools.framework.snippet.Doc;
 
-/**
- * Entry points for a PHP snippet set.
- */
+/** Entry points for a PHP snippet set. */
 interface PhpSnippetSet<Element> {
-  /**
-   * Generates the result filename for the generated document.
-   */
+  /** Generates the result filename for the generated document. */
   Doc generateFilename(Element element);
 
-  /**
-   * Generates the body of the class for the service interface.
-   */
+  /** Generates the body of the class for the service interface. */
   Doc generateBody(Element element);
 
   /**
-   * Generates the result class, based on the result for the body, and a set of accumulated types
-   * to be imported.
+   * Generates the result class, based on the result for the body, and a set of accumulated types to
+   * be imported.
    */
   Doc generateClass(Element element, Doc body, Iterable<String> imports);
 }

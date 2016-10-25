@@ -15,16 +15,13 @@
 package com.google.api.codegen.util;
 
 import com.google.api.client.util.Joiner;
-import com.google.api.codegen.util.CommonAcronyms.SubNamePiece;
 import com.google.api.codegen.util.CommonAcronyms.NamePieceCasingType;
+import com.google.api.codegen.util.CommonAcronyms.SubNamePiece;
 import com.google.common.base.CaseFormat;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Name represents an identifier name which is casing-aware.
- */
+/** Name represents an identifier name which is casing-aware. */
 public class Name {
   private List<NamePiece> namePieces;
 
@@ -32,7 +29,7 @@ public class Name {
    * Creates a Name from a sequence of lower-underscore strings.
    *
    * @throws IllegalArgumentException if any of the strings contain any characters that are not
-   * lower case or underscores.
+   *     lower case or underscores.
    */
   public static Name from(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
@@ -47,7 +44,7 @@ public class Name {
    * Creates a Name from a sequence of upper-underscore strings.
    *
    * @throws IllegalArgumentException if any of the strings contain any characters that are not
-   * upper case or underscores.
+   *     upper case or underscores.
    */
   public static Name upperUnderscore(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
@@ -181,16 +178,12 @@ public class Name {
     this.namePieces = namePieces;
   }
 
-  /**
-   * Returns the identifier in upper-underscore format.
-   */
+  /** Returns the identifier in upper-underscore format. */
   public String toUpperUnderscore() {
     return toUnderscore(CaseFormat.UPPER_UNDERSCORE);
   }
 
-  /**
-   * Returns the identifier in lower-underscore format.
-   */
+  /** Returns the identifier in lower-underscore format. */
   public String toLowerUnderscore() {
     return toUnderscore(CaseFormat.LOWER_UNDERSCORE);
   }
@@ -203,16 +196,12 @@ public class Name {
     return Joiner.on('_').join(newPieces);
   }
 
-  /**
-   * Returns the identifier in lower-camel format.
-   */
+  /** Returns the identifier in lower-camel format. */
   public String toLowerCamel() {
     return toCamel(CaseFormat.LOWER_CAMEL);
   }
 
-  /**
-   * Returns the identifier in upper-camel format.
-   */
+  /** Returns the identifier in upper-camel format. */
   public String toUpperCamel() {
     return toCamel(CaseFormat.UPPER_CAMEL);
   }
@@ -235,16 +224,14 @@ public class Name {
     return buffer.toString();
   }
 
-  /**
-   * Returns the name in human readable form, useful in comments.
-   */
+  /** Returns the name in human readable form, useful in comments. */
   public String toPhrase() {
     return toLowerUnderscore().replace('_', ' ');
   }
 
   /**
-   * Returns a new Name containing the pieces from this Name plus the given
-   * identifier added on the end.
+   * Returns a new Name containing the pieces from this Name plus the given identifier added on the
+   * end.
    */
   public Name join(String identifier) {
     validateLowerUnderscore(identifier);
@@ -255,8 +242,8 @@ public class Name {
   }
 
   /**
-   * Returns a new Name containing the pieces from this Name plus the pieces of the given
-   * name added on the end.
+   * Returns a new Name containing the pieces from this Name plus the pieces of the given name added
+   * on the end.
    */
   public Name join(Name rhs) {
     List<NamePiece> newPieceList = new ArrayList<>();

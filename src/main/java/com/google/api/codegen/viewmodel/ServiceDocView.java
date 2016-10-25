@@ -15,9 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -45,7 +43,7 @@ public abstract class ServiceDocView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder firstLine(String val);
 
     public abstract Builder remainingLines(List<String> val);

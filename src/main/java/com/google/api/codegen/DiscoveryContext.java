@@ -14,47 +14,37 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.Service;
 import com.google.api.client.util.DateTime;
 import com.google.api.codegen.discovery.DefaultString;
-import com.google.api.Service;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.protobuf.Api;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
-/**
- * A CodegenContext that provides helpers specific to the Discovery use case.
- */
+/** A CodegenContext that provides helpers specific to the Discovery use case. */
 public abstract class DiscoveryContext extends CodegenContext {
 
   private final Service service;
   private final ApiaryConfig apiaryConfig;
 
-  /**
-   * Constructs an abstract instance.
-   */
+  /** Constructs an abstract instance. */
   protected DiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     this.service = Preconditions.checkNotNull(service);
     this.apiaryConfig = Preconditions.checkNotNull(apiaryConfig);
   }
 
-  /**
-   * Returns the associated service.
-   */
+  /** Returns the associated service. */
   public Service getService() {
     return service;
   }
 
-  /**
-   * Returns the associated config.
-   */
+  /** Returns the associated config. */
   public ApiaryConfig getApiaryConfig() {
     return apiaryConfig;
   }
@@ -73,9 +63,7 @@ public abstract class DiscoveryContext extends CodegenContext {
     return service.getDocumentation().getOverview();
   }
 
-  /**
-   * Returns the simple name of the method with given ID.
-   */
+  /** Returns the simple name of the method with given ID. */
   public String getMethodName(Method method) {
     return getSimpleName(method.getName());
   }
@@ -87,15 +75,13 @@ public abstract class DiscoveryContext extends CodegenContext {
   /**
    * Returns a sample identifier name for a variable of the given type name.
    *
-   * May be overridden by individual language contexts.
+   * <p>May be overridden by individual language contexts.
    */
   public String getSampleVarName(String typeName) {
     return upperCamelToLowerCamel(getSimpleName(typeName));
   }
 
-  /**
-   * Returns a name for a type's field's type.
-   */
+  /** Returns a name for a type's field's type. */
   public String typeName(Type type, Field field, String name) {
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       if (isMapField(type, field.getName())) {
@@ -115,7 +101,7 @@ public abstract class DiscoveryContext extends CodegenContext {
   /**
    * Returns a name for an array field's type.
    *
-   * May be overridden by individual language contexts.
+   * <p>May be overridden by individual language contexts.
    */
   protected String arrayTypeName(Field field) {
     return arrayTypeName(elementTypeName(field));
@@ -128,7 +114,7 @@ public abstract class DiscoveryContext extends CodegenContext {
   /**
    * Returns a name for a map field's type.
    *
-   * May be overridden by individual language contexts.
+   * <p>May be overridden by individual language contexts.
    */
   protected String mapTypeName(Field field) {
     return mapTypeName(keyTypeName(field), valueTypeName(field));
@@ -141,7 +127,7 @@ public abstract class DiscoveryContext extends CodegenContext {
   /**
    * Returns a name for an object field's type.
    *
-   * May be overridden by individual language contexts.
+   * <p>May be overridden by individual language contexts.
    */
   public String objectTypeName(Field field) {
     return objectTypeName(field.getTypeUrl());
@@ -154,15 +140,13 @@ public abstract class DiscoveryContext extends CodegenContext {
   /**
    * Returns a name for a natively-typed field's type.
    *
-   * May be overridden by individual language contexts.
+   * <p>May be overridden by individual language contexts.
    */
   protected String nativeTypeName(Type type, Field field, String name) {
     return name;
   }
 
-  /**
-   * Returns a name for an array field element's type.
-   */
+  /** Returns a name for an array field element's type. */
   public String elementTypeName(Field field) {
     Type items = getApiaryConfig().getType(field.getTypeUrl());
     if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
@@ -179,23 +163,19 @@ public abstract class DiscoveryContext extends CodegenContext {
   /**
    * Returns a name for a natively-typed array field element's type.
    *
-   * May be overridden by individual language contexts.
+   * <p>May be overridden by individual language contexts.
    */
   protected String nativeElementTypeName(Field field) {
     return "item";
   }
 
-  /**
-   * Returns a name for a map field key's type.
-   */
+  /** Returns a name for a map field key's type. */
   public String keyTypeName(Field field) {
     Type items = getApiaryConfig().getType(field.getTypeUrl());
     return typeName(items, getField(items, "key"), "name");
   }
 
-  /**
-   * Returns a name for a map field value's type.
-   */
+  /** Returns a name for a map field value's type. */
   public String valueTypeName(Field field) {
     Type items = getApiaryConfig().getType(field.getTypeUrl());
     return typeName(items, getField(items, "value"), "value");
@@ -337,9 +317,7 @@ public abstract class DiscoveryContext extends CodegenContext {
     return new DefaultString(stringLiteral(def), sample);
   }
 
-  /**
-   * Returns the sample string for the given type and field.
-   */
+  /** Returns the sample string for the given type and field. */
   public String getDefaultSample(Type type, Field field) {
     String sample = getDefaultString(type, field).getComment();
     if (Strings.isNullOrEmpty(sample)) {
@@ -349,8 +327,8 @@ public abstract class DiscoveryContext extends CodegenContext {
   }
 
   /**
-   * Returns description of type's field from {@link ApiaryConfig}, or field's name if no description
-   * is available.
+   * Returns description of type's field from {@link ApiaryConfig}, or field's name if no
+   * description is available.
    */
   public String getDescription(String typeName, String fieldName) {
     String description = apiaryConfig.getDescription(typeName, fieldName);

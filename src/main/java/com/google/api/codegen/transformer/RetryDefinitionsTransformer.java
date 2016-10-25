@@ -24,9 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-/**
- * RetryDefinitionsTransformer generates retry definitions from a service model.
- */
+/** RetryDefinitionsTransformer generates retry definitions from a service model. */
 public class RetryDefinitionsTransformer {
 
   public List<RetryCodesDefinitionView> generateRetryCodesDefinitions(

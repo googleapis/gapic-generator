@@ -21,12 +21,9 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Strings;
-
 import javax.annotation.Nullable;
 
-/**
- * PageStreamingConfig represents the page streaming configuration for a method.
- */
+/** PageStreamingConfig represents the page streaming configuration for a method. */
 public class PageStreamingConfig {
   private final Field requestTokenField;
   private final Field pageSizeField;
@@ -35,9 +32,8 @@ public class PageStreamingConfig {
 
   /**
    * Creates an instance of PageStreamingConfig based on PageStreamingConfigProto, linking it up
-   * with the provided method. On errors, null will be returned, and diagnostics are reported to
-   * the diag collector.
-   *
+   * with the provided method. On errors, null will be returned, and diagnostics are reported to the
+   * diag collector.
    */
   @Nullable
   public static PageStreamingConfig createPageStreaming(
@@ -113,16 +109,12 @@ public class PageStreamingConfig {
     this.resourcesField = resourcesField;
   }
 
-  /**
-   * Returns the field used in the request to hold the page token.
-   */
+  /** Returns the field used in the request to hold the page token. */
   public Field getRequestTokenField() {
     return requestTokenField;
   }
 
-  /**
-   * Returns whether there is a field for page size.
-   */
+  /** Returns whether there is a field for page size. */
   public boolean hasPageSizeField() {
     return pageSizeField != null;
   }
@@ -136,16 +128,12 @@ public class PageStreamingConfig {
     return pageSizeField;
   }
 
-  /**
-   * Returns the field used in the response to hold the next page token.
-   */
+  /** Returns the field used in the response to hold the next page token. */
   public Field getResponseTokenField() {
     return responseTokenField;
   }
 
-  /**
-   * Returns the field used in the response to hold the resource being returned.
-   */
+  /** Returns the field used in the response to hold the resource being returned. */
   public Field getResourcesField() {
     return resourcesField;
   }

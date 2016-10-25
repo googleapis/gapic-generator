@@ -15,14 +15,12 @@
 package com.google.api.codegen.util;
 
 /**
- * NameFormatterDelegator is an abstract class that implements the NameFormatter
- * interface and simply delegates calls to another NameFormatter. This allows a
- * child class to provide the interface of NameFormatter along with additional
- * functionality.
+ * NameFormatterDelegator is an abstract class that implements the NameFormatter interface and
+ * simply delegates calls to another NameFormatter. This allows a child class to provide the
+ * interface of NameFormatter along with additional functionality.
  *
- * Note to future maintainers: This class should only contain methods which
- * forward on to NameFormatter and nothing else; otherwise, it is no longer
- * functioning in spirit as a mix-in.
+ * <p>Note to future maintainers: This class should only contain methods which forward on to
+ * NameFormatter and nothing else; otherwise, it is no longer functioning in spirit as a mix-in.
  */
 public abstract class NameFormatterDelegator implements NameFormatter {
 

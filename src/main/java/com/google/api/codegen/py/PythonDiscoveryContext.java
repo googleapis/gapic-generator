@@ -22,17 +22,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
 import java.util.List;
 
-/**
- * A DiscoveryContext specialized for Python.
- */
+/** A DiscoveryContext specialized for Python. */
 public class PythonDiscoveryContext extends DiscoveryContext {
 
-  /**
-   * A map from primitive field types used by DiscoveryImporter to Python counterparts.
-   */
+  /** A map from primitive field types used by DiscoveryImporter to Python counterparts. */
   private static final ImmutableMap<Field.Kind, String> FIELD_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_UNKNOWN, "dict")
@@ -48,9 +43,7 @@ public class PythonDiscoveryContext extends DiscoveryContext {
           .put(Field.Kind.TYPE_ENUM, "str")
           .build();
 
-  /**
-   * A map from Python native type name to corresponding default value.
-   */
+  /** A map from Python native type name to corresponding default value. */
   private static final ImmutableMap<String, String> NATIVE_DEFAULT_MAP =
       ImmutableMap.<String, String>builder()
           .put("dict", "{}")
@@ -65,9 +58,7 @@ public class PythonDiscoveryContext extends DiscoveryContext {
 
   private final PythonContextCommon pythonCommon;
 
-  /**
-   * Constructs the Python discovery context.
-   */
+  /** Constructs the Python discovery context. */
   public PythonDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
     pythonCommon = new PythonContextCommon();

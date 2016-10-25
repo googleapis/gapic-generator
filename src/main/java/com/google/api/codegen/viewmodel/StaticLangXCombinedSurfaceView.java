@@ -16,8 +16,6 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
-
-import java.util.Collection;
 import java.util.List;
 
 @AutoValue
@@ -80,7 +78,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 

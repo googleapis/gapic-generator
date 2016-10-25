@@ -16,9 +16,7 @@ package com.google.api.codegen;
 
 import java.util.Comparator;
 
-/**
- * A comparator for GeneratedResult for, e.g., ensuring determinism in test output.
- */
+/** A comparator for GeneratedResult for, e.g., ensuring determinism in test output. */
 public class GeneratedResultComparator implements Comparator<GeneratedResult> {
 
   @Override

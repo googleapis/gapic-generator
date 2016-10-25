@@ -15,7 +15,6 @@
 package com.google.api.codegen.util;
 
 import com.google.common.truth.Truth;
-
 import org.junit.Test;
 
 public class NamePathTest {

@@ -15,20 +15,17 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
-import com.google.api.codegen.DiscoveryImporter;
 import com.google.common.truth.Truth;
 import com.google.protobuf.Api;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import org.junit.Test;
 
 public class DiscoveryImporterTest {
   private static Reader getReader(String file) throws IOException {

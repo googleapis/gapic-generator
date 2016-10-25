@@ -16,16 +16,13 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.sync.Synchronizer;
 import com.google.api.tools.framework.tools.ToolOptions;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-/**
- * Implementation of a synchronizer tool that handles code merge.
- */
+/** Implementation of a synchronizer tool that handles code merge. */
 public class SynchronizerTool {
   public static void main(String[] args) throws Exception {
     Options options = new Options();

@@ -14,16 +14,15 @@
  */
 package com.google.api.codegen.util.go;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GoTypeTable implements TypeTable {
 
@@ -121,8 +120,7 @@ public class GoTypeTable implements TypeTable {
   }
 
   /**
-   * A set of Go reserved identifiers. See
-   * https://golang.org/ref/spec#Keywords
+   * A set of Go reserved identifiers. See https://golang.org/ref/spec#Keywords
    * https://golang.org/ref/spec#Predeclared_identifiers
    */
   public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
