@@ -101,7 +101,7 @@ public abstract class DocConfig {
       ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
       for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
         CollectionConfig collectionConfig =
-            context.getCollectionConfig(service, fieldNamePattern.getValue());
+            context.getCollectionConfig(fieldNamePattern.getValue());
         InitValueConfig initValueConfig =
             InitValueConfig.create(context.getApiWrapperName(service), collectionConfig);
         initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);

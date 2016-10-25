@@ -118,11 +118,11 @@ public abstract class SurfaceTransformerContext {
   }
 
   public Collection<CollectionConfig> getCollectionConfigs() {
-    return getInterfaceConfig().getCollectionConfigs();
+    return getApiConfig().getCollectionConfigs();
   }
 
   public CollectionConfig getCollectionConfig(String entityName) {
-    return getInterfaceConfig().getCollectionConfig(entityName);
+    return getApiConfig().getCollectionConfig(entityName);
   }
 
   public MethodTransformerContext asFlattenedMethodContext(

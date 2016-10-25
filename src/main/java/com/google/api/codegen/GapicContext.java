@@ -78,9 +78,8 @@ public class GapicContext extends CodegenContext {
   }
 
   /** Get collection configuration for a method. */
-  public CollectionConfig getCollectionConfig(Interface service, String entityName) {
-    CollectionConfig result =
-        getApiConfig().getInterfaceConfig(service).getCollectionConfig(entityName);
+  public CollectionConfig getCollectionConfig(String entityName) {
+    CollectionConfig result = getApiConfig().getCollectionConfig(entityName);
     if (result == null) {
       throw new IllegalStateException(
           "A collection config was not present for entity name " + entityName);
