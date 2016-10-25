@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.tools.framework.model.Field;
@@ -41,7 +43,7 @@ public class InitCodeNode {
   private InitValueConfig initValueConfig;
   private Map<String, InitCodeNode> children;
   private TypeRef typeRef;
-  private Field nodeField;
+  private FieldConfig nodeFieldConfig;
   private Name identifier;
 
   // TODO(michaelbausor): delete this field once DocConfig is no longer used (when python converts
@@ -94,11 +96,11 @@ public class InitCodeNode {
   }
 
   /*
-   * Get the Field of the node. Nodes that are children of Map or List nodes will share the same
-   * field as their parent.
+   * Get the FieldConfig of the node. Nodes that are children of Map or List nodes will share the
+   * same field config as their parent.
    */
-  public Field getField() {
-    return nodeField;
+  public FieldConfig getFieldConfig() {
+    return nodeFieldConfig;
   }
 
   /*
@@ -245,7 +247,7 @@ public class InitCodeNode {
   }
 
   private void resolveNamesAndTypes(
-      InitCodeContext context, TypeRef type, Name suggestedName, Field field) {
+      InitCodeContext context, TypeRef type, Name suggestedName, FieldConfig fieldConfig) {
 
     for (InitCodeNode child : children.values()) {
       validateKeyValue(type, child.key);
@@ -253,7 +255,7 @@ public class InitCodeNode {
           context,
           getChildType(type, child.key),
           getChildSuggestedName(suggestedName, lineType, child),
-          getChildField(field, type, child.key));
+          getChildFieldConfig(context.fieldConfigMap(), fieldConfig, type, child.key));
     }
 
     SymbolTable table = context.symbolTable();
@@ -261,7 +263,7 @@ public class InitCodeNode {
 
     validateType(lineType, type, children.keySet());
     typeRef = type;
-    nodeField = field;
+    nodeFieldConfig = fieldConfig;
     identifier = table.getNewSymbol(suggestedName);
 
     if (children.size() == 0) {
@@ -426,15 +428,23 @@ public class InitCodeNode {
     }
   }
 
-  private static Field getChildField(Field parentField, TypeRef parentType, String key) {
+  private static FieldConfig getChildFieldConfig(
+      Map<String, FieldConfig> fieldConfigMap,
+      FieldConfig parentFieldConfig,
+      TypeRef parentType,
+      String key) {
     if (parentType.isMap()) {
-      return parentField;
+      return parentFieldConfig;
     } else if (parentType.isRepeated()) {
-      return parentField;
+      return parentFieldConfig;
     } else if (parentType.isMessage()) {
       for (Field field : parentType.getMessageType().getFields()) {
         if (field.getSimpleName().equals(key)) {
-          return field;
+          FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
+          if (fieldConfig == null) {
+            fieldConfig = ResourceNameUtil.createFieldConfig(field);
+          }
+          return fieldConfig;
         }
       }
       throw new IllegalArgumentException(

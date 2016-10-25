@@ -39,7 +39,7 @@ public class BundlingTransformer {
       if (!methodConfig.isBundling()) {
         continue;
       }
-      descriptors.add(generateDescriptorClass(context.asMethodContext(method)));
+      descriptors.add(generateDescriptorClass(context.asRequestMethodContext(method)));
     }
 
     return descriptors;

@@ -60,7 +60,7 @@ public class ImportTypeTransformer {
     fullNames.add(getFileImport(context.getInterface(), namer, importFileType));
 
     for (Method method : context.getSupportedMethods()) {
-      Interface targetInterface = context.asMethodContext(method).getTargetInterface();
+      Interface targetInterface = context.asRequestMethodContext(method).getTargetInterface();
       fullNames.add(getFileImport(targetInterface, namer, importFileType));
     }
 
