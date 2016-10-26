@@ -479,6 +479,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
         Name.from("method").join(Name.upperCamelKeepUpperAcronyms(method.getSimpleName())));
   }
 
+  /** The variable name of the rerouted gRPC client. Used in C# */
+  public String getReroutedGrpcClientVarName(MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getGrpcClientName");
+  }
+
+  /** The method name to create a rerouted gRPC client. Used in C# */
+  public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getReroutedGrpcMethodName");
+  }
+
   /** The name of the surface method which can call the given API method. */
   public String getApiMethodName(Method method, VisibilityConfig visibility) {
     return visibility.methodName(this, Name.upperCamel(method.getSimpleName()));

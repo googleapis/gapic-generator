@@ -100,7 +100,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
 
     snippetsBuilder.templateFileName(SNIPPETS_TEMPLATE_FILENAME);
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    snippetsBuilder.outputPath(outputPath + File.separator + name + ".g.cs");
+    snippetsBuilder.outputPath(
+        outputPath + File.separator + name.replace("Generated", "") + ".g.cs");
     snippetsBuilder.packageName(context.getApiConfig().getPackageName() + ".Snippets");
     snippetsBuilder.name(name);
     snippetsBuilder.snippetMethods(generateMethods(context));
@@ -204,8 +205,11 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             methodContext, ApiMethodType.FlattenedAsyncCallSettingsMethod);
     SurfaceNamer namer = methodContext.getNamer();
     String callerResponseTypeName =
-        namer.getStaticLangCallerAsyncReturnTypeName(
-            methodContext.getMethod(), methodContext.getMethodConfig());
+        methodContext
+            .getTypeTable()
+            .getAndSaveNicknameFor(
+                namer.getStaticLangCallerAsyncReturnTypeName(
+                    methodContext.getMethod(), methodContext.getMethodConfig()));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -222,8 +226,11 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     StaticLangApiMethodView method = apiMethodTransformer.generateFlattenedMethod(methodContext);
     SurfaceNamer namer = methodContext.getNamer();
     String callerResponseTypeName =
-        namer.getStaticLangCallerReturnTypeName(
-            methodContext.getMethod(), methodContext.getMethodConfig());
+        methodContext
+            .getTypeTable()
+            .getAndSaveNicknameFor(
+                namer.getStaticLangCallerReturnTypeName(
+                    methodContext.getMethod(), methodContext.getMethodConfig()));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)

@@ -318,9 +318,12 @@
             this.GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
             _clientHelper = new ClientHelper(effectiveSettings);
+            @join rerouted : api.reroutedGrpcClients
+                {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
+            @end
             @join call : api.apiCallableMembers
                 {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
-                    GrpcClient.{@call.asyncMethodName}, GrpcClient.{@call.methodName}, effectiveSettings.{@call.memberName});
+                    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
             @end
         }
 
@@ -465,7 +468,7 @@
             /// </summary>
             public IEnumerator<{@method.listMethod.resourceTypeName}> GetEnumerator() => {@method.listMethod.resourcesFieldGetFunction}.GetEnumerator();
 
-            <inheritdoc/>
+            /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 

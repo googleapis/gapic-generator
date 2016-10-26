@@ -39,6 +39,9 @@ public abstract class StaticLangXApiView implements ViewModel {
   @Nullable // Used in C#
   public abstract String grpcTypeName();
 
+  @Nullable // Used in C#
+  public abstract List<ReroutedGrpcView> reroutedGrpcClients();
+
   public abstract String settingsClassName();
 
   public abstract List<ApiCallableView> apiCallableMembers();
@@ -85,6 +88,8 @@ public abstract class StaticLangXApiView implements ViewModel {
     public abstract Builder grpcServiceName(String val);
 
     public abstract Builder grpcTypeName(String val);
+
+    public abstract Builder reroutedGrpcClients(List<ReroutedGrpcView> val);
 
     public abstract Builder settingsClassName(String val);
 
