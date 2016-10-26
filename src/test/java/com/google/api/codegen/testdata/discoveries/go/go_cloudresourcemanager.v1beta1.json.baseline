@@ -19,16 +19,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -40,8 +36,8 @@ func main() {
   }
 
   // The resource name of the Organization to fetch, e.g. "organizations/1234".
-  name := "organizations/{MY-ORGANIZATION}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
+  // ex: "organizations/my-organization"
 
   resp, err := cloudresourcemanagerService.Organizations.Get(name).Context(ctx).Do()
   if err != nil {
@@ -71,16 +67,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -91,16 +83,16 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "organizations/{MY-ORGANIZATION}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "organizations/my-organization"
 
-  rb := cloudresourcemanager.GetIamPolicyRequest{
+  rb := &cloudresourcemanager.GetIamPolicyRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Organizations.GetIamPolicy(resource, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Organizations.GetIamPolicy(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -128,16 +120,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -147,7 +135,6 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-
 
   req := cloudresourcemanagerService.Organizations.List()
   if err := req.Pages(ctx, func(page *cloudresourcemanager.ListOrganizationsResponse) error {
@@ -180,16 +167,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -200,16 +183,16 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "organizations/{MY-ORGANIZATION}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "organizations/my-organization"
 
-  rb := cloudresourcemanager.SetIamPolicyRequest{
+  rb := &cloudresourcemanager.SetIamPolicyRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Organizations.SetIamPolicy(resource, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Organizations.SetIamPolicy(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -237,16 +220,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -259,14 +238,14 @@ func main() {
 
   // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
   // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "organizations/{MY-ORGANIZATION}"
-  // TODO: Change placeholder value above.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "organizations/my-organization"
 
-  rb := cloudresourcemanager.TestIamPermissionsRequest{
+  rb := &cloudresourcemanager.TestIamPermissionsRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Organizations.TestIamPermissions(resource, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Organizations.TestIamPermissions(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -294,16 +273,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -316,14 +291,14 @@ func main() {
 
   // Output Only. The resource name of the organization. This is the organization's relative path in the
   // API. Its format is "organizations/[organization_id]". For example, "organizations/1234".
-  name := "organizations/{MY-ORGANIZATION}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
+  // ex: "organizations/my-organization"
 
-  rb := cloudresourcemanager.Organization{
+  rb := &cloudresourcemanager.Organization{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Organizations.Update(name, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Organizations.Update(name, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -351,16 +326,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -371,12 +342,11 @@ func main() {
     log.Fatal(err)
   }
 
-
-  rb := cloudresourcemanager.Project{
+  rb := &cloudresourcemanager.Project{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Projects.Create(&rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.Create(rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -404,16 +374,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -425,8 +391,7 @@ func main() {
   }
 
   // The Project ID (for example, `foo-bar-123`). Required.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   resp, err := cloudresourcemanagerService.Projects.Delete(projectId).Context(ctx).Do()
   if err != nil {
@@ -456,16 +421,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -477,8 +438,7 @@ func main() {
   }
 
   // The Project ID (for example, `my-project-123`). Required.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   resp, err := cloudresourcemanagerService.Projects.Get(projectId).Context(ctx).Do()
   if err != nil {
@@ -508,16 +468,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -529,14 +485,13 @@ func main() {
   }
 
   // The Project ID (for example, `my-project-123`). Required.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := cloudresourcemanager.GetAncestryRequest{
+  rb := &cloudresourcemanager.GetAncestryRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Projects.GetAncestry(projectId, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.GetAncestry(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -564,16 +519,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -584,16 +535,15 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "{MY-RESOURCE}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
 
-  rb := cloudresourcemanager.GetIamPolicyRequest{
+  rb := &cloudresourcemanager.GetIamPolicyRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Projects.GetIamPolicy(resource, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.GetIamPolicy(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -621,16 +571,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -640,7 +586,6 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-
 
   req := cloudresourcemanagerService.Projects.List()
   if err := req.Pages(ctx, func(page *cloudresourcemanager.ListProjectsResponse) error {
@@ -673,16 +618,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -693,16 +634,15 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "{MY-RESOURCE}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
 
-  rb := cloudresourcemanager.SetIamPolicyRequest{
+  rb := &cloudresourcemanager.SetIamPolicyRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Projects.SetIamPolicy(resource, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.SetIamPolicy(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -730,16 +670,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -752,14 +688,13 @@ func main() {
 
   // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
   // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "{MY-RESOURCE}"
-  // TODO: Change placeholder value above.
+  resource := ""  // TODO: Update placeholder value.
 
-  rb := cloudresourcemanager.TestIamPermissionsRequest{
+  rb := &cloudresourcemanager.TestIamPermissionsRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Projects.TestIamPermissions(resource, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.TestIamPermissions(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -787,16 +722,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -808,14 +739,13 @@ func main() {
   }
 
   // The project ID (for example, `foo-bar-123`). Required.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := cloudresourcemanager.UndeleteProjectRequest{
+  rb := &cloudresourcemanager.UndeleteProjectRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Projects.Undelete(projectId, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.Undelete(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -843,16 +773,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/cloudresourcemanager/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -864,14 +790,13 @@ func main() {
   }
 
   // The project ID (for example, `my-project-123`). Required.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := cloudresourcemanager.Project{
+  rb := &cloudresourcemanager.Project{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Projects.Update(projectId, &rb).Context(ctx).Do()
+  resp, err := cloudresourcemanagerService.Projects.Update(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

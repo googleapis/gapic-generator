@@ -28,8 +28,6 @@ import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransforme
 import com.google.api.codegen.discovery.transformer.go.GoSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleMethodToViewTransformer;
-import com.google.api.codegen.go.GoDiscoveryContext;
-import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.php.PhpDiscoveryContext;
 import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonDiscoveryContext;
@@ -87,14 +85,6 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
               new CSharpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
-          .build();
-
-    } else if (id.equals(GO)) {
-      return CommonDiscoveryProvider.newBuilder()
-          .setContext(new GoDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(
-              new GoSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
