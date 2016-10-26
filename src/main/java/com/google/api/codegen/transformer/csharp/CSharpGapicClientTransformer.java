@@ -39,6 +39,7 @@ import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangXApiView;
@@ -53,7 +54,9 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
@@ -154,6 +157,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     }
     xapiClass.apiMethodsImpl(methodsImpl);
     xapiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
+    xapiClass.reroutedGrpcClients(generateReroutedGrpcView(context));
 
     // must be done as the last step to catch all imports
     xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
@@ -216,6 +220,26 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       settingsMembers.addAll(calls);
     }
     return settingsMembers;
+  }
+
+  private List<ReroutedGrpcView> generateReroutedGrpcView(SurfaceTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    Set<ReroutedGrpcView> rerouteds = new HashSet<>();
+    for (Method method : context.getSupportedMethods()) {
+      MethodConfig methodConfig = context.getMethodConfig(method);
+      String reroute = methodConfig.getRerouteToGrpcInterface();
+      if (reroute != null) {
+        ReroutedGrpcView rerouted =
+            ReroutedGrpcView.newBuilder()
+                .grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig))
+                .typeName("var") // TODO: Add explicit type.
+                .getMethodName(namer.getReroutedGrpcMethodName(methodConfig))
+                .build();
+        rerouteds.add(rerouted);
+      }
+    }
+    return new ArrayList<ReroutedGrpcView>(rerouteds);
   }
 
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {

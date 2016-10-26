@@ -202,8 +202,11 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             methodContext, fields, ApiMethodType.FlattenedAsyncCallSettingsMethod);
     SurfaceNamer namer = methodContext.getNamer();
     String callerResponseTypeName =
-        namer.getStaticLangCallerAsyncReturnTypeName(
-            methodContext.getMethod(), methodContext.getMethodConfig());
+        methodContext
+            .getTypeTable()
+            .getAndSaveNicknameFor(
+                namer.getStaticLangCallerAsyncReturnTypeName(
+                    methodContext.getMethod(), methodContext.getMethodConfig()));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -221,8 +224,11 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
         apiMethodTransformer.generateFlattenedMethod(methodContext, fields);
     SurfaceNamer namer = methodContext.getNamer();
     String callerResponseTypeName =
-        namer.getStaticLangCallerReturnTypeName(
-            methodContext.getMethod(), methodContext.getMethodConfig());
+        methodContext
+            .getTypeTable()
+            .getAndSaveNicknameFor(
+                namer.getStaticLangCallerReturnTypeName(
+                    methodContext.getMethod(), methodContext.getMethodConfig()));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)

@@ -1,4 +1,4 @@
-============== file: Google/Example/Library/V1/LibraryServiceClientSnippets.g.cs ==============
+============== file: Google/Example/Library/V1/GeneratedLibraryServiceClientSnippets.g.cs ==============
 // Copyright 2016 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,12 @@
 
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
+using Google.Example.Library.V1;
+using Google.Example.Library.V1.UpdateBookIndexRequest.Types;
+using Google.Longrunning;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Google.Tagger.V1;
 using Grpc.Core;
 using System;
 using System.Collections;
@@ -27,11 +31,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using UpdateBookIndexRequest.Types;
 
 namespace Google.Example.Library.V1.Snippets
 {
-    public class LibraryServiceClientSnippets
+    public class GeneratedLibraryServiceClientSnippets
     {
         public async Task CreateShelfAsync()
         {
@@ -142,7 +145,6 @@ namespace Google.Example.Library.V1.Snippets
         public async Task ListShelvesAsync()
         {
             // Snippet: ListShelvesAsync(string,int?,CallSettings)
-            // Additional: ListShelvesAsync(string,int?,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
@@ -341,7 +343,6 @@ namespace Google.Example.Library.V1.Snippets
         public async Task ListBooksAsync()
         {
             // Snippet: ListBooksAsync(string,string,string,int?,CallSettings)
-            // Additional: ListBooksAsync(string,string,string,int?,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
@@ -519,7 +520,6 @@ namespace Google.Example.Library.V1.Snippets
         public async Task ListStringsAsync()
         {
             // Snippet: ListStringsAsync(string,int?,CallSettings)
-            // Additional: ListStringsAsync(string,int?,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
@@ -688,7 +688,6 @@ namespace Google.Example.Library.V1.Snippets
         public async Task FindRelatedBooksAsync()
         {
             // Snippet: FindRelatedBooksAsync(IEnumerable<string>,IEnumerable<string>,string,int?,CallSettings)
-            // Additional: FindRelatedBooksAsync(IEnumerable<string>,IEnumerable<string>,string,int?,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
@@ -783,6 +782,33 @@ namespace Google.Example.Library.V1.Snippets
             string tag = "";
             // Make the request
             AddTagResponse response = libraryServiceClient.AddTag(formattedResource, tag);
+            // End snippet
+        }
+
+        public async Task AddLabelAsync()
+        {
+            // Snippet: AddLabelAsync(string,string,CallSettings)
+            // Additional: AddLabelAsync(string,string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string label = "";
+            // Make the request
+            AddLabelResponse response = await libraryServiceClient.AddLabelAsync(formattedResource, label);
+            // End snippet
+        }
+
+        public void AddLabel()
+        {
+            // Snippet: AddLabel(string,string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string label = "";
+            // Make the request
+            AddLabelResponse response = libraryServiceClient.AddLabel(formattedResource, label);
             // End snippet
         }
 
