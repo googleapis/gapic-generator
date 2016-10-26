@@ -54,7 +54,7 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -224,8 +224,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
   private List<ReroutedGrpcView> generateReroutedGrpcView(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
-    ModelTypeTable typeTable = context.getTypeTable();
-    Set<ReroutedGrpcView> rerouteds = new HashSet<>();
+    Set<ReroutedGrpcView> reroutedViews = new LinkedHashSet<>();
     for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       String reroute = methodConfig.getRerouteToGrpcInterface();
@@ -236,10 +235,10 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
                 .typeName("var") // TODO: Add explicit type.
                 .getMethodName(namer.getReroutedGrpcMethodName(methodConfig))
                 .build();
-        rerouteds.add(rerouted);
+        reroutedViews.add(rerouted);
       }
     }
-    return new ArrayList<ReroutedGrpcView>(rerouteds);
+    return new ArrayList<ReroutedGrpcView>(reroutedViews);
   }
 
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
