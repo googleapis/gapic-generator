@@ -140,16 +140,16 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
   private StaticLangApiView generateApiClass(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
-    StaticLangApiView.Builder xapiClass = StaticLangApiView.newBuilder();
+    StaticLangApiView.Builder apiClass = StaticLangApiView.newBuilder();
     List<StaticLangApiMethodView> methods = generateApiMethods(context);
 
-    xapiClass.doc(serviceTransformer.generateServiceDoc(context, null));
+    apiClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
-    xapiClass.name(namer.getApiWrapperClassName(context.getInterface()));
-    xapiClass.implName(namer.getApiWrapperClassImplName(context.getInterface()));
-    xapiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterface()));
-    xapiClass.grpcTypeName(namer.getGrpcServiceClassName(context.getInterface()));
-    xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
+    apiClass.name(namer.getApiWrapperClassName(context.getInterface()));
+    apiClass.implName(namer.getApiWrapperClassImplName(context.getInterface()));
+    apiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterface()));
+    apiClass.grpcTypeName(namer.getGrpcServiceClassName(context.getInterface()));
+    apiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
     List<ApiCallableView> callables = new ArrayList<>();
     for (ApiCallableView call : apiCallableTransformer.generateStaticLangApiCallables(context)) {
       if (call.type() == ApiCallableType.SimpleApiCallable
@@ -157,24 +157,24 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         callables.add(call);
       }
     }
-    xapiClass.apiCallableMembers(callables);
-    xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
-    xapiClass.formatResourceFunctions(
+    apiClass.apiCallableMembers(callables);
+    apiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
+    apiClass.formatResourceFunctions(
         pathTemplateTransformer.generateFormatResourceFunctions(context));
-    xapiClass.parseResourceFunctions(
+    apiClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
-    xapiClass.apiMethods(methods);
+    apiClass.apiMethods(methods);
     List<StaticLangApiMethodView> methodsImpl = new ArrayList<>();
     for (StaticLangApiMethodView method : methods) {
       if (methodTypeHasImpl(method.type())) {
         methodsImpl.add(method);
       }
     }
-    xapiClass.apiMethodsImpl(methodsImpl);
-    xapiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
-    xapiClass.reroutedGrpcClients(generateReroutedGrpcView(context));
+    apiClass.apiMethodsImpl(methodsImpl);
+    apiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
+    apiClass.reroutedGrpcClients(generateReroutedGrpcView(context));
 
-    return xapiClass.build();
+    return apiClass.build();
   }
 
   private boolean methodTypeHasImpl(ApiMethodType type) {
@@ -182,30 +182,30 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangSettingsView generateSettingsClass(SurfaceTransformerContext context) {
-    StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
-    xsettingsClass.doc(generateSettingsDoc(context));
+    StaticLangSettingsView.Builder settingsClass = StaticLangSettingsView.newBuilder();
+    settingsClass.doc(generateSettingsDoc(context));
     String name = context.getNamer().getApiSettingsClassName(context.getInterface());
-    xsettingsClass.name(name);
+    settingsClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
-    xsettingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
-    xsettingsClass.servicePort(serviceConfig.getServicePort());
-    xsettingsClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
-    xsettingsClass.callSettings(generateCallSettings(context));
-    xsettingsClass.pageStreamingDescriptors(
+    settingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
+    settingsClass.servicePort(serviceConfig.getServicePort());
+    settingsClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
+    settingsClass.callSettings(generateCallSettings(context));
+    settingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
-    xsettingsClass.pagedListResponseFactories(
+    settingsClass.pagedListResponseFactories(
         pageStreamingTransformer.generateFactoryClasses(context));
-    xsettingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
-    xsettingsClass.retryCodesDefinitions(
+    settingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
+    settingsClass.retryCodesDefinitions(
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
-    xsettingsClass.retryParamsDefinitions(
+    settingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
-    xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
-    xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
+    settingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
+    settingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
+    settingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
 
-    return xsettingsClass.build();
+    return settingsClass.build();
   }
 
   public List<ApiCallSettingsView> generateCallSettings(SurfaceTransformerContext context) {
