@@ -171,10 +171,10 @@
 
 @private apiCallableMember(apiCallable)
   @if apiCallable.isStreaming
-    private final StreamingApiCallable<{@apiCallable.requestTypeName}, \
+    private final StreamingCallable<{@apiCallable.requestTypeName}, \
       {@apiCallable.responseTypeName}> {@apiCallable.name};
   @else
-    private final UnaryApiCallable<{@apiCallable.requestTypeName}, \
+    private final UnaryCallable<{@apiCallable.requestTypeName}, \
       {@apiCallable.responseTypeName}> {@apiCallable.name};
   @end
 @end
@@ -212,17 +212,17 @@
     @join apiCallable : xapiClass.apiCallableMembers
       @switch apiCallable.type
       @case "SimpleApiCallable"
-        this.{@apiCallable.name} = UnaryApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
       @case "PagedApiCallable"
         this.{@apiCallable.name} =
-            UnaryApiCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+            UnaryCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
       @case "BundlingApiCallable"
-        this.{@apiCallable.name} = UnaryApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
         if (settings.{@apiCallable.settingsFunctionName}().getBundlerFactory() != null) {
           closeables.add(settings.{@apiCallable.settingsFunctionName}().getBundlerFactory());
         }
       @case "StreamingApiCallable"
-        this.{@apiCallable.name} = StreamingApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
+        this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
       @default
         $unhandledCase: {@apiCallable.type.toString}$
       @end
@@ -387,14 +387,14 @@
 @end
 
 @private nonStreamingCallableMethod(apiMethod)
-  public final UnaryApiCallable<{@apiMethod.apiRequestTypeName}, \
+  public final UnaryCallable<{@apiMethod.apiRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }
 @end
 
 @private streamingCallableMethod(apiMethod)
-  public final StreamingApiCallable<{@apiMethod.apiRequestTypeName}, \
+  public final StreamingCallable<{@apiMethod.apiRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }

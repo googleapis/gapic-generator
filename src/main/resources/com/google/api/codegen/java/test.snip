@@ -112,7 +112,7 @@
 @private bidiStreamingCall(test)
   MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
 
-  StreamingApiCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
+  StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
       api.{@test.surfaceMethodName}();
   StreamObserver<{@test.requestTypeName}> requestObserver =
       callable.bidiStreamingCall(responseObserver);
@@ -124,7 +124,7 @@
 @private serverStreamingCall(test)
   MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
-  StreamingApiCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
+  StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
       api.{@test.surfaceMethodName}();
   callable.serverStreamingCall(request, responseObserver);
 @end

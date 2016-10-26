@@ -67,21 +67,21 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PageStreamingDescriptor");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
   }
 
   @Override
   public void addPagedListResponseFactoryImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
   }
 
   @Override
   public void addPagedListResponseImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryApiCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
   }
 
   @Override
@@ -94,7 +94,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public void addPageStreamingCallSettingsImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PageStreamingCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
   }
 
   @Override
