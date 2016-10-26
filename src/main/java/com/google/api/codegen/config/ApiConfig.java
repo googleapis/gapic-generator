@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
+import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -25,7 +26,14 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.CharStreams;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import javax.annotation.Nullable;
 
 /** ApiConfig represents the code-gen config for an API library. */
@@ -39,8 +47,15 @@ public abstract class ApiConfig {
   /** Returns the location of the domain layer, if any. */
   public abstract String getDomainLayerLocation();
 
+  /** Returns the resource name messages configuration. If none was specified, returns null. */
   @Nullable
   public abstract ResourceNameMessageConfigs getResourceNameMessageConfigs();
+
+  /** Returns the lines from the configured copyright file. */
+  public abstract ImmutableList<String> getCopyrightLines();
+
+  /** Returns the lines from the configured license file. */
+  public abstract ImmutableList<String> getLicenseLines();
 
   /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
@@ -60,21 +75,37 @@ public abstract class ApiConfig {
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
-    if (interfaceConfigMap == null) {
+
+    ImmutableList<String> copyrightLines = null;
+    ImmutableList<String> licenseLines = null;
+    try {
+      copyrightLines = loadCopyrightLines(model.getDiagCollector(), configProto.getLicenseHeader());
+      licenseLines = loadLicenseLines(model.getDiagCollector(), configProto.getLicenseHeader());
+    } catch (Exception e) {
+      model
+          .getDiagCollector()
+          .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
+      e.printStackTrace(System.err);
+      throw new RuntimeException(e);
+    }
+
+    if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
       return null;
     } else {
       return new AutoValue_ApiConfig(
           interfaceConfigMap,
           settings.getPackageName(),
           settings.getDomainLayerLocation(),
-          messageConfigs);
+          messageConfigs,
+          copyrightLines,
+          licenseLines);
     }
   }
 
   /** Creates an ApiConfig with no content. Exposed for testing. */
   @VisibleForTesting
   public static ApiConfig createDummyApiConfig() {
-    return new AutoValue_ApiConfig(
+    return createDummyApiConfig(
         ImmutableMap.<String, InterfaceConfig>builder().build(), "", "", null);
   }
 
@@ -86,7 +117,12 @@ public abstract class ApiConfig {
       String domainLayerLocation,
       ResourceNameMessageConfigs messageConfigs) {
     return new AutoValue_ApiConfig(
-        interfaceConfigMap, packageName, domainLayerLocation, messageConfigs);
+        interfaceConfigMap,
+        packageName,
+        domainLayerLocation,
+        messageConfigs,
+        ImmutableList.<String>of(),
+        ImmutableList.<String>of());
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
@@ -124,6 +160,43 @@ public abstract class ApiConfig {
     } else {
       return interfaceConfigMap.build();
     }
+  }
+
+  private static ImmutableList<String> loadCopyrightLines(
+      DiagCollector diagCollector, LicenseHeaderProto licenseHeaderProto) throws IOException {
+    if (licenseHeaderProto == null) {
+      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "license_header missing"));
+      return null;
+    }
+    if (Strings.isNullOrEmpty(licenseHeaderProto.getCopyrightFile())) {
+      diagCollector.addDiag(
+          Diag.error(SimpleLocation.TOPLEVEL, "license_header.copyright_file missing"));
+      return null;
+    }
+
+    return getResourceLines(licenseHeaderProto.getCopyrightFile());
+  }
+
+  private static ImmutableList<String> loadLicenseLines(
+      DiagCollector diagCollector, LicenseHeaderProto licenseHeaderProto) throws IOException {
+    if (licenseHeaderProto == null) {
+      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "license_header missing"));
+      return null;
+    }
+    if (Strings.isNullOrEmpty(licenseHeaderProto.getLicenseFile())) {
+      diagCollector.addDiag(
+          Diag.error(SimpleLocation.TOPLEVEL, "license_header.license_file missing"));
+      return null;
+    }
+
+    return getResourceLines(licenseHeaderProto.getLicenseFile());
+  }
+
+  private static ImmutableList<String> getResourceLines(String resourceFileName)
+      throws IOException {
+    InputStream fileStream = ConfigProto.class.getResourceAsStream(resourceFileName);
+    InputStreamReader fileReader = new InputStreamReader(fileStream, Charsets.UTF_8);
+    return ImmutableList.copyOf(CharStreams.readLines(fileReader));
   }
 
   /** Returns the InterfaceConfig for the given API interface. */

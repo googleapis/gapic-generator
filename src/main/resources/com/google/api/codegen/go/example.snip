@@ -3,7 +3,7 @@
 @snippet generate(view)
     {@headerComment()}
 
-    package {@view.exampleLocalPackageName}
+    package {@view.localExamplePackageName}
 
     import (
         @join imp : view.imports
@@ -13,7 +13,7 @@
 
     func {@view.clientConstructorExampleName}() {
         ctx := context.Background()
-        c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
+        c, err := {@view.localLibPackageName}.{@view.clientConstructorName}(ctx)
         if err != nil {
             // TODO: Handle error.
         }
@@ -24,7 +24,7 @@
     @join resource : view.iamResources
         func {@resource.exampleName}() {
             ctx := context.Background()
-            c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
+            c, err := {@view.localLibPackageName}.{@view.clientConstructorName}(ctx)
             if err != nil {
                 // TODO: Handle error.
             }
@@ -214,7 +214,7 @@
 
 @private methodInit(view, method)
     ctx := context.Background()
-    c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
+    c, err := {@view.localLibPackageName}.{@view.clientConstructorName}(ctx)
     if err != nil {
         // TODO: Handle error.
     }

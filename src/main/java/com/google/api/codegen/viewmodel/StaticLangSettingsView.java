@@ -14,17 +14,12 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class StaticLangXSettingsView implements ViewModel {
-  @Override
-  public abstract String templateFileName();
-
-  public abstract String packageName();
+public abstract class StaticLangSettingsView {
 
   public abstract SettingsDocView doc();
 
@@ -57,25 +52,12 @@ public abstract class StaticLangXSettingsView implements ViewModel {
 
   public abstract boolean hasDefaultInstance();
 
-  public abstract List<ImportTypeView> imports();
-
-  @Override
-  public abstract String outputPath();
-
-  @Override
-  public String resourceRoot() {
-    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
-  }
-
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangXSettingsView.Builder();
+    return new AutoValue_StaticLangSettingsView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder templateFileName(String val);
-
-    public abstract Builder packageName(String val);
 
     public abstract Builder doc(SettingsDocView generateSettingsDoc);
 
@@ -102,16 +84,12 @@ public abstract class StaticLangXSettingsView implements ViewModel {
 
     public abstract Builder retryParamsDefinitions(List<RetryParamsDefinitionView> val);
 
-    public abstract Builder imports(List<ImportTypeView> val);
-
-    public abstract Builder outputPath(String val);
-
     public abstract Builder hasDefaultServiceAddress(boolean hasDefaultServiceAddress);
 
     public abstract Builder hasDefaultServiceScopes(boolean hasDefaultServiceScopes);
 
     public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
 
-    public abstract StaticLangXSettingsView build();
+    public abstract StaticLangSettingsView build();
   }
 }

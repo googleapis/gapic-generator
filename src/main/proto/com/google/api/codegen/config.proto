@@ -77,6 +77,9 @@ message ConfigProto {
   // The configuration to create the providers.
   GeneratorProto generator = 6;
 
+  // The configuration for the license header to put on generated files.
+  LicenseHeaderProto license_header = 7;
+
   // A list of API interface configurations.
   repeated InterfaceConfigProto interfaces = 10;
 
@@ -91,6 +94,14 @@ message LanguageSettingsProto {
   // Location of the domain layer, if any, that the user should use
   // instead of the generated client.
   string domain_layer_location = 2;
+}
+
+message LicenseHeaderProto {
+  // The file containing the copyright line(s).
+  string copyright_file = 1;
+
+  // The file containing the raw license header without any copyright line(s).
+  string license_file = 2;
 }
 
 message GeneratorProto {
