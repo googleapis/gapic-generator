@@ -19,9 +19,7 @@ import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
 import com.google.common.collect.ImmutableSet;
 
-/**
- * The NameFormatter for NodeJS.
- */
+/** The NameFormatter for NodeJS. */
 public class NodeJSNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {

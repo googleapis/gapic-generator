@@ -6,33 +6,18 @@
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var clouddebugger = google.clouddebugger('v2');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // Identifies the debuggee.
-    debuggeeId: '{MY-DEBUGGEE-ID}',
-
+    debuggeeId: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -47,6 +32,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Stackdriver Debugger API
@@ -54,36 +53,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var clouddebugger = google.clouddebugger('v2');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `update` method:
-
     // Identifies the debuggee being debugged.
-    debuggeeId: '{MY-DEBUGGEE-ID}',
+    debuggeeId: '',  // TODO: Update placeholder value.
 
     // Breakpoint identifier, unique in the scope of the debuggee.
-    id: '{MY-ID}',
-
+    id: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -102,6 +86,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Stackdriver Debugger API
@@ -109,28 +107,16 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var clouddebugger = google.clouddebugger('v2');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
     resource: {
       // TODO: Add desired properties of the request body.
     },
@@ -148,6 +134,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Stackdriver Debugger API
@@ -155,36 +155,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var clouddebugger = google.clouddebugger('v2');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
     // ID of the debuggee whose breakpoint to delete.
-    debuggeeId: '{MY-DEBUGGEE-ID}',
+    debuggeeId: '',  // TODO: Update placeholder value.
 
     // ID of the breakpoint to delete.
-    breakpointId: '{MY-BREAKPOINT-ID}',
-
+    breakpointId: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -192,9 +177,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   clouddebugger.debugger.debuggees.breakpoints.delete(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Stackdriver Debugger API
@@ -202,36 +202,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var clouddebugger = google.clouddebugger('v2');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
     // ID of the debuggee whose breakpoint to get.
-    debuggeeId: '{MY-DEBUGGEE-ID}',
+    debuggeeId: '',  // TODO: Update placeholder value.
 
     // ID of the breakpoint to get.
-    breakpointId: '{MY-BREAKPOINT-ID}',
-
+    breakpointId: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -246,6 +231,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Stackdriver Debugger API
@@ -253,33 +252,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var clouddebugger = google.clouddebugger('v2');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // ID of the debuggee whose breakpoints to list.
-    debuggeeId: '{MY-DEBUGGEE-ID}',
-
+    debuggeeId: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -294,6 +278,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Stackdriver Debugger API
@@ -301,33 +299,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var clouddebugger = google.clouddebugger('v2');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `set` method:
-
     // ID of the debuggee where the breakpoint is to be set.
-    debuggeeId: '{MY-DEBUGGEE-ID}',
-
+    debuggeeId: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -346,6 +329,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Stackdriver Debugger API
@@ -353,28 +350,16 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var clouddebugger = google.clouddebugger('v2');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
     auth: authClient
   };
 
@@ -388,3 +373,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}

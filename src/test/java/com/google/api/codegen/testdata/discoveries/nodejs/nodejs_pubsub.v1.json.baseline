@@ -6,34 +6,20 @@
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    resource_: 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}',
-
+    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource_: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/snapshots/my-snapshot'
 
     auth: authClient
   };
@@ -48,6 +34,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -55,34 +55,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    resource_: 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}',
-
+    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource_: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/snapshots/my-snapshot'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -101,6 +87,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -108,34 +108,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
     // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-    resource_: 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}',
-
+    resource_: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/snapshots/my-snapshot'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -154,6 +140,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -161,33 +161,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `acknowledge` method:
-
     // The subscription whose message is being acknowledged.
-    subscription: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    subscription: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -199,9 +185,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   pubsub.projects.subscriptions.acknowledge(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -209,37 +210,23 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `create` method:
-
     // The name of the subscription. It must have the format
     // `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter, and
     // contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
     // (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
     // length, and it must not start with `"goog"`.
-    name: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    name: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -258,6 +245,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -265,33 +266,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `delete` method:
-
     // The subscription to delete.
-    subscription: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    subscription: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     auth: authClient
   };
@@ -299,9 +286,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   pubsub.projects.subscriptions.delete(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -309,33 +311,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
     // The name of the subscription to get.
-    subscription: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    subscription: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     auth: authClient
   };
@@ -350,6 +338,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -357,34 +359,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    resource_: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource_: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     auth: authClient
   };
@@ -399,6 +387,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -406,33 +408,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // The name of the cloud project that subscriptions belong to.
-    project: 'projects/{MY-PROJECT}',
-
+    project: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project'
 
     auth: authClient
   };
@@ -460,6 +448,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
   pubsub.projects.subscriptions.list(request, handlePage);
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -467,33 +469,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `modifyAckDeadline` method:
-
     // The name of the subscription.
-    subscription: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    subscription: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -505,9 +493,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   pubsub.projects.subscriptions.modifyAckDeadline(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -515,33 +518,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `modifyPushConfig` method:
-
     // The name of the subscription.
-    subscription: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    subscription: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -553,9 +542,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   pubsub.projects.subscriptions.modifyPushConfig(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -563,33 +567,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `pull` method:
-
     // The subscription from which messages should be pulled.
-    subscription: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    subscription: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -608,6 +598,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -615,34 +619,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    resource_: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource_: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -661,6 +651,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -668,34 +672,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
     // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-    resource_: 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}',
-
+    resource_: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/subscriptions/my-subscription'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -714,6 +704,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -721,36 +725,22 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `create` method:
-
-    // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
-    // start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
+    // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}`
+    // must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
     // underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
     // between 3 and 255 characters in length, and it must not start with `"goog"`.
-    name: 'projects/{MY-PROJECT}/topics/{MY-TOPIC}',
-
+    name: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/topics/my-topic'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -769,6 +759,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -776,33 +780,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `delete` method:
-
     // Name of the topic to delete.
-    topic: 'projects/{MY-PROJECT}/topics/{MY-TOPIC}',
-
+    topic: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/topics/my-topic'
 
     auth: authClient
   };
@@ -810,9 +800,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   pubsub.projects.topics.delete(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -820,33 +825,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `get` method:
-
     // The name of the topic to get.
-    topic: 'projects/{MY-PROJECT}/topics/{MY-TOPIC}',
-
+    topic: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/topics/my-topic'
 
     auth: authClient
   };
@@ -861,6 +852,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -868,34 +873,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    resource_: 'projects/{MY-PROJECT}/topics/{MY-TOPIC}',
-
+    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource_: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/topics/my-topic'
 
     auth: authClient
   };
@@ -910,6 +901,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -917,33 +922,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // The name of the cloud project that topics belong to.
-    project: 'projects/{MY-PROJECT}',
-
+    project: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project'
 
     auth: authClient
   };
@@ -971,6 +962,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
   pubsub.projects.topics.list(request, handlePage);
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -978,33 +983,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `publish` method:
-
     // The messages in the request will be published on this topic.
-    topic: 'projects/{MY-PROJECT}/topics/{MY-TOPIC}',
-
+    topic: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/topics/my-topic'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1023,6 +1014,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -1030,34 +1035,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-    // path. For example, a Project resource is specified as `projects/{project}`.
-    resource_: 'projects/{MY-PROJECT}/topics/{MY-TOPIC}',
-
+    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource_: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/topics/my-topic'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1076,6 +1067,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -1083,33 +1088,19 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // The name of the topic that subscriptions are attached to.
-    topic: 'projects/{MY-PROJECT}/topics/{MY-TOPIC}',
-
+    topic: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/topics/my-topic'
 
     auth: authClient
   };
@@ -1137,6 +1128,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
   pubsub.projects.topics.subscriptions.list(request, handlePage);
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Google Cloud Pub/Sub API
@@ -1144,34 +1149,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/pubsub
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var pubsub = google.pubsub('v1');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
     // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-    resource_: 'projects/{MY-PROJECT}/topics/{MY-TOPIC}',
-
+    resource_: '',  // TODO: Update placeholder value.
+    // ex: 'projects/my-project/topics/my-topic'
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -1190,3 +1181,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}

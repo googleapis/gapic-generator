@@ -35,7 +35,7 @@ public abstract class SimpleInitCodeLineView implements InitCodeLineView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder lineType(InitCodeLineType val);
 
     public abstract Builder typeName(String val);

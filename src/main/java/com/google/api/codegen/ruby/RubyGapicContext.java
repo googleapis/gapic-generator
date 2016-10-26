@@ -53,9 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
-/**
- * A GapicContext specialized for Ruby.
- */
+/** A GapicContext specialized for Ruby. */
 public class RubyGapicContext extends GapicContext implements RubyContext {
 
   public RubyGapicContext(Model model, ApiConfig apiConfig) {
@@ -65,9 +63,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   // Snippet Helpers
   // ===============
 
-  /**
-   * Returns the Ruby filename which holds the gRPC service definition.
-   */
+  /** Returns the Ruby filename which holds the gRPC service definition. */
   public String getGrpcFilename(Interface service) {
     return getBasename(service.getFile()) + "_services_pb";
   }
@@ -76,9 +72,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return protoFile.getSimpleName().replace(".proto", "");
   }
 
-  /**
-   * Return comments lines for a given proto element, extracted directly from the proto doc
-   */
+  /** Return comments lines for a given proto element, extracted directly from the proto doc */
   public List<String> defaultComments(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of();
@@ -87,9 +81,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         RDocCommentFixer.rdocify(DocumentationUtil.getScopedDescription(element)));
   }
 
-  /**
-   * Returns type information for a field in YARD style.
-   */
+  /** Returns type information for a field in YARD style. */
   private String fieldTypeCardinalityComment(Field field) {
     TypeRef type = field.getType();
 
@@ -112,9 +104,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return String.format("%s%s%s", cardinalityComment, typeComment, closing);
   }
 
-  /**
-   * Returns a YARD comment string for the field as a parameter to a function.
-   */
+  /** Returns a YARD comment string for the field as a parameter to a function. */
   private String fieldParamComment(Field field, String paramComment) {
     String commentType = fieldTypeCardinalityComment(field);
     String comment =
@@ -129,9 +119,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return comment + "\n";
   }
 
-  /**
-   * Return a YARD comment string for the field, as the attribute of a message.
-   */
+  /** Return a YARD comment string for the field, as the attribute of a message. */
   private String fieldAttributeComment(Field field) {
     String comment =
         "@!attribute [rw] "
@@ -148,9 +136,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return comment + "\n";
   }
 
-  /**
-   * Return YARD return type string for the given method, or null if the return type is nil.
-   */
+  /** Return YARD return type string for the given method, or null if the return type is nil. */
   @Nullable
   private String returnTypeComment(Method method, MethodConfig config) {
     MessageType returnMessageType = method.getOutputMessage();
@@ -227,9 +213,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return convertToCommentedBlock(contentBuilder.toString());
   }
 
-  /**
-   * Return the list of messages within element which should be documented in Ruby.
-   */
+  /** Return the list of messages within element which should be documented in Ruby. */
   public ImmutableList<MessageType> filterDocumentingMessages(ProtoContainerElement element) {
     ImmutableList.Builder<MessageType> builder = ImmutableList.builder();
     for (MessageType msg : element.getMessages()) {
@@ -241,9 +225,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return builder.build();
   }
 
-  /**
-   * Return the doccomment for the message.
-   */
+  /** Return the doccomment for the message. */
   public List<String> methodDocComment(MessageType msg) {
     StringBuilder attributesBuilder = new StringBuilder();
     for (Field field : msg.getFields()) {
@@ -262,9 +244,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return content;
   }
 
-  /**
-   * Return a non-conflicting safe name if name is a Ruby built-in.
-   */
+  /** Return a non-conflicting safe name if name is a Ruby built-in. */
   public String wrapIfKeywordOrBuiltIn(String name) {
     if (KEYWORD_BUILT_IN_SET.contains(name)) {
       return name + "_";
@@ -272,9 +252,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return name;
   }
 
-  /**
-   * Returns the name of Ruby class for the given proto element.
-   */
+  /** Returns the name of Ruby class for the given proto element. */
   public String rubyTypeNameForProtoElement(ProtoElement element) {
     String fullName = element.getFullName();
     int lastDot = fullName.lastIndexOf('.');
@@ -293,9 +271,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return Joiner.on("::").join(rubyNames);
   }
 
-  /**
-   * Returns the name of Ruby class for the given typeRef.
-   */
+  /** Returns the name of Ruby class for the given typeRef. */
   public String rubyTypeName(TypeRef typeRef) {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
@@ -328,9 +304,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return builder.build();
   }
 
-  /**
-   * Returns the iterable of Ruby module names for the proto element.
-   */
+  /** Returns the iterable of Ruby module names for the proto element. */
   public Iterable<String> getGrpcModules(ProtoElement element) {
     String fullName = element.getFullName();
     List<String> modules = new ArrayList<>();
@@ -346,7 +320,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
   public OptionalArrayMethodView getMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    MethodTransformerContext methodContext = context.asMethodContext(method);
+    MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
     ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
     return methodTransformer.generateDynamicLangApiMethod(methodContext);
   }
@@ -385,9 +359,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   // Constants
   // =========
 
-  /**
-   * A map from primitive types to its default value.
-   */
+  /** A map from primitive types to its default value. */
   private static final ImmutableMap<Type, String> DEFAULT_VALUE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "false")

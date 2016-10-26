@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -36,17 +35,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
-import org.joda.time.Duration;
-
 import io.grpc.Status;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-
 import javax.annotation.Nullable;
+import org.joda.time.Duration;
 
 /**
  * InterfaceConfig represents the code-gen config for an API interface, and includes the
@@ -54,6 +49,12 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class InterfaceConfig {
+
+  private static final String SERVICE_ADDRESS_PARAM = "service_address";
+  private static final String SCOPES_PARAM = "scopes";
+  private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
+      ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
+
   public abstract List<MethodConfig> getMethodConfigs();
 
   @Nullable
@@ -68,6 +69,8 @@ public abstract class InterfaceConfig {
   public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
 
   public abstract ImmutableList<Field> getIamResources();
+
+  public abstract ImmutableList<String> getRequiredConstructorParams();
 
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up method configurations
@@ -109,6 +112,15 @@ public abstract class InterfaceConfig {
         createIamResources(
             iface.getModel(), interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
 
+    ImmutableList<String> requiredConstructorParams =
+        ImmutableList.<String>copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
+    for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
+      if (!CONSTRUCTOR_PARAMS.contains(param)) {
+        diagCollector.addDiag(
+            Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
+      }
+    }
+
     if (diagCollector.hasErrors()) {
       return null;
     } else {
@@ -119,7 +131,8 @@ public abstract class InterfaceConfig {
           methodConfigMap,
           retryCodesDefinition,
           retrySettingsDefinition,
-          iamResources);
+          iamResources,
+          requiredConstructorParams);
     }
   }
 
@@ -266,16 +279,12 @@ public abstract class InterfaceConfig {
     return collectionConfigs().get(entityName);
   }
 
-  /**
-   * Returns the list of CollectionConfigs.
-   */
+  /** Returns the list of CollectionConfigs. */
   public Collection<CollectionConfig> getCollectionConfigs() {
     return collectionConfigs().values();
   }
 
-  /**
-   * Returns the MethodConfig for the given method.
-   */
+  /** Returns the MethodConfig for the given method. */
   public MethodConfig getMethodConfig(Method method) {
     MethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
     if (methodConfig == null) {
@@ -283,6 +292,18 @@ public abstract class InterfaceConfig {
           "no method config for method '" + method.getFullName() + "'");
     }
     return methodConfig;
+  }
+
+  public boolean hasDefaultServiceAddress() {
+    return !getRequiredConstructorParams().contains(SERVICE_ADDRESS_PARAM);
+  }
+
+  public boolean hasDefaultServiceScopes() {
+    return !getRequiredConstructorParams().contains(SCOPES_PARAM);
+  }
+
+  public boolean hasDefaultInstance() {
+    return getRequiredConstructorParams().size() == 0;
   }
 
   /**

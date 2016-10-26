@@ -39,11 +39,11 @@ interfaces:
     max_rpc_timeout_millis: 3000
     total_timeout_millis: 30000
   collections:
-  - name_pattern: shelves/{shelf}
+  - name_pattern: shelves/{shelf_id}
     entity_name: shelf
-  - name_pattern: shelves/{shelf}/books/{book}
+  - name_pattern: shelves/{shelf_id}/books/{book_id}
     entity_name: book
-  - name_pattern: archives/{archive_path=**}/books/{book}
+  - name_pattern: archives/{archive_path=**}/books/{book_id}
     entity_name: archived_book
   # To test the case that entity name / variable which happens to be
   # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
@@ -52,8 +52,9 @@ interfaces:
   smoke_test:
     method: GetBook
     init_fields:
-      - name%shelf="testShelf"
-      - name%book="testBook"
+      - name%shelf_id="testShelf-$RANDOM"
+      - name%book_id="testBook"
+    flattening_group_name: get_book_1
   experimental_features:
     iam_resources:
     - type: google.example.library.v1.Book
@@ -179,7 +180,8 @@ interfaces:
   - name: GetBook
     flattening:
       groups:
-      - parameters:
+      - flattening_group_name: get_book_1
+        parameters:
         - name
     required_fields:
       - name
@@ -414,4 +416,17 @@ interfaces:
     surface_treatments:
     - include_languages:
       - go
-      visibility: DISABLED
+      visibility: PRIVATE
+  - name: GetBigBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
+    timeout_millis: 60000

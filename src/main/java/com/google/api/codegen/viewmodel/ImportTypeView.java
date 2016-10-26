@@ -30,7 +30,7 @@ public abstract class ImportTypeView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder fullName(String fullName);
 
     public abstract Builder nickname(String nickName);

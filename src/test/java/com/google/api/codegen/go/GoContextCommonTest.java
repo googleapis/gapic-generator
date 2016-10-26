@@ -14,17 +14,13 @@
  */
 package com.google.api.codegen.go;
 
-import com.google.common.truth.Truth;
 import com.google.common.base.Joiner;
-
+import com.google.common.truth.Truth;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Test;
 
-/**
- * Client config code generator baseline tests.
- */
+/** Client config code generator baseline tests. */
 public class GoContextCommonTest {
 
   private static GoContextCommon ctx = new GoContextCommon();
@@ -43,9 +39,7 @@ public class GoContextCommonTest {
         .inOrder();
   }
 
-  /**
-   * Repeats string `s` `n` times.
-   */
+  /** Repeats string `s` `n` times. */
   private String stringRep(String s, int n) {
     StringBuilder sb = new StringBuilder(s.length() * n);
     for (int i = 0; i < n; i++) {

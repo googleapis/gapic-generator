@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -26,7 +27,6 @@ import com.google.api.tools.framework.aspects.documentation.model.DocumentationU
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Status;
 import java.util.List;
@@ -67,14 +67,10 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(ProtoElement element) {
-    if (!(element instanceof Method)) {
-      return super.getDocLines(element);
-    }
-    Method method = (Method) element;
+  public List<String> getDocLines(Method method, MethodConfig methodConfig) {
     String text = DocumentationUtil.getDescription(method);
     text = lowerFirstLetter(text);
-    return super.getDocLines(getApiMethodName(method) + " " + text);
+    return super.getDocLines(getApiMethodName(method, methodConfig.getVisibility()) + " " + text);
   }
 
   @Override
@@ -118,6 +114,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getCallableName(Method method) {
+    return publicMethodName(Name.upperCamel(method.getSimpleName()));
+  }
+
+  @Override
   public String getApiWrapperClassName(Interface service) {
     return className(clientNamePrefix(service).join("client"));
   }
@@ -135,7 +136,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiMethodExampleName(Interface service, Method method) {
-    return exampleFunction(service, getApiMethodName(method));
+    return exampleFunction(service, getApiMethodName(method, VisibilityConfig.PUBLIC));
   }
 
   @Override
@@ -220,6 +221,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getIamResourceGetterFunctionExampleName(Interface service, Field field) {
     return exampleFunction(service, getIamResourceGetterFunctionName(field));
+  }
+
+  @Override
+  public String getSettingsMemberName(Method method) {
+    return publicFieldName(Name.upperCamel(method.getSimpleName()));
   }
 
   private String exampleFunction(Interface service, String functionName) {

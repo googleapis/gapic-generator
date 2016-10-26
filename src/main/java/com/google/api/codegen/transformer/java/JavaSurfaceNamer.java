@@ -31,9 +31,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * The SurfaceNamer for Java.
- */
+/** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
 
   public JavaSurfaceNamer(String implicitPackageName) {

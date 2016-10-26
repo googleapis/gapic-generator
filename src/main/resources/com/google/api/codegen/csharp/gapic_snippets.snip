@@ -94,7 +94,7 @@
         foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in response)
         {
             // Do something with each item
-            Console.Writeline(item);
+            Console.WriteLine(item);
         }
         
         // Or iterate over fixed-sized pages, lazily performing RPCs as required
@@ -102,10 +102,10 @@
         foreach (FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
         {
             // Do something with each page of items
-            Console.Writeline("A page of results:");
+            Console.WriteLine("A page of results:");
             foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
             {
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
         }
         // End snippet
@@ -116,29 +116,29 @@
     public async Task {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
-        // Additional: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CancellationToken)
         {@preparations(snippetMethod)}
         {@snippetMethod.callerResponseTypeName} response =
-            await {@sampleMethodCall(snippetMethod)};
+            {@sampleMethodCall(snippetMethod)};
 
         // Iterate over all response items, lazily performing RPCs as required
-        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in response)
+        await response.ForEachAsync(({@snippetMethod.method.listMethod.resourceTypeName} item) =>
         {
             // Do something with each item
-            Console.Writeline(item);
-        }
+            Console.WriteLine(item);
+        });
         
         // Or iterate over fixed-sized pages, lazily performing RPCs as required
         int pageSize = 10;
-        foreach (FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
+        IAsyncEnumerable<FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+        await fixedSizePages.ForEachAsync((FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page) =>
         {
             // Do something with each page of items
-            Console.Writeline("A page of results:");
+            Console.WriteLine("A page of results:");
             foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in page)
             {
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
-        }
+        });
         // End snippet
     }
 @end

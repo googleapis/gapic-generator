@@ -17,19 +17,14 @@ package com.google.api.codegen;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.Multimap;
-
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Utility methods for code generation.
- */
+/** Utility methods for code generation. */
 public class CodeGeneratorUtil {
 
-  /**
-   * Writes generated output to files under the given root.
-   */
+  /** Writes generated output to files under the given root. */
   public static <Element> void writeGeneratedOutput(
       String root, Multimap<Element, GeneratedResult> elements) throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();

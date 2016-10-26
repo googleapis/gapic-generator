@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
-
 import java.util.List;
 
 public class ServiceTransformer {
@@ -33,6 +32,7 @@ public class ServiceTransformer {
     serviceDoc.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterface()));
     serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterface()));
+    serviceDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     return serviceDoc.build();
   }
 }

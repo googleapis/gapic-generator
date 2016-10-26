@@ -17,15 +17,12 @@ package com.google.api.codegen.configgen;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Config generator for method page streaming.
- */
+/** Config generator for method page streaming. */
 public class PageStreamingConfigGenerator implements MethodConfigGenerator {
 
   private static final String PARAMETER_PAGE_SIZE = "page_size";

@@ -16,28 +16,18 @@ package com.google.api.codegen.py;
 
 import com.google.api.tools.framework.snippet.Doc;
 
-/**
- * Entry points for a Python snippet set.
- */
+/** Entry points for a Python snippet set. */
 interface PythonSnippetSet<Element> {
 
-  /**
-   * Generates the result filename for the generated document
-   */
+  /** Generates the result filename for the generated document */
   Doc generateFilename(Element element);
 
-  /**
-   * Generates a body of the module for the element where imports may be generated.
-   */
+  /** Generates a body of the module for the element where imports may be generated. */
   Doc generateBody(Element element);
 
-  /**
-   * Generates the result module with a set of accumulated imports.
-   */
+  /** Generates the result module with a set of accumulated imports. */
   Doc generateModule(Element element, Doc body, Iterable<String> imports);
 
-  /**
-   * Generate the example snippet for the code documentation.
-   */
+  /** Generate the example snippet for the code documentation. */
   Doc generateMethodSampleCode(PythonDocConfig config);
 }

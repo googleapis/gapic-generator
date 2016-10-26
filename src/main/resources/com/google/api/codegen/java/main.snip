@@ -21,9 +21,24 @@
 @end
 
 @private serviceDoc(xapiClass)
-  @let coreSampleCode = syncMethodSampleCode(xapiClass.doc.exampleApiMethod), \
-       decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
-    {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+  @switch xapiClass.doc.exampleApiMethod.type
+  @case "FlattenedMethod"
+    @let coreSampleCode = syncMethodSampleCode(xapiClass.doc.exampleApiMethod), \
+         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+    @end
+  @case "PagedFlattenedMethod"
+    @let coreSampleCode = pagedIterableMethodSampleCode(xapiClass.doc.exampleApiMethod), \
+         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+    @end
+  @case "RequestObjectMethod"
+    @let coreSampleCode = syncMethodSampleCode(xapiClass.doc.exampleApiMethod), \
+         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+    @end
+  @default
+    $unhandledCase: {@xapiClass.doc.exampleApiMethod.type}$
   @end
 @end
 
@@ -165,12 +180,15 @@
 @end
 
 @private constructors(xapiClass)
-  /**
-   * Constructs an instance of {@xapiClass.name} with default settings.
-   */
-  public static final {@xapiClass.name} create() throws IOException {
-    return create({@xapiClass.settingsClassName}.defaultBuilder().build());
-  }
+  @if xapiClass.hasDefaultInstance
+    /**
+     * Constructs an instance of {@xapiClass.name} with default settings.
+     */
+    public static final {@xapiClass.name} create() throws IOException {
+      return create({@xapiClass.settingsClassName}.defaultBuilder().build());
+    }
+    {@""}
+  @end
 
   /**
    * Constructs an instance of {@xapiClass.name}, using the given settings.

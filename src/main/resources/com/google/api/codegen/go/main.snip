@@ -21,8 +21,8 @@
 
     // {@view.callOptionsTypeName} contains the retry settings for each method of {@view.clientTypeName}.
     type {@view.callOptionsTypeName} struct {
-        @join apiMethod : view.apiMethods
-            {@apiMethod.name} []gax.CallOption
+        @join settings : view.callSettings
+            {@settings.methodName} []gax.CallOption
         @end
     }
 
@@ -140,6 +140,7 @@
         func (c *{@view.clientTypeName}) {@resource.resourceGetterFunctionName}({@resource.paramName} {@resource.resourceTypeName}) *iam.Handle {
             return iam.InternalNewHandle(c.Connection(), {@resource.paramName}.{@resource.fieldName})
         }
+
     @end
 
     @join method : view.apiMethods
@@ -155,11 +156,16 @@
         @case "ServerStreaming"
             {@simpleMethod(view, method)}
         @case "NonStreaming"
-            @if method.isPageStreaming
+            @switch method.type
+            @case "PagedRequestObjectMethod"
                 {@pageStreamingMethod(view, method)}
-            @else
+            @case "RequestObjectMethod"
                 @if method.hasReturnValue
-                    {@simpleMethod(view, method)}
+                    @if method.isLongRunning
+                        {@lroMethod(view, method)}
+                    @else
+                        {@simpleMethod(view, method)}
+                    @end
                 @else
                     {@emptyReturnMethod(view, method)}
                 @end
@@ -179,13 +185,29 @@
         var resp {@method.responseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
-            resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
+            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
+            return err
+        }, c.CallOptions.{@method.settingsGetterName}...)
+        if err != nil {
+            return nil, err
+        }
+        return resp, nil
+    }
+@end
+
+@private lroMethod(view, method)
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) (*longrunning.Operation, error) {
+        {@mergeMetadata()}
+        var resp {@method.responseTypeName}
+        err := gax.Invoke(ctx, func(ctx context.Context) error {
+            var err error
+            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
             return err
         }, c.CallOptions.{@method.name}...)
         if err != nil {
             return nil, err
         }
-        return resp, nil
+        return longrunning.InternalNewOperation(c.Connection(), resp), nil
     }
 @end
 
@@ -199,7 +221,7 @@
             var err error
             resp, err = c.{@method.stubName}.{@method.name}(ctx)
             return err
-        }, c.CallOptions.{@method.name}...)
+        }, c.CallOptions.{@method.settingsGetterName}...)
         if err != nil {
             return nil, err
         }
@@ -212,9 +234,9 @@
         {@mergeMetadata()}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
-            _, err = c.{@method.stubName}.{@method.name}(ctx, req)
+            _, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
             return err
-        }, c.CallOptions.{@method.name}...)
+        }, c.CallOptions.{@method.settingsGetterName}...)
         return err
     }
 @end
@@ -234,9 +256,9 @@
             }
             err := gax.Invoke(ctx, func(ctx context.Context) error {
                 var err error
-                resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
+                resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
                 return err
-            }, c.CallOptions.{@method.name}...)
+            }, c.CallOptions.{@method.settingsGetterName}...)
             if err != nil {
                 return "", err
             }

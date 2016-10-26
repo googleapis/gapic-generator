@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -25,7 +26,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -101,7 +101,7 @@ public abstract class SurfaceTransformerContext {
   /**
    * Returns the MethodConfig object of the given gRPC method.
    *
-   * If the method is a gRPC re-route method, returns the MethodConfig of the original method.
+   * <p>If the method is a gRPC re-route method, returns the MethodConfig of the original method.
    */
   public MethodConfig getMethodConfig(Method method) {
     Interface originalInterface = getInterface();
@@ -125,7 +125,8 @@ public abstract class SurfaceTransformerContext {
     return getInterfaceConfig().getCollectionConfig(entityName);
   }
 
-  public MethodTransformerContext asMethodContext(Method method) {
+  public MethodTransformerContext asFlattenedMethodContext(
+      Method method, FlatteningConfig flatteningConfig) {
     return MethodTransformerContext.create(
         this,
         getInterface(),
@@ -134,15 +135,58 @@ public abstract class SurfaceTransformerContext {
         getNamer(),
         method,
         getMethodConfig(method),
+        flatteningConfig,
         getFeatureConfig());
   }
 
-  /** Returns a list of simple RPC methods. */
+  public MethodTransformerContext asRequestMethodContext(Method method) {
+    return MethodTransformerContext.create(
+        this,
+        getInterface(),
+        getApiConfig(),
+        getTypeTable(),
+        getNamer(),
+        method,
+        getMethodConfig(method),
+        null,
+        getFeatureConfig());
+  }
+
+  public MethodTransformerContext asDynamicMethodContext(Method method) {
+    return MethodTransformerContext.create(
+        this,
+        getInterface(),
+        getApiConfig(),
+        getTypeTable(),
+        getNamer(),
+        method,
+        getMethodConfig(method),
+        null,
+        getFeatureConfig());
+  }
+
+  /** Returns a list of supported methods, configured by FeatureConfig. */
   public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
       if (isSupported(method)) {
+        methods.add(method);
+      }
+    }
+    return methods;
+  }
+
+  /**
+   * Returns a list of methods with samples, similar to getSupportedMethods, but also filter out
+   * private methods.
+   */
+  public List<Method> getPublicMethods() {
+    List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
+    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
+      Method method = methodConfig.getMethod();
+      VisibilityConfig visibility = getInterfaceConfig().getMethodConfig(method).getVisibility();
+      if (isSupported(method) && visibility == VisibilityConfig.PUBLIC) {
         methods.add(method);
       }
     }

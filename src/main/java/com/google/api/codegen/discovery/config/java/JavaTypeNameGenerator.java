@@ -14,19 +14,24 @@
  */
 package com.google.api.codegen.discovery.config.java;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.api.client.util.Strings;
+import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JavaTypeNameGenerator implements TypeNameGenerator {
 
   private static final String PACKAGE_PREFIX = "com.google.api.services";
   private static final String NON_REQUEST_SUBPACKAGE = "model";
+
+  @Override
+  public String getApiVersion(String apiVersion) {
+    return apiVersion;
+  }
 
   @Override
   public String getPackagePrefix(String apiName, String apiVersion) {
@@ -46,6 +51,15 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
       copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
     }
     return Joiner.on('.').join(copy);
+  }
+
+  @Override
+  public String getResponseTypeUrl(String responseTypeUrl) {
+    if (responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
+        || responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_URL)) {
+      return "";
+    }
+    return responseTypeUrl;
   }
 
   @Override

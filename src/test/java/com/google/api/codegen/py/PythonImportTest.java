@@ -14,16 +14,14 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.py.PythonImport;
-import com.google.api.codegen.py.PythonImportHandler;
 import com.google.common.truth.Truth;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * Tests for {@link PythonImportHandler} and {@link PythonImport}
+ * Tests for {@link com.google.api.codegen.py.PythonImportHandler} and {@link
+ * com.google.api.codegen.py.PythonImport}
  */
 @RunWith(JUnit4.class)
 public class PythonImportTest {

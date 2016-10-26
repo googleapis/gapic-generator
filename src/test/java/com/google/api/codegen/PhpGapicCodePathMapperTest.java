@@ -20,16 +20,13 @@ import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.gax.grpc.ApiCallable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for {@link ApiCallable}.
- */
+/** Tests for {@link ApiCallable}. */
 @RunWith(JUnit4.class)
 public class PhpGapicCodePathMapperTest {
 

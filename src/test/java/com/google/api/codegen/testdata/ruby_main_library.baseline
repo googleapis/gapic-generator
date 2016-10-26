@@ -103,19 +103,19 @@ module Library
       ].freeze
 
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}"
+        "shelves/{shelf_id}"
       )
 
       private_constant :SHELF_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}/books/{book}"
+        "shelves/{shelf_id}/books/{book_id}"
       )
 
       private_constant :BOOK_PATH_TEMPLATE
 
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive_path=**}/books/{book}"
+        "archives/{archive_path=**}/books/{book_id}"
       )
 
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
@@ -127,33 +127,33 @@ module Library
       private_constant :RETURN_PATH_TEMPLATE
 
       # Returns a fully-qualified shelf resource name string.
-      # @param shelf [String]
+      # @param shelf_id [String]
       # @return [String]
-      def self.shelf_path shelf
+      def self.shelf_path shelf_id
         SHELF_PATH_TEMPLATE.render(
-          :"shelf" => shelf
+          :"shelf_id" => shelf_id
         )
       end
 
       # Returns a fully-qualified book resource name string.
-      # @param shelf [String]
-      # @param book [String]
+      # @param shelf_id [String]
+      # @param book_id [String]
       # @return [String]
-      def self.book_path shelf, book
+      def self.book_path shelf_id, book_id
         BOOK_PATH_TEMPLATE.render(
-          :"shelf" => shelf,
-          :"book" => book
+          :"shelf_id" => shelf_id,
+          :"book_id" => book_id
         )
       end
 
       # Returns a fully-qualified archived_book resource name string.
       # @param archive_path [String]
-      # @param book [String]
+      # @param book_id [String]
       # @return [String]
-      def self.archived_book_path archive_path, book
+      def self.archived_book_path archive_path, book_id
         ARCHIVED_BOOK_PATH_TEMPLATE.render(
           :"archive_path" => archive_path,
-          :"book" => book
+          :"book_id" => book_id
         )
       end
 
@@ -170,25 +170,25 @@ module Library
         )
       end
 
-      # Parses the shelf from a shelf resource.
+      # Parses the shelf_id from a shelf resource.
       # @param shelf_name [String]
       # @return [String]
-      def self.match_shelf_from_shelf_name shelf_name
-        SHELF_PATH_TEMPLATE.match(shelf_name)["shelf"]
+      def self.match_shelf_id_from_shelf_name shelf_name
+        SHELF_PATH_TEMPLATE.match(shelf_name)["shelf_id"]
       end
 
-      # Parses the shelf from a book resource.
+      # Parses the shelf_id from a book resource.
       # @param book_name [String]
       # @return [String]
-      def self.match_shelf_from_book_name book_name
-        BOOK_PATH_TEMPLATE.match(book_name)["shelf"]
+      def self.match_shelf_id_from_book_name book_name
+        BOOK_PATH_TEMPLATE.match(book_name)["shelf_id"]
       end
 
-      # Parses the book from a book resource.
+      # Parses the book_id from a book resource.
       # @param book_name [String]
       # @return [String]
-      def self.match_book_from_book_name book_name
-        BOOK_PATH_TEMPLATE.match(book_name)["book"]
+      def self.match_book_id_from_book_name book_name
+        BOOK_PATH_TEMPLATE.match(book_name)["book_id"]
       end
 
       # Parses the archive_path from a archived_book resource.
@@ -198,11 +198,11 @@ module Library
         ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["archive_path"]
       end
 
-      # Parses the book from a archived_book resource.
+      # Parses the book_id from a archived_book resource.
       # @param archived_book_name [String]
       # @return [String]
-      def self.match_book_from_archived_book_name archived_book_name
-        ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["book"]
+      def self.match_book_id_from_archived_book_name archived_book_name
+        ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["book_id"]
       end
 
       # Parses the shelf from a return resource.
@@ -371,6 +371,10 @@ module Library
           @library_service_stub.method(:add_tag),
           defaults["add_tag"]
         )
+        @get_big_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_big_book),
+          defaults["get_big_book"]
+        )
         @add_label = Google::Gax.create_api_call(
           @labeler_stub.method(:add_label),
           defaults["add_label"]
@@ -401,9 +405,9 @@ module Library
       def create_shelf \
           shelf,
           options: nil
-        req = Google::Example::Library::V1::CreateShelfRequest.new(
-          shelf: shelf
-        )
+        req = Google::Example::Library::V1::CreateShelfRequest.new({
+            shelf: shelf
+        }.delete_if { |_, v| v.nil? })
         @create_shelf.call(req, options)
       end
 
@@ -427,7 +431,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   options_ = ''
       #   response = library_service_api.get_shelf(formatted_name, options_)
 
@@ -437,12 +441,12 @@ module Library
           message: nil,
           string_builder: nil,
           options: nil
-        req = Google::Example::Library::V1::GetShelfRequest.new(
-          name: name,
-          options: options_
-        )
-        req.message = message unless message.nil?
-        req.string_builder = string_builder unless string_builder.nil?
+        req = Google::Example::Library::V1::GetShelfRequest.new({
+            name: name,
+            options: options_
+            message: message,
+            string_builder: string_builder
+        }.delete_if { |_, v| v.nil? })
         @get_shelf.call(req, options)
       end
 
@@ -496,15 +500,15 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   library_service_api.delete_shelf(formatted_name)
 
       def delete_shelf \
           name,
           options: nil
-        req = Google::Example::Library::V1::DeleteShelfRequest.new(
-          name: name
-        )
+        req = Google::Example::Library::V1::DeleteShelfRequest.new({
+            name: name
+        }.delete_if { |_, v| v.nil? })
         @delete_shelf.call(req, options)
       end
 
@@ -527,18 +531,18 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
-      #   formatted_other_shelf_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
+      #   formatted_other_shelf_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   response = library_service_api.merge_shelves(formatted_name, formatted_other_shelf_name)
 
       def merge_shelves \
           name,
           other_shelf_name,
           options: nil
-        req = Google::Example::Library::V1::MergeShelvesRequest.new(
-          name: name,
-          other_shelf_name: other_shelf_name
-        )
+        req = Google::Example::Library::V1::MergeShelvesRequest.new({
+            name: name,
+            other_shelf_name: other_shelf_name
+        }.delete_if { |_, v| v.nil? })
         @merge_shelves.call(req, options)
       end
 
@@ -560,7 +564,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   book = Book.new
       #   response = library_service_api.create_book(formatted_name, book)
 
@@ -568,10 +572,10 @@ module Library
           name,
           book,
           options: nil
-        req = Google::Example::Library::V1::CreateBookRequest.new(
-          name: name,
-          book: book
-        )
+        req = Google::Example::Library::V1::CreateBookRequest.new({
+            name: name,
+            book: book
+        }.delete_if { |_, v| v.nil? })
         @create_book.call(req, options)
       end
 
@@ -607,12 +611,12 @@ module Library
           edition: nil,
           review_copy: nil,
           options: nil
-        req = Google::Example::Library::V1::PublishSeriesRequest.new(
-          shelf: shelf,
-          books: books
-        )
-        req.edition = edition unless edition.nil?
-        req.review_copy = review_copy unless review_copy.nil?
+        req = Google::Example::Library::V1::PublishSeriesRequest.new({
+            shelf: shelf,
+            books: books
+            edition: edition,
+            review_copy: review_copy
+        }.delete_if { |_, v| v.nil? })
         @publish_series.call(req, options)
       end
 
@@ -631,15 +635,15 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_service_api.get_book(formatted_name)
 
       def get_book \
           name,
           options: nil
-        req = Google::Example::Library::V1::GetBookRequest.new(
-          name: name
-        )
+        req = Google::Example::Library::V1::GetBookRequest.new({
+            name: name
+        }.delete_if { |_, v| v.nil? })
         @get_book.call(req, options)
       end
 
@@ -670,7 +674,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #
       #   # Iterate over all results.
       #   library_service_api.list_books(formatted_name).each do |element|
@@ -690,11 +694,11 @@ module Library
           page_size: nil,
           filter: nil,
           options: nil
-        req = Google::Example::Library::V1::ListBooksRequest.new(
-          name: name
-        )
-        req.page_size = page_size unless page_size.nil?
-        req.filter = filter unless filter.nil?
+        req = Google::Example::Library::V1::ListBooksRequest.new({
+            name: name
+            page_size: page_size,
+            filter: filter
+        }.delete_if { |_, v| v.nil? })
         @list_books.call(req, options)
       end
 
@@ -712,15 +716,15 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   library_service_api.delete_book(formatted_name)
 
       def delete_book \
           name,
           options: nil
-        req = Google::Example::Library::V1::DeleteBookRequest.new(
-          name: name
-        )
+        req = Google::Example::Library::V1::DeleteBookRequest.new({
+            name: name
+        }.delete_if { |_, v| v.nil? })
         @delete_book.call(req, options)
       end
 
@@ -746,7 +750,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   book = Book.new
       #   response = library_service_api.update_book(formatted_name, book)
 
@@ -756,12 +760,12 @@ module Library
           update_mask: nil,
           physical_mask: nil,
           options: nil
-        req = Google::Example::Library::V1::UpdateBookRequest.new(
-          name: name,
-          book: book
-        )
-        req.update_mask = update_mask unless update_mask.nil?
-        req.physical_mask = physical_mask unless physical_mask.nil?
+        req = Google::Example::Library::V1::UpdateBookRequest.new({
+            name: name,
+            book: book
+            update_mask: update_mask,
+            physical_mask: physical_mask
+        }.delete_if { |_, v| v.nil? })
         @update_book.call(req, options)
       end
 
@@ -782,18 +786,18 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
-      #   formatted_other_shelf_name = LibraryServiceApi.shelf_path("[SHELF]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_other_shelf_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
       #   response = library_service_api.move_book(formatted_name, formatted_other_shelf_name)
 
       def move_book \
           name,
           other_shelf_name,
           options: nil
-        req = Google::Example::Library::V1::MoveBookRequest.new(
-          name: name,
-          other_shelf_name: other_shelf_name
-        )
+        req = Google::Example::Library::V1::MoveBookRequest.new({
+            name: name,
+            other_shelf_name: other_shelf_name
+        }.delete_if { |_, v| v.nil? })
         @move_book.call(req, options)
       end
 
@@ -839,9 +843,10 @@ module Library
           name: nil,
           page_size: nil,
           options: nil
-        req = Google::Example::Library::V1::ListStringsRequest.new
-        req.name = name unless name.nil?
-        req.page_size = page_size unless page_size.nil?
+        req = Google::Example::Library::V1::ListStringsRequest.new({
+            name: name,
+            page_size: page_size
+        }.delete_if { |_, v| v.nil? })
         @list_strings.call(req, options)
       end
 
@@ -862,7 +867,7 @@ module Library
       #   Stage = Google::Example::Library::V1::Comment::Stage
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   comment = ''
       #   stage = Stage::UNSET
       #   alignment = Alignment::CHAR
@@ -877,10 +882,10 @@ module Library
           name,
           comments,
           options: nil
-        req = Google::Example::Library::V1::AddCommentsRequest.new(
-          name: name,
-          comments: comments
-        )
+        req = Google::Example::Library::V1::AddCommentsRequest.new({
+            name: name,
+            comments: comments
+        }.delete_if { |_, v| v.nil? })
         @add_comments.call(req, options)
       end
 
@@ -899,15 +904,15 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.archived_book_path("[ARCHIVE_PATH]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
       #   response = library_service_api.get_book_from_archive(formatted_name)
 
       def get_book_from_archive \
           name,
           options: nil
-        req = Google::Example::Library::V1::GetBookFromArchiveRequest.new(
-          name: name
-        )
+        req = Google::Example::Library::V1::GetBookFromArchiveRequest.new({
+            name: name
+        }.delete_if { |_, v| v.nil? })
         @get_book_from_archive.call(req, options)
       end
 
@@ -929,7 +934,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_name = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   index_name = "default index"
       #   index_map_item = ''
       #   index_map = { "default_key" => index_map_item }
@@ -940,11 +945,11 @@ module Library
           index_name,
           index_map,
           options: nil
-        req = Google::Example::Library::V1::UpdateBookIndexRequest.new(
-          name: name,
-          index_name: index_name,
-          index_map: index_map
-        )
+        req = Google::Example::Library::V1::UpdateBookIndexRequest.new({
+            name: name,
+            index_name: index_name,
+            index_map: index_map
+        }.delete_if { |_, v| v.nil? })
         @update_book_index.call(req, options)
       end
 
@@ -993,11 +998,11 @@ module Library
           shelves,
           page_size: nil,
           options: nil
-        req = Google::Example::Library::V1::FindRelatedBooksRequest.new(
-          names: names,
-          shelves: shelves
-        )
-        req.page_size = page_size unless page_size.nil?
+        req = Google::Example::Library::V1::FindRelatedBooksRequest.new({
+            names: names,
+            shelves: shelves
+            page_size: page_size
+        }.delete_if { |_, v| v.nil? })
         @find_related_books.call(req, options)
       end
 
@@ -1020,7 +1025,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_resource = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_resource = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   tag = ''
       #   response = library_service_api.add_tag(formatted_resource, tag)
 
@@ -1028,10 +1033,10 @@ module Library
           resource,
           tag,
           options: nil
-        req = Google::Tagger::V1::AddTagRequest.new(
-          resource: resource,
-          tag: tag
-        )
+        req = Google::Tagger::V1::AddTagRequest.new({
+            resource: resource,
+            tag: tag
+        }.delete_if { |_, v| v.nil? })
         @add_tag.call(req, options)
       end
 
@@ -1054,7 +1059,7 @@ module Library
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   formatted_resource = LibraryServiceApi.book_path("[SHELF]", "[BOOK]")
+      #   formatted_resource = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   label = ''
       #   response = library_service_api.add_label(formatted_resource, label)
 
@@ -1062,11 +1067,36 @@ module Library
           resource,
           label,
           options: nil
-        req = Google::Tagger::V1::AddLabelRequest.new(
-          resource: resource,
-          label: label
-        )
+        req = Google::Tagger::V1::AddLabelRequest.new({
+            resource: resource,
+            label: label
+        }.delete_if { |_, v| v.nil? })
         @add_label.call(req, options)
+      end
+
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Longrunning::Operation]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1/library_service_api"
+      #
+      #   LibraryServiceApi = Library::V1::LibraryServiceApi
+      #
+      #   library_service_api = LibraryServiceApi.new
+      #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   response = library_service_api.get_big_book(formatted_name)
+
+      def get_big_book \
+          name,
+          options: nil
+        req = Google::Example::Library::V1::GetBookRequest.new({
+            name: name
+        }.delete_if { |_, v| v.nil? })
+        @get_big_book.call(req, options)
       end
     end
   end

@@ -16,20 +16,25 @@
 // Generated code. DO NOT EDIT!
 
 using Google.Api.Gax;
+using Google.Api.Gax.Grpc;
+using Google.Example.Library.V1;
+using Google.Example.Library.V1.UpdateBookIndexRequest.Types;
+using Google.Longrunning;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Google.Tagger.V1;
 using Grpc.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using UpdateBookIndexRequest.Types;
 
 namespace Google.Example.Library.V1.Snippets
 {
-    public class LibraryServiceClientSnippets
+    public class GeneratedLibraryServiceClientSnippets
     {
         public async Task CreateShelfAsync()
         {
@@ -63,7 +68,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             // Make the request
             Shelf response = await libraryServiceClient.GetShelfAsync(formattedName);
             // End snippet
@@ -75,7 +80,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             // Make the request
             Shelf response = libraryServiceClient.GetShelf(formattedName);
             // End snippet
@@ -88,7 +93,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             // Make the request
             Shelf response = await libraryServiceClient.GetShelfAsync(formattedName, message);
@@ -101,7 +106,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             // Make the request
             Shelf response = libraryServiceClient.GetShelf(formattedName, message);
@@ -115,7 +120,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
             // Make the request
@@ -129,7 +134,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
             // Make the request
@@ -140,33 +145,33 @@ namespace Google.Example.Library.V1.Snippets
         public async Task ListShelvesAsync()
         {
             // Snippet: ListShelvesAsync(string,int?,CallSettings)
-            // Additional: ListShelvesAsync(string,int?,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
 
             // Make the request
             IPagedAsyncEnumerable<ListShelvesResponse,Shelf> response =
-                await libraryServiceClient.ListShelvesAsync();
+                libraryServiceClient.ListShelvesAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (Shelf item in response)
+            await response.ForEachAsync((Shelf item) =>
             {
                 // Do something with each item
-                Console.Writeline(item);
-            }
+                Console.WriteLine(item);
+            });
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
             int pageSize = 10;
-            foreach (FixedSizePage<Shelf> page in response.AsPages().WithFixedSize(pageSize))
+            IAsyncEnumerable<FixedSizePage<Shelf>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<Shelf> page) =>
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (Shelf item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
-            }
+            });
             // End snippet
         }
 
@@ -185,7 +190,7 @@ namespace Google.Example.Library.V1.Snippets
             foreach (Shelf item in response)
             {
                 // Do something with each item
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
@@ -193,10 +198,10 @@ namespace Google.Example.Library.V1.Snippets
             foreach (FixedSizePage<Shelf> page in response.AsPages().WithFixedSize(pageSize))
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (Shelf item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
             }
             // End snippet
@@ -209,7 +214,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             // Make the request
             await libraryServiceClient.DeleteShelfAsync(formattedName);
             // End snippet
@@ -221,7 +226,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             // Make the request
             libraryServiceClient.DeleteShelf(formattedName);
             // End snippet
@@ -234,8 +239,8 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
-            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             // Make the request
             Shelf response = await libraryServiceClient.MergeShelvesAsync(formattedName, formattedOtherShelfName);
             // End snippet
@@ -247,8 +252,8 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
-            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             // Make the request
             Shelf response = libraryServiceClient.MergeShelves(formattedName, formattedOtherShelfName);
             // End snippet
@@ -261,7 +266,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             Book book = new Book();
             // Make the request
             Book response = await libraryServiceClient.CreateBookAsync(formattedName, book);
@@ -274,7 +279,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             Book book = new Book();
             // Make the request
             Book response = libraryServiceClient.CreateBook(formattedName, book);
@@ -317,7 +322,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
             Book response = await libraryServiceClient.GetBookAsync(formattedName);
             // End snippet
@@ -329,7 +334,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
             Book response = libraryServiceClient.GetBook(formattedName);
             // End snippet
@@ -338,34 +343,34 @@ namespace Google.Example.Library.V1.Snippets
         public async Task ListBooksAsync()
         {
             // Snippet: ListBooksAsync(string,string,string,int?,CallSettings)
-            // Additional: ListBooksAsync(string,string,string,int?,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             string filter = "";
             // Make the request
             IPagedAsyncEnumerable<ListBooksResponse,Book> response =
-                await libraryServiceClient.ListBooksAsync(formattedName, filter);
+                libraryServiceClient.ListBooksAsync(formattedName, filter);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (Book item in response)
+            await response.ForEachAsync((Book item) =>
             {
                 // Do something with each item
-                Console.Writeline(item);
-            }
+                Console.WriteLine(item);
+            });
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
             int pageSize = 10;
-            foreach (FixedSizePage<Book> page in response.AsPages().WithFixedSize(pageSize))
+            IAsyncEnumerable<FixedSizePage<Book>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<Book> page) =>
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (Book item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
-            }
+            });
             // End snippet
         }
 
@@ -375,7 +380,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             string filter = "";
             // Make the request
             IPagedEnumerable<ListBooksResponse,Book> response =
@@ -385,7 +390,7 @@ namespace Google.Example.Library.V1.Snippets
             foreach (Book item in response)
             {
                 // Do something with each item
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
@@ -393,10 +398,10 @@ namespace Google.Example.Library.V1.Snippets
             foreach (FixedSizePage<Book> page in response.AsPages().WithFixedSize(pageSize))
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (Book item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
             }
             // End snippet
@@ -409,7 +414,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
             await libraryServiceClient.DeleteBookAsync(formattedName);
             // End snippet
@@ -421,7 +426,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
             libraryServiceClient.DeleteBook(formattedName);
             // End snippet
@@ -434,7 +439,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             Book book = new Book();
             // Make the request
             Book response = await libraryServiceClient.UpdateBookAsync(formattedName, book);
@@ -447,7 +452,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             Book book = new Book();
             // Make the request
             Book response = libraryServiceClient.UpdateBook(formattedName, book);
@@ -461,7 +466,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             Book book = new Book();
             FieldMask updateMask = new FieldMask();
             FieldMask physicalMask = new FieldMask();
@@ -476,7 +481,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             Book book = new Book();
             FieldMask updateMask = new FieldMask();
             FieldMask physicalMask = new FieldMask();
@@ -492,8 +497,8 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
-            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             // Make the request
             Book response = await libraryServiceClient.MoveBookAsync(formattedName, formattedOtherShelfName);
             // End snippet
@@ -505,8 +510,8 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
-            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
             // Make the request
             Book response = libraryServiceClient.MoveBook(formattedName, formattedOtherShelfName);
             // End snippet
@@ -515,33 +520,33 @@ namespace Google.Example.Library.V1.Snippets
         public async Task ListStringsAsync()
         {
             // Snippet: ListStringsAsync(string,int?,CallSettings)
-            // Additional: ListStringsAsync(string,int?,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
 
             // Make the request
             IPagedAsyncEnumerable<ListStringsResponse,string> response =
-                await libraryServiceClient.ListStringsAsync();
+                libraryServiceClient.ListStringsAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            await response.ForEachAsync((string item) =>
             {
                 // Do something with each item
-                Console.Writeline(item);
-            }
+                Console.WriteLine(item);
+            });
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
             int pageSize = 10;
-            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (string item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
-            }
+            });
             // End snippet
         }
 
@@ -560,7 +565,7 @@ namespace Google.Example.Library.V1.Snippets
             foreach (string item in response)
             {
                 // Do something with each item
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
@@ -568,10 +573,10 @@ namespace Google.Example.Library.V1.Snippets
             foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (string item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
             }
             // End snippet
@@ -584,7 +589,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -605,7 +610,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -627,7 +632,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
             // Make the request
             Book response = await libraryServiceClient.GetBookFromArchiveAsync(formattedName);
             // End snippet
@@ -639,7 +644,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
             // Make the request
             Book response = libraryServiceClient.GetBookFromArchive(formattedName);
             // End snippet
@@ -652,7 +657,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
@@ -669,7 +674,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
@@ -683,7 +688,6 @@ namespace Google.Example.Library.V1.Snippets
         public async Task FindRelatedBooksAsync()
         {
             // Snippet: FindRelatedBooksAsync(IEnumerable<string>,IEnumerable<string>,string,int?,CallSettings)
-            // Additional: FindRelatedBooksAsync(IEnumerable<string>,IEnumerable<string>,string,int?,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
@@ -694,26 +698,27 @@ namespace Google.Example.Library.V1.Snippets
             IEnumerable<string> shelves = new List<string>();
             // Make the request
             IPagedAsyncEnumerable<FindRelatedBooksResponse,string> response =
-                await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
+                libraryServiceClient.FindRelatedBooksAsync(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            await response.ForEachAsync((string item) =>
             {
                 // Do something with each item
-                Console.Writeline(item);
-            }
+                Console.WriteLine(item);
+            });
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
             int pageSize = 10;
-            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (string item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
-            }
+            });
             // End snippet
         }
 
@@ -736,7 +741,7 @@ namespace Google.Example.Library.V1.Snippets
             foreach (string item in response)
             {
                 // Do something with each item
-                Console.Writeline(item);
+                Console.WriteLine(item);
             }
 
             // Or iterate over fixed-sized pages, lazily performing RPCs as required
@@ -744,10 +749,10 @@ namespace Google.Example.Library.V1.Snippets
             foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
             {
                 // Do something with each page of items
-                Console.Writeline("A page of results:");
+                Console.WriteLine("A page of results:");
                 foreach (string item in page)
                 {
-                    Console.Writeline(item);
+                    Console.WriteLine(item);
                 }
             }
             // End snippet
@@ -760,7 +765,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             string tag = "";
             // Make the request
             AddTagResponse response = await libraryServiceClient.AddTagAsync(formattedResource, tag);
@@ -773,10 +778,62 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF]", "[BOOK]");
+            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             string tag = "";
             // Make the request
             AddTagResponse response = libraryServiceClient.AddTag(formattedResource, tag);
+            // End snippet
+        }
+
+        public async Task AddLabelAsync()
+        {
+            // Snippet: AddLabelAsync(string,string,CallSettings)
+            // Additional: AddLabelAsync(string,string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string label = "";
+            // Make the request
+            AddLabelResponse response = await libraryServiceClient.AddLabelAsync(formattedResource, label);
+            // End snippet
+        }
+
+        public void AddLabel()
+        {
+            // Snippet: AddLabel(string,string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string label = "";
+            // Make the request
+            AddLabelResponse response = libraryServiceClient.AddLabel(formattedResource, label);
+            // End snippet
+        }
+
+        public async Task GetBigBookAsync()
+        {
+            // Snippet: GetBigBookAsync(string,CallSettings)
+            // Additional: GetBigBookAsync(string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            Operation response = await libraryServiceClient.GetBigBookAsync(formattedName);
+            // End snippet
+        }
+
+        public void GetBigBook()
+        {
+            // Snippet: GetBigBook(string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            Operation response = libraryServiceClient.GetBigBook(formattedName);
             // End snippet
         }
 

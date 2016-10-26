@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
@@ -47,7 +48,8 @@ public class ApiCallableTransformer {
       if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }
-      callableMembers.addAll(generateStaticLangApiCallables(context.asMethodContext(method)));
+      callableMembers.addAll(
+          generateStaticLangApiCallables(context.asRequestMethodContext(method)));
     }
 
     return callableMembers;
@@ -57,7 +59,7 @@ public class ApiCallableTransformer {
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
 
     for (Method method : context.getSupportedMethods()) {
-      settingsMembers.addAll(generateApiCallableSettings(context.asMethodContext(method)));
+      settingsMembers.addAll(generateApiCallableSettings(context.asRequestMethodContext(method)));
     }
 
     return settingsMembers;
@@ -75,10 +77,13 @@ public class ApiCallableTransformer {
     apiCallableBuilder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     apiCallableBuilder.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     apiCallableBuilder.name(context.getNamer().getCallableName(method));
-    apiCallableBuilder.methodName(context.getNamer().getApiMethodName(method));
+    apiCallableBuilder.methodName(
+        context.getNamer().getApiMethodName(method, context.getMethodConfig().getVisibility()));
     apiCallableBuilder.asyncMethodName(context.getNamer().getAsyncApiMethodName(method));
     apiCallableBuilder.memberName(context.getNamer().getSettingsMemberName(method));
     apiCallableBuilder.settingsFunctionName(context.getNamer().getSettingsFunctionName(method));
+    apiCallableBuilder.grpcClientVarName(
+        context.getNamer().getReroutedGrpcClientVarName(methodConfig));
 
     if (methodConfig.isGrpcStreaming()) {
       apiCallableBuilder.type(ApiCallableType.StreamingApiCallable);
@@ -107,11 +112,14 @@ public class ApiCallableTransformer {
           typeTable.getAndSaveNicknameFor(method.getInputType()));
       pagedApiCallableBuilder.responseTypeName(pagedResponseTypeName);
       pagedApiCallableBuilder.name(context.getNamer().getPagedCallableName(method));
-      pagedApiCallableBuilder.methodName(context.getNamer().getApiMethodName(method));
+      pagedApiCallableBuilder.methodName(
+          context.getNamer().getApiMethodName(method, context.getMethodConfig().getVisibility()));
       pagedApiCallableBuilder.asyncMethodName(context.getNamer().getAsyncApiMethodName(method));
       pagedApiCallableBuilder.memberName(context.getNamer().getSettingsMemberName(method));
       pagedApiCallableBuilder.settingsFunctionName(
           context.getNamer().getSettingsFunctionName(method));
+      pagedApiCallableBuilder.grpcClientVarName(
+          context.getNamer().getReroutedGrpcClientVarName(methodConfig));
 
       apiCallables.add(pagedApiCallableBuilder.build());
     }
@@ -139,7 +147,7 @@ public class ApiCallableTransformer {
 
     ApiCallSettingsView.Builder settings = ApiCallSettingsView.newBuilder();
 
-    settings.methodName(namer.getApiMethodName(method));
+    settings.methodName(namer.getApiMethodName(method, VisibilityConfig.PUBLIC));
     settings.asyncMethodName(namer.getAsyncApiMethodName(method));
     settings.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     settings.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));

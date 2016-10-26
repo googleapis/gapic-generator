@@ -30,19 +30,13 @@ import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.io.File;
 
-/**
- * The ModelTypeTable for Java.
- */
+/** The ModelTypeTable for Java. */
 public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
-  /**
-   * The package prefix protoc uses if no java package option was provided.
-   */
+  /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
 
-  /**
-   * A map from primitive types in proto to Java counterparts.
-   */
+  /** A map from primitive types in proto to Java counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "boolean")
@@ -62,9 +56,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_BYTES, "com.google.protobuf.ByteString")
           .build();
 
-  /**
-   * A map from primitive types in proto to zero values in Java.
-   */
+  /** A map from primitive types in proto to zero values in Java. */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "false")
@@ -182,7 +174,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   /**
    * Returns the Java representation of a zero value for that type, to be used in code sample doc.
    *
-   * Parametric types may use the diamond operator, since the return value will be used only in
+   * <p>Parametric types may use the diamond operator, since the return value will be used only in
    * initialization.
    */
   @Override
@@ -259,9 +251,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     return packageName;
   }
 
-  /**
-   * Gets the class name for the given proto file.
-   */
+  /** Gets the class name for the given proto file. */
   private static String getFileClassName(ProtoFile file) {
     String baseName = Files.getNameWithoutExtension(new File(file.getSimpleName()).getName());
     return LanguageUtil.lowerUnderscoreToUpperCamel(baseName);

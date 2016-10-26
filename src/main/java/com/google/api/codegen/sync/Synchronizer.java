@@ -14,15 +14,13 @@
  */
 package com.google.api.codegen.sync;
 
+import autovalue.shaded.com.google.common.common.base.Preconditions;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
-
-import autovalue.shaded.com.google.common.common.base.Preconditions;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.FileVisitResult;
@@ -36,9 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Simple implementation of a synchronizer based on kdiff3.
- */
+/** Simple implementation of a synchronizer based on kdiff3. */
 public class Synchronizer extends SimpleFileVisitor<Path> {
 
   public static final Option<String> SOURCE_PATH =
@@ -102,9 +98,7 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
     } catch (IOException e) {
       error(
           "I/O error: %s (%s): %s",
-          e.getMessage(),
-          e.getClass().getSimpleName(),
-          Throwables.getStackTraceAsString(e));
+          e.getMessage(), e.getClass().getSimpleName(), Throwables.getStackTraceAsString(e));
     }
     return diagnosis;
   }
@@ -164,8 +158,7 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
         if (resultCode != 0) {
           error(
               "unresolved merge conflict for '%s', aborting. Output:%n%s",
-              relativePath,
-              CharStreams.toString(stdout));
+              relativePath, CharStreams.toString(stdout));
           return FileVisitResult.TERMINATE;
         }
         if (!Files.exists(baselinePath)) {
@@ -175,8 +168,7 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
       } catch (InterruptedException e) {
         error(
             "interrupted during merge conflict resolution for '%s', aborting. Output:%n%s",
-            relativePath,
-            CharStreams.toString(stdout));
+            relativePath, CharStreams.toString(stdout));
         return FileVisitResult.TERMINATE;
       }
     }

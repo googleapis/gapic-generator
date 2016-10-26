@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -29,7 +28,7 @@ public abstract class MethodInfo {
   /**
    * Returns the HTTP verb of the method.
    *
-   * For example: "GET"
+   * <p>For example: "GET"
    */
   @JsonProperty("verb")
   public abstract String verb();
@@ -37,13 +36,10 @@ public abstract class MethodInfo {
   /**
    * Returns a list of the method-name's components.
    *
-   * The method ID parsed from discovery is of the format
-   * "adexchangebuyer.creatives.insert", where the API name is followed be a
-   * list of resource names, and ends with the method's name.
-   * To accommodate easy overrides, the returned list contains the
-   * period-separated components of the method ID with the first component
-   * removed.
-   * For example: ["creatives", "insert"]
+   * <p>The method ID parsed from discovery is of the format "adexchangebuyer.creatives.insert",
+   * where the API name is followed be a list of resource names, and ends with the method's name. To
+   * accommodate easy overrides, the returned list contains the period-separated components of the
+   * method ID with the first component removed. For example: ["creatives", "insert"]
    */
   @JsonProperty("nameComponents")
   public abstract List<String> nameComponents();
@@ -51,8 +47,7 @@ public abstract class MethodInfo {
   /**
    * Returns a map of field names to fields.
    *
-   * The map doesn't include the request body type, see {@link
-   * #requestBodyType()}.
+   * <p>The map doesn't include the request body type, see {@link #requestBodyType()}.
    */
   @JsonProperty("fields")
   public abstract ImmutableMap<String, FieldInfo> fields();
@@ -60,8 +55,8 @@ public abstract class MethodInfo {
   /**
    * Returns the type for this method's request.
    *
-   * Apiary clients return a request type that's executed to produce a response.
-   * This value contains the properties of that type.
+   * <p>Apiary clients return a request type that's executed to produce a response. This value
+   * contains the properties of that type.
    */
   @JsonProperty("requestType")
   @Nullable
@@ -70,17 +65,15 @@ public abstract class MethodInfo {
   /**
    * Returns the type for method's request body, and null if it has none.
    *
-   * Methods may contain any number of fields with one of them being an optional
-   * message with additional properties. For convenience, that type is returned
-   * here because it lacks a proper name.
+   * <p>Methods may contain any number of fields with one of them being an optional message with
+   * additional properties. For convenience, that type is returned here because it lacks a proper
+   * name.
    */
   @JsonProperty("requestBodyType")
   @Nullable
   public abstract TypeInfo requestBodyType();
 
-  /**
-   * Returns the type for this method's response, and null if it has none.
-   */
+  /** Returns the type for this method's response, and null if it has none. */
   @JsonProperty("responseType")
   @Nullable
   public abstract TypeInfo responseType();
@@ -88,17 +81,15 @@ public abstract class MethodInfo {
   /**
    * Returns true if the method is page streaming.
    *
-   * True if the method's response type contains the field "nextPageToken".
+   * <p>True if the method's response type contains the field "nextPageToken".
    */
   @JsonProperty("isPageStreaming")
   public abstract boolean isPageStreaming();
 
   /**
-   * Returns the response type's page streaming resource field, and null if it
-   * has none.
+   * Returns the response type's page streaming resource field, and null if it has none.
    *
-   * Always the first type within the response message that has a repeated
-   * cardinality.
+   * <p>Always the first type within the response message that has a repeated cardinality.
    */
   @JsonProperty("pageStreamingResourceField")
   @Nullable
@@ -107,28 +98,21 @@ public abstract class MethodInfo {
   /**
    * Returns true if the request body contains the page streaming resource setter.
    *
-   * Provided to support a workaround for the logging.entries.list method in
-   * Java, where the request body, instead of the request, contains the page
-   * streaming resource setter.
+   * <p>Provided to support a workaround for the logging.entries.list method in Java, where the
+   * request body, instead of the request, contains the page streaming resource setter.
    */
   @JsonProperty("isPageStreamingResourceSetterInRequestBody")
   public abstract boolean isPageStreamingResourceSetterInRequestBody();
 
-  /**
-   * Returns true if the method supports media upload.
-   */
+  /** Returns true if the method supports media upload. */
   @JsonProperty("hasMediaUpload")
   public abstract boolean hasMediaUpload();
 
-  /**
-   * Returns true if the method supports media download.
-   */
+  /** Returns true if the method supports media download. */
   @JsonProperty("hasMediaDownload")
   public abstract boolean hasMediaDownload();
 
-  /**
-   * Returns a list of the method's accepted authentication scopes.
-   */
+  /** Returns a list of the method's accepted authentication scopes. */
   @JsonProperty("authScopes")
   public abstract List<String> authScopes();
 
@@ -137,7 +121,7 @@ public abstract class MethodInfo {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     @JsonProperty("verb")
     public abstract Builder verb(String val);

@@ -14,34 +14,39 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
-
 import javax.annotation.Nullable;
 
-/**
- * PageStreamingConfig represents the page streaming configuration for a method.
- */
-public class PageStreamingConfig {
-  private final Field requestTokenField;
-  private final Field pageSizeField;
-  private final Field responseTokenField;
-  private final Field resourcesField;
+/** PageStreamingConfig represents the page streaming configuration for a method. */
+@AutoValue
+public abstract class PageStreamingConfig {
+  public abstract Field getRequestTokenField();
+
+  @Nullable
+  public abstract Field getPageSizeField();
+
+  public abstract Field getResponseTokenField();
+
+  public abstract FieldConfig getResourcesFieldConfig();
 
   /**
    * Creates an instance of PageStreamingConfig based on PageStreamingConfigProto, linking it up
-   * with the provided method. On errors, null will be returned, and diagnostics are reported to
-   * the diag collector.
-   *
+   * with the provided method. On errors, null will be returned, and diagnostics are reported to the
+   * diag collector.
    */
   @Nullable
   public static PageStreamingConfig createPageStreaming(
-      DiagCollector diagCollector, PageStreamingConfigProto pageStreaming, Method method) {
+      DiagCollector diagCollector, MethodConfigProto methodConfigProto, Method method) {
+    PageStreamingConfigProto pageStreaming = methodConfigProto.getPageStreaming();
     String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
     Field requestTokenField =
         method.getInputType().getMessageType().lookupField(requestTokenFieldName);
@@ -84,7 +89,9 @@ public class PageStreamingConfig {
     }
 
     String resourcesFieldName = pageStreaming.getResponse().getResourcesField();
-    Field resourcesField = method.getOutputType().getMessageType().lookupField(resourcesFieldName);
+    Field resourcesField = method.getOutputMessage().lookupField(resourcesFieldName);
+    FieldConfig resourcesFieldConfig;
+
     if (resourcesField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -93,60 +100,28 @@ public class PageStreamingConfig {
               method.getFullName(),
               method.getOutputType().getMessageType().getFullName(),
               resourcesFieldName));
+      resourcesFieldConfig = null;
+    } else {
+      resourcesFieldConfig = ResourceNameUtil.createFieldConfig(resourcesField);
     }
 
-    if (requestTokenField == null || responseTokenField == null || resourcesField == null) {
+    if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {
       return null;
     }
-    return new PageStreamingConfig(
-        requestTokenField, pageSizeField, responseTokenField, resourcesField);
+    return new AutoValue_PageStreamingConfig(
+        requestTokenField, pageSizeField, responseTokenField, resourcesFieldConfig);
   }
 
-  private PageStreamingConfig(
-      Field requestTokenField,
-      Field pageSizeField,
-      Field responseTokenField,
-      Field resourcesField) {
-    this.requestTokenField = requestTokenField;
-    this.pageSizeField = pageSizeField;
-    this.responseTokenField = responseTokenField;
-    this.resourcesField = resourcesField;
-  }
-
-  /**
-   * Returns the field used in the request to hold the page token.
-   */
-  public Field getRequestTokenField() {
-    return requestTokenField;
-  }
-
-  /**
-   * Returns whether there is a field for page size.
-   */
+  /** Returns whether there is a field for page size. */
   public boolean hasPageSizeField() {
-    return pageSizeField != null;
+    return getPageSizeField() != null;
   }
 
-  /**
-   * Returns the field used in the request to specify the maximum number of elements in the
-   * response.
-   */
-  @Nullable
-  public Field getPageSizeField() {
-    return pageSizeField;
-  }
-
-  /**
-   * Returns the field used in the response to hold the next page token.
-   */
-  public Field getResponseTokenField() {
-    return responseTokenField;
-  }
-
-  /**
-   * Returns the field used in the response to hold the resource being returned.
-   */
   public Field getResourcesField() {
-    return resourcesField;
+    return getResourcesFieldConfig().getField();
+  }
+
+  public String getResourcesFieldName() {
+    return getResourcesField().getSimpleName();
   }
 }

@@ -51,6 +51,12 @@ public abstract class StaticLangXSettingsView implements ViewModel {
 
   public abstract List<RetryParamsDefinitionView> retryParamsDefinitions();
 
+  public abstract boolean hasDefaultServiceAddress();
+
+  public abstract boolean hasDefaultServiceScopes();
+
+  public abstract boolean hasDefaultInstance();
+
   public abstract List<ImportTypeView> imports();
 
   @Override
@@ -66,7 +72,7 @@ public abstract class StaticLangXSettingsView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder packageName(String val);
@@ -99,6 +105,12 @@ public abstract class StaticLangXSettingsView implements ViewModel {
     public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder outputPath(String val);
+
+    public abstract Builder hasDefaultServiceAddress(boolean hasDefaultServiceAddress);
+
+    public abstract Builder hasDefaultServiceScopes(boolean hasDefaultServiceScopes);
+
+    public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
 
     public abstract StaticLangXSettingsView build();
   }

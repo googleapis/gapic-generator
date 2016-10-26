@@ -32,7 +32,7 @@ public abstract class PagedResponseIterateMethodView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder overloadResourceTypeName(String val);
 

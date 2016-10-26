@@ -2,10 +2,12 @@ syntax = "proto3";
 
 package google.example.myproto.v1;
 
+import "google/longrunning/operations.proto";
 import "singleservice.proto";
 
 service Gopher {
   rpc SimpleMethod(SimpleRequest) returns (SimpleResponse);
+  rpc LroMethod(SimpleRequest) returns (google.longrunning.Operation);
   rpc RetryMethod(SimpleRequest) returns (SimpleResponse);
   rpc PageStreamMethod(PageStreamRequest) returns (PageStreamResponse);
 

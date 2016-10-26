@@ -22,11 +22,8 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +49,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   /**
-   * The type name of the Grpc client class.
-   * This needs to match what Grpc generates for the particular language.
+   * The type name of the Grpc client class. This needs to match what Grpc generates for the
+   * particular language.
    */
   @Override
   public String getGrpcClientTypeName(Interface service) {

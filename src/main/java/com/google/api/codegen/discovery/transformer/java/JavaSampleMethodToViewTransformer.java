@@ -14,10 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -32,10 +28,12 @@ import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
+import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Transforms a Method and SampleConfig into the standard discovery surface for
@@ -43,7 +41,7 @@ import com.google.protobuf.Method;
  */
 public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
-  private final static String TEMPLATE_FILENAME = "java/sample.snip";
+  private static final String TEMPLATE_FILENAME = "java/sample.snip";
 
   public JavaSampleMethodToViewTransformer() {}
 
@@ -82,8 +80,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
-    for (Entry<String, FieldInfo> field : methodInfo.fields().entrySet()) {
-      SampleFieldView sampleFieldView = generateSampleField(field, typeTable, symbolTable);
+    for (FieldInfo field : methodInfo.fields().values()) {
+      SampleFieldView sampleFieldView = createSampleFieldView(field, typeTable, symbolTable);
       fields.add(sampleFieldView);
       fieldVarNames.add(sampleFieldView.name());
     }
@@ -136,7 +134,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .build();
   }
 
-  public SampleAuthView createSampleAuthView(SampleTransformerContext context) {
+  private SampleAuthView createSampleAuthView(SampleTransformerContext context) {
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
 
@@ -148,7 +146,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .build();
   }
 
-  public SamplePageStreamingView createSamplePageStreamingView(
+  private SamplePageStreamingView createSamplePageStreamingView(
       SampleTransformerContext context, SymbolTable symbolTable) {
     MethodInfo methodInfo = context.getSampleConfig().methods().get(context.getMethodName());
     FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
@@ -172,17 +170,16 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     return builder.build();
   }
 
-  public SampleFieldView generateSampleField(
-      Entry<String, FieldInfo> field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
-    TypeInfo typeInfo = field.getValue().type();
+  private SampleFieldView createSampleFieldView(
+      FieldInfo field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
+    TypeInfo typeInfo = field.type();
     String defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
-    String example = field.getValue().example();
     return SampleFieldView.newBuilder()
-        .name(symbolTable.getNewSymbol(field.getKey()))
+        .name(symbolTable.getNewSymbol(field.name()))
         .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
         .defaultValue(defaultValue)
-        .example(example)
-        .description(field.getValue().description())
+        .example(field.example())
+        .description(field.description())
         .build();
   }
 

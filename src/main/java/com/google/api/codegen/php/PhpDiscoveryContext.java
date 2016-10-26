@@ -23,21 +23,16 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
 import java.util.List;
 
-/**
- * A subclass of DiscoveryContext which is specialized for PHP language.
- */
+/** A subclass of DiscoveryContext which is specialized for PHP language. */
 public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext {
 
   private static final String GOOGLE_SERVICE_PREFIX = "Google_Service_";
 
   private PhpTypeTable phpTypeTable;
 
-  /**
-   * A map from inferred API package names to renamed counterparts in PHP client libraries.
-   */
+  /** A map from inferred API package names to renamed counterparts in PHP client libraries. */
   private static final ImmutableMap<String, String> RENAMED_PACKAGE_MAP =
       ImmutableMap.<String, String>builder()
           .put("Adexchangebuyer", "AdExchangeBuyer")
@@ -50,9 +45,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
           .put("Sqladmin", "SQLAdmin")
           .build();
 
-  /**
-   * A map from primitive type name to corresponding default value string in PHP.
-   */
+  /** A map from primitive type name to corresponding default value string in PHP. */
   private static final ImmutableMap<Field.Kind, String> DEFAULT_PRIMITIVE_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "false")
@@ -75,17 +68,14 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       ImmutableSet.<String>builder().add("list").add("clone").build();
 
   /**
-   * A map that maps the original request class name to its renamed version used in PHP client
-   * code.
+   * A map that maps the original request class name to its renamed version used in PHP client code.
    */
   private static final ImmutableMap<String, String> RENAMED_REQUESTS =
       ImmutableMap.<String, String>builder()
           .put("Google_Service_Storage_Object", "Google_Service_Storage_StorageObject")
           .build();
 
-  /**
-   * Constructs the PHP discovery context.
-   */
+  /** Constructs the PHP discovery context. */
   public PhpDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
   }
@@ -103,9 +93,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   // ===============
 
   @Override
-  /**
-   * Returns the method names used in the PHP client code.
-   */
+  /** Returns the method names used in the PHP client code. */
   public String getMethodName(Method method) {
     StringBuilder builder = new StringBuilder(super.getMethodName(method));
     if (RENAMED_METHODS.contains(super.getMethodName(method))) {
@@ -117,9 +105,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
     return builder.toString();
   }
 
-  /**
-   * Returns a simple name represents the API in camel case.
-   */
+  /** Returns a simple name represents the API in camel case. */
   public String getSimpleApiName() {
     return getRename(lowerCamelToUpperCamel(getApi().getName()), RENAMED_PACKAGE_MAP);
   }
@@ -140,9 +126,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
     return "";
   }
 
-  /**
-   * Returns the service class name in PHP.
-   */
+  /** Returns the service class name in PHP. */
   public String getServiceClassName() {
     return GOOGLE_SERVICE_PREFIX + getSimpleApiName();
   }
@@ -153,8 +137,8 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   }
 
   /**
-   * Generates placeholder value for field of type based on field kind and, for
-   * explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
+   * Generates placeholder value for field of type based on field kind and, for explicitly-formatted
+   * strings, format type in {@link ApiaryConfig#stringFormat}.
    */
   public String typeDefaultValue(Type type, Field field) {
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {

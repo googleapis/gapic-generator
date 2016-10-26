@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.BundlingDescriptorProto;
 import com.google.api.codegen.BundlingSettingsProto;
@@ -25,12 +24,9 @@ import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
-
 import javax.annotation.Nullable;
 
-/**
- * BundlingConfig represents the bundling configuration for a method.
- */
+/** BundlingConfig represents the bundling configuration for a method. */
 public class BundlingConfig {
   private final int elementCountThreshold;
   private final long requestByteThreshold;

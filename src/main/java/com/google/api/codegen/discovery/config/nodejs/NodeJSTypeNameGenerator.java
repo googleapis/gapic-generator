@@ -14,13 +14,18 @@
  */
 package com.google.api.codegen.discovery.config.nodejs;
 
-import java.util.List;
-
+import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.common.base.Strings;
+import java.util.List;
 
 public class NodeJSTypeNameGenerator implements TypeNameGenerator {
+
+  @Override
+  public String getApiVersion(String apiVersion) {
+    return apiVersion;
+  }
 
   @Override
   public String getPackagePrefix(String apiName, String apiVersion) {
@@ -37,6 +42,15 @@ public class NodeJSTypeNameGenerator implements TypeNameGenerator {
   public String getRequestTypeName(List<String> methodNameComponents) {
     // N/A
     return "";
+  }
+
+  @Override
+  public String getResponseTypeUrl(String responseTypeUrl) {
+    if (responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
+        || responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_URL)) {
+      return "";
+    }
+    return responseTypeUrl;
   }
 
   @Override

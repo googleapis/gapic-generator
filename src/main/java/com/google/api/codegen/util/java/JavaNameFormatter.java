@@ -19,9 +19,7 @@ import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
 import com.google.common.collect.ImmutableSet;
 
-/**
- * The NameFormatter for Java.
- */
+/** The NameFormatter for Java. */
 public class JavaNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {

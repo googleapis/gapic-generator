@@ -18,14 +18,12 @@ import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.gapic.PackageNameCodePathMapper;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
-import com.google.common.collect.ImmutableList;
 import com.google.common.truth.Truth;
 import java.util.Collections;
 import org.junit.Before;
@@ -82,37 +80,44 @@ public class GoGapicSurfaceTransformerTest {
             apiConfig,
             GoGapicSurfaceTransformer.createTypeTable(),
             namer,
-            new FeatureConfig());
+            new GoFeatureConfig());
   }
-
-  private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
-      ImmutableList.<String>of("math;;;");
-
-  private static final ImmutableList<String> GRPC_SERVER_STREAM_IMPORTS =
-      ImmutableList.<String>of("io;;;");
 
   @Test
   public void testGetImportsPlain() {
     Method method = getMethod(context.getInterface(), "SimpleMethod");
-    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
+    transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("time");
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
   }
 
   @Test
   public void testGetImportsRetry() {
     Method method = getMethod(context.getInterface(), "RetryMethod");
-    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
+    transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("time");
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
   }
 
   @Test
   public void testGetImportsPageStream() {
     Method method = getMethod(context.getInterface(), "PageStreamMethod");
-    transformer.generateApiMethods(context, Collections.singletonList(method), PAGE_STREAM_IMPORTS);
+    transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("math");
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
+  }
+
+  @Test
+  public void testGetImportsLro() {
+    Method method = getMethod(context.getInterface(), "LroMethod");
+    transformer.addXApiImports(context, Collections.singletonList(method));
+    transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("math");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsKey("cloud.google.com/go/longrunning");
   }
 
   @Test
@@ -134,6 +139,14 @@ public class GoGapicSurfaceTransformerTest {
     Method method = getMethod(context.getInterface(), "ClientStreamMethod");
     transformer.addXExampleImports(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("io");
+  }
+
+  @Test
+  public void testGetExampleImportsLro() {
+    Method method = getMethod(context.getInterface(), "LroMethod");
+    transformer.addXExampleImports(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports())
+        .containsKey("github.com/golang/protobuf/ptypes");
   }
 
   @Test

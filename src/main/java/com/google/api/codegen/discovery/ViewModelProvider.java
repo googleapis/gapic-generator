@@ -14,11 +14,6 @@
  */
 package com.google.api.codegen.discovery;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -32,6 +27,10 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.protobuf.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /*
  * Calls the MethodToViewTransformer on a method with the provided ApiaryConfig.
@@ -88,7 +87,7 @@ public class ViewModelProvider implements DiscoveryProvider {
   /**
    * Applies sampleConfigOverrides to sampleConfig.
    *
-   * If sampleConfigOverrides is null, sampleConfig is returned as is.
+   * <p>If sampleConfigOverrides is null, sampleConfig is returned as is.
    */
   private static SampleConfig override(SampleConfig sampleConfig, JsonNode sampleConfigOverrides) {
     // We use JSON merging to facilitate this override mechanism:
@@ -112,11 +111,10 @@ public class ViewModelProvider implements DiscoveryProvider {
   /**
    * Overwrites the fields of tree that intersect with those of overrideTree.
    *
-   * Values of tree are modified, and values of overrideTree are not modified.
-   * The merge process loops through the fields of tree and replaces non-object
-   * values with the corresponding value from overrideTree if present. Object
-   * values are traversed recursively to replace sub-properties.
-   * Null fields in overrideTree are removed from tree.
+   * <p>Values of tree are modified, and values of overrideTree are not modified. The merge process
+   * loops through the fields of tree and replaces non-object values with the corresponding value
+   * from overrideTree if present. Object values are traversed recursively to replace
+   * sub-properties. Null fields in overrideTree are removed from tree.
    *
    * @param tree the original JsonNode to modify.
    * @param overrideTree the JsonNode with values to overwrite tree with.

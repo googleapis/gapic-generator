@@ -14,20 +14,18 @@
  */
 package com.google.api.codegen.go;
 
-import com.google.api.codegen.util.go.GoNameFormatter;
+import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.Service;
+import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableTable;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   public GoDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
@@ -96,9 +94,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
           .put(Field.Kind.TYPE_ENUM, "string")
           .build();
 
-  /**
-   * Returns the Go representation of a type's field's type.
-   */
+  /** Returns the Go representation of a type's field's type. */
   private String typeName(Type type, Field field) {
     String fieldName = field.getName();
     String fieldTypeName = field.getTypeUrl();
@@ -109,8 +105,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
       if (isMapField(type, fieldName)) {
         return String.format(
             "map[%s]%s",
-            typeName(items, getField(items, "key")),
-            typeName(items, getField(items, "value")));
+            typeName(items, getField(items, "key")), typeName(items, getField(items, "value")));
       }
       Field elements = getField(items, "elements");
       if (elements != null) {

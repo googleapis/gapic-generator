@@ -17,9 +17,7 @@ package com.google.api.codegen;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.auto.value.AutoValue;
 
-/**
- * Represents a generated document plus the filename for the document.
- */
+/** Represents a generated document plus the filename for the document. */
 @AutoValue
 public abstract class GeneratedResult {
 

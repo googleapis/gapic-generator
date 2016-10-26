@@ -30,13 +30,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-/**
- * The TypeTable for Java.
- */
+/** The TypeTable for Java. */
 public class JavaTypeTable implements TypeTable {
-  /**
-   * A bi-map from full names to type alias indicating the import map.
-   */
+  /** A bi-map from full names to type alias indicating the import map. */
   private final BiMap<String, TypeAlias> imports = HashBiMap.create();
 
   private final Set<String> usedNicknames = new HashSet<>();
@@ -49,9 +45,7 @@ public class JavaTypeTable implements TypeTable {
 
   private static final String JAVA_LANG_TYPE_PREFIX = "java.lang.";
 
-  /**
-   * A map from unboxed Java primitive type name to boxed counterpart.
-   */
+  /** A map from unboxed Java primitive type name to boxed counterpart. */
   private static final ImmutableMap<String, String> BOXED_TYPE_MAP =
       ImmutableMap.<String, String>builder()
           .put("boolean", "Boolean")
@@ -153,9 +147,7 @@ public class JavaTypeTable implements TypeTable {
     return alias.getNickname();
   }
 
-  /**
-   * Returns the Java representation of a basic type in boxed form.
-   */
+  /** Returns the Java representation of a basic type in boxed form. */
   public static String getBoxedTypeName(String primitiveTypeName) {
     return LanguageUtil.getRename(primitiveTypeName, BOXED_TYPE_MAP);
   }
@@ -179,9 +171,7 @@ public class JavaTypeTable implements TypeTable {
     return cleanedImports;
   }
 
-  /**
-   * Checks whether the simple type name is implicitly imported from java.lang.
-   */
+  /** Checks whether the simple type name is implicitly imported from java.lang. */
   private boolean isImplicitImport(String name) {
     Boolean yes = implicitImports.get(name);
     if (yes != null) {

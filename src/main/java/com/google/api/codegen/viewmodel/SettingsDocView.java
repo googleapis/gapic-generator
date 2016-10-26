@@ -34,12 +34,14 @@ public abstract class SettingsDocView {
 
   public abstract String settingsBuilderVarName();
 
+  public abstract boolean hasDefaultInstance();
+
   public static Builder newBuilder() {
     return new AutoValue_SettingsDocView.Builder();
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder serviceAddress(String val);
 
     public abstract Builder servicePort(Integer val);
@@ -55,6 +57,8 @@ public abstract class SettingsDocView {
     public abstract Builder settingsClassName(String val);
 
     public abstract Builder settingsBuilderVarName(String val);
+
+    public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
 
     public abstract SettingsDocView build();
   }

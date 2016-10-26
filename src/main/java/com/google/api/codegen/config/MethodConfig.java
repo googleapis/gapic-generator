@@ -15,32 +15,28 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.BundlingConfigProto;
-import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
+import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-
-import org.joda.time.Duration;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 import javax.annotation.Nullable;
+import org.joda.time.Duration;
 
 /**
  * MethodConfig represents the code-gen config for a method, and includes the specification of
@@ -57,7 +53,7 @@ public abstract class MethodConfig {
   public abstract GrpcStreamingConfig getGrpcStreaming();
 
   @Nullable
-  public abstract FlatteningConfig getFlattening();
+  public abstract ImmutableList<FlatteningConfig> getFlatteningConfigs();
 
   public abstract String getRetryCodesConfigName();
 
@@ -65,9 +61,9 @@ public abstract class MethodConfig {
 
   public abstract Duration getTimeout();
 
-  public abstract Iterable<Field> getRequiredFields();
+  public abstract Iterable<FieldConfig> getRequiredFieldConfigs();
 
-  public abstract Iterable<Field> getOptionalFields();
+  public abstract Iterable<FieldConfig> getOptionalFieldConfigs();
 
   @Nullable
   public abstract BundlingConfig getBundling();
@@ -102,8 +98,7 @@ public abstract class MethodConfig {
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming =
-          PageStreamingConfig.createPageStreaming(
-              diagCollector, methodConfigProto.getPageStreaming(), method);
+          PageStreamingConfig.createPageStreaming(diagCollector, methodConfigProto, method);
       if (pageStreaming == null) {
         error = true;
       }
@@ -124,11 +119,9 @@ public abstract class MethodConfig {
       }
     }
 
-    FlatteningConfig flattening = null;
+    ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening =
-          FlatteningConfig.createFlattening(
-              diagCollector, methodConfigProto.getFlattening(), method);
+      flattening = createFlattening(diagCollector, methodConfigProto, method);
       if (flattening == null) {
         error = true;
       }
@@ -177,35 +170,16 @@ public abstract class MethodConfig {
 
     boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
 
-    List<String> requiredFieldNames = methodConfigProto.getRequiredFieldsList();
-    ImmutableSet.Builder<Field> builder = ImmutableSet.builder();
-    for (String fieldName : requiredFieldNames) {
-      Field requiredField = method.getInputMessage().lookupField(fieldName);
-      if (requiredField != null) {
-        builder.add(requiredField);
-      } else {
-        Diag.error(
-            SimpleLocation.TOPLEVEL,
-            "Required field '%s' not found (in method %s)",
-            fieldName,
-            method.getFullName());
-        error = true;
-      }
-    }
-    Set<Field> requiredFields = builder.build();
-
-    Iterable<Field> optionalFields =
-        Iterables.filter(
-            method.getInputType().getMessageType().getFields(),
-            new Predicate<Field>() {
-              @Override
-              public boolean apply(Field input) {
-                return !(methodConfigProto.getRequiredFieldsList().contains(input.getSimpleName()));
-              }
-            });
-
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+
+    Iterable<FieldConfig> requiredFieldConfigs =
+        createRequiredFieldNameConfigs(
+            method, fieldNamePatterns, methodConfigProto.getRequiredFieldsList());
+
+    Iterable<FieldConfig> optionalFieldConfigs =
+        createOptionalFieldNameConfigs(
+            method, fieldNamePatterns, methodConfigProto.getRequiredFieldsList());
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
@@ -235,8 +209,8 @@ public abstract class MethodConfig {
           retryCodesName,
           retryParamsName,
           timeout,
-          requiredFields,
-          optionalFields,
+          requiredFieldConfigs,
+          optionalFieldConfigs,
           bundling,
           hasRequestObjectMethod,
           fieldNamePatterns,
@@ -244,6 +218,78 @@ public abstract class MethodConfig {
           rerouteToGrpcInterface,
           visibility);
     }
+  }
+
+  @Nullable
+  private static ImmutableList<FlatteningConfig> createFlattening(
+      DiagCollector diagCollector, MethodConfigProto methodConfigProto, Method method) {
+    boolean missing = false;
+    ImmutableList.Builder<FlatteningConfig> flatteningGroupsBuilder = ImmutableList.builder();
+    for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
+      FlatteningConfig groupConfig =
+          FlatteningConfig.createFlattening(
+              diagCollector, methodConfigProto, flatteningGroup, method);
+      if (groupConfig == null) {
+        missing = true;
+      } else {
+        flatteningGroupsBuilder.add(groupConfig);
+      }
+    }
+    if (missing) {
+      return null;
+    }
+
+    return flatteningGroupsBuilder.build();
+  }
+
+  private static Iterable<FieldConfig> createRequiredFieldNameConfigs(
+      Method method,
+      ImmutableMap<String, String> fieldNamePatterns,
+      List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldConfig> builder = ImmutableList.builder();
+    for (String fieldName : requiredFieldNames) {
+      Field requiredField = method.getInputMessage().lookupField(fieldName);
+      if (requiredField != null) {
+        builder.add(getFieldConfig(fieldNamePatterns, requiredField));
+      } else {
+        Diag.error(
+            SimpleLocation.TOPLEVEL,
+            "Required field '%s' not found (in method %s)",
+            fieldName,
+            method.getFullName());
+        return null;
+      }
+    }
+    return builder.build();
+  }
+
+  private static Iterable<FieldConfig> createOptionalFieldNameConfigs(
+      Method method,
+      ImmutableMap<String, String> fieldNamePatterns,
+      List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldConfig> optionalFieldConfigsBuilder = ImmutableList.builder();
+    for (Field field : method.getInputType().getMessageType().getFields()) {
+      if (requiredFieldNames.contains(field.getSimpleName())) {
+        continue;
+      }
+      optionalFieldConfigsBuilder.add(getFieldConfig(fieldNamePatterns, field));
+    }
+    return optionalFieldConfigsBuilder.build();
+  }
+
+  private static FieldConfig getFieldConfig(
+      ImmutableMap<String, String> fieldNamePatterns, Field field) {
+    FieldConfig fieldConfig;
+    if (ResourceNameUtil.hasResourceName(field)) {
+      fieldConfig = ResourceNameUtil.createFieldConfig(field);
+    } else if (fieldNamePatterns.containsKey(field.getSimpleName())) {
+      fieldConfig =
+          FieldConfig.createFieldConfig(
+              field, ResourceNameTreatment.VALIDATE, fieldNamePatterns.get(field.getSimpleName()));
+    } else {
+      fieldConfig = FieldConfig.createDefaultFieldConfig(field);
+    }
+    return fieldConfig;
   }
 
   /** Returns true if the method is a streaming method */
@@ -272,11 +318,19 @@ public abstract class MethodConfig {
 
   /** Returns true if this method has flattening configured. */
   public boolean isFlattening() {
-    return getFlattening() != null;
+    return getFlatteningConfigs() != null;
   }
 
   /** Returns true if this method has bundling configured. */
   public boolean isBundling() {
     return getBundling() != null;
+  }
+
+  public Iterable<Field> getRequiredFields() {
+    return FieldConfig.toFieldIterable(getRequiredFieldConfigs());
+  }
+
+  public Iterable<Field> getOptionalFields() {
+    return FieldConfig.toFieldIterable(getOptionalFieldConfigs());
   }
 }

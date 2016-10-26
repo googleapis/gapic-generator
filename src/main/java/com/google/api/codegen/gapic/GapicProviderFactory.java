@@ -16,15 +16,11 @@ package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.tools.framework.model.Model;
-
 import java.util.List;
 
-/**
- * A factory for GapicProviders which perform code generation.
- */
+/** A factory for GapicProviders which perform code generation. */
 public interface GapicProviderFactory<ProviderT> {
-  /**
-   * Create the provider from the given model, apiConfig, and id.
-   */
-  public List<ProviderT> create(Model model, ApiConfig apiConfig, String id);
+  /** Create the provider from the given model, apiConfig, and generatorConfig. */
+  public List<ProviderT> create(
+      Model model, ApiConfig apiConfig, GapicGeneratorConfig generatorConfig);
 }

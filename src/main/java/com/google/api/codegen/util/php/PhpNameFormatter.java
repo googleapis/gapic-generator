@@ -19,9 +19,7 @@ import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
 import com.google.common.collect.ImmutableSet;
 
-/**
- * The NameFormatter for PHP.
- */
+/** The NameFormatter for PHP. */
 public class PhpNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {

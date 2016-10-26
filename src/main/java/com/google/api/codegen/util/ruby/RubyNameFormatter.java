@@ -19,9 +19,7 @@ import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
 import com.google.common.collect.ImmutableSet;
 
-/**
- * The NameFormatter for Ruby.
- */
+/** The NameFormatter for Ruby. */
 public class RubyNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {
@@ -97,8 +95,8 @@ public class RubyNameFormatter implements NameFormatter {
     return name.toLowerUnderscore();
   }
 
-  /**:
-   * A set of ruby keywords and built-ins. keywords:
+  /**
+   * : A set of ruby keywords and built-ins. keywords:
    * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
    */
   private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =

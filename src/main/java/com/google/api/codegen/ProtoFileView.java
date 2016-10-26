@@ -21,7 +21,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.HashSet;
 import java.util.Set;
 

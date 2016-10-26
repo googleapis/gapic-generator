@@ -27,6 +27,7 @@
        * 2. Install the PHP client library with Composer. Check installation
        *    instructions at https://github.com/google/google-api-php-client.
      @end
+     */
 
     // Autoload Composer.
     require_once __DIR__ . '/vendor/autoload.php';
@@ -128,7 +129,7 @@
     @end
     @if context.hasRequestField(method)
 
-      ${@requestBodyName()} = new {@context.getRequestClassName(method)}($client);
+      ${@requestBodyName()} = new {@context.getRequestClassName(method)}();
       @if context.isPatch(method)
         // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object to be changed.
       @else

@@ -21,9 +21,7 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
-/**
- * A GoProvider provides general Go code generation logic.
- */
+/** A GoProvider provides general Go code generation logic. */
 public class GoSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
   private final String resourceRoot;

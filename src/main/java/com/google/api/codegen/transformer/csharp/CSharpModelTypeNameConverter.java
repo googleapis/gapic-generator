@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
@@ -22,15 +23,15 @@ import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
-  /**
-   * A map from primitive types in proto to Java counterparts.
-   */
+  /** A map from primitive types in proto to Java counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "bool")
@@ -50,9 +51,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_BYTES, "Google.Protobuf.ByteString")
           .build();
 
-  /**
-   * A map from primitive types in proto to zero values in C#.
-   */
+  /** A map from primitive types in proto to zero values in C#. */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "false")
@@ -131,6 +130,14 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
       prefix = parentEl.getSimpleName() + ".Types." + prefix;
       parentEl = parentEl.getParent();
     }
+    if (parentEl instanceof ProtoFile) {
+      String filePrefix = "";
+      for (String name : Splitter.on('.').split(parentEl.getFullName())) {
+        filePrefix += Name.from(name).toUpperCamel() + ".";
+      }
+      prefix = filePrefix + prefix;
+    }
+
     String shortName = elem.getSimpleName();
     return new TypeName(prefix + shortName, shortName);
   }

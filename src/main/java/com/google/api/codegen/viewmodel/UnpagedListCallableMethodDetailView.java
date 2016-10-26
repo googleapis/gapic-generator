@@ -25,7 +25,7 @@ public abstract class UnpagedListCallableMethodDetailView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder resourceListGetFunction(String name);
 
     public abstract UnpagedListCallableMethodDetailView build();

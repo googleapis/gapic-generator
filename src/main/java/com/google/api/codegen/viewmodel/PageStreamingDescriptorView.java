@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -42,7 +41,7 @@ public abstract class PageStreamingDescriptorView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder varName(String val);
 
     public abstract Builder requestTokenFieldName(String val);

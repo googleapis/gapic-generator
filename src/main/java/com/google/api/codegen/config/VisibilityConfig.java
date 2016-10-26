@@ -15,16 +15,37 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.VisibilityProto;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.common.collect.ImmutableMap;
 
 public enum VisibilityConfig {
   PUBLIC,
+  PRIVATE,
   DISABLED;
 
   private static ImmutableMap<VisibilityProto, VisibilityConfig> protoMap =
-      ImmutableMap.of(VisibilityProto.PUBLIC, PUBLIC, VisibilityProto.DISABLED, DISABLED);
+      ImmutableMap.of(
+          VisibilityProto.PUBLIC,
+          PUBLIC,
+          VisibilityProto.PRIVATE,
+          PRIVATE,
+          VisibilityProto.DISABLED,
+          DISABLED);
 
   public static VisibilityConfig fromProto(VisibilityProto proto) {
     return protoMap.get(proto);
+  }
+
+  public String methodName(SurfaceNamer namer, Name name) {
+    switch (this) {
+      case PUBLIC:
+        return namer.publicMethodName(name);
+      case PRIVATE:
+        return namer.privateMethodName(name);
+      case DISABLED:
+        throw new IllegalStateException("disabled methods cannot be named");
+    }
+    throw new IllegalStateException("unhandled case " + this);
   }
 }

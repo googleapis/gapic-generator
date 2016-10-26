@@ -6,36 +6,21 @@
 //    https://console.developers.google.com/apis/api/prediction
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `predict` method:
-
     // The project associated with the model.
-    project: '{MY-PROJECT}',
+    project: '',  // TODO: Update placeholder value.
 
     // The name of a hosted model.
-    hostedModelName: '{MY-HOSTED-MODEL-NAME}',
-
+    hostedModelName: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -54,6 +39,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Prediction API
@@ -61,36 +60,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/prediction
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `analyze` method:
-
     // The project associated with the model.
-    project: '{MY-PROJECT}',
+    project: '',  // TODO: Update placeholder value.
 
     // The unique name for the predictive model.
-    id: '{MY-ID}',
-
+    id: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -105,6 +89,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Prediction API
@@ -112,36 +110,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/prediction
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `delete` method:
-
     // The project associated with the model.
-    project: '{MY-PROJECT}',
+    project: '',  // TODO: Update placeholder value.
 
     // The unique name for the predictive model.
-    id: '{MY-ID}',
-
+    id: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -149,9 +132,24 @@ google.auth.getApplicationDefault(function(err, authClient) {
   prediction.trainedmodels.delete(request, function(err) {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Prediction API
@@ -159,36 +157,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/prediction
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `get` method:
-
     // The project associated with the model.
-    project: '{MY-PROJECT}',
+    project: '',  // TODO: Update placeholder value.
 
     // The unique name for the predictive model.
-    id: '{MY-ID}',
-
+    id: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -203,6 +186,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Prediction API
@@ -210,33 +207,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/prediction
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `insert` method:
-
     // The project associated with the model.
-    project: '{MY-PROJECT}',
-
+    project: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -255,6 +237,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Prediction API
@@ -262,33 +258,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/prediction
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholder below to desired parameter value for the `list` method:
-
     // The project associated with the model.
-    project: '{MY-PROJECT}',
-
+    project: '',  // TODO: Update placeholder value.
 
     auth: authClient
   };
@@ -316,6 +297,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
   prediction.trainedmodels.list(request, handlePage);
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Prediction API
@@ -323,36 +318,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/prediction
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `predict` method:
-
     // The project associated with the model.
-    project: '{MY-PROJECT}',
+    project: '',  // TODO: Update placeholder value.
 
     // The unique name for the predictive model.
-    id: '{MY-ID}',
-
+    id: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -371,6 +351,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
 // BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the Prediction API
@@ -378,36 +372,21 @@ google.auth.getApplicationDefault(function(err, authClient) {
 //    https://console.developers.google.com/apis/api/prediction
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
-// 3. Install the Node.js client library and Application Default Credentials
-//    library by running `npm install googleapis --save`
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
-google.auth.getApplicationDefault(function(err, authClient) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-    authClient = authClient.createScoped(scopes);
-  }
-
+authorize(function(authClient) {
   var request = {
-
-    // TODO: Change placeholders below to desired parameter values for the `update` method:
-
     // The project associated with the model.
-    project: '{MY-PROJECT}',
+    project: '',  // TODO: Update placeholder value.
 
     // The unique name for the predictive model.
-    id: '{MY-ID}',
-
+    id: '',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties of the request body.
@@ -426,3 +405,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
     console.log(JSON.stringify(response, null, 2));
   });
 });
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}

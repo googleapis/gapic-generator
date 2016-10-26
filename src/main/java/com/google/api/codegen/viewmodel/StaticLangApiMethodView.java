@@ -20,9 +20,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * View of a single api method. This is a union class that is capable of holding the
- * data for any type of static api method; the type is maintained as a value of the
- * ApiMethodType enum.
+ * View of a single api method. This is a union class that is capable of holding the data for any
+ * type of static api method; the type is maintained as a value of the ApiMethodType enum.
  */
 @AutoValue
 public abstract class StaticLangApiMethodView implements ApiMethodView {
@@ -46,7 +45,6 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String exampleName();
 
-  @Nullable // Used in C#
   public abstract String callableName();
 
   public abstract String settingsGetterName();
@@ -60,7 +58,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract boolean hasReturnValue();
 
-  public abstract boolean isPageStreaming();
+  public abstract boolean isLongRunning();
 
   public abstract List<RequestObjectParamView> requestObjectParams();
 
@@ -91,7 +89,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder type(ApiMethodType type);
 
     public abstract Builder apiClassName(String apiClassName);
@@ -124,7 +122,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder hasReturnValue(boolean hasReturnValue);
 
-    public abstract Builder isPageStreaming(boolean isPageStreaming);
+    public abstract Builder isLongRunning(boolean isLongRunning);
 
     public abstract Builder requestObjectParams(List<RequestObjectParamView> requestObjectParams);
 

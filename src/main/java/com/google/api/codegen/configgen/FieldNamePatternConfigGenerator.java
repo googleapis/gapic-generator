@@ -15,13 +15,10 @@
 package com.google.api.codegen.configgen;
 
 import com.google.api.tools.framework.model.Method;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Class for collection config generator.
- */
+/** Class for collection config generator. */
 public class FieldNamePatternConfigGenerator implements MethodConfigGenerator {
 
   private static final String CONFIG_KEY_FIELD_NAME_PATTERNS = "field_name_patterns";
@@ -32,9 +29,7 @@ public class FieldNamePatternConfigGenerator implements MethodConfigGenerator {
     this.nameMap = nameMap;
   }
 
-  /**
-   * Generates the field_name_pattern configuration for a method.
-   */
+  /** Generates the field_name_pattern configuration for a method. */
   @Override
   public Map<String, Object> generate(Method method) {
     Map<String, Object> fieldPatternMap = new LinkedHashMap<String, Object>();

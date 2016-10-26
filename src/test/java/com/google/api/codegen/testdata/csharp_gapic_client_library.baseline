@@ -16,7 +16,13 @@
 // Generated code. DO NOT EDIT!
 
 using Google.Api.Gax;
+using Google.Api.Gax.Grpc;
+using Google.Example.Library.V1;
+using Google.Example.Library.V1.UpdateBookIndexRequest.Types;
+using Google.Longrunning;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Google.Tagger.V1;
 using Grpc.Core;
 using System;
 using System.Collections;
@@ -24,7 +30,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using UpdateBookIndexRequest.Types;
 
 namespace Google.Example.Library.V1
 {
@@ -49,24 +54,26 @@ namespace Google.Example.Library.V1
         private LibraryServiceSettings(LibraryServiceSettings existing) : base(existing)
         {
             GaxPreconditions.CheckNotNull(existing, nameof(existing));
-            CreateShelfSettings = existing.CreateShelfSettings?.Clone();
-            GetShelfSettings = existing.GetShelfSettings?.Clone();
-            ListShelvesSettings = existing.ListShelvesSettings?.Clone();
-            DeleteShelfSettings = existing.DeleteShelfSettings?.Clone();
-            MergeShelvesSettings = existing.MergeShelvesSettings?.Clone();
-            CreateBookSettings = existing.CreateBookSettings?.Clone();
-            PublishSeriesSettings = existing.PublishSeriesSettings?.Clone();
-            GetBookSettings = existing.GetBookSettings?.Clone();
-            ListBooksSettings = existing.ListBooksSettings?.Clone();
-            DeleteBookSettings = existing.DeleteBookSettings?.Clone();
-            UpdateBookSettings = existing.UpdateBookSettings?.Clone();
-            MoveBookSettings = existing.MoveBookSettings?.Clone();
-            ListStringsSettings = existing.ListStringsSettings?.Clone();
-            AddCommentsSettings = existing.AddCommentsSettings?.Clone();
-            GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings?.Clone();
-            UpdateBookIndexSettings = existing.UpdateBookIndexSettings?.Clone();
-            FindRelatedBooksSettings = existing.FindRelatedBooksSettings?.Clone();
-            AddTagSettings = existing.AddTagSettings?.Clone();
+            CreateShelfSettings = existing.CreateShelfSettings;
+            GetShelfSettings = existing.GetShelfSettings;
+            ListShelvesSettings = existing.ListShelvesSettings;
+            DeleteShelfSettings = existing.DeleteShelfSettings;
+            MergeShelvesSettings = existing.MergeShelvesSettings;
+            CreateBookSettings = existing.CreateBookSettings;
+            PublishSeriesSettings = existing.PublishSeriesSettings;
+            GetBookSettings = existing.GetBookSettings;
+            ListBooksSettings = existing.ListBooksSettings;
+            DeleteBookSettings = existing.DeleteBookSettings;
+            UpdateBookSettings = existing.UpdateBookSettings;
+            MoveBookSettings = existing.MoveBookSettings;
+            ListStringsSettings = existing.ListStringsSettings;
+            AddCommentsSettings = existing.AddCommentsSettings;
+            GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings;
+            UpdateBookIndexSettings = existing.UpdateBookIndexSettings;
+            FindRelatedBooksSettings = existing.FindRelatedBooksSettings;
+            AddTagSettings = existing.AddTagSettings;
+            AddLabelSettings = existing.AddLabelSettings;
+            GetBigBookSettings = existing.GetBigBookSettings;
         }
 
         /// <summary>
@@ -103,16 +110,15 @@ namespace Google.Example.Library.V1
         /// The "Default" retry backoff for <see cref="LibraryServiceClient"/> RPC methods is defined as:
         /// <list type="bullet">
         /// <item><description>Initial delay: 100 milliseconds</description></item>
-        /// <item><description>Delay multiplier: 1.2</description></item>
         /// <item><description>Maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Delay multiplier: 1.2</description></item>
         /// </list>
         /// </remarks>
-        public static BackoffSettings GetDefaultRetryBackoff() => new BackoffSettings
-        {
-            Delay = TimeSpan.FromMilliseconds(100),
-            DelayMultiplier = 1.2,
-            MaxDelay = TimeSpan.FromMilliseconds(1000),
-        };
+        public static BackoffSettings GetDefaultRetryBackoff() => new BackoffSettings(
+            delay: TimeSpan.FromMilliseconds(100),
+            maxDelay: TimeSpan.FromMilliseconds(1000),
+            delayMultiplier: 1.2
+        );
 
         /// <summary>
         /// "Default" timeout backoff for <see cref="LibraryServiceClient"/> RPC methods.
@@ -128,20 +134,19 @@ namespace Google.Example.Library.V1
         /// <item><description>Maximum timeout: 3000 milliseconds</description></item>
         /// </list>
         /// </remarks>
-        public static BackoffSettings GetDefaultTimeoutBackoff() => new BackoffSettings
-        {
-            Delay = TimeSpan.FromMilliseconds(300),
-            DelayMultiplier = 1.3,
-            MaxDelay = TimeSpan.FromMilliseconds(3000),
-        };
+        public static BackoffSettings GetDefaultTimeoutBackoff() => new BackoffSettings(
+            delay: TimeSpan.FromMilliseconds(300),
+            maxDelay: TimeSpan.FromMilliseconds(3000),
+            delayMultiplier: 1.3
+        );
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.CreateShelf"/> and <see cref="LibraryServiceClient.CreateShelfAsync"/>.
+        /// <c>LibraryServiceClient.CreateShelf</c> and <c>LibraryServiceClient.CreateShelfAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.CreateShelf"/> and
-        /// <see cref="LibraryServiceClient.CreateShelfAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.CreateShelf</c> and
+        /// <c>LibraryServiceClient.CreateShelfAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -156,24 +161,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings CreateShelfSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = NonIdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings CreateShelfSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.GetShelf"/> and <see cref="LibraryServiceClient.GetShelfAsync"/>.
+        /// <c>LibraryServiceClient.GetShelf</c> and <c>LibraryServiceClient.GetShelfAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.GetShelf"/> and
-        /// <see cref="LibraryServiceClient.GetShelfAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.GetShelf</c> and
+        /// <c>LibraryServiceClient.GetShelfAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -189,24 +191,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings GetShelfSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings GetShelfSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.ListShelves"/> and <see cref="LibraryServiceClient.ListShelvesAsync"/>.
+        /// <c>LibraryServiceClient.ListShelves</c> and <c>LibraryServiceClient.ListShelvesAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.ListShelves"/> and
-        /// <see cref="LibraryServiceClient.ListShelvesAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.ListShelves</c> and
+        /// <c>LibraryServiceClient.ListShelvesAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -222,24 +221,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings ListShelvesSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings ListShelvesSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.DeleteShelf"/> and <see cref="LibraryServiceClient.DeleteShelfAsync"/>.
+        /// <c>LibraryServiceClient.DeleteShelf</c> and <c>LibraryServiceClient.DeleteShelfAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.DeleteShelf"/> and
-        /// <see cref="LibraryServiceClient.DeleteShelfAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.DeleteShelf</c> and
+        /// <c>LibraryServiceClient.DeleteShelfAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -255,24 +251,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings DeleteShelfSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings DeleteShelfSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.MergeShelves"/> and <see cref="LibraryServiceClient.MergeShelvesAsync"/>.
+        /// <c>LibraryServiceClient.MergeShelves</c> and <c>LibraryServiceClient.MergeShelvesAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.MergeShelves"/> and
-        /// <see cref="LibraryServiceClient.MergeShelvesAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.MergeShelves</c> and
+        /// <c>LibraryServiceClient.MergeShelvesAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -287,24 +280,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings MergeShelvesSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = NonIdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings MergeShelvesSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.CreateBook"/> and <see cref="LibraryServiceClient.CreateBookAsync"/>.
+        /// <c>LibraryServiceClient.CreateBook</c> and <c>LibraryServiceClient.CreateBookAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.CreateBook"/> and
-        /// <see cref="LibraryServiceClient.CreateBookAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.CreateBook</c> and
+        /// <c>LibraryServiceClient.CreateBookAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -319,24 +309,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings CreateBookSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = NonIdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings CreateBookSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.PublishSeries"/> and <see cref="LibraryServiceClient.PublishSeriesAsync"/>.
+        /// <c>LibraryServiceClient.PublishSeries</c> and <c>LibraryServiceClient.PublishSeriesAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.PublishSeries"/> and
-        /// <see cref="LibraryServiceClient.PublishSeriesAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.PublishSeries</c> and
+        /// <c>LibraryServiceClient.PublishSeriesAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -351,24 +338,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings PublishSeriesSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = NonIdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings PublishSeriesSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.GetBook"/> and <see cref="LibraryServiceClient.GetBookAsync"/>.
+        /// <c>LibraryServiceClient.GetBook</c> and <c>LibraryServiceClient.GetBookAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.GetBook"/> and
-        /// <see cref="LibraryServiceClient.GetBookAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.GetBook</c> and
+        /// <c>LibraryServiceClient.GetBookAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -384,24 +368,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings GetBookSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings GetBookSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.ListBooks"/> and <see cref="LibraryServiceClient.ListBooksAsync"/>.
+        /// <c>LibraryServiceClient.ListBooks</c> and <c>LibraryServiceClient.ListBooksAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.ListBooks"/> and
-        /// <see cref="LibraryServiceClient.ListBooksAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.ListBooks</c> and
+        /// <c>LibraryServiceClient.ListBooksAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -417,24 +398,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings ListBooksSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings ListBooksSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.DeleteBook"/> and <see cref="LibraryServiceClient.DeleteBookAsync"/>.
+        /// <c>LibraryServiceClient.DeleteBook</c> and <c>LibraryServiceClient.DeleteBookAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.DeleteBook"/> and
-        /// <see cref="LibraryServiceClient.DeleteBookAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.DeleteBook</c> and
+        /// <c>LibraryServiceClient.DeleteBookAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -450,24 +428,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings DeleteBookSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings DeleteBookSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.UpdateBook"/> and <see cref="LibraryServiceClient.UpdateBookAsync"/>.
+        /// <c>LibraryServiceClient.UpdateBook</c> and <c>LibraryServiceClient.UpdateBookAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.UpdateBook"/> and
-        /// <see cref="LibraryServiceClient.UpdateBookAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.UpdateBook</c> and
+        /// <c>LibraryServiceClient.UpdateBookAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -483,24 +458,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings UpdateBookSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings UpdateBookSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.MoveBook"/> and <see cref="LibraryServiceClient.MoveBookAsync"/>.
+        /// <c>LibraryServiceClient.MoveBook</c> and <c>LibraryServiceClient.MoveBookAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.MoveBook"/> and
-        /// <see cref="LibraryServiceClient.MoveBookAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.MoveBook</c> and
+        /// <c>LibraryServiceClient.MoveBookAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -515,24 +487,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings MoveBookSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = NonIdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings MoveBookSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.ListStrings"/> and <see cref="LibraryServiceClient.ListStringsAsync"/>.
+        /// <c>LibraryServiceClient.ListStrings</c> and <c>LibraryServiceClient.ListStringsAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.ListStrings"/> and
-        /// <see cref="LibraryServiceClient.ListStringsAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.ListStrings</c> and
+        /// <c>LibraryServiceClient.ListStringsAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -548,24 +517,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings ListStringsSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings ListStringsSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.AddComments"/> and <see cref="LibraryServiceClient.AddCommentsAsync"/>.
+        /// <c>LibraryServiceClient.AddComments</c> and <c>LibraryServiceClient.AddCommentsAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.AddComments"/> and
-        /// <see cref="LibraryServiceClient.AddCommentsAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.AddComments</c> and
+        /// <c>LibraryServiceClient.AddCommentsAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -580,24 +546,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings AddCommentsSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = NonIdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings AddCommentsSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.GetBookFromArchive"/> and <see cref="LibraryServiceClient.GetBookFromArchiveAsync"/>.
+        /// <c>LibraryServiceClient.GetBookFromArchive</c> and <c>LibraryServiceClient.GetBookFromArchiveAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.GetBookFromArchive"/> and
-        /// <see cref="LibraryServiceClient.GetBookFromArchiveAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.GetBookFromArchive</c> and
+        /// <c>LibraryServiceClient.GetBookFromArchiveAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -613,24 +576,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings GetBookFromArchiveSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings GetBookFromArchiveSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.UpdateBookIndex"/> and <see cref="LibraryServiceClient.UpdateBookIndexAsync"/>.
+        /// <c>LibraryServiceClient.UpdateBookIndex</c> and <c>LibraryServiceClient.UpdateBookIndexAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.UpdateBookIndex"/> and
-        /// <see cref="LibraryServiceClient.UpdateBookIndexAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.UpdateBookIndex</c> and
+        /// <c>LibraryServiceClient.UpdateBookIndexAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -646,24 +606,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings UpdateBookIndexSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings UpdateBookIndexSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.FindRelatedBooks"/> and <see cref="LibraryServiceClient.FindRelatedBooksAsync"/>.
+        /// <c>LibraryServiceClient.FindRelatedBooks</c> and <c>LibraryServiceClient.FindRelatedBooksAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.FindRelatedBooks"/> and
-        /// <see cref="LibraryServiceClient.FindRelatedBooksAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.FindRelatedBooks</c> and
+        /// <c>LibraryServiceClient.FindRelatedBooksAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -679,24 +636,21 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings FindRelatedBooksSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = IdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings FindRelatedBooksSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-        /// <see cref="LibraryServiceClient.AddTag"/> and <see cref="LibraryServiceClient.AddTagAsync"/>.
+        /// <c>LibraryServiceClient.AddTag</c> and <c>LibraryServiceClient.AddTagAsync</c>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.AddTag"/> and
-        /// <see cref="LibraryServiceClient.AddTagAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <c>LibraryServiceClient.AddTag</c> and
+        /// <c>LibraryServiceClient.AddTagAsync</c> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -711,16 +665,71 @@ namespace Google.Example.Library.V1
         /// </list>
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
-        public CallSettings AddTagSettings { get; set; } = new CallSettings
-        {
-            Timing = CallTiming.FromRetry(new RetrySettings
-            {
-                RetryBackoff = GetDefaultRetryBackoff(),
-                TimeoutBackoff = GetDefaultTimeoutBackoff(),
-                RetryFilter = NonIdempotentRetryFilter,
-                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
-            }),
-        };
+        public CallSettings AddTagSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.AddLabel</c> and <c>LibraryServiceClient.AddLabelAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.AddLabel</c> and
+        /// <c>LibraryServiceClient.AddLabelAsync</c> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings AddLabelSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.GetBigBook</c> and <c>LibraryServiceClient.GetBigBookAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.GetBigBook</c> and
+        /// <c>LibraryServiceClient.GetBigBookAsync</c> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings GetBigBookSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
 
         /// <summary>
         /// Creates a deep clone of this object, with all the same property values.
@@ -759,57 +768,57 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Path template for a shelf resource. Parameters:
         /// <list type="bullet">
-        /// <item><description>shelf</description></item>
+        /// <item><description>shelfId</description></item>
         /// </list>
         /// </summary>
-        public static PathTemplate ShelfTemplate { get; } = new PathTemplate("shelves/{shelf}");
+        public static PathTemplate ShelfTemplate { get; } = new PathTemplate("shelves/{shelf_id}");
 
         /// <summary>
         /// Creates a shelf resource name from its component IDs.
         /// </summary>
-        /// <param name="shelfId">The shelf ID.</param>
+        /// <param name="shelfIdId">The shelfId ID.</param>
         /// <returns>
         /// The full shelf resource name.
         /// </returns>
-        public static string FormatShelfName(string shelfId) => ShelfTemplate.Expand(shelfId);
+        public static string FormatShelfName(string shelfIdId) => ShelfTemplate.Expand(shelfIdId);
 
         /// <summary>
         /// Path template for a book resource. Parameters:
         /// <list type="bullet">
-        /// <item><description>shelf</description></item>
-        /// <item><description>book</description></item>
+        /// <item><description>shelfId</description></item>
+        /// <item><description>bookId</description></item>
         /// </list>
         /// </summary>
-        public static PathTemplate BookTemplate { get; } = new PathTemplate("shelves/{shelf}/books/{book}");
+        public static PathTemplate BookTemplate { get; } = new PathTemplate("shelves/{shelf_id}/books/{book_id}");
 
         /// <summary>
         /// Creates a book resource name from its component IDs.
         /// </summary>
-        /// <param name="shelfId">The shelf ID.</param>
-        /// <param name="bookId">The book ID.</param>
+        /// <param name="shelfIdId">The shelfId ID.</param>
+        /// <param name="bookIdId">The bookId ID.</param>
         /// <returns>
         /// The full book resource name.
         /// </returns>
-        public static string FormatBookName(string shelfId, string bookId) => BookTemplate.Expand(shelfId, bookId);
+        public static string FormatBookName(string shelfIdId, string bookIdId) => BookTemplate.Expand(shelfIdId, bookIdId);
 
         /// <summary>
         /// Path template for a archived_book resource. Parameters:
         /// <list type="bullet">
         /// <item><description>archivePath</description></item>
-        /// <item><description>book</description></item>
+        /// <item><description>bookId</description></item>
         /// </list>
         /// </summary>
-        public static PathTemplate ArchivedBookTemplate { get; } = new PathTemplate("archives/{archive_path=**}/books/{book}");
+        public static PathTemplate ArchivedBookTemplate { get; } = new PathTemplate("archives/{archive_path=**}/books/{book_id}");
 
         /// <summary>
         /// Creates a archived_book resource name from its component IDs.
         /// </summary>
         /// <param name="archivePathId">The archivePath ID.</param>
-        /// <param name="bookId">The book ID.</param>
+        /// <param name="bookIdId">The bookId ID.</param>
         /// <returns>
         /// The full archived_book resource name.
         /// </returns>
-        public static string FormatArchivedBookName(string archivePathId, string bookId) => ArchivedBookTemplate.Expand(archivePathId, bookId);
+        public static string FormatArchivedBookName(string archivePathId, string bookIdId) => ArchivedBookTemplate.Expand(archivePathId, bookIdId);
 
         /// <summary>
         /// Path template for a return resource. Parameters:
@@ -934,7 +943,7 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             CancellationToken cancellationToken) => CreateShelfAsync(
                 shelf,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
@@ -990,7 +999,7 @@ namespace Google.Example.Library.V1
             string name,
             CancellationToken cancellationToken) => GetShelfAsync(
                 name,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Gets a shelf.
@@ -1055,7 +1064,7 @@ namespace Google.Example.Library.V1
             CancellationToken cancellationToken) => GetShelfAsync(
                 name,
                 message,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Gets a shelf.
@@ -1133,7 +1142,7 @@ namespace Google.Example.Library.V1
                 name,
                 message,
                 stringBuilder,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Gets a shelf.
@@ -1247,7 +1256,7 @@ namespace Google.Example.Library.V1
             string name,
             CancellationToken cancellationToken) => DeleteShelfAsync(
                 name,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Deletes a shelf.
@@ -1316,7 +1325,7 @@ namespace Google.Example.Library.V1
             CancellationToken cancellationToken) => MergeShelvesAsync(
                 name,
                 otherShelfName,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Merges two shelves by adding all books from the shelf named
@@ -1387,7 +1396,7 @@ namespace Google.Example.Library.V1
             CancellationToken cancellationToken) => CreateBookAsync(
                 name,
                 book,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Creates a book.
@@ -1465,7 +1474,7 @@ namespace Google.Example.Library.V1
                 shelf,
                 books,
                 edition,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Creates a series of books.
@@ -1529,7 +1538,7 @@ namespace Google.Example.Library.V1
             string name,
             CancellationToken cancellationToken) => GetBookAsync(
                 name,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Gets a book.
@@ -1651,7 +1660,7 @@ namespace Google.Example.Library.V1
             string name,
             CancellationToken cancellationToken) => DeleteBookAsync(
                 name,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Deletes a book.
@@ -1716,7 +1725,7 @@ namespace Google.Example.Library.V1
             CancellationToken cancellationToken) => UpdateBookAsync(
                 name,
                 book,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Updates a book.
@@ -1803,7 +1812,7 @@ namespace Google.Example.Library.V1
                 book,
                 updateMask,
                 physicalMask,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Updates a book.
@@ -1880,7 +1889,7 @@ namespace Google.Example.Library.V1
             CancellationToken cancellationToken) => MoveBookAsync(
                 name,
                 otherShelfName,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
@@ -1999,7 +2008,7 @@ namespace Google.Example.Library.V1
             CancellationToken cancellationToken) => AddCommentsAsync(
                 name,
                 comments,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Adds comments to a book
@@ -2059,7 +2068,7 @@ namespace Google.Example.Library.V1
             string name,
             CancellationToken cancellationToken) => GetBookFromArchiveAsync(
                 name,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Gets a book from an archive.
@@ -2133,7 +2142,7 @@ namespace Google.Example.Library.V1
                 name,
                 indexName,
                 indexMap,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Updates the index of a book.
@@ -2276,7 +2285,7 @@ namespace Google.Example.Library.V1
             CancellationToken cancellationToken) => AddTagAsync(
                 resource,
                 tag,
-                new CallSettings { CancellationToken = cancellationToken });
+                CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
         /// Adds a tag to the book. This RPC is a mixin.
@@ -2303,8 +2312,142 @@ namespace Google.Example.Library.V1
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Adds a label to the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the label is being added to.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="label">
+        /// REQUIRED: The label to add.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<AddLabelResponse> AddLabelAsync(
+            string resource,
+            string label,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Adds a label to the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the label is being added to.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="label">
+        /// REQUIRED: The label to add.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<AddLabelResponse> AddLabelAsync(
+            string resource,
+            string label,
+            CancellationToken cancellationToken) => AddLabelAsync(
+                resource,
+                label,
+                CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Adds a label to the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the label is being added to.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="label">
+        /// REQUIRED: The label to add.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual AddLabelResponse AddLabel(
+            string resource,
+            string label,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<Operation> GetBigBookAsync(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<Operation> GetBigBookAsync(
+            string name,
+            CancellationToken cancellationToken) => GetBigBookAsync(
+                name,
+                CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual Operation GetBigBook(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
+    /// <summary>
+    /// LibraryService client wrapper implementation, for convenient use.
+    /// </summary>
     public sealed partial class LibraryServiceClientImpl : LibraryServiceClient
     {
         private readonly ClientHelper _clientHelper;
@@ -2326,12 +2469,20 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<UpdateBookIndexRequest, Empty> _callUpdateBookIndex;
         private readonly ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> _callFindRelatedBooks;
         private readonly ApiCall<AddTagRequest, AddTagResponse> _callAddTag;
+        private readonly ApiCall<AddLabelRequest, AddLabelResponse> _callAddLabel;
+        private readonly ApiCall<GetBookRequest, Operation> _callGetBigBook;
 
+        /// <summary>
+        /// Constructs a client wrapper for the LibraryService service, with the specified gRPC client and settings.
+        /// </summary>
+        /// <param name="grpcClient">The underlying gRPC client.</param>
+        /// <param name="settings">The base <see cref="LibraryServiceSettings"/> used within this client </param>
         public LibraryServiceClientImpl(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings settings)
         {
             this.GrpcClient = grpcClient;
             LibraryServiceSettings effectiveSettings = settings ?? LibraryServiceSettings.GetDefault();
             _clientHelper = new ClientHelper(effectiveSettings);
+            var grpcLabelerClient = grpcClient.CreateLabelerClient();
             _callCreateShelf = _clientHelper.BuildApiCall<CreateShelfRequest, Shelf>(
                 GrpcClient.CreateShelfAsync, GrpcClient.CreateShelf, effectiveSettings.CreateShelfSettings);
             _callGetShelf = _clientHelper.BuildApiCall<GetShelfRequest, Shelf>(
@@ -2368,6 +2519,10 @@ namespace Google.Example.Library.V1
                 GrpcClient.FindRelatedBooksAsync, GrpcClient.FindRelatedBooks, effectiveSettings.FindRelatedBooksSettings);
             _callAddTag = _clientHelper.BuildApiCall<AddTagRequest, AddTagResponse>(
                 GrpcClient.AddTagAsync, GrpcClient.AddTag, effectiveSettings.AddTagSettings);
+            _callAddLabel = _clientHelper.BuildApiCall<AddLabelRequest, AddLabelResponse>(
+                grpcLabelerClient.AddLabelAsync, grpcLabelerClient.AddLabel, effectiveSettings.AddLabelSettings);
+            _callGetBigBook = _clientHelper.BuildApiCall<GetBookRequest, Operation>(
+                GrpcClient.GetBigBookAsync, GrpcClient.GetBigBook, effectiveSettings.GetBigBookSettings);
         }
 
         /// <summary>
@@ -3533,6 +3688,104 @@ namespace Google.Example.Library.V1
                 },
                 callSettings);
 
+        /// <summary>
+        /// Adds a label to the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the label is being added to.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="label">
+        /// REQUIRED: The label to add.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override Task<AddLabelResponse> AddLabelAsync(
+            string resource,
+            string label,
+            CallSettings callSettings = null) => _callAddLabel.Async(
+                new AddLabelRequest
+                {
+                    Resource = resource,
+                    Label = label,
+                },
+                callSettings);
+
+        /// <summary>
+        /// Adds a label to the entity.
+        /// </summary>
+        /// <param name="resource">
+        /// REQUIRED: The resource which the label is being added to.
+        /// Resource is usually specified as a path, such as,
+        /// projects/{project}/zones/{zone}/disks/{disk}.
+        /// </param>
+        /// <param name="label">
+        /// REQUIRED: The label to add.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override AddLabelResponse AddLabel(
+            string resource,
+            string label,
+            CallSettings callSettings = null) => _callAddLabel.Sync(
+                new AddLabelRequest
+                {
+                    Resource = resource,
+                    Label = label,
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override Task<Operation> GetBigBookAsync(
+            string name,
+            CallSettings callSettings = null) => _callGetBigBook.Async(
+                new GetBookRequest
+                {
+                    Name = name,
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override Operation GetBigBook(
+            string name,
+            CallSettings callSettings = null) => _callGetBigBook.Sync(
+                new GetBookRequest
+                {
+                    Name = name,
+                },
+                callSettings);
+
     }
 
     // Partial classes to enable page-streaming
@@ -3540,28 +3793,48 @@ namespace Google.Example.Library.V1
     public partial class ListShelvesRequest : IPageRequest { }
     public partial class ListShelvesResponse : IPageResponse<Shelf>
     {
+        /// <summary>
+        /// Returns an enumerator that iterates through the resources in this response.
+        /// </summary>
         public IEnumerator<Shelf> GetEnumerator() => Shelves.GetEnumerator();
+
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public partial class ListBooksRequest : IPageRequest { }
     public partial class ListBooksResponse : IPageResponse<Book>
     {
+        /// <summary>
+        /// Returns an enumerator that iterates through the resources in this response.
+        /// </summary>
         public IEnumerator<Book> GetEnumerator() => Books.GetEnumerator();
+
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public partial class ListStringsRequest : IPageRequest { }
     public partial class ListStringsResponse : IPageResponse<string>
     {
+        /// <summary>
+        /// Returns an enumerator that iterates through the resources in this response.
+        /// </summary>
         public IEnumerator<string> GetEnumerator() => Strings.GetEnumerator();
+
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public partial class FindRelatedBooksRequest : IPageRequest { }
     public partial class FindRelatedBooksResponse : IPageResponse<string>
     {
+        /// <summary>
+        /// Returns an enumerator that iterates through the resources in this response.
+        /// </summary>
         public IEnumerator<string> GetEnumerator() => Names.GetEnumerator();
+
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 

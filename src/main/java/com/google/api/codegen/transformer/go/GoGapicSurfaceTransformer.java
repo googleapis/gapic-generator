@@ -14,12 +14,14 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.go.GoContextCommon;
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.go.GoContextCommon;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -33,7 +35,6 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
@@ -52,13 +53,14 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-
+import com.google.common.collect.ImmutableTable;
 import io.grpc.Status.Code;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +80,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
+  private final ServiceMessages serviceMessages = new ServiceMessages();
   private final GapicCodePathMapper pathMapper;
 
   public GoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
@@ -109,9 +112,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return models;
   }
 
-  private static final ImmutableList<String> PAGE_STREAM_IMPORTS =
-      ImmutableList.<String>of("math;;;", "google.golang.org/api/iterator;;;");
-
   private StaticLangXCombinedSurfaceView generate(SurfaceTransformerContext context) {
     StaticLangXCombinedSurfaceView.Builder view = StaticLangXCombinedSurfaceView.newBuilder();
 
@@ -142,8 +142,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
-    view.apiMethods(
-        generateApiMethods(context, context.getSupportedMethods(), PAGE_STREAM_IMPORTS));
+    view.apiMethods(generateApiMethods(context, context.getSupportedMethods()));
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
     if (!apiConfig.getInterfaceConfig(service).getIamResources().isEmpty()) {
@@ -167,7 +166,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
-    addXApiImports(context);
+    addXApiImports(context, context.getSupportedMethods());
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
     return view.build();
@@ -192,9 +191,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.clientTypeName(namer.getApiWrapperClassName(service));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
-    view.apiMethods(
-        generateApiMethods(
-            context, context.getSupportedMethods(), Collections.<String>emptyList()));
+    view.apiMethods(generateApiMethods(context, context.getPublicMethods()));
     view.iamResources(iamResourceTransformer.generateIamResources(context));
 
     // Examples are different from the API. In particular, we use short declaration
@@ -204,7 +201,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     //   - The input types of the methods, to initialize the requests
     // So, we clear all imports; addXExampleImports will add back the ones we want.
     context.getTypeTable().getImports().clear();
-    addXExampleImports(context, context.getSupportedMethods());
+    addXExampleImports(context, context.getPublicMethods());
     view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
     return view.build();
@@ -233,12 +230,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return new ModelTypeTable(new GoTypeTable(), new GoModelTypeNameConverter());
   }
 
-  /**
-   * Returns the doc comments of Go for the proto elements.
-   */
+  /** Returns the doc comments of Go for the proto elements. */
   public static List<String> doc(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      return ImmutableList.<String>of("");
+      return ImmutableList.<String>of();
     }
 
     // TODO(pongad): GoContextCommon should be deleted after we convert Go discovery to MVMM.
@@ -247,26 +242,19 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @VisibleForTesting
   List<StaticLangApiMethodView> generateApiMethods(
-      SurfaceTransformerContext context, List<Method> methods, List<String> pageStreamImports) {
+      SurfaceTransformerContext context, List<Method> methods) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
-    boolean hasPageStreaming = false;
     for (Method method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodTransformerContext methodContext = context.asMethodContext(method);
+      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
         apiMethods.add(
             apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext));
       } else if (methodConfig.isPageStreaming()) {
-        hasPageStreaming = true;
         apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
       } else {
         apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
-      }
-    }
-    if (hasPageStreaming) {
-      for (String imp : pageStreamImports) {
-        context.getTypeTable().saveNicknameFor(imp);
       }
     }
     return apiMethods;
@@ -325,7 +313,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
 
-  private void addXApiImports(SurfaceTransformerContext context) {
+  @VisibleForTesting
+  void addXApiImports(SurfaceTransformerContext context, Collection<Method> methods) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("fmt;;;");
     typeTable.saveNicknameFor("runtime;;;");
@@ -336,26 +325,79 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("google.golang.org/api/option;;;");
     typeTable.saveNicknameFor("google.golang.org/api/transport;;;");
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
+    addContextImports(context, ImportContext.CLIENT, methods);
   }
 
-  private static final ImmutableList<String> EXAMPLE_GRPC_SERVER_STREAM_IMPORTS =
-      ImmutableList.<String>of("io;;;");
-
   @VisibleForTesting
-  void addXExampleImports(SurfaceTransformerContext context, List<Method> methods) {
+  void addXExampleImports(SurfaceTransformerContext context, Collection<Method> methods) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor(context.getApiConfig().getPackageName() + ";;;");
 
-    boolean hasGrpcServerStreaming = false;
     for (Method method : methods) {
       typeTable.getAndSaveNicknameFor(method.getInputType());
-      hasGrpcServerStreaming |= method.getResponseStreaming();
     }
-    if (hasGrpcServerStreaming) {
-      for (String imp : EXAMPLE_GRPC_SERVER_STREAM_IMPORTS) {
-        typeTable.saveNicknameFor(imp);
+    addContextImports(context, ImportContext.EXAMPLE, methods);
+  }
+
+  private void addContextImports(
+      SurfaceTransformerContext context, ImportContext importContext, Collection<Method> methods) {
+    for (ImportKind kind : getImportKinds(context.getInterfaceConfig(), methods)) {
+      ImmutableList<String> imps = CONTEXTUAL_IMPORTS.get(importContext, kind);
+      if (imps != null) {
+        for (String imp : imps) {
+          context.getTypeTable().saveNicknameFor(imp);
+        }
       }
     }
   }
+
+  private Set<ImportKind> getImportKinds(
+      InterfaceConfig serviceConfig, Collection<Method> methods) {
+    EnumSet<ImportKind> kinds = EnumSet.noneOf(ImportKind.class);
+    for (Method method : methods) {
+      if (method.getResponseStreaming()) {
+        kinds.add(ImportKind.SERVER_STREAM);
+      }
+      if (serviceMessages.isLongRunningOperationType(method.getOutputType())) {
+        kinds.add(ImportKind.LRO);
+      }
+      if (serviceConfig.getMethodConfig(method).isPageStreaming()) {
+        kinds.add(ImportKind.PAGE_STREAM);
+      }
+    }
+    return kinds;
+  }
+
+  private enum ImportContext {
+    CLIENT,
+    EXAMPLE,
+  }
+
+  private enum ImportKind {
+    PAGE_STREAM,
+    LRO,
+    SERVER_STREAM,
+  }
+
+  private static final ImmutableTable<ImportContext, ImportKind, ImmutableList<String>>
+      CONTEXTUAL_IMPORTS =
+          ImmutableTable.<ImportContext, ImportKind, ImmutableList<String>>builder()
+              .put(
+                  ImportContext.CLIENT,
+                  ImportKind.PAGE_STREAM,
+                  ImmutableList.<String>of("math;;;", "google.golang.org/api/iterator;;;"))
+              .put(
+                  ImportContext.CLIENT,
+                  ImportKind.LRO,
+                  ImmutableList.<String>of("cloud.google.com/go/longrunning;;;"))
+              .put(
+                  ImportContext.EXAMPLE,
+                  ImportKind.SERVER_STREAM,
+                  ImmutableList.<String>of("io;;;"))
+              .put(
+                  ImportContext.EXAMPLE,
+                  ImportKind.LRO,
+                  ImmutableList.<String>of("github.com/golang/protobuf/ptypes;;;"))
+              .build();
 }

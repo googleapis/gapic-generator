@@ -33,7 +33,7 @@ public abstract class BundlingConfigView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder elementCountThreshold(int val);
 
     public abstract Builder requestByteThreshold(long val);

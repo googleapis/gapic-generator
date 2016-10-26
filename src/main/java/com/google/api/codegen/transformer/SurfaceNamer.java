@@ -15,13 +15,14 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -37,13 +38,13 @@ import java.util.List;
 /**
  * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
  *
- * Naming is composed of two steps:
+ * <p>Naming is composed of two steps:
  *
- * 1. Composing a Name instance with the name pieces
- * 2. Formatting the Name for the particular type of identifier needed.
+ * <p>1. Composing a Name instance with the name pieces 2. Formatting the Name for the particular
+ * type of identifier needed.
  *
- * This class delegates step 2 to the provided name formatter, which generally
- * would be a language-specific namer.
+ * <p>This class delegates step 2 to the provided name formatter, which generally would be a
+ * language-specific namer.
  */
 public class SurfaceNamer extends NameFormatterDelegator {
   private ModelTypeFormatter modelTypeFormatter;
@@ -70,7 +71,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
 
-  /** The full path to the source file  */
+  /** The full path to the source file */
   public String getSourceFilePath(String path, String className) {
     return getNotImplementedString("SurfaceNamer.getSourceFilePath");
   }
@@ -95,15 +96,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return className(Name.upperCamel("PagedResponseWrappers"));
   }
 
+  /** The name of the generated resource type from the entity name. */
+  public Name getResourceTypeName(String entityName) {
+    return Name.from(entityName).join("name");
+  }
+
   /**
    * The name of the iterate method of the PagedListResponse type for a field, returning the
    * resource type iterate method if available
    */
-  public String getPagedResponseIterateMethod(FeatureConfig featureConfig, Field field) {
-    if (featureConfig.useResourceNameFormatOption(field)) {
-      String resourceName = ResourceNameUtil.getResourceName(field);
-      Name resourceNameName = Name.upperCamel(resourceName);
-      return publicMethodName(Name.from("iterate_all_as").join(resourceNameName));
+  public String getPagedResponseIterateMethod(
+      FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+      Name resourceName = getResourceTypeName(fieldConfig.getEntityName());
+      return publicMethodName(Name.from("iterate_all_as").join(resourceName));
     } else {
       return getPagedResponseIterateMethod();
     }
@@ -114,49 +120,42 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.from("iterate_all_elements"));
   }
 
-  /**
-   * The name of the constructor for the service client.
-   * The client is VKit generated, not GRPC.
-   */
+  /** The name of the constructor for the service client. The client is VKit generated, not GRPC. */
   public String getApiWrapperClassConstructorName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
 
   /**
-   * The name of example of the constructor for the service client.
-   * The client is VKit generated, not GRPC.
+   * The name of example of the constructor for the service client. The client is VKit generated,
+   * not GRPC.
    */
   public String getApiWrapperClassConstructorExampleName(Interface interfaze) {
     return getApiWrapperClassConstructorName(interfaze);
   }
 
-  /**
-   * Constructor name for the type with the given nickname.
-   */
+  /** Constructor name for the type with the given nickname. */
   public String getTypeConstructor(String typeNickname) {
     return typeNickname;
   }
 
   /**
-   * The name of a variable that holds an instance of the class that implements
-   * a particular proto interface.
+   * The name of a variable that holds an instance of the class that implements a particular proto
+   * interface.
    */
   public String getApiWrapperVariableName(Interface interfaze) {
     return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
 
   /**
-   * The name of a variable that holds an instance of the module that contains
-   * the implementation of a particular proto interface. So far it is used by
-   * just NodeJS.
+   * The name of a variable that holds an instance of the module that contains the implementation of
+   * a particular proto interface. So far it is used by just NodeJS.
    */
   public String getApiWrapperModuleName(Interface interfaze) {
     return getNotImplementedString("SurfaceNamer.getApiWrapperModuleName");
   }
 
   /**
-   * The name of the settings class for a particular proto interface;
-   * not used in most languages.
+   * The name of the settings class for a particular proto interface; not used in most languages.
    */
   public String getApiSettingsClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
@@ -168,16 +167,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The name of a variable that holds the settings class for a particular
-   * proto interface; not used in most languages.
+   * The name of a variable that holds the settings class for a particular proto interface; not used
+   * in most languages.
    */
   public String getApiSettingsVariableName(Interface interfaze) {
     return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
   }
 
   /**
-   * The name of the builder class for the settings class for a particular
-   * proto interface; not used in most languages.
+   * The name of the builder class for the settings class for a particular proto interface; not used
+   * in most languages.
    */
   public String getApiSettingsBuilderVarName(Interface interfaze) {
     return localVarName(Name.upperCamel(interfaze.getSimpleName(), "SettingsBuilder"));
@@ -194,12 +193,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to set the given proto field. */
-  public String getFieldSetFunctionName(FeatureConfig featureConfig, Field field) {
-    if (featureConfig.useResourceNameFormatOption(field)) {
+  public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    Field field = fieldConfig.getField();
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
       return getResourceNameFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
     } else {
-      return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getFieldSetFunctionName(field);
     }
+  }
+
+  /** The function name to set the given proto field. */
+  public String getFieldSetFunctionName(Field field) {
+    return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
   /** The function name to set a field having the given type and name. */
@@ -224,12 +229,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to get the given proto field. */
-  public String getFieldGetFunctionName(FeatureConfig featureConfig, Field field) {
-    if (featureConfig.useResourceNameFormatOption(field)) {
+  public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    Field field = fieldConfig.getField();
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
       return getResourceNameFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
     } else {
-      return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getFieldGetFunctionName(field);
     }
+  }
+
+  /** The function name to get the given proto field. */
+  public String getFieldGetFunctionName(Field field) {
+    return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
   /** The function name to get a field having the given type and name. */
@@ -279,23 +290,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /**
-   * The name of the package
-   */
+  /** The name of the package */
   public String getLocalPackageName() {
     return getNotImplementedString("SurfaceNamer.getLocalPackageName");
   }
 
-  /**
-   * The name of the example package
-   */
+  /** The name of the example package */
   public String getExamplePackageName() {
     return getNotImplementedString("SurfaceNamer.getExamplePackageName");
   }
 
   /**
-   * The name of a path template constant for the given collection,
-   * to be held in an API wrapper class.
+   * The name of a path template constant for the given collection, to be held in an API wrapper
+   * class.
    */
   public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
     return inittedConstantName(Name.from(collectionConfig.getEntityName(), "path", "template"));
@@ -317,8 +324,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The function name to parse a variable from the string representing the entity for
-   * the given collection.
+   * The function name to parse a variable from the string representing the entity for the given
+   * collection.
    */
   public String getParseFunctionName(String var, CollectionConfig collectionConfig) {
     return staticFunctionName(
@@ -425,16 +432,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getClientConfigPath");
   }
 
-  /**
-   * Human-friendly name of this service
-   */
+  /** Human-friendly name of this service */
   public String getServicePhraseName(Interface service) {
     return Name.upperCamel(service.getSimpleName()).toPhrase();
   }
 
   /**
-   * The type name of the Grpc client class.
-   * This needs to match what Grpc generates for the particular language.
+   * The type name of the Grpc client class. This needs to match what Grpc generates for the
+   * particular language.
    */
   public String getGrpcClientTypeName(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
@@ -443,8 +448,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The type name of the Grpc container class.
-   * This needs to match what Grpc generates for the particular language.
+   * The type name of the Grpc container class. This needs to match what Grpc generates for the
+   * particular language.
    */
   public String getGrpcContainerTypeName(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
@@ -453,8 +458,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The type name of the Grpc service class
-   * This needs to match what Grpc generates for the particular language.
+   * The type name of the Grpc service class This needs to match what Grpc generates for the
+   * particular language.
    */
   public String getGrpcServiceClassName(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
@@ -466,17 +471,27 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The type name of the method constant in the Grpc container class.
-   * This needs to match what Grpc generates for the particular language.
+   * The type name of the method constant in the Grpc container class. This needs to match what Grpc
+   * generates for the particular language.
    */
   public String getGrpcMethodConstant(Method method) {
     return inittedConstantName(
         Name.from("method").join(Name.upperCamelKeepUpperAcronyms(method.getSimpleName())));
   }
 
+  /** The variable name of the rerouted gRPC client. Used in C# */
+  public String getReroutedGrpcClientVarName(MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getGrpcClientName");
+  }
+
+  /** The method name to create a rerouted gRPC client. Used in C# */
+  public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getReroutedGrpcMethodName");
+  }
+
   /** The name of the surface method which can call the given API method. */
-  public String getApiMethodName(Method method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName()));
+  public String getApiMethodName(Method method, VisibilityConfig visibility) {
+    return visibility.methodName(this, Name.upperCamel(method.getSimpleName()));
   }
 
   /** The name of the async surface method which can call the given API method. */
@@ -486,7 +501,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the example for the method. */
   public String getApiMethodExampleName(Interface interfaze, Method method) {
-    return getApiMethodName(method);
+    return getApiMethodName(method, VisibilityConfig.PUBLIC);
   }
 
   public String getAsyncApiMethodExampleName(Method method) {
@@ -494,33 +509,32 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the GRPC streaming surface method which can call the given API method. */
-  public String getGrpcStreamingApiMethodName(Method method) {
-    return getApiMethodName(method);
-  }
-
-  /** The name of the example of the GRPC streaming surface method which can call the given API method. */
-  public String getGrpcStreamingApiMethodExampleName(Interface interfaze, Method method) {
-    return getGrpcStreamingApiMethodName(method);
+  public String getGrpcStreamingApiMethodName(Method method, VisibilityConfig visibility) {
+    return getApiMethodName(method, visibility);
   }
 
   /**
-   * The name of a variable to hold a value for the given proto message field
-   * (such as a flattened parameter).
+   * The name of the example of the GRPC streaming surface method which can call the given API
+   * method.
+   */
+  public String getGrpcStreamingApiMethodExampleName(Interface interfaze, Method method) {
+    return getGrpcStreamingApiMethodName(method, VisibilityConfig.PUBLIC);
+  }
+
+  /**
+   * The name of a variable to hold a value for the given proto message field (such as a flattened
+   * parameter).
    */
   public String getVariableName(Field field) {
     return localVarName(Name.from(field.getSimpleName()));
   }
 
-  /**
-   * The name of a field as a method.
-   */
+  /** The name of a field as a method. */
   public String getFieldAsMethodName(Field field) {
     return privateMethodName(Name.from(field.getSimpleName()));
   }
 
-  /**
-   * Returns true if the request object param type for the given field should be imported.
-   */
+  /** Returns true if the request object param type for the given field should be imported. */
   public boolean shouldImportRequestObjectParamType(Field field) {
     return true;
   }
@@ -540,6 +554,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** Provides the doc lines for the given proto element in the current language. */
   public List<String> getDocLines(ProtoElement element) {
     return getDocLines(DocumentationUtil.getDescription(element));
+  }
+
+  /** Provides the doc lines for the given method element in the current language. */
+  public List<String> getDocLines(Method method, MethodConfig methodConfig) {
+    return getDocLines(method);
   }
 
   /** The doc lines that declare what exception(s) are thrown for an API method. */
@@ -563,10 +582,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return "private";
   }
 
-  /**
-   * The name used in Grpc for the given API method.
-   * This needs to match what Grpc generates.
-   */
+  /** The name used in Grpc for the given API method. This needs to match what Grpc generates. */
   public String getGrpcMethodName(Method method) {
     // This might seem silly, but it makes clear what we're dealing with (upper camel).
     // This is language-independent because of gRPC conventions.
@@ -663,8 +679,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The generic-aware response type name for the given type.
-   * For example, in Java, this will be the type used for ListenableFuture&lt;...&gt;.
+   * The generic-aware response type name for the given type. For example, in Java, this will be the
+   * type used for ListenableFuture&lt;...&gt;.
    */
   public String getGenericAwareResponseTypeName(TypeRef outputType) {
     return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
@@ -685,8 +701,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Computes the nickname of the async response type name for the given resource type, saves it in the
-   * given type table, and returns it.
+   * Computes the nickname of the async response type name for the given resource type, saves it in
+   * the given type table, and returns it.
    */
   public String getAndSaveAsyncPagedResponseTypeName(
       Method method, ModelTypeTable typeTable, Field resourcesField) {
@@ -711,9 +727,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getAndSaveAsyncPagedResponseTypeName(method, typeTable, resourcesField);
   }
 
-  /**
-   * The test case name for the given method.
-   */
+  /** The class name of the generated resource type from the entity name. */
+  public String getAndSaveResourceTypeName(
+      ModelTypeTable typeTable, ProtoElement elem, TypeRef type, String entityName) {
+    String resourceClassName = className(getResourceTypeName(entityName));
+    return typeTable.getAndSaveNicknameForTypedResourceName(elem, type, resourceClassName);
+  }
+
+  /** The test case name for the given method. */
   public String getTestCaseName(SymbolTable symbolTable, Method method) {
     Name testCaseName = symbolTable.getNewSymbol(Name.upperCamel(method.getSimpleName(), "Test"));
     return publicMethodName(testCaseName);
@@ -755,8 +776,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
-   * The fully qualified class name of a an API service.
-   * TODO: Support the general pattern of package + class name in NameFormatter.
+   * The fully qualified class name of a an API service. TODO: Support the general pattern of
+   * package + class name in NameFormatter.
    */
   public String getFullyQualifiedApiWrapperClassName(Interface interfaze, String packageName) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
@@ -810,8 +831,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /**
    * Returns the service name with common suffixes removed.
    *
-   * For example:
-   *  "LoggingServiceV2" becomes Name("Logging")
+   * <p>For example: "LoggingServiceV2" becomes Name("Logging")
    */
   public Name getReducedServiceName(Interface service) {
     String name = service.getSimpleName().replaceAll("V[0-9]+$", "");

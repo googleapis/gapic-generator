@@ -19,9 +19,7 @@ import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
 import com.google.common.collect.ImmutableSet;
 
-/**
- * The NameFormatter for Java.
- */
+/** The NameFormatter for Java. */
 public class GoNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {
@@ -98,8 +96,7 @@ public class GoNameFormatter implements NameFormatter {
   }
 
   /**
-   * A set of Go reserved identifiers. See
-   * https://golang.org/ref/spec#Keywords
+   * A set of Go reserved identifiers. See https://golang.org/ref/spec#Keywords
    * https://golang.org/ref/spec#Predeclared_identifiers
    */
   public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
