@@ -12,50 +12,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel.testing;
+package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.viewmodel.FileHeaderView;
-import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.StaticLangSettingsView.Builder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class MockServiceView implements ViewModel {
+public abstract class StaticLangSettingsFileView implements ViewModel {
+  @Override
+  public abstract String templateFileName();
 
   public abstract FileHeaderView fileHeader();
 
-  public abstract String name();
+  public abstract StaticLangSettingsView settings();
 
-  public abstract String serviceImplClassName();
+  @Override
+  public abstract String outputPath();
 
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
-  @Override
-  public abstract String templateFileName();
-
-  @Override
-  public abstract String outputPath();
-
   public static Builder newBuilder() {
-    return new AutoValue_MockServiceView.Builder();
+    return new AutoValue_StaticLangSettingsFileView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
+    public abstract Builder templateFileName(String val);
 
     public abstract Builder fileHeader(FileHeaderView val);
 
-    public abstract Builder name(String val);
-
-    public abstract Builder serviceImplClassName(String val);
-
     public abstract Builder outputPath(String val);
 
-    public abstract Builder templateFileName(String val);
+    public abstract Builder settings(StaticLangSettingsView val);
 
-    public abstract MockServiceView build();
+    public abstract StaticLangSettingsFileView build();
   }
 }

@@ -15,7 +15,7 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -23,13 +23,11 @@ import java.util.List;
 @AutoValue
 public abstract class MockServiceImplView implements ViewModel {
 
-  public abstract String packageName();
+  public abstract FileHeaderView fileHeader();
 
   public abstract String name();
 
   public abstract String grpcClassName();
-
-  public abstract List<ImportTypeView> imports();
 
   public abstract List<MockGrpcMethodView> grpcMethods();
 
@@ -50,13 +48,12 @@ public abstract class MockServiceImplView implements ViewModel {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder packageName(String val);
+
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder name(String val);
 
     public abstract Builder grpcClassName(String val);
-
-    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder outputPath(String val);
 

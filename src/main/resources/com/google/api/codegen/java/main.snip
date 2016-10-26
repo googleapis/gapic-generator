@@ -1,21 +1,18 @@
 @extends "java/common.snip"
 @extends "java/method_sample.snip"
 
-@snippet generate(xapiClass)
-  {@license()}
-  package {@xapiClass.packageName};
+@snippet generate(apiFile)
+  {@renderFileHeader(apiFile.fileHeader)}
 
-  {@importList(xapiClass.imports)}
-
-  {@serviceDoc(xapiClass)}
+  {@serviceDoc(apiFile.api)}
   @@javax.annotation.Generated("by GAPIC")
-  public class {@xapiClass.name} implements AutoCloseable {
-    {@members(xapiClass)}
-    {@statics(xapiClass)}
-    {@staticFunctions(xapiClass)}
-    {@constructors(xapiClass)}
-    {@memberMethods(xapiClass)}
-    {@apiMethods(xapiClass)}
+  public class {@apiFile.api.name} implements AutoCloseable {
+    {@members(apiFile.api)}
+    {@statics(apiFile.api)}
+    {@staticFunctions(apiFile.api)}
+    {@constructors(apiFile.api)}
+    {@memberMethods(apiFile.api)}
+    {@apiMethods(apiFile.api)}
     {@cleanupSection()}
   }
 @end
