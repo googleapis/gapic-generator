@@ -99,7 +99,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
 
     snippetsBuilder.templateFileName(SNIPPETS_TEMPLATE_FILENAME);
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    snippetsBuilder.outputPath(outputPath + File.separator + name.replace("Generated", "") + ".g.cs");
+    snippetsBuilder.outputPath(
+        outputPath + File.separator + name.replace("Generated", "") + ".g.cs");
     snippetsBuilder.packageName(context.getApiConfig().getPackageName() + ".Snippets");
     snippetsBuilder.name(name);
     snippetsBuilder.snippetMethods(generateMethods(context));
