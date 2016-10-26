@@ -16,7 +16,7 @@
  */
 package com.google.gcloud.example;
 
-import com.google.api.gax.grpc.UnaryApiCallable;
+import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.protobuf.Empty;
@@ -86,7 +86,7 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
   private final ScheduledExecutorService executor;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
-  private final UnaryApiCallable<IncrementRequest, Empty> incrementCallable;
+  private final UnaryCallable<IncrementRequest, Empty> incrementCallable;
 
 
 
@@ -110,7 +110,7 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
     this.executor = settings.getExecutorProvider().getOrBuildExecutor();
     this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
-    this.incrementCallable = UnaryApiCallable.create(settings.incrementSettings(), this.channel, this.executor);
+    this.incrementCallable = UnaryCallable.create(settings.incrementSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -179,7 +179,7 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<IncrementRequest, Empty> incrementCallable() {
+  public final UnaryCallable<IncrementRequest, Empty> incrementCallable() {
     return incrementCallable;
   }
 
