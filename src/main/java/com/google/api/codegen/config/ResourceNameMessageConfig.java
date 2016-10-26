@@ -26,19 +26,19 @@ public abstract class ResourceNameMessageConfig {
 
   public abstract String messageName();
 
-  abstract ImmutableMap<String, String> entityNameMap();
+  abstract ImmutableMap<String, String> fieldEntityMap();
 
   @Nullable
   public static ResourceNameMessageConfig createInterfaceConfig(
       DiagCollector diagCollector, ResourceNameMessageConfigProto messageResourceTypesProto) {
     String messageName = messageResourceTypesProto.getMessageName();
-    ImmutableMap<String, String> entityNameMap =
-        ImmutableMap.copyOf(messageResourceTypesProto.getFieldResourceTypes());
+    ImmutableMap<String, String> fieldEntityMap =
+        ImmutableMap.copyOf(messageResourceTypesProto.getFieldEntityMap());
 
-    return new AutoValue_ResourceNameMessageConfig(messageName, entityNameMap);
+    return new AutoValue_ResourceNameMessageConfig(messageName, fieldEntityMap);
   }
 
   public String getEntityNameForField(String fieldSimpleName) {
-    return entityNameMap().get(fieldSimpleName);
+    return fieldEntityMap().get(fieldSimpleName);
   }
 }
