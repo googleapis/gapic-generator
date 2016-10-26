@@ -79,7 +79,7 @@ public abstract class FieldConfig {
         getEntityName(parameterField, messageConfigs, methodConfigProto.getFieldNamePatterns());
 
     ResourceNameTreatment treatment;
-    if (flatteningGroup.getParameterResourceNameTreatment().containsKey(parameterField)) {
+    if (flatteningGroup.getParameterResourceNameTreatment().containsKey(parameterName)) {
       treatment = flatteningGroup.getParameterResourceNameTreatment().get(parameterName);
     } else {
       // No specific resource name treatment is specified, so we infer the correct treatment from

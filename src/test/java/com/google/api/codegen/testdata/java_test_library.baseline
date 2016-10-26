@@ -146,11 +146,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest() {
-    ShelfName name2 = ShelfName.create("[SHELF_ID]");
+    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(name2)
+      .setName(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -174,11 +174,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest2() {
-    ShelfName name2 = ShelfName.create("[SHELF_ID]");
+    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(name2)
+      .setName(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -186,29 +186,29 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName name = ShelfName.create("[SHELF_ID]");
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
 
     Shelf actualResponse =
-        api.getShelf(name, message);
+        api.getShelf(formattedName, message);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
   }
 
   @Test
   @SuppressWarnings("all")
   public void getShelfTest3() {
-    ShelfName name2 = ShelfName.create("[SHELF_ID]");
+    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(name2)
+      .setName(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -216,19 +216,19 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName name = ShelfName.create("[SHELF_ID]");
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
     com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
     Shelf actualResponse =
-        api.getShelf(name, message, stringBuilder);
+        api.getShelf(formattedName, message, stringBuilder);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertEquals(stringBuilder, actualRequest.getStringBuilder());
   }

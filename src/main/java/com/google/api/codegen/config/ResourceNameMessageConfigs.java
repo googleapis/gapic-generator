@@ -43,11 +43,6 @@ public abstract class ResourceNameMessageConfigs {
     return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap.build());
   }
 
-  public static ResourceNameMessageConfigs createEmpty() {
-    return new AutoValue_ResourceNameMessageConfigs(
-        ImmutableMap.<String, ResourceNameMessageConfig>of());
-  }
-
   public boolean fieldHasResourceName(Field field) {
     return fieldHasResourceName(field.getParent().getSimpleName(), field.getSimpleName());
   }
