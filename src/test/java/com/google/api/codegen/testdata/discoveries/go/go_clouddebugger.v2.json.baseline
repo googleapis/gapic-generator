@@ -19,16 +19,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouddebugger/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -40,8 +36,7 @@ func main() {
   }
 
   // Identifies the debuggee.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
-  // TODO: Change placeholder value above.
+  debuggeeId := ""  // TODO: Update placeholder value.
 
   resp, err := clouddebuggerService.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
   if err != nil {
@@ -71,16 +66,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouddebugger/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -92,18 +83,16 @@ func main() {
   }
 
   // Identifies the debuggee being debugged.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
-  // TODO: Change placeholder value above.
+  debuggeeId := ""  // TODO: Update placeholder value.
 
   // Breakpoint identifier, unique in the scope of the debuggee.
-  id := "{MY-ID}"
-  // TODO: Change placeholder value above.
+  id := ""  // TODO: Update placeholder value.
 
-  rb := clouddebugger.UpdateActiveBreakpointRequest{
+  rb := &clouddebugger.UpdateActiveBreakpointRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := clouddebuggerService.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, &rb).Context(ctx).Do()
+  resp, err := clouddebuggerService.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -131,16 +120,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouddebugger/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -151,12 +136,11 @@ func main() {
     log.Fatal(err)
   }
 
-
-  rb := clouddebugger.RegisterDebuggeeRequest{
+  rb := &clouddebugger.RegisterDebuggeeRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := clouddebuggerService.Controller.Debuggees.Register(&rb).Context(ctx).Do()
+  resp, err := clouddebuggerService.Controller.Debuggees.Register(rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -184,16 +168,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouddebugger/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -205,12 +185,10 @@ func main() {
   }
 
   // ID of the debuggee whose breakpoint to delete.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
-  // TODO: Change placeholder value above.
+  debuggeeId := ""  // TODO: Update placeholder value.
 
   // ID of the breakpoint to delete.
-  breakpointId := "{MY-BREAKPOINT-ID}"
-  // TODO: Change placeholder value above.
+  breakpointId := ""  // TODO: Update placeholder value.
 
   resp, err := clouddebuggerService.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
   if err != nil {
@@ -240,16 +218,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouddebugger/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -261,12 +235,10 @@ func main() {
   }
 
   // ID of the debuggee whose breakpoint to get.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
-  // TODO: Change placeholder value above.
+  debuggeeId := ""  // TODO: Update placeholder value.
 
   // ID of the breakpoint to get.
-  breakpointId := "{MY-BREAKPOINT-ID}"
-  // TODO: Change placeholder value above.
+  breakpointId := ""  // TODO: Update placeholder value.
 
   resp, err := clouddebuggerService.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
   if err != nil {
@@ -296,16 +268,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouddebugger/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -317,8 +285,7 @@ func main() {
   }
 
   // ID of the debuggee whose breakpoints to list.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
-  // TODO: Change placeholder value above.
+  debuggeeId := ""  // TODO: Update placeholder value.
 
   resp, err := clouddebuggerService.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
   if err != nil {
@@ -348,16 +315,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouddebugger/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -369,14 +332,13 @@ func main() {
   }
 
   // ID of the debuggee where the breakpoint is to be set.
-  debuggeeId := "{MY-DEBUGGEE-ID}"
-  // TODO: Change placeholder value above.
+  debuggeeId := ""  // TODO: Update placeholder value.
 
-  rb := clouddebugger.Breakpoint{
+  rb := &clouddebugger.Breakpoint{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := clouddebuggerService.Debugger.Debuggees.Breakpoints.Set(debuggeeId, &rb).Context(ctx).Do()
+  resp, err := clouddebuggerService.Debugger.Debuggees.Breakpoints.Set(debuggeeId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -404,16 +366,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouddebugger/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -423,7 +381,6 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-
 
   resp, err := clouddebuggerService.Debugger.Debuggees.List().Context(ctx).Do()
   if err != nil {

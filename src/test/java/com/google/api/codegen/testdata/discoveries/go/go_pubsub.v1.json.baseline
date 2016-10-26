@@ -19,16 +19,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -39,10 +35,10 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/snapshots/my-snapshot"
 
   resp, err := pubsubService.Projects.Snapshots.GetIamPolicy(resource).Context(ctx).Do()
   if err != nil {
@@ -72,16 +68,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -92,16 +84,16 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/snapshots/my-snapshot"
 
-  rb := pubsub.SetIamPolicyRequest{
+  rb := &pubsub.SetIamPolicyRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Snapshots.SetIamPolicy(resource, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Snapshots.SetIamPolicy(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -129,16 +121,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -151,14 +139,14 @@ func main() {
 
   // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
   // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}"
-  // TODO: Change placeholder value above.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/snapshots/my-snapshot"
 
-  rb := pubsub.TestIamPermissionsRequest{
+  rb := &pubsub.TestIamPermissionsRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Snapshots.TestIamPermissions(resource, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Snapshots.TestIamPermissions(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -186,16 +174,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -207,14 +191,14 @@ func main() {
   }
 
   // The subscription whose message is being acknowledged.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  subscription := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
-  rb := pubsub.AcknowledgeRequest{
+  rb := &pubsub.AcknowledgeRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Subscriptions.Acknowledge(subscription, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Subscriptions.Acknowledge(subscription, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -242,16 +226,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -267,14 +247,14 @@ func main() {
   // contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
   // (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
   // length, and it must not start with `"goog"`.
-  name := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
-  rb := pubsub.Subscription{
+  rb := &pubsub.Subscription{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Subscriptions.Create(name, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Subscriptions.Create(name, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -302,16 +282,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -323,8 +299,8 @@ func main() {
   }
 
   // The subscription to delete.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  subscription := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
   resp, err := pubsubService.Projects.Subscriptions.Delete(subscription).Context(ctx).Do()
   if err != nil {
@@ -354,16 +330,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -375,8 +347,8 @@ func main() {
   }
 
   // The name of the subscription to get.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  subscription := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
   resp, err := pubsubService.Projects.Subscriptions.Get(subscription).Context(ctx).Do()
   if err != nil {
@@ -406,16 +378,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -426,10 +394,10 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
   resp, err := pubsubService.Projects.Subscriptions.GetIamPolicy(resource).Context(ctx).Do()
   if err != nil {
@@ -459,16 +427,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -480,8 +444,8 @@ func main() {
   }
 
   // The name of the cloud project that subscriptions belong to.
-  project := "projects/{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project"
 
   req := pubsubService.Projects.Subscriptions.List(project)
   if err := req.Pages(ctx, func(page *pubsub.ListSubscriptionsResponse) error {
@@ -514,16 +478,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -535,14 +495,14 @@ func main() {
   }
 
   // The name of the subscription.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  subscription := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
-  rb := pubsub.ModifyAckDeadlineRequest{
+  rb := &pubsub.ModifyAckDeadlineRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Subscriptions.ModifyAckDeadline(subscription, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Subscriptions.ModifyAckDeadline(subscription, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -570,16 +530,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -591,14 +547,14 @@ func main() {
   }
 
   // The name of the subscription.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  subscription := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
-  rb := pubsub.ModifyPushConfigRequest{
+  rb := &pubsub.ModifyPushConfigRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Subscriptions.ModifyPushConfig(subscription, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Subscriptions.ModifyPushConfig(subscription, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -626,16 +582,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -647,14 +599,14 @@ func main() {
   }
 
   // The subscription from which messages should be pulled.
-  subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  subscription := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
-  rb := pubsub.PullRequest{
+  rb := &pubsub.PullRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Subscriptions.Pull(subscription, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Subscriptions.Pull(subscription, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -682,16 +634,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -702,16 +650,16 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
-  rb := pubsub.SetIamPolicyRequest{
+  rb := &pubsub.SetIamPolicyRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Subscriptions.SetIamPolicy(resource, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Subscriptions.SetIamPolicy(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -739,16 +687,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -761,14 +705,14 @@ func main() {
 
   // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
   // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}"
-  // TODO: Change placeholder value above.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/subscriptions/my-subscription"
 
-  rb := pubsub.TestIamPermissionsRequest{
+  rb := &pubsub.TestIamPermissionsRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Subscriptions.TestIamPermissions(resource, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Subscriptions.TestIamPermissions(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -796,16 +740,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -816,18 +756,18 @@ func main() {
     log.Fatal(err)
   }
 
-  // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
-  // start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
+  // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}`
+  // must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
   // underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
   // between 3 and 255 characters in length, and it must not start with `"goog"`.
-  name := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/topics/my-topic"
 
-  rb := pubsub.Topic{
+  rb := &pubsub.Topic{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Topics.Create(name, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Topics.Create(name, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -855,16 +795,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -876,8 +812,8 @@ func main() {
   }
 
   // Name of the topic to delete.
-  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
-  // TODO: Change placeholder value above.
+  topic := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/topics/my-topic"
 
   resp, err := pubsubService.Projects.Topics.Delete(topic).Context(ctx).Do()
   if err != nil {
@@ -907,16 +843,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -928,8 +860,8 @@ func main() {
   }
 
   // The name of the topic to get.
-  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
-  // TODO: Change placeholder value above.
+  topic := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/topics/my-topic"
 
   resp, err := pubsubService.Projects.Topics.Get(topic).Context(ctx).Do()
   if err != nil {
@@ -959,16 +891,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -979,10 +907,10 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/topics/my-topic"
 
   resp, err := pubsubService.Projects.Topics.GetIamPolicy(resource).Context(ctx).Do()
   if err != nil {
@@ -1012,16 +940,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1033,8 +957,8 @@ func main() {
   }
 
   // The name of the cloud project that topics belong to.
-  project := "projects/{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project"
 
   req := pubsubService.Projects.Topics.List(project)
   if err := req.Pages(ctx, func(page *pubsub.ListTopicsResponse) error {
@@ -1067,16 +991,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1088,14 +1008,14 @@ func main() {
   }
 
   // The messages in the request will be published on this topic.
-  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
-  // TODO: Change placeholder value above.
+  topic := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/topics/my-topic"
 
-  rb := pubsub.PublishRequest{
+  rb := &pubsub.PublishRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Topics.Publish(topic, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Topics.Publish(topic, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -1123,16 +1043,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1143,16 +1059,16 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-  // path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
-  // TODO: Change placeholder value above.
+  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+  // a path. For example, a Project resource is specified as `projects/{project}`.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/topics/my-topic"
 
-  rb := pubsub.SetIamPolicyRequest{
+  rb := &pubsub.SetIamPolicyRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Topics.SetIamPolicy(resource, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Topics.SetIamPolicy(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -1180,16 +1096,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1201,8 +1113,8 @@ func main() {
   }
 
   // The name of the topic that subscriptions are attached to.
-  topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
-  // TODO: Change placeholder value above.
+  topic := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/topics/my-topic"
 
   req := pubsubService.Projects.Topics.Subscriptions.List(topic)
   if err := req.Pages(ctx, func(page *pubsub.ListTopicSubscriptionsResponse) error {
@@ -1235,16 +1147,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/pubsub/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1257,14 +1165,14 @@ func main() {
 
   // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
   // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-  resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}"
-  // TODO: Change placeholder value above.
+  resource := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/topics/my-topic"
 
-  rb := pubsub.TestIamPermissionsRequest{
+  rb := &pubsub.TestIamPermissionsRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := pubsubService.Projects.Topics.TestIamPermissions(resource, &rb).Context(ctx).Do()
+  resp, err := pubsubService.Projects.Topics.TestIamPermissions(resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
