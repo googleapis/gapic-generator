@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.BundlingConfig;
@@ -23,6 +24,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -429,9 +431,31 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
         .initFields(primitiveFields)
+        .fieldConfigMap(createResponseFieldConfigMap(context))
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();
+  }
+
+  private ImmutableMap<String, FieldConfig> createResponseFieldConfigMap(
+      MethodTransformerContext context) {
+    ApiConfig apiConfig = context.getApiConfig();
+    ResourceNameMessageConfigs messageConfig = apiConfig.getResourceNameMessageConfigs();
+    ResourceNameTreatment treatment = context.getMethodConfig().getDefaultResourceNameTreatment();
+
+    if (messageConfig == null || treatment == ResourceNameTreatment.NONE) {
+      return ImmutableMap.of();
+    }
+    ImmutableMap.Builder<String, FieldConfig> builder = ImmutableMap.builder();
+    for (Field field : context.getMethod().getOutputMessage().getFields()) {
+      if (messageConfig.fieldHasResourceName(field)) {
+        builder.put(
+            field.getFullName(),
+            FieldConfig.createFieldConfig(
+                field, treatment, messageConfig.getFieldResourceName(field)));
+      }
+    }
+    return builder.build();
   }
 
   private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(

@@ -82,7 +82,8 @@ public abstract class InterfaceConfig {
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
-      Interface iface) {
+      Interface iface,
+      ResourceNameMessageConfigs messageConfigs) {
     ImmutableMap<String, CollectionConfig> collectionConfigs =
         createCollectionConfigs(diagCollector, interfaceConfigProto);
 
@@ -100,6 +101,7 @@ public abstract class InterfaceConfig {
               language,
               interfaceConfigProto,
               iface,
+              messageConfigs,
               retryCodesDefinition.keySet(),
               retrySettingsDefinition.keySet());
       methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
@@ -230,6 +232,7 @@ public abstract class InterfaceConfig {
       String language,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
+      ResourceNameMessageConfigs messageConfigs,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, MethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
@@ -250,6 +253,7 @@ public abstract class InterfaceConfig {
               language,
               methodConfigProto,
               method,
+              messageConfigs,
               retryCodesConfigNames,
               retryParamsConfigNames);
       if (methodConfig == null) {

@@ -20,6 +20,7 @@ import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
@@ -427,9 +428,9 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   ShelfName name = ShelfName.create("[SHELF_ID]");
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
-   *   Shelf response = libraryServiceApi.getShelf(name, message);
+   *   Shelf response = libraryServiceApi.getShelf(formattedName, message);
    * }
    * </code></pre>
    *
@@ -437,10 +438,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param message Field to verify that message-type query parameter gets flattened.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Shelf getShelf(ShelfName name, SomeMessage message) {
+  public final Shelf getShelf(String name, SomeMessage message) {
+    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
-        .setNameWithResource(name)
+        .setName(name)
         .setMessage(message)
         .build();
     return getShelf(request);
@@ -453,10 +455,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   ShelfName name = ShelfName.create("[SHELF_ID]");
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
-   *   Shelf response = libraryServiceApi.getShelf(name, message, stringBuilder);
+   *   Shelf response = libraryServiceApi.getShelf(formattedName, message, stringBuilder);
    * }
    * </code></pre>
    *
@@ -465,10 +467,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param stringBuilder
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Shelf getShelf(ShelfName name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+  public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
-        .setNameWithResource(name)
+        .setName(name)
         .setMessage(message)
         .setStringBuilder(stringBuilder)
         .build();
@@ -482,10 +484,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   ShelfName name = ShelfName.create("[SHELF_ID]");
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setName(formattedName)
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryServiceApi.getShelf(request);
@@ -506,10 +508,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   ShelfName name = ShelfName.create("[SHELF_ID]");
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setName(formattedName)
    *     .setOptions(options)
    *     .build();
    *   ListenableFuture&lt;Shelf&gt; future = libraryServiceApi.getShelfCallable().futureCall(request);
@@ -1521,7 +1523,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   Book response = libraryServiceApi.getBookFromArchive(name);
    * }
    * </code></pre>
@@ -1529,7 +1531,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Book getBookFromArchive(BookName name) {
+  public final Book getBookFromArchive(ArchivedBookName name) {
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
         .setNameWithResource(name)
@@ -1544,7 +1546,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
@@ -1566,7 +1568,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
