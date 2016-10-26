@@ -16,7 +16,7 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.core.PagedListResponse;
-import com.google.api.gax.grpc.StreamingApiCallable;
+import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.testing.MockGrpcService;
 import com.google.api.gax.testing.MockServiceHelper;
 import com.google.api.gax.testing.MockStreamObserver;
@@ -673,7 +673,7 @@ public class LibraryServiceTest {
 
     MockStreamObserver<StreamShelvesResponse> responseObserver = new MockStreamObserver<>();
 
-    StreamingApiCallable<StreamShelvesRequest, StreamShelvesResponse> callable =
+    StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> callable =
         api.streamShelvesCallable();
     callable.serverStreamingCall(request, responseObserver);
 
@@ -706,7 +706,7 @@ public class LibraryServiceTest {
 
     MockStreamObserver<Book> responseObserver = new MockStreamObserver<>();
 
-    StreamingApiCallable<StreamBooksRequest, Book> callable =
+    StreamingCallable<StreamBooksRequest, Book> callable =
         api.streamBooksCallable();
     callable.serverStreamingCall(request, responseObserver);
 
@@ -732,7 +732,7 @@ public class LibraryServiceTest {
 
     MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
 
-    StreamingApiCallable<DiscussBookRequest, Comment> callable =
+    StreamingCallable<DiscussBookRequest, Comment> callable =
         api.discussBookCallable();
     StreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
