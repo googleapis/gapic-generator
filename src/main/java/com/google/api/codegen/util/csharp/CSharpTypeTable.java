@@ -19,8 +19,10 @@ import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -37,6 +39,16 @@ public class CSharpTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
+    int firstGenericOpenIndex = fullName.indexOf('<');
+    if (firstGenericOpenIndex >= 0) {
+      int lastGenericCloseIndex = fullName.lastIndexOf('>');
+      String containerTypeName = fullName.substring(0, firstGenericOpenIndex);
+      List<String> genericParamNames =
+          Splitter.on(',')
+              .splitToList(fullName.substring(firstGenericOpenIndex + 1, lastGenericCloseIndex));
+      return getContainerTypeName(
+          containerTypeName, genericParamNames.toArray(new String[genericParamNames.size()]));
+    }
     int lastDotIndex = fullName.lastIndexOf('.');
     if (lastDotIndex < 0) {
       return new TypeName(fullName, fullName);

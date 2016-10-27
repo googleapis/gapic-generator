@@ -41,6 +41,9 @@ public abstract class ApiCallableView {
 
   public abstract String settingsFunctionName();
 
+  // Used in C#
+  public abstract String grpcClientVarName();
+
   public static Builder newBuilder() {
     return new AutoValue_ApiCallableView.Builder()
         .grpcStreamingType(GrpcStreamingType.NonStreaming);
@@ -65,6 +68,8 @@ public abstract class ApiCallableView {
     public abstract Builder memberName(String name);
 
     public abstract Builder settingsFunctionName(String name);
+
+    public abstract Builder grpcClientVarName(String name);
 
     public abstract ApiCallableView build();
   }

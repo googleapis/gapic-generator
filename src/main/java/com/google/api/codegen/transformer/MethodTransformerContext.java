@@ -16,12 +16,14 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 import java.util.Collection;
+import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -34,6 +36,7 @@ public abstract class MethodTransformerContext {
       SurfaceNamer namer,
       Method method,
       MethodConfig methodConfig,
+      FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
     return new AutoValue_MethodTransformerContext(
         surfaceTransformerContext,
@@ -43,6 +46,7 @@ public abstract class MethodTransformerContext {
         namer,
         method,
         methodConfig,
+        flatteningConfig,
         featureConfig);
   }
 
@@ -59,6 +63,9 @@ public abstract class MethodTransformerContext {
   public abstract Method getMethod();
 
   public abstract MethodConfig getMethodConfig();
+
+  @Nullable
+  public abstract FlatteningConfig getFlatteningConfig();
 
   public abstract FeatureConfig getFeatureConfig();
 
@@ -88,6 +95,7 @@ public abstract class MethodTransformerContext {
         getNamer(),
         getMethod(),
         getMethodConfig(),
+        getFlatteningConfig(),
         getFeatureConfig());
   }
 }

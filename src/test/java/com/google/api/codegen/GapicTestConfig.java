@@ -18,7 +18,6 @@ import com.google.api.AnnotationsProto;
 import com.google.api.AuthProto;
 import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
-import com.google.gapic.ResourceNameFormatProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.ExtensionRegistry;
 import java.io.IOException;
@@ -37,7 +36,6 @@ public class GapicTestConfig extends TestConfig {
     ExtensionRegistry registry = ExtensionRegistry.newInstance();
     AnnotationsProto.registerAllExtensions(registry);
     AuthProto.registerAllExtensions(registry);
-    ResourceNameFormatProto.registerAllExtensions(registry);
     return FileDescriptorSet.parseFrom(Files.newInputStream(getDescriptorFile()), registry);
   }
 }
