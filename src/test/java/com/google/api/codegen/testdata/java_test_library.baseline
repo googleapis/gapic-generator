@@ -616,12 +616,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromArchiveTest() {
-    String formattedName2 = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+    ArchivedBookName name2 = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     BookFromArchive expectedResponse = BookFromArchive.newBuilder()
-      .setName(formattedName2)
+      .setNameWithResource(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -646,12 +646,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromAnywhereTest() {
-    String name2 = "name2-1052831874";
+    BookOneofNameOneof name2 = BookOneofNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     BookFromAnywhere expectedResponse = BookFromAnywhere.newBuilder()
-      .setName(name2)
+      .setNameWithResource(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
