@@ -64,13 +64,14 @@ public class ApiaryConfigToSampleConfigConverter {
     for (Method method : this.methods) {
       methods.put(method.getName(), createMethod(method));
     }
-    String apiTypeName = typeNameGenerator.getApiTypeName(apiName);
+    String apiTypeName = typeNameGenerator.getApiTypeName(apiaryConfig.getServiceCanonicalName());
     return SampleConfig.newBuilder()
         .apiTitle(apiaryConfig.getApiTitle())
         .apiName(apiName)
         .apiVersion(apiVersion)
         .apiTypeName(apiTypeName)
         .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
+        .appName(typeNameGenerator.getSampleApplicationName(apiTypeName))
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
         .authInstructionsUrl(apiaryConfig.getAuthInstructionsUrl())

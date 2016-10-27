@@ -12,7 +12,7 @@
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var cloudtrace = google.cloudtrace('v1');
+var cloudTrace = google.cloudtrace('v1');
 
 authorize(function(authClient) {
   var request = {
@@ -27,7 +27,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  cloudtrace.projects.patchTraces(request, function(err) {
+  cloudTrace.projects.patchTraces(request, function(err) {
     if (err) {
       console.log(err);
       return;
@@ -61,7 +61,7 @@ function authorize(callback) {
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var cloudtrace = google.cloudtrace('v1');
+var cloudTrace = google.cloudtrace('v1');
 
 authorize(function(authClient) {
   var request = {
@@ -74,7 +74,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  cloudtrace.projects.traces.get(request, function(err, response) {
+  cloudTrace.projects.traces.get(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -111,7 +111,7 @@ function authorize(callback) {
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var cloudtrace = google.cloudtrace('v1');
+var cloudTrace = google.cloudtrace('v1');
 
 authorize(function(authClient) {
   var request = {
@@ -138,11 +138,11 @@ authorize(function(authClient) {
 
     if (response.nextPageToken) {
       request.pageToken = response.nextPageToken;
-      cloudtrace.projects.traces.list(request, handlePage);
+      cloudTrace.projects.traces.list(request, handlePage);
     }
   };
 
-  cloudtrace.projects.traces.list(request, handlePage);
+  cloudTrace.projects.traces.list(request, handlePage);
 });
 
 function authorize(callback) {

@@ -63,6 +63,18 @@ public abstract class DiscoveryContext extends CodegenContext {
     return service.getDocumentation().getOverview();
   }
 
+  public String getServiceName() {
+    return apiaryConfig.getServiceCanonicalName().replace(" ", "");
+  }
+
+  // Used to construct User-Agent header in some language client libraries.
+  // Specification: https://tools.ietf.org/html/rfc7231#section-5.5.3
+  // Compliant example:
+  // https://developers.google.com/api-client-library/java/google-api-java-client/oauth2#googlecredential
+  public String getSampleApplicationName() {
+    return "Google-" + getServiceName() + "Sample/0.1";
+  }
+
   /** Returns the simple name of the method with given ID. */
   public String getMethodName(Method method) {
     return getSimpleName(method.getName());
