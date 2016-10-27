@@ -36,7 +36,6 @@ import com.google.common.io.CharStreams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import javax.annotation.Nullable;
 
@@ -61,9 +60,9 @@ public abstract class ApiConfig {
   /** Returns the lines from the configured license file. */
   public abstract ImmutableList<String> getLicenseLines();
 
-  public abstract ImmutableMap<String, CollectionConfig> collectionConfigs();
+  public abstract ImmutableMap<String, CollectionConfig> getCollectionConfigs();
 
-  public abstract ImmutableMap<String, CollectionOneofConfig> collectionOneofConfigs();
+  public abstract ImmutableMap<String, CollectionOneofConfig> getCollectionOneofConfigs();
 
   /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
@@ -75,16 +74,21 @@ public abstract class ApiConfig {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             model.getDiagCollector(), configProto);
+    
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             model.getDiagCollector(), configProto, messageConfigs, model.getSymbolTable());
+    
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
+    
     ImmutableMap<String, CollectionConfig> collectionConfigs =
         createCollectionConfigs(model.getDiagCollector(), configProto.getInterfacesList());
+    
     ImmutableMap<String, CollectionOneofConfig> collectionOneofConfigs =
         createCollectionOneofConfigs(
             model.getDiagCollector(), configProto.getCollectionOneofsList(), collectionConfigs);
+    
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
@@ -268,11 +272,19 @@ public abstract class ApiConfig {
   }
 
   public CollectionConfig getCollectionConfig(String entityName) {
-    return collectionConfigs().get(entityName);
+    return getCollectionConfigs().get(entityName);
   }
-
-  /** Returns the list of CollectionConfigs. */
-  public Collection<CollectionConfig> getCollectionConfigs() {
-    return collectionConfigs().values();
+  
+  public ResourceNameType getTypeOfEntityName(String entityName) {
+    if (getCollectionConfigs().containsKey(entityName)) {
+      return ResourceNameType.SINGLE;
+    }
+    if (getCollectionOneofConfigs().containsKey(entityName)) {
+      return ResourceNameType.ONEOF;
+    }
+    if (entityName == "*") {
+      return ResourceNameType.ANY;
+    }
+    return ResourceNameType.NONE;
   }
 }

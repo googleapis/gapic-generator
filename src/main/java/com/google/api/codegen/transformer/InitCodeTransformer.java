@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -31,6 +32,7 @@ import com.google.api.codegen.viewmodel.ListInitCodeLineView;
 import com.google.api.codegen.viewmodel.MapEntryView;
 import com.google.api.codegen.viewmodel.MapInitCodeLineView;
 import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
+import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
@@ -197,12 +199,15 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
 
     if (context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())) {
+      ResourceNameType resourceNameType =
+          context.getApiConfig().getTypeOfEntityName(item.getFieldConfig().getEntityName());
       surfaceLine.typeName(
           namer.getAndSaveResourceTypeName(
               typeTable,
               item.getFieldConfig().getField(),
               item.getType(),
-              item.getFieldConfig().getEntityName()));
+              item.getFieldConfig().getEntityName(),
+              resourceNameType));
     } else {
       surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
     }
@@ -239,12 +244,15 @@ public class InitCodeTransformer {
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      ResourceNameType resourceNameType =
+          context.getApiConfig().getTypeOfEntityName(fieldConfig.getEntityName());
       surfaceLine.elementTypeName(
           namer.getAndSaveResourceTypeName(
               typeTable,
               item.getFieldConfig().getField(),
               item.getType().makeOptional(),
-              item.getFieldConfig().getEntityName()));
+              item.getFieldConfig().getEntityName(),
+              resourceNameType));
     } else {
       surfaceLine.elementTypeName(
           typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
@@ -301,17 +309,27 @@ public class InitCodeTransformer {
         && !item.getType().isRepeated()) {
       // For a repeated type, we want to use a SimpleInitValueView
 
-      ResourceNameInitValueView.Builder initValue = ResourceNameInitValueView.newBuilder();
-
       String entityName = fieldConfig.getEntityName();
-      Name resourceName = namer.getResourceTypeName(entityName);
-      initValue.resourceTypeName(namer.className(resourceName));
+      ResourceNameType resourceNameType = context.getApiConfig().getTypeOfEntityName(entityName);
 
-      List<String> varList =
-          Lists.newArrayList(context.getCollectionConfig(entityName).getNameTemplate().vars());
-      initValue.formatArgs(getFormatFunctionArgs(varList, initValueConfig));
-
-      return initValue.build();
+      switch (resourceNameType) {
+        case ANY:
+          throw new UnsupportedOperationException("entity name *");
+        case INVALID:
+          throw new UnsupportedOperationException("entity name invalid");
+        case ONEOF:
+          ResourceNameInitValueView initView = createResourceNameInitValueView(context, item);
+          Name resourceOneofName = namer.getResourceTypeName(entityName, resourceNameType);
+          return ResourceNameOneofInitValueView.newBuilder()
+              .resourceOneofTypeName(namer.className(resourceOneofName))
+              .specificResourceNameView(initView)
+              .build();
+        case SINGLE:
+          return createResourceNameInitValueView(context, item);
+        case NONE:
+        default:
+          throw new UnsupportedOperationException("unexpected entity name type");
+      }
     } else if (initValueConfig.hasFormattingConfig()) {
       FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
 
@@ -339,6 +357,22 @@ public class InitCodeTransformer {
 
       return initValue.build();
     }
+  }
+  
+  private ResourceNameInitValueView createResourceNameInitValueView(
+      MethodTransformerContext context, InitCodeNode item) {
+    CollectionConfig collectionConfig =
+        context.getFirstCollectionConfig(item.getFieldConfig().getEntityName());
+    Name resourceName =
+        context
+            .getNamer()
+            .getResourceTypeName(collectionConfig.getEntityName(), ResourceNameType.SINGLE);
+    List<String> varList = Lists.newArrayList(collectionConfig.getNameTemplate().vars());
+
+    return ResourceNameInitValueView.newBuilder()
+        .resourceTypeName(context.getNamer().className(resourceName))
+        .formatArgs(getFormatFunctionArgs(varList, item.getInitValueConfig()))
+        .build();
   }
 
   private static List<String> getFormatFunctionArgs(

@@ -23,6 +23,11 @@ language_settings:
 license_header:
   copyright_file: copyright-google.txt
   license_file: license-header-apache-2.0.txt
+collection_oneofs:
+  - oneof_name: book_oneof
+    collection_names:
+    - book
+    - archived_book
 interfaces:
 - name: google.example.library.v1.LibraryService
   retry_codes_def:
@@ -326,6 +331,18 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: archived_book
+  - name: GetBookFromAnywhere
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+      - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    request_object_method: false
+    resource_name_treatment: STATIC_TYPES
   - name: UpdateBookIndex
     flattening:
       groups:
@@ -492,6 +509,9 @@ resource_name_generation:
 - message_name: GetBookFromArchiveRequest
   field_entity_map:
     name: archived_book
+- message_name: GetBookFromAnywhereRequest
+  field_entity_map:
+    name: book_oneof
 - message_name: UpdateBookIndexRequest
   field_entity_map:
     name: book

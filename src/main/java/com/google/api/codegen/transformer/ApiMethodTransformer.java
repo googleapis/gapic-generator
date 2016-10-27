@@ -19,6 +19,7 @@ import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -268,6 +269,8 @@ public class ApiMethodTransformer {
 
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     Field resourceField = resourceFieldConfig.getField();
+    ResourceNameType resourceNameType =
+        context.getApiConfig().getTypeOfEntityName(resourceFieldConfig.getEntityName());
 
     String resourceTypeName;
 
@@ -277,7 +280,8 @@ public class ApiMethodTransformer {
               typeTable,
               resourceField,
               resourceField.getType().makeOptional(),
-              resourceFieldConfig.getEntityName());
+              resourceFieldConfig.getEntityName(),
+              resourceNameType);
     } else {
       resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
     }
@@ -285,7 +289,8 @@ public class ApiMethodTransformer {
     String iterateMethodName =
         context
             .getNamer()
-            .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
+            .getPagedResponseIterateMethod(
+                context.getFeatureConfig(), resourceFieldConfig, resourceNameType);
 
     String resourceFieldName = context.getNamer().getFieldName(resourceField);
     String resourceFieldGetFunctionName =
@@ -651,16 +656,22 @@ public class ApiMethodTransformer {
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      ResourceNameType resourceNameType =
+          context.getApiConfig().getTypeOfEntityName(fieldConfig.getEntityName());
       if (namer.shouldImportRequestObjectParamType(field)) {
         typeName =
             namer.getAndSaveResourceTypeName(
-                typeTable, field, field.getType(), fieldConfig.getEntityName());
+                typeTable, field, field.getType(), fieldConfig.getEntityName(), resourceNameType);
       }
       if (namer.shouldImportRequestObjectParamElementType(field)) {
         // Use makeOptional to remove repeated property from type
         elementTypeName =
             namer.getAndSaveResourceTypeName(
-                typeTable, field, field.getType().makeOptional(), fieldConfig.getEntityName());
+                typeTable,
+                field,
+                field.getType().makeOptional(),
+                fieldConfig.getEntityName(),
+                resourceNameType);
       }
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {

@@ -48,8 +48,14 @@
   @case "FormattedInitValueView"
     {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
   @case "ResourceNameInitValueView"
-    {@initValue.resourceTypeName}.create({@argList(initValue.formatArgs)})
+    {@renderResourceName(initValue)}
+  @case "ResourceNameOneofInitValueView"
+    {@initValue.resourceOneofTypeName}.from({@renderResourceName(initValue.specificResourceNameView)})
   @default
     $unhandledCase: {@initValue.type}$
   @end
+@end
+
+@private renderResourceName(initValue)
+  {@initValue.resourceTypeName}.create({@argList(initValue.formatArgs)})
 @end
