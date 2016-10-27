@@ -120,7 +120,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
         throw new UnsupportedOperationException("unexpected entity name type");
     }
   }
-  
+
   /**
    * The name of the iterate method of the PagedListResponse type for a field, returning the
    * resource type iterate method if available

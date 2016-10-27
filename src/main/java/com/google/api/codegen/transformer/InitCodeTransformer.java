@@ -358,7 +358,7 @@ public class InitCodeTransformer {
       return initValue.build();
     }
   }
-  
+
   private ResourceNameInitValueView createResourceNameInitValueView(
       MethodTransformerContext context, InitCodeNode item) {
     CollectionConfig collectionConfig =

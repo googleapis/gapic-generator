@@ -86,7 +86,7 @@ public abstract class MethodTransformerContext {
   public CollectionConfig getCollectionConfig(String entityName) {
     return getApiConfig().getCollectionConfig(entityName);
   }
-  
+
   public boolean entityNameIsCollectionConfig(String entityName) {
     return getApiConfig().getCollectionConfig(entityName) != null;
   }
@@ -94,7 +94,7 @@ public abstract class MethodTransformerContext {
   public boolean entityNameIsCollectionOneofConfig(String entityName) {
     return getApiConfig().getCollectionOneofConfigs().get(entityName) != null;
   }
-  
+
   public CollectionConfig getFirstCollectionConfig(String entityName) {
     CollectionConfig collectionConfig = getApiConfig().getCollectionConfig(entityName);
     if (collectionConfig == null) {
@@ -106,7 +106,7 @@ public abstract class MethodTransformerContext {
     }
     return collectionConfig;
   }
-  
+
   public MethodTransformerContext cloneWithEmptyTypeTable() {
     return create(
         getSurfaceTransformerContext(),

@@ -74,21 +74,21 @@ public abstract class ApiConfig {
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             model.getDiagCollector(), configProto);
-    
+
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             model.getDiagCollector(), configProto, messageConfigs, model.getSymbolTable());
-    
+
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
-    
+
     ImmutableMap<String, CollectionConfig> collectionConfigs =
         createCollectionConfigs(model.getDiagCollector(), configProto.getInterfacesList());
-    
+
     ImmutableMap<String, CollectionOneofConfig> collectionOneofConfigs =
         createCollectionOneofConfigs(
             model.getDiagCollector(), configProto.getCollectionOneofsList(), collectionConfigs);
-    
+
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
@@ -274,7 +274,7 @@ public abstract class ApiConfig {
   public CollectionConfig getCollectionConfig(String entityName) {
     return getCollectionConfigs().get(entityName);
   }
-  
+
   public ResourceNameType getTypeOfEntityName(String entityName) {
     if (getCollectionConfigs().containsKey(entityName)) {
       return ResourceNameType.SINGLE;
