@@ -19,16 +19,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -41,8 +37,8 @@ func main() {
 
   // Required. The resource name of the log to delete.  Example:
   // `"projects/my-project/logs/syslog"`.
-  logName := "billingAccounts/{MY-BILLINGACCOUNT}/logs/{MY-LOG}"
-  // TODO: Change placeholder value above.
+  logName := ""  // TODO: Update placeholder value.
+  // ex: "billingAccounts/my-billingAccount/logs/my-log"
 
   resp, err := loggingService.BillingAccounts.Logs.Delete(logName).Context(ctx).Do()
   if err != nil {
@@ -72,16 +68,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -92,12 +84,11 @@ func main() {
     log.Fatal(err)
   }
 
-
-  rb := logging.ListLogEntriesRequest{
+  rb := &logging.ListLogEntriesRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := loggingService.Entries.List(&rb).Context(ctx).Do()
+  resp, err := loggingService.Entries.List(rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -125,16 +116,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -145,12 +132,11 @@ func main() {
     log.Fatal(err)
   }
 
-
-  rb := logging.WriteLogEntriesRequest{
+  rb := &logging.WriteLogEntriesRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := loggingService.Entries.Write(&rb).Context(ctx).Do()
+  resp, err := loggingService.Entries.Write(rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -178,16 +164,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -197,7 +179,6 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-
 
   req := loggingService.MonitoredResourceDescriptors.List()
   if err := req.Pages(ctx, func(page *logging.ListMonitoredResourceDescriptorsResponse) error {
@@ -230,16 +211,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -252,8 +229,8 @@ func main() {
 
   // Required. The resource name of the log to delete.  Example:
   // `"projects/my-project/logs/syslog"`.
-  logName := "organizations/{MY-ORGANIZATION}/logs/{MY-LOG}"
-  // TODO: Change placeholder value above.
+  logName := ""  // TODO: Update placeholder value.
+  // ex: "organizations/my-organization/logs/my-log"
 
   resp, err := loggingService.Organizations.Logs.Delete(logName).Context(ctx).Do()
   if err != nil {
@@ -283,16 +260,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -305,8 +278,8 @@ func main() {
 
   // Required. The resource name of the log to delete.  Example:
   // `"projects/my-project/logs/syslog"`.
-  logName := "projects/{MY-PROJECT}/logs/{MY-LOG}"
-  // TODO: Change placeholder value above.
+  logName := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/logs/my-log"
 
   resp, err := loggingService.Projects.Logs.Delete(logName).Context(ctx).Do()
   if err != nil {
@@ -336,16 +309,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -359,14 +328,14 @@ func main() {
   // The resource name of the project in which to create the metric.
   // Example: `"projects/my-project-id"`.
   // The new metric must be provided in the request.
-  parent := "projects/{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  parent := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project"
 
-  rb := logging.LogMetric{
+  rb := &logging.LogMetric{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := loggingService.Projects.Metrics.Create(parent, &rb).Context(ctx).Do()
+  resp, err := loggingService.Projects.Metrics.Create(parent, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -394,16 +363,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -416,8 +381,8 @@ func main() {
 
   // The resource name of the metric to delete.
   // Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}"
-  // TODO: Change placeholder value above.
+  metricName := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/metrics/my-metric"
 
   resp, err := loggingService.Projects.Metrics.Delete(metricName).Context(ctx).Do()
   if err != nil {
@@ -447,16 +412,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -469,8 +430,8 @@ func main() {
 
   // The resource name of the desired metric.
   // Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}"
-  // TODO: Change placeholder value above.
+  metricName := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/metrics/my-metric"
 
   resp, err := loggingService.Projects.Metrics.Get(metricName).Context(ctx).Do()
   if err != nil {
@@ -500,16 +461,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -522,8 +479,8 @@ func main() {
 
   // Required. The resource name containing the metrics.
   // Example: `"projects/my-project-id"`.
-  parent := "projects/{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  parent := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project"
 
   req := loggingService.Projects.Metrics.List(parent)
   if err := req.Pages(ctx, func(page *logging.ListLogMetricsResponse) error {
@@ -556,16 +513,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -581,14 +534,14 @@ func main() {
   // The updated metric must be provided in the request and have the
   // same identifier that is specified in `metricName`.
   // If the metric does not exist, it is created.
-  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}"
-  // TODO: Change placeholder value above.
+  metricName := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/metrics/my-metric"
 
-  rb := logging.LogMetric{
+  rb := &logging.LogMetric{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := loggingService.Projects.Metrics.Update(metricName, &rb).Context(ctx).Do()
+  resp, err := loggingService.Projects.Metrics.Update(metricName, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -616,16 +569,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -639,14 +588,14 @@ func main() {
   // Required. The resource in which to create the sink.
   // Example: `"projects/my-project-id"`.
   // The new sink must be provided in the request.
-  parent := "projects/{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  parent := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project"
 
-  rb := logging.LogSink{
+  rb := &logging.LogSink{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := loggingService.Projects.Sinks.Create(parent, &rb).Context(ctx).Do()
+  resp, err := loggingService.Projects.Sinks.Create(parent, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -674,16 +623,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -698,8 +643,8 @@ func main() {
   // resource and the sink identifier.  Example:
   // `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
   // does not exist.
-  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}"
-  // TODO: Change placeholder value above.
+  sinkName := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/sinks/my-sink"
 
   resp, err := loggingService.Projects.Sinks.Delete(sinkName).Context(ctx).Do()
   if err != nil {
@@ -729,16 +674,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -751,8 +692,8 @@ func main() {
 
   // Required. The resource name of the sink to return.
   // Example: `"projects/my-project-id/sinks/my-sink-id"`.
-  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}"
-  // TODO: Change placeholder value above.
+  sinkName := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/sinks/my-sink"
 
   resp, err := loggingService.Projects.Sinks.Get(sinkName).Context(ctx).Do()
   if err != nil {
@@ -782,16 +723,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -804,8 +741,8 @@ func main() {
 
   // Required. The cloud resource containing the sinks.
   // Example: `"projects/my-logging-project"`.
-  parent := "projects/{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  parent := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project"
 
   req := loggingService.Projects.Sinks.List(parent)
   if err := req.Pages(ctx, func(page *logging.ListSinksResponse) error {
@@ -838,16 +775,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/logging/v2beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -861,14 +794,14 @@ func main() {
   // Required. The resource name of the sink to update, including the parent
   // resource and the sink identifier.  If the sink does not exist, this method
   // creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
-  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}"
-  // TODO: Change placeholder value above.
+  sinkName := ""  // TODO: Update placeholder value.
+  // ex: "projects/my-project/sinks/my-sink"
 
-  rb := logging.LogSink{
+  rb := &logging.LogSink{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := loggingService.Projects.Sinks.Update(sinkName, &rb).Context(ctx).Do()
+  resp, err := loggingService.Projects.Sinks.Update(sinkName, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
