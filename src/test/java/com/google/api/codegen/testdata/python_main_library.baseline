@@ -114,101 +114,6 @@ class LibraryServiceApi(object):
         'https://www.googleapis.com/auth/library',
     )
 
-    _SHELF_PATH_TEMPLATE = path_template.PathTemplate(
-        'shelves/{shelf_id}')
-    _BOOK_PATH_TEMPLATE = path_template.PathTemplate(
-        'shelves/{shelf_id}/books/{book_id}')
-    _ARCHIVED_BOOK_PATH_TEMPLATE = path_template.PathTemplate(
-        'archives/{archive_path=**}/books/{book_id}')
-
-    @classmethod
-    def shelf_path(cls, shelf_id):
-        """Returns a fully-qualified shelf resource name string."""
-        return cls._SHELF_PATH_TEMPLATE.render({
-            'shelf_id': shelf_id,
-        })
-
-    @classmethod
-    def book_path(cls, shelf_id, book_id):
-        """Returns a fully-qualified book resource name string."""
-        return cls._BOOK_PATH_TEMPLATE.render({
-            'shelf_id': shelf_id,
-            'book_id': book_id,
-        })
-
-    @classmethod
-    def archived_book_path(cls, archive_path, book_id):
-        """Returns a fully-qualified archived_book resource name string."""
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.render({
-            'archive_path': archive_path,
-            'book_id': book_id,
-        })
-
-    @classmethod
-    def match_shelf_id_from_shelf_name(cls, shelf_name):
-        """Parses the shelf_id from a shelf resource.
-
-        Args:
-          shelf_name (string): A fully-qualified path representing a shelf
-            resource.
-
-        Returns:
-          A string representing the shelf_id.
-        """
-        return cls._SHELF_PATH_TEMPLATE.match(shelf_name).get('shelf_id')
-
-    @classmethod
-    def match_shelf_id_from_book_name(cls, book_name):
-        """Parses the shelf_id from a book resource.
-
-        Args:
-          book_name (string): A fully-qualified path representing a book
-            resource.
-
-        Returns:
-          A string representing the shelf_id.
-        """
-        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('shelf_id')
-
-    @classmethod
-    def match_book_id_from_book_name(cls, book_name):
-        """Parses the book_id from a book resource.
-
-        Args:
-          book_name (string): A fully-qualified path representing a book
-            resource.
-
-        Returns:
-          A string representing the book_id.
-        """
-        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('book_id')
-
-    @classmethod
-    def match_archive_path_from_archived_book_name(cls, archived_book_name):
-        """Parses the archive_path from a archived_book resource.
-
-        Args:
-          archived_book_name (string): A fully-qualified path representing a archived_book
-            resource.
-
-        Returns:
-          A string representing the archive_path.
-        """
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('archive_path')
-
-    @classmethod
-    def match_book_id_from_archived_book_name(cls, archived_book_name):
-        """Parses the book_id from a archived_book resource.
-
-        Args:
-          archived_book_name (string): A fully-qualified path representing a archived_book
-            resource.
-
-        Returns:
-          A string representing the book_id.
-        """
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('book_id')
-
     def __init__(
             self,
             service_path=SERVICE_ADDRESS,
@@ -327,6 +232,9 @@ class LibraryServiceApi(object):
         self._get_book_from_archive = api_callable.create_api_call(
             self.library_service_stub.GetBookFromArchive,
             settings=defaults['get_book_from_archive'])
+        self._get_book_from_anywhere = api_callable.create_api_call(
+            self.library_service_stub.GetBookFromAnywhere,
+            settings=defaults['get_book_from_anywhere'])
         self._update_book_index = api_callable.create_api_call(
             self.library_service_stub.UpdateBookIndex,
             settings=defaults['update_book_index'])
@@ -888,7 +796,7 @@ class LibraryServiceApi(object):
             settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.example.library.v1.library_pb2.Book` instance.
+          A :class:`google.example.library.v1.library_pb2.BookFromArchive` instance.
 
         Raises:
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
@@ -897,6 +805,35 @@ class LibraryServiceApi(object):
         request = library_pb2.GetBookFromArchiveRequest(
             name=name)
         return self._get_book_from_archive(request, options)
+
+    def get_book_from_anywhere(
+            self,
+            name,
+            options=None):
+        """
+        Gets a book from a shelf or archive.
+
+        Example:
+          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> api = library_service_api.LibraryServiceApi()
+          >>> name = ''
+          >>> response = api.get_book_from_anywhere(name)
+
+        Args:
+          name (string): The name of the book to retrieve.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Returns:
+          A :class:`google.example.library.v1.library_pb2.BookFromAnywhere` instance.
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+          :exc:`ValueError` if the parameters are invalid.
+        """
+        request = library_pb2.GetBookFromAnywhereRequest(
+            name=name)
+        return self._get_book_from_anywhere(request, options)
 
     def update_book_index(
             self,

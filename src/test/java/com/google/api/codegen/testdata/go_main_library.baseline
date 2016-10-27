@@ -61,6 +61,7 @@ type CallOptions struct {
     ListStrings []gax.CallOption
     AddComments []gax.CallOption
     GetBookFromArchive []gax.CallOption
+    GetBookFromAnywhere []gax.CallOption
     UpdateBookIndex []gax.CallOption
     StreamShelves []gax.CallOption
     StreamBooks []gax.CallOption
@@ -111,6 +112,7 @@ func defaultCallOptions() *CallOptions {
         ListStrings: retry[[2]string{"default", "idempotent"}],
         AddComments: retry[[2]string{"default", "non_idempotent"}],
         GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
+        GetBookFromAnywhere: retry[[2]string{"default", "idempotent"}],
         UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
         StreamShelves: retry[[2]string{"default", "idempotent"}],
         StreamBooks: retry[[2]string{"default", "idempotent"}],
@@ -502,15 +504,31 @@ func (c *Client) AddComments(ctx context.Context, req *librarypb.AddCommentsRequ
 }
 
 // GetBookFromArchive gets a book from an archive.
-func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.Book, error) {
+func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
-    var resp *librarypb.Book
+    var resp *librarypb.BookFromArchive
     err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.GetBookFromArchive(ctx, req)
         return err
     }, c.CallOptions.GetBookFromArchive...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// GetBookFromAnywhere gets a book from a shelf or archive.
+func (c *Client) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp *librarypb.BookFromAnywhere
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetBookFromAnywhere(ctx, req)
+        return err
+    }, c.CallOptions.GetBookFromAnywhere...)
     if err != nil {
         return nil, err
     }
