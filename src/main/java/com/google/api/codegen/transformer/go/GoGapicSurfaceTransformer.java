@@ -170,7 +170,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     addXApiImports(context, context.getSupportedMethods());
-    view.imports(GoTypeTable.generateImports(context.getTypeTable().getImports()));
+    view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
     return view.build();
   }
@@ -204,7 +204,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     // So, we clear all imports; addXExampleImports will add back the ones we want.
     context.getTypeTable().getImports().clear();
     addXExampleImports(context, context.getPublicMethods());
-    view.imports(GoTypeTable.generateImports(context.getTypeTable().getImports()));
+    view.imports(GoTypeTable.formatImports(context.getTypeTable().getImports()));
 
     return view.build();
   }
