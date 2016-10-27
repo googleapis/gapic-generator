@@ -19,16 +19,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -38,7 +34,6 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-
 
   resp, err := storagetransferService.V1.GetGoogleServiceAccount().Context(ctx).Do()
   if err != nil {
@@ -68,16 +63,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -90,8 +81,7 @@ func main() {
 
   // The ID of the Google Developers Console project that the Google service account is associated with.
   // Required.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   resp, err := storagetransferService.GoogleServiceAccounts.Get(projectId).Context(ctx).Do()
   if err != nil {
@@ -121,16 +111,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -141,12 +127,11 @@ func main() {
     log.Fatal(err)
   }
 
-
-  rb := storagetransfer.TransferJob{
+  rb := &storagetransfer.TransferJob{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storagetransferService.TransferJobs.Create(&rb).Context(ctx).Do()
+  resp, err := storagetransferService.TransferJobs.Create(rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -174,16 +159,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -195,8 +176,7 @@ func main() {
   }
 
   // The job to get. Required.
-  jobName := "{MY-JOB-NAME}"
-  // TODO: Change placeholder value above.
+  jobName := ""  // TODO: Update placeholder value.
 
   resp, err := storagetransferService.TransferJobs.Get(jobName).Context(ctx).Do()
   if err != nil {
@@ -226,16 +206,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -245,7 +221,6 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-
 
   req := storagetransferService.TransferJobs.List()
   if err := req.Pages(ctx, func(page *storagetransfer.ListTransferJobsResponse) error {
@@ -278,16 +253,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -299,14 +270,14 @@ func main() {
   }
 
   // The name of job to update. Required.
-  jobName := "{MY-JOB-NAME}"
-  // TODO: Change placeholder value above.
+  jobName := ""  // TODO: Update placeholder value.
 
-  rb := storagetransfer.UpdateTransferJobRequest{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &storagetransfer.UpdateTransferJobRequest{
+    // TODO: Add desired fields of the request body to be changed. Only assigned
+    // fields will be changed.
   }
 
-  resp, err := storagetransferService.TransferJobs.Patch(jobName, &rb).Context(ctx).Do()
+  resp, err := storagetransferService.TransferJobs.Patch(jobName, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -334,16 +305,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -355,8 +322,7 @@ func main() {
   }
 
   // The name of the operation resource to be cancelled.
-  name := "{MY-NAME}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
 
   resp, err := storagetransferService.TransferOperations.Cancel(name).Context(ctx).Do()
   if err != nil {
@@ -386,16 +352,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -407,8 +369,7 @@ func main() {
   }
 
   // The name of the operation resource to be deleted.
-  name := "{MY-NAME}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
 
   resp, err := storagetransferService.TransferOperations.Delete(name).Context(ctx).Do()
   if err != nil {
@@ -438,16 +399,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -459,8 +416,7 @@ func main() {
   }
 
   // The name of the operation resource.
-  name := "{MY-NAME}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
 
   resp, err := storagetransferService.TransferOperations.Get(name).Context(ctx).Do()
   if err != nil {
@@ -490,16 +446,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -511,8 +463,7 @@ func main() {
   }
 
   // The value `transferOperations`.
-  name := "{MY-NAME}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
 
   req := storagetransferService.TransferOperations.List(name)
   if err := req.Pages(ctx, func(page *storagetransfer.ListOperationsResponse) error {
@@ -545,16 +496,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -566,14 +513,13 @@ func main() {
   }
 
   // The name of the transfer operation. Required.
-  name := "{MY-NAME}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
 
-  rb := storagetransfer.PauseTransferOperationRequest{
+  rb := &storagetransfer.PauseTransferOperationRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storagetransferService.TransferOperations.Pause(name, &rb).Context(ctx).Do()
+  resp, err := storagetransferService.TransferOperations.Pause(name, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -601,16 +547,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/storagetransfer/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -622,14 +564,13 @@ func main() {
   }
 
   // The name of the transfer operation. Required.
-  name := "{MY-NAME}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
 
-  rb := storagetransfer.ResumeTransferOperationRequest{
+  rb := &storagetransfer.ResumeTransferOperationRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := storagetransferService.TransferOperations.Resume(name, &rb).Context(ctx).Do()
+  resp, err := storagetransferService.TransferOperations.Resume(name, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
