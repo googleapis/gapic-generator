@@ -112,6 +112,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
       case INVALID:
         throw new UnsupportedOperationException("entity name invalid");
       case ONEOF:
+        // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
+        // with a collection config.
+        entityName = removeSuffix(entityName, "_oneof");
         return Name.from(entityName).join("name_oneof");
       case SINGLE:
         return Name.from(entityName).join("name");
@@ -119,6 +122,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
       default:
         throw new UnsupportedOperationException("unexpected entity name type");
     }
+  }
+
+  private static String removeSuffix(String original, String suffix) {
+    if (original.endsWith(suffix)) {
+      original = original.substring(0, original.length() - (suffix.length() + 1));
+    }
+    return original;
   }
 
   /**
