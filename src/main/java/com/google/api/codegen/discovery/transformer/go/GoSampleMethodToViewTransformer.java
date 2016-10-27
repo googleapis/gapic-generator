@@ -29,7 +29,6 @@ import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -113,8 +112,8 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     }
 
     // Imports must be collected last.
-    List<ImportTypeView> imports =
-        new ArrayList<>(GoTypeTable.generateImports(typeTable.getImports()));
+    List<String> imports = new ArrayList<>();
+    imports.addAll(GoTypeTable.formatImports(typeTable.getImports()));
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
