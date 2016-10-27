@@ -19,16 +19,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -41,19 +37,17 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://support.google.com/cloud/answer/6158840).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
-  rb := container.CreateClusterRequest{
+  rb := &container.CreateClusterRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := containerService.Projects.Zones.Clusters.Create(projectId, zone, &rb).Context(ctx).Do()
+  resp, err := containerService.Projects.Zones.Clusters.Create(projectId, zone, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -81,16 +75,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -103,17 +93,14 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://support.google.com/cloud/answer/6158840).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the cluster to delete.
-  clusterId := "{MY-CLUSTER-ID}"
-  // TODO: Change placeholder value above.
+  clusterId := ""  // TODO: Update placeholder value.
 
   resp, err := containerService.Projects.Zones.Clusters.Delete(projectId, zone, clusterId).Context(ctx).Do()
   if err != nil {
@@ -143,16 +130,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -165,17 +148,14 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://support.google.com/cloud/answer/6158840).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the cluster to retrieve.
-  clusterId := "{MY-CLUSTER-ID}"
-  // TODO: Change placeholder value above.
+  clusterId := ""  // TODO: Update placeholder value.
 
   resp, err := containerService.Projects.Zones.Clusters.Get(projectId, zone, clusterId).Context(ctx).Do()
   if err != nil {
@@ -205,16 +185,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -227,13 +203,11 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://support.google.com/cloud/answer/6158840).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides, or "-" for all zones.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   resp, err := containerService.Projects.Zones.Clusters.List(projectId, zone).Context(ctx).Do()
   if err != nil {
@@ -263,16 +237,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -285,23 +255,20 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the cluster.
-  clusterId := "{MY-CLUSTER-ID}"
-  // TODO: Change placeholder value above.
+  clusterId := ""  // TODO: Update placeholder value.
 
-  rb := container.CreateNodePoolRequest{
+  rb := &container.CreateNodePoolRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := containerService.Projects.Zones.Clusters.NodePools.Create(projectId, zone, clusterId, &rb).Context(ctx).Do()
+  resp, err := containerService.Projects.Zones.Clusters.NodePools.Create(projectId, zone, clusterId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -329,16 +296,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -351,21 +314,17 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the cluster.
-  clusterId := "{MY-CLUSTER-ID}"
-  // TODO: Change placeholder value above.
+  clusterId := ""  // TODO: Update placeholder value.
 
   // The name of the node pool to delete.
-  nodePoolId := "{MY-NODE-POOL-ID}"
-  // TODO: Change placeholder value above.
+  nodePoolId := ""  // TODO: Update placeholder value.
 
   resp, err := containerService.Projects.Zones.Clusters.NodePools.Delete(projectId, zone, clusterId, nodePoolId).Context(ctx).Do()
   if err != nil {
@@ -395,16 +354,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -417,21 +372,17 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the cluster.
-  clusterId := "{MY-CLUSTER-ID}"
-  // TODO: Change placeholder value above.
+  clusterId := ""  // TODO: Update placeholder value.
 
   // The name of the node pool.
-  nodePoolId := "{MY-NODE-POOL-ID}"
-  // TODO: Change placeholder value above.
+  nodePoolId := ""  // TODO: Update placeholder value.
 
   resp, err := containerService.Projects.Zones.Clusters.NodePools.Get(projectId, zone, clusterId, nodePoolId).Context(ctx).Do()
   if err != nil {
@@ -461,16 +412,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -483,17 +430,14 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://developers.google.com/console/help/new/#projectnumber).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the cluster.
-  clusterId := "{MY-CLUSTER-ID}"
-  // TODO: Change placeholder value above.
+  clusterId := ""  // TODO: Update placeholder value.
 
   resp, err := containerService.Projects.Zones.Clusters.NodePools.List(projectId, zone, clusterId).Context(ctx).Do()
   if err != nil {
@@ -523,16 +467,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -545,23 +485,20 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://support.google.com/cloud/answer/6158840).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the cluster to upgrade.
-  clusterId := "{MY-CLUSTER-ID}"
-  // TODO: Change placeholder value above.
+  clusterId := ""  // TODO: Update placeholder value.
 
-  rb := container.UpdateClusterRequest{
+  rb := &container.UpdateClusterRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := containerService.Projects.Zones.Clusters.Update(projectId, zone, clusterId, &rb).Context(ctx).Do()
+  resp, err := containerService.Projects.Zones.Clusters.Update(projectId, zone, clusterId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -589,16 +526,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -611,13 +544,11 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://support.google.com/cloud/answer/6158840).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
   // for.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   resp, err := containerService.Projects.Zones.GetServerconfig(projectId, zone).Context(ctx).Do()
   if err != nil {
@@ -647,16 +578,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -669,17 +596,14 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://support.google.com/cloud/answer/6158840).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
   // resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The server-assigned `name` of the operation.
-  operationId := "{MY-OPERATION-ID}"
-  // TODO: Change placeholder value above.
+  operationId := ""  // TODO: Update placeholder value.
 
   resp, err := containerService.Projects.Zones.Operations.Get(projectId, zone, operationId).Context(ctx).Do()
   if err != nil {
@@ -709,16 +633,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/container/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -731,13 +651,11 @@ func main() {
 
   // The Google Developers Console [project ID or project number]
   // (https://support.google.com/cloud/answer/6158840).
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
   // for, or `-` for all zones.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   resp, err := containerService.Projects.Zones.Operations.List(projectId, zone).Context(ctx).Do()
   if err != nil {
