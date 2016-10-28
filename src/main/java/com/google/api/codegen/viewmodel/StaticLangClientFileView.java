@@ -65,7 +65,7 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract List<ApiCallSettingsView> callSettings();
 
-  public abstract List<String> serviceDoc();
+  public abstract ServiceDocView serviceDoc();
 
   public abstract String localPackageName();
 
@@ -114,7 +114,7 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
     public abstract Builder iamResources(List<IamResourceView> val);
 
-    public abstract Builder serviceDoc(List<String> val);
+    public abstract Builder serviceDoc(ServiceDocView val);
 
     public abstract Builder serviceAddress(String val);
 

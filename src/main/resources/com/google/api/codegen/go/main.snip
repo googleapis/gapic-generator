@@ -79,8 +79,9 @@
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
     //
-    @join line : view.serviceDoc
-        {@line}
+    // {@view.serviceDoc.firstLine}
+    @join line : view.serviceDoc.remainingLines
+        // {@line}
     @end
     func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientTypeName}, error) {
         conn, err := transport.DialGRPC(ctx, append({@view.defaultClientOptionFunctionName}(), opts...)...)

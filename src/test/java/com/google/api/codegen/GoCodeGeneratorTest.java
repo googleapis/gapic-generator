@@ -28,7 +28,7 @@ public class GoCodeGeneratorTest extends GapicTestBase {
   public GoCodeGeneratorTest(
       String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.go.GoContext.class, "");
+    getTestDataLocator().addTestDataSource(getClass(), "go");
   }
 
   /**
