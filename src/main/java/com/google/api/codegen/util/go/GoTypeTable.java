@@ -14,10 +14,12 @@
  */
 package com.google.api.codegen.util.go;
 
+import com.google.api.codegen.util.ImportType;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,24 +83,37 @@ public class GoTypeTable implements TypeTable {
     return imports;
   }
 
-  public static List<String> formatImports(Map<String, TypeAlias> imports) {
-    List<String> standard = new ArrayList<>(imports.size());
-    List<String> thirdParty = new ArrayList<>(imports.size());
+  /**
+   * Similar to ImportTypeTransformer.generateImports, but specific to Go since Go imports
+   * differently than other languages.
+   *
+   * <p>Specifically, {@code fullName} and {@code nickname} of each {@code ImportTypeView} is not
+   * the names of a type, but the names of an imported package.
+   */
+  public static List<ImportTypeView> generateImports(Map<String, TypeAlias> imports) {
+    List<ImportTypeView> standard = new ArrayList<>(imports.size());
+    List<ImportTypeView> thirdParty = new ArrayList<>(imports.size());
 
     for (Map.Entry<String, TypeAlias> imp : imports.entrySet()) {
       String importPath = imp.getKey();
       String packageRename = imp.getValue().getNickname();
-      List<String> target = isStandardImport(importPath) ? standard : thirdParty;
-      if (packageRename.equals("")) {
-        target.add(String.format("\"%s\"", importPath));
-      } else {
-        target.add(String.format("%s \"%s\"", packageRename, importPath));
-      }
+      List<ImportTypeView> target = isStandardImport(importPath) ? standard : thirdParty;
+      target.add(
+          ImportTypeView.newBuilder()
+              .fullName('"' + importPath + '"')
+              .nickname(packageRename)
+              .type(ImportType.SimpleImport)
+              .build());
     }
 
-    List<String> merge = new ArrayList<>(standard);
+    List<ImportTypeView> merge = new ArrayList<>(standard);
     if (!standard.isEmpty() && !thirdParty.isEmpty()) {
-      merge.add("");
+      merge.add(
+          ImportTypeView.newBuilder()
+              .fullName("")
+              .nickname("")
+              .type(ImportType.SimpleImport)
+              .build());
     }
     merge.addAll(thirdParty);
     return merge;
