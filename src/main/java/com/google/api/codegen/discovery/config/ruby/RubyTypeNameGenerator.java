@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 
-public class RubyTypeNameGenerator implements TypeNameGenerator {
+public class RubyTypeNameGenerator extends TypeNameGenerator {
 
   private String apiName;
   private String apiVersion;
@@ -60,20 +60,20 @@ public class RubyTypeNameGenerator implements TypeNameGenerator {
   }
 
   @Override
+  public void setApiNameAndVersion(String apiName, String apiVersion) {
+    this.apiName = apiName;
+    this.apiVersion = apiVersion;
+  }
+
+  @Override
   public List<String> getMethodNameComponents(List<String> nameComponents) {
-    // Generate the key by joining apiName and the nameComponents on '.'
+    // Generate the key by joining apiName, apiVersion and nameComponents on '.'
     // Ex: "/admin:directory_v1/admin.channels.stop"
     String key = "/" + apiName + ":" + apiVersion + "/" + Joiner.on('.').join(nameComponents);
     if (!METHOD_NAME_MAP.containsKey(key)) {
       throw new IllegalArgumentException("\"" + key + "\"" + " not in method name map");
     }
     return ImmutableList.of(METHOD_NAME_MAP.get(key));
-  }
-
-  @Override
-  public void setApiNameAndVersion(String apiName, String apiVersion) {
-    this.apiName = apiName;
-    this.apiVersion = apiVersion;
   }
 
   @Override
@@ -92,12 +92,6 @@ public class RubyTypeNameGenerator implements TypeNameGenerator {
   }
 
   @Override
-  public String getRequestTypeName(List<String> methodNameComponents) {
-    // N/A
-    return "";
-  }
-
-  @Override
   public String getResponseTypeUrl(String responseTypeUrl) {
     if (responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
         || responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_URL)) {
@@ -111,17 +105,6 @@ public class RubyTypeNameGenerator implements TypeNameGenerator {
     // Avoid cases like "DatasetList.Datasets"
     String pieces[] = messageTypeName.split("\\.");
     return pieces[pieces.length - 1];
-  }
-
-  @Override
-  public String getSubpackage(boolean isRequest) {
-    // N/A
-    return "";
-  }
-
-  @Override
-  public String getStringFormatExample(String format) {
-    return "";
   }
 
   @Override

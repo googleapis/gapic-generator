@@ -27,6 +27,7 @@ class RubySampleTypeNameConverter implements SampleTypeNameConverter {
   /** A map from primitive types in proto to zero value in Ruby. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
+          .put(Field.Kind.TYPE_UNKNOWN, "{}")
           .put(Field.Kind.TYPE_BOOL, "false")
           .put(Field.Kind.TYPE_INT32, "0")
           .put(Field.Kind.TYPE_INT64, "''")

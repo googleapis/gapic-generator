@@ -24,24 +24,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GoTypeNameGenerator implements TypeNameGenerator {
+public class GoTypeNameGenerator extends TypeNameGenerator {
 
   // Pattern used to rename some Go package versions.
   private static final Pattern SUB_VERSION = Pattern.compile("^(.+)_(v[0-9.]+)$");
 
   @Override
   public List<String> getMethodNameComponents(List<String> nameComponents) {
-    // Don't edit the original object.
     LinkedList<String> copy = new LinkedList<String>(nameComponents);
+    // Don't edit the original object.
     copy.removeFirst();
     for (int i = 0; i < copy.size(); i++) {
       copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
     }
     return copy;
   }
-
-  @Override
-  public void setApiNameAndVersion(String apiName, String apiVersion) {}
 
   @Override
   public String getApiVersion(String apiVersion) {
@@ -58,12 +55,6 @@ public class GoTypeNameGenerator implements TypeNameGenerator {
   @Override
   public String getPackagePrefix(String apiName, String apiVersion) {
     return "google.golang.org/api/" + apiName + "/" + apiVersion;
-  }
-
-  @Override
-  public String getApiTypeName(String apiName) {
-    // N/A
-    return "";
   }
 
   @Override
@@ -91,17 +82,6 @@ public class GoTypeNameGenerator implements TypeNameGenerator {
     // Avoid cases like "DatasetList.Datasets"
     String pieces[] = messageTypeName.split("\\.");
     return pieces[pieces.length - 1];
-  }
-
-  @Override
-  public String getSubpackage(boolean isRequest) {
-    // N/A
-    return "";
-  }
-
-  @Override
-  public String getStringFormatExample(String format) {
-    return "";
   }
 
   @Override

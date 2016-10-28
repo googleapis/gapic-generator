@@ -27,7 +27,7 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
   @Override
   public ViewModel transform(Method method, SampleConfig config) {
     SampleTypeTable typeTable =
-        new SampleTypeTable(new NodeJSTypeTable(""), new RubySampleTypeNameConverter());
+        new SampleTypeTable(new RubyTypeTable(""), new RubySampleTypeNameConverter());
     SampleNamer namer = new RubySampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(config, typeTable, namer, method.getName());
@@ -54,7 +54,7 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(NodeJSTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(RubyTypeTable.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
@@ -100,7 +100,7 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
-        .outputPath(context.getMethodName() + ".frag.njs")
+        .outputPath(context.getMethodName() + ".frag.rb")
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())

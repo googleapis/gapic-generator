@@ -101,11 +101,13 @@
     @end
   @else
     @if class.hasResponse
+      @# Perform the call
       {@class.responseVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)})
 
       @# TODO: Change code below to process the `{@class.responseVarName}` object:
       puts JSON.pretty_generate({@class.responseVarName})
     @else
+      # Perform the call
       {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)})
     @end
   @end
