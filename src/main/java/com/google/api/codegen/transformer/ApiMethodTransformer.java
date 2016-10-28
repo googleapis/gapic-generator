@@ -533,6 +533,7 @@ public class ApiMethodTransformer {
         removePageTokenFieldConfig(context, context.getMethodConfig().getOptionalFieldConfigs());
     apiMethod.optionalRequestObjectParamsNoPageToken(
         generateRequestObjectParams(context, filteredFieldConfigs));
+    apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     return apiMethod.build();
   }
