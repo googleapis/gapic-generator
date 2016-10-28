@@ -19,9 +19,9 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
 import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
@@ -332,13 +332,13 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   }
 
   public List<ImportTypeView> getServiceImports(Interface service) {
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return importTypeTransformer.generateServiceFileImports(context);
   }
 
   public List<ImportTypeView> getProtoImports(Interface service) {
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return importTypeTransformer.generateProtoFileImports(context);
   }

@@ -32,12 +32,6 @@ public abstract class StaticLangClientExampleFileView implements ViewModel {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
-  /** The package name of the example */
-  public abstract String localExamplePackageName();
-
-  /** The package name of the library */
-  public abstract String localLibPackageName();
-
   /** The name of the constructor of the client */
   public abstract String clientConstructorName();
 
@@ -47,8 +41,7 @@ public abstract class StaticLangClientExampleFileView implements ViewModel {
   /** Type of the client */
   public abstract String clientTypeName();
 
-  /** Imports for the example */
-  public abstract List<ImportTypeView> imports();
+  public abstract FileHeaderView fileHeader();
 
   /** Methods to make examples for */
   public abstract List<StaticLangApiMethodView> apiMethods();
@@ -67,17 +60,13 @@ public abstract class StaticLangClientExampleFileView implements ViewModel {
 
     public abstract Builder outputPath(String val);
 
-    public abstract Builder localExamplePackageName(String val);
-
-    public abstract Builder localLibPackageName(String val);
-
     public abstract Builder clientConstructorName(String val);
 
     public abstract Builder clientConstructorExampleName(String val);
 
     public abstract Builder clientTypeName(String val);
 
-    public abstract Builder imports(List<ImportTypeView> val);
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
