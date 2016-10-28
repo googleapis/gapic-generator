@@ -74,6 +74,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String SAMPLE_TEMPLATE_FILENAME = "go/example.snip";
   private static final String DOC_TEMPLATE_FILENAME = "go/doc.snip";
 
+  private static final int COMMENT_LINE_LENGTH = 75;
+
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
   private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
@@ -221,7 +223,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     packageInfo.serviceDocs(Collections.<ServiceDocView>emptyList());
     packageInfo.packageDoc(
         CommonRenderingUtil.getDocLines(
-            model.getServiceConfig().getDocumentation().getSummary(), 75));
+            model.getServiceConfig().getDocumentation().getSummary(), COMMENT_LINE_LENGTH));
     packageInfo.domainLayerLocation(apiConfig.getDomainLayerLocation());
 
     packageInfo.fileHeader(
