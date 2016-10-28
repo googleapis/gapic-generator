@@ -24,12 +24,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class ImportTypeTransformer {
+public class ImportTypeTransformer implements ImportGenerator {
   private enum ImportFileType {
     SERVICE_FILE,
     PROTO_FILE
   }
 
+  @Override
   public List<ImportTypeView> generateImports(Map<String, TypeAlias> imports) {
     List<ImportTypeView> generatedImports = new ArrayList<>();
     for (String key : imports.keySet()) {

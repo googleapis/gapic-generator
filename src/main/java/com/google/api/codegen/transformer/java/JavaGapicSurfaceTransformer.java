@@ -26,6 +26,7 @@ import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -60,20 +61,22 @@ import com.google.api.tools.framework.model.Model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Java. */
 public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
-  private GapicCodePathMapper pathMapper;
-  private ServiceTransformer serviceTransformer;
-  private PathTemplateTransformer pathTemplateTransformer;
-  private ApiCallableTransformer apiCallableTransformer;
-  private ApiMethodTransformer apiMethodTransformer;
-  private PageStreamingTransformer pageStreamingTransformer;
-  private BundlingTransformer bundlingTransformer;
-  private FileHeaderTransformer fileHeaderTransformer;
-  private RetryDefinitionsTransformer retryDefinitionsTransformer;
+  private final GapicCodePathMapper pathMapper;
+  private final ServiceTransformer serviceTransformer = new ServiceTransformer();
+  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+  private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
+  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
+  private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final FileHeaderTransformer fileHeaderTransformer = new FileHeaderTransformer();
+  private final RetryDefinitionsTransformer retryDefinitionsTransformer =
+      new RetryDefinitionsTransformer();
+  private final ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -83,14 +86,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
   public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
-    this.serviceTransformer = new ServiceTransformer();
-    this.pathTemplateTransformer = new PathTemplateTransformer();
-    this.apiCallableTransformer = new ApiCallableTransformer();
-    this.apiMethodTransformer = new ApiMethodTransformer();
-    this.pageStreamingTransformer = new PageStreamingTransformer();
-    this.bundlingTransformer = new BundlingTransformer();
-    this.fileHeaderTransformer = new FileHeaderTransformer();
-    this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
   }
 
   @Override
@@ -159,7 +154,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     apiFile.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
-    apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context, importTypeTransformer));
 
     return apiFile.build();
   }
@@ -222,7 +217,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     // must be done as the last step to catch all imports
     pagedResponseWrappers.fileHeader(
-        fileHeaderTransformer.generateFileHeader(apiConfig, typeTable.getImports(), namer));
+        fileHeaderTransformer.generateFileHeader(
+            apiConfig, typeTable.getImports(), namer, importTypeTransformer));
 
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, apiConfig);
@@ -323,7 +319,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     settingsFile.outputPath(outputPath + "/" + className + ".java");
 
     // must be done as the last step to catch all imports
-    settingsFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    settingsFile.fileHeader(
+        fileHeaderTransformer.generateFileHeader(context, importTypeTransformer));
 
     return settingsFile.build();
   }
@@ -384,7 +381,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
-            apiConfig, new HashMap<String, TypeAlias>(), namer));
+            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer, importTypeTransformer));
 
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, apiConfig);

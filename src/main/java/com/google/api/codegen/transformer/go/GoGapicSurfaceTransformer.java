@@ -61,7 +61,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -78,12 +77,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
   private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
-  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
-  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+  private final FeatureConfig featureConfig = new GoFeatureConfig();
+  private final FileHeaderTransformer fileHeaderTransformer = new FileHeaderTransformer();
+  private final GoImportTransformer goImportTransformer = new GoImportTransformer();
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
-  private final FileHeaderTransformer fileHeaderTransformer = new FileHeaderTransformer();
-  private final FeatureConfig featureConfig = new GoFeatureConfig();
+  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
+  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ServiceMessages serviceMessages = new ServiceMessages();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final GapicCodePathMapper pathMapper;
@@ -126,7 +126,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     view.templateFileName(XAPI_TEMPLATE_FILENAME);
     view.serviceDoc(serviceTransformer.generateServiceDoc(context, null));
-    view.localPackageName(namer.getLocalPackageName());
     view.clientTypeName(namer.getApiWrapperClassName(service));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(service));
@@ -171,7 +170,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     addXApiImports(context, context.getSupportedMethods());
-    view.imports(GoTypeTable.generateImports(context.getTypeTable().getImports()));
+    view.fileHeader(fileHeaderTransformer.generateFileHeader(context, goImportTransformer));
 
     return view.build();
   }
@@ -189,8 +188,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     String fileName = namer.getExampleFileName(service);
     view.outputPath(outputPath + File.separator + fileName);
 
-    view.localExamplePackageName(namer.getLocalExamplePackageName());
-    view.localLibPackageName(namer.getLocalPackageName());
     view.clientTypeName(namer.getApiWrapperClassName(service));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
@@ -205,7 +202,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     // So, we clear all imports; addXExampleImports will add back the ones we want.
     context.getTypeTable().getImports().clear();
     addXExampleImports(context, context.getPublicMethods());
-    view.imports(GoTypeTable.generateImports(context.getTypeTable().getImports()));
+    view.fileHeader(fileHeaderTransformer.generateFileHeader(context, goImportTransformer));
 
     return view.build();
   }
@@ -228,7 +225,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
-            apiConfig, new HashMap<String, TypeAlias>(), namer));
+            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer, goImportTransformer));
 
     return packageInfo.build();
   }
