@@ -21,11 +21,11 @@ import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
-import com.google.example.library.v1.BooNameOneof;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
+import com.google.example.library.v1.BookNameOneof;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -181,7 +181,7 @@ public class LibraryServiceApi implements AutoCloseable {
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}/books/{book_id}");
 
   private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("archives/{archive_path=**}/books/{book_id}");
+      PathTemplate.createWithoutUrlEncoding("archives/{archive_path}/books/{book_id=**}");
 
   /**
    * Formats a string containing the fully-qualified path to represent
@@ -1595,7 +1595,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BooNameOneof name = BooNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   BookFromAnywhere response = libraryServiceApi.getBookFromAnywhere(name);
    * }
    * </code></pre>
@@ -1603,7 +1603,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final BookFromAnywhere getBookFromAnywhere(BooNameOneof name) {
+  public final BookFromAnywhere getBookFromAnywhere(BookNameOneof name) {
     GetBookFromAnywhereRequest request =
         GetBookFromAnywhereRequest.newBuilder()
         .setNameWithResource(name)
@@ -1618,7 +1618,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BooNameOneof name = BooNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
@@ -1640,7 +1640,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BooNameOneof name = BooNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();

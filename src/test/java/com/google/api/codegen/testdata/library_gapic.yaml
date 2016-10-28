@@ -23,6 +23,9 @@ language_settings:
 license_header:
   copyright_file: copyright-google.txt
   license_file: license-header-apache-2.0.txt
+collections:
+  - name_pattern: archives/{archive_path}/books/{book_id=**}
+    entity_name: archived_book
 collection_oneofs:
   - oneof_name: book_oneof
     collection_names:
@@ -51,7 +54,7 @@ interfaces:
     entity_name: shelf
   - name_pattern: shelves/{shelf_id}/books/{book_id}
     entity_name: book
-  - name_pattern: archives/{archive_path=**}/books/{book_id}
+  - name_pattern: archives/{archive_path}/books/{book_id=**}
     entity_name: archived_book
   smoke_test:
     method: GetBook

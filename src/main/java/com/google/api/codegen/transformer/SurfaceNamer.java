@@ -126,7 +126,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   private static String removeSuffix(String original, String suffix) {
     if (original.endsWith(suffix)) {
-      original = original.substring(0, original.length() - (suffix.length() + 1));
+      original = original.substring(0, original.length() - suffix.length());
     }
     return original;
   }
