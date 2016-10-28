@@ -19,7 +19,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
+public abstract class StaticLangClientFileView implements ViewModel {
   @Override
   public abstract String templateFileName();
 
@@ -33,7 +33,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract Integer servicePort();
 
-  public abstract List<String> imports();
+  public abstract FileHeaderView fileHeader();
 
   public abstract Iterable<String> authScopes();
 
@@ -65,16 +65,14 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract List<ApiCallSettingsView> callSettings();
 
-  public abstract List<String> serviceDoc();
-
-  public abstract String localPackageName();
+  public abstract ServiceDocView serviceDoc();
 
   public abstract String serviceAddress();
 
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptorClasses();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangXCombinedSurfaceView.Builder();
+    return new AutoValue_StaticLangClientFileView.Builder();
   }
 
   @AutoValue.Builder
@@ -82,7 +80,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder authScopes(Iterable<String> val);
 
@@ -104,8 +102,6 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
     public abstract Builder outputPath(String val);
 
-    public abstract Builder localPackageName(String val);
-
     public abstract Builder callSettings(List<ApiCallSettingsView> callSettings);
 
     public abstract Builder pathTemplates(List<PathTemplateView> val);
@@ -114,7 +110,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
     public abstract Builder iamResources(List<IamResourceView> val);
 
-    public abstract Builder serviceDoc(List<String> val);
+    public abstract Builder serviceDoc(ServiceDocView val);
 
     public abstract Builder serviceAddress(String val);
 
@@ -127,6 +123,6 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
     public abstract Builder pageStreamingDescriptorClasses(
         List<PageStreamingDescriptorClassView> val);
 
-    public abstract StaticLangXCombinedSurfaceView build();
+    public abstract StaticLangClientFileView build();
   }
 }

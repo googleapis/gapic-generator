@@ -1,27 +1,9 @@
 @extends "csharp/common.snip"
 
 @snippet generate(common)
-    // Copyright 2016 Google Inc. All Rights Reserved.
-    //
-    // Licensed under the Apache License, Version 2.0 (the "License");
-    // you may not use this file except in compliance with the License.
-    // You may obtain a copy of the License at
-    //
-    //     http://www.apache.org/licenses/LICENSE-2.0
-    //
-    // Unless required by applicable law or agreed to in writing, software
-    // distributed under the License is distributed on an "AS IS" BASIS,
-    // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    // See the License for the specific language governing permissions and
-    // limitations under the License.
+    {@renderFileHeader(common.fileHeader)}
 
-    // Generated code. DO NOT EDIT!
-
-    @join import : common.api.imports
-        using {@import.fullName};
-    @end
-
-    namespace {@common.api.packageName}
+    namespace {@common.fileHeader.packageName}
     {
         {@settings(common.api, common.settings)}
 
@@ -318,9 +300,12 @@
             this.GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
             _clientHelper = new ClientHelper(effectiveSettings);
+            @join rerouted : api.reroutedGrpcClients
+                {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
+            @end
             @join call : api.apiCallableMembers
                 {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
-                    GrpcClient.{@call.asyncMethodName}, GrpcClient.{@call.methodName}, effectiveSettings.{@call.memberName});
+                    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
             @end
         }
 
@@ -465,7 +450,7 @@
             /// </summary>
             public IEnumerator<{@method.listMethod.resourceTypeName}> GetEnumerator() => {@method.listMethod.resourcesFieldGetFunction}.GetEnumerator();
 
-            <inheritdoc/>
+            /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 

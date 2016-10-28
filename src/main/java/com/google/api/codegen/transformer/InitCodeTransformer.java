@@ -145,24 +145,21 @@ public class InitCodeTransformer {
       MethodTransformerContext context,
       Iterable<InitCodeNode> orderedItems,
       Iterable<InitCodeNode> argItems) {
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
     ModelTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 
     // Initialize the type table with the apiClassName since each sample will be using the
     // apiClass.
     typeTable.getAndSaveNicknameFor(
-        namer.getFullyQualifiedApiWrapperClassName(
-            context.getInterface(), context.getApiConfig().getPackageName()));
+        namer.getFullyQualifiedApiWrapperClassName(context.getInterface()));
 
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(getFieldSettings(context, argItems))
         .imports(importTypeTransformer.generateImports(typeTable.getImports()))
-        .apiFileName(
-            namer.getServiceFileName(
-                context.getInterface(), context.getApiConfig().getPackageName()))
+        .apiFileName(namer.getServiceFileName(context.getInterface()))
         .build();
   }
 

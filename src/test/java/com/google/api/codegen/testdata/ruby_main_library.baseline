@@ -365,9 +365,9 @@ module Library
       def create_shelf \
           shelf,
           options: nil
-        req = Google::Example::Library::V1::CreateShelfRequest.new(
+        req = Google::Example::Library::V1::CreateShelfRequest.new({
           shelf: shelf
-        )
+        }.delete_if { |_, v| v.nil? })
         @create_shelf.call(req, options)
       end
 
@@ -401,12 +401,12 @@ module Library
           message: nil,
           string_builder: nil,
           options: nil
-        req = Google::Example::Library::V1::GetShelfRequest.new(
+        req = Google::Example::Library::V1::GetShelfRequest.new({
           name: name,
-          options: options_
-        )
-        req.message = message unless message.nil?
-        req.string_builder = string_builder unless string_builder.nil?
+          options: options_,
+          message: message,
+          string_builder: string_builder
+        }.delete_if { |_, v| v.nil? })
         @get_shelf.call(req, options)
       end
 
@@ -466,9 +466,9 @@ module Library
       def delete_shelf \
           name,
           options: nil
-        req = Google::Example::Library::V1::DeleteShelfRequest.new(
+        req = Google::Example::Library::V1::DeleteShelfRequest.new({
           name: name
-        )
+        }.delete_if { |_, v| v.nil? })
         @delete_shelf.call(req, options)
       end
 
@@ -499,10 +499,10 @@ module Library
           name,
           other_shelf_name,
           options: nil
-        req = Google::Example::Library::V1::MergeShelvesRequest.new(
+        req = Google::Example::Library::V1::MergeShelvesRequest.new({
           name: name,
           other_shelf_name: other_shelf_name
-        )
+        }.delete_if { |_, v| v.nil? })
         @merge_shelves.call(req, options)
       end
 
@@ -532,10 +532,10 @@ module Library
           name,
           book,
           options: nil
-        req = Google::Example::Library::V1::CreateBookRequest.new(
+        req = Google::Example::Library::V1::CreateBookRequest.new({
           name: name,
           book: book
-        )
+        }.delete_if { |_, v| v.nil? })
         @create_book.call(req, options)
       end
 
@@ -571,12 +571,12 @@ module Library
           edition: nil,
           review_copy: nil,
           options: nil
-        req = Google::Example::Library::V1::PublishSeriesRequest.new(
+        req = Google::Example::Library::V1::PublishSeriesRequest.new({
           shelf: shelf,
-          books: books
-        )
-        req.edition = edition unless edition.nil?
-        req.review_copy = review_copy unless review_copy.nil?
+          books: books,
+          edition: edition,
+          review_copy: review_copy
+        }.delete_if { |_, v| v.nil? })
         @publish_series.call(req, options)
       end
 
@@ -601,9 +601,9 @@ module Library
       def get_book \
           name,
           options: nil
-        req = Google::Example::Library::V1::GetBookRequest.new(
+        req = Google::Example::Library::V1::GetBookRequest.new({
           name: name
-        )
+        }.delete_if { |_, v| v.nil? })
         @get_book.call(req, options)
       end
 
@@ -654,11 +654,11 @@ module Library
           page_size: nil,
           filter: nil,
           options: nil
-        req = Google::Example::Library::V1::ListBooksRequest.new(
-          name: name
-        )
-        req.page_size = page_size unless page_size.nil?
-        req.filter = filter unless filter.nil?
+        req = Google::Example::Library::V1::ListBooksRequest.new({
+          name: name,
+          page_size: page_size,
+          filter: filter
+        }.delete_if { |_, v| v.nil? })
         @list_books.call(req, options)
       end
 
@@ -682,9 +682,9 @@ module Library
       def delete_book \
           name,
           options: nil
-        req = Google::Example::Library::V1::DeleteBookRequest.new(
+        req = Google::Example::Library::V1::DeleteBookRequest.new({
           name: name
-        )
+        }.delete_if { |_, v| v.nil? })
         @delete_book.call(req, options)
       end
 
@@ -720,12 +720,12 @@ module Library
           update_mask: nil,
           physical_mask: nil,
           options: nil
-        req = Google::Example::Library::V1::UpdateBookRequest.new(
+        req = Google::Example::Library::V1::UpdateBookRequest.new({
           name: name,
-          book: book
-        )
-        req.update_mask = update_mask unless update_mask.nil?
-        req.physical_mask = physical_mask unless physical_mask.nil?
+          book: book,
+          update_mask: update_mask,
+          physical_mask: physical_mask
+        }.delete_if { |_, v| v.nil? })
         @update_book.call(req, options)
       end
 
@@ -754,10 +754,10 @@ module Library
           name,
           other_shelf_name,
           options: nil
-        req = Google::Example::Library::V1::MoveBookRequest.new(
+        req = Google::Example::Library::V1::MoveBookRequest.new({
           name: name,
           other_shelf_name: other_shelf_name
-        )
+        }.delete_if { |_, v| v.nil? })
         @move_book.call(req, options)
       end
 
@@ -803,9 +803,10 @@ module Library
           name: nil,
           page_size: nil,
           options: nil
-        req = Google::Example::Library::V1::ListStringsRequest.new
-        req.name = name unless name.nil?
-        req.page_size = page_size unless page_size.nil?
+        req = Google::Example::Library::V1::ListStringsRequest.new({
+          name: name,
+          page_size: page_size
+        }.delete_if { |_, v| v.nil? })
         @list_strings.call(req, options)
       end
 
@@ -841,10 +842,10 @@ module Library
           name,
           comments,
           options: nil
-        req = Google::Example::Library::V1::AddCommentsRequest.new(
+        req = Google::Example::Library::V1::AddCommentsRequest.new({
           name: name,
           comments: comments
-        )
+        }.delete_if { |_, v| v.nil? })
         @add_comments.call(req, options)
       end
 
@@ -869,9 +870,9 @@ module Library
       def get_book_from_archive \
           name,
           options: nil
-        req = Google::Example::Library::V1::GetBookFromArchiveRequest.new(
+        req = Google::Example::Library::V1::GetBookFromArchiveRequest.new({
           name: name
-        )
+        }.delete_if { |_, v| v.nil? })
         @get_book_from_archive.call(req, options)
       end
 
@@ -904,11 +905,11 @@ module Library
           index_name,
           index_map,
           options: nil
-        req = Google::Example::Library::V1::UpdateBookIndexRequest.new(
+        req = Google::Example::Library::V1::UpdateBookIndexRequest.new({
           name: name,
           index_name: index_name,
           index_map: index_map
-        )
+        }.delete_if { |_, v| v.nil? })
         @update_book_index.call(req, options)
       end
 
@@ -957,11 +958,11 @@ module Library
           shelves,
           page_size: nil,
           options: nil
-        req = Google::Example::Library::V1::FindRelatedBooksRequest.new(
+        req = Google::Example::Library::V1::FindRelatedBooksRequest.new({
           names: names,
-          shelves: shelves
-        )
-        req.page_size = page_size unless page_size.nil?
+          shelves: shelves,
+          page_size: page_size
+        }.delete_if { |_, v| v.nil? })
         @find_related_books.call(req, options)
       end
 
@@ -992,10 +993,10 @@ module Library
           resource,
           tag,
           options: nil
-        req = Google::Tagger::V1::AddTagRequest.new(
+        req = Google::Tagger::V1::AddTagRequest.new({
           resource: resource,
           tag: tag
-        )
+        }.delete_if { |_, v| v.nil? })
         @add_tag.call(req, options)
       end
 
@@ -1026,10 +1027,10 @@ module Library
           resource,
           label,
           options: nil
-        req = Google::Tagger::V1::AddLabelRequest.new(
+        req = Google::Tagger::V1::AddLabelRequest.new({
           resource: resource,
           label: label
-        )
+        }.delete_if { |_, v| v.nil? })
         @add_label.call(req, options)
       end
 
@@ -1052,9 +1053,9 @@ module Library
       def get_big_book \
           name,
           options: nil
-        req = Google::Example::Library::V1::GetBookRequest.new(
+        req = Google::Example::Library::V1::GetBookRequest.new({
           name: name
-        )
+        }.delete_if { |_, v| v.nil? })
         @get_big_book.call(req, options)
       end
     end

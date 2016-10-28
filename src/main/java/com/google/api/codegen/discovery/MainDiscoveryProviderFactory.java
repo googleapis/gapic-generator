@@ -21,13 +21,13 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpDiscoveryContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
+import com.google.api.codegen.discovery.config.go.GoTypeNameGenerator;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
 import com.google.api.codegen.discovery.config.nodejs.NodeJSTypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.go.GoSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleMethodToViewTransformer;
-import com.google.api.codegen.go.GoDiscoveryContext;
-import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.php.PhpDiscoveryContext;
 import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonDiscoveryContext;
@@ -60,10 +60,12 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
   private static final Map<String, Class<? extends SampleMethodToViewTransformer>>
       SAMPLE_METHOD_TO_VIEW_TRANSFORMER_MAP =
           ImmutableMap.of(
+              GO, GoSampleMethodToViewTransformer.class,
               JAVA, JavaSampleMethodToViewTransformer.class,
               NODEJS, NodeJSSampleMethodToViewTransformer.class);
   private static final Map<String, Class<? extends TypeNameGenerator>> TYPE_NAME_GENERATOR_MAP =
       ImmutableMap.of(
+          GO, GoTypeNameGenerator.class,
           JAVA, JavaTypeNameGenerator.class,
           NODEJS, NodeJSTypeNameGenerator.class);
 
@@ -83,14 +85,6 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
               new CSharpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
-          .build();
-
-    } else if (id.equals(GO)) {
-      return CommonDiscoveryProvider.newBuilder()
-          .setContext(new GoDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(
-              new GoSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 

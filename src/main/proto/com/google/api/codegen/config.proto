@@ -77,8 +77,14 @@ message ConfigProto {
   // The configuration to create the providers.
   GeneratorProto generator = 6;
 
+  // The configuration for the license header to put on generated files.
+  LicenseHeaderProto license_header = 7;
+
   // A list of API interface configurations.
   repeated InterfaceConfigProto interfaces = 10;
+
+  // A list of message resource name configurations.
+  repeated ResourceNameMessageConfigProto resource_name_generation = 20;
 }
 
 message LanguageSettingsProto {
@@ -88,6 +94,14 @@ message LanguageSettingsProto {
   // Location of the domain layer, if any, that the user should use
   // instead of the generated client.
   string domain_layer_location = 2;
+}
+
+message LicenseHeaderProto {
+  // The file containing the copyright line(s).
+  string copyright_file = 1;
+
+  // The file containing the raw license header without any copyright line(s).
+  string license_file = 2;
 }
 
 message GeneratorProto {
@@ -203,6 +217,9 @@ message MethodConfigProto {
   string reroute_to_grpc_interface = 12;
 
   repeated SurfaceTreatmentProto surface_treatments = 20;
+
+  // Set the resource name treatment for fields
+  ResourceNameTreatment resource_name_treatment = 15;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
@@ -224,6 +241,23 @@ message FlatteningGroupProto {
   // An optional name for the flattening group, which must be unique within
   // the method config.
   string flattening_group_name = 2;
+
+  // Map flattening parameters listed in parameters field to a resource name
+  // treatment. This is used to override the resource_name_treament setting in
+  // MethodConfigProto.
+  map<string, ResourceNameTreatment> parameter_resource_name_treatment = 3;
+}
+
+// The ResourceNameTreatment enum can be used to specify how to treat the
+// resource name formats defined in the field_name_patterns
+// and response_field_name_patterns fields. NONE: the collection configs will
+// not be used by the generated code. VALIDATE: string fields will be
+// validated by the client against the specified resource name formats.
+// STATIC_TYPES: the client will use generated types for resource names.
+enum ResourceNameTreatment {
+  NONE = 0;
+  VALIDATE = 1;
+  STATIC_TYPES = 2;
 }
 
 // `PageStreamingConfigProto` describes information for generating a method which
@@ -332,6 +366,17 @@ message BundlingDescriptorProto {
   // correspondence with the multiple request messages originally bundled
   // together.
   string subresponse_field = 3;
+}
+
+// `ResourceNameMessageConfigProto` specifies the fields of a message that
+// support a resource name type.
+message ResourceNameMessageConfigProto {
+  // The simple name of the message.
+  string message_name = 1;
+
+  // A list of field simple names and corresponding entity names, as defined in
+  // the collection configs.
+  map<string, string> field_entity_map = 2;
 }
 
 // ExperimentalFeatures contain special-case features that,

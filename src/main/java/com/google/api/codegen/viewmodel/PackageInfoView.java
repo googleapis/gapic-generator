@@ -27,11 +27,11 @@ public abstract class PackageInfoView implements ViewModel {
   @Override
   public abstract String outputPath();
 
+  public abstract FileHeaderView fileHeader();
+
   public abstract String serviceTitle();
 
   public abstract List<ServiceDocView> serviceDocs();
-
-  public abstract String packageName();
 
   public abstract String domainLayerLocation();
 
@@ -56,11 +56,11 @@ public abstract class PackageInfoView implements ViewModel {
 
     public abstract Builder outputPath(String val);
 
+    public abstract Builder fileHeader(FileHeaderView val);
+
     public abstract Builder serviceTitle(String val);
 
     public abstract Builder serviceDocs(List<ServiceDocView> val);
-
-    public abstract Builder packageName(String val);
 
     public abstract Builder domainLayerLocation(String val);
 

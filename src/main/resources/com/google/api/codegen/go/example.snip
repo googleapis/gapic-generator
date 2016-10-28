@@ -1,19 +1,17 @@
 @extends "go/header.snip"
 
 @snippet generate(view)
-    {@headerComment()}
+    {@headerComment(view.fileHeader)}
 
-    package {@view.exampleLocalPackageName}
+    package {@view.fileHeader.localExamplePackageName}
 
     import (
-        @join imp : view.imports
-            {@imp}
-        @end
+        {@imports(view.fileHeader.imports)}
     )
 
     func {@view.clientConstructorExampleName}() {
         ctx := context.Background()
-        c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
+        c, err := {@view.fileHeader.localPackageName}.{@view.clientConstructorName}(ctx)
         if err != nil {
             // TODO: Handle error.
         }
@@ -24,7 +22,7 @@
     @join resource : view.iamResources
         func {@resource.exampleName}() {
             ctx := context.Background()
-            c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
+            c, err := {@view.fileHeader.localPackageName}.{@view.clientConstructorName}(ctx)
             if err != nil {
                 // TODO: Handle error.
             }
@@ -214,7 +212,7 @@
 
 @private methodInit(view, method)
     ctx := context.Background()
-    c, err := {@view.libLocalPackageName}.{@view.clientConstructorName}(ctx)
+    c, err := {@view.fileHeader.localPackageName}.{@view.clientConstructorName}(ctx)
     if err != nil {
         // TODO: Handle error.
     }

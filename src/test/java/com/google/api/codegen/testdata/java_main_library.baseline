@@ -1,23 +1,26 @@
 ============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryServiceApi.java ==============
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016, Google Inc. All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.gcloud.pubsub.spi;
 
-import com.google.api.gax.grpc.StreamingApiCallable;
-import com.google.api.gax.grpc.UnaryApiCallable;
+import com.google.api.gax.grpc.StreamingCallable;
+import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
@@ -138,33 +141,33 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ScheduledExecutorService executor;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
-  private final UnaryApiCallable<CreateShelfRequest, Shelf> createShelfCallable;
-  private final UnaryApiCallable<GetShelfRequest, Shelf> getShelfCallable;
-  private final UnaryApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
-  private final UnaryApiCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable;
-  private final UnaryApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
-  private final UnaryApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
-  private final UnaryApiCallable<CreateBookRequest, Book> createBookCallable;
-  private final UnaryApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
-  private final UnaryApiCallable<GetBookRequest, Book> getBookCallable;
-  private final UnaryApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
-  private final UnaryApiCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable;
-  private final UnaryApiCallable<DeleteBookRequest, Empty> deleteBookCallable;
-  private final UnaryApiCallable<UpdateBookRequest, Book> updateBookCallable;
-  private final UnaryApiCallable<MoveBookRequest, Book> moveBookCallable;
-  private final UnaryApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
-  private final UnaryApiCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable;
-  private final UnaryApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
-  private final UnaryApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
-  private final UnaryApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
-  private final StreamingApiCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable;
-  private final StreamingApiCallable<StreamBooksRequest, Book> streamBooksCallable;
-  private final StreamingApiCallable<DiscussBookRequest, Comment> discussBookCallable;
-  private final UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
-  private final UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
-  private final UnaryApiCallable<AddTagRequest, AddTagResponse> addTagCallable;
-  private final UnaryApiCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
-  private final UnaryApiCallable<GetBookRequest, Operation> getBigBookCallable;
+  private final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable;
+  private final UnaryCallable<GetShelfRequest, Shelf> getShelfCallable;
+  private final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
+  private final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable;
+  private final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
+  private final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
+  private final UnaryCallable<CreateBookRequest, Book> createBookCallable;
+  private final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
+  private final UnaryCallable<GetBookRequest, Book> getBookCallable;
+  private final UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
+  private final UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable;
+  private final UnaryCallable<DeleteBookRequest, Empty> deleteBookCallable;
+  private final UnaryCallable<UpdateBookRequest, Book> updateBookCallable;
+  private final UnaryCallable<MoveBookRequest, Book> moveBookCallable;
+  private final UnaryCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
+  private final UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable;
+  private final UnaryCallable<AddCommentsRequest, Empty> addCommentsCallable;
+  private final UnaryCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
+  private final UnaryCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
+  private final StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable;
+  private final StreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
+  private final StreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
+  private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
+  private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
+  private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
+  private final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
+  private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
 
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
@@ -270,40 +273,40 @@ public class LibraryServiceApi implements AutoCloseable {
     this.executor = settings.getExecutorProvider().getOrBuildExecutor();
     this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
-    this.createShelfCallable = UnaryApiCallable.create(settings.createShelfSettings(), this.channel, this.executor);
-    this.getShelfCallable = UnaryApiCallable.create(settings.getShelfSettings(), this.channel, this.executor);
-    this.listShelvesCallable = UnaryApiCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
+    this.createShelfCallable = UnaryCallable.create(settings.createShelfSettings(), this.channel, this.executor);
+    this.getShelfCallable = UnaryCallable.create(settings.getShelfSettings(), this.channel, this.executor);
+    this.listShelvesCallable = UnaryCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
     this.listShelvesPagedCallable =
-        UnaryApiCallable.createPagedVariant(settings.listShelvesSettings(), this.channel, this.executor);
-    this.deleteShelfCallable = UnaryApiCallable.create(settings.deleteShelfSettings(), this.channel, this.executor);
-    this.mergeShelvesCallable = UnaryApiCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
-    this.createBookCallable = UnaryApiCallable.create(settings.createBookSettings(), this.channel, this.executor);
-    this.publishSeriesCallable = UnaryApiCallable.create(settings.publishSeriesSettings(), this.channel, this.executor);
+        UnaryCallable.createPagedVariant(settings.listShelvesSettings(), this.channel, this.executor);
+    this.deleteShelfCallable = UnaryCallable.create(settings.deleteShelfSettings(), this.channel, this.executor);
+    this.mergeShelvesCallable = UnaryCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
+    this.createBookCallable = UnaryCallable.create(settings.createBookSettings(), this.channel, this.executor);
+    this.publishSeriesCallable = UnaryCallable.create(settings.publishSeriesSettings(), this.channel, this.executor);
     if (settings.publishSeriesSettings().getBundlerFactory() != null) {
       closeables.add(settings.publishSeriesSettings().getBundlerFactory());
     }
-    this.getBookCallable = UnaryApiCallable.create(settings.getBookSettings(), this.channel, this.executor);
-    this.listBooksCallable = UnaryApiCallable.create(settings.listBooksSettings(), this.channel, this.executor);
+    this.getBookCallable = UnaryCallable.create(settings.getBookSettings(), this.channel, this.executor);
+    this.listBooksCallable = UnaryCallable.create(settings.listBooksSettings(), this.channel, this.executor);
     this.listBooksPagedCallable =
-        UnaryApiCallable.createPagedVariant(settings.listBooksSettings(), this.channel, this.executor);
-    this.deleteBookCallable = UnaryApiCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
-    this.updateBookCallable = UnaryApiCallable.create(settings.updateBookSettings(), this.channel, this.executor);
-    this.moveBookCallable = UnaryApiCallable.create(settings.moveBookSettings(), this.channel, this.executor);
-    this.listStringsCallable = UnaryApiCallable.create(settings.listStringsSettings(), this.channel, this.executor);
+        UnaryCallable.createPagedVariant(settings.listBooksSettings(), this.channel, this.executor);
+    this.deleteBookCallable = UnaryCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
+    this.updateBookCallable = UnaryCallable.create(settings.updateBookSettings(), this.channel, this.executor);
+    this.moveBookCallable = UnaryCallable.create(settings.moveBookSettings(), this.channel, this.executor);
+    this.listStringsCallable = UnaryCallable.create(settings.listStringsSettings(), this.channel, this.executor);
     this.listStringsPagedCallable =
-        UnaryApiCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
-    this.addCommentsCallable = UnaryApiCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
-    this.getBookFromArchiveCallable = UnaryApiCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
-    this.updateBookIndexCallable = UnaryApiCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
-    this.streamShelvesCallable = StreamingApiCallable.create(settings.streamShelvesSettings(), this.channel);
-    this.streamBooksCallable = StreamingApiCallable.create(settings.streamBooksSettings(), this.channel);
-    this.discussBookCallable = StreamingApiCallable.create(settings.discussBookSettings(), this.channel);
-    this.findRelatedBooksCallable = UnaryApiCallable.create(settings.findRelatedBooksSettings(), this.channel, this.executor);
+        UnaryCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
+    this.addCommentsCallable = UnaryCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
+    this.getBookFromArchiveCallable = UnaryCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
+    this.updateBookIndexCallable = UnaryCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
+    this.streamShelvesCallable = StreamingCallable.create(settings.streamShelvesSettings(), this.channel);
+    this.streamBooksCallable = StreamingCallable.create(settings.streamBooksSettings(), this.channel);
+    this.discussBookCallable = StreamingCallable.create(settings.discussBookSettings(), this.channel);
+    this.findRelatedBooksCallable = UnaryCallable.create(settings.findRelatedBooksSettings(), this.channel, this.executor);
     this.findRelatedBooksPagedCallable =
-        UnaryApiCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
-    this.addTagCallable = UnaryApiCallable.create(settings.addTagSettings(), this.channel, this.executor);
-    this.addLabelCallable = UnaryApiCallable.create(settings.addLabelSettings(), this.channel, this.executor);
-    this.getBigBookCallable = UnaryApiCallable.create(settings.getBigBookSettings(), this.channel, this.executor);
+        UnaryCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
+    this.addTagCallable = UnaryCallable.create(settings.addTagSettings(), this.channel, this.executor);
+    this.addLabelCallable = UnaryCallable.create(settings.addLabelSettings(), this.channel, this.executor);
+    this.getBigBookCallable = UnaryCallable.create(settings.getBigBookSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -391,7 +394,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<CreateShelfRequest, Shelf> createShelfCallable() {
+  public final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable() {
     return createShelfCallable;
   }
 
@@ -425,9 +428,9 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   ShelfName name = ShelfName.create("[SHELF_ID]");
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
-   *   Shelf response = libraryServiceApi.getShelf(name, message);
+   *   Shelf response = libraryServiceApi.getShelf(formattedName, message);
    * }
    * </code></pre>
    *
@@ -435,10 +438,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param message Field to verify that message-type query parameter gets flattened.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Shelf getShelf(ShelfName name, SomeMessage message) {
+  public final Shelf getShelf(String name, SomeMessage message) {
+    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
-        .setNameWithResource(name)
+        .setName(name)
         .setMessage(message)
         .build();
     return getShelf(request);
@@ -451,10 +455,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   ShelfName name = ShelfName.create("[SHELF_ID]");
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
-   *   Shelf response = libraryServiceApi.getShelf(name, message, stringBuilder);
+   *   Shelf response = libraryServiceApi.getShelf(formattedName, message, stringBuilder);
    * }
    * </code></pre>
    *
@@ -463,10 +467,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param stringBuilder
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Shelf getShelf(ShelfName name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+  public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
-        .setNameWithResource(name)
+        .setName(name)
         .setMessage(message)
         .setStringBuilder(stringBuilder)
         .build();
@@ -480,10 +484,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   ShelfName name = ShelfName.create("[SHELF_ID]");
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setName(formattedName)
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryServiceApi.getShelf(request);
@@ -504,10 +508,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   ShelfName name = ShelfName.create("[SHELF_ID]");
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setName(formattedName)
    *     .setOptions(options)
    *     .build();
    *   ListenableFuture&lt;Shelf&gt; future = libraryServiceApi.getShelfCallable().futureCall(request);
@@ -516,7 +520,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<GetShelfRequest, Shelf> getShelfCallable() {
+  public final UnaryCallable<GetShelfRequest, Shelf> getShelfCallable() {
     return getShelfCallable;
   }
 
@@ -581,7 +585,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
+  public final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
     return listShelvesPagedCallable;
   }
 
@@ -608,7 +612,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
+  public final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     return listShelvesCallable;
   }
 
@@ -674,7 +678,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
+  public final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
     return deleteShelfCallable;
   }
 
@@ -753,7 +757,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
+  public final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
     return mergeShelvesCallable;
   }
 
@@ -826,7 +830,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<CreateBookRequest, Book> createBookCallable() {
+  public final UnaryCallable<CreateBookRequest, Book> createBookCallable() {
     return createBookCallable;
   }
 
@@ -902,7 +906,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
+  public final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
     return publishSeriesCallable;
   }
 
@@ -968,7 +972,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<GetBookRequest, Book> getBookCallable() {
+  public final UnaryCallable<GetBookRequest, Book> getBookCallable() {
     return getBookCallable;
   }
 
@@ -1044,7 +1048,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable() {
+  public final UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable() {
     return listBooksPagedCallable;
   }
 
@@ -1074,7 +1078,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
+  public final UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
     return listBooksCallable;
   }
 
@@ -1140,7 +1144,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<DeleteBookRequest, Empty> deleteBookCallable() {
+  public final UnaryCallable<DeleteBookRequest, Empty> deleteBookCallable() {
     return deleteBookCallable;
   }
 
@@ -1245,7 +1249,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<UpdateBookRequest, Book> updateBookCallable() {
+  public final UnaryCallable<UpdateBookRequest, Book> updateBookCallable() {
     return updateBookCallable;
   }
 
@@ -1318,7 +1322,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<MoveBookRequest, Book> moveBookCallable() {
+  public final UnaryCallable<MoveBookRequest, Book> moveBookCallable() {
     return moveBookCallable;
   }
 
@@ -1383,7 +1387,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable() {
+  public final UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable() {
     return listStringsPagedCallable;
   }
 
@@ -1410,7 +1414,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
+  public final UnaryCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
     return listStringsCallable;
   }
 
@@ -1508,7 +1512,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<AddCommentsRequest, Empty> addCommentsCallable() {
+  public final UnaryCallable<AddCommentsRequest, Empty> addCommentsCallable() {
     return addCommentsCallable;
   }
 
@@ -1519,7 +1523,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   Book response = libraryServiceApi.getBookFromArchive(name);
    * }
    * </code></pre>
@@ -1527,7 +1531,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Book getBookFromArchive(BookName name) {
+  public final Book getBookFromArchive(ArchivedBookName name) {
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
         .setNameWithResource(name)
@@ -1542,7 +1546,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
@@ -1564,7 +1568,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithResource(name)
    *     .build();
@@ -1574,7 +1578,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable() {
+  public final UnaryCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable() {
     return getBookFromArchiveCallable;
   }
 
@@ -1660,7 +1664,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
+  public final UnaryCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
     return updateBookIndexCallable;
   }
 
@@ -1696,7 +1700,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final StreamingApiCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable() {
+  public final StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable() {
     return streamShelvesCallable;
   }
 
@@ -1735,7 +1739,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final StreamingApiCallable<StreamBooksRequest, Book> streamBooksCallable() {
+  public final StreamingCallable<StreamBooksRequest, Book> streamBooksCallable() {
     return streamBooksCallable;
   }
 
@@ -1775,7 +1779,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final StreamingApiCallable<DiscussBookRequest, Comment> discussBookCallable() {
+  public final StreamingCallable<DiscussBookRequest, Comment> discussBookCallable() {
     return discussBookCallable;
   }
 
@@ -1858,7 +1862,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
+  public final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
     return findRelatedBooksPagedCallable;
   }
 
@@ -1891,7 +1895,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
+  public final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
     return findRelatedBooksCallable;
   }
 
@@ -1967,7 +1971,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<AddTagRequest, AddTagResponse> addTagCallable() {
+  public final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
     return addTagCallable;
   }
 
@@ -2043,7 +2047,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<AddLabelRequest, AddLabelResponse> addLabelCallable() {
+  public final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable() {
     return addLabelCallable;
   }
 
@@ -2109,7 +2113,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<GetBookRequest, Operation> getBigBookCallable() {
+  public final UnaryCallable<GetBookRequest, Operation> getBigBookCallable() {
     return getBigBookCallable;
   }
 

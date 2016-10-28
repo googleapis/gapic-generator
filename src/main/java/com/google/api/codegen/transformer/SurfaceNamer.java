@@ -47,16 +47,19 @@ import java.util.List;
  * language-specific namer.
  */
 public class SurfaceNamer extends NameFormatterDelegator {
-  private ModelTypeFormatter modelTypeFormatter;
-  private TypeNameConverter typeNameConverter;
+  private final ModelTypeFormatter modelTypeFormatter;
+  private final TypeNameConverter typeNameConverter;
+  private final String packageName;
 
   public SurfaceNamer(
       NameFormatter languageNamer,
       ModelTypeFormatter modelTypeFormatter,
-      TypeNameConverter typeNameConverter) {
+      TypeNameConverter typeNameConverter,
+      String packageName) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
     this.typeNameConverter = typeNameConverter;
+    this.packageName = packageName;
   }
 
   public ModelTypeFormatter getModelTypeFormatter() {
@@ -65,6 +68,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public TypeNameConverter getTypeNameConverter() {
     return typeNameConverter;
+  }
+
+  public String getPackageName() {
+    return packageName;
   }
 
   public String getNotImplementedString(String feature) {
@@ -290,14 +297,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The name of the package */
+  /** The name of the example package */
+  public String getExamplePackageName() {
+    return getNotImplementedString("SurfaceNamer.getExamplePackageName");
+  }
+
+  /** The local (unqualified) name of the package */
   public String getLocalPackageName() {
     return getNotImplementedString("SurfaceNamer.getLocalPackageName");
   }
 
-  /** The name of the example package */
-  public String getExamplePackageName() {
-    return getNotImplementedString("SurfaceNamer.getExamplePackageName");
+  /** The local (unqualified) name of the example package */
+  public String getLocalExamplePackageName() {
+    return getNotImplementedString("SurfaceNamer.getLocalExamplePackageName");
   }
 
   /**
@@ -477,6 +489,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getGrpcMethodConstant(Method method) {
     return inittedConstantName(
         Name.from("method").join(Name.upperCamelKeepUpperAcronyms(method.getSimpleName())));
+  }
+
+  /** The variable name of the rerouted gRPC client. Used in C# */
+  public String getReroutedGrpcClientVarName(MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getGrpcClientName");
+  }
+
+  /** The method name to create a rerouted gRPC client. Used in C# */
+  public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getReroutedGrpcMethodName");
   }
 
   /** The name of the surface method which can call the given API method. */
@@ -756,12 +778,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The file name for an API service. */
-  public String getServiceFileName(Interface service, String packageName) {
+  public String getServiceFileName(Interface service) {
     return getNotImplementedString("SurfaceNamer.getServiceFileName");
   }
 
   /** The file name for the example of an API service. */
-  public String getExampleFileName(Interface service, String packageName) {
+  public String getExampleFileName(Interface service) {
     return getNotImplementedString("SurfaceNamer.getExampleFileName");
   }
 
@@ -769,7 +791,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The fully qualified class name of a an API service. TODO: Support the general pattern of
    * package + class name in NameFormatter.
    */
-  public String getFullyQualifiedApiWrapperClassName(Interface interfaze, String packageName) {
+  public String getFullyQualifiedApiWrapperClassName(Interface interfaze) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
   }
 

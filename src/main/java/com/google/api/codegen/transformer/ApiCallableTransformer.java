@@ -82,6 +82,8 @@ public class ApiCallableTransformer {
     apiCallableBuilder.asyncMethodName(context.getNamer().getAsyncApiMethodName(method));
     apiCallableBuilder.memberName(context.getNamer().getSettingsMemberName(method));
     apiCallableBuilder.settingsFunctionName(context.getNamer().getSettingsFunctionName(method));
+    apiCallableBuilder.grpcClientVarName(
+        context.getNamer().getReroutedGrpcClientVarName(methodConfig));
 
     if (methodConfig.isGrpcStreaming()) {
       apiCallableBuilder.type(ApiCallableType.StreamingApiCallable);
@@ -116,6 +118,8 @@ public class ApiCallableTransformer {
       pagedApiCallableBuilder.memberName(context.getNamer().getSettingsMemberName(method));
       pagedApiCallableBuilder.settingsFunctionName(
           context.getNamer().getSettingsFunctionName(method));
+      pagedApiCallableBuilder.grpcClientVarName(
+          context.getNamer().getReroutedGrpcClientVarName(methodConfig));
 
       apiCallables.add(pagedApiCallableBuilder.build());
     }

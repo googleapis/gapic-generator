@@ -1,14 +1,12 @@
 @extends "go/header.snip"
 
 @snippet generate(view)
-    {@headerComment()}
+    {@headerComment(view.fileHeader)}
 
-    package {@view.localPackageName}
+    package {@view.fileHeader.localPackageName}
 
     import (
-        @join imp : view.imports
-            {@imp}
-        @end
+        {@imports(view.fileHeader.imports)}
     )
 
     @if view.pathTemplates
@@ -81,8 +79,9 @@
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
     //
-    @join line : view.serviceDoc
-        {@line}
+    // {@view.serviceDoc.firstLine}
+    @join line : view.serviceDoc.remainingLines
+        // {@line}
     @end
     func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientTypeName}, error) {
         conn, err := transport.DialGRPC(ctx, append({@view.defaultClientOptionFunctionName}(), opts...)...)

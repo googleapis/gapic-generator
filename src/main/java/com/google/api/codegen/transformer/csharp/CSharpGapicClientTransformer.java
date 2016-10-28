@@ -24,7 +24,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
-import com.google.api.codegen.transformer.ImportTypeTransformer;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -33,6 +33,7 @@ import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -40,11 +41,12 @@ import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
+import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
-import com.google.api.codegen.viewmodel.StaticLangXApiView;
-import com.google.api.codegen.viewmodel.StaticLangXCommonView;
-import com.google.api.codegen.viewmodel.StaticLangXSettingsView;
+import com.google.api.codegen.viewmodel.StaticLangApiView;
+import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -53,34 +55,29 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
   private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final ApiMethodTransformer apiMethodTransformer;
-  private final ServiceTransformer serviceTransformer;
-  private final PathTemplateTransformer pathTemplateTransformer;
-  private final ApiCallableTransformer apiCallableTransformer;
-  private final ImportTypeTransformer importTypeTransformer;
-  private final PageStreamingTransformer pageStreamingTransformer;
-  private final BundlingTransformer bundlingTransformer;
-  private final RetryDefinitionsTransformer retryDefinitionsTransformer;
-  private final CSharpCommonTransformer csharpCommonTransformer;
+  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final ServiceTransformer serviceTransformer = new ServiceTransformer();
+  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+  private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new StandardImportTypeTransformer());
+  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
+  private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final RetryDefinitionsTransformer retryDefinitionsTransformer =
+      new RetryDefinitionsTransformer();
+  private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
 
   public CSharpGapicClientTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
-    this.serviceTransformer = new ServiceTransformer();
-    this.pathTemplateTransformer = new PathTemplateTransformer();
-    this.apiCallableTransformer = new ApiCallableTransformer();
-    this.apiMethodTransformer = new ApiMethodTransformer();
-    this.pageStreamingTransformer = new PageStreamingTransformer();
-    this.bundlingTransformer = new BundlingTransformer();
-    this.importTypeTransformer = new ImportTypeTransformer();
-    this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
-    this.csharpCommonTransformer = new CSharpCommonTransformer();
   }
 
   @Override
@@ -96,11 +93,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
               createTypeTable(apiConfig.getPackageName()),
               namer,
               new CSharpFeatureConfig());
-      csharpCommonTransformer.addCommonImports(context);
-      StaticLangXApiView xapi = generateXApi(context);
-      StaticLangXSettingsView xsettings = generateXSettings(context);
 
-      surfaceDocs.add(StaticLangXCommonView.newBuilder().api(xapi).settings(xsettings).build());
+      surfaceDocs.add(generateApiAndSettingsView(context));
     }
 
     return surfaceDocs;
@@ -117,21 +111,39 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         new CSharpModelTypeNameConverter(implicitPackageName));
   }
 
-  private StaticLangXApiView generateXApi(SurfaceTransformerContext context) {
+  private StaticLangApiAndSettingsFileView generateApiAndSettingsView(
+      SurfaceTransformerContext context) {
+    StaticLangApiAndSettingsFileView.Builder fileView =
+        StaticLangApiAndSettingsFileView.newBuilder();
+
+    fileView.templateFileName(XAPI_TEMPLATE_FILENAME);
+
+    fileView.api(generateApiClass(context));
+    fileView.settings(generateSettingsClass(context));
+
+    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
+    String name = context.getNamer().getApiWrapperClassName(context.getInterface());
+    fileView.outputPath(outputPath + File.separator + name + ".cs");
+
+    // must be done as the last step to catch all imports
+    csharpCommonTransformer.addCommonImports(context);
+    fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+
+    return fileView.build();
+  }
+
+  private StaticLangApiView generateApiClass(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
-    StaticLangXApiView.Builder xapiClass = StaticLangXApiView.newBuilder();
+    StaticLangApiView.Builder apiClass = StaticLangApiView.newBuilder();
     List<StaticLangApiMethodView> methods = generateApiMethods(context);
 
-    xapiClass.doc(serviceTransformer.generateServiceDoc(context, null));
+    apiClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
-    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.packageName(context.getApiConfig().getPackageName());
-    String name = namer.getApiWrapperClassName(context.getInterface());
-    xapiClass.name(name);
-    xapiClass.implName(namer.getApiWrapperClassImplName(context.getInterface()));
-    xapiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterface()));
-    xapiClass.grpcTypeName(namer.getGrpcServiceClassName(context.getInterface()));
-    xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
+    apiClass.name(namer.getApiWrapperClassName(context.getInterface()));
+    apiClass.implName(namer.getApiWrapperClassImplName(context.getInterface()));
+    apiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterface()));
+    apiClass.grpcTypeName(namer.getGrpcServiceClassName(context.getInterface()));
+    apiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
     List<ApiCallableView> callables = new ArrayList<>();
     for (ApiCallableView call : apiCallableTransformer.generateStaticLangApiCallables(context)) {
       if (call.type() == ApiCallableType.SimpleApiCallable
@@ -139,68 +151,55 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         callables.add(call);
       }
     }
-    xapiClass.apiCallableMembers(callables);
-    xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
-    xapiClass.formatResourceFunctions(
+    apiClass.apiCallableMembers(callables);
+    apiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
+    apiClass.formatResourceFunctions(
         pathTemplateTransformer.generateFormatResourceFunctions(context));
-    xapiClass.parseResourceFunctions(
+    apiClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
-    xapiClass.apiMethods(methods);
+    apiClass.apiMethods(methods);
     List<StaticLangApiMethodView> methodsImpl = new ArrayList<>();
     for (StaticLangApiMethodView method : methods) {
       if (methodTypeHasImpl(method.type())) {
         methodsImpl.add(method);
       }
     }
-    xapiClass.apiMethodsImpl(methodsImpl);
-    xapiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
+    apiClass.apiMethodsImpl(methodsImpl);
+    apiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
+    apiClass.reroutedGrpcClients(generateReroutedGrpcView(context));
 
-    // must be done as the last step to catch all imports
-    xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
-
-    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    xapiClass.outputPath(outputPath + File.separator + name + ".cs");
-
-    return xapiClass.build();
+    return apiClass.build();
   }
 
   private boolean methodTypeHasImpl(ApiMethodType type) {
     return type != ApiMethodType.FlattenedAsyncCancellationTokenMethod;
   }
 
-  private StaticLangXSettingsView generateXSettings(SurfaceTransformerContext context) {
-    StaticLangXSettingsView.Builder xsettingsClass = StaticLangXSettingsView.newBuilder();
-    xsettingsClass.templateFileName(""); // Unused in C#
-    xsettingsClass.packageName(context.getApiConfig().getPackageName());
-    xsettingsClass.doc(generateSettingsDoc(context));
+  private StaticLangSettingsView generateSettingsClass(SurfaceTransformerContext context) {
+    StaticLangSettingsView.Builder settingsClass = StaticLangSettingsView.newBuilder();
+    settingsClass.doc(generateSettingsDoc(context));
     String name = context.getNamer().getApiSettingsClassName(context.getInterface());
-    xsettingsClass.name(name);
+    settingsClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
-    xsettingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
-    xsettingsClass.servicePort(serviceConfig.getServicePort());
-    xsettingsClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
-    xsettingsClass.callSettings(generateCallSettings(context));
-    xsettingsClass.pageStreamingDescriptors(
+    settingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
+    settingsClass.servicePort(serviceConfig.getServicePort());
+    settingsClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
+    settingsClass.callSettings(generateCallSettings(context));
+    settingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
-    xsettingsClass.pagedListResponseFactories(
+    settingsClass.pagedListResponseFactories(
         pageStreamingTransformer.generateFactoryClasses(context));
-    xsettingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
-    xsettingsClass.retryCodesDefinitions(
+    settingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
+    settingsClass.retryCodesDefinitions(
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
-    xsettingsClass.retryParamsDefinitions(
+    settingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
-    xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
-    xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
+    settingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
+    settingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
+    settingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
 
-    // must be done as the last step to catch all imports
-    xsettingsClass.imports(
-        importTypeTransformer.generateImports(context.getTypeTable().getImports()));
-
-    xsettingsClass.outputPath(""); // Not used in C#
-
-    return xsettingsClass.build();
+    return settingsClass.build();
   }
 
   public List<ApiCallSettingsView> generateCallSettings(SurfaceTransformerContext context) {
@@ -217,6 +216,25 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       settingsMembers.addAll(calls);
     }
     return settingsMembers;
+  }
+
+  private List<ReroutedGrpcView> generateReroutedGrpcView(SurfaceTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    Set<ReroutedGrpcView> reroutedViews = new LinkedHashSet<>();
+    for (Method method : context.getSupportedMethods()) {
+      MethodConfig methodConfig = context.getMethodConfig(method);
+      String reroute = methodConfig.getRerouteToGrpcInterface();
+      if (reroute != null) {
+        ReroutedGrpcView rerouted =
+            ReroutedGrpcView.newBuilder()
+                .grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig))
+                .typeName("var") // TODO: Add explicit type.
+                .getMethodName(namer.getReroutedGrpcMethodName(methodConfig))
+                .build();
+        reroutedViews.add(rerouted);
+      }
+    }
+    return new ArrayList<ReroutedGrpcView>(reroutedViews);
   }
 
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {

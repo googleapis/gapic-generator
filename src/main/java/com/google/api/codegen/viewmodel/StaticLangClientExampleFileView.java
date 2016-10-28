@@ -20,7 +20,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class StaticLangXExampleView implements ViewModel {
+public abstract class StaticLangClientExampleFileView implements ViewModel {
   @Override
   public abstract String templateFileName();
 
@@ -32,12 +32,6 @@ public abstract class StaticLangXExampleView implements ViewModel {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
-  /** The package name of the example */
-  public abstract String exampleLocalPackageName();
-
-  /** The package name of the library */
-  public abstract String libLocalPackageName();
-
   /** The name of the constructor of the client */
   public abstract String clientConstructorName();
 
@@ -47,8 +41,7 @@ public abstract class StaticLangXExampleView implements ViewModel {
   /** Type of the client */
   public abstract String clientTypeName();
 
-  /** Imports for the example */
-  public abstract List<String> imports();
+  public abstract FileHeaderView fileHeader();
 
   /** Methods to make examples for */
   public abstract List<StaticLangApiMethodView> apiMethods();
@@ -58,7 +51,7 @@ public abstract class StaticLangXExampleView implements ViewModel {
   public abstract List<IamResourceView> iamResources();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangXExampleView.Builder();
+    return new AutoValue_StaticLangClientExampleFileView.Builder();
   }
 
   @AutoValue.Builder
@@ -67,22 +60,18 @@ public abstract class StaticLangXExampleView implements ViewModel {
 
     public abstract Builder outputPath(String val);
 
-    public abstract Builder exampleLocalPackageName(String val);
-
-    public abstract Builder libLocalPackageName(String val);
-
     public abstract Builder clientConstructorName(String val);
 
     public abstract Builder clientConstructorExampleName(String val);
 
     public abstract Builder clientTypeName(String val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
     public abstract Builder iamResources(List<IamResourceView> val);
 
-    public abstract StaticLangXExampleView build();
+    public abstract StaticLangClientExampleFileView build();
   }
 }
