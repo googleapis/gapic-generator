@@ -19,16 +19,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -40,18 +36,16 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
-  rb := deploymentmanager.DeploymentsCancelPreviewRequest{
+  rb := &deploymentmanager.DeploymentsCancelPreviewRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := deploymentmanagerService.Deployments.CancelPreview(project, deployment, &rb).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.CancelPreview(project, deployment, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -79,16 +73,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -100,12 +90,10 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
   resp, err := deploymentmanagerService.Deployments.Delete(project, deployment).Context(ctx).Do()
   if err != nil {
@@ -135,16 +123,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -156,12 +140,10 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
   resp, err := deploymentmanagerService.Deployments.Get(project, deployment).Context(ctx).Do()
   if err != nil {
@@ -191,16 +173,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -212,12 +190,10 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the resource for this request.
-  resource := "{MY-RESOURCE}"
-  // TODO: Change placeholder value above.
+  resource := ""  // TODO: Update placeholder value.
 
   resp, err := deploymentmanagerService.Deployments.GetIamPolicy(project, resource).Context(ctx).Do()
   if err != nil {
@@ -247,16 +223,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -268,14 +240,13 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
-  rb := deploymentmanager.Deployment{
+  rb := &deploymentmanager.Deployment{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := deploymentmanagerService.Deployments.Insert(project, &rb).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Insert(project, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -303,16 +274,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -324,8 +291,7 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := deploymentmanagerService.Deployments.List(project)
   if err := req.Pages(ctx, func(page *deploymentmanager.DeploymentsListResponse) error {
@@ -358,16 +324,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -379,18 +341,17 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
-  rb := deploymentmanager.Deployment{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &deploymentmanager.Deployment{
+    // TODO: Add desired fields of the request body to be changed. Only assigned
+    // fields will be changed.
   }
 
-  resp, err := deploymentmanagerService.Deployments.Patch(project, deployment, &rb).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Patch(project, deployment, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -418,16 +379,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -439,18 +396,16 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the resource for this request.
-  resource := "{MY-RESOURCE}"
-  // TODO: Change placeholder value above.
+  resource := ""  // TODO: Update placeholder value.
 
-  rb := deploymentmanager.Policy{
+  rb := &deploymentmanager.Policy{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := deploymentmanagerService.Deployments.SetIamPolicy(project, resource, &rb).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.SetIamPolicy(project, resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -478,16 +433,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -499,18 +450,16 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
-  rb := deploymentmanager.DeploymentsStopRequest{
+  rb := &deploymentmanager.DeploymentsStopRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := deploymentmanagerService.Deployments.Stop(project, deployment, &rb).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Stop(project, deployment, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -538,16 +487,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -559,18 +504,16 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the resource for this request.
-  resource := "{MY-RESOURCE}"
-  // TODO: Change placeholder value above.
+  resource := ""  // TODO: Update placeholder value.
 
-  rb := deploymentmanager.TestPermissionsRequest{
+  rb := &deploymentmanager.TestPermissionsRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := deploymentmanagerService.Deployments.TestIamPermissions(project, resource, &rb).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.TestIamPermissions(project, resource, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -598,16 +541,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -619,18 +558,16 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
-  rb := deploymentmanager.Deployment{
+  rb := &deploymentmanager.Deployment{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := deploymentmanagerService.Deployments.Update(project, deployment, &rb).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Update(project, deployment, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -658,16 +595,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -679,16 +612,13 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
   // The name of the manifest for this request.
-  manifest := "{MY-MANIFEST}"
-  // TODO: Change placeholder value above.
+  manifest := ""  // TODO: Update placeholder value.
 
   resp, err := deploymentmanagerService.Manifests.Get(project, deployment, manifest).Context(ctx).Do()
   if err != nil {
@@ -718,16 +648,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -739,12 +665,10 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
   req := deploymentmanagerService.Manifests.List(project, deployment)
   if err := req.Pages(ctx, func(page *deploymentmanager.ManifestsListResponse) error {
@@ -777,16 +701,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -798,12 +718,10 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the operation for this request.
-  operation := "{MY-OPERATION}"
-  // TODO: Change placeholder value above.
+  operation := ""  // TODO: Update placeholder value.
 
   resp, err := deploymentmanagerService.Operations.Get(project, operation).Context(ctx).Do()
   if err != nil {
@@ -833,16 +751,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -854,8 +768,7 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := deploymentmanagerService.Operations.List(project)
   if err := req.Pages(ctx, func(page *deploymentmanager.OperationsListResponse) error {
@@ -888,16 +801,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -909,16 +818,13 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
   // The name of the resource for this request.
-  resource := "{MY-RESOURCE}"
-  // TODO: Change placeholder value above.
+  resource := ""  // TODO: Update placeholder value.
 
   resp, err := deploymentmanagerService.Resources.Get(project, deployment, resource).Context(ctx).Do()
   if err != nil {
@@ -948,16 +854,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -969,12 +871,10 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}"
-  // TODO: Change placeholder value above.
+  deployment := ""  // TODO: Update placeholder value.
 
   req := deploymentmanagerService.Resources.List(project, deployment)
   if err := req.Pages(ctx, func(page *deploymentmanager.ResourcesListResponse) error {
@@ -1007,16 +907,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/deploymentmanager/v2"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1028,14 +924,13 @@ func main() {
   }
 
   // The project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := deploymentmanagerService.Types.List(project)
   if err := req.Pages(ctx, func(page *deploymentmanager.TypesListResponse) error {
-    for _, type2 := range page.Types {
-      // TODO: Change code below to process each `type2` resource:
-      fmt.Printf("%#v\n", type2)
+    for _, type_ := range page.Types {
+      // TODO: Change code below to process each `type_` resource:
+      fmt.Printf("%#v\n", type_)
     }
     return nil
   }); err != nil {

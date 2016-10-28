@@ -1,16 +1,18 @@
 ============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryServiceSettings.java ==============
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016, Google Inc. All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.gcloud.pubsub.spi;
 
@@ -20,15 +22,15 @@ import com.google.api.gax.grpc.BundlingCallSettings;
 import com.google.api.gax.grpc.BundlingDescriptor;
 import com.google.api.gax.grpc.BundlingSettings;
 import com.google.api.gax.grpc.CallContext;
-import com.google.api.gax.grpc.PageStreamingCallSettings;
-import com.google.api.gax.grpc.PageStreamingDescriptor;
+import com.google.api.gax.grpc.PagedCallSettings;
+import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
 import com.google.api.gax.grpc.RequestIssuer;
 import com.google.api.gax.grpc.ServiceApiSettings;
 import com.google.api.gax.grpc.SimpleCallSettings;
 import com.google.api.gax.grpc.StreamingCallSettings;
-import com.google.api.gax.grpc.UnaryApiCallSettings;
-import com.google.api.gax.grpc.UnaryApiCallable;
+import com.google.api.gax.grpc.UnaryCallSettings;
+import com.google.api.gax.grpc.UnaryCallable;
 import com.google.auth.Credentials;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -135,24 +137,24 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
   private final SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings;
-  private final PageStreamingCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
+  private final PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
   private final SimpleCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
   private final SimpleCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final SimpleCallSettings<CreateBookRequest, Book> createBookSettings;
   private final BundlingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
   private final SimpleCallSettings<GetBookRequest, Book> getBookSettings;
-  private final PageStreamingCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
+  private final PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
   private final SimpleCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
   private final SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final SimpleCallSettings<MoveBookRequest, Book> moveBookSettings;
-  private final PageStreamingCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
+  private final PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
   private final SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
   private final SimpleCallSettings<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
   private final SimpleCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
   private final StreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
   private final StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
-  private final PageStreamingCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
+  private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
   private final SimpleCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final SimpleCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
   private final SimpleCallSettings<GetBookRequest, Operation> getBigBookSettings;
@@ -174,7 +176,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   /**
    * Returns the object with the settings used for calls to listShelves.
    */
-  public PageStreamingCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
+  public PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
     return listShelvesSettings;
   }
 
@@ -216,7 +218,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   /**
    * Returns the object with the settings used for calls to listBooks.
    */
-  public PageStreamingCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
+  public PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
     return listBooksSettings;
   }
 
@@ -244,7 +246,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   /**
    * Returns the object with the settings used for calls to listStrings.
    */
-  public PageStreamingCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
+  public PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
     return listStringsSettings;
   }
 
@@ -293,7 +295,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   /**
    * Returns the object with the settings used for calls to findRelatedBooks.
    */
-  public PageStreamingCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
+  public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
     return findRelatedBooksSettings;
   }
 
@@ -393,8 +395,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     getBigBookSettings = settingsBuilder.getBigBookSettings().build();
   }
 
-  private static final PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
-      new PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
+  private static final PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
+      new PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
         @Override
         public Object emptyToken() {
           return "";
@@ -424,8 +426,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         }
       };
 
-  private static final PageStreamingDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
-      new PageStreamingDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
+  private static final PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
+      new PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
         @Override
         public Object emptyToken() {
           return "";
@@ -458,8 +460,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         }
       };
 
-  private static final PageStreamingDescriptor<ListStringsRequest, ListStringsResponse, String> LIST_STRINGS_PAGE_STR_DESC =
-      new PageStreamingDescriptor<ListStringsRequest, ListStringsResponse, String>() {
+  private static final PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> LIST_STRINGS_PAGE_STR_DESC =
+      new PagedListDescriptor<ListStringsRequest, ListStringsResponse, String>() {
         @Override
         public Object emptyToken() {
           return "";
@@ -492,8 +494,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         }
       };
 
-  private static final PageStreamingDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> FIND_RELATED_BOOKS_PAGE_STR_DESC =
-      new PageStreamingDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String>() {
+  private static final PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> FIND_RELATED_BOOKS_PAGE_STR_DESC =
+      new PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String>() {
         @Override
         public Object emptyToken() {
           return "";
@@ -530,7 +532,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
         @Override
         public ListShelvesPagedResponse createPagedListResponse(
-            UnaryApiCallable<ListShelvesRequest, ListShelvesResponse> callable,
+            UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
             ListShelvesRequest request,
             CallContext context) {
           return new ListShelvesPagedResponse(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
@@ -541,7 +543,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse>() {
         @Override
         public ListBooksPagedResponse createPagedListResponse(
-            UnaryApiCallable<ListBooksRequest, ListBooksResponse> callable,
+            UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
             ListBooksRequest request,
             CallContext context) {
           return new ListBooksPagedResponse(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
@@ -552,7 +554,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse>() {
         @Override
         public ListStringsPagedResponse createPagedListResponse(
-            UnaryApiCallable<ListStringsRequest, ListStringsResponse> callable,
+            UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
             ListStringsRequest request,
             CallContext context) {
           return new ListStringsPagedResponse(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
@@ -563,7 +565,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse>() {
         @Override
         public FindRelatedBooksPagedResponse createPagedListResponse(
-            UnaryApiCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
+            UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
             FindRelatedBooksRequest request,
             CallContext context) {
           return new FindRelatedBooksPagedResponse(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
@@ -637,28 +639,28 @@ public class LibraryServiceSettings extends ServiceApiSettings {
    * Builder for LibraryServiceSettings.
    */
   public static class Builder extends ServiceApiSettings.Builder {
-    private final ImmutableList<UnaryApiCallSettings.Builder> unaryMethodSettingsBuilders;
+    private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
     private final SimpleCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
     private final SimpleCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings;
-    private final PageStreamingCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
+    private final PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
     private final SimpleCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
     private final SimpleCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private final SimpleCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
     private final BundlingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
     private final SimpleCallSettings.Builder<GetBookRequest, Book> getBookSettings;
-    private final PageStreamingCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
+    private final PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
     private final SimpleCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
     private final SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
     private final SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
-    private final PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
+    private final PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
     private final SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private final SimpleCallSettings.Builder<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
     private final SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
     private final StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
     private final StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
-    private final PageStreamingCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
+    private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
     private final SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
     private final SimpleCallSettings.Builder<GetBookRequest, Operation> getBigBookSettings;
@@ -700,7 +702,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       getShelfSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_SHELF);
 
-      listShelvesSettings = PageStreamingCallSettings.newBuilder(
+      listShelvesSettings = PagedCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_LIST_SHELVES,
           LIST_SHELVES_PAGE_STR_FACT);
 
@@ -717,7 +719,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       getBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BOOK);
 
-      listBooksSettings = PageStreamingCallSettings.newBuilder(
+      listBooksSettings = PagedCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_LIST_BOOKS,
           LIST_BOOKS_PAGE_STR_FACT);
 
@@ -727,7 +729,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       moveBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_MOVE_BOOK);
 
-      listStringsSettings = PageStreamingCallSettings.newBuilder(
+      listStringsSettings = PagedCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_LIST_STRINGS,
           LIST_STRINGS_PAGE_STR_FACT);
 
@@ -743,7 +745,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       discussBookSettings = StreamingCallSettings.newBuilder(LibraryServiceGrpc.METHOD_DISCUSS_BOOK);
 
-      findRelatedBooksSettings = PageStreamingCallSettings.newBuilder(
+      findRelatedBooksSettings = PagedCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_FIND_RELATED_BOOKS,
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
 
@@ -753,7 +755,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       getBigBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BIG_BOOK);
 
-      unaryMethodSettingsBuilders = ImmutableList.<UnaryApiCallSettings.Builder>of(
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           createShelfSettings,
           getShelfSettings,
           listShelvesSettings,
@@ -897,7 +899,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       addLabelSettings = settings.addLabelSettings.toBuilder();
       getBigBookSettings = settings.getBigBookSettings.toBuilder();
 
-      unaryMethodSettingsBuilders = ImmutableList.<UnaryApiCallSettings.Builder>of(
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           createShelfSettings,
           getShelfSettings,
           listShelvesSettings,
@@ -975,7 +977,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
      *
      * Note: This method does not support applying settings to streaming methods.
      */
-    public Builder applyToAllApiMethods(UnaryApiCallSettings.Builder apiCallSettings) throws Exception {
+    public Builder applyToAllApiMethods(UnaryCallSettings.Builder apiCallSettings) throws Exception {
       super.applyToAllApiMethods(unaryMethodSettingsBuilders, apiCallSettings);
       return this;
     }
@@ -997,7 +999,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     /**
      * Returns the builder for the settings used for calls to listShelves.
      */
-    public PageStreamingCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
+    public PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
       return listShelvesSettings;
     }
 
@@ -1039,7 +1041,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     /**
      * Returns the builder for the settings used for calls to listBooks.
      */
-    public PageStreamingCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
+    public PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
       return listBooksSettings;
     }
 
@@ -1067,7 +1069,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     /**
      * Returns the builder for the settings used for calls to listStrings.
      */
-    public PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
+    public PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
       return listStringsSettings;
     }
 
@@ -1116,7 +1118,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     /**
      * Returns the builder for the settings used for calls to findRelatedBooks.
      */
-    public PageStreamingCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
+    public PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
       return findRelatedBooksSettings;
     }
 

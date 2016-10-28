@@ -37,6 +37,7 @@ public abstract class FlatteningConfig {
   @Nullable
   public static FlatteningConfig createFlattening(
       DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
       MethodConfigProto methodConfigProto,
       FlatteningGroupProto flatteningGroup,
       Method method) {
@@ -46,7 +47,7 @@ public abstract class FlatteningConfig {
     for (String parameter : flatteningGroup.getParametersList()) {
       FieldConfig fieldConfig =
           FieldConfig.createFlattenedFieldConfig(
-              diagCollector, methodConfigProto, method, parameter);
+              diagCollector, messageConfigs, methodConfigProto, method, flatteningGroup, parameter);
       if (fieldConfig == null) {
         missing = true;
       } else {

@@ -27,9 +27,11 @@ import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
   private static final String TEMPLATE_FILENAME = "java/sample.snip";
 
-  public JavaSampleMethodToViewTransformer() {}
+  private final ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
@@ -105,8 +107,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     }
 
     // Imports must be collected last.
-    List<String> imports = new ArrayList<String>();
-    imports.addAll(typeTable.getImports().keySet());
+    List<ImportTypeView> imports =
+        new ArrayList<>(importTypeTransformer.generateImports(typeTable.getImports()));
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)

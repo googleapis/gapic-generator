@@ -1,27 +1,29 @@
 ============== file: src/test/java/com/google/gcloud/pubsub/spi/LibraryServiceTest.java ==============
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016, Google Inc. All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.core.PagedListResponse;
-import com.google.api.gax.grpc.StreamingApiCallable;
+import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.testing.MockGrpcService;
 import com.google.api.gax.testing.MockServiceHelper;
 import com.google.api.gax.testing.MockStreamObserver;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
@@ -145,11 +147,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest() {
-    ShelfName name2 = ShelfName.create("[SHELF_ID]");
+    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(name2)
+      .setName(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -173,11 +175,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest2() {
-    ShelfName name2 = ShelfName.create("[SHELF_ID]");
+    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(name2)
+      .setName(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -185,29 +187,29 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName name = ShelfName.create("[SHELF_ID]");
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
 
     Shelf actualResponse =
-        api.getShelf(name, message);
+        api.getShelf(formattedName, message);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
   }
 
   @Test
   @SuppressWarnings("all")
   public void getShelfTest3() {
-    ShelfName name2 = ShelfName.create("[SHELF_ID]");
+    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(name2)
+      .setName(formattedName2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -215,19 +217,19 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName name = ShelfName.create("[SHELF_ID]");
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     SomeMessage message = SomeMessage.newBuilder().build();
     com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
     Shelf actualResponse =
-        api.getShelf(name, message, stringBuilder);
+        api.getShelf(formattedName, message, stringBuilder);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertEquals(stringBuilder, actualRequest.getStringBuilder());
   }
@@ -624,7 +626,7 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
 
     Book actualResponse =
         api.getBookFromArchive(name);
@@ -673,7 +675,7 @@ public class LibraryServiceTest {
 
     MockStreamObserver<StreamShelvesResponse> responseObserver = new MockStreamObserver<>();
 
-    StreamingApiCallable<StreamShelvesRequest, StreamShelvesResponse> callable =
+    StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> callable =
         api.streamShelvesCallable();
     callable.serverStreamingCall(request, responseObserver);
 
@@ -706,7 +708,7 @@ public class LibraryServiceTest {
 
     MockStreamObserver<Book> responseObserver = new MockStreamObserver<>();
 
-    StreamingApiCallable<StreamBooksRequest, Book> callable =
+    StreamingCallable<StreamBooksRequest, Book> callable =
         api.streamBooksCallable();
     callable.serverStreamingCall(request, responseObserver);
 
@@ -732,7 +734,7 @@ public class LibraryServiceTest {
 
     MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
 
-    StreamingApiCallable<DiscussBookRequest, Comment> callable =
+    StreamingCallable<DiscussBookRequest, Comment> callable =
         api.discussBookCallable();
     StreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);

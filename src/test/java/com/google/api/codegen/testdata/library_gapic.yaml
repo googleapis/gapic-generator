@@ -20,6 +20,9 @@ language_settings:
     package_name: "@google-cloud/library"
   csharp:
     package_name: Google.Example.Library.V1
+license_header:
+  copyright_file: copyright-google.txt
+  license_file: license-header-apache-2.0.txt
 interfaces:
 - name: google.example.library.v1.LibraryService
   retry_codes_def:
@@ -71,18 +74,25 @@ interfaces:
     retry_params_name: default
     timeout_millis: 1000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
   - name: GetShelf
     flattening:
       groups:
       - parameters:
         - name
+        parameter_resource_name_treatment:
+          name: STATIC_TYPES
       - parameters:
         - name
         - message
+        parameter_resource_name_treatment:
+          name: VALIDATE
       - parameters:
         - name
         - message
         - string_builder
+        parameter_resource_name_treatment:
+          name: NONE
     required_fields:
       - name
       - options
@@ -117,6 +127,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 4000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
   - name: MergeShelves
@@ -132,6 +143,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 5000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
       other_shelf_name: shelf
@@ -148,6 +160,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 6000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
   - name: PublishSeries
@@ -177,6 +190,7 @@ interfaces:
           - shelf.name
         subresponse_field: book_names
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
   - name: GetBook
     flattening:
       groups:
@@ -189,6 +203,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 8000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: ListBooks
@@ -210,6 +225,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: shelf
   - name: DeleteBook
@@ -224,6 +240,7 @@ interfaces:
     timeout_millis: 10000
     # leaving commented out to test the default
     #request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: UpdateBook
@@ -244,6 +261,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
   - name: MoveBook
@@ -259,6 +277,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: book
       other_shelf_name: shelf
@@ -290,6 +309,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: true
+    resource_name_treatment: VALIDATE
     field_name_patterns:
       name: book
     sample_code_init_fields:
@@ -307,6 +327,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: archived_book
   - name: UpdateBookIndex
@@ -321,6 +342,7 @@ interfaces:
     - index_name
     - index_map
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
@@ -339,6 +361,7 @@ interfaces:
     timeout_millis: 30000
   - name: StreamBooks
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     flattening:
       groups:
       - parameters:
@@ -373,6 +396,7 @@ interfaces:
     retry_params_name: default
     timeout_millis: 3000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
     sample_code_init_fields:
     - names[0]
     # TODO(michaelbausor): support %-entity notation for list elements
@@ -388,6 +412,7 @@ interfaces:
     - resource
     - tag
     request_object_method: true
+    resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -407,6 +432,7 @@ interfaces:
     - resource
     - label
     request_object_method: true
+    resource_name_treatment: VALIDATE
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -425,8 +451,58 @@ interfaces:
     required_fields:
     - name
     request_object_method: true
+    resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
       name: book
     timeout_millis: 60000
+resource_name_generation:
+- message_name: Book
+  field_entity_map:
+    name: book
+- message_name: Shelf
+  field_entity_map:
+    name: shelf
+- message_name: GetShelfRequest
+  field_entity_map:
+    name: shelf
+- message_name: DeleteShelfRequest
+  field_entity_map:
+    name: shelf
+- message_name: MergeShelvesRequest
+  field_entity_map:
+    name: shelf
+    other_shelf_name: shelf
+- message_name: CreateBookRequest
+  field_entity_map:
+    name: shelf
+- message_name: GetBookRequest
+  field_entity_map:
+    name: book
+- message_name: ListBooksRequest
+  field_entity_map:
+    name: shelf
+- message_name: UpdateBookRequest
+  field_entity_map:
+    name: book
+- message_name: DeleteBookRequest
+  field_entity_map:
+    name: book
+- message_name: MoveBookRequest
+  field_entity_map:
+    name: book
+    other_shelf_name: shelf
+- message_name: GetBookFromArchiveRequest
+  field_entity_map:
+    name: archived_book
+- message_name: UpdateBookIndexRequest
+  field_entity_map:
+    name: book
+- message_name: FindRelatedBooksRequest
+  field_entity_map:
+    names: book
+    shelves: shelf
+- message_name: FindRelatedBooksResponse
+  field_entity_map:
+    names: book
