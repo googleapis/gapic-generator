@@ -87,10 +87,6 @@ public abstract class SampleConfig {
   @JsonProperty("packagePrefix")
   public abstract String packagePrefix();
 
-  /** Returns a sample application name. */
-  @JsonProperty("appName")
-  public abstract String appName();
-
   /** Returns a map of method names to methods. */
   @JsonProperty("methods")
   public abstract Map<String, MethodInfo> methods();
@@ -124,9 +120,6 @@ public abstract class SampleConfig {
 
     @JsonProperty("packagePrefix")
     public abstract Builder packagePrefix(String val);
-
-    @JsonProperty("appName")
-    public abstract Builder appName(String val);
 
     @JsonProperty("methods")
     public abstract Builder methods(Map<String, MethodInfo> val);

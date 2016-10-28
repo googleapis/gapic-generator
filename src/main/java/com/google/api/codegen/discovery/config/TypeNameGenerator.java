@@ -56,11 +56,6 @@ public class TypeNameGenerator {
     return canonicalName.replace(" ", "");
   }
 
-  /** Returns the application name of the sample. */
-  public String getSampleApplicationName(String apiTypeName) {
-    return "Google-" + apiTypeName + "Sample/0.1";
-  }
-
   /**
    * Returns the request's type name.
    *

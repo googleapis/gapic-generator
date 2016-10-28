@@ -122,6 +122,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
+        .appName(namer.getSampleApplicationName(config.apiTypeName()))
         .imports(imports)
         .auth(createSampleAuthView(context))
         .serviceVarName(serviceVarName)

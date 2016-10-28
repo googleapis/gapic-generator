@@ -115,7 +115,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
-        .appName(config.appName())
+        .appName(namer.getSampleApplicationName(config.apiTypeName()))
         .className(namer.getSampleClassName(config.apiTypeName()))
         .imports(imports)
         .auth(createSampleAuthView(context))

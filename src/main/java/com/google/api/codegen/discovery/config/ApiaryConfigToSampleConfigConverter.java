@@ -71,7 +71,6 @@ public class ApiaryConfigToSampleConfigConverter {
         .apiVersion(apiVersion)
         .apiTypeName(apiTypeName)
         .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
-        .appName(typeNameGenerator.getSampleApplicationName(apiTypeName))
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
         .authInstructionsUrl(apiaryConfig.getAuthInstructionsUrl())

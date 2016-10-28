@@ -92,7 +92,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
-        .appName(config.appName())
+        .appName(namer.getSampleApplicationName(config.apiTypeName()))
         .auth(sampleAuthView)
         .serviceVarName(serviceVarName)
         .serviceTypeName(serviceTypeName)
