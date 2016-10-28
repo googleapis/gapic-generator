@@ -20,20 +20,20 @@ import com.google.api.codegen.viewmodel.FileHeaderView;
 import java.util.Map;
 
 public class FileHeaderTransformer {
-  public FileHeaderView generateFileHeader(
-      SurfaceTransformerContext context, ImportGenerator importGenerator) {
+
+  private final ImportTypeTransformer importTypeTransformer;
+
+  public FileHeaderTransformer(ImportTypeTransformer importTypeTransformer) {
+    this.importTypeTransformer = importTypeTransformer;
+  }
+
+  public FileHeaderView generateFileHeader(SurfaceTransformerContext context) {
     return generateFileHeader(
-        context.getApiConfig(),
-        context.getTypeTable().getImports(),
-        context.getNamer(),
-        importGenerator);
+        context.getApiConfig(), context.getTypeTable().getImports(), context.getNamer());
   }
 
   public FileHeaderView generateFileHeader(
-      ApiConfig apiConfig,
-      Map<String, TypeAlias> imports,
-      SurfaceNamer namer,
-      ImportGenerator importGenerator) {
+      ApiConfig apiConfig, Map<String, TypeAlias> imports, SurfaceNamer namer) {
     FileHeaderView.Builder fileHeader = FileHeaderView.newBuilder();
 
     fileHeader.copyrightLines(apiConfig.getCopyrightLines());
@@ -42,7 +42,7 @@ public class FileHeaderTransformer {
     fileHeader.examplePackageName(namer.getExamplePackageName());
     fileHeader.localPackageName(namer.getLocalPackageName());
     fileHeader.localExamplePackageName(namer.getLocalExamplePackageName());
-    fileHeader.imports(importGenerator.generateImports(imports));
+    fileHeader.imports(importTypeTransformer.generateImports(imports));
 
     return fileHeader.build();
   }

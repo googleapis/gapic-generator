@@ -78,8 +78,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
   private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
-  private final FileHeaderTransformer fileHeaderTransformer = new FileHeaderTransformer();
-  private final GoImportTransformer goImportTransformer = new GoImportTransformer();
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new GoImportTransformer());
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
@@ -170,7 +170,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     addXApiImports(context, context.getSupportedMethods());
-    view.fileHeader(fileHeaderTransformer.generateFileHeader(context, goImportTransformer));
+    view.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     return view.build();
   }
@@ -202,7 +202,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     // So, we clear all imports; addXExampleImports will add back the ones we want.
     context.getTypeTable().getImports().clear();
     addXExampleImports(context, context.getPublicMethods());
-    view.fileHeader(fileHeaderTransformer.generateFileHeader(context, goImportTransformer));
+    view.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     return view.build();
   }
@@ -225,7 +225,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
-            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer, goImportTransformer));
+            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer));
 
     return packageInfo.build();
   }

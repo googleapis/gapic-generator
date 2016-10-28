@@ -14,16 +14,16 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.transformer.ImportGenerator;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GoImportTransformer implements ImportGenerator {
+public class GoImportTransformer implements ImportTypeTransformer {
   /**
-   * Similar to ImportTypeTransformer.generateImports, but specific to Go since Go imports
+   * Similar to StandardImportTypeTransformer.generateImports, but specific to Go since Go imports
    * differently than other languages.
    *
    * <p>Specifically, {@code fullName} and {@code nickname} of each {@code ImportTypeView} is not

@@ -32,11 +32,11 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.Name;
@@ -80,9 +80,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private final GapicCodePathMapper pathMapper;
   private final InitCodeTransformer initCodeTransformer;
-  private final FileHeaderTransformer fileHeaderTransformer = new FileHeaderTransformer();
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new StandardImportTypeTransformer());
   private final TestValueGenerator valueGenerator = new TestValueGenerator(new JavaValueProducer());
-  private final ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
@@ -146,8 +146,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.method(createSmokeTestMethodView(methodContext));
 
     // Imports must be done as the last step to catch all imports.
-    FileHeaderView fileHeader =
-        fileHeaderTransformer.generateFileHeader(context, importTypeTransformer);
+    FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     testClass.fileHeader(fileHeader);
 
     return testClass.build();
@@ -228,8 +227,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.templateFileName(UNIT_TEST_TEMPLATE_FILE);
 
     // Imports must be done as the last step to catch all imports.
-    FileHeaderView fileHeader =
-        fileHeaderTransformer.generateFileHeader(context, importTypeTransformer);
+    FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     testClass.fileHeader(fileHeader);
 
     return testClass.build();
@@ -520,8 +518,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     mockService.templateFileName(MOCK_SERVICE_FILE);
 
     // Imports must be done as the last step to catch all imports.
-    FileHeaderView fileHeader =
-        fileHeaderTransformer.generateFileHeader(context, importTypeTransformer);
+    FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     mockService.fileHeader(fileHeader);
 
     return mockService.build();
@@ -546,8 +543,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     mockServiceImpl.templateFileName(MOCK_SERVICE_IMPL_FILE);
 
     // Imports must be done as the last step to catch all imports.
-    FileHeaderView fileHeader =
-        fileHeaderTransformer.generateFileHeader(context, importTypeTransformer);
+    FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     mockServiceImpl.fileHeader(fileHeader);
 
     return mockServiceImpl.build();
