@@ -15,6 +15,7 @@
 package com.google.api.codegen.discovery.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -43,7 +44,7 @@ public abstract class SampleView implements ViewModel {
   public abstract String appName();
 
   @Nullable
-  public abstract List<String> imports();
+  public abstract List<ImportTypeView> imports();
 
   public abstract SampleAuthView auth();
 
@@ -140,7 +141,7 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder appName(String val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder auth(SampleAuthView val);
 

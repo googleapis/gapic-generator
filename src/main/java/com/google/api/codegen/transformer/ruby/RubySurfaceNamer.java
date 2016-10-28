@@ -29,11 +29,12 @@ import java.util.List;
 
 /** The SurfaceNamer for Ruby. */
 public class RubySurfaceNamer extends SurfaceNamer {
-  public RubySurfaceNamer(String implicitPackageName) {
+  public RubySurfaceNamer(String packageName) {
     super(
         new RubyNameFormatter(),
-        new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(implicitPackageName)),
-        new RubyTypeTable(implicitPackageName));
+        new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(packageName)),
+        new RubyTypeTable(packageName),
+        packageName);
   }
 
   /** The function name to set a field having the given type and name. */
@@ -66,8 +67,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The file name for an API service. */
   @Override
-  public String getServiceFileName(Interface service, String packageName) {
-    String[] names = packageName.split("::");
+  public String getServiceFileName(Interface service) {
+    String[] names = getPackageName().split("::");
     List<String> newNames = new ArrayList<>();
     for (String name : names) {
       newNames.add(packageFilePathPiece(Name.upperCamel(name)));
@@ -77,8 +78,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
-    return packageName + "::" + getApiWrapperClassName(service);
+  public String getFullyQualifiedApiWrapperClassName(Interface service) {
+    return getPackageName() + "::" + getApiWrapperClassName(service);
   }
 
   @Override

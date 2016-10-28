@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.util.ResourceNameUtil;
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -26,6 +27,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 /** FieldConfig represents a configuration for a Field, derived from the GAPIC config. */
@@ -55,8 +57,10 @@ public abstract class FieldConfig {
   @Nullable
   public static FieldConfig createFlattenedFieldConfig(
       DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
       MethodConfigProto methodConfigProto,
       Method method,
+      FlatteningGroupProto flatteningGroup,
       String parameterName) {
 
     Field parameterField = method.getInputMessage().lookupField(parameterName);
@@ -71,17 +75,58 @@ public abstract class FieldConfig {
       return null;
     }
 
-    ResourceNameTreatment treatment = ResourceNameTreatment.NONE;
-    String entityName = methodConfigProto.getFieldNamePatterns().get(parameterName);
+    String entityName =
+        getEntityName(parameterField, messageConfigs, methodConfigProto.getFieldNamePatterns());
 
-    if (ResourceNameUtil.hasResourceName(parameterField)) {
-      treatment = ResourceNameTreatment.STATIC_TYPES;
-      entityName = ResourceNameUtil.getResourceName(parameterField);
-    } else if (entityName != null) {
-      treatment = ResourceNameTreatment.VALIDATE;
+    ResourceNameTreatment treatment;
+    if (flatteningGroup.getParameterResourceNameTreatment().containsKey(parameterName)) {
+      treatment = flatteningGroup.getParameterResourceNameTreatment().get(parameterName);
+    } else {
+      // No specific resource name treatment is specified, so we infer the correct treatment from
+      // the method-level default and the specified entities.
+      if (entityName == null) {
+        treatment = ResourceNameTreatment.NONE;
+      } else {
+        treatment = methodConfigProto.getResourceNameTreatment();
+        if (treatment == null) {
+          treatment = ResourceNameTreatment.NONE;
+        }
+      }
     }
 
+    if (treatment == ResourceNameTreatment.NONE) {
+      entityName = null;
+    }
+
+    validate(messageConfigs, parameterField, treatment, entityName);
+
     return createFieldConfig(parameterField, treatment, entityName);
+  }
+
+  public static String getEntityName(
+      Field field,
+      ResourceNameMessageConfigs messageConfigs,
+      Map<String, String> fieldNamePatterns) {
+    String entityName = null;
+    if (fieldNamePatterns != null) {
+      entityName = fieldNamePatterns.get(field.getSimpleName());
+    }
+    if (messageConfigs != null && messageConfigs.fieldHasResourceName(field)) {
+      String resourceEntityName = messageConfigs.getFieldResourceName(field);
+      if (entityName == null) {
+        entityName = resourceEntityName;
+      } else if (!entityName.equals(resourceEntityName)) {
+        throw new IllegalArgumentException(
+            "Multiple entity names specified for field: "
+                + field.getFullName()
+                + ": ["
+                + entityName
+                + ", "
+                + resourceEntityName
+                + "]");
+      }
+    }
+    return entityName;
   }
 
   public boolean hasEntityName() {
@@ -94,6 +139,39 @@ public abstract class FieldConfig {
 
   public boolean useValidation() {
     return getResourceNameTreatment() == ResourceNameTreatment.VALIDATE;
+  }
+
+  /*
+   * Check that the provided resource name treatment and entityName are valid for the provided field.
+   */
+  public static void validate(
+      ResourceNameMessageConfigs messageConfigs,
+      Field field,
+      ResourceNameTreatment treatment,
+      String entityName) {
+    switch (treatment) {
+      case NONE:
+        break;
+      case STATIC_TYPES:
+        if (messageConfigs == null || !messageConfigs.fieldHasResourceName(field)) {
+          throw new IllegalArgumentException(
+              "Field must have a resource type specified to support "
+                  + "STATIC_TYPES resource name treatment. Field: "
+                  + field.getFullName());
+        }
+        break;
+      case VALIDATE:
+        if (entityName == null) {
+          throw new IllegalArgumentException(
+              "Field must have a resource type or field name pattern specified to support "
+                  + "VALIDATE resource name treatment. Field: "
+                  + field.getFullName());
+        }
+        break;
+      case UNRECOGNIZED:
+      default:
+        throw new IllegalArgumentException("Unrecognized resource name type: " + treatment);
+    }
   }
 
   private static Function<FieldConfig, Field> selectFieldFunction() {

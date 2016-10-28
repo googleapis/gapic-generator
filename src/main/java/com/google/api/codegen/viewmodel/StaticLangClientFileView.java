@@ -19,7 +19,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
+public abstract class StaticLangClientFileView implements ViewModel {
   @Override
   public abstract String templateFileName();
 
@@ -33,7 +33,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
   public abstract Integer servicePort();
 
-  public abstract List<String> imports();
+  public abstract List<ImportTypeView> imports();
 
   public abstract Iterable<String> authScopes();
 
@@ -74,7 +74,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptorClasses();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangXCombinedSurfaceView.Builder();
+    return new AutoValue_StaticLangClientFileView.Builder();
   }
 
   @AutoValue.Builder
@@ -82,7 +82,7 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder authScopes(Iterable<String> val);
 
@@ -127,6 +127,6 @@ public abstract class StaticLangXCombinedSurfaceView implements ViewModel {
     public abstract Builder pageStreamingDescriptorClasses(
         List<PageStreamingDescriptorClassView> val);
 
-    public abstract StaticLangXCombinedSurfaceView build();
+    public abstract StaticLangClientFileView build();
   }
 }

@@ -1,20 +1,22 @@
 ============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceApi.java ==============
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016, Google Inc. All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.gcloud.example;
 
-import com.google.api.gax.grpc.UnaryApiCallable;
+import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.protobuf.Empty;
@@ -84,7 +86,7 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
   private final ScheduledExecutorService executor;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
-  private final UnaryApiCallable<IncrementRequest, Empty> incrementCallable;
+  private final UnaryCallable<IncrementRequest, Empty> incrementCallable;
 
 
 
@@ -108,7 +110,7 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
     this.executor = settings.getExecutorProvider().getOrBuildExecutor();
     this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
-    this.incrementCallable = UnaryApiCallable.create(settings.incrementSettings(), this.channel, this.executor);
+    this.incrementCallable = UnaryCallable.create(settings.incrementSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -177,7 +179,7 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryApiCallable<IncrementRequest, Empty> incrementCallable() {
+  public final UnaryCallable<IncrementRequest, Empty> incrementCallable() {
     return incrementCallable;
   }
 

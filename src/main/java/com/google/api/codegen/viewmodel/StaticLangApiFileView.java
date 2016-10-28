@@ -14,41 +14,40 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
-// View of both api and settings for static language.
-// ViewModel members delegate to api.
 @AutoValue
-public abstract class StaticLangXCommonView implements ViewModel {
-  public abstract StaticLangXApiView api();
+public abstract class StaticLangApiFileView implements ViewModel {
+  @Override
+  public abstract String templateFileName();
 
-  public abstract StaticLangXSettingsView settings();
+  public abstract FileHeaderView fileHeader();
 
-  public static Builder newBuilder() {
-    return new AutoValue_StaticLangXCommonView.Builder();
-  }
+  public abstract StaticLangApiView api();
+
+  @Override
+  public abstract String outputPath();
 
   @Override
   public String resourceRoot() {
-    return api().resourceRoot();
+    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
-  @Override
-  public String templateFileName() {
-    return api().templateFileName();
-  }
-
-  @Override
-  public String outputPath() {
-    return api().outputPath();
+  public static Builder newBuilder() {
+    return new AutoValue_StaticLangApiFileView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder api(StaticLangXApiView val);
+    public abstract Builder templateFileName(String val);
 
-    public abstract Builder settings(StaticLangXSettingsView val);
+    public abstract Builder fileHeader(FileHeaderView val);
 
-    public abstract StaticLangXCommonView build();
+    public abstract Builder outputPath(String val);
+
+    public abstract Builder api(StaticLangApiView val);
+
+    public abstract StaticLangApiFileView build();
   }
 }
