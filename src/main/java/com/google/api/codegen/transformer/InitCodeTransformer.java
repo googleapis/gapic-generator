@@ -147,7 +147,7 @@ public class InitCodeTransformer {
       MethodTransformerContext context,
       Iterable<InitCodeNode> orderedItems,
       Iterable<InitCodeNode> argItems) {
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
     ModelTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 

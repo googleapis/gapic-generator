@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
@@ -39,6 +40,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   public abstract String key();
 
   public abstract String grpcMethodName();
+
+  public abstract GrpcStreamingType grpcStreamingType();
 
   public abstract List<DynamicLangDefaultableParamView> methodParams();
 
@@ -77,6 +80,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder key(String val);
 
     public abstract Builder grpcMethodName(String val);
+
+    public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract Builder methodParams(List<DynamicLangDefaultableParamView> val);
 

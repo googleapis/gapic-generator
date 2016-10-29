@@ -37,6 +37,7 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.Name;
@@ -80,7 +81,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private final GapicCodePathMapper pathMapper;
   private final InitCodeTransformer initCodeTransformer;
-  private final FileHeaderTransformer fileHeaderTransformer = new FileHeaderTransformer();
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new StandardImportTypeTransformer());
   private final TestValueGenerator valueGenerator = new TestValueGenerator(new JavaValueProducer());
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
