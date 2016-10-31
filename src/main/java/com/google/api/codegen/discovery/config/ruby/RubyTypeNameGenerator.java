@@ -34,11 +34,11 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
 
   private String apiName;
   private String apiVersion;
-  private final ImmutableMap<String, String> METHOD_NAME_MAP;
+  private final ImmutableMap<String, String> NAME_MAP;
 
   public RubyTypeNameGenerator() {
     try {
-      METHOD_NAME_MAP = getMethodNameMap();
+      NAME_MAP = getMethodNameMap();
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
@@ -70,10 +70,10 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
     // Generate the key by joining apiName, apiVersion and nameComponents on '.'
     // Ex: "/admin:directory_v1/admin.channels.stop"
     String key = "/" + apiName + ":" + apiVersion + "/" + Joiner.on('.').join(nameComponents);
-    if (!METHOD_NAME_MAP.containsKey(key)) {
+    if (!NAME_MAP.containsKey(key)) {
       throw new IllegalArgumentException("\"" + key + "\"" + " not in method name map");
     }
-    return ImmutableList.of(METHOD_NAME_MAP.get(key));
+    return ImmutableList.of(NAME_MAP.get(key));
   }
 
   @Override
@@ -104,7 +104,14 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
   public String getMessageTypeName(String messageTypeName) {
     // Avoid cases like "DatasetList.Datasets"
     String pieces[] = messageTypeName.split("\\.");
-    return pieces[pieces.length - 1];
+    messageTypeName = pieces[0];
+    // Generate the key by joining apiName, apiVersion and messageTypeName.
+    // Ex: "/bigquery:v2/DatasetList"
+    String key = "/" + apiName + ":" + apiVersion + "/" + messageTypeName;
+    if (!NAME_MAP.containsKey(key)) {
+      throw new IllegalArgumentException("\"" + key + "\"" + " not in method name map");
+    }
+    return Name.from(NAME_MAP.get(key)).toUpperCamel();
   }
 
   @Override

@@ -85,7 +85,11 @@
   @end
   @if class.isPageStreaming
     {@class.pageStreaming.pageVarName} = {@class.serviceVarName}.fetch_all(items: :{@class.pageStreaming.resourceFieldName}) do |token|
-      {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)}, page_token: token)
+      @if class.fieldVarNames
+        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)}, page_token: token)
+      @else
+        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}(page_token: token)
+      @end
     end
 
     @if class.pageStreaming.isResourceMap
@@ -101,13 +105,11 @@
     @end
   @else
     @if class.hasResponse
-      @# Perform the call
       {@class.responseVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)})
 
       @# TODO: Change code below to process the `{@class.responseVarName}` object:
       puts JSON.pretty_generate({@class.responseVarName})
     @else
-      # Perform the call
       {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)})
     @end
   @end

@@ -26,15 +26,15 @@ public class RubySampleNamer extends SampleNamer {
   }
 
   public static String getServiceTypeNamespace(String apiName, String apiVersion) {
+    // The version suffix doesn't seem to follow any particular pattern other
+    // than that the first character is capitalized.
+    apiVersion = apiVersion.substring(0, 1).toUpperCase() + apiVersion.substring(1);
     // For whatever reason the namespace that contains the service constructor
     // isn't based on apiTypeName, so generate it from the apiName and
     // apiVersion instead.
     // Ex: "Google::Apis::MyapiV1beta1" instead of "Google::Apis::MyApiV1beta1"
     return Joiner.on("::")
-        .join(
-            "Google",
-            "Apis",
-            Name.lowerCamel(apiName).toUpperCamel() + Name.from(apiVersion).toUpperCamel());
+        .join("Google", "Apis", Name.lowerCamel(apiName).toUpperCamel() + apiVersion);
   }
 
   @Override

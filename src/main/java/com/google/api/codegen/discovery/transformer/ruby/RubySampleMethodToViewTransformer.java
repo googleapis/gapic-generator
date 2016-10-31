@@ -29,6 +29,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,12 @@ import java.util.List;
 public class RubySampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
   private static final String TEMPLATE_FILENAME = "ruby/sample.snip";
+
+  // Map of rename rules for fields.
+  // Could be done through overrides, but this is a rule implemented in the Ruby
+  // client library generator.
+  private static final ImmutableMap<String, String> FIELD_RENAMES =
+      ImmutableMap.of("objectId", "object_id_");
 
   public RubySampleMethodToViewTransformer() {}
 
@@ -68,14 +75,16 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     }
 
     // Created before the fields in-case there are naming conflicts in the symbol table.
-    SampleAuthView sampleAuthView = createSampleAuthView(context, symbolTable);
+    SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView =
           SampleFieldView.newBuilder()
-              .name(namer.localVarName(Name.lowerCamel(field.name())))
+              .name(
+                  FIELD_RENAMES.getOrDefault(
+                      field.name(), namer.localVarName(Name.lowerCamel(field.name()))))
               .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
               .example(field.example())
               .description(field.description())
@@ -121,8 +130,7 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
         .build();
   }
 
-  private SampleAuthView createSampleAuthView(
-      SampleTransformerContext context, SymbolTable symbolTable) {
+  private SampleAuthView createSampleAuthView(SampleTransformerContext context) {
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
 
