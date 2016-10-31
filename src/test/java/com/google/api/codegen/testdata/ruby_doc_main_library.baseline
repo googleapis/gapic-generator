@@ -120,6 +120,12 @@ module Library
 
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
+      RETURN_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf}/books/{book}/returns/{return}"
+      )
+
+      private_constant :RETURN_PATH_TEMPLATE
+
       # Returns a fully-qualified shelf resource name string.
       # @param shelf_id [String]
       # @return [String]
@@ -148,6 +154,19 @@ module Library
         ARCHIVED_BOOK_PATH_TEMPLATE.render(
           :"archive_path" => archive_path,
           :"book_id" => book_id
+        )
+      end
+
+      # Returns a fully-qualified return resource name string.
+      # @param shelf [String]
+      # @param book [String]
+      # @param return_ [String]
+      # @return [String]
+      def self.return_path shelf, book, return_
+        RETURN_PATH_TEMPLATE.render(
+          :"shelf" => shelf,
+          :"book" => book,
+          :"return" => return_
         )
       end
 
@@ -184,6 +203,27 @@ module Library
       # @return [String]
       def self.match_book_id_from_archived_book_name archived_book_name
         ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["book_id"]
+      end
+
+      # Parses the shelf from a return resource.
+      # @param return_name [String]
+      # @return [String]
+      def self.match_shelf_from_return_name return_name
+        RETURN_PATH_TEMPLATE.match(return_name)["shelf"]
+      end
+
+      # Parses the book from a return resource.
+      # @param return_name [String]
+      # @return [String]
+      def self.match_book_from_return_name return_name
+        RETURN_PATH_TEMPLATE.match(return_name)["book"]
+      end
+
+      # Parses the return from a return resource.
+      # @param return_name [String]
+      # @return [String]
+      def self.match_return_from_return_name return_name
+        RETURN_PATH_TEMPLATE.match(return_name)["return"]
       end
 
       # @param service_path [String]
@@ -392,8 +432,8 @@ module Library
       #
       #   library_service_api = LibraryServiceApi.new
       #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
-      #   options = ''
-      #   response = library_service_api.get_shelf(formatted_name, options)
+      #   options_ = ''
+      #   response = library_service_api.get_shelf(formatted_name, options_)
 
       def get_shelf \
           name,

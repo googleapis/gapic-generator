@@ -29,6 +29,7 @@ import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.transformer.go.GoImportTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -59,7 +60,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(GoTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(GoNameFormatter.RESERVED_IDENTIFIER_SET);
     addStaticImports(context, symbolTable);
 
     SampleView.Builder builder = SampleView.newBuilder();

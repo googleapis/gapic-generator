@@ -117,6 +117,7 @@ class LibraryServiceApi
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
     private static $archivedBookNameTemplate;
+    private static $returnNameTemplate;
 
     private $grpcCredentialsHelper;
     private $libraryServiceStub;
@@ -161,6 +162,19 @@ class LibraryServiceApi
     }
 
     /**
+     * Formats a string containing the fully-qualified path to represent
+     * a return resource.
+     */
+    public static function formatReturnName($shelf, $book, $return)
+    {
+        return self::getReturnNameTemplate()->render([
+            'shelf' => $shelf,
+            'book' => $book,
+            'return' => $return,
+        ]);
+    }
+
+    /**
      * Parses the shelf_id from the given fully-qualified path which
      * represents a shelf resource.
      */
@@ -189,7 +203,7 @@ class LibraryServiceApi
 
     /**
      * Parses the archive_path from the given fully-qualified path which
-     * represents a archivedBook resource.
+     * represents a archived_book resource.
      */
     public static function parseArchivePathFromArchivedBookName($archivedBookName)
     {
@@ -198,11 +212,38 @@ class LibraryServiceApi
 
     /**
      * Parses the book_id from the given fully-qualified path which
-     * represents a archivedBook resource.
+     * represents a archived_book resource.
      */
     public static function parseBookIdFromArchivedBookName($archivedBookName)
     {
         return self::getArchivedBookNameTemplate()->match($archivedBookName)['book_id'];
+    }
+
+    /**
+     * Parses the shelf from the given fully-qualified path which
+     * represents a return resource.
+     */
+    public static function parseShelfFromReturnName($returnName)
+    {
+        return self::getReturnNameTemplate()->match($returnName)['shelf'];
+    }
+
+    /**
+     * Parses the book from the given fully-qualified path which
+     * represents a return resource.
+     */
+    public static function parseBookFromReturnName($returnName)
+    {
+        return self::getReturnNameTemplate()->match($returnName)['book'];
+    }
+
+    /**
+     * Parses the return from the given fully-qualified path which
+     * represents a return resource.
+     */
+    public static function parseReturnFromReturnName($returnName)
+    {
+        return self::getReturnNameTemplate()->match($returnName)['return'];
     }
 
 
@@ -231,6 +272,15 @@ class LibraryServiceApi
         }
 
         return self::$archivedBookNameTemplate;
+    }
+
+    private static function getReturnNameTemplate()
+    {
+        if (self::$returnNameTemplate == null) {
+            self::$returnNameTemplate = new PathTemplate('shelves/{shelf}/books/{book}/returns/{return}');
+        }
+
+        return self::$returnNameTemplate;
     }
 
     private static function getPageStreamingDescriptors()
