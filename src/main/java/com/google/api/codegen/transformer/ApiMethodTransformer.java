@@ -535,6 +535,10 @@ public class ApiMethodTransformer {
         generateRequestObjectParams(context, filteredFieldConfigs));
     apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
+    ServiceMessages messages = new ServiceMessages();
+    apiMethod.isLongRunning(
+        messages.isLongRunningOperationType(context.getMethod().getOutputType()));
+
     return apiMethod.build();
   }
 

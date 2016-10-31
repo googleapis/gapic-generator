@@ -15,19 +15,54 @@
   @join alias : apiMethod.initCode.imports
     {@alias.nickname} = {@alias.fullName}
   @end
+  @if apiMethod.isLongRunning
+    OperationsApi = Google::Longrunning::OperationsApi
+  @end
 
   {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
+  @if apiMethod.isLongRunning
+    operations_api = OperationsApi.new
+  @end
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
   @end
-  @switch apiMethod.type.toString
-  @case "OptionalArrayMethod"
-    {@optionalArrayMethodSampleCode(apiMethod)}
-  @case "PagedOptionalArrayMethod"
-    {@pagedOptionalArrayMethodSampleCode(apiMethod)}
-  @default
-    $unhandledCase: {@apiMethod.type.toString}$
+  @if apiMethod.isLongRunning
+    {@longRunningMethodSampleCode(apiMethod)}
+  @else
+    @switch apiMethod.type.toString
+    @case "OptionalArrayMethod"
+      {@optionalArrayMethodSampleCode(apiMethod)}
+    @case "PagedOptionalArrayMethod"
+      {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+    @default
+      $unhandledCase: {@apiMethod.type.toString}$
+    @end
   @end
+@end
+
+@private longRunningMethodSampleCode(apiMethod)
+
+  @# Add a callback during the method call.
+  operation = {@longRunningMethodCallSampleCode(apiMethod)} do |operation|
+    results = operation.results
+    @# Process the results.
+  end
+
+  @# Or use the return value to add a callback.
+  operation.on_done do |operation|
+    results = operation.results
+    @# Process the results.
+  end
+
+  @# Check status.
+  operation.done?
+
+  @# Reload the status.
+  operation.reload!
+  operation.done?
+
+  @# Wait.
+  operation.wait_until_done!
 @end
 
 @private optionalArrayMethodSampleCode(apiMethod)
@@ -52,6 +87,17 @@
       @# Process element.
     end
   end
+@end
+
+@private longRunningMethodCallSampleCode(apiMethod)
+  @let fieldSettings = apiMethod.initCode.fieldSettings
+    @if fieldSettings
+      {@apiMethod.apiVariableName}.{@apiMethod.name}\
+        ({@sampleMethodCallArgList(fieldSettings)}, operations_api)
+    @else
+      {@apiMethod.apiVariableName}.{@apiMethod.name}(operations_api)
+    @end
+  @end
 @end
 
 @private methodCallSampleCode(apiMethod)

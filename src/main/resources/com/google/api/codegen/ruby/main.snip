@@ -45,6 +45,10 @@
   require "pathname"
 
   require "google/gax"
+  @if context.hasLongRunningMethod(service)
+    require "google/longrunning/operations_api"
+
+  @end
   @join import : {@context.getProtoImports(service)}
     require "{@import.fullName}"
   @end
@@ -396,6 +400,9 @@
           @else
             {@optionalParameterValues(optionalParams)},
           @end
+          @if @operationsApiParam(method)
+            {@operationsApiParam(method)}
+          @end
           options: nil
         req = {@inputTypeName}.new({
           @if requiredParams
@@ -409,13 +416,35 @@
             {@namedParameters(optionalParams)}
           @end
         }.delete_if { |_, v| v.nil? })
-        @@{@methodName}.call(req, options)
+        {@methodCall(method)}
       end
     @else
-      def {@methodName} options: nil
+      def {@methodName} {@operationsApiParam(method)}options: nil
         req = {@inputTypeName}.new
-        @@{@methodName}.call(req, options)
+        {@methodCall(method)}
       end
+    @end
+  @end
+@end
+
+@private operationsApiParam(method)
+  @if context.isLongRunning(method)
+    operations_api, {@""}
+  @end
+@end
+
+@private methodCall(method)
+  @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName())
+    @if context.isLongRunning(method)
+      operation = Google::Gax::Operation.new(
+        @@{@methodName}.call(req, options),
+        operations_api,
+        call_options: options
+      )
+      operation.on_done { |operation| yield(operation) } if block_given?
+      operation
+    @else
+      @@{@methodName}.call(req, options)
     @end
   @end
 @end

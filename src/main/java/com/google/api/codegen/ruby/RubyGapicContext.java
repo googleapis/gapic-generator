@@ -15,6 +15,7 @@
 package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
@@ -157,6 +158,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
           + "  See Google::Gax::PagedEnumerable documentation for other\n"
           + "  operations such as per-page iteration or access to the response\n"
           + "  object.";
+    } else if (isLongRunning(method)) {
+      return "@return [Google::Gax::Operation]";
     } else {
       return "@return [" + classInfo + "]";
     }
@@ -186,6 +189,12 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
       } else {
         paramTypesBuilder.append(fieldParamComment(field, null));
       }
+    }
+    if (isLongRunning(method)) {
+      paramTypesBuilder.append(
+          "@param operations_api [Google::Longrunning::OperationsApi] \n"
+              + "  The client that will be used to reload the operation returned by\n"
+              + "  this api call.\n");
     }
     paramTypesBuilder.append(
         "@param options [Google::Gax::CallOptions] \n"
@@ -354,6 +363,19 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         modelTypeTable,
         new RubySurfaceNamer(getApiConfig().getPackageName()),
         new RubyFeatureConfig());
+  }
+
+  public boolean isLongRunning(Method method) {
+    return new ServiceMessages().isLongRunningOperationType(method.getOutputType());
+  }
+
+  public boolean hasLongRunningMethod(Interface service) {
+    for (Method method : getSupportedMethodsV2(service)) {
+      if (isLongRunning(method)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // Constants
