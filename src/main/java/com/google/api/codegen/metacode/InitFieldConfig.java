@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
@@ -23,6 +24,8 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class InitFieldConfig {
   private static final String randomValueToken = "$RANDOM";
+  private static final String projectIdToken = "$PROJECT_ID";
+  private static final String projectIdVariableName = "project_id";
 
   public abstract String fieldPath();
 
@@ -30,7 +33,7 @@ public abstract class InitFieldConfig {
   public abstract String entityName();
 
   @Nullable
-  public abstract String value();
+  public abstract InitValue value();
 
   /*
    * Parses the given config string and returns the corresponding object.
@@ -38,7 +41,7 @@ public abstract class InitFieldConfig {
   public static InitFieldConfig from(String initFieldConfigString) {
     String fieldName = null;
     String entityName = null;
-    String value = null;
+    InitValue value = null;
 
     String[] equalsParts = initFieldConfigString.split("[=]");
     if (equalsParts.length > 2) {
@@ -69,11 +72,16 @@ public abstract class InitFieldConfig {
     return entityName() != null && value() != null;
   }
 
-  private static String parseValueString(String valueString, String stringToHash) {
+  private static InitValue parseValueString(String valueString, String stringToHash) {
+    InitValue initValue = new InitValue(valueString, InitValueType.Literal);
     if (valueString.contains(randomValueToken)) {
       String randomValue = Integer.toString(Math.abs(stringToHash.hashCode()));
       valueString = valueString.replace(randomValueToken, randomValue);
+      initValue = new InitValue(valueString, InitValueType.Literal);
+    } else if (valueString.contains(projectIdToken)) {
+      valueString = projectIdVariableName;
+      initValue = new InitValue(valueString, InitValueType.Variable);
     }
-    return valueString;
+    return initValue;
   }
 }

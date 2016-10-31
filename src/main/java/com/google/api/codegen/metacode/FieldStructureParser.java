@@ -76,7 +76,10 @@ public class FieldStructureParser {
               .get(fieldConfig.fieldPath())
               .withInitialCollectionValue(fieldConfig.entityName(), fieldConfig.value());
     } else if (fieldConfig.hasSimpleInitValue()) {
-      valueConfig = InitValueConfig.createWithValue(stripQuotes(fieldConfig.value()));
+      InitValue initValue = fieldConfig.value();
+      valueConfig =
+          InitValueConfig.createWithValue(
+              new InitValue(stripQuotes(initValue.getValue()), initValue.getType()));
     } else if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
       valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
     }

@@ -15,6 +15,7 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -191,7 +192,7 @@ public class InitCodeNode {
 
   private static InitValueConfig mergeInitValueConfig(
       InitValueConfig oldConfig, InitValueConfig newConfig) {
-    HashMap<String, String> collectionValues = new HashMap<>();
+    HashMap<String, InitValue> collectionValues = new HashMap<>();
     if (oldConfig.hasSimpleInitialValue()
         && newConfig.hasSimpleInitialValue()
         && !oldConfig.getInitialValue().equals(newConfig.getInitialValue())) {
@@ -271,13 +272,14 @@ public class InitCodeNode {
 
       // Validate initValueConfig, or generate random value
       if (initValueConfig.hasSimpleInitialValue()) {
-        validateValue(type, initValueConfig.getInitialValue());
+        validateValue(type, initValueConfig.getInitialValue().getValue());
       } else if (initValueConfig.isEmpty()
           && type.isPrimitive()
           && !type.isRepeated()
           && valueGenerator != null) {
         String newValue = valueGenerator.getAndStoreValue(type, identifier);
-        initValueConfig = InitValueConfig.createWithValue(newValue);
+        initValueConfig =
+            InitValueConfig.createWithValue(new InitValue(newValue, InitValueType.Literal));
       }
     }
   }

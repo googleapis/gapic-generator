@@ -31,6 +31,8 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.metacode.InitValue;
+import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
@@ -477,7 +479,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       // are available
       String responseTokenName = config.getResponseTokenField().getSimpleName();
       additionalSubTrees.add(
-          InitCodeNode.createWithValue(responseTokenName, InitValueConfig.createWithValue("")));
+          InitCodeNode.createWithValue(
+              responseTokenName,
+              InitValueConfig.createWithValue(new InitValue("", InitValueType.Literal))));
     }
     if (context.getMethodConfig().isBundling()) {
       // Initialize one bundling element if it is bundling.
@@ -646,6 +650,11 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
     typeTable.saveNicknameFor("org.apache.commons.lang.builder.ReflectionToStringBuilder");
     typeTable.saveNicknameFor("org.apache.commons.lang.builder.ToStringStyle");
+    typeTable.saveNicknameFor("org.apache.commons.cli.CommandLine");
+    typeTable.saveNicknameFor("org.apache.commons.cli.DefaultParser");
+    typeTable.saveNicknameFor("org.apache.commons.cli.HelpFormatter");
+    typeTable.saveNicknameFor("org.apache.commons.cli.Option");
+    typeTable.saveNicknameFor("org.apache.commons.cli.Options");
   }
 
   private void addMockServiceImplImports(SurfaceTransformerContext context) {

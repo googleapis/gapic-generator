@@ -22,6 +22,8 @@ import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.metacode.InitValue;
+import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FieldSettingView;
@@ -297,7 +299,6 @@ public class InitCodeTransformer {
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
         && !item.getType().isRepeated()) {
       // For a repeated type, we want to use a SimpleInitValueView
-
       ResourceNameType resourceNameType = fieldConfig.getResourceNameType();
       SingleResourceNameConfig resourceNameConfig;
       switch (resourceNameType) {
@@ -333,7 +334,7 @@ public class InitCodeTransformer {
       List<String> varList =
           Lists.newArrayList(
               initValueConfig.getSingleResourceNameConfig().getNameTemplate().vars());
-      initValue.formatArgs(getFormatFunctionArgs(varList, initValueConfig));
+      initValue.formatArgs(getFormatFunctionArgs(context, varList, initValueConfig));
 
       return initValue.build();
     } else {
@@ -343,7 +344,8 @@ public class InitCodeTransformer {
         initValue.initialValue(
             context
                 .getTypeTable()
-                .renderPrimitiveValue(item.getType(), initValueConfig.getInitialValue()));
+                .renderPrimitiveValue(
+                    item.getType(), initValueConfig.getInitialValue().getValue()));
       } else {
         initValue.initialValue(
             context.getTypeTable().getZeroValueAndSaveNicknameFor(item.getType()));
@@ -362,18 +364,23 @@ public class InitCodeTransformer {
 
     return ResourceNameInitValueView.newBuilder()
         .resourceTypeName(resourceName)
-        .formatArgs(getFormatFunctionArgs(varList, item.getInitValueConfig()))
+        .formatArgs(getFormatFunctionArgs(context, varList, item.getInitValueConfig()))
         .build();
   }
 
   private static List<String> getFormatFunctionArgs(
-      List<String> varList, InitValueConfig initValueConfig) {
+      MethodTransformerContext context, List<String> varList, InitValueConfig initValueConfig) {
     List<String> formatFunctionArgs = new ArrayList<>();
     for (String entityName : varList) {
       String entityValue = "\"[" + Name.from(entityName).toUpperUnderscore() + "]\"";
       if (initValueConfig.hasFormattingConfigInitialValues()
           && initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
-        entityValue = initValueConfig.getResourceNameBindingValues().get(entityName);
+        InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
+        if (initValue.getType() == InitValueType.Variable) {
+          entityValue = context.getNamer().localVarName(Name.from(initValue.getValue()));
+        } else {
+          entityValue = initValue.getValue();
+        }
       }
       formatFunctionArgs.add(entityValue);
     }
