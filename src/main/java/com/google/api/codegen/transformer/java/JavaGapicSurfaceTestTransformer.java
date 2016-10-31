@@ -364,7 +364,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       ResourceNameType resourceNameType =
           methodContext.getApiConfig().getTypeOfEntityName(resourcesFieldConfig.getEntityName());
       Name resourceName =
-          namer.getResourceTypeName(resourcesFieldConfig.getEntityName(), resourceNameType);
+          Name.upperCamel(
+              namer.getResourceTypeName(resourcesFieldConfig.getEntityName(), resourceNameType));
       resourceTypeName =
           methodContext
               .getNamer()

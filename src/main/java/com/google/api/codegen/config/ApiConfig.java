@@ -233,9 +233,11 @@ public abstract class ApiConfig {
         if (collectionConfigsMap.containsKey(collectionConfig.getEntityName())) {
           CollectionConfig otherConfig = collectionConfigsMap.get(collectionConfig.getEntityName());
           if (!collectionConfig.getNamePattern().equals(otherConfig.getNamePattern())) {
-            throw new IllegalArgumentException(
-                "Inconsistent collection configs across interfaces. Entity name: "
-                    + collectionConfig.getEntityName());
+            diagCollector.addDiag(
+                Diag.error(
+                    SimpleLocation.TOPLEVEL,
+                    "Inconsistent collection configs across interfaces. Entity name: "
+                        + collectionConfig.getEntityName()));
           }
         } else {
           collectionConfigsMap.put(collectionConfig.getEntityName(), collectionConfig);

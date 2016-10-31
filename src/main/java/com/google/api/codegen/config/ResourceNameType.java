@@ -15,9 +15,18 @@
 package com.google.api.codegen.config;
 
 public enum ResourceNameType {
+  /** No resource type is available. */
   NONE,
+
+  /** A single concrete resource type. */
   SINGLE,
+
+  /** A single "invalid value" resource type. */
   INVALID,
+
+  /** A set of resource types, accessed using a "oneof" pattern. */
   ONEOF,
+
+  /** Any resource type. */
   ANY
 }

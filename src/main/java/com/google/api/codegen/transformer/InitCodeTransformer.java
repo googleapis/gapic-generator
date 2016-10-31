@@ -319,9 +319,8 @@ public class InitCodeTransformer {
           throw new UnsupportedOperationException("entity name invalid");
         case ONEOF:
           ResourceNameInitValueView initView = createResourceNameInitValueView(context, item);
-          Name resourceOneofName = namer.getResourceTypeName(entityName, resourceNameType);
           return ResourceNameOneofInitValueView.newBuilder()
-              .resourceOneofTypeName(namer.className(resourceOneofName))
+              .resourceOneofTypeName(namer.getResourceTypeName(entityName, resourceNameType))
               .specificResourceNameView(initView)
               .build();
         case SINGLE:
@@ -363,14 +362,14 @@ public class InitCodeTransformer {
       MethodTransformerContext context, InitCodeNode item) {
     CollectionConfig collectionConfig =
         context.getFirstCollectionConfig(item.getFieldConfig().getEntityName());
-    Name resourceName =
+    String resourceName =
         context
             .getNamer()
             .getResourceTypeName(collectionConfig.getEntityName(), ResourceNameType.SINGLE);
     List<String> varList = Lists.newArrayList(collectionConfig.getNameTemplate().vars());
 
     return ResourceNameInitValueView.newBuilder()
-        .resourceTypeName(context.getNamer().className(resourceName))
+        .resourceTypeName(resourceName)
         .formatArgs(getFormatFunctionArgs(varList, item.getInitValueConfig()))
         .build();
   }

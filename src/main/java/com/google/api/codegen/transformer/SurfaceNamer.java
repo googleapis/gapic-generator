@@ -105,7 +105,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the generated resource type from the entity name. */
-  public Name getResourceTypeName(String entityName, ResourceNameType resourceNameType) {
+  public String getResourceTypeName(String entityName, ResourceNameType resourceNameType) {
+    return className(getResourceTypeNameObject(entityName, resourceNameType));
+  }
+
+  protected Name getResourceTypeNameObject(String entityName, ResourceNameType resourceNameType) {
     switch (resourceNameType) {
       case ANY:
         return Name.from("resource_name");
@@ -138,7 +142,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getPagedResponseIterateMethod(
       FeatureConfig featureConfig, FieldConfig fieldConfig, ResourceNameType resourceNameType) {
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      Name resourceName = getResourceTypeName(fieldConfig.getEntityName(), resourceNameType);
+      Name resourceName = getResourceTypeNameObject(fieldConfig.getEntityName(), resourceNameType);
       return publicMethodName(Name.from("iterate_all_as").join(resourceName));
     } else {
       return getPagedResponseIterateMethod();
@@ -769,7 +773,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
       TypeRef type,
       String entityName,
       ResourceNameType resourceNameType) {
-    String resourceClassName = className(getResourceTypeName(entityName, resourceNameType));
+    String resourceClassName = getResourceTypeName(entityName, resourceNameType);
     return typeTable.getAndSaveNicknameForTypedResourceName(elem, type, resourceClassName);
   }
 
