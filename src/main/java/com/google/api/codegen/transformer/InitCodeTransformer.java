@@ -23,7 +23,6 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
-import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FieldSettingView;
@@ -376,10 +375,15 @@ public class InitCodeTransformer {
       if (initValueConfig.hasFormattingConfigInitialValues()
           && initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
-        if (initValue.getType() == InitValueType.Variable) {
-          entityValue = context.getNamer().localVarName(Name.from(initValue.getValue()));
-        } else {
-          entityValue = initValue.getValue();
+        switch (initValue.getType()) {
+          case Variable:
+            entityValue = context.getNamer().localVarName(Name.from(initValue.getValue()));
+            break;
+          case Literal:
+            entityValue = initValue.getValue();
+            break;
+          default:
+            throw new IllegalArgumentException("Unhandled init value type");
         }
       }
       formatFunctionArgs.add(entityValue);

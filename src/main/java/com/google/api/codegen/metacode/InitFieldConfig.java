@@ -79,6 +79,9 @@ public abstract class InitFieldConfig {
       valueString = valueString.replace(randomValueToken, randomValue);
       initValue = new InitValue(valueString, InitValueType.Literal);
     } else if (valueString.contains(projectIdToken)) {
+      if (!valueString.equals(projectIdToken)) {
+        throw new IllegalArgumentException("Inconsistent: found project ID as a substring ");
+      }
       valueString = projectIdVariableName;
       initValue = new InitValue(valueString, InitValueType.Variable);
     }
