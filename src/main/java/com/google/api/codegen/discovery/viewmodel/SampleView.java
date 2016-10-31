@@ -41,6 +41,7 @@ public abstract class SampleView implements ViewModel {
 
   public abstract String apiVersion();
 
+  @Nullable
   public abstract String appName();
 
   @Nullable
