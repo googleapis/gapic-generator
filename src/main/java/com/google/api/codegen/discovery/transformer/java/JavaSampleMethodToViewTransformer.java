@@ -27,7 +27,7 @@ import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
-import com.google.api.codegen.transformer.ImportTypeTransformer;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -45,7 +45,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
   private static final String TEMPLATE_FILENAME = "java/sample.snip";
 
-  private final ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+  private final StandardImportTypeTransformer importTypeTransformer =
+      new StandardImportTypeTransformer();
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {

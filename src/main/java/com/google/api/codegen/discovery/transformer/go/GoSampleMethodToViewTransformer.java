@@ -26,6 +26,7 @@ import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
+import com.google.api.codegen.transformer.go.GoImportTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoNameFormatter;
@@ -40,7 +41,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
   private static final String TEMPLATE_FILENAME = "go/sample.snip";
 
-  public GoSampleMethodToViewTransformer() {}
+  private final GoImportTransformer goImportTransformer = new GoImportTransformer();
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
@@ -115,7 +116,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
     // Imports must be collected last.
     List<ImportTypeView> imports =
-        new ArrayList<>(GoTypeTable.generateImports(typeTable.getImports()));
+        new ArrayList<>(goImportTransformer.generateImports(typeTable.getImports()));
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
