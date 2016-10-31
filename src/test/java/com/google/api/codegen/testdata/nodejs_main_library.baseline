@@ -187,6 +187,104 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
   }.bind(this));
 }
 
+// Path templates
+
+var SHELF_PATH_TEMPLATE = new gax.PathTemplate(
+    'shelves/{shelf_id}');
+
+var BOOK_PATH_TEMPLATE = new gax.PathTemplate(
+    'shelves/{shelf_id}/books/{book_id}');
+
+var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
+    'archives/{archive_path}/books/{book_id=**}');
+
+/**
+ * Returns a fully-qualified shelf resource name string.
+ * @param {String} shelfId
+ * @returns {String}
+ */
+LibraryServiceApi.prototype.shelfPath = function(shelfId) {
+  return SHELF_PATH_TEMPLATE.render({
+    shelf_id: shelfId
+  });
+};
+
+/**
+ * Parses the shelfName from a shelf resource.
+ * @param {String} shelfName
+ *   A fully-qualified path representing a shelf resources.
+ * @returns {String} - A string representing the shelf_id.
+ */
+LibraryServiceApi.prototype.matchShelfIdFromShelfName = function(shelfName) {
+  return SHELF_PATH_TEMPLATE.match(shelfName).shelf_id;
+};
+
+/**
+ * Returns a fully-qualified book resource name string.
+ * @param {String} shelfId
+ * @param {String} bookId
+ * @returns {String}
+ */
+LibraryServiceApi.prototype.bookPath = function(shelfId, bookId) {
+  return BOOK_PATH_TEMPLATE.render({
+    shelf_id: shelfId,
+    book_id: bookId
+  });
+};
+
+/**
+ * Parses the bookName from a book resource.
+ * @param {String} bookName
+ *   A fully-qualified path representing a book resources.
+ * @returns {String} - A string representing the shelf_id.
+ */
+LibraryServiceApi.prototype.matchShelfIdFromBookName = function(bookName) {
+  return BOOK_PATH_TEMPLATE.match(bookName).shelf_id;
+};
+
+/**
+ * Parses the bookName from a book resource.
+ * @param {String} bookName
+ *   A fully-qualified path representing a book resources.
+ * @returns {String} - A string representing the book_id.
+ */
+LibraryServiceApi.prototype.matchBookIdFromBookName = function(bookName) {
+  return BOOK_PATH_TEMPLATE.match(bookName).book_id;
+};
+
+/**
+ * Returns a fully-qualified archived_book resource name string.
+ * @param {String} archivePath
+ * @param {String} bookId
+ * @returns {String}
+ */
+LibraryServiceApi.prototype.archivedBookPath = function(archivePath, bookId) {
+  return ARCHIVED_BOOK_PATH_TEMPLATE.render({
+    archive_path: archivePath,
+    book_id: bookId
+  });
+};
+
+/**
+ * Parses the archivedBookName from a archived_book resource.
+ * @param {String} archivedBookName
+ *   A fully-qualified path representing a archived_book resources.
+ * @returns {String} - A string representing the archive_path.
+ */
+LibraryServiceApi.prototype.matchArchivePathFromArchivedBookName = function(archivedBookName) {
+  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).archive_path;
+};
+
+/**
+ * Parses the archivedBookName from a archived_book resource.
+ * @param {String} archivedBookName
+ *   A fully-qualified path representing a archived_book resources.
+ * @returns {String} - A string representing the book_id.
+ */
+LibraryServiceApi.prototype.matchBookIdFromArchivedBookName = function(archivedBookName) {
+  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).book_id;
+};
+
 // Service calls
 
 /**
