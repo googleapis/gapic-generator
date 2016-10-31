@@ -94,6 +94,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getGrpcServerTypeName(Interface service) {
+    return converter.getTypeName(service).getNickname() + "Server";
+  }
+
+  @Override
   public String getGrpcClientTypeName(Interface service) {
     return converter.getTypeName(service).getNickname() + "Client";
   }
@@ -205,7 +210,16 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangStreamingReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStreamingServerName(Method method) {
+    // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesServer",
+    // neither camel or underscore.
+    return converter.getTypeName(method.getParent()).getNickname()
+        + "_"
+        + className(Name.upperCamel(method.getSimpleName()).join("server"));
+  }
+
+  @Override
+  public String getStreamingClientName(Method method) {
     // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
     // neither camel or underscore.
     return converter.getTypeName(method.getParent()).getNickname()

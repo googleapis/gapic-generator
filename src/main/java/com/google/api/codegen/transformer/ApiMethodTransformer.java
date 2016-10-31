@@ -442,9 +442,7 @@ public class ApiMethodTransformer {
         methodViewBuilder.responseTypeName(syncNickname);
         break;
       case GrpcStreaming:
-        String streamingReturnTypeFullName =
-            namer.getStaticLangStreamingReturnTypeName(
-                context.getMethod(), context.getMethodConfig());
+        String streamingReturnTypeFullName = namer.getStreamingClientName(context.getMethod());
         String streamingNickname =
             context.getTypeTable().getAndSaveNicknameFor(streamingReturnTypeFullName);
         methodViewBuilder.responseTypeName(streamingNickname);

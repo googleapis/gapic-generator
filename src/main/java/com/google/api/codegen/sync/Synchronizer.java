@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.sync;
 
-import autovalue.shaded.com.google.common.common.base.Preconditions;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
 import java.io.IOException;

@@ -450,6 +450,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The type name of the Grpc server class. This needs to match what Grpc generates for the
+   * particular language.
+   */
+  public String getGrpcServerTypeName(Interface service) {
+    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
+    String className = className(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Server"));
+    return qualifiedName(namePath.withHead(className));
+  }
+
+  /**
    * The type name of the Grpc client class. This needs to match what Grpc generates for the
    * particular language.
    */
@@ -636,9 +646,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getStaticLangAsyncReturnTypeName(method, methodConfig);
   }
 
-  /** The GRPC streaming return type name in a static language for a given method. */
-  public String getStaticLangStreamingReturnTypeName(Method method, MethodConfig methodConfig) {
-    return getNotImplementedString("SurfaceNamer.getStaticLangStreamingReturnTypeName");
+  /** The GRPC streaming server type name for a given method. */
+  public String getStreamingServerName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getStreamingServerName");
+  }
+
+  /** The GRPC streaming client type name for a given method. */
+  public String getStreamingClientName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getStreamingClientName");
   }
 
   /** The name of the paged callable variant of the given method. */
