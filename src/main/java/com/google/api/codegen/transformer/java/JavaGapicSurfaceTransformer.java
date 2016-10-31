@@ -20,7 +20,6 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -257,21 +256,17 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
 
-      ResourceNameType resourceNameType = resourceFieldConfig.getResourceNameType();
       String resourceTypeName =
           context
               .getNamer()
               .getAndSaveResourceTypeName(
                   context.getTypeTable(),
-                  resourceField,
-                  resourceField.getType().makeOptional(),
-                  resourceFieldConfig.getEntityName(),
-                  resourceNameType);
+                  resourceFieldConfig,
+                  resourceField.getType().makeOptional());
       String resourceTypeIterateMethodName =
           context
               .getNamer()
-              .getPagedResponseIterateMethod(
-                  context.getFeatureConfig(), resourceFieldConfig, resourceNameType);
+              .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
 
       PagedResponseIterateMethodView.Builder iterateMethod =
           PagedResponseIterateMethodView.newBuilder()

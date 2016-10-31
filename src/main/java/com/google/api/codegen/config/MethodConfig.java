@@ -338,7 +338,7 @@ public abstract class MethodConfig {
     if (entityName == null || treatment == null) {
       treatment = ResourceNameTreatment.NONE;
     }
-    
+
     ResourceCollectionConfig resourceCollectionConfig = resourceCollectionConfigs.get(entityName);
 
     FieldConfig.validate(messageConfigs, field, treatment, resourceCollectionConfig);

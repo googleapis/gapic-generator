@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.ResourceCollectionConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -105,11 +106,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the generated resource type from the entity name. */
-  public String getResourceTypeName(String entityName, ResourceNameType resourceNameType) {
-    return className(getResourceTypeNameObject(entityName, resourceNameType));
+  public String getResourceTypeName(ResourceCollectionConfig resourceCollectionConfig) {
+    return className(getResourceTypeNameObject(resourceCollectionConfig));
   }
 
-  protected Name getResourceTypeNameObject(String entityName, ResourceNameType resourceNameType) {
+  protected Name getResourceTypeNameObject(ResourceCollectionConfig resourceCollectionConfig) {
+    String entityName = resourceCollectionConfig.getEntityName();
+    ResourceNameType resourceNameType = resourceCollectionConfig.getResourceNameType();
     switch (resourceNameType) {
       case ANY:
         return Name.from("resource_name");
@@ -140,9 +143,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * resource type iterate method if available
    */
   public String getPagedResponseIterateMethod(
-      FeatureConfig featureConfig, FieldConfig fieldConfig, ResourceNameType resourceNameType) {
+      FeatureConfig featureConfig, FieldConfig fieldConfig) {
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      Name resourceName = getResourceTypeNameObject(fieldConfig.getEntityName(), resourceNameType);
+      Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceCollectionConfig());
       return publicMethodName(Name.from("iterate_all_as").join(resourceName));
     } else {
       return getPagedResponseIterateMethod();
@@ -768,13 +771,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The class name of the generated resource type from the entity name. */
   public String getAndSaveResourceTypeName(
-      ModelTypeTable typeTable,
-      ProtoElement elem,
-      TypeRef type,
-      String entityName,
-      ResourceNameType resourceNameType) {
-    String resourceClassName = getResourceTypeName(entityName, resourceNameType);
-    return typeTable.getAndSaveNicknameForTypedResourceName(elem, type, resourceClassName);
+      ModelTypeTable typeTable, FieldConfig fieldConfig, TypeRef type) {
+    String resourceClassName = getResourceTypeName(fieldConfig.getResourceCollectionConfig());
+    return typeTable.getAndSaveNicknameForTypedResourceName(
+        fieldConfig.getField(), type, resourceClassName);
   }
 
   /** The test case name for the given method. */

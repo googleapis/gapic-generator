@@ -203,12 +203,7 @@ public class InitCodeTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())) {
       surfaceLine.typeName(
-          namer.getAndSaveResourceTypeName(
-              typeTable,
-              fieldConfig.getField(),
-              item.getType(),
-              fieldConfig.getEntityName(),
-              fieldConfig.getResourceNameType()));
+          namer.getAndSaveResourceTypeName(typeTable, fieldConfig, item.getType()));
     } else {
       surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
     }
@@ -246,12 +241,7 @@ public class InitCodeTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       surfaceLine.elementTypeName(
-          namer.getAndSaveResourceTypeName(
-              typeTable,
-              fieldConfig.getField(),
-              item.getType().makeOptional(),
-              fieldConfig.getEntityName(),
-              fieldConfig.getResourceNameType()));
+          namer.getAndSaveResourceTypeName(typeTable, fieldConfig, item.getType().makeOptional()));
     } else {
       surfaceLine.elementTypeName(
           typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
@@ -317,13 +307,13 @@ public class InitCodeTransformer {
           throw new UnsupportedOperationException("entity name invalid");
         case ONEOF:
           CollectionOneofConfig oneofConfig =
-              (CollectionOneofConfig) item.getFieldConfig().getResourceCollectionConfig();
+              (CollectionOneofConfig) fieldConfig.getResourceCollectionConfig();
           collectionConfig = oneofConfig.getCollectionConfigs().get(0);
           ResourceNameInitValueView initView =
               createResourceNameInitValueView(context, item, collectionConfig);
           return ResourceNameOneofInitValueView.newBuilder()
               .resourceOneofTypeName(
-                  namer.getResourceTypeName(fieldConfig.getEntityName(), resourceNameType))
+                  namer.getResourceTypeName(fieldConfig.getResourceCollectionConfig()))
               .specificResourceNameView(initView)
               .build();
         case SINGLE:
@@ -364,10 +354,7 @@ public class InitCodeTransformer {
 
   private ResourceNameInitValueView createResourceNameInitValueView(
       MethodTransformerContext context, InitCodeNode item, CollectionConfig collectionConfig) {
-    String resourceName =
-        context
-            .getNamer()
-            .getResourceTypeName(collectionConfig.getEntityName(), ResourceNameType.SINGLE);
+    String resourceName = context.getNamer().getResourceTypeName(collectionConfig);
     List<String> varList = Lists.newArrayList(collectionConfig.getNameTemplate().vars());
 
     return ResourceNameInitValueView.newBuilder()

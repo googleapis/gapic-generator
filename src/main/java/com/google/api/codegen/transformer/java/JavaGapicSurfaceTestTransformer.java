@@ -26,7 +26,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ResourceCollectionConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
-import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -362,19 +361,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .build());
 
     if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
-      ResourceNameType resourceNameType = resourcesFieldConfig.getResourceNameType();
       Name resourceName =
           Name.upperCamel(
-              namer.getResourceTypeName(resourcesFieldConfig.getEntityName(), resourceNameType));
+              namer.getResourceTypeName(resourcesFieldConfig.getResourceCollectionConfig()));
       resourceTypeName =
           methodContext
               .getNamer()
               .getAndSaveResourceTypeName(
                   methodContext.getTypeTable(),
-                  resourcesField,
-                  resourcesField.getType().makeOptional(),
-                  resourcesFieldConfig.getEntityName(),
-                  resourceNameType);
+                  resourcesFieldConfig,
+                  resourcesField.getType().makeOptional());
 
       resourcesFieldGetterName =
           namer.getResourceNameFieldGetFunctionName(
@@ -385,7 +381,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .resourcesFieldGetterName(resourcesFieldGetterName)
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
-                      methodContext.getFeatureConfig(), resourcesFieldConfig, resourceNameType))
+                      methodContext.getFeatureConfig(), resourcesFieldConfig))
               .resourcesVarName(namer.localVarName(Name.from("resources_as").join(resourceName)))
               .build());
     }
