@@ -14,68 +14,17 @@
  */
 package com.google.api.codegen.discovery.config.nodejs;
 
-import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
-import com.google.common.base.Strings;
-import java.util.List;
 
-public class NodeJSTypeNameGenerator implements TypeNameGenerator {
+public class NodeJSTypeNameGenerator extends TypeNameGenerator {
 
   @Override
-  public String getApiVersion(String apiVersion) {
-    return apiVersion;
-  }
-
-  @Override
-  public String getPackagePrefix(String apiName, String apiVersion) {
-    // N/A
-    return "";
-  }
-
-  @Override
-  public String getApiTypeName(String apiName) {
-    return apiName;
-  }
-
-  @Override
-  public String getRequestTypeName(List<String> methodNameComponents) {
-    // N/A
-    return "";
-  }
-
-  @Override
-  public String getResponseTypeUrl(String responseTypeUrl) {
-    if (responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
-        || responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_URL)) {
-      return "";
-    }
-    return responseTypeUrl;
-  }
-
-  @Override
-  public String getMessageTypeName(String messageTypeName) {
-    // N/A
-    return "";
-  }
-
-  @Override
-  public String getSubpackage(boolean isRequest) {
-    // N/A
-    return "";
+  public String stringDelimiter() {
+    return "'";
   }
 
   @Override
   public String getStringFormatExample(String format) {
-    return "";
-  }
-
-  @Override
-  public String getFieldPatternExample(String pattern) {
-    String def = DefaultString.getNonTrivialPlaceholder(pattern);
-    if (Strings.isNullOrEmpty(def)) {
-      return "";
-    }
-    return String.format("'%s'", def);
+    return getStringFormatExample(format, "Date.toISOString()", "Date.toISOString()");
   }
 }

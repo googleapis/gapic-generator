@@ -265,6 +265,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   public abstract static class SampleInfo {
     public static SampleInfo create(
         String namespace,
+        String appName,
         String serviceTypeName,
         String serviceVarName,
         String methodName,
@@ -280,6 +281,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         PageStreamingInfo pageStreamingInfo) {
       return new AutoValue_CSharpDiscoveryContext_SampleInfo(
           namespace,
+          appName,
           serviceTypeName,
           serviceVarName,
           methodName,
@@ -296,6 +298,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     }
 
     public abstract String namespace();
+
+    public abstract String appName();
 
     public abstract String serviceTypeName();
 
@@ -353,6 +357,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     String packageName =
         CSharpContextCommon.s_underscoresToPascalCase(apiary.getServiceCanonicalName());
     String namespace = packageName + "Sample";
+    String appName = getSampleApplicationName();
     String serviceTypeName = using(serviceNamespace + "." + packageName + "Service");
     String serviceVarName = CSharpContextCommon.s_underscoresToCamelCase(packageName) + "Service";
     String methodName =
@@ -439,6 +444,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     }
     return SampleInfo.create(
         namespace,
+        appName,
         serviceTypeName,
         serviceVarName,
         methodName,
