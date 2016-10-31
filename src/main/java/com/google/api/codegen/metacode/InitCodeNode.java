@@ -198,10 +198,10 @@ public class InitCodeNode {
       throw new IllegalArgumentException("Inconsistent init values");
     }
     if (oldConfig.hasFormattingConfigInitialValues()) {
-      collectionValues.putAll(oldConfig.getCollectionValues());
+      collectionValues.putAll(oldConfig.getResourceNameBindingValues());
     }
     if (newConfig.hasFormattingConfigInitialValues()) {
-      collectionValues.putAll(newConfig.getCollectionValues());
+      collectionValues.putAll(newConfig.getResourceNameBindingValues());
     }
     return oldConfig.withInitialCollectionValues(collectionValues);
   }

@@ -38,7 +38,7 @@ public abstract class FlatteningConfig {
   public static FlatteningConfig createFlattening(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       FlatteningGroupProto flatteningGroup,
       Method method) {
@@ -50,7 +50,7 @@ public abstract class FlatteningConfig {
           FieldConfig.createFlattenedFieldConfig(
               diagCollector,
               messageConfigs,
-              resourceCollectionConfigs,
+              resourceNameConfigs,
               methodConfigProto,
               method,
               flatteningGroup,

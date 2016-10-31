@@ -15,10 +15,10 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -77,8 +77,8 @@ public abstract class MethodTransformerContext {
     return getApiConfig().getInterfaceConfig(getInterface());
   }
 
-  public CollectionConfig getSimpleCollectionConfig(String entityName) {
-    return getApiConfig().getCollectionConfig(entityName);
+  public SingleResourceNameConfig getSimpleResourceNameConfig(String entityName) {
+    return getApiConfig().getSingleResourceNameConfig(entityName);
   }
 
   public MethodTransformerContext cloneWithEmptyTypeTable() {

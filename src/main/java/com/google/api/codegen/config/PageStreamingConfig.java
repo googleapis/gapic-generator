@@ -48,7 +48,7 @@ public abstract class PageStreamingConfig {
   public static PageStreamingConfig createPageStreaming(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       Method method) {
     PageStreamingConfigProto pageStreaming = methodConfigProto.getPageStreaming();
@@ -110,11 +110,11 @@ public abstract class PageStreamingConfig {
       if (methodConfigProto.getResourceNameTreatment() == ResourceNameTreatment.STATIC_TYPES
           && messageConfigs != null
           && messageConfigs.fieldHasResourceName(resourcesField)) {
-        ResourceCollectionConfig resourceCollectionConfig =
-            resourceCollectionConfigs.get(messageConfigs.getFieldResourceName(resourcesField));
+        ResourceNameConfig resourceNameConfig =
+            resourceNameConfigs.get(messageConfigs.getFieldResourceName(resourcesField));
         resourcesFieldConfig =
             FieldConfig.createFieldConfig(
-                resourcesField, ResourceNameTreatment.STATIC_TYPES, resourceCollectionConfig);
+                resourcesField, ResourceNameTreatment.STATIC_TYPES, resourceNameConfig);
       } else {
         resourcesFieldConfig = FieldConfig.createDefaultFieldConfig(resourcesField);
       }

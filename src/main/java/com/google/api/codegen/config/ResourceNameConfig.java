@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-public interface ResourceCollectionConfig {
+public interface ResourceNameConfig {
 
   /** Returns the name used as a basis for generating methods. */
   String getEntityName();

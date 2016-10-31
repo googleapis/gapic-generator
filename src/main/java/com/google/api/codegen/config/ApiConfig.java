@@ -61,7 +61,7 @@ public abstract class ApiConfig {
   /** Returns the lines from the configured license file. */
   public abstract ImmutableList<String> getLicenseLines();
 
-  public abstract ImmutableMap<String, ResourceCollectionConfig> getResourceCollectionConfigs();
+  public abstract ImmutableMap<String, ResourceNameConfig> getResourceNameConfigs();
 
   /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
@@ -74,15 +74,15 @@ public abstract class ApiConfig {
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             model.getDiagCollector(), configProto);
 
-    ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs =
-        createResourceCollectionConfigs(model.getDiagCollector(), configProto);
+    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
+        createResourceNameConfigs(model.getDiagCollector(), configProto);
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             model.getDiagCollector(),
             configProto,
             messageConfigs,
-            resourceCollectionConfigs,
+            resourceNameConfigs,
             model.getSymbolTable());
 
     LanguageSettingsProto settings =
@@ -115,7 +115,7 @@ public abstract class ApiConfig {
           messageConfigs,
           copyrightLines,
           licenseLines,
-          resourceCollectionConfigs);
+          resourceNameConfigs);
     }
   }
 
@@ -139,14 +139,14 @@ public abstract class ApiConfig {
         messageConfigs,
         ImmutableList.<String>of(),
         ImmutableList.<String>of(),
-        ImmutableMap.<String, ResourceCollectionConfig>of());
+        ImmutableMap.<String, ResourceNameConfig>of());
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
       ConfigProto configProto,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap =
         ImmutableMap.<String, InterfaceConfig>builder();
@@ -167,7 +167,7 @@ public abstract class ApiConfig {
               interfaceConfigProto,
               iface,
               messageConfigs,
-              resourceCollectionConfigs);
+              resourceNameConfigs);
       if (interfaceConfig == null) {
         continue;
       }
@@ -218,72 +218,78 @@ public abstract class ApiConfig {
     return ImmutableList.copyOf(CharStreams.readLines(fileReader));
   }
 
-  private static ImmutableMap<String, ResourceCollectionConfig> createResourceCollectionConfigs(
+  private static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
       DiagCollector diagCollector, ConfigProto configProto) {
-    ImmutableMap<String, CollectionConfig> collectionConfigs =
-        createCollectionConfigs(diagCollector, configProto);
-    ImmutableMap<String, CollectionOneofConfig> collectionOneofConfigs =
-        createCollectionOneofConfigs(
-            diagCollector, configProto.getCollectionOneofsList(), collectionConfigs);
+    ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
+        createSingleResourceNameConfigs(diagCollector, configProto);
+    ImmutableMap<String, ResourceNameOneofConfig> collectionOneofConfigs =
+        createResourceNameOneofConfigs(
+            diagCollector, configProto.getCollectionOneofsList(), singleResourceNameConfigs);
 
-    ImmutableMap.Builder<String, ResourceCollectionConfig> resourceCollectionMap =
-        ImmutableMap.builder();
-    resourceCollectionMap.putAll(collectionConfigs);
+    ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap = ImmutableMap.builder();
+    resourceCollectionMap.putAll(singleResourceNameConfigs);
     resourceCollectionMap.putAll(collectionOneofConfigs);
     return resourceCollectionMap.build();
   }
 
-  private static ImmutableMap<String, CollectionConfig> createCollectionConfigs(
+  private static ImmutableMap<String, SingleResourceNameConfig> createSingleResourceNameConfigs(
       DiagCollector diagCollector, ConfigProto configProto) {
-    LinkedHashMap<String, CollectionConfig> collectionConfigsMap = new LinkedHashMap<>();
+    LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap =
+        new LinkedHashMap<>();
     for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
-      createCollectionConfig(diagCollector, collectionConfigProto, collectionConfigsMap);
+      createSingleResourceNameConfig(
+          diagCollector, collectionConfigProto, singleResourceNameConfigsMap);
     }
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       for (CollectionConfigProto collectionConfigProto :
           interfaceConfigProto.getCollectionsList()) {
-        createCollectionConfig(diagCollector, collectionConfigProto, collectionConfigsMap);
+        createSingleResourceNameConfig(
+            diagCollector, collectionConfigProto, singleResourceNameConfigsMap);
       }
     }
 
     if (diagCollector.getErrorCount() > 0) {
       return null;
     } else {
-      return ImmutableMap.copyOf(collectionConfigsMap);
+      return ImmutableMap.copyOf(singleResourceNameConfigsMap);
     }
   }
 
-  private static void createCollectionConfig(
+  private static void createSingleResourceNameConfig(
       DiagCollector diagCollector,
       CollectionConfigProto collectionConfigProto,
-      LinkedHashMap<String, CollectionConfig> collectionConfigsMap) {
-    CollectionConfig collectionConfig =
-        CollectionConfig.createCollection(diagCollector, collectionConfigProto);
-    if (collectionConfig == null) {
+      LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap) {
+    SingleResourceNameConfig singleResourceNameConfig =
+        SingleResourceNameConfig.createSingleResourceName(diagCollector, collectionConfigProto);
+    if (singleResourceNameConfig == null) {
       return;
     }
-    if (collectionConfigsMap.containsKey(collectionConfig.getEntityName())) {
-      CollectionConfig otherConfig = collectionConfigsMap.get(collectionConfig.getEntityName());
-      if (!collectionConfig.getNamePattern().equals(otherConfig.getNamePattern())) {
+    if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityName())) {
+      SingleResourceNameConfig otherConfig =
+          singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityName());
+      if (!singleResourceNameConfig.getNamePattern().equals(otherConfig.getNamePattern())) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
                 "Inconsistent collection configs across interfaces. Entity name: "
-                    + collectionConfig.getEntityName()));
+                    + singleResourceNameConfig.getEntityName()));
       }
     } else {
-      collectionConfigsMap.put(collectionConfig.getEntityName(), collectionConfig);
+      singleResourceNameConfigsMap.put(
+          singleResourceNameConfig.getEntityName(), singleResourceNameConfig);
     }
   }
 
-  private static ImmutableMap<String, CollectionOneofConfig> createCollectionOneofConfigs(
+  private static ImmutableMap<String, ResourceNameOneofConfig> createResourceNameOneofConfigs(
       DiagCollector diagCollector,
       Iterable<CollectionOneofProto> oneofConfigProtos,
-      ImmutableMap<String, CollectionConfig> collectionConfigs) {
-    ImmutableMap.Builder<String, CollectionOneofConfig> oneofConfigBuilder = ImmutableMap.builder();
+      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs) {
+    ImmutableMap.Builder<String, ResourceNameOneofConfig> oneofConfigBuilder =
+        ImmutableMap.builder();
     for (CollectionOneofProto oneofProto : oneofConfigProtos) {
-      CollectionOneofConfig oneofConfig =
-          CollectionOneofConfig.createCollectionOneof(diagCollector, oneofProto, collectionConfigs);
+      ResourceNameOneofConfig oneofConfig =
+          ResourceNameOneofConfig.createResourceNameOneof(
+              diagCollector, oneofProto, singleResourceNameConfigs);
       if (oneofConfig == null) {
         continue;
       }
@@ -297,14 +303,14 @@ public abstract class ApiConfig {
     return getInterfaceConfigMap().get(iface.getFullName());
   }
 
-  public Iterable<CollectionConfig> getCollectionConfigs() {
-    return Iterables.filter(getResourceCollectionConfigs().values(), CollectionConfig.class);
+  public Iterable<SingleResourceNameConfig> getSingleResourceNameConfigs() {
+    return Iterables.filter(getResourceNameConfigs().values(), SingleResourceNameConfig.class);
   }
 
-  public CollectionConfig getCollectionConfig(String entityName) {
-    ResourceCollectionConfig collectionConfig = getResourceCollectionConfigs().get(entityName);
-    if (collectionConfig != null && collectionConfig instanceof CollectionConfig) {
-      return (CollectionConfig) collectionConfig;
+  public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
+    ResourceNameConfig resourceNameConfig = getResourceNameConfigs().get(entityName);
+    if (resourceNameConfig != null && resourceNameConfig instanceof SingleResourceNameConfig) {
+      return (SingleResourceNameConfig) resourceNameConfig;
     }
     return null;
   }

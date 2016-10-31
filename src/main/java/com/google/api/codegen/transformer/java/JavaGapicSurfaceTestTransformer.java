@@ -24,7 +24,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.ResourceCollectionConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -362,8 +362,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
       Name resourceName =
-          Name.upperCamel(
-              namer.getResourceTypeName(resourcesFieldConfig.getResourceCollectionConfig()));
+          Name.upperCamel(namer.getResourceTypeName(resourcesFieldConfig.getResourceNameConfig()));
       resourceTypeName =
           methodContext
               .getNamer()
@@ -445,8 +444,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       MethodTransformerContext context) {
     ApiConfig apiConfig = context.getApiConfig();
     ResourceNameMessageConfigs messageConfig = apiConfig.getResourceNameMessageConfigs();
-    ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs =
-        apiConfig.getResourceCollectionConfigs();
+    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
+        apiConfig.getResourceNameConfigs();
     ResourceNameTreatment treatment = context.getMethodConfig().getDefaultResourceNameTreatment();
 
     if (messageConfig == null || treatment == ResourceNameTreatment.NONE) {
@@ -455,11 +454,11 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ImmutableMap.Builder<String, FieldConfig> builder = ImmutableMap.builder();
     for (Field field : context.getMethod().getOutputMessage().getFields()) {
       if (messageConfig.fieldHasResourceName(field)) {
-        ResourceCollectionConfig resourceCollectionConfig =
-            resourceCollectionConfigs.get(messageConfig.getFieldResourceName(field));
+        ResourceNameConfig resourceNameConfig =
+            resourceNameConfigs.get(messageConfig.getFieldResourceName(field));
         builder.put(
             field.getFullName(),
-            FieldConfig.createFieldConfig(field, treatment, resourceCollectionConfig));
+            FieldConfig.createFieldConfig(field, treatment, resourceNameConfig));
       }
     }
     return builder.build();

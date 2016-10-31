@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.CollectionConfig;
-import com.google.api.codegen.config.CollectionOneofConfig;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -111,12 +111,12 @@ public class InitCodeTransformer {
     ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
-      CollectionConfig collectionConfig =
-          context.getSimpleCollectionConfig(fieldNamePattern.getValue());
+      SingleResourceNameConfig resourceNameConfig =
+          context.getSimpleResourceNameConfig(fieldNamePattern.getValue());
       String apiWrapperClassName =
           context.getNamer().getApiWrapperClassName(context.getInterface());
       InitValueConfig initValueConfig =
-          InitValueConfig.create(apiWrapperClassName, collectionConfig);
+          InitValueConfig.create(apiWrapperClassName, resourceNameConfig);
       mapBuilder.put(fieldNamePattern.getKey(), initValueConfig);
     }
     return mapBuilder.build();
@@ -299,26 +299,26 @@ public class InitCodeTransformer {
       // For a repeated type, we want to use a SimpleInitValueView
 
       ResourceNameType resourceNameType = fieldConfig.getResourceNameType();
-      CollectionConfig collectionConfig;
+      SingleResourceNameConfig resourceNameConfig;
       switch (resourceNameType) {
         case ANY:
           throw new UnsupportedOperationException("entity name *");
         case INVALID:
           throw new UnsupportedOperationException("entity name invalid");
         case ONEOF:
-          CollectionOneofConfig oneofConfig =
-              (CollectionOneofConfig) fieldConfig.getResourceCollectionConfig();
-          collectionConfig = oneofConfig.getCollectionConfigs().get(0);
+          ResourceNameOneofConfig oneofConfig =
+              (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
+          resourceNameConfig = oneofConfig.getSingleResourceNameConfigs().get(0);
           ResourceNameInitValueView initView =
-              createResourceNameInitValueView(context, item, collectionConfig);
+              createResourceNameInitValueView(context, item, resourceNameConfig);
           return ResourceNameOneofInitValueView.newBuilder()
-              .resourceOneofTypeName(
-                  namer.getResourceTypeName(fieldConfig.getResourceCollectionConfig()))
+              .resourceOneofTypeName(namer.getResourceTypeName(fieldConfig.getResourceNameConfig()))
               .specificResourceNameView(initView)
               .build();
         case SINGLE:
-          collectionConfig = (CollectionConfig) item.getFieldConfig().getResourceCollectionConfig();
-          return createResourceNameInitValueView(context, item, collectionConfig);
+          resourceNameConfig =
+              (SingleResourceNameConfig) item.getFieldConfig().getResourceNameConfig();
+          return createResourceNameInitValueView(context, item, resourceNameConfig);
         case NONE:
         default:
           throw new UnsupportedOperationException("unexpected entity name type");
@@ -328,10 +328,11 @@ public class InitCodeTransformer {
 
       initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
       initValue.formatFunctionName(
-          context.getNamer().getFormatFunctionName(initValueConfig.getCollectionConfig()));
+          context.getNamer().getFormatFunctionName(initValueConfig.getSingleResourceNameConfig()));
 
       List<String> varList =
-          Lists.newArrayList(initValueConfig.getCollectionConfig().getNameTemplate().vars());
+          Lists.newArrayList(
+              initValueConfig.getSingleResourceNameConfig().getNameTemplate().vars());
       initValue.formatArgs(getFormatFunctionArgs(varList, initValueConfig));
 
       return initValue.build();
@@ -353,9 +354,11 @@ public class InitCodeTransformer {
   }
 
   private ResourceNameInitValueView createResourceNameInitValueView(
-      MethodTransformerContext context, InitCodeNode item, CollectionConfig collectionConfig) {
-    String resourceName = context.getNamer().getResourceTypeName(collectionConfig);
-    List<String> varList = Lists.newArrayList(collectionConfig.getNameTemplate().vars());
+      MethodTransformerContext context,
+      InitCodeNode item,
+      SingleResourceNameConfig resourceNameConfig) {
+    String resourceName = context.getNamer().getResourceTypeName(resourceNameConfig);
+    List<String> varList = Lists.newArrayList(resourceNameConfig.getNameTemplate().vars());
 
     return ResourceNameInitValueView.newBuilder()
         .resourceTypeName(resourceName)
@@ -369,8 +372,8 @@ public class InitCodeTransformer {
     for (String entityName : varList) {
       String entityValue = "\"[" + Name.from(entityName).toUpperUnderscore() + "]\"";
       if (initValueConfig.hasFormattingConfigInitialValues()
-          && initValueConfig.getCollectionValues().containsKey(entityName)) {
-        entityValue = initValueConfig.getCollectionValues().get(entityName);
+          && initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
+        entityValue = initValueConfig.getResourceNameBindingValues().get(entityName);
       }
       formatFunctionArgs.add(entityValue);
     }

@@ -291,8 +291,8 @@
 @end
 
 @private pathTemplateSection(service)
-  @if context.getApiConfig.getCollectionConfigs()
-    @join collectionConfig : context.getApiConfig.getCollectionConfigs()
+  @if context.getApiConfig.getSingleResourceNameConfigs()
+    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
       {@pathTemplateName(collectionConfig)} = Google::Gax::PathTemplate.new(
         "{@collectionConfig.getNamePattern}"
@@ -301,11 +301,11 @@
       private_constant :{@pathTemplateName(collectionConfig)}
     @end
 
-    @join collectionConfig : context.getApiConfig.getCollectionConfigs()
+    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
       {@createResourceFunction(collectionConfig)}
     @end
-    @join collectionConfig : context.getApiConfig.getCollectionConfigs()
+    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
         {@createMatchFunctions(collectionConfig)}
     @end

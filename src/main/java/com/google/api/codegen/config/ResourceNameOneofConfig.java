@@ -26,29 +26,29 @@ import javax.annotation.Nullable;
 
 /** CollectionOneofConfig represents the configuration for a oneof set of resource names. */
 @AutoValue
-public abstract class CollectionOneofConfig implements ResourceCollectionConfig {
+public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
 
   @Override
   public abstract String getEntityName();
 
-  public abstract List<CollectionConfig> getCollectionConfigs();
+  public abstract List<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
   @Nullable
-  public static CollectionOneofConfig createCollectionOneof(
+  public static ResourceNameOneofConfig createResourceNameOneof(
       DiagCollector diagCollector,
       CollectionOneofProto collectionOneofProto,
-      ImmutableMap<String, CollectionConfig> collectionConfigs) {
+      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs) {
     String oneofName = collectionOneofProto.getOneofName();
-    if (collectionConfigs.containsKey(oneofName)) {
+    if (singleResourceNameConfigs.containsKey(oneofName)) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "oneof_name \"" + oneofName + "\" already exists in collection configs"));
       return null;
     }
-    List<CollectionConfig> configList = new ArrayList<>();
+    List<SingleResourceNameConfig> configList = new ArrayList<>();
     for (String entityName : collectionOneofProto.getCollectionNamesList()) {
-      if (!collectionConfigs.containsKey(entityName)) {
+      if (!singleResourceNameConfigs.containsKey(entityName)) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
@@ -59,10 +59,10 @@ public abstract class CollectionOneofConfig implements ResourceCollectionConfig 
                     + "\" not found in collection configs"));
         return null;
       }
-      configList.add(collectionConfigs.get(entityName));
+      configList.add(singleResourceNameConfigs.get(entityName));
     }
 
-    return new AutoValue_CollectionOneofConfig(oneofName, configList);
+    return new AutoValue_ResourceNameOneofConfig(oneofName, configList);
   }
 
   @Override

@@ -80,7 +80,7 @@ public abstract class InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
         createRetryCodesDefinition(diagCollector, interfaceConfigProto);
@@ -97,7 +97,7 @@ public abstract class InterfaceConfig {
               interfaceConfigProto,
               iface,
               messageConfigs,
-              resourceCollectionConfigs,
+              resourceNameConfigs,
               retryCodesDefinition.keySet(),
               retrySettingsDefinition.keySet());
       methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
@@ -207,7 +207,7 @@ public abstract class InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, MethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
@@ -229,7 +229,7 @@ public abstract class InterfaceConfig {
               methodConfigProto,
               method,
               messageConfigs,
-              resourceCollectionConfigs,
+              resourceNameConfigs,
               retryCodesConfigNames,
               retryParamsConfigNames);
       if (methodConfig == null) {
