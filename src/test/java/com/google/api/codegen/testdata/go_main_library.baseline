@@ -1,11 +1,11 @@
 ============== file: cloud.google.com/go/library/apiv1/library_client.go ==============
-// Copyright 2016 Google Inc. All Rights Reserved.
+// Copyright 2016, Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,6 +42,7 @@ var (
     libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}")
     libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}/books/{book_id}")
     libraryArchivedBookPathTemplate = gax.MustCompilePathTemplate("archives/{archive_path=**}/books/{book_id}")
+    libraryReturnPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}/returns/{return}")
 )
 
 // CallOptions contains the retry settings for each method of Client.
@@ -214,6 +215,19 @@ func LibraryArchivedBookPath(archivePath, bookId string) string {
     path, err := libraryArchivedBookPathTemplate.Render(map[string]string{
         "archive_path": archivePath,
         "book_id": bookId,
+    })
+    if err != nil {
+        panic(err)
+    }
+    return path
+}
+
+// LibraryReturnPath returns the path for the return resource.
+func LibraryReturnPath(shelf, book, return_ string) string {
+    path, err := libraryReturnPathTemplate.Render(map[string]string{
+        "shelf": shelf,
+        "book": book,
+        "return": return_,
     })
     if err != nil {
         panic(err)

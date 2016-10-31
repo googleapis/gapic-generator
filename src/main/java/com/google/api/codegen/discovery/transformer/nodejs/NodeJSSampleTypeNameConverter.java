@@ -57,7 +57,7 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getServiceTypeName(String apiTypeName) {
-    return new TypeName(apiTypeName);
+    return new TypeName(apiTypeName.toLowerCase());
   }
 
   @Override

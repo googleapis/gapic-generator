@@ -33,6 +33,7 @@ import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -63,27 +64,20 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final ApiMethodTransformer apiMethodTransformer;
-  private final ServiceTransformer serviceTransformer;
-  private final PathTemplateTransformer pathTemplateTransformer;
-  private final ApiCallableTransformer apiCallableTransformer;
-  private final FileHeaderTransformer fileHeaderTransformer;
-  private final PageStreamingTransformer pageStreamingTransformer;
-  private final BundlingTransformer bundlingTransformer;
-  private final RetryDefinitionsTransformer retryDefinitionsTransformer;
-  private final CSharpCommonTransformer csharpCommonTransformer;
+  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final ServiceTransformer serviceTransformer = new ServiceTransformer();
+  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+  private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new StandardImportTypeTransformer());
+  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
+  private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final RetryDefinitionsTransformer retryDefinitionsTransformer =
+      new RetryDefinitionsTransformer();
+  private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
 
   public CSharpGapicClientTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
-    this.serviceTransformer = new ServiceTransformer();
-    this.pathTemplateTransformer = new PathTemplateTransformer();
-    this.apiCallableTransformer = new ApiCallableTransformer();
-    this.apiMethodTransformer = new ApiMethodTransformer();
-    this.pageStreamingTransformer = new PageStreamingTransformer();
-    this.bundlingTransformer = new BundlingTransformer();
-    this.fileHeaderTransformer = new FileHeaderTransformer();
-    this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
-    this.csharpCommonTransformer = new CSharpCommonTransformer();
   }
 
   @Override

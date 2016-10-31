@@ -15,10 +15,8 @@
 package com.google.api.codegen.discovery.config.go;
 
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
-import com.google.common.base.Strings;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -85,11 +83,7 @@ public class GoTypeNameGenerator extends TypeNameGenerator {
   }
 
   @Override
-  public String getFieldPatternExample(String pattern) {
-    String def = DefaultString.getNonTrivialPlaceholder(pattern);
-    if (Strings.isNullOrEmpty(def)) {
-      return "";
-    }
-    return String.format("\"%s\"", def);
+  public String getStringFormatExample(String format) {
+    return "";
   }
 }

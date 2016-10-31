@@ -116,13 +116,7 @@ public class DiscoveryImporter {
     if (disco.get("documentationLink") != null) {
       docs.setDocumentationRootUrl(disco.get("documentationLink").asText());
     }
-    String title = disco.get("title").asText();
-    builder.setTitle(title);
-    if (disco.get("canonicalName") != null) {
-      docs.setSummary(disco.get("canonicalName").asText());
-    } else {
-      docs.setSummary(title);
-    }
+    builder.setTitle(disco.get("title").asText());
     // substitute Documentation overview field for lack of API revision field
     if (disco.get("revision") != null) {
       docs.setOverview(disco.get("revision").asText());
@@ -156,7 +150,7 @@ public class DiscoveryImporter {
     if (disco.get("canonicalName") != null) {
       importer.config.setServiceCanonicalName(disco.get("canonicalName").asText());
     } else {
-      importer.config.setServiceCanonicalName(apiName);
+      importer.config.setServiceCanonicalName(lowerCamelToUpperCamel(apiName));
     }
     importer.config.setServiceVersion(apiVersion);
 

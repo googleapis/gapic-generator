@@ -15,12 +15,10 @@
 package com.google.api.codegen.discovery.config.ruby;
 
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.ruby.RubyApiaryNameMap;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
@@ -51,12 +49,12 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
             Resources.getResource(RubyApiaryNameMap.class, "apiary_names.yaml"),
             StandardCharsets.UTF_8);
     // Unchecked cast here.
-    Map<String, String> nameData = (Map<String, String>) (new Yaml().load(data));
-    ImmutableMap.Builder<String, String> builder = ImmutableMap.<String, String>builder();
-    for (Map.Entry<String, String> entry : nameData.entrySet()) {
-      builder.put(entry.getKey(), entry.getValue());
-    }
-    return builder.build();
+    return ImmutableMap.copyOf((Map<String, String>) (new Yaml().load(data)));
+  }
+
+  @Override
+  public String stringDelimiter() {
+    return "'";
   }
 
   @Override
@@ -88,7 +86,7 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
 
   @Override
   public String getApiTypeName(String apiName) {
-    return Name.lowerCamel(apiName, "service").toUpperCamel();
+    return Name.upperCamel(apiName.replace(" ", ""), "Service").toUpperCamel();
   }
 
   @Override
@@ -112,14 +110,5 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
       throw new IllegalArgumentException("\"" + key + "\"" + " not in method name map");
     }
     return Name.from(NAME_MAP.get(key)).toUpperCamel();
-  }
-
-  @Override
-  public String getFieldPatternExample(String pattern) {
-    String def = DefaultString.getNonTrivialPlaceholder(pattern);
-    if (Strings.isNullOrEmpty(def)) {
-      return "";
-    }
-    return String.format("'%s'", def);
   }
 }

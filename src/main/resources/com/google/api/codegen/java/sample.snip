@@ -1,3 +1,5 @@
+@extends "java/common.snip"
+
 @snippet generate(class)
   /*
    * BEFORE RUNNING:
@@ -22,9 +24,7 @@
      *    https://developers.google.com/resources/api-libraries/download/{@class.apiName}/{@class.apiVersion}/java
    @end
    */
-  @join import : class.imports
-    import {@import};
-  @end
+  {@importList(class.imports)}
 
   public class {@class.className} {
     {@mainFunc(class)}
@@ -66,7 +66,7 @@
 
     @end
     {@class.serviceTypeName} {@class.serviceVarName} = {@class.createServiceFuncName}();
-    {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)});
+    {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@argList(class.fieldVarNames)});
 
     @if {@class.hasMediaDownload()}
       // TODO: Download media content if desired. See:
@@ -142,7 +142,7 @@
     @end
 
     return new {@class.serviceTypeName}.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("{@class.appName}")
         .build();
   }
 @end
@@ -153,7 +153,7 @@
   @end
 @end
 
-@private paramList(fieldVarNames)
+@private argList(fieldVarNames)
   @join fieldVarName : fieldVarNames on ", "
     {@fieldVarName}
   @end

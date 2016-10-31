@@ -2,38 +2,74 @@
 
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
     var api = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName}();
-    {@initCode(apiMethod.initCode)}
     {@coreSampleCode}
 @end
 
 @snippet sampleCode(apiMethod)
-    @if initializeRequestObject(apiMethod)
-        {@initializeRequestObject(apiMethod)}
-
-    @end
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
         {@optionalArrayMethodSampleCode(apiMethod)}
     @case "PagedOptionalArrayMethod"
+        {@initCode(apiMethod)}
         {@pagedOptionalArrayMethodSampleCode(apiMethod)}
     @default
         $unhandledCase: {@apiMethod.type.toString}$
     @end
 @end
 
+@private methodCallReturningStream(apiMethod, elementName)
+    {@methodCallSampleCode(apiMethod)}.on('data', function({@elementName}) {
+        // doThingsWith({@elementName})
+    });
+@end
+
+@private clientStreamingSampleCode(apiMethod)
+    var stream = api.{@apiMethod.name}(function(err, response) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        // doThingsWith(response)
+    });
+    {@initCode(apiMethod)}
+    {@sampleWriteStreamingRequest(apiMethod)}
+@end
+
+@private bidiStreamingSampleCode(apiMethod)
+    var stream = api.{@apiMethod.name}().on('data', function(response) {
+        // doThingsWith(response);
+    });
+    {@initCode(apiMethod)}
+    {@sampleWriteStreamingRequest(apiMethod)}
+@end
+
+@private sampleWriteStreamingRequest(apiMethod)
+    // Write request objects.
+    stream.write({@sampleMethodCallArgList(apiMethod)});
+@end
+
 @private optionalArrayMethodSampleCode(apiMethod)
-    @if apiMethod.hasReturnValue
-        {@methodCallSampleCodeWithReturnValue(apiMethod)};
-    @else
-        {@methodCallSampleCodeWithoutReturnValue(apiMethod)};
+    @switch apiMethod.grpcStreamingType.toString
+    @case "ServerStreaming"
+        {@initCode(apiMethod)}
+        {@methodCallReturningStream(apiMethod, "response")}
+    @case "ClientStreaming"
+        {@clientStreamingSampleCode(apiMethod)}
+    @case "BidiStreaming"
+        {@bidiStreamingSampleCode(apiMethod)}
+    @case "NonStreaming"
+        {@initCode(apiMethod)}
+        @if apiMethod.hasReturnValue
+            {@methodCallSampleCodeWithReturnValue(apiMethod)};
+        @else
+            {@methodCallSampleCodeWithoutReturnValue(apiMethod)};
+        @end
     @end
 @end
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod)
     // Iterate over all elements.
-    {@methodCallSampleCode(apiMethod)}.on('data', function(element) {
-        // doThingsWith(element)
-    });
+    {@methodCallReturningStream(apiMethod, "element")}
 
     // Or obtain the paged response through the callback.
     {@methodCallSampleCodeForPagedResponse(apiMethod)}
@@ -106,8 +142,15 @@
     @end
 @end
 
-@private initCode(initCodeSpec)
-    @join line : initCodeSpec.lines
+@private initCode(apiMethod)
+    {@initCodeLines(apiMethod.initCode)}
+    @if initializeRequestObject(apiMethod)
+        {@initializeRequestObject(apiMethod)}
+    @end
+@end
+
+@private initCodeLines(initCode)
+    @join line : initCode.lines
         @switch line.lineType.toString
         @case "StructureInitLine"
             {@initLineStructure(line)}

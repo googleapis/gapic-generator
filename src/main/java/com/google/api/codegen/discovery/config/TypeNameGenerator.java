@@ -15,6 +15,8 @@
 package com.google.api.codegen.discovery.config;
 
 import com.google.api.codegen.DiscoveryImporter;
+import com.google.api.codegen.discovery.DefaultString;
+import com.google.common.base.Strings;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,6 +42,16 @@ public class TypeNameGenerator {
    */
   public void setApiNameAndVersion(String apiName, String apiVersion) {}
 
+  /** Returns language-specific delimiter used for string literals in samples. */
+  public String stringDelimiter() {
+    return "\"";
+  }
+
+  /** Returns string enclosed as language-specific string literal. */
+  public String stringLiteral(String s) {
+    return stringDelimiter() + s + stringDelimiter();
+  }
+
   /**
    * Returns the version of the API.
    *
@@ -60,8 +72,8 @@ public class TypeNameGenerator {
    *
    * <p>Not fully qualified.
    */
-  public String getApiTypeName(String apiName) {
-    return apiName;
+  public String getApiTypeName(String canonicalName) {
+    return canonicalName.replace(" ", "");
   }
 
   /**
@@ -111,6 +123,23 @@ public class TypeNameGenerator {
     return "";
   }
 
+  // Helper for language-specific overrides.
+  public String getStringFormatExample(String format, String dateRef, String dateTimeRef) {
+    if (Strings.isNullOrEmpty(format)) {
+      return "";
+    }
+    switch (format) {
+      case "byte":
+        return "Base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
+      case "date":
+        return stringLiteral("YYYY-MM-DD") + ": see " + dateRef;
+      case "date-time":
+        return stringLiteral("YYYY-MM-DDThh:mm:ss.fff") + ": see " + dateTimeRef;
+      default:
+        return "";
+    }
+  }
+
   /**
    * Returns an example demonstrating the given field pattern or an empty string if pattern is
    * invalid.
@@ -119,6 +148,10 @@ public class TypeNameGenerator {
    * language-specific quotes.
    */
   public String getFieldPatternExample(String pattern) {
-    return "";
+    String def = DefaultString.getNonTrivialPlaceholder(pattern);
+    if (Strings.isNullOrEmpty(def)) {
+      return "";
+    }
+    return stringLiteral(def);
   }
 }
