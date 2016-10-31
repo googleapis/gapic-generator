@@ -36,7 +36,8 @@ public abstract class ResourceNameMessageConfigs {
     for (ResourceNameMessageConfigProto messageResourceTypesProto :
         configProto.getResourceNameGenerationList()) {
       ResourceNameMessageConfig messageResourceTypeConfig =
-          ResourceNameMessageConfig.createInterfaceConfig(diagCollector, messageResourceTypesProto);
+          ResourceNameMessageConfig.createResourceNameMessageConfig(
+              diagCollector, messageResourceTypesProto);
       messageResourceTypeConfigMap.put(
           messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
     }

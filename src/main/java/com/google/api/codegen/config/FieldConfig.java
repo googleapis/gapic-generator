@@ -38,15 +38,31 @@ public abstract class FieldConfig {
   public abstract ResourceNameTreatment getResourceNameTreatment();
 
   @Nullable
-  public abstract String getEntityName();
+  public abstract ResourceCollectionConfig getResourceCollectionConfig();
+
+  public String getEntityName() {
+    if (getResourceCollectionConfig() == null) {
+      return null;
+    }
+    return getResourceCollectionConfig().getEntityName();
+  }
+
+  public ResourceNameType getResourceNameType() {
+    if (getResourceCollectionConfig() == null) {
+      return null;
+    }
+    return getResourceCollectionConfig().getResourceNameType();
+  }
 
   public static FieldConfig createFieldConfig(
-      Field field, ResourceNameTreatment resourceNameTreatment, String entityName) {
-    if (resourceNameTreatment != ResourceNameTreatment.NONE && entityName == null) {
+      Field field,
+      ResourceNameTreatment resourceNameTreatment,
+      ResourceCollectionConfig resourceCollectionConfig) {
+    if (resourceNameTreatment != ResourceNameTreatment.NONE && resourceCollectionConfig == null) {
       throw new IllegalArgumentException(
           "resourceName may only be null if resourceNameTreatment is NONE");
     }
-    return new AutoValue_FieldConfig(field, resourceNameTreatment, entityName);
+    return new AutoValue_FieldConfig(field, resourceNameTreatment, resourceCollectionConfig);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
@@ -58,6 +74,7 @@ public abstract class FieldConfig {
   public static FieldConfig createFlattenedFieldConfig(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs,
       MethodConfigProto methodConfigProto,
       Method method,
       FlatteningGroupProto flatteningGroup,
@@ -94,13 +111,22 @@ public abstract class FieldConfig {
       }
     }
 
-    if (treatment == ResourceNameTreatment.NONE) {
-      entityName = null;
+    ResourceCollectionConfig resourceCollectionConfig = null;
+    if (entityName != null) {
+      resourceCollectionConfig = resourceCollectionConfigs.get(entityName);
+      if (resourceCollectionConfig == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "No resourceCollectionConfig with entity_name \"%s\"",
+                entityName));
+        return null;
+      }
     }
 
-    validate(messageConfigs, parameterField, treatment, entityName);
+    validate(messageConfigs, parameterField, treatment, resourceCollectionConfig);
 
-    return createFieldConfig(parameterField, treatment, entityName);
+    return createFieldConfig(parameterField, treatment, resourceCollectionConfig);
   }
 
   public static String getEntityName(
@@ -148,7 +174,7 @@ public abstract class FieldConfig {
       ResourceNameMessageConfigs messageConfigs,
       Field field,
       ResourceNameTreatment treatment,
-      String entityName) {
+      ResourceCollectionConfig resourceCollectionConfig) {
     switch (treatment) {
       case NONE:
         break;
@@ -161,7 +187,7 @@ public abstract class FieldConfig {
         }
         break;
       case VALIDATE:
-        if (entityName == null) {
+        if (resourceCollectionConfig == null) {
           throw new IllegalArgumentException(
               "Field must have a resource type or field name pattern specified to support "
                   + "VALIDATE resource name treatment. Field: "

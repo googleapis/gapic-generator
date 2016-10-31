@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 /** CollectionConfig represents the collection configuration for a method. */
 @AutoValue
-public abstract class CollectionConfig {
+public abstract class CollectionConfig implements ResourceCollectionConfig {
 
   /**
    * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will be
@@ -53,5 +53,11 @@ public abstract class CollectionConfig {
   public abstract PathTemplate getNameTemplate();
 
   /** Returns the name used as a basis for generating methods. */
+  @Override
   public abstract String getEntityName();
+
+  @Override
+  public ResourceNameType getResourceNameType() {
+    return ResourceNameType.SINGLE;
+  }
 }

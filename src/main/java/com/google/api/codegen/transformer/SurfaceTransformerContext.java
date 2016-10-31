@@ -27,7 +27,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,12 +116,8 @@ public abstract class SurfaceTransformerContext {
     }
   }
 
-  public Collection<CollectionConfig> getCollectionConfigs() {
-    return getApiConfig().getCollectionConfigs().values();
-  }
-
-  public CollectionConfig getCollectionConfig(String entityName) {
-    return getApiConfig().getCollectionConfig(entityName);
+  public Iterable<CollectionConfig> getSimpleCollectionConfigs() {
+    return getApiConfig().getCollectionConfigs();
   }
 
   public MethodTransformerContext asFlattenedMethodContext(

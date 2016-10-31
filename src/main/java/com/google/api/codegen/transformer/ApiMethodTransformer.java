@@ -269,8 +269,7 @@ public class ApiMethodTransformer {
 
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     Field resourceField = resourceFieldConfig.getField();
-    ResourceNameType resourceNameType =
-        context.getApiConfig().getTypeOfEntityName(resourceFieldConfig.getEntityName());
+    ResourceNameType resourceNameType = resourceFieldConfig.getResourceNameType();
 
     String resourceTypeName;
 
@@ -469,7 +468,7 @@ public class ApiMethodTransformer {
           context.getMethodConfig().getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
-        CollectionConfig collectionConfig = context.getCollectionConfig(entityName);
+        CollectionConfig collectionConfig = context.getSimpleCollectionConfig(entityName);
         if (collectionConfig == null) {
           throw new IllegalStateException("No collection config with id '" + entityName + "'");
         }
@@ -657,8 +656,7 @@ public class ApiMethodTransformer {
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-      ResourceNameType resourceNameType =
-          context.getApiConfig().getTypeOfEntityName(fieldConfig.getEntityName());
+      ResourceNameType resourceNameType = fieldConfig.getResourceNameType();
       if (namer.shouldImportRequestObjectParamType(field)) {
         typeName =
             namer.getAndSaveResourceTypeName(

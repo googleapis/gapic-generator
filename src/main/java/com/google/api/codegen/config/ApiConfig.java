@@ -32,6 +32,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.io.CharStreams;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,9 +61,7 @@ public abstract class ApiConfig {
   /** Returns the lines from the configured license file. */
   public abstract ImmutableList<String> getLicenseLines();
 
-  public abstract ImmutableMap<String, CollectionConfig> getCollectionConfigs();
-
-  public abstract ImmutableMap<String, CollectionOneofConfig> getCollectionOneofConfigs();
+  public abstract ImmutableMap<String, ResourceCollectionConfig> getResourceCollectionConfigs();
 
   /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
@@ -75,19 +74,19 @@ public abstract class ApiConfig {
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             model.getDiagCollector(), configProto);
 
+    ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs =
+        createResourceCollectionConfigs(model.getDiagCollector(), configProto);
+
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
-            model.getDiagCollector(), configProto, messageConfigs, model.getSymbolTable());
+            model.getDiagCollector(),
+            configProto,
+            messageConfigs,
+            resourceCollectionConfigs,
+            model.getSymbolTable());
 
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
-
-    ImmutableMap<String, CollectionConfig> collectionConfigs =
-        createCollectionConfigs(model.getDiagCollector(), configProto.getInterfacesList());
-
-    ImmutableMap<String, CollectionOneofConfig> collectionOneofConfigs =
-        createCollectionOneofConfigs(
-            model.getDiagCollector(), configProto.getCollectionOneofsList(), collectionConfigs);
 
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
@@ -116,8 +115,7 @@ public abstract class ApiConfig {
           messageConfigs,
           copyrightLines,
           licenseLines,
-          collectionConfigs,
-          collectionOneofConfigs);
+          resourceCollectionConfigs);
     }
   }
 
@@ -141,14 +139,14 @@ public abstract class ApiConfig {
         messageConfigs,
         ImmutableList.<String>of(),
         ImmutableList.<String>of(),
-        ImmutableMap.<String, CollectionConfig>of(),
-        ImmutableMap.<String, CollectionOneofConfig>of());
+        ImmutableMap.<String, ResourceCollectionConfig>of());
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
       ConfigProto configProto,
       ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceCollectionConfig> resourceCollectionConfigs,
       SymbolTable symbolTable) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap =
         ImmutableMap.<String, InterfaceConfig>builder();
@@ -168,7 +166,8 @@ public abstract class ApiConfig {
               configProto.getLanguage(),
               interfaceConfigProto,
               iface,
-              messageConfigs);
+              messageConfigs,
+              resourceCollectionConfigs);
       if (interfaceConfig == null) {
         continue;
       }
@@ -219,29 +218,31 @@ public abstract class ApiConfig {
     return ImmutableList.copyOf(CharStreams.readLines(fileReader));
   }
 
+  private static ImmutableMap<String, ResourceCollectionConfig> createResourceCollectionConfigs(
+      DiagCollector diagCollector, ConfigProto configProto) {
+    ImmutableMap<String, CollectionConfig> collectionConfigs =
+        createCollectionConfigs(diagCollector, configProto);
+    ImmutableMap<String, CollectionOneofConfig> collectionOneofConfigs =
+        createCollectionOneofConfigs(
+            diagCollector, configProto.getCollectionOneofsList(), collectionConfigs);
+
+    ImmutableMap.Builder<String, ResourceCollectionConfig> resourceCollectionMap =
+        ImmutableMap.builder();
+    resourceCollectionMap.putAll(collectionConfigs);
+    resourceCollectionMap.putAll(collectionOneofConfigs);
+    return resourceCollectionMap.build();
+  }
+
   private static ImmutableMap<String, CollectionConfig> createCollectionConfigs(
-      DiagCollector diagCollector, Iterable<InterfaceConfigProto> interfaceConfigProtos) {
+      DiagCollector diagCollector, ConfigProto configProto) {
     LinkedHashMap<String, CollectionConfig> collectionConfigsMap = new LinkedHashMap<>();
-    for (InterfaceConfigProto interfaceConfigProto : interfaceConfigProtos) {
+    for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
+      createCollectionConfig(diagCollector, collectionConfigProto, collectionConfigsMap);
+    }
+    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       for (CollectionConfigProto collectionConfigProto :
           interfaceConfigProto.getCollectionsList()) {
-        CollectionConfig collectionConfig =
-            CollectionConfig.createCollection(diagCollector, collectionConfigProto);
-        if (collectionConfig == null) {
-          continue;
-        }
-        if (collectionConfigsMap.containsKey(collectionConfig.getEntityName())) {
-          CollectionConfig otherConfig = collectionConfigsMap.get(collectionConfig.getEntityName());
-          if (!collectionConfig.getNamePattern().equals(otherConfig.getNamePattern())) {
-            diagCollector.addDiag(
-                Diag.error(
-                    SimpleLocation.TOPLEVEL,
-                    "Inconsistent collection configs across interfaces. Entity name: "
-                        + collectionConfig.getEntityName()));
-          }
-        } else {
-          collectionConfigsMap.put(collectionConfig.getEntityName(), collectionConfig);
-        }
+        createCollectionConfig(diagCollector, collectionConfigProto, collectionConfigsMap);
       }
     }
 
@@ -249,6 +250,29 @@ public abstract class ApiConfig {
       return null;
     } else {
       return ImmutableMap.copyOf(collectionConfigsMap);
+    }
+  }
+
+  private static void createCollectionConfig(
+      DiagCollector diagCollector,
+      CollectionConfigProto collectionConfigProto,
+      LinkedHashMap<String, CollectionConfig> collectionConfigsMap) {
+    CollectionConfig collectionConfig =
+        CollectionConfig.createCollection(diagCollector, collectionConfigProto);
+    if (collectionConfig == null) {
+      return;
+    }
+    if (collectionConfigsMap.containsKey(collectionConfig.getEntityName())) {
+      CollectionConfig otherConfig = collectionConfigsMap.get(collectionConfig.getEntityName());
+      if (!collectionConfig.getNamePattern().equals(otherConfig.getNamePattern())) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Inconsistent collection configs across interfaces. Entity name: "
+                    + collectionConfig.getEntityName()));
+      }
+    } else {
+      collectionConfigsMap.put(collectionConfig.getEntityName(), collectionConfig);
     }
   }
 
@@ -263,7 +287,7 @@ public abstract class ApiConfig {
       if (oneofConfig == null) {
         continue;
       }
-      oneofConfigBuilder.put(oneofConfig.getOneofName(), oneofConfig);
+      oneofConfigBuilder.put(oneofConfig.getEntityName(), oneofConfig);
     }
     return oneofConfigBuilder.build();
   }
@@ -273,20 +297,15 @@ public abstract class ApiConfig {
     return getInterfaceConfigMap().get(iface.getFullName());
   }
 
-  public CollectionConfig getCollectionConfig(String entityName) {
-    return getCollectionConfigs().get(entityName);
+  public Iterable<CollectionConfig> getCollectionConfigs() {
+    return Iterables.filter(getResourceCollectionConfigs().values(), CollectionConfig.class);
   }
 
-  public ResourceNameType getTypeOfEntityName(String entityName) {
-    if (getCollectionConfigs().containsKey(entityName)) {
-      return ResourceNameType.SINGLE;
+  public CollectionConfig getCollectionConfig(String entityName) {
+    ResourceCollectionConfig collectionConfig = getResourceCollectionConfigs().get(entityName);
+    if (collectionConfig != null && collectionConfig instanceof CollectionConfig) {
+      return (CollectionConfig) collectionConfig;
     }
-    if (getCollectionOneofConfigs().containsKey(entityName)) {
-      return ResourceNameType.ONEOF;
-    }
-    if (entityName == "*") {
-      return ResourceNameType.ANY;
-    }
-    return ResourceNameType.NONE;
+    return null;
   }
 }

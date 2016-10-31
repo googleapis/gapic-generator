@@ -26,9 +26,10 @@ import javax.annotation.Nullable;
 
 /** CollectionOneofConfig represents the configuration for a oneof set of resource names. */
 @AutoValue
-public abstract class CollectionOneofConfig {
+public abstract class CollectionOneofConfig implements ResourceCollectionConfig {
 
-  public abstract String getOneofName();
+  @Override
+  public abstract String getEntityName();
 
   public abstract List<CollectionConfig> getCollectionConfigs();
 
@@ -62,5 +63,10 @@ public abstract class CollectionOneofConfig {
     }
 
     return new AutoValue_CollectionOneofConfig(oneofName, configList);
+  }
+
+  @Override
+  public ResourceNameType getResourceNameType() {
+    return ResourceNameType.ONEOF;
   }
 }

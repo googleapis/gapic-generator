@@ -257,8 +257,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
 
-      ResourceNameType resourceNameType =
-          context.getApiConfig().getTypeOfEntityName(resourceFieldConfig.getEntityName());
+      ResourceNameType resourceNameType = resourceFieldConfig.getResourceNameType();
       String resourceTypeName =
           context
               .getNamer()

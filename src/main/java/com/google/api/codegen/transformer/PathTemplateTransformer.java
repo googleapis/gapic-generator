@@ -32,7 +32,7 @@ public class PathTemplateTransformer {
   public List<PathTemplateView> generatePathTemplates(SurfaceTransformerContext context) {
     List<PathTemplateView> pathTemplates = new ArrayList<>();
 
-    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
+    for (CollectionConfig collectionConfig : context.getSimpleCollectionConfigs()) {
       PathTemplateView.Builder pathTemplate = PathTemplateView.newBuilder();
       pathTemplate.name(
           context.getNamer().getPathTemplateName(context.getInterface(), collectionConfig));
@@ -49,7 +49,7 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Interface service = context.getInterface();
-    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
+    for (CollectionConfig collectionConfig : context.getSimpleCollectionConfigs()) {
       FormatResourceFunctionView.Builder function = FormatResourceFunctionView.newBuilder();
       function.entityName(collectionConfig.getEntityName());
       function.name(namer.getFormatFunctionName(collectionConfig));
@@ -80,7 +80,7 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Interface service = context.getInterface();
-    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
+    for (CollectionConfig collectionConfig : context.getSimpleCollectionConfigs()) {
       for (String var : collectionConfig.getNameTemplate().vars()) {
         ParseResourceFunctionView.Builder function = ParseResourceFunctionView.newBuilder();
         function.entityName(namer.getEntityName(collectionConfig));
@@ -103,7 +103,7 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Interface service = context.getInterface();
-    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
+    for (CollectionConfig collectionConfig : context.getSimpleCollectionConfigs()) {
       PathTemplateGetterFunctionView.Builder function = PathTemplateGetterFunctionView.newBuilder();
       function.name(namer.getPathTemplateNameGetter(service, collectionConfig));
       function.resourceName(namer.getPathTemplateResourcePhraseName(collectionConfig));

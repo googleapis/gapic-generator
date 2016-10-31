@@ -16,14 +16,12 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.CollectionConfig;
-import com.google.api.codegen.config.CollectionOneofConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
-import java.util.Collection;
 import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
@@ -79,32 +77,8 @@ public abstract class MethodTransformerContext {
     return getApiConfig().getInterfaceConfig(getInterface());
   }
 
-  public Collection<CollectionConfig> getCollectionConfigs() {
-    return getApiConfig().getCollectionConfigs().values();
-  }
-
-  public CollectionConfig getCollectionConfig(String entityName) {
+  public CollectionConfig getSimpleCollectionConfig(String entityName) {
     return getApiConfig().getCollectionConfig(entityName);
-  }
-
-  public boolean entityNameIsCollectionConfig(String entityName) {
-    return getApiConfig().getCollectionConfig(entityName) != null;
-  }
-
-  public boolean entityNameIsCollectionOneofConfig(String entityName) {
-    return getApiConfig().getCollectionOneofConfigs().get(entityName) != null;
-  }
-
-  public CollectionConfig getFirstCollectionConfig(String entityName) {
-    CollectionConfig collectionConfig = getApiConfig().getCollectionConfig(entityName);
-    if (collectionConfig == null) {
-      CollectionOneofConfig oneofConfig =
-          getApiConfig().getCollectionOneofConfigs().get(entityName);
-      if (oneofConfig != null && oneofConfig.getCollectionConfigs().size() > 0) {
-        collectionConfig = oneofConfig.getCollectionConfigs().get(0);
-      }
-    }
-    return collectionConfig;
   }
 
   public MethodTransformerContext cloneWithEmptyTypeTable() {
