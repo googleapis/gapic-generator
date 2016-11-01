@@ -61,6 +61,7 @@ public abstract class ApiConfig {
   /** Returns the lines from the configured license file. */
   public abstract ImmutableList<String> getLicenseLines();
 
+  /** Returns a map from entity names to resource name configs. */
   public abstract ImmutableMap<String, ResourceNameConfig> getResourceNameConfigs();
 
   /**
@@ -87,7 +88,6 @@ public abstract class ApiConfig {
 
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
-
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }

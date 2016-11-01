@@ -19,5 +19,6 @@ public interface ResourceNameConfig {
   /** Returns the name used as a basis for generating methods. */
   String getEntityName();
 
+  /** Returns the resource name type. */
   ResourceNameType getResourceNameType();
 }
