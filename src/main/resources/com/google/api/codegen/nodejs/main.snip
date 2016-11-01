@@ -381,23 +381,22 @@
 
 @private flattenedMethod(service, method)
   @let serviceName = context.getApiWrapperName(service), \
-       documentation = comments(context.methodComments(service, method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
        apiMethodView = context.getApiMethodView(service, method)
-    @if documentation
-      /**
-       {@documentation}
+    /**
+     @if context.defaultComments(method)
+       {@comments(context.defaultComments(method))}
        *
-       * @@example
-       *
-       @join sampleLine : util.getDocLines({@decorateSampleCodeSegment(apiMethodView)})
-         {@""}* {@sampleLine}
-       @end
-       */
-    @end
-
+     @end
+     {@comments(util.getDocLines(context.paramComments(service, method)))}
+     {@comments(util.getDocLines(context.returnTypeComment(method, methodConfig)))}
+     *
+     * @@example
+     *
+     {@comments(util.getDocLines(decorateSampleCodeSegment(apiMethodView)))}
+     */
     {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options{@callbackParams(apiMethodView)}) {
       @switch apiMethodView.grpcStreamingType.toString
       @case "ClientStreaming"
@@ -411,6 +410,31 @@
       }
       return this._{@methodName(method)}({@requestObject(apiMethodView)}options{@callbackParams(apiMethodView)});
     };
+    @switch apiMethodView.type.toString
+    @case "PagedOptionalArrayMethod"
+
+      /**
+       * Stream version of {@@link {@methodName(method)}}.
+       *
+       * This is the same method as {@methodName(method)} but returns a NodeJS Stream object.
+       * The callback for 'data' event will be called everytime a new item arrives.
+       *
+       {@comments(util.getDocLines(context.paramComments(service, method)))}
+       * @@return {Stream}
+       *   An object stream which emits {@context.typeDocument(methodConfig.getPageStreaming.getResourcesField.getType)} on 'data' event.
+       *
+       * @@example
+       *
+       {@comments(util.getDocLines(decorateSampleCode(apiMethodView, sampleCodePageStreaming(apiMethodView))))}
+       */
+      {@serviceName}.prototype.{@methodName(method)}Stream = function({@methodRequestParameters(apiMethodView)}options) {
+        if (options === undefined) {
+          options = {};
+        }
+        return PAGE_DESCRIPTORS.{@methodName(method)}.createStream(this._{@methodName(method)}, {@requestObject(apiMethodView)}options);
+      };
+    @default
+    @end
   @end
 @end
 

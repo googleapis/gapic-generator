@@ -17,9 +17,12 @@
     @end
 @end
 
-@private methodCallReturningStream(apiMethod, elementName)
-    {@methodCallSampleCode(apiMethod)}.on('data', function({@elementName}) {
-        // doThingsWith({@elementName})
+@snippet sampleCodePageStreaming(apiMethod)
+    {@initCode(apiMethod)}
+    {@methodCallSampleCode(apiMethod)}.on('data', function(element) {
+        // doThingsWith(element)
+    }).on('error', funciton(err) {
+        console.error(err);
     });
 @end
 
@@ -52,7 +55,9 @@
     @switch apiMethod.grpcStreamingType.toString
     @case "ServerStreaming"
         {@initCode(apiMethod)}
-        {@methodCallReturningStream(apiMethod, "response")}
+        {@methodCallSampleCode(apiMethod)}.on('data', function(response) {
+            // doThingsWith(response)
+        });
     @case "ClientStreaming"
         {@clientStreamingSampleCode(apiMethod)}
     @case "BidiStreaming"
@@ -69,9 +74,15 @@
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod)
     // Iterate over all elements.
-    {@methodCallReturningStream(apiMethod, "element")}
+    {@methodCallSampleCodePrefix(apiMethod)}.then(function(resources) {
+        for (var i = 0; i < resources.length; ++i) {
+            // doThingsWith(resources[i])
+        }
+    }).catch(function(err) {
+        console.error(err);
+    });
 
-    // Or obtain the paged response through the callback.
+    // Or obtain the paged response.
     {@methodCallSampleCodeForPagedResponse(apiMethod)}
 @end
 
@@ -80,66 +91,49 @@
         {@sampleMethodCallArgList(apiMethod)})
 @end
 
-@private methodCallSampleCodeForPagedResponse(apiMethod)
+@private sampleMethodCallArgListAndComma(apiMethod)
     @if sampleMethodCallArgList(apiMethod)
-        function callback(err, response, nextPageToken) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            // doThingsWith(response)
-            if (nextPageToken) {
-                // fetch the next page.
-                api.{@apiMethod.name}(\
-                    {@sampleMethodCallArgList(apiMethod)}, {pageToken: nextPageToken}, callback);
-            }
-        }
-        api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod)}, {flattenPages: false}, callback);
+        {@sampleMethodCallArgList(apiMethod)}, {@""}
     @else
-        function callback(err, response, nextPageToken) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            // doThingsWith(response)
-            if (nextPageToken) {
-                // fetch the next page.
-                api.{@apiMethod.name}({pageToken: nextPageToken}, callback);
-            }
+    @end
+@end
+
+@private methodCallSampleCodeForPagedResponse(apiMethod)
+    function callback(err, response, nextPageToken) {
+        if (err) {
+            console.error(err);
+            return;
         }
-        api.{@apiMethod.name}({flattenPages: false}, callback);
+        // doThingsWith(response)
+        if (nextPageToken) {
+            // fetch the next page.
+            api.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}{autoPaginate: false, pageToken: nextPageToken}, callback);
+        }
+    }
+    api.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}{autoPaginate: false}, callback);
+@end
+
+@private methodCallSampleCodePrefix(apiMethod)
+    @if sampleMethodCallArgList(apiMethod)
+        api.{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod)})
+    @else
+        api.{@apiMethod.name}()
     @end
 @end
 
 @private methodCallSampleCodeWithReturnValue(apiMethod)
-    @if sampleMethodCallArgList(apiMethod)
-        api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod)}).then(function(response) {
-            // doThingsWith(response)
-        }).catch(function(err) {
-            console.error(err);
-        })
-    @else
-        api.{@apiMethod.name}().then(function(response) {
-            // doThingsWith(response)
-        }).catch(function(err) {
-            console.error(err);
-        })
-    @end
+    {@methodCallSampleCodePrefix(apiMethod)}.then(function(response) {
+        // doThingsWith(response)
+    }).catch(function(err) {
+        console.error(err);
+    })
 @end
 
 @private methodCallSampleCodeWithoutReturnValue(apiMethod)
-    @if sampleMethodCallArgList(apiMethod)
-        api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod)}).catch(function(err) {
-            console.error(err);
-        })
-    @else
-        api.{@apiMethod.name}().catch(function(err) {
-            console.error(err);
-        })
-    @end
+    {@methodCallSampleCodePrefix(apiMethod)}.catch(function(err) {
+        console.error(err);
+    })
 @end
 
 @private initCode(apiMethod)
