@@ -10,23 +10,7 @@
     public static void main(String args[]) {
       Logger.getLogger("").setLevel(Level.WARNING);
       try {
-        Options options = new Options();
-        options.addOption("h", "help", false, "show usage");
-        options.addOption(
-            Option.builder()
-                .longOpt("project_id")
-                .desc("Project id")
-                .hasArg()
-                .argName("PROJECT-ID")
-                .required(false)
-                .build());
-
-        CommandLine cl = (new DefaultParser()).parse(options, args);
-        if (cl.hasOption("help")) {
-          HelpFormatter formater = new HelpFormatter();
-          formater.printHelp("{@smokeTest.name}", options);
-        }
-        executeNoCatch(cl.getOptionValue("project_id"));
+        {@testBody(smokeTest)}
         System.out.println("OK");
       } catch (Exception e) {
         System.err.println("Failed with exception:");
@@ -34,13 +18,47 @@
         System.exit(1);
       }
     }
-
-    {@executeNoCatch(smokeTest)}
+    @if smokeTest.requireProjectID
+      {@executeWithProjectID(smokeTest)}
+    @else
+      {@executeWithNoProjectID(smokeTest)}
+    @end
   }
 @end
 
-@private executeNoCatch(smokeTest)
+@private testBody(smokeTest)
+  @if smokeTest.requireProjectID
+    Options options = new Options();
+    options.addOption("h", "help", false, "show usage");
+    options.addOption(
+        Option.builder()
+            .longOpt("project_id")
+            .desc("Project id")
+            .hasArg()
+            .argName("PROJECT-ID")
+            .required(true)
+            .build());
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    if (cl.hasOption("help")) {
+      HelpFormatter formater = new HelpFormatter();
+      formater.printHelp("{@smokeTest.name}", options);
+    }
+    executeNoCatch(cl.getOptionValue("project_id"));
+  @else
+    executeNoCatch();
+  @end
+@end
+
+@private executeWithProjectID(smokeTest)
   public static void executeNoCatch(String projectId) throws Exception {
+    try ({@smokeTest.apiClassName} api = {@smokeTest.apiClassName}.create()) {
+      {@methodCall(smokeTest.method)}
+    }
+  }
+@end
+
+@private executeWithNoProjectID(smokeTest)
+  public static void executeNoCatch() throws Exception {
     try ({@smokeTest.apiClassName} api = {@smokeTest.apiClassName}.create()) {
       {@methodCall(smokeTest.method)}
     }

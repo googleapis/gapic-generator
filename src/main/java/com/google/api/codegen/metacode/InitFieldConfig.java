@@ -23,9 +23,10 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class InitFieldConfig {
+  public static final String projectIdVariableName = "project_id";
+
   private static final String randomValueToken = "$RANDOM";
   private static final String projectIdToken = "$PROJECT_ID";
-  private static final String projectIdVariableName = "project_id";
 
   public abstract String fieldPath();
 

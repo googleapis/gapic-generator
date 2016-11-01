@@ -44,9 +44,8 @@ public class LibraryServiceSmokeTest {
               .desc("Project id")
               .hasArg()
               .argName("PROJECT-ID")
-              .required(false)
+              .required(true)
               .build());
-
       CommandLine cl = (new DefaultParser()).parse(options, args);
       if (cl.hasOption("help")) {
         HelpFormatter formater = new HelpFormatter();
@@ -60,7 +59,6 @@ public class LibraryServiceSmokeTest {
       System.exit(1);
     }
   }
-
   public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryServiceApi api = LibraryServiceApi.create()) {
       BookName name = BookName.create("testShelf-1963239498", projectId);

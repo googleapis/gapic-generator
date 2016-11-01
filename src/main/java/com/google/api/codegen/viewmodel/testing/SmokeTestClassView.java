@@ -33,6 +33,8 @@ public abstract class SmokeTestClassView implements ViewModel {
 
   public abstract TestMethodView method();
 
+  public abstract boolean requireProjectID();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -45,7 +47,7 @@ public abstract class SmokeTestClassView implements ViewModel {
   public abstract String outputPath();
 
   public static Builder newBuilder() {
-    return new AutoValue_SmokeTestClassView.Builder();
+    return new AutoValue_SmokeTestClassView.Builder().requireProjectID(false);
   }
 
   @AutoValue.Builder
@@ -64,6 +66,8 @@ public abstract class SmokeTestClassView implements ViewModel {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder method(TestMethodView val);
+
+    public abstract Builder requireProjectID(boolean val);
 
     public abstract SmokeTestClassView build();
   }

@@ -30,7 +30,9 @@ import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
+import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.metacode.InitValueConfig;
@@ -48,8 +50,12 @@ import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.util.testing.JavaValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FileHeaderView;
+import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
+import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
@@ -141,12 +147,15 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
+    TestMethodView testMethodView = createSmokeTestMethodView(methodContext);
+
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
     testClass.apiClassName(namer.getApiWrapperClassName(service));
     testClass.name(name);
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
-    testClass.method(createSmokeTestMethodView(methodContext));
+    testClass.method(testMethodView);
+    testClass.requireProjectID(requireProjectId(testMethodView.initCode(), context.getNamer()));
 
     // Imports must be done as the last step to catch all imports.
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
@@ -163,7 +172,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     if (context.getMethodConfig().isPageStreaming()) {
       methodType = ApiMethodType.PagedFlattenedMethod;
     }
-
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(context, createSmokeTestInitContext(context));
 
@@ -174,6 +182,22 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .initCode(initCodeView)
         .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
         .build();
+  }
+
+  private boolean requireProjectId(InitCodeView initCodeView, SurfaceNamer namer) {
+    for (FieldSettingView settingsView : initCodeView.fieldSettings()) {
+      InitCodeLineView line = settingsView.initCodeLine();
+      if (line.lineType() == InitCodeLineType.SimpleInitLine) {
+        SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
+        if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
+          ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
+          return initValue
+              .formatArgs()
+              .contains(namer.localVarName(Name.from(InitFieldConfig.projectIdVariableName)));
+        }
+      }
+    }
+    return false;
   }
 
   private InitCodeContext createSmokeTestInitContext(MethodTransformerContext context) {
