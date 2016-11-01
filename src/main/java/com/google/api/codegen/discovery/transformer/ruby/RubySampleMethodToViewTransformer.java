@@ -80,11 +80,13 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
+      String name = namer.localVarName(Name.lowerCamel(field.name()));
+      if (FIELD_RENAMES.containsKey(field.name())) {
+        name = FIELD_RENAMES.get(field.name());
+      }
       SampleFieldView sampleFieldView =
           SampleFieldView.newBuilder()
-              .name(
-                  FIELD_RENAMES.getOrDefault(
-                      field.name(), namer.localVarName(Name.lowerCamel(field.name()))))
+              .name(name)
               .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
               .example(field.example())
               .description(field.description())
