@@ -21,5 +21,5 @@ import java.util.Map;
 /** A DiscoveryProvider performs fragment generation using discovery-based input. */
 public interface DiscoveryProvider {
   /** Runs code generation and returns a map from relative file paths to generated Doc. */
-  Map<String, Doc> generate(Method method);
+  Map<String, Doc> generate(Method method)LOL;
 }
