@@ -83,7 +83,7 @@ public class PathTemplateTransformer {
     for (SingleResourceNameConfig resourceNameConfig : context.getSimpleResourceNameConfigs()) {
       for (String var : resourceNameConfig.getNameTemplate().vars()) {
         ParseResourceFunctionView.Builder function = ParseResourceFunctionView.newBuilder();
-        function.entityName(namer.getEntityName(resourceNameConfig));
+        function.entityName(resourceNameConfig.getEntityName());
         function.name(namer.getParseFunctionName(var, resourceNameConfig));
         function.pathTemplateName(namer.getPathTemplateName(service, resourceNameConfig));
         function.pathTemplateGetterName(
