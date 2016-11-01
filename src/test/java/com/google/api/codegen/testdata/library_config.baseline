@@ -19,10 +19,12 @@ interfaces:
   collections:
   - name_pattern: archives/{archive}/books/{book_path=**}
     entity_name: book_path
+  - name_pattern: archives/{archive}/books/{book}
+    entity_name: book
   - name_pattern: bookShelves/{book_shelf}
     entity_name: book_shelf
   - name_pattern: bookShelves/{book_shelf}/books/{book}
-    entity_name: book
+    entity_name: book_2
   retry_codes_def:
   - name: idempotent
     retry_codes:
@@ -152,7 +154,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: book
+      name: book_2
     timeout_millis: 60000
   - name: ListBooks
     flattening:
@@ -187,7 +189,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: book
+      name: book_2
     timeout_millis: 60000
   - name: UpdateBook
     flattening:
@@ -206,7 +208,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: book
+      name: book_2
     timeout_millis: 60000
   - name: MoveBook
     flattening:
@@ -221,7 +223,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      name: book
+      name: book_2
     timeout_millis: 60000
   - name: ListStrings
     flattening:
@@ -267,7 +269,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: book_path
+      name: book
     timeout_millis: 60000
   - name: GetBookFromAnywhere
     flattening:
@@ -297,7 +299,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      name: book
+      name: book_2
     timeout_millis: 60000
   - name: StreamShelves
     request_object_method: false
@@ -361,7 +363,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      resource: book
+      resource: book_2
     timeout_millis: 60000
   - name: GetBigBook
     flattening:
@@ -374,6 +376,6 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: book
+      name: book_2
     timeout_millis: 60000
 

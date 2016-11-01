@@ -303,7 +303,7 @@ public class InitCodeTransformer {
       switch (resourceNameType) {
         case ANY:
           throw new UnsupportedOperationException("entity name *");
-        case INVALID:
+        case UNFORMATTED:
           throw new UnsupportedOperationException("entity name invalid");
         case ONEOF:
           ResourceNameOneofConfig oneofConfig =

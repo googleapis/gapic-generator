@@ -110,7 +110,9 @@ service LibraryService {
 
   // Gets a book from an archive.
   rpc GetBookFromArchive(GetBookFromArchiveRequest) returns (BookFromArchive) {
-    option (google.api.http) = { get: "/v1/{name=archives/*/books/**}"};
+    // The http binding on this field does not include the "**" path in order to
+    // test the name conflict resolution in configgen.
+    option (google.api.http) = { get: "/v1/{name=archives/*/books/*}"};
   }
 
   // Gets a book from a shelf or archive.
