@@ -380,7 +380,10 @@
       {@documentation}
       @if method.getRequestStreaming()
         @#
-        @# EXPERIMENTAL: This method interface might change in the future.
+        @# @@note
+        @#   EXPERIMENTAL:
+        @#     Streaming requests are still undergoing review.
+        @#     This method interface might change in the future.
         @#
       @end
     @end
@@ -390,22 +393,16 @@
     @end
 
     @if method.getRequestStreaming()
-      def {@methodName} @\
-          reqs,
-          options: nil
-          @@{@methodName}.call(reqs, options)
+      def {@methodName} reqs, options: nil
+        @@{@methodName}.call(reqs, options)
       end
     @else
       @if or(requiredParams, optionalParams)
         def {@methodName} @\
             @if requiredParams
-              @if optionalParams
-                {@requiredParameterNames(requiredParams)},
-                {@optionalParameterValues(optionalParams)},
-              @else
-                {@requiredParameterNames(requiredParams)},
-              @end
-            @else
+              {@requiredParameterNames(requiredParams)},
+            @end
+            @if optionalParams
               {@optionalParameterValues(optionalParams)},
             @end
             options: nil

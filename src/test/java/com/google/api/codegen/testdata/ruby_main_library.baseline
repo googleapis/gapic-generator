@@ -995,7 +995,10 @@ module Library
       #
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       #
-      # EXPERIMENTAL: This method interface might change in the future.
+      # @note
+      #   EXPERIMENTAL:
+      #     Streaming requests are still undergoing review.
+      #     This method interface might change in the future.
       #
       # @example
       #   require "library/v1/library_service_api"
@@ -1010,10 +1013,8 @@ module Library
       #     # Process element.
       #   end
 
-      def discuss_book \
-          reqs,
-          options: nil
-          @discuss_book.call(reqs, options)
+      def discuss_book reqs, options: nil
+        @discuss_book.call(reqs, options)
       end
 
       # @param names [Array<String>]
