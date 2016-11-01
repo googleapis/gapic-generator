@@ -29,6 +29,7 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -65,7 +66,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(JavaTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
@@ -116,6 +117,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
+        .appName(namer.getSampleApplicationName(config.apiTypeName()))
         .className(namer.getSampleClassName(config.apiTypeName()))
         .imports(imports)
         .auth(createSampleAuthView(context))
