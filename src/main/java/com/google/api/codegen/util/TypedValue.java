@@ -15,18 +15,15 @@
 package com.google.api.codegen.util;
 
 import com.google.auto.value.AutoValue;
-
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Represents a value and its associated type.
- */
+/** Represents a value and its associated type. */
 @AutoValue
 public abstract class TypedValue {
 
   /**
-   * Create a TypedValue. The pattern "%s" in valuePattern is used by
-   * getValueAndSaveTypeNicknameIn to format the final value.
+   * Create a TypedValue. The pattern "%s" in valuePattern is used by getValueAndSaveTypeNicknameIn
+   * to format the final value.
    */
   public static TypedValue create(TypeName typeName, String valuePattern) {
     return new AutoValue_TypedValue(typeName, valuePattern);
@@ -37,8 +34,8 @@ public abstract class TypedValue {
   public abstract String getValuePattern();
 
   /**
-   * Renders the value given the value pattern, and adds any necessary nicknames
-   * to the given type table.
+   * Renders the value given the value pattern, and adds any necessary nicknames to the given type
+   * table.
    */
   public String getValueAndSaveTypeNicknameIn(TypeTable typeTable) {
     if (getValuePattern().contains("%s")) {

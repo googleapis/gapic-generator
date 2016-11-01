@@ -14,7 +14,7 @@ buildscript {
   }
   dependencies {
     classpath "com.google.protobuf:protobuf-gradle-plugin:0.7.3"
-    classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.2"
+    classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.4.1"
     classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
   }
 }
@@ -33,7 +33,7 @@ apply plugin: "signing"
 sourceCompatibility = 1.7
 
 group = "com.google.api"
-version = "0.0.3-SNAPSHOT"
+version = "0.0.5-SNAPSHOT"
 
 def protoVersion = "3.0.0-beta-3"
 
@@ -443,9 +443,6 @@ task verifyLicense << {
 
 test.dependsOn verifyLicense
 
-googleJavaFormat {
-  toolVersion '1.0'
-}
 tasks.googleJavaFormat {
   exclude '.apt_generated/**'
   exclude 'bin/**'

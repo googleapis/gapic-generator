@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView.Builder;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
-
 import io.grpc.Status.Code;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -41,7 +40,7 @@ public abstract class RetryCodesDefinitionView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder key(String val);
 
     public abstract Builder name(String val);

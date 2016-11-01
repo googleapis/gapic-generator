@@ -27,9 +27,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
 
-  /**
-   * A map from primitive types in proto to NodeJS counterparts.
-   */
+  /** A map from primitive types in proto to NodeJS counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "boolean")
@@ -49,9 +47,7 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_BYTES, "String")
           .build();
 
-  /**
-   * A map from primitive types in proto to zero value in NodeJS
-   */
+  /** A map from primitive types in proto to zero value in NodeJS */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "false")

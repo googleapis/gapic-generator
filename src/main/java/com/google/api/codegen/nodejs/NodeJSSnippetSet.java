@@ -16,17 +16,11 @@ package com.google.api.codegen.nodejs;
 
 import com.google.api.tools.framework.snippet.Doc;
 
-/**
- * Entry points for a NodeJS snippet set.
- */
+/** Entry points for a NodeJS snippet set. */
 interface NodeJSSnippetSet<Element> {
-  /**
-   * Generates the result filename for the generated document.
-   */
+  /** Generates the result filename for the generated document. */
   Doc generateFilename(Element element);
 
-  /**
-   * Generates the body of the class for the service interface.
-   */
+  /** Generates the body of the class for the service interface. */
   Doc generateBody(Element element);
 }

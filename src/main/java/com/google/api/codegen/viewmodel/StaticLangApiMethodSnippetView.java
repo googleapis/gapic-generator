@@ -34,7 +34,7 @@ public abstract class StaticLangApiMethodSnippetView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder method(StaticLangApiMethodView val);
 
     public abstract Builder snippetMethodName(String val);

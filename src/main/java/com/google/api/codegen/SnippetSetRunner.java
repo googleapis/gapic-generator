@@ -20,16 +20,12 @@ package com.google.api.codegen;
  */
 public final class SnippetSetRunner {
 
-  /**
-   * The path to the root of snippet resources.
-   */
+  /** The path to the root of snippet resources. */
   public static final String SNIPPET_RESOURCE_ROOT =
       SnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
   public interface Generator<Element> {
-    /**
-     * Runs the code generation.
-     */
+    /** Runs the code generation. */
     GeneratedResult generate(Element element, String snippetFileName, CodegenContext context);
   }
 }

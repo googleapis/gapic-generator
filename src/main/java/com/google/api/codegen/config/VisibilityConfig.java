@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.VisibilityProto;
 import com.google.common.collect.ImmutableMap;
 
 public enum VisibilityConfig {

@@ -20,7 +20,6 @@ import com.google.api.codegen.util.NameFormatter;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-
 import java.util.ArrayList;
 
 /**

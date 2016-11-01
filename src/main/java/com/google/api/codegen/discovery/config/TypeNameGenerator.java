@@ -16,75 +16,66 @@ package com.google.api.codegen.discovery.config;
 
 import java.util.List;
 
-/**
- * Generates language specific names for types and package paths.
- *
- */
+/** Generates language specific names for types and package paths. */
 public interface TypeNameGenerator {
 
   /**
    * Returns the version of the API.
    *
-   * Provided in case there is some common transformation on the API's version.
-   * For example: "alpha" to "v0.alpha"
+   * <p>Provided in case there is some common transformation on the API's version. For example:
+   * "alpha" to "v0.alpha"
    */
   public String getApiVersion(String apiVersion);
 
-  /**
-   * Returns the package prefix for the API.
-   */
+  /** Returns the package prefix for the API. */
   public String getPackagePrefix(String apiName, String apiVersion);
 
   /**
    * Returns the API type name.
    *
-   * Not fully qualified.
+   * <p>Not fully qualified.
    */
   public String getApiTypeName(String apiName);
 
   /**
    * Returns the request's type name.
    *
-   * Not fully qualified.
+   * <p>Not fully qualified.
    */
   public String getRequestTypeName(List<String> methodNameComponents);
 
   /**
    * Returns the responseTypeUrl or an empty string if the response is empty.
    *
-   * Provided in case there is some common transformation on the
-   * responseTypeUrl.
+   * <p>Provided in case there is some common transformation on the responseTypeUrl.
    */
   public String getResponseTypeUrl(String responseTypeUrl);
 
   /**
    * Returns the message's type name.
    *
-   * Not fully qualified.
+   * <p>Not fully qualified.
    */
   public String getMessageTypeName(String messageTypeName);
 
-  /**
-   * Returns a message's subpackage depending on whether or not it's a request
-   * type.
-   */
+  /** Returns a message's subpackage depending on whether or not it's a request type. */
   public String getSubpackage(boolean isRequest);
 
   /**
-   * Returns an example demonstrating the given string format or an empty
-   * string if format is unrecognized.
+   * Returns an example demonstrating the given string format or an empty string if format is
+   * unrecognized.
    *
-   * If not the empty string, the returned value will be enclosed within the
-   * correct language-specific quotes.
+   * <p>If not the empty string, the returned value will be enclosed within the correct
+   * language-specific quotes.
    */
   public String getStringFormatExample(String format);
 
   /**
-   * Returns an example demonstrating the given field pattern or an empty
-   * string if pattern is invalid.
+   * Returns an example demonstrating the given field pattern or an empty string if pattern is
+   * invalid.
    *
-   * If not the empty string, the returned value will be enclosed within the
-   * correct language-specific quotes.
+   * <p>If not the empty string, the returned value will be enclosed within the correct
+   * language-specific quotes.
    */
   public String getFieldPatternExample(String pattern);
 }

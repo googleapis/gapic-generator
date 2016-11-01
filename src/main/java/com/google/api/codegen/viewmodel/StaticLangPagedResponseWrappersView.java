@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.StaticLangApiView.Builder;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
@@ -23,11 +24,9 @@ public abstract class StaticLangPagedResponseWrappersView implements ViewModel {
   @Override
   public abstract String templateFileName();
 
-  public abstract String packageName();
+  public abstract FileHeaderView fileHeader();
 
   public abstract String name();
-
-  public abstract List<ImportTypeView> imports();
 
   public abstract List<StaticLangPagedResponseView> pagedResponseWrapperList();
 
@@ -44,14 +43,12 @@ public abstract class StaticLangPagedResponseWrappersView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
-    public abstract Builder packageName(String val);
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder name(String val);
-
-    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder pagedResponseWrapperList(List<StaticLangPagedResponseView> val);
 

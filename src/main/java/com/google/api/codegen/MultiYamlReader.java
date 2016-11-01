@@ -22,14 +22,12 @@ import com.google.api.tools.framework.yaml.YamlReader;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import com.google.protobuf.Message;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Nullable;
 
 public class MultiYamlReader {

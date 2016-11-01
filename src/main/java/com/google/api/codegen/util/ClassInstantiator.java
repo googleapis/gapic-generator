@@ -15,13 +15,10 @@
 package com.google.api.codegen.util;
 
 import com.google.common.base.Throwables;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * Utility class for constructing an instance of a class.
- */
+/** Utility class for constructing an instance of a class. */
 public final class ClassInstantiator {
 
   private ClassInstantiator() {}
@@ -49,9 +46,7 @@ public final class ClassInstantiator {
     if (!coerceType.isAssignableFrom(classType)) {
       errorReporter.error(
           "the %s class '%s' does not extend the expected class '%s'",
-          classDescription,
-          classType.getName(),
-          coerceType.getName());
+          classDescription, classType.getName(), coerceType.getName());
       return null;
     }
     Constructor<?> ctor;
@@ -62,8 +57,7 @@ public final class ClassInstantiator {
           new StringBuilder(
               String.format(
                   "the %s class '%s' does not have the expected constructor with parameters:",
-                  classDescription,
-                  classType.getName()));
+                  classDescription, classType.getName()));
       for (Class c : ctorParam) {
         error.append(" ");
         error.append(c.getName());

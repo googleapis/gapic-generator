@@ -18,34 +18,22 @@ import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 
-/**
- * Maps Type instances to TypeName instances.
- */
+/** Maps Type instances to TypeName instances. */
 // TODO(saicheems): Rename this, it's responsible for more than type names.
 public interface SampleTypeNameConverter {
 
-  /**
-   * Provides a TypeName for the service.
-   */
+  /** Provides a TypeName for the service. */
   TypeName getServiceTypeName(String apiTypeName);
 
-  /**
-   * Provides a TypeName from the given API type name and TypeInfo.
-   */
+  /** Provides a TypeName from the given API type name and TypeInfo. */
   TypeName getRequestTypeName(String apiTypeName, TypeInfo typeInfo);
 
-  /**
-   * Provides a TypeName for the given TypeInfo.
-   */
+  /** Provides a TypeName for the given TypeInfo. */
   TypeName getTypeName(TypeInfo typeInfo);
 
-  /**
-   * Provides the element TypeName for the given TypeInfo.
-   */
+  /** Provides the element TypeName for the given TypeInfo. */
   TypeName getTypeNameForElementType(TypeInfo typeInfo);
 
-  /**
-   * Provides a TypedValue containing the zero value of the given TypeInfo.
-   */
+  /** Provides a TypedValue containing the zero value of the given TypeInfo. */
   TypedValue getZeroValue(TypeInfo typeInfo);
 }

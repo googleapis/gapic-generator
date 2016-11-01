@@ -20,14 +20,13 @@ import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Status;
 import java.util.List;
@@ -35,16 +34,18 @@ import java.util.List;
 public class GoSurfaceNamer extends SurfaceNamer {
 
   private final GoModelTypeNameConverter converter;
-  private final String packagePath;
 
-  public GoSurfaceNamer(String packagePath) {
-    this(new GoModelTypeNameConverter(), packagePath);
+  public GoSurfaceNamer(String packageName) {
+    this(new GoModelTypeNameConverter(), packageName);
   }
 
-  private GoSurfaceNamer(GoModelTypeNameConverter converter, String packagePath) {
-    super(new GoNameFormatter(), new ModelTypeFormatterImpl(converter), new GoTypeTable());
+  private GoSurfaceNamer(GoModelTypeNameConverter converter, String packageName) {
+    super(
+        new GoNameFormatter(),
+        new ModelTypeFormatterImpl(converter),
+        new GoTypeTable(),
+        packageName);
     this.converter = converter;
-    this.packagePath = packagePath;
   }
 
   @Override
@@ -115,6 +116,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getCallableName(Method method) {
+    return publicMethodName(Name.upperCamel(method.getSimpleName()));
+  }
+
+  @Override
   public String getApiWrapperClassName(Interface service) {
     return className(clientNamePrefix(service).join("client"));
   }
@@ -139,12 +145,12 @@ public class GoSurfaceNamer extends SurfaceNamer {
   public String getLocalPackageName() {
     // packagePath is in form "cloud.google.com/go/library/apiv1";
     // we want "library".
-    String[] parts = packagePath.split("/");
+    String[] parts = getPackageName().split("/");
     return parts[parts.length - 2];
   }
 
   @Override
-  public String getExamplePackageName() {
+  public String getLocalExamplePackageName() {
     return getLocalPackageName() + "_test";
   }
 
@@ -178,12 +184,12 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getServiceFileName(Interface service, String packageName) {
+  public String getServiceFileName(Interface service) {
     return classFileNameBase(getReducedServiceName(service).join("client"));
   }
 
   @Override
-  public String getExampleFileName(Interface service, String packageName) {
+  public String getExampleFileName(Interface service) {
     return classFileNameBase(
         getReducedServiceName(service).join("client").join("example").join("test"));
   }

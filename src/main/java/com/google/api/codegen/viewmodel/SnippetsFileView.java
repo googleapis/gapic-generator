@@ -29,12 +29,10 @@ public abstract class SnippetsFileView implements ViewModel {
   @Override
   public abstract String templateFileName();
 
+  public abstract FileHeaderView fileHeader();
+
   @Override
   public abstract String outputPath();
-
-  public abstract List<ImportTypeView> imports();
-
-  public abstract String packageName();
 
   public abstract String name();
 
@@ -45,14 +43,12 @@ public abstract class SnippetsFileView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
+    public abstract Builder fileHeader(FileHeaderView val);
+
     public abstract Builder outputPath(String val);
-
-    public abstract Builder imports(List<ImportTypeView> val);
-
-    public abstract Builder packageName(String val);
 
     public abstract Builder name(String val);
 

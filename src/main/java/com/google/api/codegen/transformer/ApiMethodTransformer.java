@@ -14,14 +14,14 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.ResourceNameUtil;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
@@ -39,8 +39,10 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView.Builder;
 import com.google.api.codegen.viewmodel.UnpagedListCallableMethodDetailView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,16 +57,12 @@ public class ApiMethodTransformer {
     this.initCodeTransformer = new InitCodeTransformer();
   }
 
-  public StaticLangApiMethodView generatePagedFlattenedMethod(
-      MethodTransformerContext context, ImmutableList<Field> fields) {
-    return generatePagedFlattenedMethod(
-        context, fields, Collections.<ParamWithSimpleDoc>emptyList());
+  public StaticLangApiMethodView generatePagedFlattenedMethod(MethodTransformerContext context) {
+    return generatePagedFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(
-      MethodTransformerContext context,
-      ImmutableList<Field> fields,
-      List<ParamWithSimpleDoc> additionalParams) {
+      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -74,22 +72,18 @@ public class ApiMethodTransformer {
     methodViewBuilder.exampleName(
         namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
-    setFlattenedMethodFields(
-        context, fields, additionalParams, Synchronicity.Sync, methodViewBuilder);
+    setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
 
     return methodViewBuilder.type(ApiMethodType.PagedFlattenedMethod).build();
   }
 
   public StaticLangApiMethodView generatePagedFlattenedAsyncMethod(
-      MethodTransformerContext context, ImmutableList<Field> fields) {
-    return generatePagedFlattenedAsyncMethod(
-        context, fields, Collections.<ParamWithSimpleDoc>emptyList());
+      MethodTransformerContext context) {
+    return generatePagedFlattenedAsyncMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
   public StaticLangApiMethodView generatePagedFlattenedAsyncMethod(
-      MethodTransformerContext context,
-      ImmutableList<Field> fields,
-      List<ParamWithSimpleDoc> additionalParams) {
+      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -97,8 +91,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.name(namer.getAsyncApiMethodName(context.getMethod()));
     methodViewBuilder.exampleName(namer.getAsyncApiMethodExampleName(context.getMethod()));
     setListMethodFields(context, Synchronicity.Async, methodViewBuilder);
-    setFlattenedMethodFields(
-        context, fields, additionalParams, Synchronicity.Async, methodViewBuilder);
+    setFlattenedMethodFields(context, additionalParams, Synchronicity.Async, methodViewBuilder);
 
     return methodViewBuilder.type(ApiMethodType.PagedFlattenedAsyncMethod).build();
   }
@@ -150,7 +143,7 @@ public class ApiMethodTransformer {
     String getResourceListCallName =
         namer.getFieldGetFunctionName(
             context.getFeatureConfig(),
-            context.getMethodConfig().getPageStreaming().getResourcesField());
+            context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
 
     UnpagedListCallableMethodDetailView unpagedListCallableDetails =
         UnpagedListCallableMethodDetailView.newBuilder()
@@ -165,14 +158,12 @@ public class ApiMethodTransformer {
   }
 
   public StaticLangApiMethodView generateFlattenedAsyncMethod(
-      MethodTransformerContext context, ImmutableList<Field> fields, ApiMethodType type) {
-    return generateFlattenedAsyncMethod(
-        context, fields, Collections.<ParamWithSimpleDoc>emptyList(), type);
+      MethodTransformerContext context, ApiMethodType type) {
+    return generateFlattenedAsyncMethod(context, Collections.<ParamWithSimpleDoc>emptyList(), type);
   }
 
   public StaticLangApiMethodView generateFlattenedAsyncMethod(
       MethodTransformerContext context,
-      ImmutableList<Field> fields,
       List<ParamWithSimpleDoc> additionalParams,
       ApiMethodType type) {
     SurfaceNamer namer = context.getNamer();
@@ -183,22 +174,18 @@ public class ApiMethodTransformer {
     methodViewBuilder.exampleName(
         namer.getCallableMethodExampleName(context.getInterface(), context.getMethod()));
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
-    setFlattenedMethodFields(
-        context, fields, additionalParams, Synchronicity.Async, methodViewBuilder);
+    setFlattenedMethodFields(context, additionalParams, Synchronicity.Async, methodViewBuilder);
     setStaticLangReturnFields(context, Synchronicity.Async, methodViewBuilder);
 
     return methodViewBuilder.type(type).build();
   }
 
-  public StaticLangApiMethodView generateFlattenedMethod(
-      MethodTransformerContext context, ImmutableList<Field> fields) {
-    return generateFlattenedMethod(context, fields, Collections.<ParamWithSimpleDoc>emptyList());
+  public StaticLangApiMethodView generateFlattenedMethod(MethodTransformerContext context) {
+    return generateFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
   public StaticLangApiMethodView generateFlattenedMethod(
-      MethodTransformerContext context,
-      ImmutableList<Field> fields,
-      List<ParamWithSimpleDoc> additionalParams) {
+      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -208,8 +195,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.exampleName(
         namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
-    setFlattenedMethodFields(
-        context, fields, additionalParams, Synchronicity.Sync, methodViewBuilder);
+    setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
     setStaticLangReturnFields(context, Synchronicity.Sync, methodViewBuilder);
 
     return methodViewBuilder.type(ApiMethodType.FlattenedMethod).build();
@@ -280,25 +266,30 @@ public class ApiMethodTransformer {
     String requestTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getInputType());
     String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getOutputType());
 
-    Field resourceField = pageStreaming.getResourcesField();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+    Field resourceField = resourceFieldConfig.getField();
 
     String resourceTypeName;
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(resourceField)) {
-      String resourceShortName = ResourceNameUtil.getResourceName(resourceField);
+    if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
       resourceTypeName =
-          typeTable.getAndSaveNicknameForTypedResourceName(
-              resourceField, resourceField.getType().makeOptional(), resourceShortName);
+          namer.getAndSaveResourceTypeName(
+              typeTable,
+              resourceField,
+              resourceField.getType().makeOptional(),
+              resourceFieldConfig.getEntityName());
     } else {
       resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
     }
 
     String iterateMethodName =
-        context.getNamer().getPagedResponseIterateMethod(context.getFeatureConfig(), resourceField);
+        context
+            .getNamer()
+            .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
 
-    String resourceFieldName = context.getNamer().getFieldName(pageStreaming.getResourcesField());
+    String resourceFieldName = context.getNamer().getFieldName(resourceField);
     String resourceFieldGetFunctionName =
-        namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceField);
+        namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceFieldConfig);
 
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder()
@@ -328,18 +319,20 @@ public class ApiMethodTransformer {
 
   private void setFlattenedMethodFields(
       MethodTransformerContext context,
-      ImmutableList<Field> fields,
       List<ParamWithSimpleDoc> additionalParams,
       Synchronicity synchronicity,
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
+    Iterable<FieldConfig> fieldConfigs =
+        context.getFlatteningConfig().getFlattenedFieldConfigs().values();
     methodViewBuilder.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(), createInitCodeContext(context, fields)));
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(context, fieldConfigs, InitCodeOutputType.FieldList)));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod(), context.getMethodConfig()))
-            .paramDocs(getMethodParamDocs(context, fields, additionalParams))
+            .paramDocs(getMethodParamDocs(context, fieldConfigs, additionalParams))
             .throwsDocLines(namer.getThrowsDocLines())
             .returnsDocLines(
                 namer.getReturnDocLines(
@@ -349,8 +342,8 @@ public class ApiMethodTransformer {
             .build());
 
     List<RequestObjectParamView> params = new ArrayList<>();
-    for (Field field : fields) {
-      params.add(generateRequestObjectParam(context, field));
+    for (FieldConfig fieldConfig : fieldConfigs) {
+      params.add(generateRequestObjectParam(context, fieldConfig));
     }
     methodViewBuilder.forwardingMethodParams(params);
     List<RequestObjectParamView> nonforwardingParams = new ArrayList<>(params);
@@ -358,7 +351,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.methodParams(nonforwardingParams);
     methodViewBuilder.requestObjectParams(params);
 
-    methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fields));
+    methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fieldConfigs));
   }
 
   private void setRequestObjectMethodFields(
@@ -376,7 +369,11 @@ public class ApiMethodTransformer {
             .build());
     methodViewBuilder.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(), createInitCodeContext(context, null)));
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(
+                context,
+                context.getMethodConfig().getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject)));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -404,7 +401,11 @@ public class ApiMethodTransformer {
             .build());
     methodViewBuilder.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(), createInitCodeContext(context, null)));
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(
+                context,
+                context.getMethodConfig().getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject)));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -451,13 +452,14 @@ public class ApiMethodTransformer {
   }
 
   private List<PathTemplateCheckView> generatePathTemplateChecks(
-      MethodTransformerContext context, ImmutableList<Field> fields) {
+      MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
-    for (Field field : fields) {
-      if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
-        // Don't generate a path template check when using a ResourceName type instead of a string
+    for (FieldConfig fieldConfig : fieldConfigs) {
+      if (!fieldConfig.useValidation()) {
+        // Don't generate a path template check if fieldConfig is not configured to use validation.
         continue;
       }
+      Field field = fieldConfig.getField();
       ImmutableMap<String, String> fieldNamePatterns =
           context.getMethodConfig().getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
@@ -502,13 +504,15 @@ public class ApiMethodTransformer {
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
-    Iterable<Field> fields =
+    InitCodeOutputType initCodeOutputType =
         context.getMethod().getRequestStreaming()
-            ? null
-            : context.getMethodConfig().getRequiredFields();
+            ? InitCodeOutputType.SingleObject
+            : InitCodeOutputType.FieldList;
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context.cloneWithEmptyTypeTable(), createInitCodeContext(context, fields)));
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(
+                context, context.getMethodConfig().getRequiredFieldConfigs(), initCodeOutputType)));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
@@ -524,13 +528,13 @@ public class ApiMethodTransformer {
     apiMethod.methodParams(generateOptionalArrayMethodParams(context));
 
     apiMethod.requiredRequestObjectParams(
-        generateRequestObjectParams(context, context.getMethodConfig().getRequiredFields()));
+        generateRequestObjectParams(context, context.getMethodConfig().getRequiredFieldConfigs()));
     apiMethod.optionalRequestObjectParams(
-        generateRequestObjectParams(context, context.getMethodConfig().getOptionalFields()));
-    Iterable<Field> filteredFields =
-        removePageTokenField(context, context.getMethodConfig().getOptionalFields());
+        generateRequestObjectParams(context, context.getMethodConfig().getOptionalFieldConfigs()));
+    Iterable<FieldConfig> filteredFieldConfigs =
+        removePageTokenFieldConfig(context, context.getMethodConfig().getOptionalFieldConfigs());
     apiMethod.optionalRequestObjectParamsNoPageToken(
-        generateRequestObjectParams(context, filteredFields));
+        generateRequestObjectParams(context, filteredFieldConfigs));
     apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     return apiMethod.build();
@@ -544,9 +548,10 @@ public class ApiMethodTransformer {
     List<ParamDocView> paramDocs =
         getMethodParamDocs(
             context,
-            context.getMethodConfig().getRequiredFields(),
+            context.getMethodConfig().getRequiredFieldConfigs(),
             Collections.<ParamWithSimpleDoc>emptyList());
-    paramDocs.add(getOptionalArrayParamDoc(context, context.getMethodConfig().getOptionalFields()));
+    paramDocs.add(
+        getOptionalArrayParamDoc(context, context.getMethodConfig().getOptionalFieldConfigs()));
     docBuilder.paramDocs(paramDocs);
     docBuilder.returnTypeName(
         context
@@ -610,34 +615,37 @@ public class ApiMethodTransformer {
   }
 
   private List<RequestObjectParamView> generateRequestObjectParams(
-      MethodTransformerContext context, Iterable<Field> fields) {
+      MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
     List<RequestObjectParamView> params = new ArrayList<>();
-    for (Field field : fields) {
-      params.add(generateRequestObjectParam(context, field));
+    for (FieldConfig fieldConfig : fieldConfigs) {
+      params.add(generateRequestObjectParam(context, fieldConfig));
     }
     return params;
   }
 
-  private Iterable<Field> removePageTokenField(
-      MethodTransformerContext context, Iterable<Field> fields) {
+  private Iterable<FieldConfig> removePageTokenFieldConfig(
+      MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
     MethodConfig methodConfig = context.getMethodConfig();
-    List<Field> filtered = new ArrayList<>();
-    for (Field field : fields) {
-      if (methodConfig != null
-          && methodConfig.isPageStreaming()
-          && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
-        continue;
-      }
-      filtered.add(field);
+    if (methodConfig == null || !methodConfig.isPageStreaming()) {
+      return fieldConfigs;
     }
-    return filtered;
+    final Field requestTokenField = methodConfig.getPageStreaming().getRequestTokenField();
+    return Iterables.filter(
+        fieldConfigs,
+        new Predicate<FieldConfig>() {
+          @Override
+          public boolean apply(FieldConfig fieldConfig) {
+            return !fieldConfig.getField().equals(requestTokenField);
+          }
+        });
   }
 
   private RequestObjectParamView generateRequestObjectParam(
-      MethodTransformerContext context, Field field) {
+      MethodTransformerContext context, FieldConfig fieldConfig) {
     SurfaceNamer namer = context.getNamer();
     FeatureConfig featureConfig = context.getFeatureConfig();
     ModelTypeTable typeTable = context.getTypeTable();
+    Field field = fieldConfig.getField();
 
     String typeName =
         namer.getNotImplementedString("ApiMethodTransformer.generateRequestObjectParam - typeName");
@@ -645,17 +653,17 @@ public class ApiMethodTransformer {
         namer.getNotImplementedString(
             "ApiMethodTransformer.generateRequestObjectParam - elementTypeName");
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(field)) {
-      String resourceName = ResourceNameUtil.getResourceName(field);
+    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (namer.shouldImportRequestObjectParamType(field)) {
         typeName =
-            typeTable.getAndSaveNicknameForTypedResourceName(field, field.getType(), resourceName);
+            namer.getAndSaveResourceTypeName(
+                typeTable, field, field.getType(), fieldConfig.getEntityName());
       }
       if (namer.shouldImportRequestObjectParamElementType(field)) {
         // Use makeOptional to remove repeated property from type
         elementTypeName =
-            typeTable.getAndSaveNicknameForTypedResourceName(
-                field, field.getType().makeOptional(), resourceName);
+            namer.getAndSaveResourceTypeName(
+                typeTable, field, field.getType().makeOptional(), fieldConfig.getEntityName());
       }
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {
@@ -666,7 +674,7 @@ public class ApiMethodTransformer {
       }
     }
 
-    String setCallName = namer.getFieldSetFunctionName(featureConfig, field);
+    String setCallName = namer.getFieldSetFunctionName(featureConfig, fieldConfig);
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
@@ -681,10 +689,11 @@ public class ApiMethodTransformer {
 
   private List<ParamDocView> getMethodParamDocs(
       MethodTransformerContext context,
-      Iterable<Field> fields,
+      Iterable<FieldConfig> fieldConfigs,
       List<ParamWithSimpleDoc> additionalParamDocs) {
     List<ParamDocView> allDocs = new ArrayList<>();
-    for (Field field : fields) {
+    for (FieldConfig fieldConfig : fieldConfigs) {
+      Field field = fieldConfig.getField();
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(context.getNamer().getVariableName(field));
       paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
@@ -736,7 +745,7 @@ public class ApiMethodTransformer {
   }
 
   private ParamDocView getOptionalArrayParamDoc(
-      MethodTransformerContext context, Iterable<Field> fields) {
+      MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
     MapParamDocView.Builder paramDoc = MapParamDocView.newBuilder();
 
     Name optionalArgsName = Name.from("optional", "args");
@@ -752,7 +761,8 @@ public class ApiMethodTransformer {
     paramDoc.arrayKeyDocs(
         ImmutableList.<ParamDocView>builder()
             .addAll(
-                getMethodParamDocs(context, fields, Collections.<ParamWithSimpleDoc>emptyList()))
+                getMethodParamDocs(
+                    context, fieldConfigs, Collections.<ParamWithSimpleDoc>emptyList()))
             .addAll(getCallSettingsParamDocList(context))
             .build());
 
@@ -797,16 +807,17 @@ public class ApiMethodTransformer {
   }
 
   private InitCodeContext createInitCodeContext(
-      MethodTransformerContext context, Iterable<Field> fields) {
-    InitCodeOutputType outputType =
-        fields != null ? InitCodeOutputType.FieldList : InitCodeOutputType.SingleObject;
+      MethodTransformerContext context,
+      Iterable<FieldConfig> fieldConfigs,
+      InitCodeOutputType initCodeOutputType) {
     return InitCodeContext.newBuilder()
         .initObjectType(context.getMethod().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(fields)
-        .outputType(outputType)
+        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+        .outputType(initCodeOutputType)
+        .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .build();
   }
 }

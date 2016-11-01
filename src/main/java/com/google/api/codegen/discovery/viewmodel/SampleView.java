@@ -14,13 +14,12 @@
  */
 package com.google.api.codegen.discovery.viewmodel;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SampleView implements ViewModel {
@@ -43,7 +42,7 @@ public abstract class SampleView implements ViewModel {
   public abstract String apiVersion();
 
   @Nullable
-  public abstract List<String> imports();
+  public abstract List<ImportTypeView> imports();
 
   public abstract SampleAuthView auth();
 
@@ -120,7 +119,7 @@ public abstract class SampleView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder templateFileName(String val);
 
@@ -138,7 +137,7 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder apiVersion(String val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder auth(SampleAuthView val);
 

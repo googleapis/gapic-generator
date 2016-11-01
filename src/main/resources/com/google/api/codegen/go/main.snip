@@ -1,14 +1,12 @@
 @extends "go/header.snip"
 
 @snippet generate(view)
-    {@headerComment()}
+    {@headerComment(view.fileHeader)}
 
-    package {@view.localPackageName}
+    package {@view.fileHeader.localPackageName}
 
     import (
-        @join imp : view.imports
-            {@imp}
-        @end
+        {@imports(view.fileHeader.imports)}
     )
 
     @if view.pathTemplates
@@ -81,8 +79,9 @@
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
     //
-    @join line : view.serviceDoc
-        {@line}
+    // {@view.serviceDoc.firstLine}
+    @join line : view.serviceDoc.remainingLines
+        // {@line}
     @end
     func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientTypeName}, error) {
         conn, err := transport.DialGRPC(ctx, append({@view.defaultClientOptionFunctionName}(), opts...)...)
@@ -140,6 +139,7 @@
         func (c *{@view.clientTypeName}) {@resource.resourceGetterFunctionName}({@resource.paramName} {@resource.resourceTypeName}) *iam.Handle {
             return iam.InternalNewHandle(c.Connection(), {@resource.paramName}.{@resource.fieldName})
         }
+
     @end
 
     @join method : view.apiMethods
@@ -184,7 +184,7 @@
         var resp {@method.responseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
-            resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
+            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
             return err
         }, c.CallOptions.{@method.settingsGetterName}...)
         if err != nil {
@@ -200,7 +200,7 @@
         var resp {@method.responseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
-            resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
+            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
             return err
         }, c.CallOptions.{@method.name}...)
         if err != nil {
@@ -233,7 +233,7 @@
         {@mergeMetadata()}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
-            _, err = c.{@method.stubName}.{@method.name}(ctx, req)
+            _, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
             return err
         }, c.CallOptions.{@method.settingsGetterName}...)
         return err
@@ -255,7 +255,7 @@
             }
             err := gax.Invoke(ctx, func(ctx context.Context) error {
                 var err error
-                resp, err = c.{@method.stubName}.{@method.name}(ctx, req)
+                resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
                 return err
             }, c.CallOptions.{@method.settingsGetterName}...)
             if err != nil {

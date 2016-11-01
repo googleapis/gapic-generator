@@ -1,11 +1,11 @@
 ============== file: cloud.google.com/go/library/apiv1/library_client.go ==============
-// Copyright 2016 Google Inc. All Rights Reserved.
+// Copyright 2016, Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,6 +31,7 @@ import (
     "google.golang.org/api/option"
     "google.golang.org/api/transport"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
+    longrunningpb "google.golang.org/genproto/googleapis/longrunning"
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
@@ -224,6 +225,7 @@ func LibraryArchivedBookPath(archivePath, bookId string) string {
 func (c *Client) BookIAM(book *librarypb.Book) *iam.Handle {
     return iam.InternalNewHandle(c.Connection(), book.Name)
 }
+
 
 // CreateShelf creates a shelf, and returns the new Shelf.
 func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
@@ -621,7 +623,7 @@ func (c *Client) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*
     var resp *taggerpb.AddLabelResponse
     err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
-        resp, err = c.labelerClient.addLabel(ctx, req)
+        resp, err = c.labelerClient.AddLabel(ctx, req)
         return err
     }, c.CallOptions.AddLabel...)
     if err != nil {

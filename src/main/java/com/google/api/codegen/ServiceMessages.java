@@ -20,19 +20,14 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Empty;
-
 import java.util.List;
 
-/**
- * Utility class with methods to work with service methods.
- */
+/** Utility class with methods to work with service methods. */
 public class ServiceMessages {
 
   private static final String LRO_TYPE = "google.longrunning.Operation";
 
-  /**
-   * Returns true if the message is the empty message.
-   */
+  /** Returns true if the message is the empty message. */
   public boolean isEmptyType(TypeRef type) {
     return s_isEmptyType(type);
   }
@@ -46,9 +41,7 @@ public class ServiceMessages {
     return type.isMessage() && type.getMessageType().getFullName().equals(LRO_TYPE);
   }
 
-  /**
-   * Inputs a list of methods and returns only those which are page streaming.
-   */
+  /** Inputs a list of methods and returns only those which are page streaming. */
   public Iterable<Method> filterPageStreamingMethods(
       final InterfaceConfig config, List<Method> methods) {
     Predicate<Method> isPageStreaming =
@@ -62,9 +55,7 @@ public class ServiceMessages {
     return Iterables.filter(methods, isPageStreaming);
   }
 
-  /**
-   * Inputs a list of methods and returns only those which are bundling.
-   */
+  /** Inputs a list of methods and returns only those which are bundling. */
   public Iterable<Method> filterBundlingMethods(
       final InterfaceConfig config, List<Method> methods) {
     Predicate<Method> isBundling =

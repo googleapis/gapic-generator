@@ -48,7 +48,8 @@ public class ApiCallableTransformer {
       if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }
-      callableMembers.addAll(generateStaticLangApiCallables(context.asMethodContext(method)));
+      callableMembers.addAll(
+          generateStaticLangApiCallables(context.asRequestMethodContext(method)));
     }
 
     return callableMembers;
@@ -58,7 +59,7 @@ public class ApiCallableTransformer {
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
 
     for (Method method : context.getSupportedMethods()) {
-      settingsMembers.addAll(generateApiCallableSettings(context.asMethodContext(method)));
+      settingsMembers.addAll(generateApiCallableSettings(context.asRequestMethodContext(method)));
     }
 
     return settingsMembers;
@@ -81,6 +82,8 @@ public class ApiCallableTransformer {
     apiCallableBuilder.asyncMethodName(context.getNamer().getAsyncApiMethodName(method));
     apiCallableBuilder.memberName(context.getNamer().getSettingsMemberName(method));
     apiCallableBuilder.settingsFunctionName(context.getNamer().getSettingsFunctionName(method));
+    apiCallableBuilder.grpcClientVarName(
+        context.getNamer().getReroutedGrpcClientVarName(methodConfig));
 
     if (methodConfig.isGrpcStreaming()) {
       apiCallableBuilder.type(ApiCallableType.StreamingApiCallable);
@@ -115,6 +118,8 @@ public class ApiCallableTransformer {
       pagedApiCallableBuilder.memberName(context.getNamer().getSettingsMemberName(method));
       pagedApiCallableBuilder.settingsFunctionName(
           context.getNamer().getSettingsFunctionName(method));
+      pagedApiCallableBuilder.grpcClientVarName(
+          context.getNamer().getReroutedGrpcClientVarName(methodConfig));
 
       apiCallables.add(pagedApiCallableBuilder.build());
     }

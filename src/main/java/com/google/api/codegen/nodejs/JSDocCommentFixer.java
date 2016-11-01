@@ -15,26 +15,19 @@
 package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.CommentPatterns;
-
 import java.util.regex.Matcher;
 
-/**
- * Utility class for formatting source comments to follow JSDoc style.
- */
+/** Utility class for formatting source comments to follow JSDoc style. */
 public class JSDocCommentFixer {
 
-  /**
-   * Returns a JSDoc-formatted comment string.
-   */
+  /** Returns a JSDoc-formatted comment string. */
   public static String jsdocify(String comment) {
     comment = jsdocifyProtoMarkdownLinks(comment);
     comment = jsdocifyCloudMarkdownLinks(comment);
     return comment.trim();
   }
 
-  /**
-   * Returns a string with all proto markdown links formatted to JSDoc style.
-   */
+  /** Returns a string with all proto markdown links formatted to JSDoc style. */
   private static String jsdocifyProtoMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(comment);
@@ -48,9 +41,7 @@ public class JSDocCommentFixer {
     return sb.toString();
   }
 
-  /**
-   * Returns a string with all cloud markdown links formatted to JSDoc style.
-   */
+  /** Returns a string with all cloud markdown links formatted to JSDoc style. */
   private static String jsdocifyCloudMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);

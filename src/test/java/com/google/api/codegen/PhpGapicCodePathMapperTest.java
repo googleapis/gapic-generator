@@ -20,16 +20,13 @@ import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.gax.grpc.ApiCallable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for {@link ApiCallable}.
- */
+/** Tests for {@link ApiCallable}. */
 @RunWith(JUnit4.class)
 public class PhpGapicCodePathMapperTest {
 
@@ -42,7 +39,10 @@ public class PhpGapicCodePathMapperTest {
 
     ApiConfig configWithGoogleCloud =
         ApiConfig.createDummyApiConfig(
-            ImmutableMap.<String, InterfaceConfig>of(), "Google\\Cloud\\Sample\\Package\\V1", "");
+            ImmutableMap.<String, InterfaceConfig>of(),
+            "Google\\Cloud\\Sample\\Package\\V1",
+            "",
+            null);
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleCloud))
         .isEqualTo("prefix/Sample/Package/V1/suffix");
 
@@ -50,7 +50,8 @@ public class PhpGapicCodePathMapperTest {
         ApiConfig.createDummyApiConfig(
             ImmutableMap.<String, InterfaceConfig>of(),
             "Google\\NonCloud\\Sample\\Package\\V1",
-            "");
+            "",
+            null);
     Truth.assertThat(pathMapper.getOutputPath(null, configWithGoogleNonCloud))
         .isEqualTo("prefix/NonCloud/Sample/Package/V1/suffix");
 
@@ -58,7 +59,8 @@ public class PhpGapicCodePathMapperTest {
         ApiConfig.createDummyApiConfig(
             ImmutableMap.<String, InterfaceConfig>of(),
             "Alphabet\\Google\\Cloud\\Sample\\Package\\V1",
-            "");
+            "",
+            null);
     Truth.assertThat(pathMapper.getOutputPath(null, configWithAlphabet))
         .isEqualTo("prefix/Alphabet/Google/Cloud/Sample/Package/V1/suffix");
   }

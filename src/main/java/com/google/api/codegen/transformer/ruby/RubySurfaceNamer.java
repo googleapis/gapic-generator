@@ -22,21 +22,19 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /** The SurfaceNamer for Ruby. */
 public class RubySurfaceNamer extends SurfaceNamer {
-  public RubySurfaceNamer(String implicitPackageName) {
+  public RubySurfaceNamer(String packageName) {
     super(
         new RubyNameFormatter(),
-        new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(implicitPackageName)),
-        new RubyTypeTable(implicitPackageName));
+        new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(packageName)),
+        new RubyTypeTable(packageName),
+        packageName);
   }
 
   /** The function name to set a field having the given type and name. */
@@ -52,8 +50,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   /**
-   * The type name of the Grpc client class.
-   * This needs to match what Grpc generates for the particular language.
+   * The type name of the Grpc client class. This needs to match what Grpc generates for the
+   * particular language.
    */
   @Override
   public String getGrpcClientTypeName(Interface service) {
@@ -69,8 +67,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The file name for an API service. */
   @Override
-  public String getServiceFileName(Interface service, String packageName) {
-    String[] names = packageName.split("::");
+  public String getServiceFileName(Interface service) {
+    String[] names = getPackageName().split("::");
     List<String> newNames = new ArrayList<>();
     for (String name : names) {
       newNames.add(packageFilePathPiece(Name.upperCamel(name)));
@@ -80,8 +78,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
-    return packageName + "::" + getApiWrapperClassName(service);
+  public String getFullyQualifiedApiWrapperClassName(Interface service) {
+    return getPackageName() + "::" + getApiWrapperClassName(service);
   }
 
   @Override

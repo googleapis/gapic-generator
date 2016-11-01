@@ -15,8 +15,8 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
-import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -25,17 +25,15 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
-  /**
-   * The import path for generated pb.go files for core-proto files.
-   */
+  /** The import path for generated pb.go files for core-proto files. */
   private static final String CORE_PROTO_BASE = "google.golang.org/genproto/";
+
   private static final String CORE_PROTO_PATH = CORE_PROTO_BASE + "googleapis/";
   private static final String GOOGLE_PREFIX = "google.";
 
@@ -94,19 +92,15 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   /**
-   * Since Go imports by package instead of by class name,
-   * we have to treat it differently than other languages.
-   * Imports in Go have 4 components:
-   * - Import path, like "github.com/googleapis/gax-go"
-   * - Local package name, like "gax"; this is the name we call the package we import
-   * - The name of the thing in the package we want, like "CallOption"
-   * - If it's a pointer, we need "*"
+   * Since Go imports by package instead of by class name, we have to treat it differently than
+   * other languages. Imports in Go have 4 components: - Import path, like
+   * "github.com/googleapis/gax-go" - Local package name, like "gax"; this is the name we call the
+   * package we import - The name of the thing in the package we want, like "CallOption" - If it's a
+   * pointer, we need "*"
    *
-   * We need all 4 pieces in the full name and the last 3 in the nickname.
-   * For nickname, we simply use: "gax.CallOption",
-   * which is how we refer to the import in the program text.
-   * For the full name, we use join all 4 by semicolons:
-   * "github.com/googleapis/gax-go;gax;CallOption;"
+   * <p>We need all 4 pieces in the full name and the last 3 in the nickname. For nickname, we
+   * simply use: "gax.CallOption", which is how we refer to the import in the program text. For the
+   * full name, we use join all 4 by semicolons: "github.com/googleapis/gax-go;gax;CallOption;"
    */
   @Override
   public TypeName getTypeName(ProtoElement elem) {

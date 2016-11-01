@@ -19,16 +19,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/prediction/v1.6"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -40,18 +36,16 @@ func main() {
   }
 
   // The project associated with the model.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of a hosted model.
-  hostedModelName := "{MY-HOSTED-MODEL-NAME}"
-  // TODO: Change placeholder value above.
+  hostedModelName := ""  // TODO: Update placeholder value.
 
-  rb := prediction.Input{
+  rb := &prediction.Input{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := predictionService.Hostedmodels.Predict(project, hostedModelName, &rb).Context(ctx).Do()
+  resp, err := predictionService.Hostedmodels.Predict(project, hostedModelName, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -79,16 +73,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/prediction/v1.6"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -100,12 +90,10 @@ func main() {
   }
 
   // The project associated with the model.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The unique name for the predictive model.
-  id := "{MY-ID}"
-  // TODO: Change placeholder value above.
+  id := ""  // TODO: Update placeholder value.
 
   resp, err := predictionService.Trainedmodels.Analyze(project, id).Context(ctx).Do()
   if err != nil {
@@ -134,16 +122,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/prediction/v1.6"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -155,12 +139,10 @@ func main() {
   }
 
   // The project associated with the model.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The unique name for the predictive model.
-  id := "{MY-ID}"
-  // TODO: Change placeholder value above.
+  id := ""  // TODO: Update placeholder value.
 
   if err := predictionService.Trainedmodels.Delete(project, id).Context(ctx).Do(); err != nil {
     log.Fatal(err)
@@ -186,16 +168,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/prediction/v1.6"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -207,12 +185,10 @@ func main() {
   }
 
   // The project associated with the model.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The unique name for the predictive model.
-  id := "{MY-ID}"
-  // TODO: Change placeholder value above.
+  id := ""  // TODO: Update placeholder value.
 
   resp, err := predictionService.Trainedmodels.Get(project, id).Context(ctx).Do()
   if err != nil {
@@ -242,16 +218,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/prediction/v1.6"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -263,14 +235,13 @@ func main() {
   }
 
   // The project associated with the model.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
-  rb := prediction.Insert{
+  rb := &prediction.Insert{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := predictionService.Trainedmodels.Insert(project, &rb).Context(ctx).Do()
+  resp, err := predictionService.Trainedmodels.Insert(project, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -298,16 +269,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/prediction/v1.6"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -319,8 +286,7 @@ func main() {
   }
 
   // The project associated with the model.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := predictionService.Trainedmodels.List(project)
   if err := req.Pages(ctx, func(page *prediction.List) error {
@@ -353,16 +319,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/prediction/v1.6"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -374,18 +336,16 @@ func main() {
   }
 
   // The project associated with the model.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The unique name for the predictive model.
-  id := "{MY-ID}"
-  // TODO: Change placeholder value above.
+  id := ""  // TODO: Update placeholder value.
 
-  rb := prediction.Input{
+  rb := &prediction.Input{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := predictionService.Trainedmodels.Predict(project, id, &rb).Context(ctx).Do()
+  resp, err := predictionService.Trainedmodels.Predict(project, id, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -413,16 +373,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/prediction/v1.6"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -434,18 +390,16 @@ func main() {
   }
 
   // The project associated with the model.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The unique name for the predictive model.
-  id := "{MY-ID}"
-  // TODO: Change placeholder value above.
+  id := ""  // TODO: Update placeholder value.
 
-  rb := prediction.Update{
+  rb := &prediction.Update{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := predictionService.Trainedmodels.Update(project, id, &rb).Context(ctx).Do()
+  resp, err := predictionService.Trainedmodels.Update(project, id, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

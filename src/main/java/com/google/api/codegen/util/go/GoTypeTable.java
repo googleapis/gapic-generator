@@ -14,16 +14,13 @@
  */
 package com.google.api.codegen.util.go;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.ImmutableSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GoTypeTable implements TypeTable {
 
@@ -82,38 +79,6 @@ public class GoTypeTable implements TypeTable {
     return imports;
   }
 
-  public static List<String> formatImports(Map<String, TypeAlias> imports) {
-    List<String> standard = new ArrayList<>(imports.size());
-    List<String> thirdParty = new ArrayList<>(imports.size());
-
-    for (Map.Entry<String, TypeAlias> imp : imports.entrySet()) {
-      String importPath = imp.getKey();
-      String packageRename = imp.getValue().getNickname();
-      List<String> target = isStandardImport(importPath) ? standard : thirdParty;
-      if (packageRename.equals("")) {
-        target.add(String.format("\"%s\"", importPath));
-      } else {
-        target.add(String.format("%s \"%s\"", packageRename, importPath));
-      }
-    }
-
-    List<String> merge = new ArrayList<>(standard);
-    if (!standard.isEmpty() && !thirdParty.isEmpty()) {
-      merge.add("");
-    }
-    merge.addAll(thirdParty);
-    return merge;
-  }
-
-  private static boolean isStandardImport(String importPath) {
-    // TODO(pongad): Some packages in standard library have slashes,
-    // we might have to special case them.
-    if (importPath.equals("net/http")) {
-      return true;
-    }
-    return !importPath.contains("/");
-  }
-
   @Override
   public String getAndSaveNicknameForInnerType(
       String containerFullName, String innerTypeShortName) {
@@ -121,8 +86,7 @@ public class GoTypeTable implements TypeTable {
   }
 
   /**
-   * A set of Go reserved identifiers. See
-   * https://golang.org/ref/spec#Keywords
+   * A set of Go reserved identifiers. See https://golang.org/ref/spec#Keywords
    * https://golang.org/ref/spec#Predeclared_identifiers
    */
   public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =

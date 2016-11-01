@@ -1,11 +1,11 @@
 ============== file: cloud.google.com/go/library/apiv1/library_client_example_test.go ==============
-// Copyright 2016 Google Inc. All Rights Reserved.
+// Copyright 2016, Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,6 +52,7 @@ func ExampleClient_BookIAM() {
     //TODO: Use the IAM policy
     _ = policy
 }
+
 
 func ExampleClient_CreateShelf() {
     ctx := context.Background()
@@ -471,7 +472,7 @@ func ExampleClient_GetBigBook() {
     }
 
     var resp ptypes.DynamicAny // resp can also be concrete protobuf-generated types.
-    if err := op.Wait(&resp); err != nil {
+    if err := op.Wait(ctx, &resp); err != nil {
         // TODO: Handle error.
     }
     // TODO: Use resp.

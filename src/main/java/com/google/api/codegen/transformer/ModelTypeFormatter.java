@@ -18,40 +18,27 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
 /**
- * A read-only interface for mapping TypeRef instances to a corresponding
- * String representation for a particular language.
+ * A read-only interface for mapping TypeRef instances to a corresponding String representation for
+ * a particular language.
  *
- * Passing this type ensures that mutable functionality in derived classes
- * won't be called.
+ * <p>Passing this type ensures that mutable functionality in derived classes won't be called.
  */
 public interface ModelTypeFormatter {
-  /**
-   * Get the full name for the given short name, using the default package.
-   */
+  /** Get the full name for the given short name, using the default package. */
   String getImplicitPackageFullNameFor(String shortName);
 
-  /**
-   * Get the full name for the given type.
-   */
+  /** Get the full name for the given type. */
   String getFullNameFor(TypeRef type);
 
-  /**
-   * Get the full name for the given proto element.
-   */
+  /** Get the full name for the given proto element. */
   String getFullNameFor(ProtoElement element);
 
-  /**
-   * Get the full name for the element type of the given type.
-   */
+  /** Get the full name for the element type of the given type. */
   String getFullNameForElementType(TypeRef type);
 
-  /**
-   * Returns the nickname for the given type (without adding the full name to the import set).
-   */
+  /** Returns the nickname for the given type (without adding the full name to the import set). */
   String getNicknameFor(TypeRef type);
 
-  /**
-   * Renders the primitive value of the given type.
-   */
+  /** Renders the primitive value of the given type. */
   String renderPrimitiveValue(TypeRef type, String key);
 }

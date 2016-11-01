@@ -16,12 +16,9 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.util.CommonAcronyms;
 import com.google.common.base.CaseFormat;
-
 import java.util.Map;
 
-/**
- * Some static utility methods.
- */
+/** Some static utility methods. */
 public class LanguageUtil {
   public static String getRename(String name, Map<String, String> map) {
     String rename = map.get(name);

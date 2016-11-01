@@ -112,7 +112,7 @@
           @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
                requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-               resources = pageStreaming.getResourcesField().getSimpleName(), \
+               resources = pageStreaming.getResourcesFieldName, \
                methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
             "{@methodName}" => Google::Gax::PageDescriptor.new(
               "{@requestToken}",
@@ -409,18 +409,18 @@
               {@optionalParameterValues(optionalParams)},
             @end
             options: nil
-          @if requiredParams
-            req = {@inputTypeName}.new(
-              {@namedParameters(requiredParams)}
-            )
-          @else
-            req = {@inputTypeName}.new
-          @end
-          @join field : optionalParams
-            @let paramName = context.wrapIfKeywordOrBuiltIn(field.getSimpleName())
-              req.{@field.getSimpleName()} = {@paramName} unless {@paramName}.nil?
+          req = {@inputTypeName}.new({
+            @if requiredParams
+              @if optionalParams
+                {@namedParameters(requiredParams)},
+                {@namedParameters(optionalParams)}
+              @else
+                {@namedParameters(requiredParams)}
+              @end
+            @else
+              {@namedParameters(optionalParams)}
             @end
-          @end
+          }.delete_if { |_, v| v.nil? })
           @@{@methodName}.call(req, options)
         end
       @else

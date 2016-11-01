@@ -19,16 +19,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -40,14 +36,13 @@ func main() {
   }
 
   // The project which owns the job.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := dataflow.Job{
+  rb := &dataflow.Job{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dataflowService.Projects.Jobs.Create(projectId, &rb).Context(ctx).Do()
+  resp, err := dataflowService.Projects.Jobs.Create(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -75,16 +70,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -96,18 +87,16 @@ func main() {
   }
 
   // The project id.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The job id.
-  jobId := "{MY-JOB-ID}"
-  // TODO: Change placeholder value above.
+  jobId := ""  // TODO: Update placeholder value.
 
-  rb := dataflow.GetDebugConfigRequest{
+  rb := &dataflow.GetDebugConfigRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dataflowService.Projects.Jobs.Debug.GetConfig(projectId, jobId, &rb).Context(ctx).Do()
+  resp, err := dataflowService.Projects.Jobs.Debug.GetConfig(projectId, jobId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -135,16 +124,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -156,18 +141,16 @@ func main() {
   }
 
   // The project id.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The job id.
-  jobId := "{MY-JOB-ID}"
-  // TODO: Change placeholder value above.
+  jobId := ""  // TODO: Update placeholder value.
 
-  rb := dataflow.SendDebugCaptureRequest{
+  rb := &dataflow.SendDebugCaptureRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dataflowService.Projects.Jobs.Debug.SendCapture(projectId, jobId, &rb).Context(ctx).Do()
+  resp, err := dataflowService.Projects.Jobs.Debug.SendCapture(projectId, jobId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -195,16 +178,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -216,12 +195,10 @@ func main() {
   }
 
   // The project which owns the job.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // Identifies a single job.
-  jobId := "{MY-JOB-ID}"
-  // TODO: Change placeholder value above.
+  jobId := ""  // TODO: Update placeholder value.
 
   resp, err := dataflowService.Projects.Jobs.Get(projectId, jobId).Context(ctx).Do()
   if err != nil {
@@ -251,16 +228,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -272,12 +245,10 @@ func main() {
   }
 
   // A project id.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The job to get messages for.
-  jobId := "{MY-JOB-ID}"
-  // TODO: Change placeholder value above.
+  jobId := ""  // TODO: Update placeholder value.
 
   resp, err := dataflowService.Projects.Jobs.GetMetrics(projectId, jobId).Context(ctx).Do()
   if err != nil {
@@ -307,16 +278,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -328,8 +295,7 @@ func main() {
   }
 
   // The project which owns the jobs.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   req := dataflowService.Projects.Jobs.List(projectId)
   if err := req.Pages(ctx, func(page *dataflow.ListJobsResponse) error {
@@ -362,16 +328,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -383,12 +345,10 @@ func main() {
   }
 
   // A project id.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The job to get messages about.
-  jobId := "{MY-JOB-ID}"
-  // TODO: Change placeholder value above.
+  jobId := ""  // TODO: Update placeholder value.
 
   req := dataflowService.Projects.Jobs.Messages.List(projectId, jobId)
   if err := req.Pages(ctx, func(page *dataflow.ListJobMessagesResponse) error {
@@ -421,16 +381,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -442,18 +398,16 @@ func main() {
   }
 
   // The project which owns the job.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // Identifies a single job.
-  jobId := "{MY-JOB-ID}"
-  // TODO: Change placeholder value above.
+  jobId := ""  // TODO: Update placeholder value.
 
-  rb := dataflow.Job{
+  rb := &dataflow.Job{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dataflowService.Projects.Jobs.Update(projectId, jobId, &rb).Context(ctx).Do()
+  resp, err := dataflowService.Projects.Jobs.Update(projectId, jobId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -481,16 +435,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -502,18 +452,16 @@ func main() {
   }
 
   // Identifies the project this worker belongs to.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // Identifies the workflow job this worker belongs to.
-  jobId := "{MY-JOB-ID}"
-  // TODO: Change placeholder value above.
+  jobId := ""  // TODO: Update placeholder value.
 
-  rb := dataflow.LeaseWorkItemRequest{
+  rb := &dataflow.LeaseWorkItemRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dataflowService.Projects.Jobs.WorkItems.Lease(projectId, jobId, &rb).Context(ctx).Do()
+  resp, err := dataflowService.Projects.Jobs.WorkItems.Lease(projectId, jobId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -541,16 +489,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -562,18 +506,16 @@ func main() {
   }
 
   // The project which owns the WorkItem's job.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
   // The job which the WorkItem is part of.
-  jobId := "{MY-JOB-ID}"
-  // TODO: Change placeholder value above.
+  jobId := ""  // TODO: Update placeholder value.
 
-  rb := dataflow.ReportWorkItemStatusRequest{
+  rb := &dataflow.ReportWorkItemStatusRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dataflowService.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId, &rb).Context(ctx).Do()
+  resp, err := dataflowService.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -601,16 +543,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -622,14 +560,13 @@ func main() {
   }
 
   // The project which owns the job.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := dataflow.CreateJobFromTemplateRequest{
+  rb := &dataflow.CreateJobFromTemplateRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dataflowService.Projects.Templates.Create(projectId, &rb).Context(ctx).Do()
+  resp, err := dataflowService.Projects.Templates.Create(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -657,16 +594,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dataflow/v1b3"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -678,14 +611,13 @@ func main() {
   }
 
   // The project to send the WorkerMessages to.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := dataflow.SendWorkerMessagesRequest{
+  rb := &dataflow.SendWorkerMessagesRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dataflowService.Projects.WorkerMessages(projectId, &rb).Context(ctx).Do()
+  resp, err := dataflowService.Projects.WorkerMessages(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

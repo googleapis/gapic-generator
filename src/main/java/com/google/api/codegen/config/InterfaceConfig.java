@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -36,17 +35,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
-import org.joda.time.Duration;
-
 import io.grpc.Status;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-
 import javax.annotation.Nullable;
+import org.joda.time.Duration;
 
 /**
  * InterfaceConfig represents the code-gen config for an API interface, and includes the
@@ -87,7 +82,8 @@ public abstract class InterfaceConfig {
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
-      Interface iface) {
+      Interface iface,
+      ResourceNameMessageConfigs messageConfigs) {
     ImmutableMap<String, CollectionConfig> collectionConfigs =
         createCollectionConfigs(diagCollector, interfaceConfigProto);
 
@@ -105,6 +101,7 @@ public abstract class InterfaceConfig {
               language,
               interfaceConfigProto,
               iface,
+              messageConfigs,
               retryCodesDefinition.keySet(),
               retrySettingsDefinition.keySet());
       methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
@@ -235,6 +232,7 @@ public abstract class InterfaceConfig {
       String language,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
+      ResourceNameMessageConfigs messageConfigs,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, MethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
@@ -255,6 +253,7 @@ public abstract class InterfaceConfig {
               language,
               methodConfigProto,
               method,
+              messageConfigs,
               retryCodesConfigNames,
               retryParamsConfigNames);
       if (methodConfig == null) {
@@ -284,16 +283,12 @@ public abstract class InterfaceConfig {
     return collectionConfigs().get(entityName);
   }
 
-  /**
-   * Returns the list of CollectionConfigs.
-   */
+  /** Returns the list of CollectionConfigs. */
   public Collection<CollectionConfig> getCollectionConfigs() {
     return collectionConfigs().values();
   }
 
-  /**
-   * Returns the MethodConfig for the given method.
-   */
+  /** Returns the MethodConfig for the given method. */
   public MethodConfig getMethodConfig(Method method) {
     MethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
     if (methodConfig == null) {

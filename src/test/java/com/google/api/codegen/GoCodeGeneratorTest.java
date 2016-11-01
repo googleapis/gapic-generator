@@ -15,29 +15,25 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
-
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/**
- * Go code generator baseline tests.
- */
+/** Go code generator baseline tests. */
 @RunWith(Parameterized.class)
 public class GoCodeGeneratorTest extends GapicTestBase {
 
   public GoCodeGeneratorTest(
       String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.go.GoContext.class, "");
+    getTestDataLocator().addTestDataSource(getClass(), "go");
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the
-   * first element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the first
+   * element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {

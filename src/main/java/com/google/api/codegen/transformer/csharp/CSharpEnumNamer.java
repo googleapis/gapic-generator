@@ -21,9 +21,7 @@ package com.google.api.codegen.transformer.csharp;
  */
 public class CSharpEnumNamer {
 
-  /**
-   * Format the enum value name as required for C#.
-   */
+  /** Format the enum value name as required for C#. */
   public String getEnumValueName(String enumName, String enumValueName) {
     String stripped = tryRemovePrefix(enumName, enumValueName);
     String result = shoutyToPascalCase(stripped);

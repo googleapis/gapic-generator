@@ -15,9 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -42,7 +40,7 @@ public abstract class ApiMethodDocView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder mainDocLines(Iterable<String> lines);
 
     public abstract Builder paramDocs(List<ParamDocView> docs);

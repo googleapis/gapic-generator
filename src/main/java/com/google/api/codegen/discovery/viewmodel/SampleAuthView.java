@@ -14,12 +14,10 @@
  */
 package com.google.api.codegen.discovery.viewmodel;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.auto.value.AutoValue;
+import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SampleAuthView {
@@ -41,8 +39,7 @@ public abstract class SampleAuthView {
   /**
    * Returns a list of fully-qualified scope constants.
    *
-   * Go specific.
-   * For example: [logging.ReadScope, logging.WriteScope]
+   * <p>Go specific. For example: [logging.ReadScope, logging.WriteScope]
    */
   @Nullable
   public abstract List<String> scopeConsts();
@@ -52,7 +49,7 @@ public abstract class SampleAuthView {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder type(AuthType val);
 

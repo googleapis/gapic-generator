@@ -29,20 +29,22 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
-  public CSharpSurfaceNamer(String implicitPackageName) {
+  public CSharpSurfaceNamer(String packageName) {
     super(
         new CSharpNameFormatter(),
-        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(implicitPackageName)),
-        new CSharpTypeTable(implicitPackageName));
+        new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName)),
+        new CSharpTypeTable(packageName),
+        packageName);
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(Interface service, String packageName) {
-    return packageName + "." + getApiWrapperClassName(service);
+  public String getFullyQualifiedApiWrapperClassName(Interface service) {
+    return getPackageName() + "." + getApiWrapperClassName(service);
   }
 
   @Override
@@ -56,9 +58,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
-      return "Task";
+      return "System.Threading.Tasks.Task";
     }
-    return "Task<" + getModelTypeFormatter().getFullNameFor(method.getOutputType()) + ">";
+    return "System.Threading.Tasks.Task<"
+        + getModelTypeFormatter().getFullNameFor(method.getOutputType())
+        + ">";
   }
 
   @Override
@@ -74,7 +78,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiSnippetsClassName(Interface interfaze) {
-    return className(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
+    return className(Name.upperCamel("Generated", interfaze.getSimpleName(), "ClientSnippets"));
   }
 
   @Override
@@ -90,6 +94,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return privateMethodName(identifier);
+  }
+
+  @Override
+  public String getExamplePackageName() {
+    return getPackageName() + ".Snippets";
   }
 
   @Override
@@ -137,6 +146,23 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcContainerTypeName(Interface service) {
     return className(Name.upperCamel(service.getSimpleName()));
+  }
+
+  @Override
+  public String getReroutedGrpcClientVarName(MethodConfig methodConfig) {
+    String reroute = methodConfig.getRerouteToGrpcInterface();
+    if (reroute == null) {
+      return "GrpcClient";
+    } else {
+      List<String> reroutes = Splitter.on('.').splitToList(reroute);
+      return Name.anyCamel("grpc", reroutes.get(reroutes.size() - 1), "client").toLowerCamel();
+    }
+  }
+
+  @Override
+  public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
+    List<String> reroutes = Splitter.on('.').splitToList(methodConfig.getRerouteToGrpcInterface());
+    return Name.anyCamel("create", reroutes.get(reroutes.size() - 1), "client").toUpperCamel();
   }
 
   @Override

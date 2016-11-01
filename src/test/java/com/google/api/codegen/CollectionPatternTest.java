@@ -22,16 +22,13 @@ import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegme
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.WildcardSegment;
 import com.google.common.collect.ImmutableList;
 import com.google.common.truth.Truth;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for {@link ApiCallable}.
- */
+/** Tests for {@link ApiCallable}. */
 @RunWith(JUnit4.class)
 public class CollectionPatternTest {
 

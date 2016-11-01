@@ -18,26 +18,19 @@ import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
 import com.google.api.tools.framework.model.Interface;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
- * Utility class that provides service configuration data from an Interface.
- */
+/** Utility class that provides service configuration data from an Interface. */
 public class ServiceConfig {
-  /**
-   * Return the service address.
-   */
+  /** Return the service address. */
   public String getServiceAddress(Interface service) {
     return service.getModel().getServiceConfig().getName();
   }
 
-  /**
-   * Return the service port. TODO(cbao): Read the port from config.
-   */
+  /** Return the service port. TODO(cbao): Read the port from config. */
   public Integer getServicePort() {
     return 443;
   }
@@ -46,9 +39,7 @@ public class ServiceConfig {
     return service.getModel().getServiceConfig().getTitle();
   }
 
-  /**
-   * Return a list of scopes for authentication.
-   */
+  /** Return a list of scopes for authentication. */
   public Iterable<String> getAuthScopes(Interface service) {
     Set<String> result = new TreeSet<>();
     Service config = service.getModel().getServiceConfig();

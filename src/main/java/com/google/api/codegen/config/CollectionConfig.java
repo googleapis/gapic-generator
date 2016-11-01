@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.gax.protobuf.ValidationException;
@@ -29,8 +28,8 @@ import javax.annotation.Nullable;
 public abstract class CollectionConfig {
 
   /**
-   * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will
-   * be returned, and diagnostics are reported to the diag collector.
+   * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will be
+   * returned, and diagnostics are reported to the diag collector.
    */
   @Nullable
   public static CollectionConfig createCollection(

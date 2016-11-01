@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,14 +33,10 @@ import java.util.Map;
  */
 public class JavaContextCommon {
 
-  /**
-   * A regexp to match types from java.lang. Assumes well-formed qualified type names.
-   */
+  /** A regexp to match types from java.lang. Assumes well-formed qualified type names. */
   private static final String JAVA_LANG_TYPE_PREFIX = "java.lang.";
 
-  /**
-   * Escaper for formatting javadoc strings.
-   */
+  /** Escaper for formatting javadoc strings. */
   private static final Escaper JAVADOC_ESCAPER =
       Escapers.builder()
           .addEscape('&', "&amp;")
@@ -50,9 +45,7 @@ public class JavaContextCommon {
           .addEscape('*', "&ast;")
           .build();
 
-  /**
-   * A map from unboxed Java primitive type name to boxed counterpart.
-   */
+  /** A map from unboxed Java primitive type name to boxed counterpart. */
   private static final ImmutableMap<String, String> BOXED_TYPE_MAP =
       ImmutableMap.<String, String>builder()
           .put("boolean", "Boolean")
@@ -62,9 +55,7 @@ public class JavaContextCommon {
           .put("double", "Double")
           .build();
 
-  /**
-   * A bi-map from full names to short names indicating the import map.
-   */
+  /** A bi-map from full names to short names indicating the import map. */
   private final BiMap<String, String> imports = HashBiMap.create();
 
   /**
@@ -73,9 +64,7 @@ public class JavaContextCommon {
    */
   private final Map<String, Boolean> implicitImports = Maps.newHashMap();
 
-  /**
-   * Returns the Java representation of a basic type in boxed form.
-   */
+  /** Returns the Java representation of a basic type in boxed form. */
   public String boxedTypeName(String typeName) {
     return LanguageUtil.getRename(typeName, BOXED_TYPE_MAP);
   }
@@ -95,9 +84,7 @@ public class JavaContextCommon {
     return shortName;
   }
 
-  /**
-   * Checks whether the simple type name is implicitly imported from java.lang.
-   */
+  /** Checks whether the simple type name is implicitly imported from java.lang. */
   private boolean isImplicitImport(String name) {
     Boolean yes = implicitImports.get(name);
     if (yes != null) {

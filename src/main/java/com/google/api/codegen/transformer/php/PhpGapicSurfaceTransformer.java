@@ -20,12 +20,12 @@ import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.php.PhpTypeTable;
@@ -35,7 +35,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -95,7 +94,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     List<ApiMethodView> methods = generateApiMethods(context);
 
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
@@ -166,7 +165,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     for (Method method : context.getSupportedMethods()) {
       apiMethods.add(
-          apiMethodTransformer.generateDynamicLangApiMethod(context.asMethodContext(method)));
+          apiMethodTransformer.generateDynamicLangApiMethod(
+              context.asDynamicMethodContext(method)));
     }
 
     return apiMethods;

@@ -90,7 +90,7 @@ public abstract class ParamWithSimpleDoc {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder name(String val);
 
     public abstract Builder nameAsMethodName(String val);

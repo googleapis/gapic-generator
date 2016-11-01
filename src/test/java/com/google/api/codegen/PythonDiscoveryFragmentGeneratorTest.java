@@ -15,19 +15,15 @@
 package com.google.api.codegen;
 
 import com.google.common.collect.ImmutableList;
-
 import java.io.File;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/**
- * Python discovery doc fragment generator baseline tests.
- */
+/** Python discovery doc fragment generator baseline tests. */
 @RunWith(Parameterized.class)
 public class PythonDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTestBase {
 
@@ -37,8 +33,8 @@ public class PythonDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTest
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the
-   * first element a name, the second a discovery doc, and the third a partial GAPIC config.
+   * Declares test parameters, each one an array of values passed to the constructor, with the first
+   * element a name, the second a discovery doc, and the third a partial GAPIC config.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {

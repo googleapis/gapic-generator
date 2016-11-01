@@ -16,9 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -29,11 +27,11 @@ public abstract class PackageInfoView implements ViewModel {
   @Override
   public abstract String outputPath();
 
+  public abstract FileHeaderView fileHeader();
+
   public abstract String serviceTitle();
 
   public abstract List<ServiceDocView> serviceDocs();
-
-  public abstract String packageName();
 
   public abstract String domainLayerLocation();
 
@@ -53,16 +51,16 @@ public abstract class PackageInfoView implements ViewModel {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder outputPath(String val);
 
+    public abstract Builder fileHeader(FileHeaderView val);
+
     public abstract Builder serviceTitle(String val);
 
     public abstract Builder serviceDocs(List<ServiceDocView> val);
-
-    public abstract Builder packageName(String val);
 
     public abstract Builder domainLayerLocation(String val);
 
