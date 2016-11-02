@@ -62,6 +62,12 @@ public abstract class FieldConfig {
       throw new IllegalArgumentException(
           "resourceName may only be null if resourceNameTreatment is NONE");
     }
+    if (resourceNameConfig != null
+        && resourceNameConfig.getResourceNameType() == ResourceNameType.UNFORMATTED) {
+      throw new IllegalArgumentException(
+          "FieldConfig may not contain a ResourceNameConfig of type "
+              + ResourceNameType.UNFORMATTED);
+    }
     return new AutoValue_FieldConfig(field, resourceNameTreatment, resourceNameConfig);
   }
 
@@ -113,14 +119,18 @@ public abstract class FieldConfig {
 
     ResourceNameConfig resourceNameConfig = null;
     if (entityName != null) {
-      resourceNameConfig = resourceNameConfigs.get(entityName);
-      if (resourceNameConfig == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "No resourceNameConfig with entity_name \"%s\"",
-                entityName));
-        return null;
+      if (entityName.equals(AnyResourceNameConfig.GAPIC_CONFIG_ANY_VALUE)) {
+        resourceNameConfig = AnyResourceNameConfig.instance();
+      } else {
+        resourceNameConfig = resourceNameConfigs.get(entityName);
+        if (resourceNameConfig == null) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "No resourceNameConfig with entity_name \"%s\"",
+                  entityName));
+          return null;
+        }
       }
     }
 

@@ -48,6 +48,7 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.ResourceName;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
@@ -1389,6 +1390,31 @@ public class LibraryServiceApi implements AutoCloseable {
     ListStringsRequest request =
         ListStringsRequest.newBuilder()
 
+        .build();
+    return listStrings(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   ResourceName name = ShelfName.create("[SHELF_ID]");
+   *   for (String element : libraryServiceApi.listStrings(name).iterateAllElements()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param name
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final ListStringsPagedResponse listStrings(ResourceName name) {
+    ListStringsRequest request =
+        ListStringsRequest.newBuilder()
+        .setNameWithResource(name)
         .build();
     return listStrings(request);
   }

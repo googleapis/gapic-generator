@@ -339,7 +339,14 @@ public abstract class MethodConfig {
       treatment = ResourceNameTreatment.NONE;
     }
 
-    ResourceNameConfig resourceNameConfig = resourceNameConfigs.get(entityName);
+    ResourceNameConfig resourceNameConfig = null;
+    if (entityName != null) {
+      if (entityName.equals(AnyResourceNameConfig.GAPIC_CONFIG_ANY_VALUE)) {
+        resourceNameConfig = AnyResourceNameConfig.instance();
+      } else {
+        resourceNameConfig = resourceNameConfigs.get(entityName);
+      }
+    }
 
     FieldConfig.validate(messageConfigs, field, treatment, resourceNameConfig);
 

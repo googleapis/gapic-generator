@@ -52,6 +52,7 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.ResourceName;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
@@ -582,6 +583,35 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void listStringsTest2() {
+    String nextPageToken = "";
+    String stringsElement = "stringsElement474465855";
+    List<String> strings = Arrays.asList(stringsElement);
+    ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
+      .setNextPageToken(nextPageToken)
+      .addAllStrings(strings)
+      .build();
+    List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
+    expectedResponses.add(expectedResponse);
+    mockLibraryService.setResponses(expectedResponses);
+
+    ResourceName name = ShelfName.create("[SHELF_ID]");
+
+    ListStringsPagedResponse pagedListResponse = api.listStrings(name);
+
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
+
+    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, actualRequest.getNameAsResource());
   }
 
   @Test

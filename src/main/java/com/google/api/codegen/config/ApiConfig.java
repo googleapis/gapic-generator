@@ -18,6 +18,7 @@ import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
+import com.google.api.codegen.InvalidCollectionProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.tools.framework.model.Diag;
@@ -222,13 +223,20 @@ public abstract class ApiConfig {
       DiagCollector diagCollector, ConfigProto configProto) {
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
         createSingleResourceNameConfigs(diagCollector, configProto);
-    ImmutableMap<String, ResourceNameOneofConfig> collectionOneofConfigs =
+    ImmutableMap<String, UnformattedResourceNameConfig> unformattedResourceNameConfigs =
+        createUnformattedResourceNameConfigs(
+            diagCollector, configProto.getInvalidCollectionsList());
+    ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigs =
         createResourceNameOneofConfigs(
-            diagCollector, configProto.getCollectionOneofsList(), singleResourceNameConfigs);
+            diagCollector,
+            configProto.getCollectionOneofsList(),
+            singleResourceNameConfigs,
+            unformattedResourceNameConfigs);
 
     ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap = ImmutableMap.builder();
     resourceCollectionMap.putAll(singleResourceNameConfigs);
-    resourceCollectionMap.putAll(collectionOneofConfigs);
+    resourceCollectionMap.putAll(resourceNameOneofConfigs);
+    resourceCollectionMap.putAll(unformattedResourceNameConfigs);
     return resourceCollectionMap.build();
   }
 
@@ -280,16 +288,33 @@ public abstract class ApiConfig {
     }
   }
 
+  private static ImmutableMap<String, UnformattedResourceNameConfig>
+      createUnformattedResourceNameConfigs(
+          DiagCollector diagCollector, Iterable<InvalidCollectionProto> invalidConfigProtos) {
+    ImmutableMap.Builder<String, UnformattedResourceNameConfig> invalidConfigBuilder =
+        ImmutableMap.builder();
+    for (InvalidCollectionProto invalidConfigProto : invalidConfigProtos) {
+      UnformattedResourceNameConfig unformattedConfig =
+          UnformattedResourceNameConfig.createInvalidCollection(diagCollector, invalidConfigProto);
+      if (unformattedConfig == null) {
+        continue;
+      }
+      invalidConfigBuilder.put(unformattedConfig.getEntityName(), unformattedConfig);
+    }
+    return invalidConfigBuilder.build();
+  }
+
   private static ImmutableMap<String, ResourceNameOneofConfig> createResourceNameOneofConfigs(
       DiagCollector diagCollector,
       Iterable<CollectionOneofProto> oneofConfigProtos,
-      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs) {
+      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
+      ImmutableMap<String, UnformattedResourceNameConfig> unformattedResourceNameConfigs) {
     ImmutableMap.Builder<String, ResourceNameOneofConfig> oneofConfigBuilder =
         ImmutableMap.builder();
     for (CollectionOneofProto oneofProto : oneofConfigProtos) {
       ResourceNameOneofConfig oneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
-              diagCollector, oneofProto, singleResourceNameConfigs);
+              diagCollector, oneofProto, singleResourceNameConfigs, unformattedResourceNameConfigs);
       if (oneofConfig == null) {
         continue;
       }

@@ -26,11 +26,15 @@ license_header:
 collections:
   - name_pattern: shelves/{shelf_id}
     entity_name: shelf
+invalid_collections:
+  - entity_name: deleted_book
+    invalid_value: _deleted-book_
 collection_oneofs:
   - oneof_name: book_oneof
     collection_names:
     - book
     - archived_book
+    - deleted_book
 interfaces:
 - name: google.example.library.v1.LibraryService
   retry_codes_def:
@@ -293,6 +297,8 @@ interfaces:
     flattening:
       groups:
       - parameters: []
+      - parameters:
+        - name
     page_streaming:
       request:
         page_size_field: page_size
@@ -304,6 +310,9 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: "*"
   - name: AddComments
     flattening:
       groups:
@@ -522,6 +531,9 @@ resource_name_generation:
   field_entity_map:
     name: book
     other_shelf_name: shelf
+- message_name: ListStringsRequest
+  field_entity_map:
+    name: "*"
 - message_name: GetBookFromArchiveRequest
   field_entity_map:
     name: archived_book

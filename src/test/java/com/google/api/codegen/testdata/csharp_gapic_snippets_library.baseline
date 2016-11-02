@@ -517,7 +517,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task ListStringsAsync()
+        public async Task ListStringsAsync1()
         {
             // Snippet: ListStringsAsync(string,int?,CallSettings)
             // Create client
@@ -550,7 +550,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public void ListStrings()
+        public void ListStrings1()
         {
             // Snippet: ListStrings(string,int?,CallSettings)
             // Create client
@@ -560,6 +560,71 @@ namespace Google.Example.Library.V1.Snippets
             // Make the request
             IPagedEnumerable<ListStringsResponse,string> response =
                 libraryServiceClient.ListStrings();
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (string item in response)
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            }
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (string item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+            // End snippet
+        }
+
+        public async Task ListStringsAsync2()
+        {
+            // Snippet: ListStringsAsync(string,string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string name = "";
+            // Make the request
+            IPagedAsyncEnumerable<ListStringsResponse,string> response =
+                libraryServiceClient.ListStringsAsync(name);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            await response.ForEachAsync((string item) =>
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            });
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (string item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            });
+            // End snippet
+        }
+
+        public void ListStrings2()
+        {
+            // Snippet: ListStrings(string,string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string name = "";
+            // Make the request
+            IPagedEnumerable<ListStringsResponse,string> response =
+                libraryServiceClient.ListStrings(name);
 
             // Iterate over all response items, lazily performing RPCs as required
             foreach (string item in response)

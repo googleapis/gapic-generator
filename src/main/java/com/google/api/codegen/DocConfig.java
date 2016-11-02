@@ -102,9 +102,11 @@ public abstract class DocConfig {
       for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
         SingleResourceNameConfig resourceNameConfig =
             context.getSingleResourceNameConfig(fieldNamePattern.getValue());
-        InitValueConfig initValueConfig =
-            InitValueConfig.create(context.getApiWrapperName(service), resourceNameConfig);
-        initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
+        if (resourceNameConfig != null) {
+          InitValueConfig initValueConfig =
+              InitValueConfig.create(context.getApiWrapperName(service), resourceNameConfig);
+          initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
+        }
       }
 
       InitCodeNode rootNode =

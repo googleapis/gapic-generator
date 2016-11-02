@@ -22,14 +22,17 @@ import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class InvalidCollectionConfig {
+public abstract class UnformattedResourceNameConfig implements ResourceNameConfig {
 
-  public abstract String getEntityName();
+  public abstract String getUnformattedValue();
 
-  public abstract String getInvalidValue();
+  @Override
+  public ResourceNameType getResourceNameType() {
+    return ResourceNameType.SINGLE;
+  }
 
   @Nullable
-  public static InvalidCollectionConfig createInvalidCollection(
+  public static UnformattedResourceNameConfig createInvalidCollection(
       DiagCollector diagCollector, InvalidCollectionProto invalidCollectionProto) {
 
     String entityName = invalidCollectionProto.getEntityName();
@@ -46,6 +49,6 @@ public abstract class InvalidCollectionConfig {
       return null;
     }
 
-    return new AutoValue_InvalidCollectionConfig(entityName, invalidValue);
+    return new AutoValue_UnformattedResourceNameConfig(entityName, invalidValue);
   }
 }
