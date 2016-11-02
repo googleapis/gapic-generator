@@ -18,7 +18,7 @@ import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PhpTypeNameGenerator extends TypeNameGenerator {
@@ -42,6 +42,8 @@ public class PhpTypeNameGenerator extends TypeNameGenerator {
 
   @Override
   public List<String> getMethodNameComponents(List<String> nameComponents) {
+    ArrayList<String> out = new ArrayList<>();
+
     nameComponents = super.getMethodNameComponents(nameComponents);
     String verb = nameComponents.remove(nameComponents.size() - 1); // Pop the last element.
     if (RENAMED_METHODS.contains(verb)) {
@@ -49,13 +51,15 @@ public class PhpTypeNameGenerator extends TypeNameGenerator {
         verb += Name.lowerCamel(s).toUpperCamel();
       }
     }
-    String resource = nameComponents.get(0);
     // If there are multiple resources before the verb, they're joined on '_'.
     // Ex: "$service->billingAccounts_projects->listBillingAccountsProjects"
     if (nameComponents.size() > 1) {
-      resource = Joiner.on('_').join(nameComponents);
+      out.add(Joiner.on('_').join(nameComponents));
+    } else if (nameComponents.size() == 1) {
+      out.add(nameComponents.get(0));
     }
-    return Arrays.asList(resource, verb);
+    out.add(verb);
+    return out;
   }
 
   @Override

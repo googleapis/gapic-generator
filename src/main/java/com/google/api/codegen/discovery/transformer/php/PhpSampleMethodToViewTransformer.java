@@ -29,7 +29,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +36,6 @@ import java.util.List;
 public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
   private static final String TEMPLATE_FILENAME = "php/sample.snip";
-
-  // Map of rename rules for fields.
-  // Could be done through overrides, but this is a rule implemented in the PHP
-  // client library generator.
-  private static final ImmutableMap<String, String> FIELD_RENAMES =
-      ImmutableMap.of("objectId", "object_id_");
 
   public PhpSampleMethodToViewTransformer() {}
 
@@ -79,13 +72,9 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      String name = namer.localVarName(Name.lowerCamel(field.name()));
-      if (FIELD_RENAMES.containsKey(field.name())) {
-        name = FIELD_RENAMES.get(field.name());
-      }
       SampleFieldView sampleFieldView =
           SampleFieldView.newBuilder()
-              .name(name)
+              .name(namer.localVarName(Name.lowerCamel(field.name())))
               .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
               .example(field.example())
               .description(field.description())
