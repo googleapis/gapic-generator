@@ -2636,6 +2636,7 @@ namespace Google.Example.Library.V1
         partial void Modify_ListStringsRequest(ref ListStringsRequest request, ref CallSettings settings);
         partial void Modify_AddCommentsRequest(ref AddCommentsRequest request, ref CallSettings settings);
         partial void Modify_GetBookFromArchiveRequest(ref GetBookFromArchiveRequest request, ref CallSettings settings);
+        partial void Modify_GetBookFromAnywhereRequest(ref GetBookFromAnywhereRequest request, ref CallSettings settings);
         partial void Modify_UpdateBookIndexRequest(ref UpdateBookIndexRequest request, ref CallSettings settings);
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref CallSettings settings);
         partial void Modify_AddTagRequest(ref AddTagRequest request, ref CallSettings settings);
@@ -3720,12 +3721,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             string name,
-            CallSettings callSettings = null) => _callGetBookFromAnywhere.Async(
-                new GetBookFromAnywhereRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
+            {
+                Name = name,
+            };
+            Modify_GetBookFromAnywhereRequest(ref request, ref callSettings);
+            return _callGetBookFromAnywhere.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a book from a shelf or archive.
@@ -3741,12 +3745,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override BookFromAnywhere GetBookFromAnywhere(
             string name,
-            CallSettings callSettings = null) => _callGetBookFromAnywhere.Sync(
-                new GetBookFromAnywhereRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
+            {
+                Name = name,
+            };
+            Modify_GetBookFromAnywhereRequest(ref request, ref callSettings);
+            return _callGetBookFromAnywhere.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Updates the index of a book.
