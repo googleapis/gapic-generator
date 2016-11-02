@@ -26,6 +26,7 @@ public class CSharpCommonTransformer {
   public void addCommonImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     // Common imports, only one class per required namespace is needed.
+    typeTable.saveNicknameFor("Google.Api.Gax.GaxPreconditions");
     typeTable.saveNicknameFor("Google.Api.Gax.Grpc.ServiceSettingsBase");
     typeTable.saveNicknameFor("Google.Protobuf.WellKnownTypes.SomeSortOfWellKnownType");
     typeTable.saveNicknameFor("Grpc.Core.StatusCode");
