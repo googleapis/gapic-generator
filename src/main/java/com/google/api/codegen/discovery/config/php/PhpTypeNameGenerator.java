@@ -16,7 +16,9 @@ package com.google.api.codegen.discovery.config.php;
 
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
+import java.util.Arrays;
 import java.util.List;
 
 public class PhpTypeNameGenerator extends TypeNameGenerator {
@@ -47,8 +49,13 @@ public class PhpTypeNameGenerator extends TypeNameGenerator {
         verb += Name.lowerCamel(s).toUpperCamel();
       }
     }
-    nameComponents.add(verb);
-    return nameComponents;
+    String resource = nameComponents.get(0);
+    // If there are multiple resources before the verb, they're joined on '_'.
+    // Ex: "$service->billingAccounts_projects->listBillingAccountsProjects"
+    if (nameComponents.size() > 1) {
+      resource = Joiner.on('_').join(nameComponents);
+    }
+    return Arrays.asList(resource, verb);
   }
 
   @Override
