@@ -378,44 +378,54 @@
        sample = comments(util.getDocLines(sampleCode(methodView)))
     @if documentation
       {@documentation}
+      @if method.getRequestStreaming()
+        @#
+        @# @@note
+        @#   EXPERIMENTAL:
+        @#     Streaming requests are still undergoing review.
+        @#     This method interface might change in the future.
+        @#
+      @end
     @end
 
     @if sample
       {@sample}
     @end
 
-    @if or(requiredParams, optionalParams)
-      def {@methodName} @\
-          @if requiredParams
-            @if optionalParams
-              {@requiredParameterNames(requiredParams)},
-              {@optionalParameterValues(optionalParams)},
-            @else
-              {@requiredParameterNames(requiredParams)},
-            @end
-          @else
-            {@optionalParameterValues(optionalParams)},
-          @end
-          options: nil
-        req = {@inputTypeName}.new({
-          @if requiredParams
-            @if optionalParams
-              {@namedParameters(requiredParams)},
-              {@namedParameters(optionalParams)}
-            @else
-              {@namedParameters(requiredParams)}
-            @end
-          @else
-            {@namedParameters(optionalParams)}
-          @end
-        }.delete_if { |_, v| v.nil? })
-        @@{@methodName}.call(req, options)
+    @if method.getRequestStreaming()
+      def {@methodName} reqs, options: nil
+        @@{@methodName}.call(reqs, options)
       end
     @else
-      def {@methodName} options: nil
-        req = {@inputTypeName}.new
-        @@{@methodName}.call(req, options)
-      end
+      @if or(requiredParams, optionalParams)
+        def {@methodName} @\
+            @if requiredParams
+              {@requiredParameterNames(requiredParams)},
+            @end
+            @if optionalParams
+              {@optionalParameterValues(optionalParams)},
+            @end
+            options: nil
+          req = {@inputTypeName}.new({
+            @if requiredParams
+              @if optionalParams
+                {@namedParameters(requiredParams)},
+                {@namedParameters(optionalParams)}
+              @else
+                {@namedParameters(requiredParams)}
+              @end
+            @else
+              {@namedParameters(optionalParams)}
+            @end
+          }.delete_if { |_, v| v.nil? })
+          @@{@methodName}.call(req, options)
+        end
+      @else
+        def {@methodName} options: nil
+          req = {@inputTypeName}.new
+          @@{@methodName}.call(req, options)
+        end
+      @end
     @end
   @end
 @end

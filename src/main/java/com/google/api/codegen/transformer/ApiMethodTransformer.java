@@ -503,13 +503,15 @@ public class ApiMethodTransformer {
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
+    InitCodeOutputType initCodeOutputType =
+        context.getMethod().getRequestStreaming()
+            ? InitCodeOutputType.SingleObject
+            : InitCodeOutputType.FieldList;
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
             context.cloneWithEmptyTypeTable(),
             createInitCodeContext(
-                context,
-                context.getMethodConfig().getRequiredFieldConfigs(),
-                InitCodeOutputType.FieldList)));
+                context, context.getMethodConfig().getRequiredFieldConfigs(), initCodeOutputType)));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 

@@ -21,4 +21,9 @@ public class RubyFeatureConfig extends FeatureConfig {
   public boolean enableMixins() {
     return true;
   }
+
+  @Override
+  public boolean enableGrpcStreaming() {
+    return true;
+  }
 }
