@@ -414,10 +414,17 @@
     @case "PagedOptionalArrayMethod"
 
       /**
-       * Stream version of {@@link {@methodName(method)}}.
+       * Equivalent to {@@link {@methodName(method)}}, but returns a NodeJS Stream object.
        *
-       * This is the same method as {@methodName(method)} but returns a NodeJS Stream object.
-       * The callback for 'data' event will be called everytime a new item arrives.
+       * This fetches the paged responses for {@@link {@methodName(method)}} continuously
+       * and invokes the callback registered for 'data' event for each element in the
+       * responses.
+       *
+       * The returned object has 'end' method when no more elements are required.
+       *
+       * autoPaginate option will be ignored.
+       *
+       * @@see {@@link https://nodejs.org/api/stream.html}
        *
        {@comments(util.getDocLines(context.paramComments(service, method)))}
        * @@return {Stream}
