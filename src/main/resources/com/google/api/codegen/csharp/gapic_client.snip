@@ -314,6 +314,11 @@
         /// </summary>
         public override {@api.grpcTypeName} GrpcClient { get; }
         
+        // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
+        @join method : api.modifyMethods
+            partial void {@method.name}(ref {@method.requestTypeName} request, ref CallSettings settings);
+        @end
+        
         @join method : api.apiMethodsImpl
             {@xmlDoc(method.doc)}
             {@method(method, TRUE)}
@@ -342,12 +347,19 @@
 @private flattenedMethodSync(method, isImpl)
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.callableName}.Sync(
-                new {@method.apiRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                },
-                callSettings);
+            {@objectParams(method.methodParams)})
+        {
+            {@method.apiRequestTypeName} request = new {@method.apiRequestTypeName}
+            {
+                {@requestProperties(method.forwardingMethodParams)}
+            };
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            @if method.hasReturnValue
+                return {@method.callableName}.Sync(request, callSettings);
+            @else
+                {@method.callableName}.Sync(request, callSettings);
+            @end
+        }
     @else
         public virtual {@method.responseTypeName} {@method.name}(
             {@objectParams(method.methodParams)})
@@ -360,12 +372,15 @@
 @private flattenedMethodAsyncCallSettings(method, isImpl)
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.callableName}.Async(
-                new {@method.apiRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                },
-                callSettings);
+            {@objectParams(method.methodParams)})
+        {
+            {@method.apiRequestTypeName} request = new {@method.apiRequestTypeName}
+            {
+                {@requestProperties(method.forwardingMethodParams)}
+            };
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return {@method.callableName}.Async(request, callSettings);
+        }
     @else
         public virtual {@method.responseTypeName} {@method.name}(
             {@objectParams(method.methodParams)})
@@ -389,15 +404,17 @@
 @private pagedFlattenedMethodSync(method, isImpl)
     @if isImpl
         public override IPagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-            {@objectParams(method.methodParams)}) => new PagedEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>(
-                {@method.callableName},
-                new {@method.apiRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+            {@objectParams(method.methodParams)})
+        {
+            {@method.apiRequestTypeName} request = new {@method.apiRequestTypeName}
+            {
+                {@requestProperties(method.forwardingMethodParams)}
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return new PagedEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
+        }
     @else
         public virtual IPagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@objectParams(method.methodParams)})
@@ -410,15 +427,17 @@
 @private pagedFlattenedMethodAsync(method, isImpl)
     @if isImpl
         public override IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-            {@objectParams(method.methodParams)}) => new PagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>(
-                {@method.callableName},
-                new {@method.apiRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+            {@objectParams(method.methodParams)})
+        {
+            {@method.apiRequestTypeName} request = new {@method.apiRequestTypeName}
+            {
+                {@requestProperties(method.forwardingMethodParams)}
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return new PagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
+        }
     @else
         public virtual IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@objectParams(method.methodParams)})

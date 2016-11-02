@@ -41,6 +41,7 @@ import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.ModifyMethodView;
 import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
@@ -167,6 +168,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.apiMethodsImpl(methodsImpl);
     apiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     apiClass.reroutedGrpcClients(generateReroutedGrpcView(context));
+    apiClass.modifyMethods(generateModifyMethods(context));
 
     return apiClass.build();
   }
@@ -235,6 +237,19 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       }
     }
     return new ArrayList<ReroutedGrpcView>(reroutedViews);
+  }
+
+  private List<ModifyMethodView> generateModifyMethods(SurfaceTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    List<ModifyMethodView> modifyMethods = new ArrayList<>();
+    for (Method method : context.getSupportedMethods()) {
+      ModifyMethodView.Builder builder = ModifyMethodView.builder();
+      builder.name(namer.getModifyMethodName(method));
+      builder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
+      modifyMethods.add(builder.build());
+    }
+    return modifyMethods;
   }
 
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
