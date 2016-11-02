@@ -199,7 +199,7 @@ public class SampleInitCodeTest {
     Truth.assertThat(
             actualFormattedFieldNode
                 .getInitValueConfig()
-                .getCollectionValues()
+                .getResourceNameBindingValues()
                 .equals(expectedCollectionValues))
         .isTrue();
   }

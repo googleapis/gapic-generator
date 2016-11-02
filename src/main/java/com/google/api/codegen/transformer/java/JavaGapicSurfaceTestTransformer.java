@@ -24,6 +24,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -360,15 +361,15 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .build());
 
     if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
-      Name resourceName = namer.getResourceTypeName(resourcesFieldConfig.getEntityName());
+      Name resourceName =
+          Name.upperCamel(namer.getResourceTypeName(resourcesFieldConfig.getResourceNameConfig()));
       resourceTypeName =
           methodContext
               .getNamer()
               .getAndSaveResourceTypeName(
                   methodContext.getTypeTable(),
-                  resourcesField,
-                  resourcesField.getType().makeOptional(),
-                  resourcesFieldConfig.getEntityName());
+                  resourcesFieldConfig,
+                  resourcesField.getType().makeOptional());
 
       resourcesFieldGetterName =
           namer.getResourceNameFieldGetFunctionName(
@@ -443,6 +444,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       MethodTransformerContext context) {
     ApiConfig apiConfig = context.getApiConfig();
     ResourceNameMessageConfigs messageConfig = apiConfig.getResourceNameMessageConfigs();
+    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
+        apiConfig.getResourceNameConfigs();
     ResourceNameTreatment treatment = context.getMethodConfig().getDefaultResourceNameTreatment();
 
     if (messageConfig == null || treatment == ResourceNameTreatment.NONE) {
@@ -451,10 +454,11 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ImmutableMap.Builder<String, FieldConfig> builder = ImmutableMap.builder();
     for (Field field : context.getMethod().getOutputMessage().getFields()) {
       if (messageConfig.fieldHasResourceName(field)) {
+        ResourceNameConfig resourceNameConfig =
+            resourceNameConfigs.get(messageConfig.getFieldResourceName(field));
         builder.put(
             field.getFullName(),
-            FieldConfig.createFieldConfig(
-                field, treatment, messageConfig.getFieldResourceName(field)));
+            FieldConfig.createFieldConfig(field, treatment, resourceNameConfig));
       }
     }
     return builder.build();

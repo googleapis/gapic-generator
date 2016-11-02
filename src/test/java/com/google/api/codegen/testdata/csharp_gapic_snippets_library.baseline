@@ -634,7 +634,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
             // Make the request
-            Book response = await libraryServiceClient.GetBookFromArchiveAsync(formattedName);
+            BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(formattedName);
             // End snippet
         }
 
@@ -646,7 +646,32 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
             // Make the request
-            Book response = libraryServiceClient.GetBookFromArchive(formattedName);
+            BookFromArchive response = libraryServiceClient.GetBookFromArchive(formattedName);
+            // End snippet
+        }
+
+        public async Task GetBookFromAnywhereAsync()
+        {
+            // Snippet: GetBookFromAnywhereAsync(string,CallSettings)
+            // Additional: GetBookFromAnywhereAsync(string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string name = "";
+            // Make the request
+            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name);
+            // End snippet
+        }
+
+        public void GetBookFromAnywhere()
+        {
+            // Snippet: GetBookFromAnywhere(string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string name = "";
+            // Make the request
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name);
             // End snippet
         }
 

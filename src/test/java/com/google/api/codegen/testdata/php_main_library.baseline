@@ -38,6 +38,7 @@ use google\example\library\v1\CreateShelfRequest;
 use google\example\library\v1\DeleteBookRequest;
 use google\example\library\v1\DeleteShelfRequest;
 use google\example\library\v1\FindRelatedBooksRequest;
+use google\example\library\v1\GetBookFromAnywhereRequest;
 use google\example\library\v1\GetBookFromArchiveRequest;
 use google\example\library\v1\GetBookRequest;
 use google\example\library\v1\GetShelfRequest;
@@ -268,7 +269,7 @@ class LibraryServiceApi
     private static function getArchivedBookNameTemplate()
     {
         if (self::$archivedBookNameTemplate == null) {
-            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path=**}/books/{book_id}');
+            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path}/books/{book_id=**}');
         }
 
         return self::$archivedBookNameTemplate;
@@ -400,6 +401,7 @@ class LibraryServiceApi
             'listStrings' => $defaultDescriptors,
             'addComments' => $defaultDescriptors,
             'getBookFromArchive' => $defaultDescriptors,
+            'getBookFromAnywhere' => $defaultDescriptors,
             'updateBookIndex' => $defaultDescriptors,
             'findRelatedBooks' => $defaultDescriptors,
             'addTag' => $defaultDescriptors,
@@ -1238,7 +1240,7 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return google\example\library\v1\BookFromArchive
      *
      * @throws Google\GAX\ApiException if the remote call fails
      */
@@ -1251,6 +1253,53 @@ class LibraryServiceApi
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBookFromArchive', $mergedSettings, $this->descriptors['getBookFromArchive']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Gets a book from a shelf or archive.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $name = "";
+     *     $response = $libraryServiceApi->getBookFromAnywhere($name);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
+     * ```
+     *
+     * @param string $name The name of the book to retrieve.
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeoutMillis is ignored.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return google\example\library\v1\BookFromAnywhere
+     *
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
+    public function getBookFromAnywhere($name, $optionalArgs = [])
+    {
+        $request = new GetBookFromAnywhereRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['getBookFromAnywhere']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'GetBookFromAnywhere', $mergedSettings, $this->descriptors['getBookFromAnywhere']);
 
         return $callable(
             $request,

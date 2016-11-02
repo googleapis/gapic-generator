@@ -284,17 +284,17 @@
 @end
 
 @private pathTemplateSection(service)
-    @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    @if context.getApiConfig.getSingleResourceNameConfigs()
+        @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
             {@pathTemplateName(collectionConfig)} = path_template.PathTemplate(
                 '{@collectionConfig.getNamePattern}')
         @end
 
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+        @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
             {@createResourceFunction(collectionConfig)}
         @end
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+        @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
             {@createMatchFunctions(collectionConfig)}
         @end

@@ -15,8 +15,8 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -186,8 +186,9 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
-    return inittedConstantName(Name.from(collectionConfig.getEntityName(), "template"));
+  public String getPathTemplateName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "template"));
   }
 
   @Override

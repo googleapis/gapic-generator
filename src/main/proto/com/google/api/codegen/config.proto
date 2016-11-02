@@ -83,6 +83,13 @@ message ConfigProto {
   // A list of API interface configurations.
   repeated InterfaceConfigProto interfaces = 10;
 
+  // A list of resource name collection configs. This must be consistent with
+  // collections defined in the interfaces.
+  repeated CollectionConfigProto collections = 15;
+
+  // A list of resource name oneof configs.
+  repeated CollectionOneofProto collection_oneofs = 16;
+
   // A list of message resource name configurations.
   repeated ResourceNameMessageConfigProto resource_name_generation = 20;
 }
@@ -163,6 +170,15 @@ message CollectionConfigProto {
 
   // Name to be used as a basis for generated methods.
   string entity_name = 2;
+}
+
+message CollectionOneofProto {
+  // Name to be used as a basis for generated methods.
+  string oneof_name = 1;
+
+  // A list of the entity names of the CollectionConfigs to be included in the
+  // oneof collection.
+  repeated string collection_names = 2;
 }
 
 // `MethodConfigProto` describes the generator configuration for a method.

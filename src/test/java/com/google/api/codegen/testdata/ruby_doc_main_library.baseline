@@ -115,7 +115,7 @@ module Library
       private_constant :BOOK_PATH_TEMPLATE
 
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive_path=**}/books/{book_id}"
+        "archives/{archive_path}/books/{book_id=**}"
       )
 
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
@@ -358,6 +358,10 @@ module Library
         @get_book_from_archive = Google::Gax.create_api_call(
           @library_service_stub.method(:get_book_from_archive),
           defaults["get_book_from_archive"]
+        )
+        @get_book_from_anywhere = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_book_from_anywhere),
+          defaults["get_book_from_anywhere"]
         )
         @update_book_index = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book_index),
@@ -896,7 +900,7 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
-      # @return [Google::Example::Library::V1::Book]
+      # @return [Google::Example::Library::V1::BookFromArchive]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1/library_service_api"
@@ -914,6 +918,33 @@ module Library
           name: name
         }.delete_if { |_, v| v.nil? })
         @get_book_from_archive.call(req, options)
+      end
+
+      # Gets a book from a shelf or archive.
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::BookFromAnywhere]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1/library_service_api"
+      #
+      #   LibraryServiceApi = Library::V1::LibraryServiceApi
+      #
+      #   library_service_api = LibraryServiceApi.new
+      #   name = ''
+      #   response = library_service_api.get_book_from_anywhere(name)
+
+      def get_book_from_anywhere \
+          name,
+          options: nil
+        req = Google::Example::Library::V1::GetBookFromAnywhereRequest.new({
+          name: name
+        }.delete_if { |_, v| v.nil? })
+        @get_book_from_anywhere.call(req, options)
       end
 
       # Updates the index of a book.

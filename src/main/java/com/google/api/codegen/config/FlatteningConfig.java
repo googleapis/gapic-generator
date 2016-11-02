@@ -38,6 +38,7 @@ public abstract class FlatteningConfig {
   public static FlatteningConfig createFlattening(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       FlatteningGroupProto flatteningGroup,
       Method method) {
@@ -47,7 +48,13 @@ public abstract class FlatteningConfig {
     for (String parameter : flatteningGroup.getParametersList()) {
       FieldConfig fieldConfig =
           FieldConfig.createFlattenedFieldConfig(
-              diagCollector, messageConfigs, methodConfigProto, method, flatteningGroup, parameter);
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              method,
+              flatteningGroup,
+              parameter);
       if (fieldConfig == null) {
         missing = true;
       } else {

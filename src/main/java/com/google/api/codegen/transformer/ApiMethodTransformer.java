@@ -15,10 +15,10 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -275,10 +275,7 @@ public class ApiMethodTransformer {
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
       resourceTypeName =
           namer.getAndSaveResourceTypeName(
-              typeTable,
-              resourceField,
-              resourceField.getType().makeOptional(),
-              resourceFieldConfig.getEntityName());
+              typeTable, resourceFieldConfig, resourceField.getType().makeOptional());
     } else {
       resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
     }
@@ -465,13 +462,14 @@ public class ApiMethodTransformer {
           context.getMethodConfig().getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
-        CollectionConfig collectionConfig = context.getCollectionConfig(entityName);
-        if (collectionConfig == null) {
+        SingleResourceNameConfig resourceNameConfig =
+            context.getSimpleResourceNameConfig(entityName);
+        if (resourceNameConfig == null) {
           throw new IllegalStateException("No collection config with id '" + entityName + "'");
         }
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
         check.pathTemplateName(
-            context.getNamer().getPathTemplateName(context.getInterface(), collectionConfig));
+            context.getNamer().getPathTemplateName(context.getInterface(), resourceNameConfig));
         check.paramName(context.getNamer().getVariableName(field));
         check.allowEmptyString(shouldAllowEmpty(context, field));
         check.validationMessageContext(
@@ -654,15 +652,13 @@ public class ApiMethodTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (namer.shouldImportRequestObjectParamType(field)) {
-        typeName =
-            namer.getAndSaveResourceTypeName(
-                typeTable, field, field.getType(), fieldConfig.getEntityName());
+        typeName = namer.getAndSaveResourceTypeName(typeTable, fieldConfig, field.getType());
       }
       if (namer.shouldImportRequestObjectParamElementType(field)) {
         // Use makeOptional to remove repeated property from type
         elementTypeName =
             namer.getAndSaveResourceTypeName(
-                typeTable, field, field.getType().makeOptional(), fieldConfig.getEntityName());
+                typeTable, fieldConfig, field.getType().makeOptional());
       }
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {

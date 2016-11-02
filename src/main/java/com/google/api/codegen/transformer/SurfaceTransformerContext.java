@@ -16,10 +16,10 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -27,7 +27,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,12 +116,8 @@ public abstract class SurfaceTransformerContext {
     }
   }
 
-  public Collection<CollectionConfig> getCollectionConfigs() {
-    return getInterfaceConfig().getCollectionConfigs();
-  }
-
-  public CollectionConfig getCollectionConfig(String entityName) {
-    return getInterfaceConfig().getCollectionConfig(entityName);
+  public Iterable<SingleResourceNameConfig> getSimpleResourceNameConfigs() {
+    return getApiConfig().getSingleResourceNameConfigs();
   }
 
   public MethodTransformerContext asFlattenedMethodContext(

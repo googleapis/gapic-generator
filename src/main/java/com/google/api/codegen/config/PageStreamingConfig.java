@@ -24,6 +24,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 
 /** PageStreamingConfig represents the page streaming configuration for a method. */
@@ -47,6 +48,7 @@ public abstract class PageStreamingConfig {
   public static PageStreamingConfig createPageStreaming(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       Method method) {
     PageStreamingConfigProto pageStreaming = methodConfigProto.getPageStreaming();
@@ -108,11 +110,11 @@ public abstract class PageStreamingConfig {
       if (methodConfigProto.getResourceNameTreatment() == ResourceNameTreatment.STATIC_TYPES
           && messageConfigs != null
           && messageConfigs.fieldHasResourceName(resourcesField)) {
+        ResourceNameConfig resourceNameConfig =
+            resourceNameConfigs.get(messageConfigs.getFieldResourceName(resourcesField));
         resourcesFieldConfig =
             FieldConfig.createFieldConfig(
-                resourcesField,
-                ResourceNameTreatment.STATIC_TYPES,
-                messageConfigs.getFieldResourceName(resourcesField));
+                resourcesField, ResourceNameTreatment.STATIC_TYPES, resourceNameConfig);
       } else {
         resourcesFieldConfig = FieldConfig.createDefaultFieldConfig(resourcesField);
       }
