@@ -32,6 +32,7 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
   /** A map from primitive types in proto to Java counterparts. */
   private static final ImmutableMap<Field.Kind, String> PRIMIVITVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
+          .put(Field.Kind.TYPE_UNKNOWN, "java.lang.Object")
           .put(Field.Kind.TYPE_BOOL, "boolean")
           .put(Field.Kind.TYPE_INT32, "int")
           .put(Field.Kind.TYPE_INT64, "long")
@@ -46,6 +47,7 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
   /** A map from primitive types in proto to zero value in Java. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
+          .put(Field.Kind.TYPE_UNKNOWN, "new Object()")
           .put(Field.Kind.TYPE_BOOL, "false")
           .put(Field.Kind.TYPE_INT32, "0")
           .put(Field.Kind.TYPE_INT64, "0L")

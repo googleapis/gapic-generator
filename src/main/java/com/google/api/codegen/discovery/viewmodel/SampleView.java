@@ -58,6 +58,7 @@ public abstract class SampleView implements ViewModel {
 
   public abstract List<String> methodNameComponents();
 
+  @Nullable
   public abstract String requestVarName();
 
   @Nullable
@@ -116,6 +117,13 @@ public abstract class SampleView implements ViewModel {
 
   @Nullable
   public abstract String contextVarName();
+
+  // Ruby specific section...
+  @Nullable
+  public abstract String serviceRequirePath();
+
+  @Nullable
+  public abstract String serviceTypeNamespace();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
@@ -195,6 +203,10 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder getClientFuncName(String val);
 
     public abstract Builder contextVarName(String val);
+
+    public abstract Builder serviceRequirePath(String val);
+
+    public abstract Builder serviceTypeNamespace(String val);
 
     public abstract SampleView build();
   }
