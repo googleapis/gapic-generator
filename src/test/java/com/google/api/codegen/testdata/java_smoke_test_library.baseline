@@ -23,6 +23,11 @@ import com.google.example.library.v1.BookName;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -31,18 +36,32 @@ public class LibraryServiceSmokeTest {
   public static void main(String args[]) {
     Logger.getLogger("").setLevel(Level.WARNING);
     try {
-      executeNoCatch(args);
-      System.out.println("ok");
+      Options options = new Options();
+      options.addOption("h", "help", false, "show usage");
+      options.addOption(
+          Option.builder()
+              .longOpt("project_id")
+              .desc("Project id")
+              .hasArg()
+              .argName("PROJECT-ID")
+              .required(true)
+              .build());
+      CommandLine cl = (new DefaultParser()).parse(options, args);
+      if (cl.hasOption("help")) {
+        HelpFormatter formater = new HelpFormatter();
+        formater.printHelp("LibraryServiceSmokeTest", options);
+      }
+      executeNoCatch(cl.getOptionValue("project_id"));
+      System.out.println("OK");
     } catch (Exception e) {
       System.err.println("Failed with exception:");
       e.printStackTrace(System.err);
       System.exit(1);
     }
   }
-
-  public static void executeNoCatch(String args[]) throws Exception {
+  public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryServiceApi api = LibraryServiceApi.create()) {
-      BookName name = BookName.create("testShelf-1963239498", "testBook");
+      BookName name = BookName.create("testShelf-1963239498", projectId);
 
       Book response = api.getBook(name);
       System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
