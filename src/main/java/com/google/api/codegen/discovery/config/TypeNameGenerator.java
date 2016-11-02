@@ -20,7 +20,7 @@ import com.google.common.base.Strings;
 import java.util.LinkedList;
 import java.util.List;
 
-/** Generates language specific names for types and package paths. */
+/** Generates language-specific names for types and package paths. */
 public class TypeNameGenerator {
 
   /**
