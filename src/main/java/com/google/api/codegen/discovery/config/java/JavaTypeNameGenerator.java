@@ -17,7 +17,7 @@ package com.google.api.codegen.discovery.config.java;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class JavaTypeNameGenerator extends TypeNameGenerator {
@@ -33,7 +33,8 @@ public class JavaTypeNameGenerator extends TypeNameGenerator {
 
   @Override
   public String getRequestTypeName(List<String> methodNameComponents) {
-    List<String> copy = new ArrayList<>(methodNameComponents);
+    LinkedList<String> copy = new LinkedList<>(methodNameComponents);
+    copy.removeFirst();
     for (int i = 0; i < copy.size(); i++) {
       copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
     }

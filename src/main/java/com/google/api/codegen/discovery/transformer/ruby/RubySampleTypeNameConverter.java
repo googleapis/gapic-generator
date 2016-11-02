@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.nodejs;
+package com.google.api.codegen.discovery.transformer.ruby;
 
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleTypeNameConverter;
@@ -21,24 +21,10 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 
-public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
+/** Maps SampleConfig and TypeInfo instances to Ruby specific TypeName instances. */
+class RubySampleTypeNameConverter implements SampleTypeNameConverter {
 
-  /** A map from primitive types in proto to NodeJS counterparts. */
-  private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
-      ImmutableMap.<Field.Kind, String>builder()
-          .put(Field.Kind.TYPE_UNKNOWN, "Object")
-          .put(Field.Kind.TYPE_BOOL, "boolean")
-          .put(Field.Kind.TYPE_INT32, "number")
-          .put(Field.Kind.TYPE_INT64, "number")
-          .put(Field.Kind.TYPE_UINT32, "number")
-          .put(Field.Kind.TYPE_UINT64, "number")
-          .put(Field.Kind.TYPE_FLOAT, "number")
-          .put(Field.Kind.TYPE_DOUBLE, "number")
-          .put(Field.Kind.TYPE_STRING, "String")
-          .put(Field.Kind.TYPE_ENUM, "String")
-          .build();
-
-  /** A map from primitive types in proto to zero value in NodeJS */
+  /** A map from primitive types in proto to zero value in Ruby. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_UNKNOWN, "{}")
@@ -53,11 +39,11 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_ENUM, "''")
           .build();
 
-  public NodeJSSampleTypeNameConverter() {}
+  public RubySampleTypeNameConverter() {}
 
   @Override
   public TypeName getServiceTypeName(String apiTypeName) {
-    return new TypeName(apiTypeName.toLowerCase());
+    return new TypeName(apiTypeName);
   }
 
   @Override
@@ -68,39 +54,29 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
-    if (typeInfo.isMap()) {
-      return new TypeName("Object");
-    } else if (typeInfo.isArray()) {
-      TypeName elementTypeName = getTypeNameForElementType(typeInfo);
-      return new TypeName("", "", "%i[]", elementTypeName);
-    } else {
-      return getTypeNameForElementType(typeInfo);
+    // This method is only ever called for the request body type, which should
+    // always be a message.
+    if (typeInfo.isMessage()) {
+      return new TypeName(typeInfo.message().typeName());
     }
+    return getTypeNameForElementType(typeInfo);
   }
 
   @Override
   public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
-    String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(typeInfo.kind());
-    if (primitiveTypeName != null) {
-      return new TypeName(primitiveTypeName);
-    }
     throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
   }
 
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
-    // Don't call getTypeName; we don't need to import these.
     if (typeInfo.isMap()) {
-      return TypedValue.create(new TypeName("Object"), "{}");
+      return TypedValue.create(new TypeName("Hash"), "{}");
     }
     if (typeInfo.isArray()) {
       return TypedValue.create(new TypeName("Array"), "[]");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(typeInfo.kind())) {
-      return TypedValue.create(getTypeName(typeInfo), PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
-    }
-    if (typeInfo.isMessage()) {
-      return TypedValue.create(getTypeName(typeInfo), "{}");
+      return TypedValue.create(new TypeName("Object"), PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
     }
     throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
   }

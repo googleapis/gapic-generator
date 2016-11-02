@@ -17,6 +17,7 @@ package com.google.api.codegen.discovery.config.go;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +26,17 @@ public class GoTypeNameGenerator extends TypeNameGenerator {
 
   // Pattern used to rename some Go package versions.
   private static final Pattern SUB_VERSION = Pattern.compile("^(.+)_(v[0-9.]+)$");
+
+  @Override
+  public List<String> getMethodNameComponents(List<String> nameComponents) {
+    LinkedList<String> copy = new LinkedList<String>(nameComponents);
+    // Don't edit the original object.
+    copy.removeFirst();
+    for (int i = 0; i < copy.size(); i++) {
+      copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
+    }
+    return copy;
+  }
 
   @Override
   public String getApiVersion(String apiVersion) {
@@ -45,9 +57,11 @@ public class GoTypeNameGenerator extends TypeNameGenerator {
 
   @Override
   public String getRequestTypeName(List<String> methodNameComponents) {
-    String copy[] = methodNameComponents.toArray(new String[methodNameComponents.size() + 1]);
-    copy[copy.length - 1] = "call";
-    return Name.lowerCamel(copy).toUpperCamel();
+    LinkedList<String> copy = new LinkedList<String>(methodNameComponents);
+    copy.removeFirst();
+    String arr[] = copy.toArray(new String[copy.size() + 1]);
+    arr[arr.length - 1] = "call";
+    return Name.lowerCamel(arr).toUpperCamel();
   }
 
   @Override

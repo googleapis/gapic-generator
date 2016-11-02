@@ -14,13 +14,33 @@
  */
 package com.google.api.codegen.discovery.config;
 
-import com.google.api.client.util.Strings;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.DefaultString;
+import com.google.common.base.Strings;
+import java.util.LinkedList;
 import java.util.List;
 
 /** Generates language-specific names for types and package paths. */
 public class TypeNameGenerator {
+
+  /**
+   * Returns the language-formatted method name components.
+   *
+   * <p>For example: "myapi.foo.get" to ["Foo", "Get"]
+   */
+  public List<String> getMethodNameComponents(List<String> nameComponents) {
+    LinkedList<String> copy = new LinkedList<>(nameComponents);
+    // Don't edit the original object.
+    copy.removeFirst();
+    return copy;
+  }
+
+  /**
+   * Sets the apiName and apiVersion used for name lookups.
+   *
+   * <p>Only used in Ruby to filter method and type names from apiary_names.yaml
+   */
+  public void setApiNameAndVersion(String apiName, String apiVersion) {}
 
   /** Returns language-specific delimiter used for string literals in samples. */
   public String stringDelimiter() {

@@ -6,32 +6,28 @@
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/snapshots/my-snapshot'
 
-# TODO: Change placeholder below to desired parameter value for the `get_project_snapshot_iam_policy` method:
-
-# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}'
-
-
-# Perform the call
 response = service.get_project_snapshot_iam_policy(resource)
 
 # TODO: Change code below to process the `response` object:
@@ -43,36 +39,31 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/snapshots/my-snapshot'
 
-# TODO: Change placeholder below to desired parameter value for the `set_snapshot_iam_policy` method:
-
-# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}'
-
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::SetIamPolicyRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.set_snapshot_iam_policy(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
@@ -84,36 +75,31 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `test_snapshot_iam_permissions` method:
-
 # REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
 # specified as a path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}'
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/snapshots/my-snapshot'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::TestIamPermissionsRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.test_snapshot_iam_permissions(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
@@ -125,35 +111,29 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
-require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `acknowledge_subscription` method:
-
 # The subscription whose message is being acknowledged.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::AcknowledgeRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 service.acknowledge_subscription(subscription, request_body)
 # BEFORE RUNNING:
 # ---------------
@@ -162,39 +142,34 @@ service.acknowledge_subscription(subscription, request_body)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
-
-
-# TODO: Change placeholder below to desired parameter value for the `create_subscription` method:
 
 # The name of the subscription. It must have the format
 # `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter, and
 # contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
 # (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
 # length, and it must not start with `"goog"`.
-name = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
+name = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::Subscription.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.create_subscription(name, request_body)
 
 # TODO: Change code below to process the `response` object:
@@ -206,31 +181,26 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
-require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `delete_subscription` method:
-
 # The subscription to delete.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-
-# Perform the call
 service.delete_subscription(subscription)
 # BEFORE RUNNING:
 # ---------------
@@ -239,31 +209,27 @@ service.delete_subscription(subscription)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `get_subscription` method:
-
 # The name of the subscription to get.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-
-# Perform the call
 response = service.get_subscription(subscription)
 
 # TODO: Change code below to process the `response` object:
@@ -275,32 +241,28 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-# TODO: Change placeholder below to desired parameter value for the `get_project_subscription_iam_policy` method:
-
-# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
-
-# Perform the call
 response = service.get_project_subscription_iam_policy(resource)
 
 # TODO: Change code below to process the `response` object:
@@ -312,31 +274,27 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `list_subscriptions` method:
-
 # The name of the cloud project that subscriptions belong to.
-project = 'projects/{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project'
 
-
-# Perform the call
 subscriptions = service.fetch_all(items: :subscriptions) do |token|
   service.list_subscriptions(project, page_token: token)
 end
@@ -352,35 +310,29 @@ end
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
-require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `modify_subscription_ack_deadline` method:
-
 # The name of the subscription.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::ModifyAckDeadlineRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 service.modify_subscription_ack_deadline(subscription, request_body)
 # BEFORE RUNNING:
 # ---------------
@@ -389,35 +341,29 @@ service.modify_subscription_ack_deadline(subscription, request_body)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
-require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `modify_subscription_push_config` method:
-
 # The name of the subscription.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::ModifyPushConfigRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 service.modify_subscription_push_config(subscription, request_body)
 # BEFORE RUNNING:
 # ---------------
@@ -426,35 +372,30 @@ service.modify_subscription_push_config(subscription, request_body)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `pull_subscription` method:
-
 # The subscription from which messages should be pulled.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::PullRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.pull_subscription(subscription, request_body)
 
 # TODO: Change code below to process the `response` object:
@@ -466,36 +407,31 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-# TODO: Change placeholder below to desired parameter value for the `set_subscription_iam_policy` method:
-
-# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::SetIamPolicyRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.set_subscription_iam_policy(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
@@ -507,36 +443,31 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `test_subscription_iam_permissions` method:
-
 # REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
 # specified as a path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::TestIamPermissionsRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.test_subscription_iam_permissions(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
@@ -548,38 +479,33 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `create_topic` method:
-
-# The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
-# start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
+# The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}`
+# must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
 # underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
 # between 3 and 255 characters in length, and it must not start with `"goog"`.
-name = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
+name = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::Topic.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.create_topic(name, request_body)
 
 # TODO: Change code below to process the `response` object:
@@ -591,31 +517,26 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
-require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `delete_topic` method:
-
 # Name of the topic to delete.
-topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
+topic = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
-
-# Perform the call
 service.delete_topic(topic)
 # BEFORE RUNNING:
 # ---------------
@@ -624,31 +545,27 @@ service.delete_topic(topic)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `get_topic` method:
-
 # The name of the topic to get.
-topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
+topic = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
-
-# Perform the call
 response = service.get_topic(topic)
 
 # TODO: Change code below to process the `response` object:
@@ -660,32 +577,28 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
-# TODO: Change placeholder below to desired parameter value for the `get_project_topic_iam_policy` method:
-
-# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
-
-
-# Perform the call
 response = service.get_project_topic_iam_policy(resource)
 
 # TODO: Change code below to process the `response` object:
@@ -697,31 +610,27 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `list_topics` method:
-
 # The name of the cloud project that topics belong to.
-project = 'projects/{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project'
 
-
-# Perform the call
 topics = service.fetch_all(items: :topics) do |token|
   service.list_topics(project, page_token: token)
 end
@@ -737,35 +646,30 @@ end
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `publish_topic` method:
-
 # The messages in the request will be published on this topic.
-topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
+topic = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::PublishRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.publish_topic(topic, request_body)
 
 # TODO: Change code below to process the `response` object:
@@ -777,36 +681,31 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
-# TODO: Change placeholder below to desired parameter value for the `set_topic_iam_policy` method:
-
-# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
-
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::SetIamPolicyRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.set_topic_iam_policy(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
@@ -818,31 +717,27 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `list_topic_subscriptions` method:
-
 # The name of the topic that subscriptions are attached to.
-topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
+topic = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
-
-# Perform the call
 subscriptions = service.fetch_all(items: :subscriptions) do |token|
   service.list_topic_subscriptions(topic, page_token: token)
 end
@@ -858,36 +753,31 @@ end
 #    https://console.developers.google.com/apis/api/pubsub
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/pubsub_v1'
 require 'json'
 
 service = Google::Apis::PubsubV1::PubsubService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `test_topic_iam_permissions` method:
-
 # REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
 # specified as a path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PubsubV1::TestIamPermissionsRequest.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.test_topic_iam_permissions(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
