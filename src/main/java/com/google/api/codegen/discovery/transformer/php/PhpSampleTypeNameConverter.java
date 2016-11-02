@@ -87,10 +87,10 @@ public class PhpSampleTypeNameConverter implements SampleTypeNameConverter {
   public TypedValue getZeroValue(TypeInfo typeInfo) {
     // Don't call getTypeName; we don't need to import these.
     if (typeInfo.isMap()) {
-      return TypedValue.create(new TypeName("Array"), "array()");
+      return TypedValue.create(new TypeName("Array"), "[]");
     }
     if (typeInfo.isArray()) {
-      return TypedValue.create(new TypeName("Array"), "array()");
+      return TypedValue.create(new TypeName("Array"), "[]");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(typeInfo.kind())) {
       return TypedValue.create(

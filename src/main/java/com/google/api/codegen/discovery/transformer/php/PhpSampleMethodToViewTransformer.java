@@ -102,7 +102,6 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
       optParamsVarName = namer.localVarName(Name.lowerCamel("optParams"));
       fieldVarNames.add(optParamsVarName);
     }
-
     return builder
         .templateFileName(TEMPLATE_FILENAME)
         .outputPath(context.getMethodName() + ".frag.php")
