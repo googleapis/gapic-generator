@@ -22,10 +22,10 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class InitFieldConfig {
-  public static final String projectIdVariableName = "project_id";
+  public static final String PROJECT_ID_VARIABLE_NAME = "project_id";
 
-  private static final String randomValueToken = "$RANDOM";
-  private static final String projectIdToken = "$PROJECT_ID";
+  private static final String RANDOM_TOKEN = "$RANDOM";
+  private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
 
   public abstract String fieldPath();
 
@@ -74,15 +74,15 @@ public abstract class InitFieldConfig {
 
   private static InitValue parseValueString(String valueString, String stringToHash) {
     InitValue initValue = InitValue.createLiteral(valueString);
-    if (valueString.contains(randomValueToken)) {
+    if (valueString.contains(RANDOM_TOKEN)) {
       String randomValue = Integer.toString(Math.abs(stringToHash.hashCode()));
-      valueString = valueString.replace(randomValueToken, randomValue);
+      valueString = valueString.replace(RANDOM_TOKEN, randomValue);
       initValue = InitValue.createLiteral(valueString);
-    } else if (valueString.contains(projectIdToken)) {
-      if (!valueString.equals(projectIdToken)) {
+    } else if (valueString.contains(PROJECT_ID_TOKEN)) {
+      if (!valueString.equals(PROJECT_ID_TOKEN)) {
         throw new IllegalArgumentException("Inconsistent: found project ID as a substring ");
       }
-      valueString = projectIdVariableName;
+      valueString = PROJECT_ID_VARIABLE_NAME;
       initValue = InitValue.createVariable(valueString);
     }
     return initValue;

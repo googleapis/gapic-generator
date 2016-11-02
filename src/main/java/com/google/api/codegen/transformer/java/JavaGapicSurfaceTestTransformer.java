@@ -154,7 +154,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.method(testMethodView);
-    testClass.requireProjectID(requireProjectId(testMethodView.initCode(), context.getNamer()));
+    testClass.requireProjectId(requireProjectId(testMethodView.initCode(), context.getNamer()));
 
     // Imports must be done as the last step to catch all imports.
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
@@ -192,7 +192,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
           ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
           return initValue
               .formatArgs()
-              .contains(namer.localVarName(Name.from(InitFieldConfig.projectIdVariableName)));
+              .contains(namer.localVarName(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME)));
         }
       }
     }
