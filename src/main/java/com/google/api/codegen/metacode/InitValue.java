@@ -39,18 +39,4 @@ public abstract class InitValue {
   public abstract String getValue();
 
   public abstract InitValueType getType();
-
-  @Override
-  public boolean equals(Object o) {
-    if (this.getClass() == o.getClass()) {
-      InitValue initValue = (InitValue) o;
-      return initValue.getValue().equals(this.getValue()) && initValue.getType() == this.getType();
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return getValue().hashCode();
-  }
 }
