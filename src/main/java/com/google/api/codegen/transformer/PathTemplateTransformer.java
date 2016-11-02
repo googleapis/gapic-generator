@@ -83,7 +83,7 @@ public class PathTemplateTransformer {
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       for (String var : collectionConfig.getNameTemplate().vars()) {
         ParseResourceFunctionView.Builder function = ParseResourceFunctionView.newBuilder();
-        function.entityName(namer.getEntityName(collectionConfig));
+        function.entityName(collectionConfig.getEntityName());
         function.name(namer.getParseFunctionName(var, collectionConfig));
         function.pathTemplateName(namer.getPathTemplateName(service, collectionConfig));
         function.pathTemplateGetterName(namer.getPathTemplateNameGetter(service, collectionConfig));

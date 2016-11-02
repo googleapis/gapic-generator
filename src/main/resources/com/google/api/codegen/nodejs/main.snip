@@ -114,20 +114,27 @@
     var DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
 
     var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
-
     @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
 
       var PAGE_DESCRIPTORS = {
         @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
           @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
-               requestToken = context.propertyName(pageStreaming.getRequestTokenField()), \
-               responseToken = context.propertyName(pageStreaming.getResponseTokenField()), \
-               resources = context.propertyName(pageStreaming.getResourcesField())
+                requestToken = context.propertyName(pageStreaming.getRequestTokenField()), \
+                responseToken = context.propertyName(pageStreaming.getResponseTokenField()), \
+                resources = context.propertyName(pageStreaming.getResourcesField())
               {@methodName(method)}: new gax.PageDescriptor(
                   '{@requestToken}',
                   '{@responseToken}',
                   '{@resources}')
           @end
+        @end
+      };
+    @end
+    @if context.filterStreamingMethods(service)
+
+      var STREAM_DESCRIPTORS = {
+        @join method : context.filterStreamingMethods(service) on {@", "}.add(BREAK)
+          {@methodName(method)}: new gax.StreamDescriptor({@streamType(method)})
         @end
       };
     @end
@@ -144,22 +151,24 @@
   @end
 @end
 
+@private streamType(method)
+  @if method.getRequestStreaming()
+    @if method.getResponseStreaming()
+      gax.StreamType.BIDI_STREAMING
+    @else
+      gax.StreamType.CLIENT_STREAMING
+    @end
+  @else
+    gax.StreamType.SERVER_STREAMING
+  @end
+@end
+
 @private constructDefaults(service)
   @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
     var defaults = gaxGrpc.constructSettings(
         '{@service.getFullName}',
         configData,
         clientConfig,
-        @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
-          PAGE_DESCRIPTORS,
-        @else
-          null,
-        @end
-        @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
-          bundleDescriptors,
-        @else
-          null,
-        @end
         {'x-goog-api-client': googleApiClient});
   @end
 @end
@@ -214,7 +223,6 @@
         CODE_GEN_NAME_VERSION,
         'gax/' + gax.version,
         'nodejs/' + process.version].join(' ');
-
       @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
 
         var bundleDescriptors = {
@@ -237,6 +245,7 @@
           @end
         };
       @end
+
       {@constructDefaults(service)}
 
       @join stub : stubs on BREAK.add(BREAK)
@@ -255,10 +264,21 @@
             {@stub.name}.then(function({@stub.name}) {
               return {@stub.name}[methodName].bind({@stub.name});
             }),
-            defaults[methodName]);
+            defaults[methodName],
+            {@getDescriptors(service)});
         }.bind(this));
       @end
     }
+  @end
+@end
+
+@private getDescriptors(service)
+  @if context.validDescriptorsNames(service)
+    @join descriptor : context.validDescriptorsNames(service) on {@" || "}
+      {@descriptor}[methodName]
+    @end
+  @else
+    null
   @end
 @end
 
@@ -328,13 +348,13 @@
 
 @private createResourceFunctionParams(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@context.lowerUnderscoreToLowerCamel(param)}
+    {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
   @end
 @end
 
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    {@param}: {@context.lowerUnderscoreToLowerCamel(param)}
+    {@param}: {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
   @end
 @end
 
@@ -378,32 +398,72 @@
        */
     @end
 
-    {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options, callback) {
-      if (options instanceof Function && callback === undefined) {
-        callback = options;
-        options = {};
-      }
+    {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options{@callbackParams(apiMethodView)}) {
+      @switch apiMethodView.grpcStreamingType.toString
+      @case "ClientStreaming"
+        {@handleCallback()}
+      @case "NonStreaming"
+        {@handleCallback()}
+      @default
+      @end
       if (options === undefined) {
         options = {};
       }
-      return this._{@methodName(method)}({@requestObject(apiMethodView)}, options, callback);
+      return this._{@methodName(method)}({@requestObject(apiMethodView)}options{@callbackParams(apiMethodView)});
     };
   @end
 @end
 
+@private handleCallback()
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+@end
+
+@private callbackParams(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ClientStreaming"
+    , callback
+  @case "NonStreaming"
+    , callback
+  @default
+  @end
+@end
+
 @private requestObject(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ServerStreaming"
+    {@requestObjectInternal(apiMethodView)}
+  @case "NonStreaming"
+    {@requestObjectInternal(apiMethodView)}
+  @default
+  @end
+@end
+
+@private requestObjectInternal(apiMethodView)
   @if apiMethodView.requiredRequestObjectParams.isEmpty
     @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
-      {}
+      {}, {@""}
     @else
-      request
+      request, {@""}
     @end
   @else
-    request
+    request, {@""}
   @end
 @end
 
 @private methodRequestParameters(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ServerStreaming"
+    {@methodRequestParametersInternal(apiMethodView)}
+  @case "NonStreaming"
+    {@methodRequestParametersInternal(apiMethodView)}
+  @default
+  @end
+@end
+
+@private methodRequestParametersInternal(apiMethodView)
   @if apiMethodView.requiredRequestObjectParams.isEmpty
     @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
     @else

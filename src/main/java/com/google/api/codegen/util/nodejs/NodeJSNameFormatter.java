@@ -17,9 +17,18 @@ package com.google.api.codegen.util.nodejs;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
+import com.google.common.collect.ImmutableSet;
 
 /** The NameFormatter for NodeJS. */
 public class NodeJSNameFormatter implements NameFormatter {
+
+  private String wrapIfKeywordOrBuiltIn(String name) {
+    if (RESERVED_IDENTIFIER_SET.contains(name)) {
+      return name + "_";
+    } else {
+      return name;
+    }
+  }
 
   @Override
   public String className(Name name) {
@@ -28,7 +37,7 @@ public class NodeJSNameFormatter implements NameFormatter {
 
   @Override
   public String localVarName(Name name) {
-    return name.toLowerCamel();
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
   }
 
   @Override
@@ -58,7 +67,7 @@ public class NodeJSNameFormatter implements NameFormatter {
 
   @Override
   public String staticFunctionName(Name name) {
-    return name.toLowerCamel();
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
   }
 
   @Override
@@ -85,4 +94,59 @@ public class NodeJSNameFormatter implements NameFormatter {
   public String classFileNameBase(Name name) {
     return name.toOriginal();
   }
+
+  /**
+   * A set of ECMAScript 2016 reserved words. See
+   * https://tc39.github.io/ecma262/2016/#sec-reserved-words
+   */
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
+      ImmutableSet.<String>builder()
+          .add(
+              "break",
+              "do",
+              "in",
+              "typeof",
+              "case",
+              "else",
+              "instanceof",
+              "var",
+              "catch",
+              "export",
+              "new",
+              "void",
+              "class",
+              "extends",
+              "return",
+              "while",
+              "const",
+              "finally",
+              "super",
+              "with",
+              "continue",
+              "for",
+              "switch",
+              "yield",
+              "debugger",
+              "function",
+              "this",
+              "default",
+              "if",
+              "throw",
+              "delete",
+              "import",
+              "try",
+              "let",
+              "static",
+              "enum",
+              "await",
+              "implements",
+              "package",
+              "protected",
+              "interface",
+              "private",
+              "public",
+              "null",
+              "true",
+              "false")
+          .build();
 }

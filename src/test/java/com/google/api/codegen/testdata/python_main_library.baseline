@@ -120,6 +120,8 @@ class LibraryServiceApi(object):
         'shelves/{shelf_id}/books/{book_id}')
     _ARCHIVED_BOOK_PATH_TEMPLATE = path_template.PathTemplate(
         'archives/{archive_path=**}/books/{book_id}')
+    _RETURN_PATH_TEMPLATE = path_template.PathTemplate(
+        'shelves/{shelf}/books/{book}/returns/{return}')
 
     @classmethod
     def shelf_path(cls, shelf_id):
@@ -142,6 +144,15 @@ class LibraryServiceApi(object):
         return cls._ARCHIVED_BOOK_PATH_TEMPLATE.render({
             'archive_path': archive_path,
             'book_id': book_id,
+        })
+
+    @classmethod
+    def return_path(cls, shelf, book, return_):
+        """Returns a fully-qualified return resource name string."""
+        return cls._RETURN_PATH_TEMPLATE.render({
+            'shelf': shelf,
+            'book': book,
+            'return': return_,
         })
 
     @classmethod
@@ -208,6 +219,45 @@ class LibraryServiceApi(object):
           A string representing the book_id.
         """
         return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('book_id')
+
+    @classmethod
+    def match_shelf_from_return_name(cls, return_name):
+        """Parses the shelf from a return resource.
+
+        Args:
+          return_name (string): A fully-qualified path representing a return
+            resource.
+
+        Returns:
+          A string representing the shelf.
+        """
+        return cls._RETURN_PATH_TEMPLATE.match(return_name).get('shelf')
+
+    @classmethod
+    def match_book_from_return_name(cls, return_name):
+        """Parses the book from a return resource.
+
+        Args:
+          return_name (string): A fully-qualified path representing a return
+            resource.
+
+        Returns:
+          A string representing the book.
+        """
+        return cls._RETURN_PATH_TEMPLATE.match(return_name).get('book')
+
+    @classmethod
+    def match_return_from_return_name(cls, return_name):
+        """Parses the return from a return resource.
+
+        Args:
+          return_name (string): A fully-qualified path representing a return
+            resource.
+
+        Returns:
+          A string representing the return.
+        """
+        return cls._RETURN_PATH_TEMPLATE.match(return_name).get('return')
 
     def __init__(
             self,
@@ -1006,7 +1056,8 @@ class LibraryServiceApi(object):
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> from google.example.library.v1 import library_pb2
           >>> api = library_service_api.LibraryServiceApi()
-          >>> request = library_pb2.DiscussBookRequest()
+          >>> name = ''
+          >>> request = library_pb2.DiscussBookRequest(name)
           >>> requests = [request]
           >>> for element in api.discuss_book(requests):
           >>>   # process element

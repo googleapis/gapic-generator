@@ -45,6 +45,7 @@
   {@alwaysImport()}
   @let apiName = context.getApi.getName, \
        ApiName = context.getApiPackage, \
+       appName = context.getSampleApplicationName, \
        apiaryConfig = context.getApiaryConfig, \
        authType = apiaryConfig.getAuthType
     public class {@ApiName}Example {
@@ -66,7 +67,7 @@
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
         {@ApiName} {@serviceName()} = new {@ApiName}.Builder(httpTransport, jsonFactory, credential)
-            .setApplicationName("Google Cloud Platform Sample")
+            .setApplicationName("{@appName}")
             .build();
 
         {@initialize(method)}

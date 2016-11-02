@@ -335,13 +335,13 @@
 
 @private createResourceFunctionParams(collectionConfig)
     @join param : collectionConfig.getNameTemplate.vars() on ", "
-        {@param}
+        {@context.python.wrapIfKeywordOrBuiltIn(param)}
     @end
 @end
 
 @private createRenderDictionary(collectionConfig)
     @join param: collectionConfig.getNameTemplate.vars() on BREAK
-        '{@param}': {@param},
+        '{@param}': {@context.python.wrapIfKeywordOrBuiltIn(param)},
     @end
 @end
 

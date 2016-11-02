@@ -122,28 +122,4 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
   public String getApiVersion() {
     return getApi().getVersion().replace('.', '_');
   }
-
-  // Services in Discovery Doc are named in all lowercase. For multi-word names, it is not
-  // generally possible for us to capitalize properly. We store the properly capitalized names here
-  // so we can generate samples properly.
-  private static final ImmutableMap<String, String> SERVICE_RENAME =
-      ImmutableMap.<String, String>builder()
-          .put("clouddebugger", "CloudDebugger")
-          .put("cloudmonitoring", "CloudMonitoring")
-          .put("cloudresourcemanager", "CloudResourceManager")
-          .put("cloudtrace", "CloudTrace")
-          .put("clouduseraccounts", "CloudUserAccounts")
-          .put("deploymentmanager", "DeploymentManager")
-          .put("sqladmin", "SQLAdmin")
-          .build();
-
-  public String getServiceName() {
-    String name = getApi().getName();
-    if (SERVICE_RENAME.containsKey(name)) {
-      name = SERVICE_RENAME.get(name);
-    } else {
-      name = lowerCamelToUpperCamel(name);
-    }
-    return name + "Service";
-  }
 }

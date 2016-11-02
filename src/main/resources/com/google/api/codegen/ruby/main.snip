@@ -315,7 +315,7 @@
 @private createResourceFunction(collectionConfig)
   @# Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
   @join param : collectionConfig.getNameTemplate.vars()
-    @# @@param {@param} [String]
+    @# @@param {@context.wrapIfKeywordOrBuiltIn(param)} [String]
   @end
   @# @@return [String]
   def self.{@collectionConfig.getEntityName}_path {@createResourceFunctionParams(collectionConfig)}
@@ -327,13 +327,13 @@
 
 @private createResourceFunctionParams(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@param}
+    {@context.wrapIfKeywordOrBuiltIn(param)}
   @end
 @end
 
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    :"{@param}" => {@param}
+    :"{@param}" => {@context.wrapIfKeywordOrBuiltIn(param)}
   @end
 @end
 

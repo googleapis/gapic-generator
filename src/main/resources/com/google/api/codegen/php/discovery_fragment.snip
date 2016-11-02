@@ -44,8 +44,8 @@
 @end
 
 @snippet generateBody(method)
-  @let apiName = context.getSimpleApiName, \
-       serviceName = context.getServiceClassName, \
+  @let appName = context.getSampleApplicationName, \
+       serviceTypeName = context.getServiceClassName, \
        apiaryConfig = context.getApiaryConfig, \
        authType = apiaryConfig.getAuthType
     @switch authType
@@ -54,20 +54,20 @@
       // For more information, see:
       // https://developers.google.com/identity/protocols/application-default-credentials
       $client = new Google_Client();
-      $client->setApplicationName('Google Cloud Platform Sample');
+      $client->setApplicationName('{@appName}');
       $client->useApplicationDefaultCredentials();
       $client->addScope('https://www.googleapis.com/auth/cloud-platform');
     @case "OAUTH_3L"
       $client = getClient();
     @default
       $client = new Google_Client();
-      $client->setApplicationName('Google Cloud Platform Sample');
+      $client->setApplicationName('{@appName}');
 
       // {@TODO()} Change placeholder below to desired API key:
       $client->setDeveloperKey('{MY-API-KEY}');
     @end
     {@BREAK}
-    $service = new {@serviceName}($client);
+    $service = new {@serviceTypeName}($client);
 
     {@initialize(method)}
     @if context.isPageStreaming(method)

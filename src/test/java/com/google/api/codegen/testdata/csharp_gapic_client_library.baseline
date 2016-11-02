@@ -820,6 +820,27 @@ namespace Google.Example.Library.V1
         /// </returns>
         public static string FormatArchivedBookName(string archivePathId, string bookIdId) => ArchivedBookTemplate.Expand(archivePathId, bookIdId);
 
+        /// <summary>
+        /// Path template for a return resource. Parameters:
+        /// <list type="bullet">
+        /// <item><description>shelf</description></item>
+        /// <item><description>book</description></item>
+        /// <item><description>return</description></item>
+        /// </list>
+        /// </summary>
+        public static PathTemplate ReturnTemplate { get; } = new PathTemplate("shelves/{shelf}/books/{book}/returns/{return}");
+
+        /// <summary>
+        /// Creates a return resource name from its component IDs.
+        /// </summary>
+        /// <param name="shelfId">The shelf ID.</param>
+        /// <param name="bookId">The book ID.</param>
+        /// <param name="returnId">The return ID.</param>
+        /// <returns>
+        /// The full return resource name.
+        /// </returns>
+        public static string FormatReturnName(string shelfId, string bookId, string returnId) => ReturnTemplate.Expand(shelfId, bookId, returnId);
+
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
         // Pros:

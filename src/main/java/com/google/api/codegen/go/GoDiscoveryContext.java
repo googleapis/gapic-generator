@@ -18,7 +18,7 @@ import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
@@ -49,7 +49,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   }
 
   public boolean isReserved(String name) {
-    return GoTypeTable.RESERVED_IDENTIFIER_SET.contains(name);
+    return GoNameFormatter.RESERVED_IDENTIFIER_SET.contains(name);
   }
 
   @Override

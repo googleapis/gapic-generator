@@ -20,7 +20,6 @@ import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -89,57 +88,4 @@ public class RubyTypeTable implements TypeTable {
       String containerFullName, String innerTypeShortName) {
     return dynamicTypeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
   }
-
-  /**
-   * : A set of ruby keywords and built-ins. keywords:
-   * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
-   */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
-      ImmutableSet.<String>builder()
-          .add(
-              "__ENCODING__",
-              "__LINE__",
-              "__FILE__",
-              "BEGIN",
-              "END",
-              "alias",
-              "and",
-              "begin",
-              "break",
-              "case",
-              "class",
-              "def",
-              "defined?",
-              "do",
-              "else",
-              "elsif",
-              "end",
-              "ensure",
-              "false",
-              "for",
-              "if",
-              "in",
-              "module",
-              "next",
-              "nil",
-              "not",
-              "or",
-              "redo",
-              "rescue",
-              "retry",
-              "return",
-              "self",
-              "super",
-              "then",
-              "true",
-              "undef",
-              "unless",
-              "until",
-              "when",
-              "while",
-              "yield",
-              // "options" is here because it's a common keyword argument to
-              // specify a CallOptions instance.
-              "options")
-          .build();
 }

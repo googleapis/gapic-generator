@@ -178,6 +178,9 @@ public class LibraryServiceApi implements AutoCloseable {
   private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("archives/{archive_path=**}/books/{book_id}");
 
+  private static final PathTemplate RETURN_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}/returns/{return}");
+
   /**
    * Formats a string containing the fully-qualified path to represent
    * a shelf resource.
@@ -208,6 +211,17 @@ public class LibraryServiceApi implements AutoCloseable {
   }
 
   /**
+   * Formats a string containing the fully-qualified path to represent
+   * a return resource.
+   */
+  public static final String formatReturnName(String shelf, String book, String return_) {
+    return RETURN_PATH_TEMPLATE.instantiate(
+        "shelf", shelf,
+        "book", book,
+        "return", return_);
+  }
+
+  /**
    * Parses the shelf_id from the given fully-qualified path which
    * represents a shelf resource.
    */
@@ -233,7 +247,7 @@ public class LibraryServiceApi implements AutoCloseable {
 
   /**
    * Parses the archive_path from the given fully-qualified path which
-   * represents a archivedBook resource.
+   * represents a archived_book resource.
    */
   public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
@@ -241,10 +255,34 @@ public class LibraryServiceApi implements AutoCloseable {
 
   /**
    * Parses the book_id from the given fully-qualified path which
-   * represents a archivedBook resource.
+   * represents a archived_book resource.
    */
   public static final String parseBookIdFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book_id");
+  }
+
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a return resource.
+   */
+  public static final String parseShelfFromReturnName(String returnName) {
+    return RETURN_PATH_TEMPLATE.parse(returnName).get("shelf");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a return resource.
+   */
+  public static final String parseBookFromReturnName(String returnName) {
+    return RETURN_PATH_TEMPLATE.parse(returnName).get("book");
+  }
+
+  /**
+   * Parses the return from the given fully-qualified path which
+   * represents a return resource.
+   */
+  public static final String parseReturnFromReturnName(String returnName) {
+    return RETURN_PATH_TEMPLATE.parse(returnName).get("return");
   }
 
   /**
@@ -1771,7 +1809,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *   StreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
    *       libraryServiceApi.discussBookCallable().bidiStreamingCall(responseObserver)});
    *
-   *   DiscussBookRequest request = DiscussBookRequest.newBuilder().build();
+   *   String name = "";
+   *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
+   *     .setName(name)
+   *     .build();
    *   requestObserver.onNext(request);
    * }
    * </code></pre>
