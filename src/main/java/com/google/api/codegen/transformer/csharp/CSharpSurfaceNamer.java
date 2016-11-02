@@ -179,6 +179,13 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getModifyMethodName(Method method) {
+    return "Modify_"
+        + privateMethodName(
+            Name.upperCamel(getModelTypeFormatter().getNicknameFor(method.getInputType())));
+  }
+
+  @Override
   public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
     return inittedConstantName(Name.from(collectionConfig.getEntityName(), "template"));
   }
