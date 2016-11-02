@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.tools.framework.model.Interface;
@@ -182,8 +181,8 @@ public class SampleInitCodeTest {
     initValueMap.put("formatted_field", initValueConfig);
 
     HashMap<String, InitValue> expectedCollectionValues = new HashMap<>();
-    expectedCollectionValues.put("entity1", new InitValue("test1", InitValueType.Literal));
-    expectedCollectionValues.put("entity2", new InitValue("test2", InitValueType.Literal));
+    expectedCollectionValues.put("entity1", InitValue.createLiteral("test1"));
+    expectedCollectionValues.put("entity2", InitValue.createLiteral("test2"));
 
     InitCodeContext context =
         getContextBuilder()
@@ -225,8 +224,7 @@ public class SampleInitCodeTest {
 
     InitCodeNode expectedStructure =
         InitCodeNode.createWithValue(
-            "myfield",
-            InitValueConfig.createWithValue(new InitValue("default", InitValueType.Literal)));
+            "myfield", InitValueConfig.createWithValue(InitValue.createLiteral("default")));
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();

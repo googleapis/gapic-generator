@@ -14,28 +14,31 @@
  */
 package com.google.api.codegen.metacode;
 
-/** A class which represents the initialized value of a field. */
-public class InitValue {
-  private final String value;
-  private final InitValueType type;
+import com.google.auto.value.AutoValue;
 
+/** A class which represents the initialized value of a field. */
+@AutoValue
+public abstract class InitValue {
   public enum InitValueType {
     Literal,
     Variable,
   }
 
-  public InitValue(String value, InitValueType type) {
-    this.value = value;
-    this.type = type;
+  public static InitValue create(String value, InitValueType type) {
+    return new AutoValue_InitValue(value, type);
   }
 
-  public String getValue() {
-    return value;
+  public static InitValue createLiteral(String value) {
+    return new AutoValue_InitValue(value, InitValueType.Literal);
   }
 
-  public InitValueType getType() {
-    return type;
+  public static InitValue createVariable(String variableName) {
+    return new AutoValue_InitValue(variableName, InitValueType.Variable);
   }
+
+  public abstract String getValue();
+
+  public abstract InitValueType getType();
 
   @Override
   public boolean equals(Object o) {
@@ -48,6 +51,6 @@ public class InitValue {
 
   @Override
   public int hashCode() {
-    return value.hashCode();
+    return getValue().hashCode();
   }
 }

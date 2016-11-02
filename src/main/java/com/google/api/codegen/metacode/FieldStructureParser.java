@@ -79,7 +79,7 @@ public class FieldStructureParser {
       InitValue initValue = fieldConfig.value();
       valueConfig =
           InitValueConfig.createWithValue(
-              new InitValue(stripQuotes(initValue.getValue()), initValue.getType()));
+              InitValue.create(stripQuotes(initValue.getValue()), initValue.getType()));
     } else if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
       valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
     }

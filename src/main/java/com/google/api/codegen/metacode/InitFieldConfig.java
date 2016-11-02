@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
@@ -74,17 +73,17 @@ public abstract class InitFieldConfig {
   }
 
   private static InitValue parseValueString(String valueString, String stringToHash) {
-    InitValue initValue = new InitValue(valueString, InitValueType.Literal);
+    InitValue initValue = InitValue.createLiteral(valueString);
     if (valueString.contains(randomValueToken)) {
       String randomValue = Integer.toString(Math.abs(stringToHash.hashCode()));
       valueString = valueString.replace(randomValueToken, randomValue);
-      initValue = new InitValue(valueString, InitValueType.Literal);
+      initValue = InitValue.createLiteral(valueString);
     } else if (valueString.contains(projectIdToken)) {
       if (!valueString.equals(projectIdToken)) {
         throw new IllegalArgumentException("Inconsistent: found project ID as a substring ");
       }
       valueString = projectIdVariableName;
-      initValue = new InitValue(valueString, InitValueType.Variable);
+      initValue = InitValue.createVariable(valueString);
     }
     return initValue;
   }

@@ -15,7 +15,6 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -278,8 +277,7 @@ public class InitCodeNode {
           && !type.isRepeated()
           && valueGenerator != null) {
         String newValue = valueGenerator.getAndStoreValue(type, identifier);
-        initValueConfig =
-            InitValueConfig.createWithValue(new InitValue(newValue, InitValueType.Literal));
+        initValueConfig = InitValueConfig.createWithValue(InitValue.createLiteral(newValue));
       }
     }
   }

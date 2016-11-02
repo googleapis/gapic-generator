@@ -34,7 +34,6 @@ import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.metacode.InitValue;
-import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
@@ -504,8 +503,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       String responseTokenName = config.getResponseTokenField().getSimpleName();
       additionalSubTrees.add(
           InitCodeNode.createWithValue(
-              responseTokenName,
-              InitValueConfig.createWithValue(new InitValue("", InitValueType.Literal))));
+              responseTokenName, InitValueConfig.createWithValue(InitValue.createLiteral(""))));
     }
     if (context.getMethodConfig().isBundling()) {
       // Initialize one bundling element if it is bundling.
