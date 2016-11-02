@@ -16,17 +16,12 @@
  */
 package com.google.gcloud.pubsub.spi;
 
-import com.google.api.gax.core.CredentialsProvider;
-import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.ConnectionSettings;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.gax.grpc.BundlingCallSettings;
 import com.google.api.gax.grpc.BundlingDescriptor;
 import com.google.api.gax.grpc.BundlingSettings;
 import com.google.api.gax.grpc.CallContext;
-import com.google.api.gax.grpc.ChannelProvider;
-import com.google.api.gax.grpc.ExecutorProvider;
-import com.google.api.gax.grpc.InstantiatingChannelProvider;
-import com.google.api.gax.grpc.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.PagedCallSettings;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
@@ -336,14 +331,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     return getBigBookSettings;
   }
 
-
-  /**
-   * Returns a builder for the default ExecutorProvider for this service.
-   */
-  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
-    return InstantiatingExecutorProvider.newBuilder();
-  }
-
   /**
    * Returns the default service address.
    */
@@ -363,26 +350,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
    */
   public static ImmutableList<String> getDefaultServiceScopes() {
     return DEFAULT_SERVICE_SCOPES;
-  }
-
-
-  /**
-   * Returns a builder for the default credentials for this service.
-   */
-  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
-    return GoogleCredentialsProvider.newBuilder()
-        .setScopesToApply(DEFAULT_SERVICE_SCOPES)
-        ;
-  }
-
-  /**
-   * Returns a builder for the default ChannelProvider for this service.
-   */
-  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
-    return InstantiatingChannelProvider.newBuilder()
-        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-        .setPort(DEFAULT_SERVICE_PORT)
-        .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }
 
   /**
@@ -407,8 +374,12 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   private LibraryServiceSettings(Builder settingsBuilder) throws IOException {
-    super(settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getChannelProvider());
+    super(settingsBuilder.getChannelProvider(),
+          settingsBuilder.getExecutorProvider(),
+          settingsBuilder.getGeneratorName(),
+          settingsBuilder.getGeneratorVersion(),
+          settingsBuilder.getClientLibName(),
+          settingsBuilder.getClientLibVersion());
 
     createShelfSettings = settingsBuilder.createShelfSettings().build();
     getShelfSettings = settingsBuilder.getShelfSettings().build();
@@ -738,7 +709,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     }
 
     private Builder() {
-      super(defaultChannelProviderBuilder().build());
+      super(s_getDefaultConnectionSettingsBuilder().build());
 
       createShelfSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_CREATE_SHELF);
 
@@ -974,15 +945,50 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       );
     }
 
+    private static ConnectionSettings.Builder s_getDefaultConnectionSettingsBuilder() {
+      return ConnectionSettings.newBuilder()
+        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+        .setPort(DEFAULT_SERVICE_PORT)
+        .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
+        ;
+    }
     @Override
-    public Builder setExecutorProvider(ExecutorProvider executorProvider) {
-      super.setExecutorProvider(executorProvider);
+    protected ConnectionSettings.Builder getDefaultConnectionSettingsBuilder() {
+      return s_getDefaultConnectionSettingsBuilder();
+    }
+    @Override
+    public Builder provideExecutorWith(ScheduledExecutorService executor, boolean shouldAutoClose) {
+      super.provideExecutorWith(executor, shouldAutoClose);
       return this;
     }
-
     @Override
-    public Builder setChannelProvider(ChannelProvider channelProvider) {
-      super.setChannelProvider(channelProvider);
+    public Builder provideChannelWith(ManagedChannel channel, boolean shouldAutoClose) {
+      super.provideChannelWith(channel, shouldAutoClose);
+      return this;
+    }
+    @Override
+    public Builder provideChannelWith(ConnectionSettings settings) {
+      super.provideChannelWith(settings);
+      return this;
+    }
+    @Override
+    public Builder provideChannelWith(Credentials credentials) {
+      super.provideChannelWith(credentials);
+      return this;
+    }
+    @Override
+    public Builder provideChannelWith(List<String> scopes) {
+      super.provideChannelWith(scopes);
+      return this;
+    }
+    @Override
+    public Builder setGeneratorHeader(String name, String version) {
+      super.setGeneratorHeader(name, version);
+      return this;
+    }
+    @Override
+    public Builder setClientLibHeader(String name, String version) {
+      super.setClientLibHeader(name, version);
       return this;
     }
 

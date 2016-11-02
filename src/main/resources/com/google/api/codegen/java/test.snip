@@ -80,6 +80,24 @@
         actualRequest.{@assert.actualValueGetter}());
     @end
   }
+
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.name}Exception() {
+    {@setException(test)}
+
+    try {
+      {@initCode(test.initCode)}
+
+      api.{@test.surfaceMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      Assert.fail("No exception raised");
+    } catch (ApiException e) {
+      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+    } catch (Exception e) {
+      Assert.fail("Unknown exception found");
+    }
+  }
 @end
 
 @private grpcStreamingTestCase(test)
@@ -89,20 +107,53 @@
     {@setResponse(test)}
     {@initCode(test.initCode)}
 
-    @switch test.grpcStreamingType
-    @case "BidiStreaming"
-      {@bidiStreamingCall(test)}
-    @case "ServerStreaming"
-      {@serverStreamingCall(test)}
-    @default
-      $unhandled case - test.grpcStreamingType.toString$
-    @end
+    {@streamingMethodCall(test)}
 
     List<{@test.responseTypeName}> actualResponses = responseObserver.future().get();
     Assert.assertEquals(1, actualResponses.size());
     Assert.assertEquals(expectedResponse, actualResponses.get(0));
     Assert.assertEquals(0, responseObserver.errors().size());
   }
+
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.name}Exception() throws Exception {
+    {@setException(test)}
+    {@initCode(test.initCode)}
+
+    {@streamingMethodCallWithException(test)}
+
+    List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+    Assert.assertEquals(1, responseObserver.errors().size());
+    Assert.assertTrue(responseObserver.errors().get(0) instanceof StatusRuntimeException);
+
+    StatusRuntimeException statusException =
+        (StatusRuntimeException) responseObserver.errors().get(0);
+    Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+  }
+@end
+
+@private streamingMethodCall(test)
+  @switch test.grpcStreamingType
+  @case "BidiStreaming"
+    {@bidiStreamingCall(test)}
+    requestObserver.onCompleted();
+  @case "ServerStreaming"
+    {@serverStreamingCall(test)}
+  @default
+    $unhandled case - test.grpcStreamingType.toString$
+  @end
+@end
+
+@private streamingMethodCallWithException(test)
+  @switch test.grpcStreamingType
+  @case "BidiStreaming"
+    {@bidiStreamingCall(test)}
+  @case "ServerStreaming"
+    {@serverStreamingCall(test)}
+  @default
+    $unhandled case - test.grpcStreamingType.toString$
+  @end
 @end
 
 @private bidiStreamingCall(test)
@@ -114,7 +165,6 @@
       callable.bidiStreamingCall(responseObserver);
 
   requestObserver.onNext(request);
-  requestObserver.onCompleted();
 @end
 
 @private serverStreamingCall(test)
@@ -127,9 +177,12 @@
 
 @private setResponse(test)
   {@initCode(test.mockResponse.initCode)}
-  List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
-  expectedResponses.add(expectedResponse);
-  {@test.mockServiceVarName}.setResponses(expectedResponses);
+  {@test.mockServiceVarName}.addResponse(expectedResponse);
+@end
+
+@private setException(test)
+  StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+  {@test.mockServiceVarName}.addException(exception);
 @end
 
 @private methodCall(test)

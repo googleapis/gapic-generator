@@ -16,7 +16,6 @@
  */
 package com.google.gcloud.pubsub.spi;
 
-import com.google.api.gax.grpc.ChannelAndExecutor;
 import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
@@ -49,7 +48,6 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.ResourceName;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
@@ -133,22 +131,18 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  * <pre>
  * <code>
- * InstantiatingChannelProvider channelProvider =
- *     LibraryServiceSettings.defaultChannelProviderBuilder()
- *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
- *         .build();
- * LibraryServiceSettings libraryServiceSettings =
- *     LibraryServiceSettings.defaultBuilder().setChannelProvider(channelProvider).build();
- * LibraryServiceApi libraryServiceApi =
- *     LibraryServiceApi.create(libraryServiceSettings);
+ * LibraryServiceSettings libraryServiceSettings = LibraryServiceSettings.defaultBuilder()
+ *     .provideChannelWith(myCredentials)
+ *     .build();
+ * LibraryServiceApi libraryServiceApi = LibraryServiceApi.create(libraryServiceSettings);
  * </code>
  * </pre>
  */
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceApi implements AutoCloseable {
   private final LibraryServiceSettings settings;
-  private final ScheduledExecutorService executor;
   private final ManagedChannel channel;
+  private final ScheduledExecutorService executor;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   private final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable;
@@ -319,9 +313,8 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException {
     this.settings = settings;
-    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
-    this.executor = channelAndExecutor.getExecutor();
-    this.channel = channelAndExecutor.getChannel();
+    this.executor = settings.getExecutorProvider().getOrBuildExecutor();
+    this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
     this.createShelfCallable = UnaryCallable.create(settings.createShelfSettings(), this.channel, this.executor);
     this.getShelfCallable = UnaryCallable.create(settings.getShelfSettings(), this.channel, this.executor);
@@ -819,9 +812,9 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
+   *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
-   *   Book response = libraryServiceApi.createBook(formattedName, book);
+   *   Book response = libraryServiceApi.createBook(name, book);
    * }
    * </code></pre>
    *
@@ -829,10 +822,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param book The book to create.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Book createBook(String name, Book book) {
+  public final Book createBook(ShelfName name, Book book) {
     CreateBookRequest request =
         CreateBookRequest.newBuilder()
-        .setName(name)
+        .setNameWithResource(name)
         .setBook(book)
         .build();
     return createBook(request);
@@ -845,10 +838,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
+   *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setNameWithResource(name)
    *     .setBook(book)
    *     .build();
    *   Book response = libraryServiceApi.createBook(request);
@@ -869,10 +862,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
+   *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setNameWithResource(name)
    *     .setBook(book)
    *     .build();
    *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.createBookCallable().futureCall(request);
@@ -1396,31 +1389,6 @@ public class LibraryServiceApi implements AutoCloseable {
     ListStringsRequest request =
         ListStringsRequest.newBuilder()
 
-        .build();
-    return listStrings(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Lists a primitive resource. To test go page streaming.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
-   *   ResourceName name = ShelfName.create("[SHELF_ID]");
-   *   for (String element : libraryServiceApi.listStrings(name).iterateAllElements()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param name
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
-   */
-  public final ListStringsPagedResponse listStrings(ResourceName name) {
-    ListStringsRequest request =
-        ListStringsRequest.newBuilder()
-        .setNameWithResource(name)
         .build();
     return listStrings(request);
   }
