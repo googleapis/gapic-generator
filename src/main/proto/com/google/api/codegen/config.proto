@@ -90,6 +90,8 @@ message ConfigProto {
   // A list of resource name oneof configs.
   repeated CollectionOneofProto collection_oneofs = 16;
 
+  repeated InvalidCollectionProto invalid_collections = 17;
+
   // A list of message resource name configurations.
   repeated ResourceNameMessageConfigProto resource_name_generation = 20;
 }
@@ -179,6 +181,11 @@ message CollectionOneofProto {
   // A list of the entity names of the CollectionConfigs to be included in the
   // oneof collection.
   repeated string collection_names = 2;
+}
+
+message InvalidCollectionProto {
+  string entity_name = 1;
+  string invalid_value = 2;
 }
 
 // `MethodConfigProto` describes the generator configuration for a method.
