@@ -24,14 +24,14 @@ import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.discovery.config.go.GoTypeNameGenerator;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
 import com.google.api.codegen.discovery.config.nodejs.NodeJSTypeNameGenerator;
+import com.google.api.codegen.discovery.config.php.PhpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.ruby.RubyTypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.go.GoSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleMethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.php.PhpSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.ruby.RubySampleMethodToViewTransformer;
-import com.google.api.codegen.php.PhpDiscoveryContext;
-import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonDiscoveryContext;
 import com.google.api.codegen.py.PythonDiscoveryInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
@@ -63,12 +63,14 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
               GO, GoSampleMethodToViewTransformer.class,
               JAVA, JavaSampleMethodToViewTransformer.class,
               NODEJS, NodeJSSampleMethodToViewTransformer.class,
+              PHP, PhpSampleMethodToViewTransformer.class,
               RUBY, RubySampleMethodToViewTransformer.class);
   private static final Map<String, Class<? extends TypeNameGenerator>> TYPE_NAME_GENERATOR_MAP =
       ImmutableMap.of(
           GO, GoTypeNameGenerator.class,
           JAVA, JavaTypeNameGenerator.class,
           NODEJS, NodeJSTypeNameGenerator.class,
+          PHP, PhpTypeNameGenerator.class,
           RUBY, RubyTypeNameGenerator.class);
 
   public static DiscoveryProvider defaultCreate(
@@ -87,14 +89,6 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
               new CSharpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
-          .build();
-
-    } else if (id.equals(PHP)) {
-      return CommonDiscoveryProvider.newBuilder()
-          .setContext(new PhpDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(
-              new PhpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
