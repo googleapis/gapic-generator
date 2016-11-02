@@ -713,6 +713,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getSettingsMemberName(method);
   }
 
+  /** The name of a method to apply modifications to this method request. */
+  public String getModifyMethodName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getModifyMethodName");
+  }
+
   /** The type name of call options */
   public String getCallSettingsTypeName(Interface service) {
     return className(Name.upperCamel(service.getSimpleName(), "Settings"));

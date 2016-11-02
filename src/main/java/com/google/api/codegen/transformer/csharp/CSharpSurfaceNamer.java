@@ -31,15 +31,107 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.util.List;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
+
+  private static ImmutableSet<String> keywords =
+      ImmutableSet.<String>builder()
+          .add("abstract")
+          .add("as")
+          .add("base")
+          .add("bool")
+          .add("break")
+          .add("byte")
+          .add("case")
+          .add("catch")
+          .add("char")
+          .add("checked")
+          .add("class")
+          .add("const")
+          .add("continue")
+          .add("decimal")
+          .add("default")
+          .add("delegate")
+          .add("do")
+          .add("double")
+          .add("else")
+          .add("enum")
+          .add("event")
+          .add("explicit")
+          .add("extern")
+          .add("false")
+          .add("finally")
+          .add("fixed")
+          .add("float")
+          .add("for")
+          .add("foreach")
+          .add("goto")
+          .add("if")
+          .add("implicit")
+          .add("in")
+          .add("int")
+          .add("interface")
+          .add("internal")
+          .add("is")
+          .add("lock")
+          .add("long")
+          .add("namespace")
+          .add("new")
+          .add("null")
+          .add("object")
+          .add("operator")
+          .add("out")
+          .add("override")
+          .add("params")
+          .add("private")
+          .add("protected")
+          .add("public")
+          .add("readonly")
+          .add("ref")
+          .add("return")
+          .add("sbyte")
+          .add("sealed")
+          .add("short")
+          .add("sizeof")
+          .add("stackalloc")
+          .add("static")
+          .add("string")
+          .add("struct")
+          .add("switch")
+          .add("this")
+          .add("throw")
+          .add("true")
+          .add("try")
+          .add("typeof")
+          .add("uint")
+          .add("ulong")
+          .add("unchecked")
+          .add("unsafe")
+          .add("ushort")
+          .add("using")
+          .add("virtual")
+          .add("void")
+          .add("volatile")
+          .add("while")
+          .build();
+
+  private static String prefixKeyword(String name) {
+    return keywords.contains(name) ? "@" + name : name;
+  }
+
   public CSharpSurfaceNamer(String packageName) {
     super(
         new CSharpNameFormatter(),
         new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName)),
         new CSharpTypeTable(packageName),
         packageName);
+  }
+
+  @Override
+  public String localVarName(Name name) {
+    return prefixKeyword(super.localVarName(name));
   }
 
   @Override
@@ -84,6 +176,13 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getCallableName(Method method) {
     return privateFieldName(Name.upperCamel("Call", method.getSimpleName()));
+  }
+
+  @Override
+  public String getModifyMethodName(Method method) {
+    return "Modify_"
+        + privateMethodName(
+            Name.upperCamel(getModelTypeFormatter().getNicknameFor(method.getInputType())));
   }
 
   @Override
@@ -191,6 +290,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getParamName(String var) {
     return localVarName(Name.from(var).join("id"));
+  }
+
+  @Override
+  public String getParamDocName(String var) {
+    return super.localVarName(Name.from(var));
   }
 
   @Override

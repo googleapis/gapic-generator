@@ -248,6 +248,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.stubName(namer.getStubName(context.getTargetInterface()));
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
+    methodViewBuilder.modifyMethodName(namer.getModifyMethodName(context.getMethod()));
     methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     ServiceMessages messages = new ServiceMessages();
