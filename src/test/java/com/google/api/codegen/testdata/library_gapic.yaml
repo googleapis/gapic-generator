@@ -23,6 +23,14 @@ language_settings:
 license_header:
   copyright_file: copyright-google.txt
   license_file: license-header-apache-2.0.txt
+collections:
+  - name_pattern: shelves/{shelf_id}
+    entity_name: shelf
+collection_oneofs:
+  - oneof_name: book_oneof
+    collection_names:
+    - book
+    - archived_book
 interfaces:
 - name: google.example.library.v1.LibraryService
   retry_codes_def:
@@ -46,13 +54,17 @@ interfaces:
     entity_name: shelf
   - name_pattern: shelves/{shelf_id}/books/{book_id}
     entity_name: book
-  - name_pattern: archives/{archive_path=**}/books/{book_id}
+  - name_pattern: archives/{archive_path}/books/{book_id=**}
     entity_name: archived_book
+  # To test the case that entity name / variable which happens to be
+  # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
+  - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
+    entity_name: return
   smoke_test:
     method: GetBook
     init_fields:
       - name%shelf_id="testShelf-$RANDOM"
-      - name%book_id="testBook"
+      - name%book_id=$PROJECT_ID
     flattening_group_name: get_book_1
   experimental_features:
     iam_resources:
@@ -326,6 +338,18 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: archived_book
+  - name: GetBookFromAnywhere
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+      - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    request_object_method: false
+    resource_name_treatment: STATIC_TYPES
   - name: UpdateBookIndex
     flattening:
       groups:
@@ -460,6 +484,12 @@ resource_name_generation:
 - message_name: Book
   field_entity_map:
     name: book
+- message_name: BookFromArchive
+  field_entity_map:
+    name: archived_book
+- message_name: BookFromAnywhere
+  field_entity_map:
+    name: book_oneof
 - message_name: Shelf
   field_entity_map:
     name: shelf
@@ -495,6 +525,9 @@ resource_name_generation:
 - message_name: GetBookFromArchiveRequest
   field_entity_map:
     name: archived_book
+- message_name: GetBookFromAnywhereRequest
+  field_entity_map:
+    name: book_oneof
 - message_name: UpdateBookIndexRequest
   field_entity_map:
     name: book

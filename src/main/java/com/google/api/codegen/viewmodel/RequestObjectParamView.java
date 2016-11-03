@@ -34,6 +34,10 @@ public abstract class RequestObjectParamView {
 
   public abstract boolean isArray();
 
+  public boolean isCollection() {
+    return isMap() || isArray();
+  }
+
   @Nullable // Used in C#
   public abstract String defaultValue();
 

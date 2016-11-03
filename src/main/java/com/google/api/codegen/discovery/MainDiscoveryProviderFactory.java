@@ -24,18 +24,18 @@ import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.discovery.config.go.GoTypeNameGenerator;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
 import com.google.api.codegen.discovery.config.nodejs.NodeJSTypeNameGenerator;
+import com.google.api.codegen.discovery.config.ruby.RubyTypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.go.GoSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleMethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.ruby.RubySampleMethodToViewTransformer;
 import com.google.api.codegen.php.PhpDiscoveryContext;
 import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonDiscoveryContext;
 import com.google.api.codegen.py.PythonDiscoveryInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
-import com.google.api.codegen.ruby.RubyDiscoveryContext;
-import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Method;
@@ -62,12 +62,14 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           ImmutableMap.of(
               GO, GoSampleMethodToViewTransformer.class,
               JAVA, JavaSampleMethodToViewTransformer.class,
-              NODEJS, NodeJSSampleMethodToViewTransformer.class);
+              NODEJS, NodeJSSampleMethodToViewTransformer.class,
+              RUBY, RubySampleMethodToViewTransformer.class);
   private static final Map<String, Class<? extends TypeNameGenerator>> TYPE_NAME_GENERATOR_MAP =
       ImmutableMap.of(
           GO, GoTypeNameGenerator.class,
           JAVA, JavaTypeNameGenerator.class,
-          NODEJS, NodeJSTypeNameGenerator.class);
+          NODEJS, NodeJSTypeNameGenerator.class,
+          RUBY, RubyTypeNameGenerator.class);
 
   public static DiscoveryProvider defaultCreate(
       Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
@@ -103,14 +105,6 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
               new PythonSnippetSetRunner<Method>(
                   new PythonDiscoveryInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName("py/" + DEFAULT_SNIPPET_FILE)
-          .build();
-
-    } else if (id.equals(RUBY)) {
-      return CommonDiscoveryProvider.newBuilder()
-          .setContext(new RubyDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(
-              new RubySnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
     }
 

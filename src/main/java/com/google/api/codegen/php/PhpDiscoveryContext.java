@@ -32,19 +32,6 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
 
   private PhpTypeTable phpTypeTable;
 
-  /** A map from inferred API package names to renamed counterparts in PHP client libraries. */
-  private static final ImmutableMap<String, String> RENAMED_PACKAGE_MAP =
-      ImmutableMap.<String, String>builder()
-          .put("Adexchangebuyer", "AdExchangeBuyer")
-          .put("Cloudtrace", "CloudTrace")
-          .put("Clouddebugger", "CloudDebugger")
-          .put("Cloudmonitoring", "CloudMonitoring")
-          .put("Cloudresourcemanager", "CloudResourceManager")
-          .put("Clouduseraccounts", "CloudUserAccounts")
-          .put("Deploymentmanager", "DeploymentManager")
-          .put("Sqladmin", "SQLAdmin")
-          .build();
-
   /** A map from primitive type name to corresponding default value string in PHP. */
   private static final ImmutableMap<Field.Kind, String> DEFAULT_PRIMITIVE_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
@@ -105,11 +92,6 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
     return builder.toString();
   }
 
-  /** Returns a simple name represents the API in camel case. */
-  public String getSimpleApiName() {
-    return getRename(lowerCamelToUpperCamel(getApi().getName()), RENAMED_PACKAGE_MAP);
-  }
-
   /**
    * Returns the request class name of the given method in PHP. If the method does not have a
    * request returns an empty string.
@@ -128,7 +110,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
 
   /** Returns the service class name in PHP. */
   public String getServiceClassName() {
-    return GOOGLE_SERVICE_PREFIX + getSimpleApiName();
+    return GOOGLE_SERVICE_PREFIX + getServiceName();
   }
 
   @Override

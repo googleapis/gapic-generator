@@ -70,19 +70,6 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .put("sql.instances.import", "sql.instances.sqladminImport")
           .build();
 
-  // TODO(tcoffee): revisit default capitalization behavior based on wider survey of APIs
-  /** A map from inferred API package names to renamed counterparts in Java client libraries. */
-  private static final ImmutableMap<String, String> RENAMED_PACKAGE_MAP =
-      ImmutableMap.<String, String>builder()
-          .put("Clouddebugger", "CloudDebugger")
-          .put("Cloudmonitoring", "CloudMonitoring")
-          .put("Cloudresourcemanager", "CloudResourceManager")
-          .put("Cloudtrace", "CloudTrace")
-          .put("Clouduseraccounts", "CloudUserAccounts")
-          .put("Deploymentmanager", "DeploymentManager")
-          .put("Sqladmin", "SQLAdmin")
-          .build();
-
   /** A set of names of APIs whose package paths include their version number. */
   private static final ImmutableSet<String> VERSIONED_PACKAGE_SET =
       ImmutableSet.<String>builder()
@@ -175,9 +162,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
    * in the import list.
    */
   public String getApiPackage() {
-    return getTypeName(
-        getApiRootUrl()
-            + getRename(lowerCamelToUpperCamel(getApi().getName()), RENAMED_PACKAGE_MAP));
+    return getTypeName(getApiRootUrl() + getServiceName());
   }
 
   /*

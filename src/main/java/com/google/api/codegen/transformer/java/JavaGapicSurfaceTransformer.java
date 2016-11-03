@@ -255,25 +255,26 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     Field resourceField = resourceFieldConfig.getField();
 
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
-      PagedResponseIterateMethodView.Builder iterateMethod =
-          PagedResponseIterateMethodView.newBuilder();
 
       String resourceTypeName =
           context
               .getNamer()
               .getAndSaveResourceTypeName(
                   context.getTypeTable(),
-                  resourceField,
-                  resourceField.getType().makeOptional(),
-                  resourceFieldConfig.getEntityName());
-      iterateMethod.overloadResourceTypeName(resourceTypeName);
-      iterateMethod.overloadResourceTypeParseFunctionName(
-          context.getNamer().publicMethodName(Name.from("parse")));
-      iterateMethod.overloadResourceTypeIterateMethodName(
+                  resourceFieldConfig,
+                  resourceField.getType().makeOptional());
+      String resourceTypeIterateMethodName =
           context
               .getNamer()
-              .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig));
-      iterateMethod.iterateMethodName(context.getNamer().getPagedResponseIterateMethod());
+              .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
+
+      PagedResponseIterateMethodView.Builder iterateMethod =
+          PagedResponseIterateMethodView.newBuilder()
+              .overloadResourceTypeName(resourceTypeName)
+              .overloadResourceTypeParseFunctionName(
+                  context.getNamer().publicMethodName(Name.from("parse")))
+              .overloadResourceTypeIterateMethodName(resourceTypeIterateMethodName)
+              .iterateMethodName(context.getNamer().getPagedResponseIterateMethod());
 
       iterateMethods.add(iterateMethod.build());
     }

@@ -119,7 +119,9 @@ class LibraryServiceApi(object):
     _BOOK_PATH_TEMPLATE = path_template.PathTemplate(
         'shelves/{shelf_id}/books/{book_id}')
     _ARCHIVED_BOOK_PATH_TEMPLATE = path_template.PathTemplate(
-        'archives/{archive_path=**}/books/{book_id}')
+        'archives/{archive_path}/books/{book_id=**}')
+    _RETURN_PATH_TEMPLATE = path_template.PathTemplate(
+        'shelves/{shelf}/books/{book}/returns/{return}')
 
     @classmethod
     def shelf_path(cls, shelf_id):
@@ -142,6 +144,15 @@ class LibraryServiceApi(object):
         return cls._ARCHIVED_BOOK_PATH_TEMPLATE.render({
             'archive_path': archive_path,
             'book_id': book_id,
+        })
+
+    @classmethod
+    def return_path(cls, shelf, book, return_):
+        """Returns a fully-qualified return resource name string."""
+        return cls._RETURN_PATH_TEMPLATE.render({
+            'shelf': shelf,
+            'book': book,
+            'return': return_,
         })
 
     @classmethod
@@ -208,6 +219,45 @@ class LibraryServiceApi(object):
           A string representing the book_id.
         """
         return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('book_id')
+
+    @classmethod
+    def match_shelf_from_return_name(cls, return_name):
+        """Parses the shelf from a return resource.
+
+        Args:
+          return_name (string): A fully-qualified path representing a return
+            resource.
+
+        Returns:
+          A string representing the shelf.
+        """
+        return cls._RETURN_PATH_TEMPLATE.match(return_name).get('shelf')
+
+    @classmethod
+    def match_book_from_return_name(cls, return_name):
+        """Parses the book from a return resource.
+
+        Args:
+          return_name (string): A fully-qualified path representing a return
+            resource.
+
+        Returns:
+          A string representing the book.
+        """
+        return cls._RETURN_PATH_TEMPLATE.match(return_name).get('book')
+
+    @classmethod
+    def match_return_from_return_name(cls, return_name):
+        """Parses the return from a return resource.
+
+        Args:
+          return_name (string): A fully-qualified path representing a return
+            resource.
+
+        Returns:
+          A string representing the return.
+        """
+        return cls._RETURN_PATH_TEMPLATE.match(return_name).get('return')
 
     def __init__(
             self,
@@ -327,6 +377,9 @@ class LibraryServiceApi(object):
         self._get_book_from_archive = api_callable.create_api_call(
             self.library_service_stub.GetBookFromArchive,
             settings=defaults['get_book_from_archive'])
+        self._get_book_from_anywhere = api_callable.create_api_call(
+            self.library_service_stub.GetBookFromAnywhere,
+            settings=defaults['get_book_from_anywhere'])
         self._update_book_index = api_callable.create_api_call(
             self.library_service_stub.UpdateBookIndex,
             settings=defaults['update_book_index'])
@@ -888,7 +941,7 @@ class LibraryServiceApi(object):
             settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.example.library.v1.library_pb2.Book` instance.
+          A :class:`google.example.library.v1.library_pb2.BookFromArchive` instance.
 
         Raises:
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
@@ -897,6 +950,35 @@ class LibraryServiceApi(object):
         request = library_pb2.GetBookFromArchiveRequest(
             name=name)
         return self._get_book_from_archive(request, options)
+
+    def get_book_from_anywhere(
+            self,
+            name,
+            options=None):
+        """
+        Gets a book from a shelf or archive.
+
+        Example:
+          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> api = library_service_api.LibraryServiceApi()
+          >>> name = ''
+          >>> response = api.get_book_from_anywhere(name)
+
+        Args:
+          name (string): The name of the book to retrieve.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Returns:
+          A :class:`google.example.library.v1.library_pb2.BookFromAnywhere` instance.
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+          :exc:`ValueError` if the parameters are invalid.
+        """
+        request = library_pb2.GetBookFromAnywhereRequest(
+            name=name)
+        return self._get_book_from_anywhere(request, options)
 
     def update_book_index(
             self,

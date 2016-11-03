@@ -29,6 +29,7 @@ import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.transformer.go.GoImportTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -59,7 +60,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(GoTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(GoNameFormatter.RESERVED_IDENTIFIER_SET);
     addStaticImports(context, symbolTable);
 
     SampleView.Builder builder = SampleView.newBuilder();
@@ -70,10 +71,6 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     // isn't Go specific logic in the transformer.
     String servicePackageName = GoSampleNamer.getServicePackageName(config.packagePrefix());
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(servicePackageName));
-    List<String> methodNameComponents = new ArrayList<String>();
-    for (String nameComponent : methodInfo.nameComponents()) {
-      methodNameComponents.add(namer.publicFieldName(Name.lowerCamel(nameComponent)));
-    }
     String requestVarName = symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("req")));
     // For this and other type name assignments, we don't use TypeTable logic to
     // add to the import list. The main issue is that the TypeTable returns
@@ -127,7 +124,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .auth(createSampleAuthView(context))
         .serviceVarName(serviceVarName)
         .methodVerb(methodInfo.verb())
-        .methodNameComponents(methodNameComponents)
+        .methodNameComponents(methodInfo.nameComponents())
         .requestVarName(requestVarName)
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)

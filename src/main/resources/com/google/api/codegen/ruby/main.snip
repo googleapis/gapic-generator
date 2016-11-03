@@ -291,8 +291,8 @@
 @end
 
 @private pathTemplateSection(service)
-  @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+  @if context.getApiConfig.getSingleResourceNameConfigs()
+    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
       {@pathTemplateName(collectionConfig)} = Google::Gax::PathTemplate.new(
         "{@collectionConfig.getNamePattern}"
@@ -301,11 +301,11 @@
       private_constant :{@pathTemplateName(collectionConfig)}
     @end
 
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
       {@createResourceFunction(collectionConfig)}
     @end
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
         {@createMatchFunctions(collectionConfig)}
     @end
@@ -315,7 +315,7 @@
 @private createResourceFunction(collectionConfig)
   @# Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
   @join param : collectionConfig.getNameTemplate.vars()
-    @# @@param {@param} [String]
+    @# @@param {@context.wrapIfKeywordOrBuiltIn(param)} [String]
   @end
   @# @@return [String]
   def self.{@collectionConfig.getEntityName}_path {@createResourceFunctionParams(collectionConfig)}
@@ -327,13 +327,13 @@
 
 @private createResourceFunctionParams(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@param}
+    {@context.wrapIfKeywordOrBuiltIn(param)}
   @end
 @end
 
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    :"{@param}" => {@param}
+    :"{@param}" => {@context.wrapIfKeywordOrBuiltIn(param)}
   @end
 @end
 
@@ -378,44 +378,54 @@
        sample = comments(util.getDocLines(sampleCode(methodView)))
     @if documentation
       {@documentation}
+      @if method.getRequestStreaming()
+        @#
+        @# @@note
+        @#   EXPERIMENTAL:
+        @#     Streaming requests are still undergoing review.
+        @#     This method interface might change in the future.
+        @#
+      @end
     @end
 
     @if sample
       {@sample}
     @end
 
-    @if or(requiredParams, optionalParams)
-      def {@methodName} @\
-          @if requiredParams
-            @if optionalParams
-              {@requiredParameterNames(requiredParams)},
-              {@optionalParameterValues(optionalParams)},
-            @else
-              {@requiredParameterNames(requiredParams)},
-            @end
-          @else
-            {@optionalParameterValues(optionalParams)},
-          @end
-          options: nil
-        req = {@inputTypeName}.new({
-          @if requiredParams
-            @if optionalParams
-              {@namedParameters(requiredParams)},
-              {@namedParameters(optionalParams)}
-            @else
-              {@namedParameters(requiredParams)}
-            @end
-          @else
-            {@namedParameters(optionalParams)}
-          @end
-        }.delete_if { |_, v| v.nil? })
-        @@{@methodName}.call(req, options)
+    @if method.getRequestStreaming()
+      def {@methodName} reqs, options: nil
+        @@{@methodName}.call(reqs, options)
       end
     @else
-      def {@methodName} options: nil
-        req = {@inputTypeName}.new
-        @@{@methodName}.call(req, options)
-      end
+      @if or(requiredParams, optionalParams)
+        def {@methodName} @\
+            @if requiredParams
+              {@requiredParameterNames(requiredParams)},
+            @end
+            @if optionalParams
+              {@optionalParameterValues(optionalParams)},
+            @end
+            options: nil
+          req = {@inputTypeName}.new({
+            @if requiredParams
+              @if optionalParams
+                {@namedParameters(requiredParams)},
+                {@namedParameters(optionalParams)}
+              @else
+                {@namedParameters(requiredParams)}
+              @end
+            @else
+              {@namedParameters(optionalParams)}
+            @end
+          }.delete_if { |_, v| v.nil? })
+          @@{@methodName}.call(req, options)
+        end
+      @else
+        def {@methodName} options: nil
+          req = {@inputTypeName}.new
+          @@{@methodName}.call(req, options)
+        end
+      @end
     @end
   @end
 @end

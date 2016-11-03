@@ -15,14 +15,13 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
-import java.util.Collection;
 import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
@@ -78,12 +77,8 @@ public abstract class MethodTransformerContext {
     return getApiConfig().getInterfaceConfig(getInterface());
   }
 
-  public Collection<CollectionConfig> getCollectionConfigs() {
-    return getInterfaceConfig().getCollectionConfigs();
-  }
-
-  public CollectionConfig getCollectionConfig(String entityName) {
-    return getInterfaceConfig().getCollectionConfig(entityName);
+  public SingleResourceNameConfig getSimpleResourceNameConfig(String entityName) {
+    return getApiConfig().getSingleResourceNameConfig(entityName);
   }
 
   public MethodTransformerContext cloneWithEmptyTypeTable() {

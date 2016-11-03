@@ -6,32 +6,28 @@
 #    https://console.developers.google.com/apis/api/cloudbilling
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
 require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `get_billing_account` method:
-
 # The resource name of the billing account to retrieve. For example,
 # `billingAccounts/012345-567890-ABCDEF`.
-name = 'billingAccounts/{MY-BILLINGACCOUNT}'
+name = ''  # TODO: Update placeholder value.
+# ex: 'billingAccounts/my-billingAccount'
 
-
-# Perform the call
 response = service.get_billing_account(name)
 
 # TODO: Change code below to process the `response` object:
@@ -43,30 +39,28 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/cloudbilling
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
 require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# Perform the call
-billingAccounts = service.fetch_all(items: :billingAccounts) do |token|
-  service.list_billing_accounts(, page_token: token)
+billing_accounts = service.fetch_all(items: :billing_accounts) do |token|
+  service.list_billing_accounts(page_token: token)
 end
 
-billingAccounts.each do |billing_account|
+billing_accounts.each do |billing_account|
   # TODO: Change code below to process each `billing_account` resource:
   puts JSON.pretty_generate(billing_account)
 end
@@ -77,37 +71,33 @@ end
 #    https://console.developers.google.com/apis/api/cloudbilling
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
 require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `list_billing_account_projects` method:
-
 # The resource name of the billing account associated with the projects that you want to list. For
 # example, `billingAccounts/012345-567890-ABCDEF`.
-name = 'billingAccounts/{MY-BILLINGACCOUNT}'
+name = ''  # TODO: Update placeholder value.
+# ex: 'billingAccounts/my-billingAccount'
 
-
-# Perform the call
-projectBillingInfo = service.fetch_all(items: :projectBillingInfo) do |token|
+project_billing_info2 = service.fetch_all(items: :project_billing_info) do |token|
   service.list_billing_account_projects(name, page_token: token)
 end
 
-projectBillingInfo.each do |project_billing_info|
+project_billing_info2.each do |project_billing_info|
   # TODO: Change code below to process each `project_billing_info` resource:
   puts JSON.pretty_generate(project_billing_info)
 end
@@ -118,32 +108,28 @@ end
 #    https://console.developers.google.com/apis/api/cloudbilling
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
 require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `get_project_billing_info` method:
-
 # The resource name of the project for which billing information is retrieved. For example,
 # `projects/tokyo-rain-123`.
-name = 'projects/{MY-PROJECT}'
+name = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project'
 
-
-# Perform the call
 response = service.get_project_billing_info(name)
 
 # TODO: Change code below to process the `response` object:
@@ -155,36 +141,31 @@ puts JSON.pretty_generate(response)
 #    https://console.developers.google.com/apis/api/cloudbilling
 # 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run
+#    https://cloud.google.com/sdk and run
 #    `gcloud beta auth application-default login`
+#    For more information, see:
+#    https://developers.google.com/identity/protocols/application-default-credentials
 # 3. Install the Ruby client library and Application Default Credentials
 #    library by running `gem install google-api-client` and
 #    `gem install googleauth`
+
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
 require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-
-# TODO: Change placeholder below to desired parameter value for the `update_project_billing_info` method:
-
 # The resource name of the project associated with the billing information that you want to update.
 # For example, `projects/tokyo-rain-123`.
-name = 'projects/{MY-PROJECT}'
+name = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project'
 
-
+# TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudbillingV1::ProjectBillingInfo.new
-# TODO: Assign values to desired members of the `request_body` object.
 
-
-# Perform the call
 response = service.update_project_billing_info(name, request_body)
 
 # TODO: Change code below to process the `response` object:

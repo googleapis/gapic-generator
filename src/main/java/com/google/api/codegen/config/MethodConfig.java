@@ -92,6 +92,7 @@ public abstract class MethodConfig {
       MethodConfigProto methodConfigProto,
       Method method,
       ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
 
@@ -102,7 +103,7 @@ public abstract class MethodConfig {
         .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming =
           PageStreamingConfig.createPageStreaming(
-              diagCollector, messageConfigs, methodConfigProto, method);
+              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, method);
       if (pageStreaming == null) {
         error = true;
       }
@@ -125,7 +126,9 @@ public abstract class MethodConfig {
 
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening = createFlattening(diagCollector, messageConfigs, methodConfigProto, method);
+      flattening =
+          createFlattening(
+              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, method);
       if (flattening == null) {
         error = true;
       }
@@ -183,6 +186,7 @@ public abstract class MethodConfig {
             messageConfigs,
             methodConfigProto.getResourceNameTreatment(),
             fieldNamePatterns,
+            resourceNameConfigs,
             methodConfigProto.getRequiredFieldsList());
 
     Iterable<FieldConfig> optionalFieldConfigs =
@@ -191,6 +195,7 @@ public abstract class MethodConfig {
             messageConfigs,
             methodConfigProto.getResourceNameTreatment(),
             fieldNamePatterns,
+            resourceNameConfigs,
             methodConfigProto.getRequiredFieldsList());
 
     ResourceNameTreatment defaultResourceNameTreatment =
@@ -240,6 +245,7 @@ public abstract class MethodConfig {
   private static ImmutableList<FlatteningConfig> createFlattening(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       Method method) {
     boolean missing = false;
@@ -247,7 +253,12 @@ public abstract class MethodConfig {
     for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
       FlatteningConfig groupConfig =
           FlatteningConfig.createFlattening(
-              diagCollector, messageConfigs, methodConfigProto, flatteningGroup, method);
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              flatteningGroup,
+              method);
       if (groupConfig == null) {
         missing = true;
       } else {
@@ -266,6 +277,7 @@ public abstract class MethodConfig {
       ResourceNameMessageConfigs messageConfigs,
       ResourceNameTreatment defaultResourceNameTreatment,
       ImmutableMap<String, String> fieldNamePatterns,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       List<String> requiredFieldNames) {
     ImmutableList.Builder<FieldConfig> builder = ImmutableList.builder();
     for (String fieldName : requiredFieldNames) {
@@ -273,7 +285,11 @@ public abstract class MethodConfig {
       if (requiredField != null) {
         builder.add(
             getFieldConfig(
-                messageConfigs, fieldNamePatterns, requiredField, defaultResourceNameTreatment));
+                messageConfigs,
+                fieldNamePatterns,
+                resourceNameConfigs,
+                requiredField,
+                defaultResourceNameTreatment));
       } else {
         Diag.error(
             SimpleLocation.TOPLEVEL,
@@ -291,6 +307,7 @@ public abstract class MethodConfig {
       ResourceNameMessageConfigs messageConfigs,
       ResourceNameTreatment defaultResourceNameTreatment,
       ImmutableMap<String, String> fieldNamePatterns,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       List<String> requiredFieldNames) {
     ImmutableList.Builder<FieldConfig> optionalFieldConfigsBuilder = ImmutableList.builder();
     for (Field field : method.getInputType().getMessageType().getFields()) {
@@ -298,7 +315,12 @@ public abstract class MethodConfig {
         continue;
       }
       optionalFieldConfigsBuilder.add(
-          getFieldConfig(messageConfigs, fieldNamePatterns, field, defaultResourceNameTreatment));
+          getFieldConfig(
+              messageConfigs,
+              fieldNamePatterns,
+              resourceNameConfigs,
+              field,
+              defaultResourceNameTreatment));
     }
     return optionalFieldConfigsBuilder.build();
   }
@@ -306,6 +328,7 @@ public abstract class MethodConfig {
   private static FieldConfig getFieldConfig(
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, String> fieldNamePatterns,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       Field field,
       ResourceNameTreatment defaultResourceNameTreatment) {
 
@@ -316,13 +339,11 @@ public abstract class MethodConfig {
       treatment = ResourceNameTreatment.NONE;
     }
 
-    if (treatment == ResourceNameTreatment.NONE) {
-      entityName = null;
-    }
+    ResourceNameConfig resourceNameConfig = resourceNameConfigs.get(entityName);
 
-    FieldConfig.validate(messageConfigs, field, treatment, entityName);
+    FieldConfig.validate(messageConfigs, field, treatment, resourceNameConfig);
 
-    return FieldConfig.createFieldConfig(field, treatment, entityName);
+    return FieldConfig.createFieldConfig(field, treatment, resourceNameConfig);
   }
 
   /** Returns true if the method is a streaming method */
