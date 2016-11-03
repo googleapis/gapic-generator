@@ -21,8 +21,13 @@ import com.google.api.codegen.util.NamePath;
 public class CSharpNameFormatter implements NameFormatter {
 
   @Override
-  public String className(Name name) {
+  public String publicClassName(Name name) {
     return name.toUpperCamel();
+  }
+
+  @Override
+  public String privateClassName(Name name) {
+    return publicClassName(name);
   }
 
   @Override
@@ -82,6 +87,6 @@ public class CSharpNameFormatter implements NameFormatter {
 
   @Override
   public String classFileNameBase(Name name) {
-    return className(name);
+    return publicClassName(name);
   }
 }

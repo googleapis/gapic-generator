@@ -21,8 +21,8 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 /**
- * Sort of a union for mock-related classes. Used in languages that idiomatically
- * put mocks and tests in the same file.
+ * Sort of a union for mock-related classes. Used in languages that idiomatically put mocks and
+ * tests in the same file.
  */
 @AutoValue
 public abstract class MockCombinedView implements ViewModel {

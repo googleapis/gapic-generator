@@ -30,6 +30,10 @@
 
         var _ {@impl.grpcClassName} = &{@impl.name}{}
 
+        func (s *{@impl.name}) recordReq(req interface{}) {
+            s.reqs = append(s.reqs, req)
+        }
+
         @join method : impl.grpcMethods
             @switch method.grpcStreamingType
             @case "BidiStreaming"
@@ -47,9 +51,9 @@
     @end
 @end
 
-@private simpleMethod(view, method)
-    func (s *{@view.name}) {@method.name}(_ context.Context, req {@method.requestTypeName}) ({@method.responseTypeName}, error) {
-        s.reqs = append(s.reqs, req)
+@private simpleMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(_ context.Context, req {@method.requestTypeName}) ({@method.responseTypeName}, error) {
+        s.recordReq(req)
         if s.err != nil {
             return nil, s.err
         }
@@ -57,9 +61,9 @@
     }
 @end
 
-@private serverStreamMethod(view, method)
-    func (s *{@view.name}) {@method.name}(req {@method.requestTypeName}, stream {@method.streamHandle}) error {
-        s.reqs = append(s.reqs, req)
+@private serverStreamMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(req {@method.requestTypeName}, stream {@method.streamHandle}) error {
+        s.recordReq(req)
         if s.err != nil {
             return s.err
         }
@@ -72,8 +76,8 @@
     }
 @end
 
-@private clientStreamMethod(view, method)
-    func (s *{@view.name}) {@method.name}(stream {@method.streamHandle}) error {
+@private clientStreamMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandle}) error {
         if s.err != nil {
             return s.err
         }
@@ -83,14 +87,14 @@
             } else if err != nil {
                 return err
             } else {
-                s.reqs = append(s.reqs, req)
+                s.recordReq(req)
             }
         }
     }
 @end
 
-@private bidiMethod(view, method)
-    func (s *{@view.name}) {@method.name}(stream {@method.streamHandle}) error {
+@private bidiMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandle}) error {
         if s.err != nil {
             return s.err
         }
@@ -105,7 +109,7 @@
                     ch <- err
                     return
                 } else {
-                    s.reqs = append(s.reqs, req)
+                    s.recordReq(req)
                 }
             }
         }()
