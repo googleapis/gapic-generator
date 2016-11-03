@@ -16,6 +16,7 @@
  */
 package com.google.gcloud.example;
 
+import com.google.api.gax.grpc.ChannelAndExecutor;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
@@ -72,18 +73,22 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  * <pre>
  * <code>
- * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings = NoTemplatesApiServiceSettings.defaultBuilder()
- *     .provideChannelWith(myCredentials)
- *     .build();
- * NoTemplatesApiServiceApi noTemplatesApiServiceApi = NoTemplatesApiServiceApi.create(noTemplatesApiServiceSettings);
+ * InstantiatingChannelProvider channelProvider =
+ *     NoTemplatesApiServiceSettings.defaultChannelProviderBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings =
+ *     NoTemplatesApiServiceSettings.defaultBuilder().setChannelProvider(channelProvider).build();
+ * NoTemplatesApiServiceApi noTemplatesApiServiceApi =
+ *     NoTemplatesApiServiceApi.create(noTemplatesApiServiceSettings);
  * </code>
  * </pre>
  */
 @javax.annotation.Generated("by GAPIC")
 public class NoTemplatesApiServiceApi implements AutoCloseable {
   private final NoTemplatesApiServiceSettings settings;
-  private final ManagedChannel channel;
   private final ScheduledExecutorService executor;
+  private final ManagedChannel channel;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   private final UnaryCallable<IncrementRequest, Empty> incrementCallable;
@@ -107,8 +112,9 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
    */
   protected NoTemplatesApiServiceApi(NoTemplatesApiServiceSettings settings) throws IOException {
     this.settings = settings;
-    this.executor = settings.getExecutorProvider().getOrBuildExecutor();
-    this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
+    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
+    this.executor = channelAndExecutor.getExecutor();
+    this.channel = channelAndExecutor.getChannel();
 
     this.incrementCallable = UnaryCallable.create(settings.incrementSettings(), this.channel, this.executor);
 
