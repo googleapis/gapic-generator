@@ -16,6 +16,7 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.grpc.ChannelAndExecutor;
 import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
@@ -131,18 +132,22 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  * <pre>
  * <code>
- * LibraryServiceSettings libraryServiceSettings = LibraryServiceSettings.defaultBuilder()
- *     .provideChannelWith(myCredentials)
- *     .build();
- * LibraryServiceApi libraryServiceApi = LibraryServiceApi.create(libraryServiceSettings);
+ * InstantiatingChannelProvider channelProvider =
+ *     LibraryServiceSettings.defaultChannelProviderBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * LibraryServiceSettings libraryServiceSettings =
+ *     LibraryServiceSettings.defaultBuilder().setChannelProvider(channelProvider).build();
+ * LibraryServiceApi libraryServiceApi =
+ *     LibraryServiceApi.create(libraryServiceSettings);
  * </code>
  * </pre>
  */
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceApi implements AutoCloseable {
   private final LibraryServiceSettings settings;
-  private final ManagedChannel channel;
   private final ScheduledExecutorService executor;
+  private final ManagedChannel channel;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   private final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable;
@@ -313,8 +318,9 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException {
     this.settings = settings;
-    this.executor = settings.getExecutorProvider().getOrBuildExecutor();
-    this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
+    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
+    this.executor = channelAndExecutor.getExecutor();
+    this.channel = channelAndExecutor.getChannel();
 
     this.createShelfCallable = UnaryCallable.create(settings.createShelfSettings(), this.channel, this.executor);
     this.getShelfCallable = UnaryCallable.create(settings.getShelfSettings(), this.channel, this.executor);

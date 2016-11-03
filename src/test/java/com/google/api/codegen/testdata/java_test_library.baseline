@@ -110,7 +110,7 @@ public class LibraryServiceTest {
   public void setUp() throws IOException {
     serviceHelper.reset();
     LibraryServiceSettings settings = LibraryServiceSettings.defaultBuilder()
-        .provideChannelWith(serviceHelper.createChannel(), true)
+        .setChannelProvider(serviceHelper.createChannelProvider())
         .build();
     api = LibraryServiceApi.create(settings);
   }

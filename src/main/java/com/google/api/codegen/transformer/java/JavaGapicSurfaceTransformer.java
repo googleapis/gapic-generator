@@ -160,7 +160,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangApiView generateApiClass(SurfaceTransformerContext context) {
-    addXApiImports(context);
+    addApiImports(context);
 
     List<StaticLangApiMethodView> methods = generateApiMethods(context);
 
@@ -326,7 +326,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private StaticLangSettingsView generateSettingsClass(
       SurfaceTransformerContext context, StaticLangApiMethodView exampleApiMethod) {
-    addXSettingsImports(context);
+    addSettingsImports(context);
 
     StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
@@ -389,8 +389,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return packageInfo.build();
   }
 
-  private void addXApiImports(SurfaceTransformerContext context) {
+  private void addApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
@@ -401,13 +402,18 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
   }
 
-  private void addXSettingsImports(SurfaceTransformerContext context) {
+  private void addSettingsImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("com.google.api.gax.core.ConnectionSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallSettings");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ExecutorProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ServiceApiSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallSettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
