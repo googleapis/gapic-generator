@@ -21,8 +21,10 @@ import java.util.regex.Matcher;
 /** Utility class for formatting source comments to follow RDoc style. */
 public class RDocCommentFixer {
 
-  /** Returns a Sphinx-formatted comment string. */
+  /** Returns a RDoc-formatted comment string. */
   public static String rdocify(String comment) {
+    // escape '$' in the comment first
+    comment = comment.replaceAll("\\$", "\\\\\\$");
     comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("+");
     comment = rdocifyProtoMarkdownLinks(comment);
     comment = rdocifyCloudMarkdownLinks(comment);

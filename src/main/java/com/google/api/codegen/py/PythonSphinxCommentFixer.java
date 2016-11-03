@@ -22,6 +22,8 @@ public class PythonSphinxCommentFixer {
 
   /** Returns a Sphinx-formatted comment string. */
   public static String sphinxify(String comment) {
+    // escape '$' in the comment first
+    comment = comment.replaceAll("\\$", "\\\\\\$");
     comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("``");
     comment = comment.replace("\"", "\\\"");
     comment = sphinxifyProtoMarkdownLinks(comment);
