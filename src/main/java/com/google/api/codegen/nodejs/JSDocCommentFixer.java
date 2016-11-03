@@ -50,7 +50,8 @@ public class JSDocCommentFixer {
     }
     do {
       String url = "https://cloud.google.com" + m.group(2);
-      m.appendReplacement(sb, String.format("[%s](%s)", m.group(1), url));
+      // cloud markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
+      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("[%s](%s)", m.group(1), url)));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();

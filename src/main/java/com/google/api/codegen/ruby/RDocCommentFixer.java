@@ -23,8 +23,6 @@ public class RDocCommentFixer {
 
   /** Returns a RDoc-formatted comment string. */
   public static String rdocify(String comment) {
-    // escape '$' in the comment first
-    comment = comment.replaceAll("\\$", "\\\\\\$");
     comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("+");
     comment = rdocifyProtoMarkdownLinks(comment);
     comment = rdocifyCloudMarkdownLinks(comment);
@@ -69,7 +67,7 @@ public class RDocCommentFixer {
     return sb.toString();
   }
 
-  /** Returns a string with all cloud markdown links formatted to Sphinx style. */
+  /** Returns a string with all cloud markdown links formatted to RDoc style. */
   private static String rdocifyCloudMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);
@@ -78,13 +76,14 @@ public class RDocCommentFixer {
     }
     do {
       String url = "https://cloud.google.com" + m.group(2);
-      m.appendReplacement(sb, String.format("{%s}[%s]", m.group(1), url));
+      // cloud markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
+      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("{%s}[%s]", m.group(1), url)));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
   }
 
-  /** Returns a string with all cloud markdown links formatted to Sphinx style. */
+  /** Returns a string with all absolute markdown links formatted to RDoc style. */
   private static String rdocifyAbsoluteMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.ABSOLUTE_LINK_PATTERN.matcher(comment);
@@ -92,7 +91,9 @@ public class RDocCommentFixer {
       return comment;
     }
     do {
-      m.appendReplacement(sb, String.format("{%s}[%s]", m.group(1), m.group(2)));
+      // absolute markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
+      m.appendReplacement(
+          sb, Matcher.quoteReplacement(String.format("{%s}[%s]", m.group(1), m.group(2))));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();

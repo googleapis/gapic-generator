@@ -22,8 +22,6 @@ public class PythonSphinxCommentFixer {
 
   /** Returns a Sphinx-formatted comment string. */
   public static String sphinxify(String comment) {
-    // escape '$' in the comment first
-    comment = comment.replaceAll("\\$", "\\\\\\$");
     comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("``");
     comment = comment.replace("\"", "\\\"");
     comment = sphinxifyProtoMarkdownLinks(comment);
@@ -53,7 +51,9 @@ public class PythonSphinxCommentFixer {
       return comment;
     }
     do {
-      m.appendReplacement(sb, String.format("`%s <%s>`_", m.group(1), m.group(2)));
+      // absolute markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
+      m.appendReplacement(
+          sb, Matcher.quoteReplacement(String.format("`%s <%s>`_", m.group(1), m.group(2))));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
@@ -67,8 +67,11 @@ public class PythonSphinxCommentFixer {
       return comment;
     }
     do {
+      // cloud markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
       m.appendReplacement(
-          sb, String.format("`%s <https://cloud.google.com%s>`_", m.group(1), m.group(2)));
+          sb,
+          Matcher.quoteReplacement(
+              String.format("`%s <https://cloud.google.com%s>`_", m.group(1), m.group(2))));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
