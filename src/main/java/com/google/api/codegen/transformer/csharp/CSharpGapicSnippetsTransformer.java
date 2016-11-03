@@ -68,7 +68,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
           SurfaceTransformerContext.create(
               service,
               apiConfig,
-              createTypeTable(apiConfig.getPackageName()),
+              createTypeTable(namer.getExamplePackageName()),
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
