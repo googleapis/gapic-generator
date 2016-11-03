@@ -25,12 +25,6 @@ public class PhpSampleNamer extends SampleNamer {
   }
 
   @Override
-  public String getSampleApplicationName(String apiTypeName) {
-    // Unfortunate replacement that's necessary because the API type name is of a special format.
-    return "Google-" + apiTypeName.replace("Google_Service_", "") + "Sample/0.1";
-  }
-
-  @Override
   public String getServiceVarName(String apiTypeName) {
     return localVarName(Name.lowerCamel("service"));
   }
