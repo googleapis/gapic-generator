@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
-/** CollectionOneofConfig represents the configuration for a oneof set of resource names. */
+/** ResourceNameOneofConfig represents the configuration for a oneof set of resource names. */
 @AutoValue
 public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
 

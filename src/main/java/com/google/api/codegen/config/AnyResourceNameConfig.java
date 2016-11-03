@@ -14,6 +14,10 @@
  */
 package com.google.api.codegen.config;
 
+/**
+ * AnyResourceNameConfig is a singleton configuration indicating acceptance of any resource name
+ * format.
+ */
 public class AnyResourceNameConfig implements ResourceNameConfig {
 
   public static final String ENTITY_NAME = "resource_name";

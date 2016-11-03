@@ -21,6 +21,10 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
+/**
+ * UnformattedResourceNameConfig represents a resource name configuration that accepts a particular
+ * unformatted value.
+ */
 @AutoValue
 public abstract class UnformattedResourceNameConfig implements ResourceNameConfig {
 
