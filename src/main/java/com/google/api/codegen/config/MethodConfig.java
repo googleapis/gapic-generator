@@ -180,11 +180,18 @@ public abstract class MethodConfig {
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
 
+    ResourceNameTreatment defaultResourceNameTreatment =
+        methodConfigProto.getResourceNameTreatment();
+    if (defaultResourceNameTreatment == null
+        || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
+      defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+    }
+
     Iterable<FieldConfig> requiredFieldConfigs =
         createFieldNameConfigs(
             diagCollector,
             messageConfigs,
-            methodConfigProto.getResourceNameTreatment(),
+            defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
             getRequiredFields(diagCollector, method, methodConfigProto.getRequiredFieldsList()));
@@ -193,13 +200,10 @@ public abstract class MethodConfig {
         createFieldNameConfigs(
             diagCollector,
             messageConfigs,
-            methodConfigProto.getResourceNameTreatment(),
+            defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
             getOptionalFields(method, methodConfigProto.getRequiredFieldsList()));
-
-    ResourceNameTreatment defaultResourceNameTreatment =
-        methodConfigProto.getResourceNameTreatment();
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());

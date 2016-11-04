@@ -84,10 +84,10 @@ public abstract class FieldConfig {
       ResourceNameTreatment defaultResourceNameTreatment) {
     String entityName = getEntityName(field, messageConfigs, fieldNamePatterns);
 
-    if (treatment == null) {
+    if (treatment == null || treatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
       // No specific resource name treatment is specified, so we infer the correct treatment from
       // the method-level default and the specified entities.
-      if (entityName == null || defaultResourceNameTreatment == null) {
+      if (entityName == null) {
         treatment = ResourceNameTreatment.NONE;
       } else {
         treatment = defaultResourceNameTreatment;
@@ -181,6 +181,7 @@ public abstract class FieldConfig {
                   + field.getFullName());
         }
         break;
+      case UNSET_TREATMENT:
       case UNRECOGNIZED:
       default:
         throw new IllegalArgumentException("Unrecognized resource name type: " + treatment);

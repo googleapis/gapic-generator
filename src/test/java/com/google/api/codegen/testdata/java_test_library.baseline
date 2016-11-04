@@ -319,12 +319,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    BookName name2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    String formattedName2 = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(name2)
+      .setName(formattedName2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -333,18 +333,18 @@ public class LibraryServiceTest {
     expectedResponses.add(expectedResponse);
     mockLibraryService.setResponses(expectedResponses);
 
-    ShelfName name = ShelfName.create("[SHELF_ID]");
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF_ID]");
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
-        api.createBook(name, book);
+        api.createBook(formattedName, book);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     CreateBookRequest actualRequest = (CreateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(formattedName, actualRequest.getName());
     Assert.assertEquals(book, actualRequest.getBook());
   }
 

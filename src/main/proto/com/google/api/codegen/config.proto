@@ -276,14 +276,17 @@ message FlatteningGroupProto {
 
 // The ResourceNameTreatment enum can be used to specify how to treat the
 // resource name formats defined in the field_name_patterns
-// and response_field_name_patterns fields. NONE: the collection configs will
-// not be used by the generated code. VALIDATE: string fields will be
-// validated by the client against the specified resource name formats.
+// and response_field_name_patterns fields.
+// UNSET: default value
+// NONE: the collection configs will not be used by the generated code.
+// VALIDATE: string fields will be validated by the client against the
+// specified resource name formats.
 // STATIC_TYPES: the client will use generated types for resource names.
 enum ResourceNameTreatment {
-  NONE = 0;
-  VALIDATE = 1;
-  STATIC_TYPES = 2;
+  UNSET_TREATMENT = 0;
+  NONE = 1;
+  VALIDATE = 2;
+  STATIC_TYPES = 3;
 }
 
 // `PageStreamingConfigProto` describes information for generating a method which

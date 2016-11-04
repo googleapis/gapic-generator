@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -61,6 +62,13 @@ public abstract class FlatteningConfig {
         return null;
       }
 
+      ResourceNameTreatment defaultResourceNameTreatment =
+          methodConfigProto.getResourceNameTreatment();
+      if (defaultResourceNameTreatment == null
+          || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
+        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+      }
+
       FieldConfig fieldConfig =
           FieldConfig.createFieldConfig(
               diagCollector,
@@ -69,7 +77,7 @@ public abstract class FlatteningConfig {
               resourceNameConfigs,
               parameterField,
               flatteningGroup.getParameterResourceNameTreatment().get(parameter),
-              methodConfigProto.getResourceNameTreatment());
+              defaultResourceNameTreatment);
       if (fieldConfig == null) {
         missing = true;
       } else {
