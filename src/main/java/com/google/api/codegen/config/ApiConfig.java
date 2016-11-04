@@ -17,7 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.FixedCollectionProto;
+import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
@@ -224,7 +224,7 @@ public abstract class ApiConfig {
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
         createSingleResourceNameConfigs(diagCollector, configProto);
     ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
-        createFixedResourceNameConfigs(diagCollector, configProto.getFixedCollectionsList());
+        createFixedResourceNameConfigs(diagCollector, configProto.getFixedResourceNameValuesList());
     ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigs =
         createResourceNameOneofConfigs(
             diagCollector,
@@ -288,12 +288,12 @@ public abstract class ApiConfig {
   }
 
   private static ImmutableMap<String, FixedResourceNameConfig> createFixedResourceNameConfigs(
-      DiagCollector diagCollector, Iterable<FixedCollectionProto> fixedConfigProtos) {
+      DiagCollector diagCollector, Iterable<FixedResourceNameValueProto> fixedConfigProtos) {
     ImmutableMap.Builder<String, FixedResourceNameConfig> fixedConfigBuilder =
         ImmutableMap.builder();
-    for (FixedCollectionProto fixedConfigProto : fixedConfigProtos) {
+    for (FixedResourceNameValueProto fixedConfigProto : fixedConfigProtos) {
       FixedResourceNameConfig fixedConfig =
-          FixedResourceNameConfig.createFixedCollection(diagCollector, fixedConfigProto);
+          FixedResourceNameConfig.createFixedResourceNameConfig(diagCollector, fixedConfigProto);
       if (fixedConfig == null) {
         continue;
       }

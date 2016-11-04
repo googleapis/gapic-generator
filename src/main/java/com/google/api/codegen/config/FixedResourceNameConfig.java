@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.FixedCollectionProto;
+import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -36,11 +36,11 @@ public abstract class FixedResourceNameConfig implements ResourceNameConfig {
   }
 
   @Nullable
-  public static FixedResourceNameConfig createFixedCollection(
-      DiagCollector diagCollector, FixedCollectionProto fixedCollectionProto) {
+  public static FixedResourceNameConfig createFixedResourceNameConfig(
+      DiagCollector diagCollector, FixedResourceNameValueProto fixedResourceNameValueProto) {
 
-    String entityName = fixedCollectionProto.getEntityName();
-    String fixedValue = fixedCollectionProto.getFixedValue();
+    String entityName = fixedResourceNameValueProto.getEntityName();
+    String fixedValue = fixedResourceNameValueProto.getFixedValue();
 
     if (entityName == null || fixedValue == null) {
       diagCollector.addDiag(
