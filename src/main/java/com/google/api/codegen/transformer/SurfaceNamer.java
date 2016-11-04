@@ -116,7 +116,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     switch (resourceNameType) {
       case ANY:
         return Name.from("resource_name");
-      case UNFORMATTED:
+      case FIXED:
         throw new UnsupportedOperationException("entity name invalid");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name

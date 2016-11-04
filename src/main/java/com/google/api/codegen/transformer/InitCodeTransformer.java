@@ -40,6 +40,7 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
@@ -302,13 +303,16 @@ public class InitCodeTransformer {
       SingleResourceNameConfig resourceNameConfig;
       switch (resourceNameType) {
         case ANY:
-          throw new UnsupportedOperationException("entity name *");
-        case UNFORMATTED:
+          // TODO(michaelbausor): handle case where there are no other resource names at all...
+          resourceNameConfig =
+              Iterables.get(context.getApiConfig().getSingleResourceNameConfigs(), 0);
+          return createResourceNameInitValueView(context, item, resourceNameConfig);
+        case FIXED:
           throw new UnsupportedOperationException("entity name invalid");
         case ONEOF:
           ResourceNameOneofConfig oneofConfig =
               (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
-          resourceNameConfig = oneofConfig.getSingleResourceNameConfigs().get(0);
+          resourceNameConfig = Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
           ResourceNameInitValueView initView =
               createResourceNameInitValueView(context, item, resourceNameConfig);
           return ResourceNameOneofInitValueView.newBuilder()

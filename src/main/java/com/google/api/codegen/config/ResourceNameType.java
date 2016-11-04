@@ -22,13 +22,13 @@ public enum ResourceNameType {
   SINGLE,
 
   /**
-   * A single unformatted type. This is used to indicate a special string that can be accepted by a
+   * A single fixed type. This is used to indicate a special string that can be accepted by a
    * resource name field that is not formatted as a normal resource name. For example, a field might
    * accept resource names with the format "foos/{foo}", but also accept an unformatted string such
    * as "_deleted-foo_". Resource names of this type will typically be part of a ONEOF
    * configuration, alongside other resource names of the SINGLE type.
    */
-  UNFORMATTED,
+  FIXED,
 
   /** A set of resource types, accessed using a "oneof" pattern. */
   ONEOF,
