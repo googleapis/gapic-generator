@@ -54,7 +54,7 @@ public class NoTemplatesApiServiceTest {
   public void setUp() throws IOException {
     serviceHelper.reset();
     NoTemplatesApiServiceSettings settings = NoTemplatesApiServiceSettings.defaultBuilder()
-        .provideChannelWith(serviceHelper.createChannel(), true)
+        .setChannelProvider(serviceHelper.createChannelProvider())
         .build();
     api = NoTemplatesApiServiceApi.create(settings);
   }

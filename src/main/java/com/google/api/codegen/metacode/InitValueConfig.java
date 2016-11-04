@@ -28,7 +28,7 @@ public abstract class InitValueConfig {
     return new AutoValue_InitValueConfig(null, null, null, null);
   }
 
-  public static InitValueConfig createWithValue(String value) {
+  public static InitValueConfig createWithValue(InitValue value) {
     return new AutoValue_InitValueConfig(null, null, value, null);
   }
 
@@ -40,7 +40,7 @@ public abstract class InitValueConfig {
   public static InitValueConfig create(
       String apiWrapperName,
       SingleResourceNameConfig singleResourceNameConfig,
-      Map<String, String> resourceNameBindingValues) {
+      Map<String, InitValue> resourceNameBindingValues) {
     return new AutoValue_InitValueConfig(
         apiWrapperName, singleResourceNameConfig, null, resourceNameBindingValues);
   }
@@ -52,20 +52,20 @@ public abstract class InitValueConfig {
   public abstract SingleResourceNameConfig getSingleResourceNameConfig();
 
   @Nullable
-  public abstract String getInitialValue();
+  public abstract InitValue getInitialValue();
 
   @Nullable
-  public abstract Map<String, String> getResourceNameBindingValues();
+  public abstract Map<String, InitValue> getResourceNameBindingValues();
 
   /** Creates an updated InitValueConfig with the provided value. */
-  public InitValueConfig withInitialCollectionValue(String entityName, String value) {
-    HashMap<String, String> resourceNameBindingValues = new HashMap<>();
+  public InitValueConfig withInitialCollectionValue(String entityName, InitValue value) {
+    HashMap<String, InitValue> resourceNameBindingValues = new HashMap<>();
     resourceNameBindingValues.put(entityName, value);
     return withInitialCollectionValues(resourceNameBindingValues);
   }
 
   public InitValueConfig withInitialCollectionValues(
-      Map<String, String> resourceNameBindingValues) {
+      Map<String, InitValue> resourceNameBindingValues) {
     return new AutoValue_InitValueConfig(
         getApiWrapperName(), getSingleResourceNameConfig(), null, resourceNameBindingValues);
   }
