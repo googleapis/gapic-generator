@@ -61,10 +61,10 @@
       requests.add(request);
       responseObserver.onNext(({@method.responseTypeName}) response);
       responseObserver.onCompleted();
-    } else if(response instanceof Exception) {
+    } else if (response instanceof Exception) {
       responseObserver.onError((Exception) response);
     } else {
-      throw new IllegalArgumentException("Unrecognized response type");
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
     }
   }
 @end
@@ -80,7 +80,7 @@
       public void onNext({@method.requestTypeName} value) {
         if (response instanceof {@method.responseTypeName}) {
           responseObserver.onNext(({@method.responseTypeName}) response);
-        } else if(response instanceof Exception) {
+        } else if (response instanceof Exception) {
           responseObserver.onError((Exception) response);
         } else {
           throw new IllegalArgumentException("Unrecognized response type");

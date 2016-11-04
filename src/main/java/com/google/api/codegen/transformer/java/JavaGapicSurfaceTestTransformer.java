@@ -343,6 +343,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     return GapicSurfaceTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
+        .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .surfaceMethodName(surfaceMethodName)
         .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
         .requestTypeName(requestTypeName)
@@ -706,5 +707,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
     typeTable.saveNicknameFor("io.grpc.Status");
     typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
+    typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
   }
 }

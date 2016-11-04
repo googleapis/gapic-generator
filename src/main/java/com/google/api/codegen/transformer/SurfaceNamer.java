@@ -791,6 +791,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(testCaseName);
   }
 
+  /** The exception test case name for the given method. */
+  public String getExceptionTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName =
+        symbolTable.getNewSymbol(Name.upperCamel(method.getSimpleName(), "ExceptionTest"));
+    return publicMethodName(testCaseName);
+  }
+
   /** The unit test class name for the given API service. */
   public String getUnitTestClassName(Interface service) {
     return className(Name.upperCamel(service.getSimpleName(), "Test"));

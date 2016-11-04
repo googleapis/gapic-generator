@@ -83,6 +83,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -152,7 +153,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void createShelfTestException() {
+  public void createShelfExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -163,8 +164,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -196,7 +195,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void getShelfTestException() {
+  public void getShelfExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -207,8 +206,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -242,7 +239,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void getShelfTest2Exception() {
+  public void getShelfExceptionTest2() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -254,8 +251,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -291,7 +286,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void getShelfTest3Exception() {
+  public void getShelfExceptionTest3() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -304,8 +299,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -337,7 +330,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listShelvesTestException() {
+  public void listShelvesExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -348,8 +341,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -372,7 +363,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void deleteShelfTestException() {
+  public void deleteShelfExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -383,8 +374,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -418,7 +407,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void mergeShelvesTestException() {
+  public void mergeShelvesExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -430,8 +419,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -467,7 +454,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void createBookTestException() {
+  public void createBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -479,8 +466,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -513,7 +498,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void publishSeriesTestException() {
+  public void publishSeriesExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -526,8 +511,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -561,7 +544,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void getBookTestException() {
+  public void getBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -572,8 +555,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -608,7 +589,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listBooksTestException() {
+  public void listBooksExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -620,8 +601,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -644,7 +623,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void deleteBookTestException() {
+  public void deleteBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -655,8 +634,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -692,7 +669,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void updateBookTestException() {
+  public void updateBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -704,8 +681,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -745,7 +720,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void updateBookTest2Exception() {
+  public void updateBookExceptionTest2() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -759,8 +734,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -796,7 +769,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void moveBookTestException() {
+  public void moveBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -808,8 +781,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -841,7 +812,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listStringsTestException() {
+  public void listStringsExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -852,8 +823,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -931,7 +900,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void addCommentsTestException() {
+  public void addCommentsExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -951,8 +920,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -986,7 +953,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void getBookFromArchiveTestException() {
+  public void getBookFromArchiveExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -997,8 +964,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -1032,7 +997,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void getBookFromAnywhereTestException() {
+  public void getBookFromAnywhereExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -1043,8 +1008,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -1073,7 +1036,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void updateBookIndexTestException() {
+  public void updateBookIndexExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -1088,8 +1051,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -1114,7 +1075,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void streamShelvesTestException() throws Exception {
+  public void streamShelvesExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
     StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
@@ -1125,13 +1086,14 @@ public class LibraryServiceTest {
         api.streamShelvesCallable();
     callable.serverStreamingCall(request, responseObserver);
 
-    List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
-    Assert.assertEquals(1, responseObserver.errors().size());
-    Assert.assertTrue(responseObserver.errors().get(0) instanceof StatusRuntimeException);
-
-    StatusRuntimeException statusException =
-        (StatusRuntimeException) responseObserver.errors().get(0);
-    Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+    try {
+      List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+      Assert.fail("No exception thrown");
+    } catch (ExecutionException e) {
+      Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
+      StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
+      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+    }
   }
 
   @Test
@@ -1167,7 +1129,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void streamBooksTestException() throws Exception {
+  public void streamBooksExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
     String name = "name3373707";
@@ -1181,13 +1143,14 @@ public class LibraryServiceTest {
         api.streamBooksCallable();
     callable.serverStreamingCall(request, responseObserver);
 
-    List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
-    Assert.assertEquals(1, responseObserver.errors().size());
-    Assert.assertTrue(responseObserver.errors().get(0) instanceof StatusRuntimeException);
-
-    StatusRuntimeException statusException =
-        (StatusRuntimeException) responseObserver.errors().get(0);
-    Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+    try {
+      List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+      Assert.fail("No exception thrown");
+    } catch (ExecutionException e) {
+      Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
+      StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
+      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+    }
   }
 
   @Test
@@ -1223,7 +1186,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void discussBookTestException() throws Exception {
+  public void discussBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
     String name = "name3373707";
@@ -1240,13 +1203,14 @@ public class LibraryServiceTest {
 
     requestObserver.onNext(request);
 
-    List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
-    Assert.assertEquals(1, responseObserver.errors().size());
-    Assert.assertTrue(responseObserver.errors().get(0) instanceof StatusRuntimeException);
-
-    StatusRuntimeException statusException =
-        (StatusRuntimeException) responseObserver.errors().get(0);
-    Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+    try {
+      List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+      Assert.fail("No exception thrown");
+    } catch (ExecutionException e) {
+      Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
+      StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
+      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+    }
   }
 
   @Test
@@ -1284,7 +1248,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void findRelatedBooksTestException() {
+  public void findRelatedBooksExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -1297,8 +1261,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -1325,7 +1287,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void addTagTestException() {
+  public void addTagExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -1337,8 +1299,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -1365,7 +1325,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void addLabelTestException() {
+  public void addLabelExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLabeler.addException(exception);
 
@@ -1377,8 +1337,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
@@ -1408,7 +1366,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void getBigBookTestException() {
+  public void getBigBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -1419,8 +1377,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 

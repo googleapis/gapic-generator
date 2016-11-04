@@ -83,7 +83,7 @@
 
   @@Test
   @@SuppressWarnings("all")
-  public void {@test.name}Exception() {
+  public void {@test.nameWithException}() throws Exception {
     {@setException(test)}
 
     try {
@@ -94,8 +94,6 @@
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 @end
@@ -117,19 +115,20 @@
 
   @@Test
   @@SuppressWarnings("all")
-  public void {@test.name}Exception() throws Exception {
+  public void {@test.nameWithException}() throws Exception {
     {@setException(test)}
     {@initCode(test.initCode)}
 
     {@streamingMethodCallWithException(test)}
 
-    List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
-    Assert.assertEquals(1, responseObserver.errors().size());
-    Assert.assertTrue(responseObserver.errors().get(0) instanceof StatusRuntimeException);
-
-    StatusRuntimeException statusException =
-        (StatusRuntimeException) responseObserver.errors().get(0);
-    Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+    try {
+      List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+      Assert.fail("No exception thrown");
+    } catch (ExecutionException e) {
+      Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
+      StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
+      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+    }
   }
 @end
 
@@ -141,7 +140,7 @@
   @case "ServerStreaming"
     {@serverStreamingCall(test)}
   @default
-    $unhandled case - test.grpcStreamingType.toString$
+    $unhandled case: {@test.grpcStreamingType.toString}$
   @end
 @end
 
@@ -152,7 +151,7 @@
   @case "ServerStreaming"
     {@serverStreamingCall(test)}
   @default
-    $unhandled case - test.grpcStreamingType.toString$
+    $unhandled case: {@test.grpcStreamingType.toString}$
   @end
 @end
 
