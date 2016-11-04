@@ -105,8 +105,8 @@ public abstract class FieldConfig {
         treatment = ResourceNameTreatment.NONE;
       } else {
         treatment = methodConfigProto.getResourceNameTreatment();
-        if (treatment == null) {
-          treatment = ResourceNameTreatment.NONE;
+        if (treatment.equals(ResourceNameTreatment.NONE)) {
+          treatment = ResourceNameTreatment.VALIDATE;
         }
       }
     }
