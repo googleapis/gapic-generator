@@ -35,7 +35,8 @@ public class JSDocCommentFixer {
       return comment;
     }
     do {
-      m.appendReplacement(sb, String.format("{@link %s}", m.group(1)));
+      // proto display name may contain '$' which needs to be escaped using Matcher.quoteReplacement
+      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("{@link %s}", m.group(1))));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
