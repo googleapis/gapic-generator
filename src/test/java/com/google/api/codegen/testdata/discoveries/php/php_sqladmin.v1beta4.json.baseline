@@ -1521,17 +1521,10 @@ $project = '';  // TODO: Update placeholder value.
 // Database instance ID. This does not include the project ID.
 $instance = '';  // TODO: Update placeholder value.
 
-$optParams = [];
-do {
-  $response = $service->users->listUsers($project, $instance, $optParams);
+$response = $service->users->listUsers($project, $instance);
 
-  foreach ($response['items'] as $user) {
-    // TODO: Change code below to process each `user` resource:
-    echo '<pre>', var_export($user, true), '</pre>', "\n";
-  }
-
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
 ?>
 <?php
 /*
