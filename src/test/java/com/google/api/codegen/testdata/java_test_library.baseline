@@ -855,7 +855,7 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listStringsTest2Exception() {
+  public void listStringsExceptionTest2() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
     mockLibraryService.addException(exception);
 
@@ -866,8 +866,6 @@ public class LibraryServiceTest {
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
-    } catch (Exception e) {
-      Assert.fail("Unknown exception found");
     }
   }
 
