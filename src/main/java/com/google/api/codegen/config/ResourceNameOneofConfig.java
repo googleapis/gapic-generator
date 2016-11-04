@@ -43,7 +43,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       DiagCollector diagCollector,
       CollectionOneofProto collectionOneofProto,
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
-      ImmutableMap<String, UnformattedResourceNameConfig> unformattedResourceNameConfigs) {
+      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs) {
     String oneofName = collectionOneofProto.getOneofName();
     if (singleResourceNameConfigs.containsKey(oneofName)) {
       diagCollector.addDiag(
@@ -57,7 +57,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     for (String entityName : collectionOneofProto.getCollectionNamesList()) {
       ResourceNameConfig resourceNameConfig = singleResourceNameConfigs.get(entityName);
       if (resourceNameConfig == null) {
-        resourceNameConfig = unformattedResourceNameConfigs.get(entityName);
+        resourceNameConfig = fixedResourceNameConfigs.get(entityName);
       } else {
         gotSingleResourceName = true;
       }

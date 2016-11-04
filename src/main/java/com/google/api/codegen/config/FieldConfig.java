@@ -60,10 +60,9 @@ public abstract class FieldConfig {
           "resourceName may only be null if resourceNameTreatment is NONE");
     }
     if (resourceNameConfig != null
-        && resourceNameConfig.getResourceNameType() == ResourceNameType.UNFORMATTED) {
+        && resourceNameConfig.getResourceNameType() == ResourceNameType.FIXED) {
       throw new IllegalArgumentException(
-          "FieldConfig may not contain a ResourceNameConfig of type "
-              + ResourceNameType.UNFORMATTED);
+          "FieldConfig may not contain a ResourceNameConfig of type " + ResourceNameType.FIXED);
     }
     return new AutoValue_FieldConfig(field, resourceNameTreatment, resourceNameConfig);
   }

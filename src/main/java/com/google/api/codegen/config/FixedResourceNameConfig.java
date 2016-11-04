@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.InvalidCollectionProto;
+import com.google.api.codegen.FixedCollectionProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -22,37 +22,37 @@ import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
 /**
- * UnformattedResourceNameConfig represents a resource name configuration that accepts a particular
- * unformatted value.
+ * FixedResourceNameConfig represents a resource name configuration that accepts a particular fixed
+ * value.
  */
 @AutoValue
-public abstract class UnformattedResourceNameConfig implements ResourceNameConfig {
+public abstract class FixedResourceNameConfig implements ResourceNameConfig {
 
-  public abstract String getUnformattedValue();
+  public abstract String getFixedValue();
 
   @Override
   public ResourceNameType getResourceNameType() {
-    return ResourceNameType.SINGLE;
+    return ResourceNameType.FIXED;
   }
 
   @Nullable
-  public static UnformattedResourceNameConfig createInvalidCollection(
-      DiagCollector diagCollector, InvalidCollectionProto invalidCollectionProto) {
+  public static FixedResourceNameConfig createFixedCollection(
+      DiagCollector diagCollector, FixedCollectionProto fixedCollectionProto) {
 
-    String entityName = invalidCollectionProto.getEntityName();
-    String invalidValue = invalidCollectionProto.getInvalidValue();
+    String entityName = fixedCollectionProto.getEntityName();
+    String fixedValue = fixedCollectionProto.getFixedValue();
 
-    if (entityName == null || invalidValue == null) {
+    if (entityName == null || fixedValue == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
-              "incorrectly configured InvalidCollection: name: "
+              "incorrectly configured FixedResourceNameConfig: name: "
                   + entityName
                   + ", value: "
-                  + invalidValue));
+                  + fixedValue));
       return null;
     }
 
-    return new AutoValue_UnformattedResourceNameConfig(entityName, invalidValue);
+    return new AutoValue_FixedResourceNameConfig(entityName, fixedValue);
   }
 }

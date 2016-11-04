@@ -17,8 +17,8 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.FixedCollectionProto;
 import com.google.api.codegen.InterfaceConfigProto;
-import com.google.api.codegen.InvalidCollectionProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.tools.framework.model.Diag;
@@ -223,20 +223,19 @@ public abstract class ApiConfig {
       DiagCollector diagCollector, ConfigProto configProto) {
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
         createSingleResourceNameConfigs(diagCollector, configProto);
-    ImmutableMap<String, UnformattedResourceNameConfig> unformattedResourceNameConfigs =
-        createUnformattedResourceNameConfigs(
-            diagCollector, configProto.getInvalidCollectionsList());
+    ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
+        createFixedResourceNameConfigs(diagCollector, configProto.getFixedCollectionsList());
     ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigs =
         createResourceNameOneofConfigs(
             diagCollector,
             configProto.getCollectionOneofsList(),
             singleResourceNameConfigs,
-            unformattedResourceNameConfigs);
+            fixedResourceNameConfigs);
 
     ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap = ImmutableMap.builder();
     resourceCollectionMap.putAll(singleResourceNameConfigs);
     resourceCollectionMap.putAll(resourceNameOneofConfigs);
-    resourceCollectionMap.putAll(unformattedResourceNameConfigs);
+    resourceCollectionMap.putAll(fixedResourceNameConfigs);
     return resourceCollectionMap.build();
   }
 
@@ -288,33 +287,32 @@ public abstract class ApiConfig {
     }
   }
 
-  private static ImmutableMap<String, UnformattedResourceNameConfig>
-      createUnformattedResourceNameConfigs(
-          DiagCollector diagCollector, Iterable<InvalidCollectionProto> invalidConfigProtos) {
-    ImmutableMap.Builder<String, UnformattedResourceNameConfig> invalidConfigBuilder =
+  private static ImmutableMap<String, FixedResourceNameConfig> createFixedResourceNameConfigs(
+      DiagCollector diagCollector, Iterable<FixedCollectionProto> fixedConfigProtos) {
+    ImmutableMap.Builder<String, FixedResourceNameConfig> fixedConfigBuilder =
         ImmutableMap.builder();
-    for (InvalidCollectionProto invalidConfigProto : invalidConfigProtos) {
-      UnformattedResourceNameConfig unformattedConfig =
-          UnformattedResourceNameConfig.createInvalidCollection(diagCollector, invalidConfigProto);
-      if (unformattedConfig == null) {
+    for (FixedCollectionProto fixedConfigProto : fixedConfigProtos) {
+      FixedResourceNameConfig fixedConfig =
+          FixedResourceNameConfig.createFixedCollection(diagCollector, fixedConfigProto);
+      if (fixedConfig == null) {
         continue;
       }
-      invalidConfigBuilder.put(unformattedConfig.getEntityName(), unformattedConfig);
+      fixedConfigBuilder.put(fixedConfig.getEntityName(), fixedConfig);
     }
-    return invalidConfigBuilder.build();
+    return fixedConfigBuilder.build();
   }
 
   private static ImmutableMap<String, ResourceNameOneofConfig> createResourceNameOneofConfigs(
       DiagCollector diagCollector,
       Iterable<CollectionOneofProto> oneofConfigProtos,
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
-      ImmutableMap<String, UnformattedResourceNameConfig> unformattedResourceNameConfigs) {
+      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs) {
     ImmutableMap.Builder<String, ResourceNameOneofConfig> oneofConfigBuilder =
         ImmutableMap.builder();
     for (CollectionOneofProto oneofProto : oneofConfigProtos) {
       ResourceNameOneofConfig oneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
-              diagCollector, oneofProto, singleResourceNameConfigs, unformattedResourceNameConfigs);
+              diagCollector, oneofProto, singleResourceNameConfigs, fixedResourceNameConfigs);
       if (oneofConfig == null) {
         continue;
       }

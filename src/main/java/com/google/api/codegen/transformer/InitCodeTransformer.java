@@ -307,7 +307,7 @@ public class InitCodeTransformer {
           resourceNameConfig =
               Iterables.get(context.getApiConfig().getSingleResourceNameConfigs(), 0);
           return createResourceNameInitValueView(context, item, resourceNameConfig);
-        case UNFORMATTED:
+        case FIXED:
           throw new UnsupportedOperationException("entity name invalid");
         case ONEOF:
           ResourceNameOneofConfig oneofConfig =
