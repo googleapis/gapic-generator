@@ -24,6 +24,8 @@ import java.util.List;
 public abstract class GapicSurfaceTestCaseView {
   public abstract String name();
 
+  public abstract String nameWithException();
+
   public abstract String surfaceMethodName();
 
   public abstract boolean hasReturnValue();
@@ -59,6 +61,8 @@ public abstract class GapicSurfaceTestCaseView {
     public abstract Builder surfaceMethodName(String val);
 
     public abstract Builder name(String val);
+
+    public abstract Builder nameWithException(String val);
 
     public abstract Builder hasReturnValue(boolean val);
 
