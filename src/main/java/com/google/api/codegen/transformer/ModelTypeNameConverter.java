@@ -14,9 +14,11 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 
 /** ModelTypeNameConverter maps TypeRef instances to TypeName instances. */
@@ -29,7 +31,10 @@ public interface ModelTypeNameConverter {
 
   /** Provides a TypeName for the given ProtoElement and ResourceName type */
   TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName);
+      ProtoFile protoFile,
+      TypeRef type,
+      String typedResourceShortName,
+      ResourceNameType resourceNameType);
 
   /** Provides a TypeName for the given ProtoElement. */
   TypeName getTypeName(ProtoElement elem);

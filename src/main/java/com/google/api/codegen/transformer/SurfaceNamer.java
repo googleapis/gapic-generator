@@ -32,6 +32,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import io.grpc.Status;
 import java.util.ArrayList;
@@ -103,11 +104,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the class that contains paged list response wrappers. */
   public String getPagedResponseWrappersClassName() {
     return className(Name.upperCamel("PagedResponseWrappers"));
-  }
-
-  /** The name of the generated resource type from the entity name. */
-  public String getResourceTypeName(ResourceNameConfig resourceNameConfig) {
-    return className(getResourceTypeNameObject(resourceNameConfig));
   }
 
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
@@ -233,7 +229,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getResourceNameFieldSetFunctionName(fieldConfig, field.getType());
     } else {
       return getFieldSetFunctionName(field);
     }
@@ -255,13 +251,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getResourceNameFieldSetFunctionName(TypeRef type, Name identifier) {
+  public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig, TypeRef type) {
+    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldSetFunctionName:map-type");
     } else if (type.isRepeated()) {
-      return publicMethodName(Name.from("add", "all").join(identifier).join("with_resources"));
+      return publicMethodName(
+          Name.from("add", "all").join(identifier).join("with").join(resourceName));
     } else {
-      return publicMethodName(Name.from("set").join(identifier).join("with_resource"));
+      return publicMethodName(Name.from("set").join(identifier).join("with").join(resourceName));
     }
   }
 
@@ -269,7 +268,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getResourceNameFieldGetFunctionName(fieldConfig, field.getType());
     } else {
       return getFieldGetFunctionName(field);
     }
@@ -289,13 +288,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getResourceNameFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig, TypeRef type) {
+    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
     } else if (type.isRepeated()) {
-      return publicMethodName(Name.from("get").join(identifier).join("list").join("as_resources"));
+      return publicMethodName(
+          Name.from("get").join(identifier).join("list_as").join(resourceName).join("list"));
     } else {
-      return publicMethodName(Name.from("get").join(identifier).join("as_resource"));
+      return publicMethodName(Name.from("get").join(identifier).join("as").join(resourceName));
     }
   }
 
@@ -780,9 +782,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The class name of the generated resource type from the entity name. */
   public String getAndSaveResourceTypeName(
       ModelTypeTable typeTable, FieldConfig fieldConfig, TypeRef type) {
-    String resourceClassName = getResourceTypeName(fieldConfig.getResourceNameConfig());
+    return getAndSaveResourceTypeName(
+        typeTable, fieldConfig.getField().getFile(), type, fieldConfig.getResourceNameConfig());
+  }
+
+  /** The class name of the generated resource type from the entity name. */
+  public String getAndSaveResourceTypeName(
+      ModelTypeTable typeTable,
+      ProtoFile protoFile,
+      TypeRef type,
+      ResourceNameConfig resourceNameConfig) {
+    String resourceClassName = className(getResourceTypeNameObject(resourceNameConfig));
     return typeTable.getAndSaveNicknameForTypedResourceName(
-        fieldConfig.getField(), type, resourceClassName);
+        protoFile, type, resourceClassName, resourceNameConfig.getResourceNameType());
   }
 
   /** The test case name for the given method. */

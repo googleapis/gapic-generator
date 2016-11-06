@@ -14,10 +14,12 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.Map;
 
@@ -102,13 +104,17 @@ public class ModelTypeTable implements ModelTypeFormatter {
   }
 
   /*
-   * Computes the nickname for the given ProtoElement, Type, and ResourceName. Adds the full name to
+   * Computes the nickname for the given FieldConfig, Type, and ResourceName. Adds the full name to
    * the import set, and returns the nickname.
    */
   public String getAndSaveNicknameForTypedResourceName(
-      ProtoElement elem, TypeRef type, String typedResourceShortName) {
+      ProtoFile protoFile,
+      TypeRef type,
+      String typedResourceShortName,
+      ResourceNameType resourceNameType) {
     return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForTypedResourceName(elem, type, typedResourceShortName));
+        typeNameConverter.getTypeNameForTypedResourceName(
+            protoFile, type, typedResourceShortName, resourceNameType));
   }
 
   /**

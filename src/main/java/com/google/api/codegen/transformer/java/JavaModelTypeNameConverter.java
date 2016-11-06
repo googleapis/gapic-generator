@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -210,11 +211,14 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoElement elem, TypeRef type, String resourceName) {
-    String packageName = getProtoElementPackage(elem);
-    String longName = packageName + "." + resourceName;
+      ProtoFile protoFile,
+      TypeRef type,
+      String typedResourceShortName,
+      ResourceNameType resourceNameType) {
+    String packageName = getResourceNamePackage(protoFile, resourceNameType);
+    String longName = packageName + "." + typedResourceShortName;
 
-    TypeName simpleTypeName = new TypeName(longName, resourceName);
+    TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
 
     if (type.isMap()) {
       throw new IllegalArgumentException("Map type not supported for typed resource name");
@@ -224,6 +228,21 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
     } else {
       return simpleTypeName;
+    }
+  }
+
+  private static String getResourceNamePackage(ProtoFile file, ResourceNameType resourceNameType) {
+    switch (resourceNameType) {
+      case ANY:
+        return "com.google.api.resourcenames";
+      case FIXED:
+      case SINGLE:
+        return "com.google.api.resourcenames.types";
+      case ONEOF:
+        return getJavaPackage(file);
+      case NONE:
+      default:
+        throw new IllegalArgumentException("Unexpected ResourceNameType: " + resourceNameType);
     }
   }
 
