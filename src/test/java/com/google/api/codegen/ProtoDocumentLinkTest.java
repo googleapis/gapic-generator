@@ -41,7 +41,7 @@ public class ProtoDocumentLinkTest {
     // Fully qualified name may NOT contain special character '$'
     m = CommentPatterns.PROTO_LINK_PATTERN.matcher("[A-Za-z_$][A-Za-z_$0-9]");
     Truth.assertThat(m.find()).isFalse();
-    // Fully qualified name many NOT be numbers only
+    // Fully qualified name may NOT be numbers only
     m = CommentPatterns.PROTO_LINK_PATTERN.matcher("[Shelf][123]");
     Truth.assertThat(m.find()).isFalse();
   }
