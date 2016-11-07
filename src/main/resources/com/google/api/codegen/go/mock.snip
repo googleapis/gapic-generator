@@ -30,10 +30,6 @@
 
         var _ {@impl.grpcClassName} = &{@impl.name}{}
 
-        func (s *{@impl.name}) recordReq(req interface{}) {
-            s.reqs = append(s.reqs, req)
-        }
-
         @join method : impl.grpcMethods
             @switch method.grpcStreamingType
             @case "BidiStreaming"
@@ -53,7 +49,7 @@
 
 @private simpleMethod(impl, method)
     func (s *{@impl.name}) {@method.name}(_ context.Context, req {@method.requestTypeName}) ({@method.responseTypeName}, error) {
-        s.recordReq(req)
+        s.reqs = append(s.reqs, req)
         if s.err != nil {
             return nil, s.err
         }
@@ -63,7 +59,7 @@
 
 @private serverStreamMethod(impl, method)
     func (s *{@impl.name}) {@method.name}(req {@method.requestTypeName}, stream {@method.streamHandle}) error {
-        s.recordReq(req)
+        s.reqs = append(s.reqs, req)
         if s.err != nil {
             return s.err
         }
@@ -87,7 +83,7 @@
             } else if err != nil {
                 return err
             } else {
-                s.recordReq(req)
+                s.reqs = append(s.reqs, req)
             }
         }
     }
@@ -109,7 +105,7 @@
                     ch <- err
                     return
                 } else {
-                    s.recordReq(req)
+                    s.reqs = append(s.reqs, req)
                 }
             }
         }()

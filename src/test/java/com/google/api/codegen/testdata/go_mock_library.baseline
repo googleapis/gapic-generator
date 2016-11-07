@@ -44,12 +44,8 @@ type mockLibraryService struct {
 
 var _ librarypb.LibraryServiceServer = &mockLibraryService{}
 
-func (s *mockLibraryService) recordReq(req interface{}) {
-    s.reqs = append(s.reqs, req)
-}
-
 func (s *mockLibraryService) CreateShelf(_ context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -57,7 +53,7 @@ func (s *mockLibraryService) CreateShelf(_ context.Context, req *librarypb.Creat
 }
 
 func (s *mockLibraryService) GetShelf(_ context.Context, req *librarypb.GetShelfRequest) (*librarypb.Shelf, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -65,7 +61,7 @@ func (s *mockLibraryService) GetShelf(_ context.Context, req *librarypb.GetShelf
 }
 
 func (s *mockLibraryService) ListShelves(_ context.Context, req *librarypb.ListShelvesRequest) (*librarypb.ListShelvesResponse, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -73,7 +69,7 @@ func (s *mockLibraryService) ListShelves(_ context.Context, req *librarypb.ListS
 }
 
 func (s *mockLibraryService) DeleteShelf(_ context.Context, req *librarypb.DeleteShelfRequest) (*google_protobuf.Empty, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -81,7 +77,7 @@ func (s *mockLibraryService) DeleteShelf(_ context.Context, req *librarypb.Delet
 }
 
 func (s *mockLibraryService) MergeShelves(_ context.Context, req *librarypb.MergeShelvesRequest) (*librarypb.Shelf, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -89,7 +85,7 @@ func (s *mockLibraryService) MergeShelves(_ context.Context, req *librarypb.Merg
 }
 
 func (s *mockLibraryService) CreateBook(_ context.Context, req *librarypb.CreateBookRequest) (*librarypb.Book, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -97,7 +93,7 @@ func (s *mockLibraryService) CreateBook(_ context.Context, req *librarypb.Create
 }
 
 func (s *mockLibraryService) PublishSeries(_ context.Context, req *librarypb.PublishSeriesRequest) (*librarypb.PublishSeriesResponse, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -105,7 +101,7 @@ func (s *mockLibraryService) PublishSeries(_ context.Context, req *librarypb.Pub
 }
 
 func (s *mockLibraryService) GetBook(_ context.Context, req *librarypb.GetBookRequest) (*librarypb.Book, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -113,7 +109,7 @@ func (s *mockLibraryService) GetBook(_ context.Context, req *librarypb.GetBookRe
 }
 
 func (s *mockLibraryService) ListBooks(_ context.Context, req *librarypb.ListBooksRequest) (*librarypb.ListBooksResponse, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -121,7 +117,7 @@ func (s *mockLibraryService) ListBooks(_ context.Context, req *librarypb.ListBoo
 }
 
 func (s *mockLibraryService) DeleteBook(_ context.Context, req *librarypb.DeleteBookRequest) (*google_protobuf.Empty, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -129,7 +125,7 @@ func (s *mockLibraryService) DeleteBook(_ context.Context, req *librarypb.Delete
 }
 
 func (s *mockLibraryService) UpdateBook(_ context.Context, req *librarypb.UpdateBookRequest) (*librarypb.Book, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -137,7 +133,7 @@ func (s *mockLibraryService) UpdateBook(_ context.Context, req *librarypb.Update
 }
 
 func (s *mockLibraryService) MoveBook(_ context.Context, req *librarypb.MoveBookRequest) (*librarypb.Book, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -145,7 +141,7 @@ func (s *mockLibraryService) MoveBook(_ context.Context, req *librarypb.MoveBook
 }
 
 func (s *mockLibraryService) ListStrings(_ context.Context, req *librarypb.ListStringsRequest) (*librarypb.ListStringsResponse, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -153,7 +149,7 @@ func (s *mockLibraryService) ListStrings(_ context.Context, req *librarypb.ListS
 }
 
 func (s *mockLibraryService) AddComments(_ context.Context, req *librarypb.AddCommentsRequest) (*google_protobuf.Empty, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -161,7 +157,7 @@ func (s *mockLibraryService) AddComments(_ context.Context, req *librarypb.AddCo
 }
 
 func (s *mockLibraryService) GetBookFromArchive(_ context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -169,7 +165,7 @@ func (s *mockLibraryService) GetBookFromArchive(_ context.Context, req *libraryp
 }
 
 func (s *mockLibraryService) GetBookFromAnywhere(_ context.Context, req *librarypb.GetBookFromAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -177,7 +173,7 @@ func (s *mockLibraryService) GetBookFromAnywhere(_ context.Context, req *library
 }
 
 func (s *mockLibraryService) UpdateBookIndex(_ context.Context, req *librarypb.UpdateBookIndexRequest) (*google_protobuf.Empty, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -185,7 +181,7 @@ func (s *mockLibraryService) UpdateBookIndex(_ context.Context, req *librarypb.U
 }
 
 func (s *mockLibraryService) StreamShelves(req *librarypb.StreamShelvesRequest, stream librarypb.LibraryService_StreamShelvesServer) error {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return s.err
     }
@@ -198,7 +194,7 @@ func (s *mockLibraryService) StreamShelves(req *librarypb.StreamShelvesRequest, 
 }
 
 func (s *mockLibraryService) StreamBooks(req *librarypb.StreamBooksRequest, stream librarypb.LibraryService_StreamBooksServer) error {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return s.err
     }
@@ -225,7 +221,7 @@ func (s *mockLibraryService) DiscussBook(stream librarypb.LibraryService_Discuss
                 ch <- err
                 return
             } else {
-                s.recordReq(req)
+                s.reqs = append(s.reqs, req)
             }
         }
     }()
@@ -248,7 +244,7 @@ func (s *mockLibraryService) DiscussBook(stream librarypb.LibraryService_Discuss
 }
 
 func (s *mockLibraryService) FindRelatedBooks(_ context.Context, req *librarypb.FindRelatedBooksRequest) (*librarypb.FindRelatedBooksResponse, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -256,7 +252,7 @@ func (s *mockLibraryService) FindRelatedBooks(_ context.Context, req *librarypb.
 }
 
 func (s *mockLibraryService) AddTag(_ context.Context, req *taggerpb.AddTagRequest) (*taggerpb.AddTagResponse, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -264,7 +260,7 @@ func (s *mockLibraryService) AddTag(_ context.Context, req *taggerpb.AddTagReque
 }
 
 func (s *mockLibraryService) GetBigBook(_ context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
@@ -283,12 +279,8 @@ type mockLabeler struct {
 
 var _ taggerpb.LabelerServer = &mockLabeler{}
 
-func (s *mockLabeler) recordReq(req interface{}) {
-    s.reqs = append(s.reqs, req)
-}
-
 func (s *mockLabeler) AddLabel(_ context.Context, req *taggerpb.AddLabelRequest) (*taggerpb.AddLabelResponse, error) {
-    s.recordReq(req)
+    s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }

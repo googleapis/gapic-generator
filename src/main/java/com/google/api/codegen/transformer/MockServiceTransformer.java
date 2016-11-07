@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/** MockServiceTransformer contains helper methods useful for creating mock views. */
 public class MockServiceTransformer {
   public Collection<Interface> getGrpcInterfacesToMock(Model model, ApiConfig apiConfig) {
     Map<String, Interface> interfaces = new LinkedHashMap<>();

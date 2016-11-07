@@ -28,7 +28,6 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.IamResourceTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
-import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -40,7 +39,6 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
@@ -49,8 +47,6 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangClientExampleFileView;
 import com.google.api.codegen.viewmodel.StaticLangClientFileView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.testing.MockCombinedView;
-import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -77,7 +73,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String XAPI_TEMPLATE_FILE = "go/main.snip";
   private static final String SAMPLE_TEMPLATE_FILE = "go/example.snip";
   private static final String DOC_TEMPLATE_FILE = "go/doc.snip";
-  private static final String MOCK_SERVICE_TEMPLATE_FILE = "go/mock.snip";
 
   private static final int COMMENT_LINE_LENGTH = 75;
 
@@ -92,7 +87,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ServiceMessages serviceMessages = new ServiceMessages();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
-  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final GapicCodePathMapper pathMapper;
 
   public GoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
@@ -101,8 +95,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(
-        XAPI_TEMPLATE_FILE, DOC_TEMPLATE_FILE, SAMPLE_TEMPLATE_FILE, MOCK_SERVICE_TEMPLATE_FILE);
+    return Arrays.asList(XAPI_TEMPLATE_FILE, DOC_TEMPLATE_FILE, SAMPLE_TEMPLATE_FILE);
   }
 
   @Override
@@ -120,7 +113,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
               service, apiConfig, createTypeTable(), namer, featureConfig);
       models.add(generateExample(context));
     }
-    models.add(generateMockServiceView(model, apiConfig, namer));
     models.add(generatePackageInfo(model, apiConfig, namer));
     return models;
   }
@@ -239,39 +231,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return packageInfo.build();
   }
 
-  private MockCombinedView generateMockServiceView(
-      Model model, ApiConfig apiConfig, SurfaceNamer namer) {
-    Map<String, TypeAlias> imports = new TreeMap<>();
-    List<MockServiceImplView> impls = new ArrayList<>();
-    FileHeaderView fileHeader =
-        fileHeaderTransformer.generateFileHeader(
-            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer);
-
-    for (Interface service : mockServiceTransformer.getGrpcInterfacesToMock(model, apiConfig)) {
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(), namer, featureConfig);
-      impls.add(
-          MockServiceImplView.newBuilder()
-              .outputPath("")
-              .templateFileName("")
-              .grpcClassName(namer.getGrpcServerTypeName(service))
-              .name(namer.getMockGrpcServiceImplName(service))
-              .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
-              .fileHeader(fileHeader)
-              .build());
-      imports.putAll(context.getTypeTable().getImports());
-    }
-
-    return MockCombinedView.newBuilder()
-        .outputPath(apiConfig.getPackageName() + File.separator + "mock_test.go")
-        .serviceImpls(impls)
-        .templateFileName(MOCK_SERVICE_TEMPLATE_FILE)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(apiConfig, imports, namer))
-        .build();
-  }
-
-  @VisibleForTesting
   static ModelTypeTable createTypeTable() {
     return new ModelTypeTable(new GoTypeTable(), new GoModelTypeNameConverter());
   }
