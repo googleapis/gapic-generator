@@ -23,19 +23,25 @@ import org.junit.Test;
 
 public class ProtoDocumentLinkTest {
 
+  /* ProtoLink in comments is defined as [display name][fully qualified name] */
   @Test
   public void testMatchProtoLink() {
     Matcher m;
     m = CommentPatterns.PROTO_LINK_PATTERN.matcher("[Shelf][google.example.library.v1.Shelf]");
     Truth.assertThat(m.find()).isTrue();
+    // Fully qualified name can be empty
     m = CommentPatterns.PROTO_LINK_PATTERN.matcher("[Shelf][]");
     Truth.assertThat(m.find()).isTrue();
+    // Display name may contain special character '$'
     m = CommentPatterns.PROTO_LINK_PATTERN.matcher("[$Shelf][]");
     Truth.assertThat(m.find()).isTrue();
+    // Display name may NOT be empty
     m = CommentPatterns.PROTO_LINK_PATTERN.matcher("[][abc]");
     Truth.assertThat(m.find()).isFalse();
+    // Fully qualified name may NOT contain special character '$'
     m = CommentPatterns.PROTO_LINK_PATTERN.matcher("[A-Za-z_$][A-Za-z_$0-9]");
     Truth.assertThat(m.find()).isFalse();
+    // Fully qualified name many NOT be numbers only
     m = CommentPatterns.PROTO_LINK_PATTERN.matcher("[Shelf][123]");
     Truth.assertThat(m.find()).isFalse();
   }
@@ -47,11 +53,13 @@ public class ProtoDocumentLinkTest {
     Truth.assertThat(RDocCommentFixer.rdocify("[$Shelf][google.example.library.v1.Shelf]"))
         .isEqualTo("$Shelf");
 
+    // Cloud link may contain special character '$'
     Truth.assertThat(RDocCommentFixer.rdocify("[cloud docs!](/library/example/link)"))
         .isEqualTo("{cloud docs!}[https://cloud.google.com/library/example/link]");
     Truth.assertThat(RDocCommentFixer.rdocify("[cloud docs!](/library/example/link$)"))
         .isEqualTo("{cloud docs!}[https://cloud.google.com/library/example/link$]");
 
+    // Absolute link may contain special character '$'
     Truth.assertThat(RDocCommentFixer.rdocify("[not a cloud link](http://www.google.com)"))
         .isEqualTo("{not a cloud link}[http://www.google.com]");
     Truth.assertThat(RDocCommentFixer.rdocify("[not a cloud link](http://www.google.com$)"))
@@ -66,11 +74,13 @@ public class ProtoDocumentLinkTest {
             PythonSphinxCommentFixer.sphinxify("[$Shelf][google.example.library.v1.Shelf]"))
         .isEqualTo("``$Shelf``");
 
+    // Cloud link may contain special character '$'
     Truth.assertThat(PythonSphinxCommentFixer.sphinxify("[cloud docs!](/library/example/link)"))
         .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link>`_");
     Truth.assertThat(PythonSphinxCommentFixer.sphinxify("[cloud docs!](/library/example/link$)"))
         .isEqualTo("`cloud docs! <https://cloud.google.com/library/example/link$>`_");
 
+    // Absolute link may contain special character '$'
     Truth.assertThat(
             PythonSphinxCommentFixer.sphinxify("[not a cloud link](http://www.google.com)"))
         .isEqualTo("`not a cloud link <http://www.google.com>`_");
@@ -86,11 +96,13 @@ public class ProtoDocumentLinkTest {
     Truth.assertThat(JSDocCommentFixer.jsdocify("[$Shelf][google.example.library.v1.Shelf]"))
         .isEqualTo("{@link $Shelf}");
 
+    // Cloud link may contain special character '$'
     Truth.assertThat(JSDocCommentFixer.jsdocify("[cloud docs!](/library/example/link)"))
         .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link)");
     Truth.assertThat(JSDocCommentFixer.jsdocify("[cloud docs!](/library/example/link$)"))
         .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link$)");
 
+    // Absolute link may contain special character '$'
     Truth.assertThat(JSDocCommentFixer.jsdocify("[not a cloud link](http://www.google.com)"))
         .isEqualTo("[not a cloud link](http://www.google.com)");
     Truth.assertThat(JSDocCommentFixer.jsdocify("[not a cloud link](http://www.google.com$)"))
