@@ -174,7 +174,7 @@
     @end
 
     @join iter : view.pageStreamingDescriptorClasses
-        {@iterator(iter)}
+        {@iterator(view, iter)}
     @end
 @end
 
@@ -244,8 +244,7 @@
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) *{@method.responseTypeName} {
         {@mergeMetadata()}
         it := &{@method.responseTypeName}{}
-
-        fetch := func(pageSize int, pageToken string) (string, error) {
+        it.{@internalFetch(view)} = func(pageSize int, pageToken string) ([]{@method.listMethod.resourceTypeName}, string, error) {
             var resp {@method.listMethod.responseObjectTypeName}
             req.PageToken = pageToken
             if pageSize > math.MaxInt32 {
@@ -258,30 +257,34 @@
                 resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
                 return err
             }, c.CallOptions.{@method.settingsGetterName}...)
+            return resp.{@method.listMethod.resourceFieldName}, resp.NextPageToken, err
+        }
+        fetch := func(pageSize int, pageToken string) (string, error) {
+            items, nextPageToken, err := it.{@internalFetch(view)}(pageSize, pageToken)
             if err != nil {
                 return "", err
             }
-            it.items = append(it.items, resp.{@method.listMethod.resourceFieldName}...)
-            return resp.NextPageToken, nil
+            it.items = append(it.items, items...)
+            return nextPageToken, nil
         }
-        bufLen := func() int { return len(it.items) }
-        takeBuf := func() interface{} {
-            b := it.items
-            it.items = nil
-            return b
-        }
-
-        it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+        it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
         return it
     }
 @end
 
-@private iterator(iter)
+@private iterator(view, iter)
     // {@iter.typeName} manages a stream of {@iter.resourceTypeName}.
     type {@iter.typeName} struct {
         items    []{@iter.resourceTypeName}
         pageInfo *iterator.PageInfo
         nextFunc func() error
+
+        // {@internalFetch(view)} is for use by the Google Cloud Libraries only.
+        //
+        // {@internalFetch(view)} returns results from a single call to the underlying RPC.
+        // The number of results is no greater than pageSize.
+        // If there are no more results, nextPageToken is empty and err is nil.
+        {@internalFetch(view)} func(pageSize int, pageToken string) (results []{@iter.resourceTypeName}, nextPageToken string, err error)
     }
 
     // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
@@ -300,6 +303,16 @@
         return item, nil
     }
 
+    func (it *{@iter.typeName}) bufLen() int {
+        return len(it.items)
+    }
+
+    func (it *{@iter.typeName}) takeBuf() interface{} {
+        b := it.items
+        it.items = nil
+        return b
+    }
+
 @end
 
 @private pathTemplateParams(args)
@@ -311,4 +324,12 @@
 @private mergeMetadata()
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+@end
+
+@private internalFetch(view)
+    @if view.hasInternalFetch
+        InternalFetch
+    @else
+        internalFetch
+    @end
 @end
