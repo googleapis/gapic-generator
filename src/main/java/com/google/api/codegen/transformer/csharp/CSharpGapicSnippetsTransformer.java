@@ -25,6 +25,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -48,15 +49,13 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   private static final String SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_snippets.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final FileHeaderTransformer fileHeaderTransformer;
-  private final ApiMethodTransformer apiMethodTransformer;
-  private final CSharpCommonTransformer csharpCommonTransformer;
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new StandardImportTypeTransformer());
+  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
 
   public CSharpGapicSnippetsTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
-    this.fileHeaderTransformer = new FileHeaderTransformer();
-    this.apiMethodTransformer = new ApiMethodTransformer();
-    this.csharpCommonTransformer = new CSharpCommonTransformer();
   }
 
   @Override
@@ -69,7 +68,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
           SurfaceTransformerContext.create(
               service,
               apiConfig,
-              createTypeTable(apiConfig.getPackageName()),
+              createTypeTable(namer.getExamplePackageName()),
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);

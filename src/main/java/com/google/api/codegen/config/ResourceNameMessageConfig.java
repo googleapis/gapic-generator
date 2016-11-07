@@ -29,7 +29,7 @@ public abstract class ResourceNameMessageConfig {
   abstract ImmutableMap<String, String> fieldEntityMap();
 
   @Nullable
-  public static ResourceNameMessageConfig createInterfaceConfig(
+  public static ResourceNameMessageConfig createResourceNameMessageConfig(
       DiagCollector diagCollector, ResourceNameMessageConfigProto messageResourceTypesProto) {
     String messageName = messageResourceTypesProto.getMessageName();
     ImmutableMap<String, String> fieldEntityMap =

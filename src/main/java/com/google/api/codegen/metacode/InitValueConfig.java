@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.auto.value.AutoValue;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,55 +28,58 @@ public abstract class InitValueConfig {
     return new AutoValue_InitValueConfig(null, null, null, null);
   }
 
-  public static InitValueConfig createWithValue(String value) {
+  public static InitValueConfig createWithValue(InitValue value) {
     return new AutoValue_InitValueConfig(null, null, value, null);
   }
 
-  public static InitValueConfig create(String apiWrapperName, CollectionConfig collectionConfig) {
-    return new AutoValue_InitValueConfig(apiWrapperName, collectionConfig, null, null);
+  public static InitValueConfig create(
+      String apiWrapperName, SingleResourceNameConfig singleResourceNameConfig) {
+    return new AutoValue_InitValueConfig(apiWrapperName, singleResourceNameConfig, null, null);
   }
 
   public static InitValueConfig create(
       String apiWrapperName,
-      CollectionConfig collectionConfig,
-      Map<String, String> collectionValues) {
-    return new AutoValue_InitValueConfig(apiWrapperName, collectionConfig, null, collectionValues);
+      SingleResourceNameConfig singleResourceNameConfig,
+      Map<String, InitValue> resourceNameBindingValues) {
+    return new AutoValue_InitValueConfig(
+        apiWrapperName, singleResourceNameConfig, null, resourceNameBindingValues);
   }
 
   @Nullable
   public abstract String getApiWrapperName();
 
   @Nullable
-  public abstract CollectionConfig getCollectionConfig();
+  public abstract SingleResourceNameConfig getSingleResourceNameConfig();
 
   @Nullable
-  public abstract String getInitialValue();
+  public abstract InitValue getInitialValue();
 
   @Nullable
-  public abstract Map<String, String> getCollectionValues();
+  public abstract Map<String, InitValue> getResourceNameBindingValues();
 
   /** Creates an updated InitValueConfig with the provided value. */
-  public InitValueConfig withInitialCollectionValue(String entityName, String value) {
-    HashMap<String, String> collectionValues = new HashMap<>();
-    collectionValues.put(entityName, value);
-    return withInitialCollectionValues(collectionValues);
+  public InitValueConfig withInitialCollectionValue(String entityName, InitValue value) {
+    HashMap<String, InitValue> resourceNameBindingValues = new HashMap<>();
+    resourceNameBindingValues.put(entityName, value);
+    return withInitialCollectionValues(resourceNameBindingValues);
   }
 
-  public InitValueConfig withInitialCollectionValues(Map<String, String> collectionValues) {
+  public InitValueConfig withInitialCollectionValues(
+      Map<String, InitValue> resourceNameBindingValues) {
     return new AutoValue_InitValueConfig(
-        getApiWrapperName(), getCollectionConfig(), null, collectionValues);
+        getApiWrapperName(), getSingleResourceNameConfig(), null, resourceNameBindingValues);
   }
 
   public boolean isEmpty() {
-    return getCollectionConfig() == null;
+    return getSingleResourceNameConfig() == null;
   }
 
   public boolean hasFormattingConfig() {
-    return getCollectionConfig() != null;
+    return getSingleResourceNameConfig() != null;
   }
 
   public boolean hasFormattingConfigInitialValues() {
-    return getCollectionValues() != null && !getCollectionValues().isEmpty();
+    return getResourceNameBindingValues() != null && !getResourceNameBindingValues().isEmpty();
   }
 
   public boolean hasSimpleInitialValue() {

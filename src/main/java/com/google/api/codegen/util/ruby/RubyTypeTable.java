@@ -94,7 +94,7 @@ public class RubyTypeTable implements TypeTable {
    * : A set of ruby keywords and built-ins. keywords:
    * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
    */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
           .add(
               "__ENCODING__",

@@ -17,9 +17,18 @@ package com.google.api.codegen.util.java;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
+import com.google.common.collect.ImmutableSet;
 
 /** The NameFormatter for Java. */
 public class JavaNameFormatter implements NameFormatter {
+
+  private String wrapIfKeywordOrBuiltIn(String name) {
+    if (RESERVED_IDENTIFIER_SET.contains(name)) {
+      return name + "_";
+    } else {
+      return name;
+    }
+  }
 
   @Override
   public String className(Name name) {
@@ -28,17 +37,17 @@ public class JavaNameFormatter implements NameFormatter {
 
   @Override
   public String localVarName(Name name) {
-    return name.toLowerCamel();
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
   }
 
   @Override
   public String privateFieldName(Name name) {
-    return name.toLowerCamel();
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
   }
 
   @Override
   public String publicFieldName(Name name) {
-    return name.toLowerCamel();
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
   }
 
   @Override
@@ -48,17 +57,17 @@ public class JavaNameFormatter implements NameFormatter {
 
   @Override
   public String publicMethodName(Name name) {
-    return name.toLowerCamel();
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
   }
 
   @Override
   public String privateMethodName(Name name) {
-    return name.toLowerCamel();
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
   }
 
   @Override
   public String staticFunctionName(Name name) {
-    return name.toLowerCamel();
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
   }
 
   @Override
@@ -85,4 +94,62 @@ public class JavaNameFormatter implements NameFormatter {
   public String classFileNameBase(Name name) {
     return name.toOriginal();
   }
+
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
+      ImmutableSet.<String>builder()
+          .add(
+              "abstract",
+              "assert",
+              "boolean",
+              "break",
+              "byte",
+              "case",
+              "catch",
+              "char",
+              "class",
+              "const",
+              "continue",
+              "default",
+              "do",
+              "double",
+              "else",
+              "enum",
+              "extends",
+              "false",
+              "final",
+              "finally",
+              "float",
+              "for",
+              "goto",
+              "if",
+              "implements",
+              "import",
+              "instanceof",
+              "int",
+              "interface",
+              "long",
+              "native",
+              "new",
+              "null",
+              "package",
+              "private",
+              "protected",
+              "public",
+              "return",
+              "short",
+              "static",
+              "strictfp",
+              "super",
+              "switch",
+              "synchronized",
+              "this",
+              "throw",
+              "throws",
+              "transient",
+              "true",
+              "try",
+              "void",
+              "volatile",
+              "while")
+          .build();
 }

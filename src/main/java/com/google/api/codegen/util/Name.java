@@ -206,6 +206,20 @@ public class Name {
     return toCamel(CaseFormat.UPPER_CAMEL);
   }
 
+  public String toUpperCamelAndDigits() {
+    char[] upper = toUpperCamel().toCharArray();
+    boolean digit = false;
+    for (int i = 0; i < upper.length; i++) {
+      if (Character.isDigit(upper[i])) {
+        digit = true;
+      } else if (digit) {
+        upper[i] = Character.toUpperCase(upper[i]);
+        digit = false;
+      }
+    }
+    return new String(upper);
+  }
+
   private String toCamel(CaseFormat caseFormat) {
     StringBuffer buffer = new StringBuffer();
     boolean firstPiece = true;

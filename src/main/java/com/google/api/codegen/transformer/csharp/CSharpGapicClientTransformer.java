@@ -33,6 +33,7 @@ import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -40,6 +41,7 @@ import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.ModifyMethodView;
 import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
@@ -63,27 +65,20 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final ApiMethodTransformer apiMethodTransformer;
-  private final ServiceTransformer serviceTransformer;
-  private final PathTemplateTransformer pathTemplateTransformer;
-  private final ApiCallableTransformer apiCallableTransformer;
-  private final FileHeaderTransformer fileHeaderTransformer;
-  private final PageStreamingTransformer pageStreamingTransformer;
-  private final BundlingTransformer bundlingTransformer;
-  private final RetryDefinitionsTransformer retryDefinitionsTransformer;
-  private final CSharpCommonTransformer csharpCommonTransformer;
+  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final ServiceTransformer serviceTransformer = new ServiceTransformer();
+  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+  private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new StandardImportTypeTransformer());
+  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
+  private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final RetryDefinitionsTransformer retryDefinitionsTransformer =
+      new RetryDefinitionsTransformer();
+  private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
 
   public CSharpGapicClientTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
-    this.serviceTransformer = new ServiceTransformer();
-    this.pathTemplateTransformer = new PathTemplateTransformer();
-    this.apiCallableTransformer = new ApiCallableTransformer();
-    this.apiMethodTransformer = new ApiMethodTransformer();
-    this.pageStreamingTransformer = new PageStreamingTransformer();
-    this.bundlingTransformer = new BundlingTransformer();
-    this.fileHeaderTransformer = new FileHeaderTransformer();
-    this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
-    this.csharpCommonTransformer = new CSharpCommonTransformer();
   }
 
   @Override
@@ -173,6 +168,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.apiMethodsImpl(methodsImpl);
     apiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     apiClass.reroutedGrpcClients(generateReroutedGrpcView(context));
+    apiClass.modifyMethods(generateModifyMethods(context));
 
     return apiClass.build();
   }
@@ -241,6 +237,19 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       }
     }
     return new ArrayList<ReroutedGrpcView>(reroutedViews);
+  }
+
+  private List<ModifyMethodView> generateModifyMethods(SurfaceTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    List<ModifyMethodView> modifyMethods = new ArrayList<>();
+    for (Method method : context.getSupportedMethods()) {
+      ModifyMethodView.Builder builder = ModifyMethodView.builder();
+      builder.name(namer.getModifyMethodName(method));
+      builder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
+      modifyMethods.add(builder.build());
+    }
+    return modifyMethods;
   }
 
   private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {

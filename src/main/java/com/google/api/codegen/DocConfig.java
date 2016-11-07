@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.InitCode;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -100,11 +100,13 @@ public abstract class DocConfig {
 
       ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
       for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
-        CollectionConfig collectionConfig =
-            context.getCollectionConfig(service, fieldNamePattern.getValue());
-        InitValueConfig initValueConfig =
-            InitValueConfig.create(context.getApiWrapperName(service), collectionConfig);
-        initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
+        SingleResourceNameConfig resourceNameConfig =
+            context.getSingleResourceNameConfig(fieldNamePattern.getValue());
+        if (resourceNameConfig != null) {
+          InitValueConfig initValueConfig =
+              InitValueConfig.create(context.getApiWrapperName(service), resourceNameConfig);
+          initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
+        }
       }
 
       InitCodeNode rootNode =

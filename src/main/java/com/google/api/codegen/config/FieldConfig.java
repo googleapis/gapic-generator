@@ -14,13 +14,10 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.FlatteningGroupProto;
-import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
@@ -38,15 +35,36 @@ public abstract class FieldConfig {
   public abstract ResourceNameTreatment getResourceNameTreatment();
 
   @Nullable
-  public abstract String getEntityName();
+  public abstract ResourceNameConfig getResourceNameConfig();
+
+  public String getEntityName() {
+    if (getResourceNameConfig() == null) {
+      return null;
+    }
+    return getResourceNameConfig().getEntityName();
+  }
+
+  public ResourceNameType getResourceNameType() {
+    if (getResourceNameConfig() == null) {
+      return null;
+    }
+    return getResourceNameConfig().getResourceNameType();
+  }
 
   public static FieldConfig createFieldConfig(
-      Field field, ResourceNameTreatment resourceNameTreatment, String entityName) {
-    if (resourceNameTreatment != ResourceNameTreatment.NONE && entityName == null) {
+      Field field,
+      ResourceNameTreatment resourceNameTreatment,
+      ResourceNameConfig resourceNameConfig) {
+    if (resourceNameTreatment != ResourceNameTreatment.NONE && resourceNameConfig == null) {
       throw new IllegalArgumentException(
           "resourceName may only be null if resourceNameTreatment is NONE");
     }
-    return new AutoValue_FieldConfig(field, resourceNameTreatment, entityName);
+    if (resourceNameConfig != null
+        && resourceNameConfig.getResourceNameType() == ResourceNameType.FIXED) {
+      throw new IllegalArgumentException(
+          "FieldConfig may not contain a ResourceNameConfig of type " + ResourceNameType.FIXED);
+    }
+    return new AutoValue_FieldConfig(field, resourceNameTreatment, resourceNameConfig);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
@@ -54,53 +72,47 @@ public abstract class FieldConfig {
     return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null);
   }
 
-  @Nullable
-  public static FieldConfig createFlattenedFieldConfig(
+  /** Package-private since this is not used outside the config package. */
+  static FieldConfig createFieldConfig(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
-      MethodConfigProto methodConfigProto,
-      Method method,
-      FlatteningGroupProto flatteningGroup,
-      String parameterName) {
+      Map<String, String> fieldNamePatterns,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      Field field,
+      ResourceNameTreatment treatment,
+      ResourceNameTreatment defaultResourceNameTreatment) {
+    String entityName = getEntityName(field, messageConfigs, fieldNamePatterns);
 
-    Field parameterField = method.getInputMessage().lookupField(parameterName);
-    if (parameterField == null) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Field missing for flattening: method = %s, message type = %s, field = %s",
-              method.getFullName(),
-              method.getInputMessage().getFullName(),
-              parameterName));
-      return null;
-    }
-
-    String entityName =
-        getEntityName(parameterField, messageConfigs, methodConfigProto.getFieldNamePatterns());
-
-    ResourceNameTreatment treatment;
-    if (flatteningGroup.getParameterResourceNameTreatment().containsKey(parameterName)) {
-      treatment = flatteningGroup.getParameterResourceNameTreatment().get(parameterName);
-    } else {
+    if (treatment == null || treatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
       // No specific resource name treatment is specified, so we infer the correct treatment from
       // the method-level default and the specified entities.
       if (entityName == null) {
         treatment = ResourceNameTreatment.NONE;
       } else {
-        treatment = methodConfigProto.getResourceNameTreatment();
-        if (treatment == null) {
-          treatment = ResourceNameTreatment.NONE;
+        treatment = defaultResourceNameTreatment;
+      }
+    }
+
+    ResourceNameConfig resourceNameConfig = null;
+    if (entityName != null) {
+      if (entityName.equals(AnyResourceNameConfig.GAPIC_CONFIG_ANY_VALUE)) {
+        resourceNameConfig = AnyResourceNameConfig.instance();
+      } else {
+        resourceNameConfig = resourceNameConfigs.get(entityName);
+        if (resourceNameConfig == null) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "No resourceNameConfig with entity_name \"%s\"",
+                  entityName));
+          return null;
         }
       }
     }
 
-    if (treatment == ResourceNameTreatment.NONE) {
-      entityName = null;
-    }
+    validate(messageConfigs, field, treatment, resourceNameConfig);
 
-    validate(messageConfigs, parameterField, treatment, entityName);
-
-    return createFieldConfig(parameterField, treatment, entityName);
+    return createFieldConfig(field, treatment, resourceNameConfig);
   }
 
   public static String getEntityName(
@@ -148,7 +160,7 @@ public abstract class FieldConfig {
       ResourceNameMessageConfigs messageConfigs,
       Field field,
       ResourceNameTreatment treatment,
-      String entityName) {
+      ResourceNameConfig resourceNameConfig) {
     switch (treatment) {
       case NONE:
         break;
@@ -161,13 +173,14 @@ public abstract class FieldConfig {
         }
         break;
       case VALIDATE:
-        if (entityName == null) {
+        if (resourceNameConfig == null) {
           throw new IllegalArgumentException(
               "Field must have a resource type or field name pattern specified to support "
                   + "VALIDATE resource name treatment. Field: "
                   + field.getFullName());
         }
         break;
+      case UNSET_TREATMENT:
       case UNRECOGNIZED:
       default:
         throw new IllegalArgumentException("Unrecognized resource name type: " + treatment);

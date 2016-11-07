@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -49,18 +49,20 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
+  public String getPathTemplateName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(
         getReducedServiceName(service)
-            .join(collectionConfig.getEntityName())
+            .join(resourceNameConfig.getEntityName())
             .join("path")
             .join("template"));
   }
 
   @Override
-  public String getPathTemplateNameGetter(Interface service, CollectionConfig collectionConfig) {
+  public String getPathTemplateNameGetter(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
-        getReducedServiceName(service).join(collectionConfig.getEntityName()).join("path"));
+        getReducedServiceName(service).join(resourceNameConfig.getEntityName()).join("path"));
   }
 
   @Override

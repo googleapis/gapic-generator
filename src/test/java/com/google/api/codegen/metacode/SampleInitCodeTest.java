@@ -180,9 +180,9 @@ public class SampleInitCodeTest {
     InitValueConfig initValueConfig = InitValueConfig.create("test-api", null);
     initValueMap.put("formatted_field", initValueConfig);
 
-    HashMap<String, String> expectedCollectionValues = new HashMap<>();
-    expectedCollectionValues.put("entity1", "test1");
-    expectedCollectionValues.put("entity2", "test2");
+    HashMap<String, InitValue> expectedCollectionValues = new HashMap<>();
+    expectedCollectionValues.put("entity1", InitValue.createLiteral("test1"));
+    expectedCollectionValues.put("entity2", InitValue.createLiteral("test2"));
 
     InitCodeContext context =
         getContextBuilder()
@@ -199,7 +199,7 @@ public class SampleInitCodeTest {
     Truth.assertThat(
             actualFormattedFieldNode
                 .getInitValueConfig()
-                .getCollectionValues()
+                .getResourceNameBindingValues()
                 .equals(expectedCollectionValues))
         .isTrue();
   }
@@ -223,7 +223,8 @@ public class SampleInitCodeTest {
     String fieldSpec = "myfield=\"default\"";
 
     InitCodeNode expectedStructure =
-        InitCodeNode.createWithValue("myfield", InitValueConfig.createWithValue("default"));
+        InitCodeNode.createWithValue(
+            "myfield", InitValueConfig.createWithValue(InitValue.createLiteral("default")));
 
     InitCodeNode actualStructure = FieldStructureParser.parse(fieldSpec);
     Truth.assertThat(checkEquals(actualStructure, expectedStructure)).isTrue();

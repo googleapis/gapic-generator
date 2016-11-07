@@ -14,24 +14,16 @@
  */
 package com.google.api.codegen.discovery.config.java;
 
-import com.google.api.client.util.Strings;
-import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public class JavaTypeNameGenerator implements TypeNameGenerator {
+public class JavaTypeNameGenerator extends TypeNameGenerator {
 
   private static final String PACKAGE_PREFIX = "com.google.api.services";
   private static final String NON_REQUEST_SUBPACKAGE = "model";
-
-  @Override
-  public String getApiVersion(String apiVersion) {
-    return apiVersion;
-  }
 
   @Override
   public String getPackagePrefix(String apiName, String apiVersion) {
@@ -40,31 +32,13 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
   }
 
   @Override
-  public String getApiTypeName(String apiName) {
-    return Name.lowerCamel(apiName).toUpperCamel();
-  }
-
-  @Override
   public String getRequestTypeName(List<String> methodNameComponents) {
-    List<String> copy = new ArrayList<>(methodNameComponents);
+    LinkedList<String> copy = new LinkedList<>(methodNameComponents);
+    copy.removeFirst();
     for (int i = 0; i < copy.size(); i++) {
       copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
     }
     return Joiner.on('.').join(copy);
-  }
-
-  @Override
-  public String getResponseTypeUrl(String responseTypeUrl) {
-    if (responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
-        || responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_URL)) {
-      return "";
-    }
-    return responseTypeUrl;
-  }
-
-  @Override
-  public String getMessageTypeName(String messageTypeName) {
-    return messageTypeName;
   }
 
   @Override
@@ -77,27 +51,9 @@ public class JavaTypeNameGenerator implements TypeNameGenerator {
 
   @Override
   public String getStringFormatExample(String format) {
-    if (Strings.isNullOrEmpty(format)) {
-      return "";
-    }
-    switch (format) {
-      case "byte":
-        return "Base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
-      case "date":
-        return "\"YYYY-MM-DD\": see java.text.SimpleDateFormat";
-      case "date-time":
-        return "\"YYYY-MM-DDThh:mm:ss.fffZ\": see com.google.api.client.util.DateTime.toStringRfc3339()";
-      default:
-        return "";
-    }
-  }
-
-  @Override
-  public String getFieldPatternExample(String pattern) {
-    String def = DefaultString.getNonTrivialPlaceholder(pattern);
-    if (Strings.isNullOrEmpty(def)) {
-      return "";
-    }
-    return String.format("\"%s\"", def);
+    return getStringFormatExample(
+        format,
+        "java.text.SimpleDateFormat",
+        "com.google.api.client.util.DateTime.toStringRfc3339()");
   }
 }

@@ -51,6 +51,9 @@ public abstract class StaticLangApiView {
   @Nullable // Used in C#
   public abstract List<StaticLangApiMethodView> apiMethodsImpl();
 
+  @Nullable // Used in C#
+  public abstract List<ModifyMethodView> modifyMethods();
+
   public abstract boolean hasDefaultInstance();
 
   public static Builder newBuilder() {
@@ -85,6 +88,8 @@ public abstract class StaticLangApiView {
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
     public abstract Builder apiMethodsImpl(List<StaticLangApiMethodView> val);
+
+    public abstract Builder modifyMethods(List<ModifyMethodView> val);
 
     public abstract Builder hasDefaultInstance(boolean val);
 

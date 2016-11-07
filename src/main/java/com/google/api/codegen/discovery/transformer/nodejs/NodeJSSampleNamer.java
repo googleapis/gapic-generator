@@ -26,6 +26,6 @@ public class NodeJSSampleNamer extends SampleNamer {
 
   @Override
   public String getServiceVarName(String apiTypeName) {
-    return localVarName(Name.lowerCamel(apiTypeName));
+    return localVarName(Name.upperCamelKeepUpperAcronyms(apiTypeName));
   }
 }

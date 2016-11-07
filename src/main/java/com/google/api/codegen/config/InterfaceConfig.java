@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -37,7 +36,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import io.grpc.Status;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -60,8 +58,6 @@ public abstract class InterfaceConfig {
   @Nullable
   public abstract SmokeTestConfig getSmokeTestConfig();
 
-  abstract ImmutableMap<String, CollectionConfig> collectionConfigs();
-
   abstract ImmutableMap<String, MethodConfig> getMethodConfigMap();
 
   public abstract ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition();
@@ -83,9 +79,8 @@ public abstract class InterfaceConfig {
       String language,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
-      ResourceNameMessageConfigs messageConfigs) {
-    ImmutableMap<String, CollectionConfig> collectionConfigs =
-        createCollectionConfigs(diagCollector, interfaceConfigProto);
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
         createRetryCodesDefinition(diagCollector, interfaceConfigProto);
@@ -102,6 +97,7 @@ public abstract class InterfaceConfig {
               interfaceConfigProto,
               iface,
               messageConfigs,
+              resourceNameConfigs,
               retryCodesDefinition.keySet(),
               retrySettingsDefinition.keySet());
       methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
@@ -129,7 +125,6 @@ public abstract class InterfaceConfig {
       return new AutoValue_InterfaceConfig(
           methodConfigs,
           smokeTestConfig,
-          collectionConfigs,
           methodConfigMap,
           retryCodesDefinition,
           retrySettingsDefinition,
@@ -145,27 +140,6 @@ public abstract class InterfaceConfig {
           iface, interfaceConfigProto.getSmokeTest(), diagCollector);
     } else {
       return null;
-    }
-  }
-
-  private static ImmutableMap<String, CollectionConfig> createCollectionConfigs(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, CollectionConfig> collectionConfigsBuilder =
-        ImmutableMap.builder();
-
-    for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
-      CollectionConfig collectionConfig =
-          CollectionConfig.createCollection(diagCollector, collectionConfigProto);
-      if (collectionConfig == null) {
-        continue;
-      }
-      collectionConfigsBuilder.put(collectionConfig.getEntityName(), collectionConfig);
-    }
-
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    } else {
-      return collectionConfigsBuilder.build();
     }
   }
 
@@ -233,6 +207,7 @@ public abstract class InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
       ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, MethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
@@ -254,6 +229,7 @@ public abstract class InterfaceConfig {
               methodConfigProto,
               method,
               messageConfigs,
+              resourceNameConfigs,
               retryCodesConfigNames,
               retryParamsConfigNames);
       if (methodConfig == null) {
@@ -277,15 +253,6 @@ public abstract class InterfaceConfig {
       methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
     }
     return methodConfigs;
-  }
-
-  public CollectionConfig getCollectionConfig(String entityName) {
-    return collectionConfigs().get(entityName);
-  }
-
-  /** Returns the list of CollectionConfigs. */
-  public Collection<CollectionConfig> getCollectionConfigs() {
-    return collectionConfigs().values();
   }
 
   /** Returns the MethodConfig for the given method. */
