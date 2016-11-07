@@ -79,12 +79,7 @@ public class GapicContext extends CodegenContext {
 
   /** Get collection configuration for a method. */
   public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
-    SingleResourceNameConfig result = getApiConfig().getSingleResourceNameConfig(entityName);
-    if (result == null) {
-      throw new IllegalStateException(
-          "A collection config was not present for entity name " + entityName);
-    }
-    return result;
+    return getApiConfig().getSingleResourceNameConfig(entityName);
   }
 
   /**
