@@ -22,6 +22,7 @@ import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FieldSettingView;
@@ -39,6 +40,7 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
@@ -297,18 +299,20 @@ public class InitCodeTransformer {
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
         && !item.getType().isRepeated()) {
       // For a repeated type, we want to use a SimpleInitValueView
-
       ResourceNameType resourceNameType = fieldConfig.getResourceNameType();
       SingleResourceNameConfig resourceNameConfig;
       switch (resourceNameType) {
         case ANY:
-          throw new UnsupportedOperationException("entity name *");
-        case UNFORMATTED:
+          // TODO(michaelbausor): handle case where there are no other resource names at all...
+          resourceNameConfig =
+              Iterables.get(context.getApiConfig().getSingleResourceNameConfigs(), 0);
+          return createResourceNameInitValueView(context, item, resourceNameConfig);
+        case FIXED:
           throw new UnsupportedOperationException("entity name invalid");
         case ONEOF:
           ResourceNameOneofConfig oneofConfig =
               (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
-          resourceNameConfig = oneofConfig.getSingleResourceNameConfigs().get(0);
+          resourceNameConfig = Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
           ResourceNameInitValueView initView =
               createResourceNameInitValueView(context, item, resourceNameConfig);
           return ResourceNameOneofInitValueView.newBuilder()
@@ -333,7 +337,7 @@ public class InitCodeTransformer {
       List<String> varList =
           Lists.newArrayList(
               initValueConfig.getSingleResourceNameConfig().getNameTemplate().vars());
-      initValue.formatArgs(getFormatFunctionArgs(varList, initValueConfig));
+      initValue.formatArgs(getFormatFunctionArgs(context, varList, initValueConfig));
 
       return initValue.build();
     } else {
@@ -343,7 +347,8 @@ public class InitCodeTransformer {
         initValue.initialValue(
             context
                 .getTypeTable()
-                .renderPrimitiveValue(item.getType(), initValueConfig.getInitialValue()));
+                .renderPrimitiveValue(
+                    item.getType(), initValueConfig.getInitialValue().getValue()));
       } else {
         initValue.initialValue(
             context.getTypeTable().getZeroValueAndSaveNicknameFor(item.getType()));
@@ -362,18 +367,28 @@ public class InitCodeTransformer {
 
     return ResourceNameInitValueView.newBuilder()
         .resourceTypeName(resourceName)
-        .formatArgs(getFormatFunctionArgs(varList, item.getInitValueConfig()))
+        .formatArgs(getFormatFunctionArgs(context, varList, item.getInitValueConfig()))
         .build();
   }
 
   private static List<String> getFormatFunctionArgs(
-      List<String> varList, InitValueConfig initValueConfig) {
+      MethodTransformerContext context, List<String> varList, InitValueConfig initValueConfig) {
     List<String> formatFunctionArgs = new ArrayList<>();
     for (String entityName : varList) {
       String entityValue = "\"[" + Name.from(entityName).toUpperUnderscore() + "]\"";
       if (initValueConfig.hasFormattingConfigInitialValues()
           && initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
-        entityValue = initValueConfig.getResourceNameBindingValues().get(entityName);
+        InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
+        switch (initValue.getType()) {
+          case Variable:
+            entityValue = context.getNamer().localVarName(Name.from(initValue.getValue()));
+            break;
+          case Literal:
+            entityValue = initValue.getValue();
+            break;
+          default:
+            throw new IllegalArgumentException("Unhandled init value type");
+        }
       }
       formatFunctionArgs.add(entityValue);
     }

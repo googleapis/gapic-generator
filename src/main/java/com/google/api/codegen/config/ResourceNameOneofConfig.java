@@ -20,24 +20,30 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
-/** CollectionOneofConfig represents the configuration for a oneof set of resource names. */
+/** ResourceNameOneofConfig represents the configuration for a oneof set of resource names. */
 @AutoValue
 public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
 
   @Override
   public abstract String getEntityName();
 
-  public abstract List<SingleResourceNameConfig> getSingleResourceNameConfigs();
+  public abstract List<ResourceNameConfig> getResourceNameConfigs();
+
+  public Iterable<SingleResourceNameConfig> getSingleResourceNameConfigs() {
+    return Iterables.filter(getResourceNameConfigs(), SingleResourceNameConfig.class);
+  }
 
   @Nullable
   public static ResourceNameOneofConfig createResourceNameOneof(
       DiagCollector diagCollector,
       CollectionOneofProto collectionOneofProto,
-      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs) {
+      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
+      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs) {
     String oneofName = collectionOneofProto.getOneofName();
     if (singleResourceNameConfigs.containsKey(oneofName)) {
       diagCollector.addDiag(
@@ -46,9 +52,16 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
               "oneof_name \"" + oneofName + "\" already exists in collection configs"));
       return null;
     }
-    List<SingleResourceNameConfig> configList = new ArrayList<>();
+    List<ResourceNameConfig> configList = new ArrayList<>();
+    boolean gotSingleResourceName = false;
     for (String entityName : collectionOneofProto.getCollectionNamesList()) {
-      if (!singleResourceNameConfigs.containsKey(entityName)) {
+      ResourceNameConfig resourceNameConfig = singleResourceNameConfigs.get(entityName);
+      if (resourceNameConfig == null) {
+        resourceNameConfig = fixedResourceNameConfigs.get(entityName);
+      } else {
+        gotSingleResourceName = true;
+      }
+      if (resourceNameConfig == null) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
@@ -59,7 +72,15 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
                     + "\" not found in collection configs"));
         return null;
       }
-      configList.add(singleResourceNameConfigs.get(entityName));
+      configList.add(resourceNameConfig);
+    }
+    if (!gotSingleResourceName) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "At least one ResourceNameConfig with type SINGLE is required in oneof "
+                  + oneofName));
+      return null;
     }
 
     return new AutoValue_ResourceNameOneofConfig(oneofName, configList);

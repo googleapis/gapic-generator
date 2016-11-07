@@ -116,7 +116,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     switch (resourceNameType) {
       case ANY:
         return Name.from("resource_name");
-      case UNFORMATTED:
+      case FIXED:
         throw new UnsupportedOperationException("entity name invalid");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
@@ -788,6 +788,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The test case name for the given method. */
   public String getTestCaseName(SymbolTable symbolTable, Method method) {
     Name testCaseName = symbolTable.getNewSymbol(Name.upperCamel(method.getSimpleName(), "Test"));
+    return publicMethodName(testCaseName);
+  }
+
+  /** The exception test case name for the given method. */
+  public String getExceptionTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName =
+        symbolTable.getNewSymbol(Name.upperCamel(method.getSimpleName(), "ExceptionTest"));
     return publicMethodName(testCaseName);
   }
 

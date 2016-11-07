@@ -66,6 +66,7 @@ public class ApiaryConfigToSampleConfigConverter {
     String apiTypeName = typeNameGenerator.getApiTypeName(apiaryConfig.getServiceCanonicalName());
     return SampleConfig.newBuilder()
         .apiTitle(apiaryConfig.getApiTitle())
+        .apiCanonicalName(apiaryConfig.getServiceCanonicalName())
         .apiName(apiName)
         .apiVersion(apiVersion)
         .apiTypeName(apiTypeName)

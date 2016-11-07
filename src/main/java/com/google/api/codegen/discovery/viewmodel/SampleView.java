@@ -118,6 +118,10 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract String contextVarName();
 
+  // PHP specific section...
+  @Nullable
+  public abstract String optParamsVarName();
+
   // Ruby specific section...
   @Nullable
   public abstract String serviceRequirePath();
@@ -203,6 +207,8 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder getClientFuncName(String val);
 
     public abstract Builder contextVarName(String val);
+
+    public abstract Builder optParamsVarName(String val);
 
     public abstract Builder serviceRequirePath(String val);
 

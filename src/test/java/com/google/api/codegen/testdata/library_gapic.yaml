@@ -26,11 +26,15 @@ license_header:
 collections:
   - name_pattern: shelves/{shelf_id}
     entity_name: shelf
+fixed_resource_name_values:
+  - entity_name: deleted_book
+    fixed_value: _deleted-book_
 collection_oneofs:
   - oneof_name: book_oneof
     collection_names:
     - book
     - archived_book
+    - deleted_book
 interfaces:
 - name: google.example.library.v1.LibraryService
   retry_codes_def:
@@ -64,7 +68,7 @@ interfaces:
     method: GetBook
     init_fields:
       - name%shelf_id="testShelf-$RANDOM"
-      - name%book_id="testBook"
+      - name%book_id=$PROJECT_ID
     flattening_group_name: get_book_1
   experimental_features:
     iam_resources:
@@ -168,7 +172,8 @@ interfaces:
     retry_params_name: default
     timeout_millis: 6000
     request_object_method: true
-    resource_name_treatment: STATIC_TYPES
+    # Test resource_name_treatment set to NONE with field_name_patterns
+    resource_name_treatment: NONE
     field_name_patterns:
       name: shelf
   - name: PublishSeries
@@ -293,6 +298,8 @@ interfaces:
     flattening:
       groups:
       - parameters: []
+      - parameters:
+        - name
     page_streaming:
       request:
         page_size_field: page_size
@@ -304,6 +311,9 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: false
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: "*"
   - name: AddComments
     flattening:
       groups:
@@ -317,7 +327,8 @@ interfaces:
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: true
-    resource_name_treatment: VALIDATE
+    # Test resource_name_treatment unset, so using default
+    # resource_name_treatment: VALIDATE
     field_name_patterns:
       name: book
     sample_code_init_fields:
@@ -522,6 +533,9 @@ resource_name_generation:
   field_entity_map:
     name: book
     other_shelf_name: shelf
+- message_name: ListStringsRequest
+  field_entity_map:
+    name: "*"
 - message_name: GetBookFromArchiveRequest
   field_entity_map:
     name: archived_book

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.nodejs;
+package com.google.api.codegen.discovery.transformer.php;
 
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleTypeNameConverter;
@@ -21,41 +21,45 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 
-public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
+public class PhpSampleTypeNameConverter implements SampleTypeNameConverter {
 
-  /** A map from primitive types in proto to NodeJS counterparts. */
+  /** A map from primitive types in proto to PHP counterparts. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
-          .put(Field.Kind.TYPE_BOOL, "boolean")
-          .put(Field.Kind.TYPE_INT32, "number")
-          .put(Field.Kind.TYPE_INT64, "number")
-          .put(Field.Kind.TYPE_UINT32, "number")
-          .put(Field.Kind.TYPE_UINT64, "number")
-          .put(Field.Kind.TYPE_FLOAT, "number")
-          .put(Field.Kind.TYPE_DOUBLE, "number")
+          .put(Field.Kind.TYPE_BOOL, "Boolean")
+          .put(Field.Kind.TYPE_INT32, "Integer")
+          .put(Field.Kind.TYPE_INT64, "String")
+          .put(Field.Kind.TYPE_UINT32, "Integer")
+          .put(Field.Kind.TYPE_UINT64, "String")
+          .put(Field.Kind.TYPE_FLOAT, "Float")
+          .put(Field.Kind.TYPE_DOUBLE, "Float")
           .put(Field.Kind.TYPE_STRING, "String")
           .put(Field.Kind.TYPE_ENUM, "String")
           .build();
 
-  /** A map from primitive types in proto to zero value in NodeJS */
+  /** A map from primitive types in proto to zero value in PHP */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "false")
           .put(Field.Kind.TYPE_INT32, "0")
-          .put(Field.Kind.TYPE_INT64, "''")
+          .put(Field.Kind.TYPE_INT64, "'0'")
           .put(Field.Kind.TYPE_UINT32, "0")
-          .put(Field.Kind.TYPE_UINT64, "''")
+          .put(Field.Kind.TYPE_UINT64, "'0'")
           .put(Field.Kind.TYPE_FLOAT, "0.0")
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
           .put(Field.Kind.TYPE_STRING, "''")
           .put(Field.Kind.TYPE_ENUM, "''")
           .build();
 
-  public NodeJSSampleTypeNameConverter() {}
+  private final String apiTypeName;
+
+  public PhpSampleTypeNameConverter(String apiTypeName) {
+    this.apiTypeName = apiTypeName;
+  }
 
   @Override
   public TypeName getServiceTypeName(String apiTypeName) {
-    return new TypeName(apiTypeName.toLowerCase());
+    return new TypeName(apiTypeName);
   }
 
   @Override
@@ -66,42 +70,35 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
-    if (typeInfo.isMap()) {
-      return new TypeName("Object");
-    } else if (typeInfo.isArray()) {
-      TypeName elementTypeName = getTypeNameForElementType(typeInfo);
-      return new TypeName("", "", "%i[]", elementTypeName);
-    } else {
-      return getTypeNameForElementType(typeInfo);
+    // This method is only ever called for the request body type, which should
+    // always be a message.
+    if (typeInfo.isMessage()) {
+      return new TypeName(apiTypeName + "_" + typeInfo.message().typeName());
     }
+    return getTypeNameForElementType(typeInfo);
   }
 
   @Override
   public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
-    if (typeInfo.kind() == Field.Kind.TYPE_UNKNOWN) {
-      return new TypeName("Object");
-    }
-    String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(typeInfo.kind());
-    if (primitiveTypeName != null) {
-      return new TypeName(primitiveTypeName);
-    }
     throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
   }
 
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
     // Don't call getTypeName; we don't need to import these.
-    if (typeInfo.isMap() || typeInfo.kind() == Field.Kind.TYPE_UNKNOWN) {
-      return TypedValue.create(new TypeName("Object"), "{}");
+    if (typeInfo.isMap()) {
+      return TypedValue.create(new TypeName("Array"), "[]");
     }
     if (typeInfo.isArray()) {
       return TypedValue.create(new TypeName("Array"), "[]");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(typeInfo.kind())) {
-      return TypedValue.create(getTypeName(typeInfo), PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
+      return TypedValue.create(
+          new TypeName(PRIMITIVE_TYPE_MAP.get(typeInfo.kind())),
+          PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
     }
     if (typeInfo.isMessage()) {
-      return TypedValue.create(getTypeName(typeInfo), "{}");
+      return TypedValue.create(new TypeName("Object"), "new stdClass()");
     }
     throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
   }

@@ -8,8 +8,10 @@
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,9 +19,6 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -27,13 +26,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-// path. For example, a Project resource is specified as `projects/{project}`.
-$resource = 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}';
-
+// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+// a path. For example, a Project resource is specified as `projects/{project}`.
+$resource = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/snapshots/my-snapshot'
 
 $response = $service->projects_snapshots->getIamPolicy($resource);
 
@@ -49,8 +45,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -58,9 +56,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -68,17 +63,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
+// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+// a path. For example, a Project resource is specified as `projects/{project}`.
+$resource = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/snapshots/my-snapshot'
 
-// TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-// path. For example, a Project resource is specified as `projects/{project}`.
-$resource = 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}';
-
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_SetIamPolicyRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_snapshots->setIamPolicy($resource, $requestBody);
 
@@ -94,8 +85,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -103,9 +96,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -113,17 +103,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
 // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
 // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-$resource = 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}';
+$resource = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/snapshots/my-snapshot'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_TestIamPermissionsRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_snapshots->testIamPermissions($resource, $requestBody);
 
@@ -139,8 +125,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -148,9 +136,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -158,16 +143,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `acknowledge` method:
-
 // The subscription whose message is being acknowledged.
-$subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
+$subscription = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_AcknowledgeRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $service->projects_subscriptions->acknowledge($subscription, $requestBody);
 ?>
@@ -180,8 +161,10 @@ $service->projects_subscriptions->acknowledge($subscription, $requestBody);
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -189,9 +172,6 @@ $service->projects_subscriptions->acknowledge($subscription, $requestBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -199,20 +179,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `create` method:
-
 // The name of the subscription. It must have the format
 // `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter, and
 // contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
 // (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
 // length, and it must not start with `"goog"`.
-$name = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
+$name = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_Subscription();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_subscriptions->create($name, $requestBody);
 
@@ -228,8 +204,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -237,9 +215,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -247,12 +222,9 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `delete` method:
-
 // The subscription to delete.
-$subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
-
+$subscription = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
 $service->projects_subscriptions->delete($subscription);
 ?>
@@ -265,8 +237,10 @@ $service->projects_subscriptions->delete($subscription);
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -274,9 +248,6 @@ $service->projects_subscriptions->delete($subscription);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -284,12 +255,9 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `get` method:
-
 // The name of the subscription to get.
-$subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
-
+$subscription = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
 $response = $service->projects_subscriptions->get($subscription);
 
@@ -305,8 +273,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -314,9 +284,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -324,13 +291,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-// path. For example, a Project resource is specified as `projects/{project}`.
-$resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
-
+// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+// a path. For example, a Project resource is specified as `projects/{project}`.
+$resource = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
 $response = $service->projects_subscriptions->getIamPolicy($resource);
 
@@ -346,8 +310,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -355,9 +321,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -365,14 +328,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `listProjectsSubscriptions` method:
-
 // The name of the cloud project that subscriptions belong to.
-$project = 'projects/{MY-PROJECT}';
+$project = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project'
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->projects_subscriptions->listProjectsSubscriptions($project, $optParams);
 
@@ -393,8 +353,10 @@ do {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -402,9 +364,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -412,16 +371,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `modifyAckDeadline` method:
-
 // The name of the subscription.
-$subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
+$subscription = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_ModifyAckDeadlineRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $service->projects_subscriptions->modifyAckDeadline($subscription, $requestBody);
 ?>
@@ -434,8 +389,10 @@ $service->projects_subscriptions->modifyAckDeadline($subscription, $requestBody)
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -443,9 +400,6 @@ $service->projects_subscriptions->modifyAckDeadline($subscription, $requestBody)
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -453,16 +407,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `modifyPushConfig` method:
-
 // The name of the subscription.
-$subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
+$subscription = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_ModifyPushConfigRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $service->projects_subscriptions->modifyPushConfig($subscription, $requestBody);
 ?>
@@ -475,8 +425,10 @@ $service->projects_subscriptions->modifyPushConfig($subscription, $requestBody);
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -484,9 +436,6 @@ $service->projects_subscriptions->modifyPushConfig($subscription, $requestBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -494,16 +443,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `pull` method:
-
 // The subscription from which messages should be pulled.
-$subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
+$subscription = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_PullRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_subscriptions->pull($subscription, $requestBody);
 
@@ -519,8 +464,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -528,9 +475,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -538,17 +482,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
+// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+// a path. For example, a Project resource is specified as `projects/{project}`.
+$resource = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
-// TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-// path. For example, a Project resource is specified as `projects/{project}`.
-$resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
-
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_SetIamPolicyRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_subscriptions->setIamPolicy($resource, $requestBody);
 
@@ -564,8 +504,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -573,9 +515,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -583,17 +522,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
 // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
 // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-$resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}';
+$resource = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/subscriptions/my-subscription'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_TestIamPermissionsRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_subscriptions->testIamPermissions($resource, $requestBody);
 
@@ -609,8 +544,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -618,9 +555,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -628,19 +562,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `create` method:
-
-// The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
-// start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
+// The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}`
+// must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
 // underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
 // between 3 and 255 characters in length, and it must not start with `"goog"`.
-$name = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}';
+$name = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/topics/my-topic'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_Topic();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_topics->create($name, $requestBody);
 
@@ -656,8 +586,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -665,9 +597,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -675,12 +604,9 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `delete` method:
-
 // Name of the topic to delete.
-$topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}';
-
+$topic = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/topics/my-topic'
 
 $service->projects_topics->delete($topic);
 ?>
@@ -693,8 +619,10 @@ $service->projects_topics->delete($topic);
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -702,9 +630,6 @@ $service->projects_topics->delete($topic);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -712,12 +637,9 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `get` method:
-
 // The name of the topic to get.
-$topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}';
-
+$topic = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/topics/my-topic'
 
 $response = $service->projects_topics->get($topic);
 
@@ -733,8 +655,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -742,9 +666,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -752,13 +673,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-// path. For example, a Project resource is specified as `projects/{project}`.
-$resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}';
-
+// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+// a path. For example, a Project resource is specified as `projects/{project}`.
+$resource = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/topics/my-topic'
 
 $response = $service->projects_topics->getIamPolicy($resource);
 
@@ -774,8 +692,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -783,9 +703,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -793,14 +710,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `listProjectsTopics` method:
-
 // The name of the cloud project that topics belong to.
-$project = 'projects/{MY-PROJECT}';
+$project = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project'
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->projects_topics->listProjectsTopics($project, $optParams);
 
@@ -821,8 +735,10 @@ do {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -830,9 +746,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -840,16 +753,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `publish` method:
-
 // The messages in the request will be published on this topic.
-$topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}';
+$topic = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/topics/my-topic'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_PublishRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_topics->publish($topic, $requestBody);
 
@@ -865,8 +774,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -874,9 +785,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -884,17 +792,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
+// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+// a path. For example, a Project resource is specified as `projects/{project}`.
+$resource = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/topics/my-topic'
 
-// TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-// path. For example, a Project resource is specified as `projects/{project}`.
-$resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}';
-
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_SetIamPolicyRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_topics->setIamPolicy($resource, $requestBody);
 
@@ -910,8 +814,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -919,9 +825,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -929,14 +832,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `listProjectsTopicsSubscriptions` method:
-
 // The name of the topic that subscriptions are attached to.
-$topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}';
+$topic = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/topics/my-topic'
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->projects_topics_subscriptions->listProjectsTopicsSubscriptions($topic, $optParams);
 
@@ -957,8 +857,10 @@ do {
  *    https://console.developers.google.com/apis/api/pubsub
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -966,9 +868,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-PubsubSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -976,17 +875,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Pubsub($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
 // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
 // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-$resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}';
+$resource = '';  // TODO: Update placeholder value.
+// ex: 'projects/my-project/topics/my-topic'
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Pubsub_TestIamPermissionsRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->projects_topics->testIamPermissions($resource, $requestBody);
 

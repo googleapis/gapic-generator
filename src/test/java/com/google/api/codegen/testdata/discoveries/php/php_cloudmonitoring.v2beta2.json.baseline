@@ -8,8 +8,10 @@
  *    https://console.developers.google.com/apis/api/cloudmonitoring
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,9 +19,6 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-CloudMonitoringSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -27,16 +26,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudMonitoring($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `create` method:
-
 // The project id. The value can be the numeric project ID or string-based project name.
-$project = '{MY-PROJECT}';
+$project = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_CloudMonitoring_MetricDescriptor();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->metricDescriptors->create($project, $requestBody);
 
@@ -52,8 +46,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/cloudmonitoring
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -61,9 +57,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-CloudMonitoringSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -71,15 +64,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudMonitoring($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `delete` method:
-
 // The project ID to which the metric belongs.
-$project = '{MY-PROJECT}';
+$project = '';  // TODO: Update placeholder value.
 
 // Name of the metric.
-$metric = '{MY-METRIC}';
-
+$metric = '';  // TODO: Update placeholder value.
 
 $response = $service->metricDescriptors->delete($project, $metric);
 
@@ -95,8 +84,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/cloudmonitoring
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -104,9 +95,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-CloudMonitoringSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -114,24 +102,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudMonitoring($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `listMetricDescriptors` method:
-
 // The project id. The value can be the numeric project ID or string-based project name.
-$project = '{MY-PROJECT}';
+$project = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_CloudMonitoring_ListMetricDescriptorsRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->metricDescriptors->listMetricDescriptors($project, $requestBody, $optParams);
 
-  foreach ($response['metrics'] as $metric_descriptor) {
-    // TODO: Change code below to process each `metric_descriptor` resource:
-    echo '<pre>', var_export($metric_descriptor, true), '</pre>', "\n";
+  foreach ($response['metrics'] as $metricDescriptor) {
+    // TODO: Change code below to process each `metricDescriptor` resource:
+    echo '<pre>', var_export($metricDescriptor, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
@@ -146,8 +129,10 @@ do {
  *    https://console.developers.google.com/apis/api/cloudmonitoring
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -155,9 +140,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-CloudMonitoringSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -165,26 +147,21 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudMonitoring($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `listTimeseries` method:
-
 // The project ID to which this time series belongs. The value can be the numeric project ID or
 // string-based project name.
-$project = '{MY-PROJECT}';
+$project = '';  // TODO: Update placeholder value.
 
 // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 // compute.googleapis.com/instance/disk/read_ops_count.
-$metric = '{MY-METRIC}';
+$metric = '';  // TODO: Update placeholder value.
 
 // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-$youngest = '{MY-YOUNGEST}';
+$youngest = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_CloudMonitoring_ListTimeseriesRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->timeseries->listTimeseries($project, $metric, $youngest, $requestBody, $optParams);
 
@@ -205,8 +182,10 @@ do {
  *    https://console.developers.google.com/apis/api/cloudmonitoring
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -214,9 +193,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-CloudMonitoringSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -224,16 +200,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudMonitoring($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `write` method:
-
 // The project ID. The value can be the numeric project ID or string-based project name.
-$project = '{MY-PROJECT}';
+$project = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_CloudMonitoring_WriteTimeseriesRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->timeseries->write($project, $requestBody);
 
@@ -249,8 +220,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/cloudmonitoring
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -258,9 +231,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-CloudMonitoringSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -268,32 +238,27 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_CloudMonitoring($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `listTimeseriesDescriptors` method:
-
 // The project ID to which this time series belongs. The value can be the numeric project ID or
 // string-based project name.
-$project = '{MY-PROJECT}';
+$project = '';  // TODO: Update placeholder value.
 
 // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 // compute.googleapis.com/instance/disk/read_ops_count.
-$metric = '{MY-METRIC}';
+$metric = '';  // TODO: Update placeholder value.
 
 // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-$youngest = '{MY-YOUNGEST}';
+$youngest = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_CloudMonitoring_ListTimeseriesDescriptorsRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->timeseriesDescriptors->listTimeseriesDescriptors($project, $metric, $youngest, $requestBody, $optParams);
 
-  foreach ($response['timeseries'] as $timeseries_descriptor) {
-    // TODO: Change code below to process each `timeseries_descriptor` resource:
-    echo '<pre>', var_export($timeseries_descriptor, true), '</pre>', "\n";
+  foreach ($response['timeseries'] as $timeseriesDescriptor) {
+    // TODO: Change code below to process each `timeseriesDescriptor` resource:
+    echo '<pre>', var_export($timeseriesDescriptor, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();

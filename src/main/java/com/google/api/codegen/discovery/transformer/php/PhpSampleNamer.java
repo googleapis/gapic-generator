@@ -12,18 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer.ruby;
+package com.google.api.codegen.discovery.transformer.php;
 
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.discovery.transformer.SampleNamer;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.php.PhpNameFormatter;
 
-public class RubyFeatureConfig extends FeatureConfig {
-  @Override
-  public boolean enableMixins() {
-    return true;
+public class PhpSampleNamer extends SampleNamer {
+
+  public PhpSampleNamer() {
+    super(new PhpNameFormatter());
   }
 
   @Override
-  public boolean enableGrpcStreaming() {
-    return true;
+  public String getServiceVarName(String apiTypeName) {
+    return localVarName(Name.lowerCamel("service"));
   }
 }

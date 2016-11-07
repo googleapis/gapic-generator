@@ -77,6 +77,14 @@
 @private members(xsettingsClass)
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return InstantiatingExecutorProvider.newBuilder();
+  }
+
   @if xsettingsClass.hasDefaultServiceAddress
     /**
      * Returns the default service address.
@@ -102,6 +110,30 @@
     }
 
   @end
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        @if xsettingsClass.hasDefaultServiceScopes
+            .setScopesToApply(DEFAULT_SERVICE_SCOPES)
+        @end
+        ;
+  }
+
+  /**
+   * Returns a builder for the default ChannelProvider for this service.
+   */
+  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
+    return InstantiatingChannelProvider.newBuilder()
+        @if xsettingsClass.hasDefaultServiceAddress
+            .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+        @end
+        .setPort(DEFAULT_SERVICE_PORT)
+        .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+  }
+
   /**
    * Returns a builder for this class with recommended defaults.
    */
@@ -184,12 +216,8 @@
 
 @private constructors(xsettingsClass)
   private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
-    super(settingsBuilder.getChannelProvider(),
-          settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getGeneratorName(),
-          settingsBuilder.getGeneratorVersion(),
-          settingsBuilder.getClientLibName(),
-          settingsBuilder.getClientLibVersion());
+    super(settingsBuilder.getExecutorProvider(),
+          settingsBuilder.getChannelProvider());
 
     @join settings : xsettingsClass.callSettings
       {@settings.memberName} = settingsBuilder.{@settings.settingsGetFunction}().build();
@@ -428,7 +456,7 @@
 @private builderConstructors(xsettingsClass)
   private Builder() {
     @if xsettingsClass.hasDefaultInstance
-      super(s_getDefaultConnectionSettingsBuilder().build());
+      super(defaultChannelProviderBuilder().build());
     @end
 
     @join settings : xsettingsClass.callSettings
@@ -500,54 +528,15 @@
 @end
 
 @private builderMethods(xsettingsClass)
-  private static ConnectionSettings.Builder s_getDefaultConnectionSettingsBuilder() {
-    return ConnectionSettings.newBuilder()
-      @if xsettingsClass.hasDefaultServiceAddress
-        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-      @end
-      .setPort(DEFAULT_SERVICE_PORT)
-      @if xsettingsClass.hasDefaultServiceScopes
-        .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
-      @end
-      ;
-  }
   @@Override
-  protected ConnectionSettings.Builder getDefaultConnectionSettingsBuilder() {
-    return s_getDefaultConnectionSettingsBuilder();
-  }
-  @@Override
-  public Builder provideExecutorWith(ScheduledExecutorService executor, boolean shouldAutoClose) {
-    super.provideExecutorWith(executor, shouldAutoClose);
+  public Builder setExecutorProvider(ExecutorProvider executorProvider) {
+    super.setExecutorProvider(executorProvider);
     return this;
   }
+
   @@Override
-  public Builder provideChannelWith(ManagedChannel channel, boolean shouldAutoClose) {
-    super.provideChannelWith(channel, shouldAutoClose);
-    return this;
-  }
-  @@Override
-  public Builder provideChannelWith(ConnectionSettings settings) {
-    super.provideChannelWith(settings);
-    return this;
-  }
-  @@Override
-  public Builder provideChannelWith(Credentials credentials) {
-    super.provideChannelWith(credentials);
-    return this;
-  }
-  @@Override
-  public Builder provideChannelWith(List<String> scopes) {
-    super.provideChannelWith(scopes);
-    return this;
-  }
-  @@Override
-  public Builder setGeneratorHeader(String name, String version) {
-    super.setGeneratorHeader(name, version);
-    return this;
-  }
-  @@Override
-  public Builder setClientLibHeader(String name, String version) {
-    super.setClientLibHeader(name, version);
+  public Builder setChannelProvider(ChannelProvider channelProvider) {
+    super.setChannelProvider(channelProvider);
     return this;
   }
 

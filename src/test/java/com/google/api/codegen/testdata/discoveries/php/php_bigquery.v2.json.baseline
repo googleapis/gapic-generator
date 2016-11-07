@@ -8,8 +8,10 @@
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,9 +19,6 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -27,15 +26,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `delete` method:
-
 // Project ID of the dataset being deleted
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of dataset being deleted
-$datasetId = '{MY-DATASET-ID}';
-
+$datasetId = '';  // TODO: Update placeholder value.
 
 $service->datasets->delete($projectId, $datasetId);
 ?>
@@ -48,8 +43,10 @@ $service->datasets->delete($projectId, $datasetId);
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -57,9 +54,6 @@ $service->datasets->delete($projectId, $datasetId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -67,15 +61,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `get` method:
-
 // Project ID of the requested dataset
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the requested dataset
-$datasetId = '{MY-DATASET-ID}';
-
+$datasetId = '';  // TODO: Update placeholder value.
 
 $response = $service->datasets->get($projectId, $datasetId);
 
@@ -91,8 +81,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -100,9 +92,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -110,16 +99,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `insert` method:
-
 // Project ID of the new dataset
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Bigquery_Dataset();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->datasets->insert($projectId, $requestBody);
 
@@ -135,8 +119,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -144,9 +130,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -154,20 +137,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `listDatasets` method:
-
 // Project ID of the datasets to be listed
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->datasets->listDatasets($projectId, $optParams);
 
-  foreach ($response['datasets'] as $dataset_list._datasets) {
-    // TODO: Change code below to process each `dataset_list._datasets` resource:
-    echo '<pre>', var_export($dataset_list._datasets, true), '</pre>', "\n";
+  foreach ($response['datasets'] as $datasets) {
+    // TODO: Change code below to process each `datasets` resource:
+    echo '<pre>', var_export($datasets, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
@@ -182,8 +161,10 @@ do {
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -191,9 +172,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -201,19 +179,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `patch` method:
-
 // Project ID of the dataset being updated
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the dataset being updated
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`. Only assigned
+// properties will be changed:
 $requestBody = new Google_Service_Bigquery_Dataset();
-// TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
 
 $response = $service->datasets->patch($projectId, $datasetId, $requestBody);
 
@@ -229,8 +203,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -238,9 +214,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -248,19 +221,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `update` method:
-
 // Project ID of the dataset being updated
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the dataset being updated
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Bigquery_Dataset();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->datasets->update($projectId, $datasetId, $requestBody);
 
@@ -276,8 +244,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -285,9 +255,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -295,15 +262,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `cancel` method:
-
 // [Required] Project ID of the job to cancel
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // [Required] Job ID of the job to cancel
-$jobId = '{MY-JOB-ID}';
-
+$jobId = '';  // TODO: Update placeholder value.
 
 $response = $service->jobs->cancel($projectId, $jobId);
 
@@ -319,8 +282,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -328,9 +293,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -338,15 +300,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `get` method:
-
 // [Required] Project ID of the requested job
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // [Required] Job ID of the requested job
-$jobId = '{MY-JOB-ID}';
-
+$jobId = '';  // TODO: Update placeholder value.
 
 $response = $service->jobs->get($projectId, $jobId);
 
@@ -362,8 +320,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -371,9 +331,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -381,15 +338,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `getQueryResults` method:
-
 // [Required] Project ID of the query job
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // [Required] Job ID of the query job
-$jobId = '{MY-JOB-ID}';
-
+$jobId = '';  // TODO: Update placeholder value.
 
 $response = $service->jobs->getQueryResults($projectId, $jobId);
 
@@ -405,8 +358,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -414,9 +369,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -424,20 +376,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `insert` method:
-
 // Project ID of the project that will be billed for the job
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Bigquery_Job();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 // TODO: Add desired media content for upload. For more information, see:
 // https://developers.google.com/api-client-library/php/guide/media_upload
-
 
 $response = $service->jobs->insert($projectId, $requestBody);
 
@@ -453,8 +399,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -462,9 +410,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -472,20 +417,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `listJobs` method:
-
 // Project ID of the jobs to list
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->jobs->listJobs($projectId, $optParams);
 
-  foreach ($response['jobs'] as $job_list._jobs) {
-    // TODO: Change code below to process each `job_list._jobs` resource:
-    echo '<pre>', var_export($job_list._jobs, true), '</pre>', "\n";
+  foreach ($response['jobs'] as $jobs) {
+    // TODO: Change code below to process each `jobs` resource:
+    echo '<pre>', var_export($jobs, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
@@ -500,8 +441,10 @@ do {
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -509,9 +452,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -519,16 +459,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `query` method:
-
 // Project ID of the project billed for the query
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Bigquery_QueryRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->jobs->query($projectId, $requestBody);
 
@@ -544,8 +479,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -553,9 +490,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -563,14 +497,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->projects->listProjects($optParams);
 
-  foreach ($response['projects'] as $project_list._projects) {
-    // TODO: Change code below to process each `project_list._projects` resource:
-    echo '<pre>', var_export($project_list._projects, true), '</pre>', "\n";
+  foreach ($response['projects'] as $projects) {
+    // TODO: Change code below to process each `projects` resource:
+    echo '<pre>', var_export($projects, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
@@ -585,8 +518,10 @@ do {
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -594,9 +529,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -604,22 +536,17 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `insertAll` method:
-
 // Project ID of the destination table.
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the destination table.
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
 // Table ID of the destination table.
-$tableId = '{MY-TABLE-ID}';
+$tableId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Bigquery_TableDataInsertAllRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->tabledata->insertAll($projectId, $datasetId, $tableId, $requestBody);
 
@@ -635,8 +562,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -644,9 +573,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -654,18 +580,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `listTabledata` method:
-
 // Project ID of the table to read
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the table to read
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
 // Table ID of the table to read
-$tableId = '{MY-TABLE-ID}';
-
+$tableId = '';  // TODO: Update placeholder value.
 
 $response = $service->tabledata->listTabledata($projectId, $datasetId, $tableId);
 
@@ -681,8 +603,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -690,9 +614,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -700,18 +621,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `delete` method:
-
 // Project ID of the table to delete
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the table to delete
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
 // Table ID of the table to delete
-$tableId = '{MY-TABLE-ID}';
-
+$tableId = '';  // TODO: Update placeholder value.
 
 $service->tables->delete($projectId, $datasetId, $tableId);
 ?>
@@ -724,8 +641,10 @@ $service->tables->delete($projectId, $datasetId, $tableId);
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -733,9 +652,6 @@ $service->tables->delete($projectId, $datasetId, $tableId);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -743,18 +659,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `get` method:
-
 // Project ID of the requested table
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the requested table
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
 // Table ID of the requested table
-$tableId = '{MY-TABLE-ID}';
-
+$tableId = '';  // TODO: Update placeholder value.
 
 $response = $service->tables->get($projectId, $datasetId, $tableId);
 
@@ -770,8 +682,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -779,9 +693,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -789,19 +700,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `insert` method:
-
 // Project ID of the new table
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the new table
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Bigquery_Table();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->tables->insert($projectId, $datasetId, $requestBody);
 
@@ -817,8 +723,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -826,9 +734,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -836,23 +741,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `listTables` method:
-
 // Project ID of the tables to list
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the tables to list
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->tables->listTables($projectId, $datasetId, $optParams);
 
-  foreach ($response['tables'] as $table_list._tables) {
-    // TODO: Change code below to process each `table_list._tables` resource:
-    echo '<pre>', var_export($table_list._tables, true), '</pre>', "\n";
+  foreach ($response['tables'] as $tables) {
+    // TODO: Change code below to process each `tables` resource:
+    echo '<pre>', var_export($tables, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
@@ -867,8 +768,10 @@ do {
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -876,9 +779,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -886,22 +786,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `patch` method:
-
 // Project ID of the table to update
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the table to update
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
 // Table ID of the table to update
-$tableId = '{MY-TABLE-ID}';
+$tableId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`. Only assigned
+// properties will be changed:
 $requestBody = new Google_Service_Bigquery_Table();
-// TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
 
 $response = $service->tables->patch($projectId, $datasetId, $tableId, $requestBody);
 
@@ -917,8 +813,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/bigquery
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -926,9 +824,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-BigquerySample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -936,22 +831,17 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Bigquery($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `update` method:
-
 // Project ID of the table to update
-$projectId = '{MY-PROJECT-ID}';
+$projectId = '';  // TODO: Update placeholder value.
 
 // Dataset ID of the table to update
-$datasetId = '{MY-DATASET-ID}';
+$datasetId = '';  // TODO: Update placeholder value.
 
 // Table ID of the table to update
-$tableId = '{MY-TABLE-ID}';
+$tableId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Bigquery_Table();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->tables->update($projectId, $datasetId, $tableId, $requestBody);
 

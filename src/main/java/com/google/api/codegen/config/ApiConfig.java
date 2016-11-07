@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
@@ -222,13 +223,19 @@ public abstract class ApiConfig {
       DiagCollector diagCollector, ConfigProto configProto) {
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
         createSingleResourceNameConfigs(diagCollector, configProto);
-    ImmutableMap<String, ResourceNameOneofConfig> collectionOneofConfigs =
+    ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
+        createFixedResourceNameConfigs(diagCollector, configProto.getFixedResourceNameValuesList());
+    ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigs =
         createResourceNameOneofConfigs(
-            diagCollector, configProto.getCollectionOneofsList(), singleResourceNameConfigs);
+            diagCollector,
+            configProto.getCollectionOneofsList(),
+            singleResourceNameConfigs,
+            fixedResourceNameConfigs);
 
     ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap = ImmutableMap.builder();
     resourceCollectionMap.putAll(singleResourceNameConfigs);
-    resourceCollectionMap.putAll(collectionOneofConfigs);
+    resourceCollectionMap.putAll(resourceNameOneofConfigs);
+    resourceCollectionMap.putAll(fixedResourceNameConfigs);
     return resourceCollectionMap.build();
   }
 
@@ -280,16 +287,32 @@ public abstract class ApiConfig {
     }
   }
 
+  private static ImmutableMap<String, FixedResourceNameConfig> createFixedResourceNameConfigs(
+      DiagCollector diagCollector, Iterable<FixedResourceNameValueProto> fixedConfigProtos) {
+    ImmutableMap.Builder<String, FixedResourceNameConfig> fixedConfigBuilder =
+        ImmutableMap.builder();
+    for (FixedResourceNameValueProto fixedConfigProto : fixedConfigProtos) {
+      FixedResourceNameConfig fixedConfig =
+          FixedResourceNameConfig.createFixedResourceNameConfig(diagCollector, fixedConfigProto);
+      if (fixedConfig == null) {
+        continue;
+      }
+      fixedConfigBuilder.put(fixedConfig.getEntityName(), fixedConfig);
+    }
+    return fixedConfigBuilder.build();
+  }
+
   private static ImmutableMap<String, ResourceNameOneofConfig> createResourceNameOneofConfigs(
       DiagCollector diagCollector,
       Iterable<CollectionOneofProto> oneofConfigProtos,
-      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs) {
+      ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
+      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs) {
     ImmutableMap.Builder<String, ResourceNameOneofConfig> oneofConfigBuilder =
         ImmutableMap.builder();
     for (CollectionOneofProto oneofProto : oneofConfigProtos) {
       ResourceNameOneofConfig oneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
-              diagCollector, oneofProto, singleResourceNameConfigs);
+              diagCollector, oneofProto, singleResourceNameConfigs, fixedResourceNameConfigs);
       if (oneofConfig == null) {
         continue;
       }

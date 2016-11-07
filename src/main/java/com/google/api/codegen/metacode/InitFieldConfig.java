@@ -22,7 +22,10 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class InitFieldConfig {
-  private static final String randomValueToken = "$RANDOM";
+  public static final String PROJECT_ID_VARIABLE_NAME = "project_id";
+
+  private static final String RANDOM_TOKEN = "$RANDOM";
+  private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
 
   public abstract String fieldPath();
 
@@ -30,7 +33,7 @@ public abstract class InitFieldConfig {
   public abstract String entityName();
 
   @Nullable
-  public abstract String value();
+  public abstract InitValue value();
 
   /*
    * Parses the given config string and returns the corresponding object.
@@ -38,7 +41,7 @@ public abstract class InitFieldConfig {
   public static InitFieldConfig from(String initFieldConfigString) {
     String fieldName = null;
     String entityName = null;
-    String value = null;
+    InitValue value = null;
 
     String[] equalsParts = initFieldConfigString.split("[=]");
     if (equalsParts.length > 2) {
@@ -69,11 +72,19 @@ public abstract class InitFieldConfig {
     return entityName() != null && value() != null;
   }
 
-  private static String parseValueString(String valueString, String stringToHash) {
-    if (valueString.contains(randomValueToken)) {
+  private static InitValue parseValueString(String valueString, String stringToHash) {
+    InitValue initValue = InitValue.createLiteral(valueString);
+    if (valueString.contains(RANDOM_TOKEN)) {
       String randomValue = Integer.toString(Math.abs(stringToHash.hashCode()));
-      valueString = valueString.replace(randomValueToken, randomValue);
+      valueString = valueString.replace(RANDOM_TOKEN, randomValue);
+      initValue = InitValue.createLiteral(valueString);
+    } else if (valueString.contains(PROJECT_ID_TOKEN)) {
+      if (!valueString.equals(PROJECT_ID_TOKEN)) {
+        throw new IllegalArgumentException("Inconsistent: found project ID as a substring ");
+      }
+      valueString = PROJECT_ID_VARIABLE_NAME;
+      initValue = InitValue.createVariable(valueString);
     }
-    return valueString;
+    return initValue;
   }
 }

@@ -19,6 +19,7 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.common.collect.ImmutableSet;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -100,4 +101,79 @@ public class PhpTypeTable implements TypeTable {
       String containerFullName, String innerTypeShortName) {
     return dynamicTypeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
   }
+
+  /**
+   * : A set of PHP keywords and built-ins. Keywords:
+   * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
+   */
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
+      ImmutableSet.<String>builder()
+          .add(
+              "abstract",
+              "and",
+              "array",
+              "as",
+              "break",
+              "callable",
+              "case",
+              "catch",
+              "class",
+              "clone",
+              "const",
+              "continue",
+              "declare",
+              "default",
+              "die",
+              "do",
+              "echo",
+              "else",
+              "elseif",
+              "empty",
+              "enddeclare",
+              "endfor",
+              "endforeach",
+              "endif",
+              "endswitch",
+              "endwhile",
+              "eval",
+              "exit",
+              "extends",
+              "final",
+              "finally",
+              "for",
+              "foreach",
+              "function",
+              "global",
+              "goto",
+              "if",
+              "implements",
+              "include",
+              "include_once",
+              "instanceof",
+              "insteadof",
+              "interface",
+              "isset",
+              "list",
+              "namespace",
+              "new",
+              "or",
+              "print",
+              "private",
+              "protected",
+              "public",
+              "require",
+              "require_once",
+              "return",
+              "static",
+              "switch",
+              "throw",
+              "trait",
+              "try",
+              "unset",
+              "use",
+              "var",
+              "while",
+              "xor",
+              "yield")
+          .build();
 }

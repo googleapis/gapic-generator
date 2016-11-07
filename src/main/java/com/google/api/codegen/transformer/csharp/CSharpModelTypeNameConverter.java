@@ -125,20 +125,18 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   public TypeName getTypeName(ProtoElement elem) {
     // Handle nested types, construct the required type prefix
     ProtoElement parentEl = elem.getParent();
-    String prefix = "";
+    String shortNamePrefix = "";
     while (parentEl != null && parentEl instanceof MessageType) {
-      prefix = parentEl.getSimpleName() + ".Types." + prefix;
+      shortNamePrefix = parentEl.getSimpleName() + "+Types+" + shortNamePrefix;
       parentEl = parentEl.getParent();
     }
+    String prefix = "";
     if (parentEl instanceof ProtoFile) {
-      String filePrefix = "";
       for (String name : Splitter.on('.').split(parentEl.getFullName())) {
-        filePrefix += Name.from(name).toUpperCamel() + ".";
+        prefix += Name.from(name).toUpperCamelAndDigits() + ".";
       }
-      prefix = filePrefix + prefix;
     }
-
-    String shortName = elem.getSimpleName();
+    String shortName = shortNamePrefix + elem.getSimpleName();
     return new TypeName(prefix + shortName, shortName);
   }
 

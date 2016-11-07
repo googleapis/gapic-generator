@@ -91,7 +91,7 @@ public class RubyTypeTable implements TypeTable {
   }
 
   /**
-   * : A set of ruby keywords and built-ins. keywords:
+   * : A set of Ruby keywords and built-ins. Keywords:
    * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
    */
   public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =

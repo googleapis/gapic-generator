@@ -17,8 +17,6 @@
 
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
-using Google.Example.Library.V1;
-using Google.Example.Library.V1.UpdateBookIndexRequest.Types;
 using Google.Longrunning;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -1996,6 +1994,64 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// </returns>
+        public virtual IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+            string name,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="string"/> resources.
+        /// </returns>
+        public virtual IPagedEnumerable<ListStringsResponse, string> ListStrings(
+            string name,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Adds comments to a book
         /// </summary>
         /// <param name="name">
@@ -3602,6 +3658,78 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// </returns>
+        public override IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+            string name,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            ListStringsRequest request = new ListStringsRequest
+            {
+                Name = name,
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListStringsRequest(ref request, ref callSettings);
+            return new PagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+        }
+
+        /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="string"/> resources.
+        /// </returns>
+        public override IPagedEnumerable<ListStringsResponse, string> ListStrings(
+            string name,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            ListStringsRequest request = new ListStringsRequest
+            {
+                Name = name,
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListStringsRequest(ref request, ref callSettings);
+            return new PagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+        }
+
+        /// <summary>
         /// Adds comments to a book
         /// </summary>
         /// <param name="name">
@@ -4100,6 +4228,18 @@ namespace Google.Example.Library.V1
         /// Returns an enumerator that iterates through the resources in this response.
         /// </summary>
         public IEnumerator<Book> GetEnumerator() => Books.GetEnumerator();
+
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    public partial class ListStringsRequest : IPageRequest { }
+    public partial class ListStringsResponse : IPageResponse<string>
+    {
+        /// <summary>
+        /// Returns an enumerator that iterates through the resources in this response.
+        /// </summary>
+        public IEnumerator<string> GetEnumerator() => Strings.GetEnumerator();
 
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
