@@ -8,8 +8,10 @@
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,9 +19,6 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -27,10 +26,8 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Appengine_Application();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->apps->create($requestBody);
 
@@ -46,8 +43,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -55,9 +54,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -65,12 +61,8 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `get` method:
-
 // Part of `name`. Name of the application to get. Example: `apps/myapp`.
-$appsId = '{MY-APPS-ID}';
-
+$appsId = '';  // TODO: Update placeholder value.
 
 $response = $service->apps->get($appsId);
 
@@ -86,8 +78,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -95,9 +89,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -105,15 +96,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `get` method:
-
 // Part of `name`. Resource name for the location.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$locationsId = '{MY-LOCATIONS-ID}';
-
+$locationsId = '';  // TODO: Update placeholder value.
 
 $response = $service->apps_locations->get($appsId, $locationsId);
 
@@ -129,8 +116,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -138,9 +127,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -148,14 +134,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `listAppsLocations` method:
-
 // Part of `name`. The resource that owns the locations collection, if applicable.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->apps_locations->listAppsLocations($appsId, $optParams);
 
@@ -176,8 +158,10 @@ do {
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -185,9 +169,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -195,15 +176,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `get` method:
-
 // Part of `name`. The name of the operation resource.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$operationsId = '{MY-OPERATIONS-ID}';
-
+$operationsId = '';  // TODO: Update placeholder value.
 
 $response = $service->apps_operations->get($appsId, $operationsId);
 
@@ -219,8 +196,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -228,9 +207,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -238,14 +214,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `listAppsOperations` method:
-
 // Part of `name`. The name of the operation collection.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->apps_operations->listAppsOperations($appsId, $optParams);
 
@@ -266,8 +238,10 @@ do {
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -275,9 +249,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -285,16 +256,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `patch` method:
-
 // Part of `name`. Name of the application to update. Example: `apps/myapp`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`. Only assigned
+// properties will be changed:
 $requestBody = new Google_Service_Appengine_Application();
-// TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
 
 $response = $service->apps->patch($appsId, $requestBody);
 
@@ -310,8 +277,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -319,9 +288,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -329,15 +295,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `delete` method:
-
 // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
-
+$servicesId = '';  // TODO: Update placeholder value.
 
 $response = $service->apps_services->delete($appsId, $servicesId);
 
@@ -353,8 +315,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -362,9 +326,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -372,15 +333,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `get` method:
-
 // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
-
+$servicesId = '';  // TODO: Update placeholder value.
 
 $response = $service->apps_services->get($appsId, $servicesId);
 
@@ -396,8 +353,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -405,9 +364,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -415,20 +371,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholder below to desired parameter value for the `listAppsServices` method:
-
 // Part of `name`. Name of the resource requested. Example: `apps/myapp`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->apps_services->listAppsServices($appsId, $optParams);
 
-  foreach ($response['services'] as $service) {
-    // TODO: Change code below to process each `service` resource:
-    echo '<pre>', var_export($service, true), '</pre>', "\n";
+  foreach ($response['services'] as $service2) {
+    // TODO: Change code below to process each `service2` resource:
+    echo '<pre>', var_export($service2, true), '</pre>', "\n";
   }
 
   $optParams['pageToken'] = $response->getNextPageToken();
@@ -443,8 +395,10 @@ do {
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -452,9 +406,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -462,19 +413,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `patch` method:
-
 // Part of `name`. Name of the resource to update. Example: `apps/myapp/services/default`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`. Only assigned
+// properties will be changed:
 $requestBody = new Google_Service_Appengine_Service();
-// TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
 
 $response = $service->apps_services->patch($appsId, $servicesId, $requestBody);
 
@@ -490,8 +437,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -499,9 +448,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -509,19 +455,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `create` method:
-
 // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Appengine_Version();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->apps_services_versions->create($appsId, $servicesId, $requestBody);
 
@@ -537,8 +478,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -546,9 +489,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -556,18 +496,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `delete` method:
-
 // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$versionsId = '{MY-VERSIONS-ID}';
-
+$versionsId = '';  // TODO: Update placeholder value.
 
 $response = $service->apps_services_versions->delete($appsId, $servicesId, $versionsId);
 
@@ -583,8 +519,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -592,9 +530,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -602,18 +537,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `get` method:
-
 // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$versionsId = '{MY-VERSIONS-ID}';
-
+$versionsId = '';  // TODO: Update placeholder value.
 
 $response = $service->apps_services_versions->get($appsId, $servicesId, $versionsId);
 
@@ -629,8 +560,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -638,9 +571,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -648,26 +578,21 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `debug` method:
-
 // Part of `name`. Name of the resource requested. Example:
 // `apps/myapp/services/default/versions/v1/instances/instance-1`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$versionsId = '{MY-VERSIONS-ID}';
+$versionsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$instancesId = '{MY-INSTANCES-ID}';
+$instancesId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Appengine_DebugInstanceRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->apps_services_versions_instances->debug($appsId, $servicesId, $versionsId, $instancesId, $requestBody);
 
@@ -683,8 +608,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -692,9 +619,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -702,22 +626,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `delete` method:
-
 // Part of `name`. Name of the resource requested. For example:
 // "apps/myapp/services/default/versions/v1/instances/instance-1".
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$versionsId = '{MY-VERSIONS-ID}';
+$versionsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$instancesId = '{MY-INSTANCES-ID}';
-
+$instancesId = '';  // TODO: Update placeholder value.
 
 $response = $service->apps_services_versions_instances->delete($appsId, $servicesId, $versionsId, $instancesId);
 
@@ -733,8 +653,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -742,9 +664,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -752,22 +671,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `get` method:
-
 // Part of `name`. Name of the resource requested. Example:
 // `apps/myapp/services/default/versions/v1/instances/instance-1`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$versionsId = '{MY-VERSIONS-ID}';
+$versionsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$instancesId = '{MY-INSTANCES-ID}';
-
+$instancesId = '';  // TODO: Update placeholder value.
 
 $response = $service->apps_services_versions_instances->get($appsId, $servicesId, $versionsId, $instancesId);
 
@@ -783,8 +698,10 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -792,9 +709,6 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -802,20 +716,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `listAppsServicesVersionsInstances` method:
-
 // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$versionsId = '{MY-VERSIONS-ID}';
+$versionsId = '';  // TODO: Update placeholder value.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->apps_services_versions_instances->listAppsServicesVersionsInstances($appsId, $servicesId, $versionsId, $optParams);
 
@@ -836,8 +746,10 @@ do {
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -845,9 +757,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -855,17 +764,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `listAppsServicesVersions` method:
-
 // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
-
-$optParams = array();
+$optParams = [];
 do {
   $response = $service->apps_services_versions->listAppsServicesVersions($appsId, $servicesId, $optParams);
 
@@ -886,8 +791,10 @@ do {
  *    https://console.developers.google.com/apis/api/appengine
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -895,9 +802,6 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-AppengineSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -905,22 +809,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Appengine($client);
 
-
-// TODO: Change placeholders below to desired parameter values for the `patch` method:
-
 // Part of `name`. Name of the resource to update. Example: `apps/myapp/services/default/versions/1`.
-$appsId = '{MY-APPS-ID}';
+$appsId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$servicesId = '{MY-SERVICES-ID}';
+$servicesId = '';  // TODO: Update placeholder value.
 
 // Part of `name`. See documentation of `appsId`.
-$versionsId = '{MY-VERSIONS-ID}';
+$versionsId = '';  // TODO: Update placeholder value.
 
-
+// TODO: Assign values to desired properties of `requestBody`. Only assigned
+// properties will be changed:
 $requestBody = new Google_Service_Appengine_Version();
-// TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
 
 $response = $service->apps_services_versions->patch($appsId, $servicesId, $versionsId, $requestBody);
 

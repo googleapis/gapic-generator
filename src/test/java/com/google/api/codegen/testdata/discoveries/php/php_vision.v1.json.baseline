@@ -8,8 +8,10 @@
  *    https://console.developers.google.com/apis/api/vision
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run
+ *    https://cloud.google.com/sdk and run
  *    `gcloud beta auth application-default login`
+ *    For more information, see:
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the PHP client library with Composer. Check installation
  *    instructions at https://github.com/google/google-api-php-client.
  */
@@ -17,9 +19,6 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Use Application Default Credentials for authentication when running locally.
-// For more information, see:
-// https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google-VisionSample/0.1');
 $client->useApplicationDefaultCredentials();
@@ -27,10 +26,8 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Vision($client);
 
-
+// TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Vision_BatchAnnotateImagesRequest();
-// TODO: Assign values to desired properties of the `requestBody` object.
-
 
 $response = $service->images->annotate($requestBody);
 

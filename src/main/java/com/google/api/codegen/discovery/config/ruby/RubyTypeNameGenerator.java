@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.discovery.config.ruby;
 
-import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.ruby.RubyApiaryNameMap;
 import com.google.api.codegen.util.Name;
@@ -87,15 +86,6 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
   @Override
   public String getApiTypeName(String apiName) {
     return Name.upperCamel(apiName.replace(" ", ""), "Service").toUpperCamel();
-  }
-
-  @Override
-  public String getResponseTypeUrl(String responseTypeUrl) {
-    if (responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME)
-        || responseTypeUrl.equals(DiscoveryImporter.EMPTY_TYPE_URL)) {
-      return "";
-    }
-    return responseTypeUrl;
   }
 
   @Override
