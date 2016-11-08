@@ -20,12 +20,14 @@ import com.google.api.gax.grpc.ChannelAndExecutor;
 import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.types.ArchivedBookName;
+import com.google.api.resourcenames.types.BookName;
+import com.google.api.resourcenames.types.ShelfName;
 import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.BookNameOneof;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
@@ -49,9 +51,7 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.ResourceName;
 import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
@@ -467,7 +467,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final Shelf getShelf(ShelfName name) {
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithShelfName(name)
         .build();
     return getShelf(request);
   }
@@ -685,7 +685,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final void deleteShelf(ShelfName name) {
     DeleteShelfRequest request =
         DeleteShelfRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithShelfName(name)
         .build();
     deleteShelf(request);
   }
@@ -699,7 +699,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithShelfName(name)
    *     .build();
    *   libraryServiceApi.deleteShelf(request);
    * }
@@ -721,7 +721,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithShelfName(name)
    *     .build();
    *   ListenableFuture&lt;Void&gt; future = libraryServiceApi.deleteShelfCallable().futureCall(request);
    *   // Do something
@@ -755,8 +755,8 @@ public class LibraryServiceApi implements AutoCloseable {
   public final Shelf mergeShelves(ShelfName name, ShelfName otherShelfName) {
     MergeShelvesRequest request =
         MergeShelvesRequest.newBuilder()
-        .setNameWithResource(name)
-        .setOtherShelfNameWithResource(otherShelfName)
+        .setNameWithShelfName(name)
+        .setOtherShelfNameWithShelfName(otherShelfName)
         .build();
     return mergeShelves(request);
   }
@@ -773,8 +773,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
-   *     .setNameWithResource(name)
-   *     .setOtherShelfNameWithResource(otherShelfName)
+   *     .setNameWithShelfName(name)
+   *     .setOtherShelfNameWithShelfName(otherShelfName)
    *     .build();
    *   Shelf response = libraryServiceApi.mergeShelves(request);
    * }
@@ -799,8 +799,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
-   *     .setNameWithResource(name)
-   *     .setOtherShelfNameWithResource(otherShelfName)
+   *     .setNameWithShelfName(name)
+   *     .setOtherShelfNameWithShelfName(otherShelfName)
    *     .build();
    *   ListenableFuture&lt;Shelf&gt; future = libraryServiceApi.mergeShelvesCallable().futureCall(request);
    *   // Do something
@@ -979,7 +979,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final Book getBook(BookName name) {
     GetBookRequest request =
         GetBookRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithBookName(name)
         .build();
     return getBook(request);
   }
@@ -993,7 +993,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .build();
    *   Book response = libraryServiceApi.getBook(request);
    * }
@@ -1015,7 +1015,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .build();
    *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.getBookCallable().futureCall(request);
    *   // Do something
@@ -1049,7 +1049,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final ListBooksPagedResponse listBooks(ShelfName name, String filter) {
     ListBooksRequest request =
         ListBooksRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithShelfName(name)
         .setFilter(filter)
         .build();
     return listBooks(request);
@@ -1064,7 +1064,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithShelfName(name)
    *     .build();
    *   for (Book element : libraryServiceApi.listBooks(request).iterateAllElements()) {
    *     // doThingsWith(element);
@@ -1089,7 +1089,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithShelfName(name)
    *     .build();
    *   ListenableFuture&lt;ListBooksPagedResponse&gt; future = libraryServiceApi.listBooksPagedCallable().futureCall(request);
    *   // Do something
@@ -1112,7 +1112,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithShelfName(name)
    *     .build();
    *   while (true) {
    *     ListBooksResponse response = libraryServiceApi.listBooksCallable().call(request);
@@ -1151,7 +1151,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final void deleteBook(BookName name) {
     DeleteBookRequest request =
         DeleteBookRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithBookName(name)
         .build();
     deleteBook(request);
   }
@@ -1165,7 +1165,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .build();
    *   libraryServiceApi.deleteBook(request);
    * }
@@ -1187,7 +1187,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .build();
    *   ListenableFuture&lt;Void&gt; future = libraryServiceApi.deleteBookCallable().futureCall(request);
    *   // Do something
@@ -1219,7 +1219,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final Book updateBook(BookName name, Book book) {
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithBookName(name)
         .setBook(book)
         .build();
     return updateBook(request);
@@ -1249,7 +1249,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final Book updateBook(BookName name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithBookName(name)
         .setBook(book)
         .setUpdateMask(updateMask)
         .setPhysicalMask(physicalMask)
@@ -1267,7 +1267,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .setBook(book)
    *     .build();
    *   Book response = libraryServiceApi.updateBook(request);
@@ -1291,7 +1291,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .setBook(book)
    *     .build();
    *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.updateBookCallable().futureCall(request);
@@ -1324,8 +1324,8 @@ public class LibraryServiceApi implements AutoCloseable {
   public final Book moveBook(BookName name, ShelfName otherShelfName) {
     MoveBookRequest request =
         MoveBookRequest.newBuilder()
-        .setNameWithResource(name)
-        .setOtherShelfNameWithResource(otherShelfName)
+        .setNameWithBookName(name)
+        .setOtherShelfNameWithShelfName(otherShelfName)
         .build();
     return moveBook(request);
   }
@@ -1340,8 +1340,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
-   *     .setNameWithResource(name)
-   *     .setOtherShelfNameWithResource(otherShelfName)
+   *     .setNameWithBookName(name)
+   *     .setOtherShelfNameWithShelfName(otherShelfName)
    *     .build();
    *   Book response = libraryServiceApi.moveBook(request);
    * }
@@ -1364,8 +1364,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
-   *     .setNameWithResource(name)
-   *     .setOtherShelfNameWithResource(otherShelfName)
+   *     .setNameWithBookName(name)
+   *     .setOtherShelfNameWithShelfName(otherShelfName)
    *     .build();
    *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.moveBookCallable().futureCall(request);
    *   // Do something
@@ -1420,7 +1420,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final ListStringsPagedResponse listStrings(ResourceName name) {
     ListStringsRequest request =
         ListStringsRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithResourceName(name)
         .build();
     return listStrings(request);
   }
@@ -1610,7 +1610,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final BookFromArchive getBookFromArchive(ArchivedBookName name) {
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithArchivedBookName(name)
         .build();
     return getBookFromArchive(request);
   }
@@ -1624,7 +1624,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithArchivedBookName(name)
    *     .build();
    *   BookFromArchive response = libraryServiceApi.getBookFromArchive(request);
    * }
@@ -1646,7 +1646,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithArchivedBookName(name)
    *     .build();
    *   ListenableFuture&lt;BookFromArchive&gt; future = libraryServiceApi.getBookFromArchiveCallable().futureCall(request);
    *   // Do something
@@ -1676,7 +1676,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final BookFromAnywhere getBookFromAnywhere(BookNameOneof name) {
     GetBookFromAnywhereRequest request =
         GetBookFromAnywhereRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithBookNameOneof(name)
         .build();
     return getBookFromAnywhere(request);
   }
@@ -1690,7 +1690,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookNameOneof(name)
    *     .build();
    *   BookFromAnywhere response = libraryServiceApi.getBookFromAnywhere(request);
    * }
@@ -1712,7 +1712,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookNameOneof(name)
    *     .build();
    *   ListenableFuture&lt;BookFromAnywhere&gt; future = libraryServiceApi.getBookFromAnywhereCallable().futureCall(request);
    *   // Do something
@@ -1748,7 +1748,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final void updateBookIndex(BookName name, String indexName, Map<String, String> indexMap) {
     UpdateBookIndexRequest request =
         UpdateBookIndexRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithBookName(name)
         .setIndexName(indexName)
         .putAllIndexMap(indexMap)
         .build();
@@ -1768,7 +1768,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
    *   indexMap.put("default_key", indexMapItem);
    *   UpdateBookIndexRequest request = UpdateBookIndexRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .setIndexName(indexName)
    *     .putAllIndexMap(indexMap)
    *     .build();
@@ -1796,7 +1796,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
    *   indexMap.put("default_key", indexMapItem);
    *   UpdateBookIndexRequest request = UpdateBookIndexRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .setIndexName(indexName)
    *     .putAllIndexMap(indexMap)
    *     .build();
@@ -1948,8 +1948,8 @@ public class LibraryServiceApi implements AutoCloseable {
   public final FindRelatedBooksPagedResponse findRelatedBooks(List<BookName> names, List<ShelfName> shelves) {
     FindRelatedBooksRequest request =
         FindRelatedBooksRequest.newBuilder()
-        .addAllNamesWithResources(names)
-        .addAllShelvesWithResources(shelves)
+        .addAllNamesWithBookName(names)
+        .addAllShelvesWithShelfName(shelves)
         .build();
     return findRelatedBooks(request);
   }
@@ -1965,8 +1965,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithResources(names)
-   *     .addAllShelvesWithResources(shelves)
+   *     .addAllNamesWithBookName(names)
+   *     .addAllShelvesWithShelfName(shelves)
    *     .build();
    *   for (BookName element : libraryServiceApi.findRelatedBooks(request).iterateAllAsBookName()) {
    *     // doThingsWith(element);
@@ -1993,8 +1993,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithResources(names)
-   *     .addAllShelvesWithResources(shelves)
+   *     .addAllNamesWithBookName(names)
+   *     .addAllShelvesWithShelfName(shelves)
    *     .build();
    *   ListenableFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
@@ -2019,12 +2019,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithResources(names)
-   *     .addAllShelvesWithResources(shelves)
+   *     .addAllNamesWithBookName(names)
+   *     .addAllShelvesWithShelfName(shelves)
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryServiceApi.findRelatedBooksCallable().call(request);
-   *     for (BookName element : response.getNamesListAsResources()) {
+   *     for (BookName element : response.getNamesListAsBookNameList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -2211,7 +2211,7 @@ public class LibraryServiceApi implements AutoCloseable {
   public final Operation getBigBook(BookName name) {
     GetBookRequest request =
         GetBookRequest.newBuilder()
-        .setNameWithResource(name)
+        .setNameWithBookName(name)
         .build();
     return getBigBook(request);
   }
@@ -2225,7 +2225,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .build();
    *   Operation response = libraryServiceApi.getBigBook(request);
    * }
@@ -2247,7 +2247,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
-   *     .setNameWithResource(name)
+   *     .setNameWithBookName(name)
    *     .build();
    *   ListenableFuture&lt;Operation&gt; future = libraryServiceApi.getBigBookCallable().futureCall(request);
    *   // Do something

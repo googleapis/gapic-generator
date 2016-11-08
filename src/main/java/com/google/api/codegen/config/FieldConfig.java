@@ -153,6 +153,11 @@ public abstract class FieldConfig {
     return getResourceNameTreatment() == ResourceNameTreatment.VALIDATE;
   }
 
+  public FieldConfig withResourceNameConfig(ResourceNameConfig resourceNameConfig) {
+    return FieldConfig.createFieldConfig(
+        getField(), getResourceNameTreatment(), resourceNameConfig);
+  }
+
   /*
    * Check that the provided resource name treatment and entityName are valid for the provided field.
    */

@@ -387,19 +387,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .build());
 
     if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
-      Name resourceName =
-          Name.upperCamel(namer.getResourceTypeName(resourcesFieldConfig.getResourceNameConfig()));
       resourceTypeName =
           methodContext
               .getNamer()
-              .getAndSaveResourceTypeName(
-                  methodContext.getTypeTable(),
-                  resourcesFieldConfig,
-                  resourcesField.getType().makeOptional());
+              .getAndSaveElementResourceTypeName(
+                  methodContext.getTypeTable(), resourcesFieldConfig);
 
-      resourcesFieldGetterName =
-          namer.getResourceNameFieldGetFunctionName(
-              resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+      resourcesFieldGetterName = namer.getResourceNameFieldGetFunctionName(resourcesFieldConfig);
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
               .resourceTypeName(resourceTypeName)
@@ -407,7 +401,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .resourcesIterateMethod(
                   namer.getPagedResponseIterateMethod(
                       methodContext.getFeatureConfig(), resourcesFieldConfig))
-              .resourcesVarName(namer.localVarName(Name.from("resources_as").join(resourceName)))
+              .resourcesVarName(namer.localVarName(Name.from("resource_names")))
               .build());
     }
 

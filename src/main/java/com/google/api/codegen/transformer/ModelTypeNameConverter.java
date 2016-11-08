@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.ProtoElement;
@@ -27,9 +28,15 @@ public interface ModelTypeNameConverter {
   /** Provides a TypeName for the element type of the given TypeRef. */
   TypeName getTypeNameForElementType(TypeRef type);
 
-  /** Provides a TypeName for the given ProtoElement and ResourceName type */
-  TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName);
+  /** Provides a TypeName for the given FieldConfig and resource short name. */
+  TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);
+
+  /**
+   * Provides a TypeName for the given FieldConfig and resource short name, using the inner type if
+   * the underlying field is repeated.
+   */
+  TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName);
 
   /** Provides a TypeName for the given ProtoElement. */
   TypeName getTypeName(ProtoElement elem);
