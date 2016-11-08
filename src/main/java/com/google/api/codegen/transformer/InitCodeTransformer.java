@@ -38,7 +38,6 @@ import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -230,7 +229,6 @@ public class InitCodeTransformer {
       MethodTransformerContext context, InitCodeNode item) {
     ListInitCodeLineView.Builder surfaceLine = ListInitCodeLineView.newBuilder();
     FieldConfig fieldConfig = item.getFieldConfig();
-    ProtoFile protoFile = fieldConfig.getField().getFile();
 
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
