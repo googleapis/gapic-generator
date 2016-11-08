@@ -173,32 +173,6 @@ public abstract class FieldConfig {
     return null;
   }
 
-  private static String getEntityName(
-      Field field,
-      ResourceNameMessageConfigs messageConfigs,
-      Map<String, String> fieldNamePatterns) {
-    String entityName = null;
-    if (fieldNamePatterns != null) {
-      entityName = fieldNamePatterns.get(field.getSimpleName());
-    }
-    if (messageConfigs != null && messageConfigs.fieldHasResourceName(field)) {
-      String resourceEntityName = messageConfigs.getFieldResourceName(field);
-      if (entityName == null) {
-        entityName = resourceEntityName;
-      } else if (!entityName.equals(resourceEntityName)) {
-        throw new IllegalArgumentException(
-            "Multiple entity names specified for field: "
-                + field.getFullName()
-                + ": ["
-                + entityName
-                + ", "
-                + resourceEntityName
-                + "]");
-      }
-    }
-    return entityName;
-  }
-
   public boolean hasEntityName() {
     return getEntityName() != null;
   }
