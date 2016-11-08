@@ -487,10 +487,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * particular language.
    */
   public String getGrpcServerTypeName(Interface service) {
-    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
-    String publicClassName =
-        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Server"));
-    return qualifiedName(namePath.withHead(publicClassName));
+    return getNotImplementedString("SurfaceNamer.getGrpcServerTypeName");
   }
 
   /**
@@ -498,10 +495,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * particular language.
    */
   public String getGrpcClientTypeName(Interface service) {
-    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
-    String publicClassName =
-        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Client"));
-    return qualifiedName(namePath.withHead(publicClassName));
+    return getNotImplementedString("SurfaceNamer.getGrpcClientTypeName");
   }
 
   /**

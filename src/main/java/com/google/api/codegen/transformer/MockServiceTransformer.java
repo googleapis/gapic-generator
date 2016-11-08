@@ -25,14 +25,13 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /** MockServiceTransformer contains helper methods useful for creating mock views. */
 public class MockServiceTransformer {
-  public Collection<Interface> getGrpcInterfacesToMock(Model model, ApiConfig apiConfig) {
+  public List<Interface> getGrpcInterfacesToMock(Model model, ApiConfig apiConfig) {
     Map<String, Interface> interfaces = new LinkedHashMap<>();
 
     for (Interface service : new InterfaceView().getElementIterable(model)) {
@@ -50,7 +49,7 @@ public class MockServiceTransformer {
       }
     }
 
-    return interfaces.values();
+    return new ArrayList<Interface>(interfaces.values());
   }
 
   public List<MockGrpcMethodView> createMockGrpcMethodViews(SurfaceTransformerContext context) {
@@ -69,7 +68,7 @@ public class MockServiceTransformer {
               .requestTypeName(requestTypeName)
               .responseTypeName(responseTypeName)
               .grpcStreamingType(methodConfig.getGrpcStreamingType())
-              .streamHandle(methodContext.getNamer().getStreamingServerName(method))
+              .streamHandleTypeName(methodContext.getNamer().getStreamingServerName(method))
               .build());
     }
     return mocks;

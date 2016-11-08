@@ -58,7 +58,7 @@
 @end
 
 @private serverStreamMethod(impl, method)
-    func (s *{@impl.name}) {@method.name}(req {@method.requestTypeName}, stream {@method.streamHandle}) error {
+    func (s *{@impl.name}) {@method.name}(req {@method.requestTypeName}, stream {@method.streamHandleTypeName}) error {
         s.reqs = append(s.reqs, req)
         if s.err != nil {
             return s.err
@@ -73,7 +73,7 @@
 @end
 
 @private clientStreamMethod(impl, method)
-    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandle}) error {
+    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandleTypeName}) error {
         if s.err != nil {
             return s.err
         }
@@ -90,7 +90,7 @@
 @end
 
 @private bidiMethod(impl, method)
-    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandle}) error {
+    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandleTypeName}) error {
         if s.err != nil {
             return s.err
         }

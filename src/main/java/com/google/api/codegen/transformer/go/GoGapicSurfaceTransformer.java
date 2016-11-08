@@ -70,9 +70,9 @@ import java.util.TreeMap;
 
 public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
-  private static final String XAPI_TEMPLATE_FILE = "go/main.snip";
-  private static final String SAMPLE_TEMPLATE_FILE = "go/example.snip";
-  private static final String DOC_TEMPLATE_FILE = "go/doc.snip";
+  private static final String API_TEMPLATE_FILENAME = "go/main.snip";
+  private static final String SAMPLE_TEMPLATE_FILENAME = "go/example.snip";
+  private static final String DOC_TEMPLATE_FILENAME = "go/doc.snip";
 
   private static final int COMMENT_LINE_LENGTH = 75;
 
@@ -95,7 +95,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(XAPI_TEMPLATE_FILE, DOC_TEMPLATE_FILE, SAMPLE_TEMPLATE_FILE);
+    return Arrays.asList(API_TEMPLATE_FILENAME, DOC_TEMPLATE_FILENAME, SAMPLE_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -125,7 +125,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     Interface service = context.getInterface();
     ApiConfig apiConfig = context.getApiConfig();
 
-    view.templateFileName(XAPI_TEMPLATE_FILE);
+    view.templateFileName(API_TEMPLATE_FILENAME);
     view.serviceDoc(serviceTransformer.generateServiceDoc(context, null));
     view.clientTypeName(namer.getApiWrapperClassName(service));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
@@ -183,7 +183,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     Interface service = context.getInterface();
     ApiConfig apiConfig = context.getApiConfig();
 
-    view.templateFileName(SAMPLE_TEMPLATE_FILE);
+    view.templateFileName(SAMPLE_TEMPLATE_FILENAME);
 
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
     String fileName = namer.getExampleFileName(service);
@@ -214,7 +214,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     String fileName = "doc.go";
     PackageInfoView.Builder packageInfo = PackageInfoView.newBuilder();
 
-    packageInfo.templateFileName(DOC_TEMPLATE_FILE);
+    packageInfo.templateFileName(DOC_TEMPLATE_FILENAME);
     packageInfo.outputPath(outputPath + File.separator + fileName);
     packageInfo.serviceTitle(model.getServiceConfig().getTitle());
     packageInfo.importPath(apiConfig.getPackageName());

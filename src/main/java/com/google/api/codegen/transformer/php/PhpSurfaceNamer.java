@@ -21,6 +21,7 @@ import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.Field;
@@ -94,5 +95,14 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(Interface service) {
     return getPackageName() + "\\" + getApiWrapperClassName(service);
+  }
+
+  @Override
+  public String getGrpcClientTypeName(Interface service) {
+    NamePath namePath =
+        getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
+    String publicClassName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Client"));
+    return qualifiedName(namePath.withHead(publicClassName));
   }
 }

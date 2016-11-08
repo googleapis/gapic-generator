@@ -127,11 +127,6 @@ public class MainGapicProviderFactory
         providers.add(provider);
       }
       if (generatorConfig.enableTestGenerator()) {
-        GapicCodePathMapper javaTestPathMapper =
-            CommonGapicCodePathMapper.newBuilder()
-                .setPrefix("src/test/java")
-                .setShouldAppendPackage(true)
-                .build();
         GapicProvider<? extends Object> testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
