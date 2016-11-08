@@ -28,6 +28,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.List;
 
 public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
@@ -166,8 +167,10 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     } else if (type.isEnum()) {
       TypeName enumTypeName = getTypeName(type);
       EnumValue enumValue = type.getEnumType().getValues().get(0);
+      List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
+      String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
       String enumValueName =
-          enumNamer.getEnumValueName(enumTypeName.getNickname(), enumValue.getSimpleName());
+          enumNamer.getEnumValueName(enumShortTypeName, enumValue.getSimpleName());
       return TypedValue.create(enumTypeName, "%s." + enumValueName);
     } else {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
