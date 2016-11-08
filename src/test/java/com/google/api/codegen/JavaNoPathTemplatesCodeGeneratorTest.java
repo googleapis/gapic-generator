@@ -27,7 +27,7 @@ public class JavaNoPathTemplatesCodeGeneratorTest extends GapicTestBase {
   public JavaNoPathTemplatesCodeGeneratorTest(
       String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.java.JavaContextCommon.class, "");
+    getTestDataLocator().addTestDataSource(getClass(), "java");
   }
 
   /**
