@@ -663,6 +663,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiException");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
+    typeTable.saveNicknameFor("io.grpc.Status");
+    typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
   }
 
   private void addSmokeTestImports(SurfaceTransformerContext context) {
@@ -705,8 +707,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingCallable");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockStreamObserver");
     typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
-    typeTable.saveNicknameFor("io.grpc.Status");
-    typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
     typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
   }
 }
