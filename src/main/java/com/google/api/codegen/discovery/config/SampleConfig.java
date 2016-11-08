@@ -61,6 +61,14 @@ public abstract class SampleConfig {
   public abstract String apiTitle();
 
   /**
+   * Returns the API's canonical name.
+   *
+   * <p>For example: "Ad Exchange Buyer"
+   */
+  @JsonProperty("apiCanonicalName")
+  public abstract String apiCanonicalName();
+
+  /**
    * Returns the API's name.
    *
    * <p>For example: "adexchangebuyer"
@@ -108,6 +116,9 @@ public abstract class SampleConfig {
 
     @JsonProperty("apiTitle")
     public abstract Builder apiTitle(String val);
+
+    @JsonProperty("apiCanonicalName")
+    public abstract Builder apiCanonicalName(String val);
 
     @JsonProperty("apiName")
     public abstract Builder apiName(String val);
