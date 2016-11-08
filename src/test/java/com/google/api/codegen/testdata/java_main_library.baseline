@@ -1948,8 +1948,8 @@ public class LibraryServiceApi implements AutoCloseable {
   public final FindRelatedBooksPagedResponse findRelatedBooks(List<BookName> names, List<ShelfName> shelves) {
     FindRelatedBooksRequest request =
         FindRelatedBooksRequest.newBuilder()
-        .addAllNamesWithBookName(names)
-        .addAllShelvesWithShelfName(shelves)
+        .addAllNamesWithBookNameList(names)
+        .addAllShelvesWithShelfNameList(shelves)
         .build();
     return findRelatedBooks(request);
   }
@@ -1965,8 +1965,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithBookName(names)
-   *     .addAllShelvesWithShelfName(shelves)
+   *     .addAllNamesWithBookNameList(names)
+   *     .addAllShelvesWithShelfNameList(shelves)
    *     .build();
    *   for (BookName element : libraryServiceApi.findRelatedBooks(request).iterateAllAsBookName()) {
    *     // doThingsWith(element);
@@ -1993,8 +1993,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithBookName(names)
-   *     .addAllShelvesWithShelfName(shelves)
+   *     .addAllNamesWithBookNameList(names)
+   *     .addAllShelvesWithShelfNameList(shelves)
    *     .build();
    *   ListenableFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryServiceApi.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
@@ -2019,8 +2019,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNamesWithBookName(names)
-   *     .addAllShelvesWithShelfName(shelves)
+   *     .addAllNamesWithBookNameList(names)
+   *     .addAllShelvesWithShelfNameList(shelves)
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryServiceApi.findRelatedBooksCallable().call(request);

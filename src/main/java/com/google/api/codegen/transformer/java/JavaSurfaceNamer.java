@@ -83,6 +83,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
+    typeTable.saveNicknameFor("com.google.common.base.Function");
+    typeTable.saveNicknameFor("com.google.common.collect.Iterables");
   }
 
   @Override

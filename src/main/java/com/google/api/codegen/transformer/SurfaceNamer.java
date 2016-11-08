@@ -258,7 +258,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldSetFunctionName:map-type");
     } else if (type.isRepeated()) {
       return publicMethodName(
-          Name.from("add", "all").join(identifier).join("with").join(resourceName));
+          Name.from("add", "all").join(identifier).join("with").join(resourceName).join("list"));
     } else {
       return publicMethodName(Name.from("set").join(identifier).join("with").join(resourceName));
     }
