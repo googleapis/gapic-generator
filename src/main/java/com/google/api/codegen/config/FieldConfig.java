@@ -37,6 +37,9 @@ public abstract class FieldConfig {
   @Nullable
   public abstract ResourceNameConfig getResourceNameConfig();
 
+  @Nullable
+  public abstract ResourceNameConfig getMessageResourceNameConfig();
+
   public String getEntityName() {
     if (getResourceNameConfig() == null) {
       return null;
@@ -55,6 +58,14 @@ public abstract class FieldConfig {
       Field field,
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig) {
+    return createFieldConfig(field, resourceNameTreatment, resourceNameConfig, resourceNameConfig);
+  }
+
+  public static FieldConfig createFieldConfig(
+      Field field,
+      ResourceNameTreatment resourceNameTreatment,
+      ResourceNameConfig resourceNameConfig,
+      ResourceNameConfig messageResourceNameConfig) {
     if (resourceNameTreatment != ResourceNameTreatment.NONE && resourceNameConfig == null) {
       throw new IllegalArgumentException(
           "resourceName may only be null if resourceNameTreatment is NONE");
@@ -64,12 +75,13 @@ public abstract class FieldConfig {
       throw new IllegalArgumentException(
           "FieldConfig may not contain a ResourceNameConfig of type " + ResourceNameType.FIXED);
     }
-    return new AutoValue_FieldConfig(field, resourceNameTreatment, resourceNameConfig);
+    return new AutoValue_FieldConfig(
+        field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
   public static FieldConfig createDefaultFieldConfig(Field field) {
-    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null);
+    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
   }
 
   /** Package-private since this is not used outside the config package. */
@@ -81,25 +93,73 @@ public abstract class FieldConfig {
       Field field,
       ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
-    String entityName = getEntityName(field, messageConfigs, fieldNamePatterns);
+    String messageFieldEntityName = null;
+    String flattenedFieldEntityName = null;
+    if (messageConfigs != null && messageConfigs.fieldHasResourceName(field)) {
+      messageFieldEntityName = messageConfigs.getFieldResourceName(field);
+    }
+    if (fieldNamePatterns != null) {
+      flattenedFieldEntityName = fieldNamePatterns.get(field.getSimpleName());
+    }
+    if (flattenedFieldEntityName == null) {
+      flattenedFieldEntityName = messageFieldEntityName;
+    }
 
     if (treatment == null || treatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
       // No specific resource name treatment is specified, so we infer the correct treatment from
       // the method-level default and the specified entities.
-      if (entityName == null) {
+      if (flattenedFieldEntityName == null) {
         treatment = ResourceNameTreatment.NONE;
       } else {
         treatment = defaultResourceNameTreatment;
       }
     }
 
-    ResourceNameConfig resourceNameConfig = null;
+    ResourceNameConfig messageFieldResourceNameConfig =
+        getResourceNameConfig(diagCollector, resourceNameConfigs, messageFieldEntityName);
+    ResourceNameConfig flattenedFieldResourceNameConfig =
+        getResourceNameConfig(diagCollector, resourceNameConfigs, flattenedFieldEntityName);
+
+    if (messageFieldResourceNameConfig != null
+        && !messageFieldResourceNameConfig.equals(flattenedFieldResourceNameConfig)) {
+      // We support the case of the flattenedField using a specific resource name type when the
+      // messageField uses a oneof containing that type
+      boolean ok = false;
+      if (messageFieldResourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
+        ResourceNameOneofConfig oneofConfig =
+            (ResourceNameOneofConfig) messageFieldResourceNameConfig;
+        ok = oneofConfig.getResourceNameConfigs().contains(flattenedFieldResourceNameConfig);
+      }
+      if (!ok) {
+        Diag.error(
+            SimpleLocation.TOPLEVEL,
+            "Multiple entity names specified for field: "
+                + field.getFullName()
+                + ": ["
+                + flattenedFieldEntityName
+                + ", "
+                + messageFieldEntityName
+                + "]");
+        return null;
+      }
+    }
+
+    validate(messageConfigs, field, treatment, flattenedFieldResourceNameConfig);
+
+    return createFieldConfig(
+        field, treatment, flattenedFieldResourceNameConfig, messageFieldResourceNameConfig);
+  }
+
+  private static ResourceNameConfig getResourceNameConfig(
+      DiagCollector diagCollector,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      String entityName) {
     if (entityName != null) {
       if (entityName.equals(AnyResourceNameConfig.GAPIC_CONFIG_ANY_VALUE)) {
-        resourceNameConfig = AnyResourceNameConfig.instance();
+        return AnyResourceNameConfig.instance();
       } else {
-        resourceNameConfig = resourceNameConfigs.get(entityName);
-        if (resourceNameConfig == null) {
+        ResourceNameConfig flattenedFieldResourceNameConfig = resourceNameConfigs.get(entityName);
+        if (flattenedFieldResourceNameConfig == null) {
           diagCollector.addDiag(
               Diag.error(
                   SimpleLocation.TOPLEVEL,
@@ -107,15 +167,13 @@ public abstract class FieldConfig {
                   entityName));
           return null;
         }
+        return flattenedFieldResourceNameConfig;
       }
     }
-
-    validate(messageConfigs, field, treatment, resourceNameConfig);
-
-    return createFieldConfig(field, treatment, resourceNameConfig);
+    return null;
   }
 
-  public static String getEntityName(
+  private static String getEntityName(
       Field field,
       ResourceNameMessageConfigs messageConfigs,
       Map<String, String> fieldNamePatterns) {
@@ -155,7 +213,23 @@ public abstract class FieldConfig {
 
   public FieldConfig withResourceNameConfig(ResourceNameConfig resourceNameConfig) {
     return FieldConfig.createFieldConfig(
-        getField(), getResourceNameTreatment(), resourceNameConfig);
+        getField(), getResourceNameTreatment(), resourceNameConfig, getMessageResourceNameConfig());
+  }
+
+  public boolean hasDifferentMessageResourceNameConfig() {
+    return getResourceNameConfig() != null
+        && getMessageResourceNameConfig() != null
+        && !getResourceNameConfig().equals(getMessageResourceNameConfig());
+  }
+
+  public FieldConfig getMessageFieldConfig() {
+    return FieldConfig.createFieldConfig(
+        getField(),
+        getMessageResourceNameConfig() == null
+            ? ResourceNameTreatment.NONE
+            : getResourceNameTreatment(),
+        getMessageResourceNameConfig(),
+        getMessageResourceNameConfig());
   }
 
   /*

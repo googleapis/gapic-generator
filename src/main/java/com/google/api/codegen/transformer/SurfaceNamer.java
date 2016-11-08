@@ -152,6 +152,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.from("iterate_all_elements"));
   }
 
+  public String getResourceOneofCreateMethod(ModelTypeTable typeTable, FieldConfig fieldConfig) {
+    return getAndSaveResourceTypeName(typeTable, fieldConfig.getMessageFieldConfig())
+        + "."
+        + publicMethodName(Name.from("from"));
+  }
+
   /** The name of the constructor for the service client. The client is VKit generated, not GRPC. */
   public String getApiWrapperClassConstructorName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
@@ -228,7 +234,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldSetFunctionName(fieldConfig);
+      return getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
       return getFieldSetFunctionName(field);
     }
@@ -268,7 +274,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldGetFunctionName(fieldConfig);
+      return getResourceNameFieldGetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
       return getFieldGetFunctionName(field);
     }

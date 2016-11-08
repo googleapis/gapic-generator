@@ -954,6 +954,7 @@ class LibraryServiceApi(object):
     def get_book_from_anywhere(
             self,
             name,
+            alt_book_name,
             options=None):
         """
         Gets a book from a shelf or archive.
@@ -962,10 +963,13 @@ class LibraryServiceApi(object):
           >>> from google.cloud.gapic.example.library.v1 import library_service_api
           >>> api = library_service_api.LibraryServiceApi()
           >>> name = ''
-          >>> response = api.get_book_from_anywhere(name)
+          >>> alt_book_name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>> response = api.get_book_from_anywhere(name, alt_book_name)
 
         Args:
           name (string): The name of the book to retrieve.
+          alt_book_name (string): An alternate book name, used to test restricting flattened field to a
+            single resource name type in a oneof.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -977,7 +981,8 @@ class LibraryServiceApi(object):
           :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.GetBookFromAnywhereRequest(
-            name=name)
+            name=name,
+            alt_book_name=alt_book_name)
         return self._get_book_from_anywhere(request, options)
 
     def update_book_index(

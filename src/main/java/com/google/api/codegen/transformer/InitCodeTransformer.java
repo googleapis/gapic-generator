@@ -195,6 +195,11 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      if (!context.isFlattenedMethodContext()) {
+        // In a non-flattened context, we always use the resource name type set on the message
+        // instead of set on the flattened method
+        fieldConfig = fieldConfig.getMessageFieldConfig();
+      }
       if (item.getType().isRepeated()) {
         surfaceLine.typeName(namer.getAndSaveResourceTypeName(typeTable, fieldConfig));
       } else {
@@ -293,6 +298,11 @@ public class InitCodeTransformer {
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
         && !item.getType().isRepeated()) {
       // For a repeated type, we want to use a SimpleInitValueView
+      if (!context.isFlattenedMethodContext()) {
+        // In a non-flattened context, we always use the resource name type set on the message
+        // instead of set on the flattened method
+        fieldConfig = fieldConfig.getMessageFieldConfig();
+      }
       SingleResourceNameConfig singleResourceNameConfig;
       switch (fieldConfig.getResourceNameType()) {
         case ANY:

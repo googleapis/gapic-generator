@@ -23,14 +23,13 @@ import com.google.api.gax.testing.MockGrpcService;
 import com.google.api.gax.testing.MockServiceHelper;
 import com.google.api.gax.testing.MockStreamObserver;
 import com.google.api.resourcenames.ResourceName;
-import com.google.api.resourcenames.types.ArchivedBookName;
-import com.google.api.resourcenames.types.BookName;
-import com.google.api.resourcenames.types.ShelfName;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
+import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.BookNameOneof;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.Comment.Stage;
@@ -56,6 +55,7 @@ import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
 import com.google.example.library.v1.StreamBooksRequest;
@@ -981,9 +981,10 @@ public class LibraryServiceTest {
     mockLibraryService.addResponse(expectedResponse);
 
     BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+    BookName altBookName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
 
     BookFromAnywhere actualResponse =
-        api.getBookFromAnywhere(name);
+        api.getBookFromAnywhere(name, altBookName);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
@@ -991,6 +992,7 @@ public class LibraryServiceTest {
     GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
 
     Assert.assertEquals(name, actualRequest.getNameAsBookNameOneof());
+    Assert.assertEquals(altBookName, actualRequest.getAltBookNameAsBookNameOneof());
   }
 
   @Test
@@ -1001,8 +1003,9 @@ public class LibraryServiceTest {
 
     try {
       BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+      BookName altBookName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
 
-      api.getBookFromAnywhere(name);
+      api.getBookFromAnywhere(name, altBookName);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());

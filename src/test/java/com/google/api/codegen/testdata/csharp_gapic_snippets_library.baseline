@@ -716,26 +716,28 @@ namespace Google.Example.Library.V1.Snippets
 
         public async Task GetBookFromAnywhereAsync()
         {
-            // Snippet: GetBookFromAnywhereAsync(string,CallSettings)
-            // Additional: GetBookFromAnywhereAsync(string,CancellationToken)
+            // Snippet: GetBookFromAnywhereAsync(string,string,CallSettings)
+            // Additional: GetBookFromAnywhereAsync(string,string,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             string name = "";
+            string formattedAltBookName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name);
+            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name, formattedAltBookName);
             // End snippet
         }
 
         public void GetBookFromAnywhere()
         {
-            // Snippet: GetBookFromAnywhere(string,CallSettings)
+            // Snippet: GetBookFromAnywhere(string,string,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             string name = "";
+            string formattedAltBookName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name);
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name, formattedAltBookName);
             // End snippet
         }
 

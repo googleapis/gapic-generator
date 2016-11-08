@@ -668,6 +668,11 @@ public class ApiMethodTransformer {
     }
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, fieldConfig);
+    String transformParamFunctionName = null;
+    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
+        && fieldConfig.hasDifferentMessageResourceNameConfig()) {
+      transformParamFunctionName = namer.getResourceOneofCreateMethod(typeTable, fieldConfig);
+    }
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
@@ -675,6 +680,7 @@ public class ApiMethodTransformer {
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);
+    param.transformParamFunctionName(transformParamFunctionName);
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
     return param.build();
