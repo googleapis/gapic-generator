@@ -32,7 +32,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import io.grpc.Status;
 import java.util.ArrayList;
@@ -229,7 +228,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldSetFunctionName(fieldConfig, field.getType());
+      return getResourceNameFieldSetFunctionName(fieldConfig);
     } else {
       return getFieldSetFunctionName(field);
     }
@@ -251,7 +250,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig, TypeRef type) {
+  public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
+    TypeRef type = fieldConfig.getField().getType();
     Name identifier = Name.from(fieldConfig.getField().getSimpleName());
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
@@ -268,7 +268,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldGetFunctionName(fieldConfig, field.getType());
+      return getResourceNameFieldGetFunctionName(fieldConfig);
     } else {
       return getFieldGetFunctionName(field);
     }
@@ -288,7 +288,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig, TypeRef type) {
+  public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
+    TypeRef type = fieldConfig.getField().getType();
     Name identifier = Name.from(fieldConfig.getField().getSimpleName());
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
@@ -780,21 +781,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The class name of the generated resource type from the entity name. */
-  public String getAndSaveResourceTypeName(
-      ModelTypeTable typeTable, FieldConfig fieldConfig, TypeRef type) {
-    return getAndSaveResourceTypeName(
-        typeTable, fieldConfig.getField().getFile(), type, fieldConfig.getResourceNameConfig());
+  public String getAndSaveResourceTypeName(ModelTypeTable typeTable, FieldConfig fieldConfig) {
+    String resourceClassName =
+        className(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
   }
 
   /** The class name of the generated resource type from the entity name. */
-  public String getAndSaveResourceTypeName(
-      ModelTypeTable typeTable,
-      ProtoFile protoFile,
-      TypeRef type,
-      ResourceNameConfig resourceNameConfig) {
-    String resourceClassName = className(getResourceTypeNameObject(resourceNameConfig));
-    return typeTable.getAndSaveNicknameForTypedResourceName(
-        protoFile, type, resourceClassName, resourceNameConfig.getResourceNameType());
+  public String getAndSaveElementResourceTypeName(
+      ModelTypeTable typeTable, FieldConfig fieldConfig) {
+    String resourceClassName =
+        className(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    return typeTable.getAndSaveNicknameForResourceNameElementType(fieldConfig, resourceClassName);
   }
 
   /** The test case name for the given method. */

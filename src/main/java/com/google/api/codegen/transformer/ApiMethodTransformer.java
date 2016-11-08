@@ -273,9 +273,7 @@ public class ApiMethodTransformer {
     String resourceTypeName;
 
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
-      resourceTypeName =
-          namer.getAndSaveResourceTypeName(
-              typeTable, resourceFieldConfig, resourceField.getType().makeOptional());
+      resourceTypeName = namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
     } else {
       resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
     }
@@ -654,13 +652,11 @@ public class ApiMethodTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (namer.shouldImportRequestObjectParamType(field)) {
-        typeName = namer.getAndSaveResourceTypeName(typeTable, fieldConfig, field.getType());
+        typeName = namer.getAndSaveResourceTypeName(typeTable, fieldConfig);
       }
       if (namer.shouldImportRequestObjectParamElementType(field)) {
         // Use makeOptional to remove repeated property from type
-        elementTypeName =
-            namer.getAndSaveResourceTypeName(
-                typeTable, fieldConfig, field.getType().makeOptional());
+        elementTypeName = namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig);
       }
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {

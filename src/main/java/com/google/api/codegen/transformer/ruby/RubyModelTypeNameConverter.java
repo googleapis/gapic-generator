@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
@@ -23,7 +23,6 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -168,11 +167,15 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoFile protoFile,
-      TypeRef type,
-      String typedResourceShortName,
-      ResourceNameType resourceNameType) {
+      FieldConfig fieldConfig, String typedResourceShortName) {
     throw new UnsupportedOperationException(
         "getTypeNameForTypedResourceName not supported by Ruby");
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    throw new UnsupportedOperationException(
+        "getTypeNameForResourceNameElementType not supported by Ruby");
   }
 }

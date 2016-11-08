@@ -14,12 +14,11 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.Map;
 
@@ -104,17 +103,24 @@ public class ModelTypeTable implements ModelTypeFormatter {
   }
 
   /*
-   * Computes the nickname for the given FieldConfig, Type, and ResourceName. Adds the full name to
+   * Computes the nickname for the given FieldConfig, and ResourceName. Adds the full name to
    * the import set, and returns the nickname.
    */
   public String getAndSaveNicknameForTypedResourceName(
-      ProtoFile protoFile,
-      TypeRef type,
-      String typedResourceShortName,
-      ResourceNameType resourceNameType) {
+      FieldConfig fieldConfig, String typedResourceShortName) {
     return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForTypedResourceName(
-            protoFile, type, typedResourceShortName, resourceNameType));
+        typeNameConverter.getTypeNameForTypedResourceName(fieldConfig, typedResourceShortName));
+  }
+
+  /*
+   * Computes the nickname for the element type given FieldConfig, and ResourceName. Adds the full
+   * name to the import set, and returns the nickname.
+   */
+  public String getAndSaveNicknameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeNameForResourceNameElementType(
+            fieldConfig, typedResourceShortName));
   }
 
   /**

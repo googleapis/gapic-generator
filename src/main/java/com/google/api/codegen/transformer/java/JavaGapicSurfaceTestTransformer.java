@@ -389,13 +389,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       resourceTypeName =
           methodContext
               .getNamer()
-              .getAndSaveResourceTypeName(
-                  methodContext.getTypeTable(),
-                  resourcesFieldConfig,
-                  resourcesField.getType().makeOptional());
+              .getAndSaveElementResourceTypeName(
+                  methodContext.getTypeTable(), resourcesFieldConfig);
 
-      resourcesFieldGetterName =
-          namer.getResourceNameFieldGetFunctionName(resourcesFieldConfig, resourcesField.getType());
+      resourcesFieldGetterName = namer.getResourceNameFieldGetFunctionName(resourcesFieldConfig);
       pageStreamingResponseViews.add(
           PageStreamingResponseView.newBuilder()
               .resourceTypeName(resourceTypeName)
