@@ -43,8 +43,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getSourceFilePath(String path, String className) {
-    return path + File.separator + className + ".java";
+  public String getSourceFilePath(String path, String publicClassName) {
+    return path + File.separator + publicClassName + ".java";
   }
 
   @Override
@@ -137,7 +137,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPagedResponseTypeInnerName(
       Method method, ModelTypeTable typeTable, Field resourceField) {
-    return className(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
+    return publicClassName(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
   }
 
   @Override

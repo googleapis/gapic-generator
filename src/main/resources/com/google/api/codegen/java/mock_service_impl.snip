@@ -1,14 +1,14 @@
 @extends "java/common.snip"
 
-@snippet generate(mockServiceImpl)
-  {@renderFileHeader(mockServiceImpl.fileHeader)}
+@snippet generate(mockServiceImplFile)
+  {@renderFileHeader(mockServiceImplFile.fileHeader)}
 
   @@javax.annotation.Generated("by GAPIC")
-  public class {@mockServiceImpl.name} extends {@mockServiceImpl.grpcClassName} {
+  public class {@mockServiceImplFile.serviceImpl.name} extends {@mockServiceImplFile.serviceImpl.grpcClassName} {
     private ArrayList<GeneratedMessageV3> requests;
     private Queue<Object> responses;
 
-    public {@mockServiceImpl.name}() {
+    public {@mockServiceImplFile.serviceImpl.name}() {
       requests = new ArrayList<>();
       responses = new LinkedList<>();
     }
@@ -34,7 +34,7 @@
       responses = new LinkedList<>();
     }
 
-    @join method : mockServiceImpl.grpcMethods
+    @join method : mockServiceImplFile.serviceImpl.grpcMethods
      {@grpcMethod(method)}
 
     @end
