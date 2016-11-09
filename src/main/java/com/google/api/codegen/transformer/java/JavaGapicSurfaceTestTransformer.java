@@ -60,6 +60,7 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
+import com.google.api.codegen.viewmodel.testing.MockServiceImplFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
@@ -116,7 +117,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
     for (Interface service : mockServiceTransformer.getGrpcInterfacesToMock(model, apiConfig)) {
       SurfaceTransformerContext context = createContext(service, apiConfig);
-      views.add(createMockServiceImplView(context));
+      views.add(createMockServiceImplFileView(context));
 
       context = createContext(service, apiConfig);
       views.add(createMockServiceView(context));
@@ -547,7 +548,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return mockService.build();
   }
 
-  private MockServiceImplView createMockServiceImplView(SurfaceTransformerContext context) {
+  private MockServiceImplFileView createMockServiceImplFileView(SurfaceTransformerContext context) {
     addMockServiceImplImports(context);
 
     Interface service = context.getInterface();
@@ -557,19 +558,23 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String grpcClassName =
         context.getTypeTable().getAndSaveNicknameFor(namer.getGrpcServiceClassName(service));
 
-    MockServiceImplView.Builder mockServiceImpl = MockServiceImplView.newBuilder();
+    MockServiceImplFileView.Builder mockServiceImplFile = MockServiceImplFileView.newBuilder();
 
-    mockServiceImpl.name(name);
-    mockServiceImpl.grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context));
-    mockServiceImpl.grpcClassName(grpcClassName);
-    mockServiceImpl.outputPath(namer.getSourceFilePath(outputPath, name));
-    mockServiceImpl.templateFileName(MOCK_SERVICE_IMPL_FILE);
+    mockServiceImplFile.serviceImpl(
+        MockServiceImplView.newBuilder()
+            .name(name)
+            .grpcClassName(grpcClassName)
+            .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
+            .build());
+
+    mockServiceImplFile.outputPath(namer.getSourceFilePath(outputPath, name));
+    mockServiceImplFile.templateFileName(MOCK_SERVICE_IMPL_FILE);
 
     // Imports must be done as the last step to catch all imports.
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
-    mockServiceImpl.fileHeader(fileHeader);
+    mockServiceImplFile.fileHeader(fileHeader);
 
-    return mockServiceImpl.build();
+    return mockServiceImplFile.build();
   }
 
   /////////////////////////////////// General Helpers //////////////////////////////////////

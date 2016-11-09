@@ -19,10 +19,9 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
-import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
@@ -32,8 +31,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "go/mock.snip";
@@ -58,37 +55,26 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private MockCombinedView generateMockServiceView(
       Model model, ApiConfig apiConfig, SurfaceNamer namer) {
-    Map<String, TypeAlias> imports = new TreeMap<>();
+    ModelTypeTable typeTable = GoGapicSurfaceTransformer.createTypeTable();
     List<MockServiceImplView> impls = new ArrayList<>();
-    FileHeaderView fileHeader =
-        fileHeaderTransformer.generateFileHeader(
-            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer);
 
     for (Interface service : mockServiceTransformer.getGrpcInterfacesToMock(model, apiConfig)) {
       SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service,
-              apiConfig,
-              GoGapicSurfaceTransformer.createTypeTable(),
-              namer,
-              featureConfig);
+          SurfaceTransformerContext.create(service, apiConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .outputPath("")
-              .templateFileName("")
               .grpcClassName(namer.getGrpcServerTypeName(service))
               .name(namer.getMockGrpcServiceImplName(service))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
-              .fileHeader(fileHeader)
               .build());
-      imports.putAll(context.getTypeTable().getImports());
     }
 
     return MockCombinedView.newBuilder()
         .outputPath(apiConfig.getPackageName() + File.separator + "mock_test.go")
         .serviceImpls(impls)
         .templateFileName(MOCK_SERVICE_TEMPLATE_FILE)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(apiConfig, imports, namer))
+        .fileHeader(
+            fileHeaderTransformer.generateFileHeader(apiConfig, typeTable.getImports(), namer))
         .build();
   }
 }

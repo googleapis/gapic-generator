@@ -18,19 +18,13 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
-/**
- * MockCombinedView acts gathers unit-test-related classes. Used in languages that idiomatically put
- * mocks and tests in the same file.
- */
 @AutoValue
-public abstract class MockCombinedView implements ViewModel {
+public abstract class MockServiceImplFileView implements ViewModel {
+
   public abstract FileHeaderView fileHeader();
 
-  public abstract List<MockServiceImplView> serviceImpls();
-
-  // TODO(pongad): Add the tests
+  public abstract MockServiceImplView serviceImpl();
 
   @Override
   public String resourceRoot() {
@@ -44,19 +38,20 @@ public abstract class MockCombinedView implements ViewModel {
   public abstract String outputPath();
 
   public static Builder newBuilder() {
-    return new AutoValue_MockCombinedView.Builder();
+    return new AutoValue_MockServiceImplFileView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
+
     public abstract Builder fileHeader(FileHeaderView val);
 
-    public abstract Builder serviceImpls(List<MockServiceImplView> val);
-
-    public abstract Builder outputPath(String val);
+    public abstract Builder serviceImpl(MockServiceImplView val);
 
     public abstract Builder templateFileName(String val);
 
-    public abstract MockCombinedView build();
+    public abstract Builder outputPath(String val);
+
+    public abstract MockServiceImplFileView build();
   }
 }
