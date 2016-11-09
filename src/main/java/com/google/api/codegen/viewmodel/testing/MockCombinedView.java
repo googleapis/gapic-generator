@@ -21,7 +21,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 /**
- * MockCombinedView acts gathers unit-test-related classes. Used in languages that idiomatically put
+ * MockCombinedView gathers unit-test-related classes. Used in languages that idiomatically put
  * mocks and tests in the same file.
  */
 @AutoValue
