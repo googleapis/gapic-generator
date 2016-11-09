@@ -84,13 +84,20 @@ public class InitCodeTransformer {
     SurfaceNamer namer = context.getNamer();
     // Add request fields checking
     for (InitCodeNode fieldItemTree : rootNode.getChildren().values()) {
+      FieldConfig fieldConfig = fieldItemTree.getFieldConfig();
 
-      String getterMethod =
-          namer.getFieldGetFunctionName(context.getFeatureConfig(), fieldItemTree.getFieldConfig());
+      String getterMethod = namer.getFieldGetFunctionName(context.getFeatureConfig(), fieldConfig);
 
       String expectedValueIdentifier = getVariableName(context, fieldItemTree);
+      String expectedTransformFunction = null;
+      if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
+          && fieldConfig.hasDifferentMessageResourceNameConfig()) {
+        expectedTransformFunction =
+            namer.getResourceOneofCreateMethod(context.getTypeTable(), fieldConfig);
+      }
 
-      assertViews.add(createAssertView(expectedValueIdentifier, getterMethod));
+      assertViews.add(
+          createAssertView(expectedValueIdentifier, expectedTransformFunction, getterMethod));
     }
     return assertViews;
   }
@@ -115,9 +122,11 @@ public class InitCodeTransformer {
     return mapBuilder.build();
   }
 
-  private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
+  private GapicSurfaceTestAssertView createAssertView(
+      String expected, String expectedTransformFunction, String actual) {
     return GapicSurfaceTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
+        .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueGetter(actual)
         .build();
   }
