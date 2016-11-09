@@ -12,6 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.go;
+package com.google.api.codegen.discovery.transformer.php;
 
-public interface GoContext {}
+import com.google.api.codegen.discovery.transformer.SampleNamer;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.php.PhpNameFormatter;
+
+public class PhpSampleNamer extends SampleNamer {
+
+  public PhpSampleNamer() {
+    super(new PhpNameFormatter());
+  }
+
+  @Override
+  public String getServiceVarName(String apiTypeName) {
+    return localVarName(Name.lowerCamel("service"));
+  }
+}

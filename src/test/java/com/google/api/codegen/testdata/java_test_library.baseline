@@ -22,13 +22,15 @@ import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.testing.MockGrpcService;
 import com.google.api.gax.testing.MockServiceHelper;
 import com.google.api.gax.testing.MockStreamObserver;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.types.ArchivedBookName;
+import com.google.api.resourcenames.types.BookName;
+import com.google.api.resourcenames.types.ShelfName;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
-import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.BookNameOneof;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.Comment.Stage;
@@ -53,9 +55,7 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.ResourceName;
 import com.google.example.library.v1.Shelf;
-import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
 import com.google.example.library.v1.StreamBooksRequest;
@@ -132,7 +132,7 @@ public class LibraryServiceTest {
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(name)
+      .setNameWithShelfName(name)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -190,7 +190,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsShelfName());
   }
 
   @Test
@@ -358,7 +358,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     DeleteShelfRequest actualRequest = (DeleteShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsShelfName());
   }
 
   @Test
@@ -384,7 +384,7 @@ public class LibraryServiceTest {
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setNameWithResource(name2)
+      .setNameWithShelfName(name2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -401,8 +401,8 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     MergeShelvesRequest actualRequest = (MergeShelvesRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
-    Assert.assertEquals(otherShelfName, actualRequest.getOtherShelfNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsShelfName());
+    Assert.assertEquals(otherShelfName, actualRequest.getOtherShelfNameAsShelfName());
   }
 
   @Test
@@ -522,7 +522,7 @@ public class LibraryServiceTest {
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(name2)
+      .setNameWithBookName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -539,7 +539,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsBookName());
   }
 
   @Test
@@ -583,7 +583,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     ListBooksRequest actualRequest = (ListBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsShelfName());
     Assert.assertEquals(filter, actualRequest.getFilter());
   }
 
@@ -618,7 +618,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     DeleteBookRequest actualRequest = (DeleteBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsBookName());
   }
 
   @Test
@@ -645,7 +645,7 @@ public class LibraryServiceTest {
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(name2)
+      .setNameWithBookName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -663,7 +663,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsBookName());
     Assert.assertEquals(book, actualRequest.getBook());
   }
 
@@ -692,7 +692,7 @@ public class LibraryServiceTest {
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(name2)
+      .setNameWithBookName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -712,7 +712,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsBookName());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
     Assert.assertEquals(physicalMask, actualRequest.getPhysicalMask());
@@ -745,7 +745,7 @@ public class LibraryServiceTest {
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(name2)
+      .setNameWithBookName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -763,8 +763,8 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     MoveBookRequest actualRequest = (MoveBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
-    Assert.assertEquals(otherShelfName, actualRequest.getOtherShelfNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsBookName());
+    Assert.assertEquals(otherShelfName, actualRequest.getOtherShelfNameAsShelfName());
   }
 
   @Test
@@ -850,7 +850,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsResourceName());
   }
 
   @Test
@@ -929,7 +929,7 @@ public class LibraryServiceTest {
     String title = "title110371416";
     boolean read = true;
     BookFromArchive expectedResponse = BookFromArchive.newBuilder()
-      .setNameWithResource(name2)
+      .setNameWithArchivedBookName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -946,7 +946,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromArchiveRequest actualRequest = (GetBookFromArchiveRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsArchivedBookName());
   }
 
   @Test
@@ -973,7 +973,7 @@ public class LibraryServiceTest {
     String title = "title110371416";
     boolean read = true;
     BookFromAnywhere expectedResponse = BookFromAnywhere.newBuilder()
-      .setNameWithResource(name2)
+      .setNameWithBookNameOneof(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -990,7 +990,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsBookNameOneof());
   }
 
   @Test
@@ -1027,7 +1027,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookIndexRequest actualRequest = (UpdateBookIndexRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsBookName());
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMap());
   }
@@ -1068,7 +1068,6 @@ public class LibraryServiceTest {
     List<StreamShelvesResponse> actualResponses = responseObserver.future().get();
     Assert.assertEquals(1, actualResponses.size());
     Assert.assertEquals(expectedResponse, actualResponses.get(0));
-    Assert.assertEquals(0, responseObserver.errors().size());
   }
 
   @Test
@@ -1102,7 +1101,7 @@ public class LibraryServiceTest {
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setNameWithResource(name2)
+      .setNameWithBookName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
@@ -1122,7 +1121,6 @@ public class LibraryServiceTest {
     List<Book> actualResponses = responseObserver.future().get();
     Assert.assertEquals(1, actualResponses.size());
     Assert.assertEquals(expectedResponse, actualResponses.get(0));
-    Assert.assertEquals(0, responseObserver.errors().size());
   }
 
   @Test
@@ -1179,7 +1177,6 @@ public class LibraryServiceTest {
     List<Comment> actualResponses = responseObserver.future().get();
     Assert.assertEquals(1, actualResponses.size());
     Assert.assertEquals(expectedResponse, actualResponses.get(0));
-    Assert.assertEquals(0, responseObserver.errors().size());
   }
 
   @Test
@@ -1219,7 +1216,7 @@ public class LibraryServiceTest {
     List<BookName> names2 = Arrays.asList(namesElement2);
     FindRelatedBooksResponse expectedResponse = FindRelatedBooksResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllNamesWithResources(names2)
+      .addAllNamesWithBookNameList(names2)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -1232,16 +1229,16 @@ public class LibraryServiceTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
-    List<BookName> resourcesAsBookName = Lists.newArrayList(pagedListResponse.iterateAllAsBookName());
-    Assert.assertEquals(1, resourcesAsBookName.size());
-    Assert.assertEquals(expectedResponse.getNamesListAsResources().get(0), resourcesAsBookName.get(0));
+    List<BookName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsBookName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(expectedResponse.getNamesListAsBookNameList().get(0), resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(names, actualRequest.getNamesListAsResources());
-    Assert.assertEquals(shelves, actualRequest.getShelvesListAsResources());
+    Assert.assertEquals(names, actualRequest.getNamesListAsBookNameList());
+    Assert.assertEquals(shelves, actualRequest.getShelvesListAsShelfNameList());
   }
 
   @Test
@@ -1359,7 +1356,7 @@ public class LibraryServiceTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResource());
+    Assert.assertEquals(name, actualRequest.getNameAsBookName());
   }
 
   @Test

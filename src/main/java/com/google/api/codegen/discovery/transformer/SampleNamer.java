@@ -27,8 +27,8 @@ public class SampleNamer extends NameFormatterDelegator {
   }
 
   /** Returns the application name of the sample. */
-  public String getSampleApplicationName(String apiTypeName) {
-    return "Google-" + apiTypeName + "Sample/0.1";
+  public String getSampleApplicationName(String apiCanonicalName) {
+    return "Google-" + apiCanonicalName.replace(" ", "") + "Sample/0.1";
   }
 
   /** Returns the class name of the sample. */

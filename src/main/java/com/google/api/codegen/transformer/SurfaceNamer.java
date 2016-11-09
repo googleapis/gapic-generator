@@ -105,11 +105,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel("PagedResponseWrappers"));
   }
 
-  /** The name of the generated resource type from the entity name. */
-  public String getResourceTypeName(ResourceNameConfig resourceNameConfig) {
-    return publicClassName(getResourceTypeNameObject(resourceNameConfig));
-  }
-
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
@@ -233,7 +228,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getResourceNameFieldSetFunctionName(fieldConfig);
     } else {
       return getFieldSetFunctionName(field);
     }
@@ -255,13 +250,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getResourceNameFieldSetFunctionName(TypeRef type, Name identifier) {
+  public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
+    TypeRef type = fieldConfig.getField().getType();
+    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldSetFunctionName:map-type");
     } else if (type.isRepeated()) {
-      return publicMethodName(Name.from("add", "all").join(identifier).join("with_resources"));
+      return publicMethodName(
+          Name.from("add", "all").join(identifier).join("with").join(resourceName).join("list"));
     } else {
-      return publicMethodName(Name.from("set").join(identifier).join("with_resource"));
+      return publicMethodName(Name.from("set").join(identifier).join("with").join(resourceName));
     }
   }
 
@@ -269,7 +268,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getResourceNameFieldGetFunctionName(fieldConfig);
     } else {
       return getFieldGetFunctionName(field);
     }
@@ -289,13 +288,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getResourceNameFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
+    TypeRef type = fieldConfig.getField().getType();
+    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
     } else if (type.isRepeated()) {
-      return publicMethodName(Name.from("get").join(identifier).join("list").join("as_resources"));
+      return publicMethodName(
+          Name.from("get").join(identifier).join("list_as").join(resourceName).join("list"));
     } else {
-      return publicMethodName(Name.from("get").join(identifier).join("as_resource"));
+      return publicMethodName(Name.from("get").join(identifier).join("as").join(resourceName));
     }
   }
 
@@ -790,11 +793,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The class name of the generated resource type from the entity name. */
-  public String getAndSaveResourceTypeName(
-      ModelTypeTable typeTable, FieldConfig fieldConfig, TypeRef type) {
-    String resourceClassName = getResourceTypeName(fieldConfig.getResourceNameConfig());
-    return typeTable.getAndSaveNicknameForTypedResourceName(
-        fieldConfig.getField(), type, resourceClassName);
+  public String getAndSaveResourceTypeName(ModelTypeTable typeTable, FieldConfig fieldConfig) {
+    String resourceClassName =
+        publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
+  }
+
+  /** The class name of the generated resource type from the entity name. */
+  public String getAndSaveElementResourceTypeName(
+      ModelTypeTable typeTable, FieldConfig fieldConfig) {
+    String resourceClassName =
+        publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    return typeTable.getAndSaveNicknameForResourceNameElementType(fieldConfig, resourceClassName);
   }
 
   /** The test case name for the given method. */
