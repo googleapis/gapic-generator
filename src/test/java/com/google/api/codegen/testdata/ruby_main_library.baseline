@@ -936,6 +936,9 @@ module Library
       #
       # @param name [String]
       #   The name of the book to retrieve.
+      # @param alt_book_name [String]
+      #   An alternate book name, used to test restricting flattened field to a
+      #   single resource name type in a oneof.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -948,13 +951,16 @@ module Library
       #
       #   library_service_api = LibraryServiceApi.new
       #   name = ''
-      #   response = library_service_api.get_book_from_anywhere(name)
+      #   formatted_alt_book_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   response = library_service_api.get_book_from_anywhere(name, formatted_alt_book_name)
 
       def get_book_from_anywhere \
           name,
+          alt_book_name,
           options: nil
         req = Google::Example::Library::V1::GetBookFromAnywhereRequest.new({
-          name: name
+          name: name,
+          alt_book_name: alt_book_name
         }.delete_if { |_, v| v.nil? })
         @get_book_from_anywhere.call(req, options)
       end

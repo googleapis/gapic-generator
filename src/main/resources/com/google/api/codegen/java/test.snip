@@ -76,8 +76,14 @@
     {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
     @join assert : test.asserts
-      Assert.assertEquals({@assert.expectedValueIdentifier}, \
-        actualRequest.{@assert.actualValueGetter}());
+      @if assert.hasExpectedValueTransformFunction
+        Assert.assertEquals({@assert.expectedValueTransformFunction}(\
+          {@assert.expectedValueIdentifier}), \
+          actualRequest.{@assert.actualValueGetter}());
+      @else
+        Assert.assertEquals({@assert.expectedValueIdentifier}, \
+          actualRequest.{@assert.actualValueGetter}());
+      @end
     @end
   }
 

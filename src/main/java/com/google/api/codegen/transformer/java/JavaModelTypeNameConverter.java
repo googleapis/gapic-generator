@@ -235,7 +235,6 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
         return "com.google.api.resourcenames";
       case FIXED:
       case SINGLE:
-        return "com.google.api.resourcenames.types";
       case ONEOF:
         return getJavaPackage(fieldConfig.getField().getFile());
       case NONE:

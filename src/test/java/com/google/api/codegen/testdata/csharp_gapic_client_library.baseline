@@ -2182,6 +2182,10 @@ namespace Google.Example.Library.V1
         /// <param name="name">
         /// The name of the book to retrieve.
         /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -2190,6 +2194,7 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             string name,
+            string altBookName,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
@@ -2201,6 +2206,10 @@ namespace Google.Example.Library.V1
         /// <param name="name">
         /// The name of the book to retrieve.
         /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
+        /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to use for this RPC.
         /// </param>
@@ -2209,8 +2218,10 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             string name,
+            string altBookName,
             CancellationToken cancellationToken) => GetBookFromAnywhereAsync(
                 name,
+                altBookName,
                 CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -2218,6 +2229,10 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
         /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -2227,6 +2242,7 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual BookFromAnywhere GetBookFromAnywhere(
             string name,
+            string altBookName,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
@@ -3841,6 +3857,10 @@ namespace Google.Example.Library.V1
         /// <param name="name">
         /// The name of the book to retrieve.
         /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -3849,11 +3869,13 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             string name,
+            string altBookName,
             CallSettings callSettings = null)
         {
             GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
             {
                 Name = name,
+                AltBookName = altBookName,
             };
             Modify_GetBookFromAnywhereRequest(ref request, ref callSettings);
             return _callGetBookFromAnywhere.Async(request, callSettings);
@@ -3865,6 +3887,10 @@ namespace Google.Example.Library.V1
         /// <param name="name">
         /// The name of the book to retrieve.
         /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -3873,11 +3899,13 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override BookFromAnywhere GetBookFromAnywhere(
             string name,
+            string altBookName,
             CallSettings callSettings = null)
         {
             GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
             {
                 Name = name,
+                AltBookName = altBookName,
             };
             Modify_GetBookFromAnywhereRequest(ref request, ref callSettings);
             return _callGetBookFromAnywhere.Sync(request, callSettings);

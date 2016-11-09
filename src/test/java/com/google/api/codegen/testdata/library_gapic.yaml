@@ -354,13 +354,17 @@ interfaces:
       groups:
       - parameters:
         - name
+        - alt_book_name
     required_fields:
       - name
+      - alt_book_name
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
     request_object_method: false
     resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      alt_book_name: book
   - name: UpdateBookIndex
     flattening:
       groups:
@@ -542,6 +546,7 @@ resource_name_generation:
 - message_name: GetBookFromAnywhereRequest
   field_entity_map:
     name: book_oneof
+    alt_book_name: book_oneof
 - message_name: UpdateBookIndexRequest
   field_entity_map:
     name: book

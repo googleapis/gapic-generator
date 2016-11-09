@@ -68,6 +68,10 @@ public abstract class MethodTransformerContext {
 
   public abstract FeatureConfig getFeatureConfig();
 
+  public boolean isFlattenedMethodContext() {
+    return getFlatteningConfig() != null;
+  }
+
   public Interface getTargetInterface() {
     return InterfaceConfig.getTargetInterface(
         getInterface(), getMethodConfig().getRerouteToGrpcInterface());

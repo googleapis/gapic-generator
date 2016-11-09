@@ -21,13 +21,12 @@ import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
-import com.google.api.resourcenames.types.ArchivedBookName;
-import com.google.api.resourcenames.types.BookName;
-import com.google.api.resourcenames.types.ShelfName;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
+import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.BookNameOneof;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
@@ -52,6 +51,7 @@ import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
@@ -1666,17 +1666,21 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
-   *   BookFromAnywhere response = libraryServiceApi.getBookFromAnywhere(name);
+   *   BookName altBookName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   BookFromAnywhere response = libraryServiceApi.getBookFromAnywhere(name, altBookName);
    * }
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
+   * @param altBookName An alternate book name, used to test restricting flattened field to a
+   * single resource name type in a oneof.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final BookFromAnywhere getBookFromAnywhere(BookNameOneof name) {
+  public final BookFromAnywhere getBookFromAnywhere(BookNameOneof name, BookName altBookName) {
     GetBookFromAnywhereRequest request =
         GetBookFromAnywhereRequest.newBuilder()
         .setNameWithBookNameOneof(name)
+        .setAltBookNameWithBookNameOneof(BookNameOneof.from(altBookName))
         .build();
     return getBookFromAnywhere(request);
   }
@@ -1689,8 +1693,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookNameOneof altBookName = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setNameWithBookNameOneof(name)
+   *     .setAltBookNameWithBookName(altBookName)
    *     .build();
    *   BookFromAnywhere response = libraryServiceApi.getBookFromAnywhere(request);
    * }
@@ -1711,8 +1717,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookNameOneof altBookName = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setNameWithBookNameOneof(name)
+   *     .setAltBookNameWithBookName(altBookName)
    *     .build();
    *   ListenableFuture&lt;BookFromAnywhere&gt; future = libraryServiceApi.getBookFromAnywhereCallable().futureCall(request);
    *   // Do something
