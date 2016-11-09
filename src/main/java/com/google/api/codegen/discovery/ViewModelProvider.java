@@ -125,23 +125,17 @@ public class ViewModelProvider implements DiscoveryProvider {
       String fieldName = fieldNames.next();
       JsonNode primaryValue = tree.get(fieldName);
       JsonNode backupValue = overrideTree.get(fieldName);
-      if (primaryValue == null) {
-        // If backupValue isn't null, then we add it to tree. This can happen if
-        // extra fields/properties are specified.
-        if (backupValue != null) {
-          tree.set(fieldName, backupValue);
-        }
-        // Otherwise, skip null nodes.
-      } else if (backupValue.isNull()) {
+      // Skip null nodes.
+      if (primaryValue != null && backupValue.isNull()) {
         // If a node is overridden as null, we pretend it was never specified
         // altogether. We provide this functionality so nodes from an object can
         // be deleted from both trees.
         // TODO(saicheems): Verify that this is the best approach for this issue.
         tree.remove(fieldName);
       } else if (primaryValue.isObject() && backupValue.isObject()) {
-        merge((ObjectNode) primaryValue, (ObjectNode) backupValue.deepCopy());
-      } else {
-        tree.set(fieldName, overrideTree.get(fieldName));
+        merge((ObjectNode) primaryValue, (ObjectNode) backupValue);
+      } else if (backupValue != null) {
+        tree.set(fieldName, backupValue);
       }
     }
   }
