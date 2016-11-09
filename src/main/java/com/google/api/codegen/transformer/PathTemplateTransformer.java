@@ -14,6 +14,11 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FixedResourceNameConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
+import com.google.api.codegen.config.ResourceNameMessageConfigs;
+import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
@@ -22,9 +27,24 @@ import com.google.api.codegen.viewmodel.PathTemplateArgumentView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.ResourceIdParamView;
+import com.google.api.codegen.viewmodel.ResourceNameFixedView;
+import com.google.api.codegen.viewmodel.ResourceNameOneofView;
+import com.google.api.codegen.viewmodel.ResourceNameParamView;
+import com.google.api.codegen.viewmodel.ResourceNameSingleView;
+import com.google.api.codegen.viewmodel.ResourceNameView;
+import com.google.api.codegen.viewmodel.ResourceProtoFieldView;
+import com.google.api.codegen.viewmodel.ResourceProtoView;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.ProtoFile;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /** PathTemplateTransformer generates view objects for path templates from a service model. */
 public class PathTemplateTransformer {
@@ -41,6 +61,150 @@ public class PathTemplateTransformer {
     }
 
     return pathTemplates;
+  }
+
+  public List<ResourceNameView> generateResourceNames(SurfaceTransformerContext context) {
+    return generateResourceNames(context, context.getApiConfig().getResourceNameConfigs().values());
+  }
+
+  public List<ResourceNameView> generateResourceNames(
+      SurfaceTransformerContext context, Iterable<ResourceNameConfig> configs) {
+    List<ResourceNameView> resourceNames = new ArrayList<>();
+    int index = 1;
+    for (ResourceNameConfig config : configs) {
+      switch (config.getResourceNameType()) {
+        case SINGLE:
+          resourceNames.add(
+              generateResourceNameSingle(context, index, (SingleResourceNameConfig) config));
+          break;
+        case ONEOF:
+          resourceNames.add(
+              generateResourceNameOneof(context, index, (ResourceNameOneofConfig) config));
+          break;
+        case FIXED:
+          resourceNames.add(
+              generateResourceNameFixed(context, index, (FixedResourceNameConfig) config));
+          break;
+        default:
+          throw new IllegalStateException("Unexpected resource-name type.");
+      }
+      index += 1;
+    }
+    return resourceNames;
+  }
+
+  private ResourceNameSingleView generateResourceNameSingle(
+      SurfaceTransformerContext context, int index, SingleResourceNameConfig config) {
+    SurfaceNamer namer = context.getNamer();
+    ResourceNameSingleView.Builder builder = ResourceNameSingleView.newBuilder();
+    builder.typeName(namer.getResourceTypeName(config));
+    builder.paramName(namer.getResourceParameterName(config));
+    builder.propertyName(namer.getResourcePropertyName(config));
+    builder.enumName(namer.getResourceEnumName(config));
+    builder.docName(config.getEntityName());
+    builder.index(index);
+    builder.pattern(config.getNamePattern());
+    List<ResourceNameParamView> params = new ArrayList<>();
+    int varIndex = 0;
+    for (String var : config.getNameTemplate().vars()) {
+      ResourceNameParamView.Builder paramBuilder = ResourceNameParamView.newBuilder();
+      paramBuilder.index(varIndex++);
+      paramBuilder.nameAsParam(namer.getParamName(var));
+      paramBuilder.nameAsProperty(namer.getPropertyName(var));
+      paramBuilder.docName(namer.getParamDocName(var));
+      params.add(paramBuilder.build());
+    }
+    builder.params(params);
+    return builder.build();
+  }
+
+  private ResourceNameOneofView generateResourceNameOneof(
+      SurfaceTransformerContext context, int index, ResourceNameOneofConfig config) {
+    SurfaceNamer namer = context.getNamer();
+    ResourceNameOneofView.Builder builder = ResourceNameOneofView.newBuilder();
+    builder.typeName(namer.getResourceTypeName(config));
+    builder.paramName(namer.getResourceParameterName(config));
+    builder.propertyName(namer.getResourcePropertyName(config));
+    builder.enumName(namer.getResourceEnumName(config));
+    builder.docName(config.getEntityName());
+    builder.index(index);
+    builder.children(generateResourceNames(context, config.getResourceNameConfigs()));
+    return builder.build();
+  }
+
+  private ResourceNameFixedView generateResourceNameFixed(
+      SurfaceTransformerContext context, int index, FixedResourceNameConfig config) {
+    SurfaceNamer namer = context.getNamer();
+    ResourceNameFixedView.Builder builder = ResourceNameFixedView.newBuilder();
+    builder.typeName(namer.getResourceTypeName(config));
+    builder.paramName(namer.getResourceParameterName(config));
+    builder.propertyName(namer.getResourcePropertyName(config));
+    builder.enumName(namer.getResourceEnumName(config));
+    builder.docName(config.getEntityName());
+    builder.index(index);
+    builder.value(config.getFixedValue());
+    return builder.build();
+  }
+
+  public List<ResourceProtoView> generateResourceProtos(SurfaceTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ResourceNameMessageConfigs resourceConfigs =
+        context.getApiConfig().getResourceNameMessageConfigs();
+    Map<String, ResourceNameConfig> resourceNameConfigs =
+        context.getApiConfig().getResourceNameConfigs();
+    ListMultimap<String, Field> fieldsByMessage = ArrayListMultimap.create();
+    for (ProtoFile protoFile : context.getModel().getFiles()) {
+      for (MessageType msg : protoFile.getMessages()) {
+        for (Field field : msg.getFields()) {
+          if (resourceConfigs.fieldHasResourceName(field)) {
+            fieldsByMessage.put(msg.getFullName(), field);
+          }
+        }
+      }
+    }
+    List<ResourceProtoView> protos = new ArrayList<>();
+    for (Entry<String, Collection<Field>> entry : fieldsByMessage.asMap().entrySet()) {
+      String msgName = entry.getKey();
+      Collection<Field> fields = new ArrayList<Field>(entry.getValue());
+      ResourceProtoView.Builder protoBuilder = ResourceProtoView.newBuilder();
+      protoBuilder.protoClassName(namer.getTypeNameConverter().getTypeName(msgName).getNickname());
+      List<ResourceProtoFieldView> fieldViews = new ArrayList<>();
+      for (Field field : fields) {
+        String fieldName = field.getSimpleName();
+        FieldConfig fieldConfig = FieldConfig.createDefaultFieldConfig(field);
+        String fieldResourceName = resourceConfigs.getFieldResourceName(field);
+        String fieldTypeName;
+        String fieldElementTypeName;
+        if (fieldResourceName.equals("*")) {
+          fieldTypeName = "IResourceName";
+          fieldElementTypeName = "IResourceName";
+        } else {
+          ResourceNameConfig resourceNameConfig = resourceNameConfigs.get(fieldResourceName);
+          String fieldTypesimpleName = namer.getResourceTypeName(resourceNameConfig);
+          fieldTypeName =
+              context
+                  .getTypeTable()
+                  .getAndSaveNicknameForTypedResourceName(fieldConfig, fieldTypesimpleName);
+          fieldElementTypeName =
+              context
+                  .getTypeTable()
+                  .getAndSaveNicknameForResourceNameElementType(fieldConfig, fieldTypesimpleName);
+        }
+        ResourceProtoFieldView fieldView =
+            ResourceProtoFieldView.newBuilder()
+                .typeName(fieldTypeName)
+                .elementTypeName(fieldElementTypeName)
+                .isAny(fieldResourceName.equals("*"))
+                .isRepeated(field.getType().isRepeated())
+                .propertyName(namer.getResourceNameFieldGetFunctionName(fieldConfig))
+                .underlyingPropertyName(namer.publicMethodName(Name.from(fieldName)))
+                .build();
+        fieldViews.add(fieldView);
+      }
+      protoBuilder.fields(fieldViews);
+      protos.add(protoBuilder.build());
+    }
+    return protos;
   }
 
   public List<FormatResourceFunctionView> generateFormatResourceFunctions(

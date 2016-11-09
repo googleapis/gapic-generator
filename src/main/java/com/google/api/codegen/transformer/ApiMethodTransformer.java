@@ -674,7 +674,7 @@ public class ApiMethodTransformer {
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
-    param.nameAsMethodName(namer.getFieldAsMethodName(field));
+    param.nameAsMethodName(namer.getFieldAsMethodName(featureConfig, fieldConfig));
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);

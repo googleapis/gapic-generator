@@ -112,7 +112,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
       case ANY:
         return Name.from("resource_name");
       case FIXED:
-        throw new UnsupportedOperationException("entity name invalid");
+        return Name.from(entityName).join("name_fixed");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
@@ -131,6 +131,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
       original = original.substring(0, original.length() - suffix.length());
     }
     return original;
+  }
+
+  public String getResourceTypeName(ResourceNameConfig resourceNameConfig) {
+    return publicClassName(getResourceTypeNameObject(resourceNameConfig));
+  }
+
+  public String getResourceParameterName(ResourceNameConfig resourceNameConfig) {
+    return localVarName(getResourceTypeNameObject(resourceNameConfig));
+  }
+
+  public String getResourcePropertyName(ResourceNameConfig resourceNameConfig) {
+    return publicMethodName(getResourceTypeNameObject(resourceNameConfig));
+  }
+
+  public String getResourceEnumName(ResourceNameConfig resourceNameConfig) {
+    return getResourceTypeNameObject(resourceNameConfig).toUpperUnderscore().toUpperCase();
   }
 
   /**
@@ -308,6 +324,30 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  /** The name of a field as a method. */
+  public String getFieldAsMethodName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    Field field = fieldConfig.getField();
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+      return getResourceNameFieldAsMethodName(field.getType(), Name.from(field.getSimpleName()));
+    } else {
+      return getFieldAsMethodName(field);
+    }
+  }
+
+  public String getFieldAsMethodName(Field field) {
+    return publicMethodName(Name.from(field.getSimpleName()));
+  }
+
+  public String getResourceNameFieldAsMethodName(TypeRef type, Name identifier) {
+    if (type.isMap()) {
+      return getNotImplementedString("SurfaceNamer.getResourceNameFieldAsMethodName:map-type");
+    } else if (type.isRepeated()) {
+      return publicMethodName(identifier.join("as").join("resources"));
+    } else {
+      return publicMethodName(identifier.join("as").join("resource"));
+    }
+  }
+
   /**
    * The function name to get the count of elements in the given field.
    *
@@ -399,6 +439,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The parameter name for the given lower-case field name. */
   public String getParamName(String var) {
     return localVarName(Name.from(var));
+  }
+
+  public String getPropertyName(String var) {
+    return publicMethodName(Name.from(var));
   }
 
   /** The documentation name of a parameter for the given lower-case field name. */
@@ -588,11 +632,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getVariableName(Field field) {
     return localVarName(Name.from(field.getSimpleName()));
-  }
-
-  /** The name of a field as a method. */
-  public String getFieldAsMethodName(Field field) {
-    return privateMethodName(Name.from(field.getSimpleName()));
   }
 
   /** Returns true if the request object param type for the given field should be imported. */

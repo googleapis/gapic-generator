@@ -12,18 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer.csharp;
+package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.transformer.FeatureConfig;
+public interface ResourceNameView {
+  public ResourceNameType type();
 
-public class CSharpFeatureConfig extends FeatureConfig {
-  @Override
-  public boolean enableMixins() {
-    return true;
-  }
+  public String typeName();
 
-  @Override
-  public boolean resourceNameTypesEnabled() {
-    return true;
-  }
+  public String paramName();
+
+  public String propertyName();
+
+  public String enumName();
+
+  public String docName();
+
+  public int index();
 }

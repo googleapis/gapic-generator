@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -193,6 +194,19 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
+    TypeRef type = fieldConfig.getField().getType();
+    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    if (type.isMap()) {
+      return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
+    } else if (type.isRepeated()) {
+      return publicMethodName(identifier.join("as_resources"));
+    } else {
+      return publicMethodName(identifier.join("as_resource"));
+    }
+  }
+
+  @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return privateMethodName(identifier);
   }
@@ -291,6 +305,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getParamName(String var) {
     return localVarName(Name.from(var).join("id"));
+  }
+
+  @Override
+  public String getPropertyName(String var) {
+    return publicMethodName(Name.from(var).join("id"));
   }
 
   @Override

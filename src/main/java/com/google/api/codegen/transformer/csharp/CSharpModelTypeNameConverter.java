@@ -209,13 +209,29 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by C#");
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    throw new UnsupportedOperationException(
-        "getTypeNameForResourceNameElementType not supported by C#");
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType().makeOptional(), typedResourceShortName);
+  }
+
+  private TypeName getTypeNameForTypedResourceName(
+      FieldConfig fieldConfig, TypeRef type, String typedResourceShortName) {
+    TypeName simpleTypeName = new TypeName(typedResourceShortName);
+    if (type.isMap()) {
+      throw new IllegalArgumentException("Map type not supported for typed resource name");
+    } else if (type.isRepeated()) {
+      TypeName listTypeName =
+          typeNameConverter.getTypeName("System.Collections.Generic.IEnumerable");
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
+    } else {
+      return simpleTypeName;
+    }
   }
 }

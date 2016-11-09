@@ -1,0 +1,252 @@
+@extends "csharp/common.snip"
+
+@snippet generate(resourceNames)
+    {@renderFileHeader(resourceNames.fileHeader)}
+
+    namespace {@resourceNames.fileHeader.packageName}
+    {
+        public interface IResourceName{}// TODO: This will be in GAX
+        public interface ISingleResourceName:IResourceName{} // TODO: Is this required?
+
+        {@resourceClasses(resourceNames.resourceNames)}
+
+        {@partialProtoClasses(resourceNames.resourceProtos)}
+    }
+@end
+
+@private resourceClasses(resources)
+    @join resource : resources
+        @switch resource.type.toString
+        @case "SINGLE"
+            {@resourceClassSingle(resource)}
+        @case "ONEOF"
+            {@resourceClassOneof(resource)}
+        @case "FIXED"
+            {@resourceClassFixed(resource)}
+        @end
+
+
+    @end
+@end
+
+@private resourceClassSingle(resource)
+    /// <summary>
+    /// Resource name for a {@resource.docName}.
+    /// </summary>
+    public sealed partial class {@resource.typeName} : ISingleResourceName
+    {
+        private static readonly PathTemplate s_template = new PathTemplate("{@resource.pattern}");
+
+        /// <summary>
+        /// Parses a {@resource.docName} resource name in string form into a <see cref="{@resource.typeName}"/>.
+        /// </summary>
+        /// <param name="{@resource.paramName}">The {@resource.docName} resource name in string form. Must not be <c>null</c>.</param>
+        public static {@resource.typeName} Parse(string {@resource.paramName})
+        {
+            GaxPreconditions.CheckNotNull({@resource.paramName}, nameof({@resource.paramName}));
+            ResourceName resourceName = s_template.ParseName({@resource.paramName});
+            return new {@resource.typeName}({@formatResourceNameArgs(resource.params)});
+        }
+        
+        public static bool TryParse(string {@resource.paramName}, out {@resource.typeName} result)
+        {
+            GaxPreconditions.CheckNotNull({@resource.paramName}, nameof({@resource.paramName}));
+            ResourceName resourceName;
+            if (s_template.TryParseName({@resource.paramName}, out resourceName))
+            {
+                result = new {@resource.typeName}({@formatResourceNameArgs(resource.params)});
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Constructs a {@resource.docName} name from its component parts.
+        /// </summary>
+        @join param : resource.params
+            /// <param name="{@param.nameAsParam}">The {@param.docName} ID. Must not be <c>null</c>.</param>
+        @end
+        public {@resource.typeName}({@formatParams(resource.params)})
+        {
+            @join param : resource.params
+                {@param.nameAsProperty} = GaxPreconditions.CheckNotNull({@param.nameAsParam}, nameof({@param.nameAsParam}));
+            @end
+        }
+
+        @join param : resource.params
+            /// <summary>
+            /// The {@param.docName} ID. Never <c>null</c>.
+            /// </summary>
+            public string {@param.nameAsProperty} { get; }
+
+        @end
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand({@formatArgs(resource.params)});
+    }
+@end
+
+@private resourceClassOneof(resource)
+    public sealed partial class {@resource.typeName} : IResourceName
+    {
+        public enum Type
+        {
+            @join child : resource.children
+                {@child.enumName} = {@child.index},
+            @end
+        }
+
+        public static {@resource.typeName} Parse(string name)
+        {
+            {@resource.typeName} result;
+            if (TryParse(name, out result))
+            {
+                return result;
+            }
+            throw new ArgumentException("Invalid name", "name");
+        }
+
+        public static bool TryParse(string name, out {@resource.typeName} result)
+        {
+            @join child : resource.children
+                {@child.typeName} {@child.paramName};
+                if ({@child.typeName}.TryParse(name, out {@child.paramName}))
+                {
+                    result = new {@resource.typeName}(Type.{@child.enumName}, {@child.paramName});
+                    return true;
+                }
+            @end
+            result = null;
+            return false;
+        }
+
+        @join child : resource.children
+            public static {@resource.typeName} From({@child.typeName} {@child.paramName}) => new {@resource.typeName}(Type.{@child.enumName}, {@child.paramName});
+
+        @end
+        public {@resource.typeName}(Type type, IResourceName value)
+        {
+            _type = type;
+            _value = GaxPreconditions.CheckNotNull(value, nameof(value));
+        }
+
+        private Type _type;
+        private IResourceName _value;
+
+        // Possibly move to base class (if we have one?)
+        private T CheckAndReturn<T>(Type type)
+        {
+            if (_type != type)
+            {
+                throw new InvalidOperationException($"Requested type {type}, but this one-of contains type {_type}");
+            }
+            return (T)_value;
+        }
+
+        @join child : resource.children
+            public {@child.typeName} {@child.propertyName} => CheckAndReturn<{@child.typeName}>(Type.{@child.enumName});
+
+        @end
+        public override string ToString() => _value.ToString();
+    }
+@end
+
+@private resourceClassFixed(resource)
+    public sealed partial class {@resource.typeName} : IResourceName
+    {
+        private const string FixedValue = "{@resource.value}";
+    
+        public static {@resource.typeName} Instance => new {@resource.typeName}();
+
+        public static {@resource.typeName} Parse(string {@resource.paramName})
+        {
+            {@resource.typeName} result;
+            if (!TryParse({@resource.paramName}, out result))
+            {
+                throw new ArgumentException($"Invalid resource name, must be \"{FixedValue}\"", nameof({@resource.paramName}));
+            }
+            return result;
+        }
+
+        public static bool TryParse(string {@resource.paramName}, out {@resource.typeName} result)
+        {
+            GaxPreconditions.CheckNotNull({@resource.paramName}, nameof({@resource.paramName}));
+            if ({@resource.paramName} == FixedValue)
+            {
+                result = Instance;
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        private {@resource.typeName}() { }
+
+        public override string ToString() => FixedValue;
+    }
+@end
+
+@private formatParams(params)
+    @join param : params on ", "
+        string {@param.nameAsParam}
+    @end
+@end
+
+@private formatArgs(params)
+    @join param : params on ", "
+        {@param.nameAsProperty}
+    @end
+@end
+
+@private formatResourceNameArgs(params)
+    @join param : params on ", "
+        resourceName[{@param.index}]
+    @end
+@end
+
+@private partialProtoClasses(protos)
+    @join proto : protos
+        public partial class {@proto.protoClassName}
+        {
+            @join field : proto.fields
+                /// <summary>
+                /// A <see cref="{@field.typeName}"/>-typed view over the <see cref="{@field.underlyingPropertyName}"/> resource-name property.
+                /// </summary>
+                public {@field.typeName} {@field.propertyName}
+                {
+                    @if field.isRepeated
+                        @if field.isAny
+                        @else
+                            get
+                            {
+                                return {@field.underlyingPropertyName}.Select(x => {@field.elementTypeName}.Parse(x));
+                            }
+                        @end
+
+                        set
+                        {
+                            GaxPreconditions.CheckNotNull(value, nameof(value));
+                            {@field.underlyingPropertyName}.Clear();
+                            {@field.underlyingPropertyName}.AddRange(value.Select(x => x.ToString()));
+                        }
+                    @else
+                        @if field.isAny
+                        @else
+                            get { return {@field.typeName}.Parse({@field.underlyingPropertyName}); }
+                        @end
+
+                        set { {@field.underlyingPropertyName} = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+                    @end
+                }
+
+            @end
+        }
+
+    @end
+@end

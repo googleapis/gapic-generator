@@ -211,7 +211,15 @@
         {@initValue.initialValue}
     @case "FormattedInitValueView"
         {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+    @case "ResourceNameInitValueView"
+        new {@initValue.resourceTypeName}({@formatResourceNameArgs(initValue.formatArgs)})
     @default
         $unhandledCase: {@initValue.type}$
+    @end
+@end
+
+@private formatResourceNameArgs(args)
+    @join arg : args on ", "
+        {@arg}
     @end
 @end

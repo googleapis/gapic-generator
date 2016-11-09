@@ -47,6 +47,7 @@ import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiView;
+import com.google.api.codegen.viewmodel.StaticLangResourceNamesView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
@@ -63,6 +64,7 @@ import java.util.Set;
 public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
   private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
+  private static final String RESOURCENAMES_TEMPLATE_FILENAME = "csharp/gapic_resourcenames.snip";
 
   private final GapicCodePathMapper pathMapper;
   private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
@@ -85,7 +87,9 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer = new CSharpSurfaceNamer(apiConfig.getPackageName());
+    CSharpFeatureConfig featureConfig = new CSharpFeatureConfig();
 
+    Interface aService = null;
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
@@ -93,23 +97,43 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
               apiConfig,
               createTypeTable(apiConfig.getPackageName()),
               namer,
-              new CSharpFeatureConfig());
+              featureConfig);
 
       surfaceDocs.add(generateApiAndSettingsView(context));
+      aService = service;
     }
+
+    SurfaceTransformerContext context =
+        SurfaceTransformerContext.create(
+            aService, apiConfig, createTypeTable(apiConfig.getPackageName()), namer, featureConfig);
+    surfaceDocs.add(generateResourceNamesView(context));
 
     return surfaceDocs;
   }
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(XAPI_TEMPLATE_FILENAME);
+    return Arrays.asList(XAPI_TEMPLATE_FILENAME, RESOURCENAMES_TEMPLATE_FILENAME);
   }
 
   private ModelTypeTable createTypeTable(String implicitPackageName) {
     return new ModelTypeTable(
         new CSharpTypeTable(implicitPackageName),
         new CSharpModelTypeNameConverter(implicitPackageName));
+  }
+
+  private StaticLangResourceNamesView generateResourceNamesView(SurfaceTransformerContext context) {
+    StaticLangResourceNamesView.Builder view = StaticLangResourceNamesView.newBuilder();
+    view.templateFileName(RESOURCENAMES_TEMPLATE_FILENAME);
+    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
+    view.outputPath(outputPath + File.separator + "ResourceNames.cs");
+    view.resourceNames(pathTemplateTransformer.generateResourceNames(context));
+    view.resourceProtos(pathTemplateTransformer.generateResourceProtos(context));
+    context.getTypeTable().saveNicknameFor("Google.Api.Gax.GaxPreconditions");
+    context.getTypeTable().saveNicknameFor("System.Linq.Enumerable");
+    context.getTypeTable().saveNicknameFor("System.InvalidOperationException");
+    view.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    return view.build();
   }
 
   private StaticLangApiAndSettingsFileView generateApiAndSettingsView(

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** The context for transforming a model into a view model for a surface. */
 @AutoValue
@@ -82,6 +83,7 @@ public abstract class SurfaceTransformerContext {
   public abstract FeatureConfig getFeatureConfig();
 
   /** A map which maps the reroute grpc interface to its original interface */
+  @Nullable
   public abstract Map<Interface, Interface> getGrpcRerouteMap();
 
   public SurfaceTransformerContext withNewTypeTable() {
