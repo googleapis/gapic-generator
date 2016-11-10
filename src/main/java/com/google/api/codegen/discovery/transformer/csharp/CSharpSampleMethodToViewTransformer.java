@@ -77,11 +77,6 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
     String serviceTypeName = typeTable.getAndSaveNicknameForServiceType(config.apiTypeName());
     String requestVarName = symbolTable.getNewSymbol(namer.getRequestVarName());
-    // We don't store this type in the type table because its nickname is fully
-    // qualified. If we use the getAndSaveNickname helper, the nickname returned
-    // is always the last segment of the import path. Since the request type is
-    // derived from the service type, skipping the type table can't cause any
-    // issues.
     String requestTypeName =
         typeTable.getAndSaveNicknameForRequestType(config.apiTypeName(), methodInfo.requestType());
 

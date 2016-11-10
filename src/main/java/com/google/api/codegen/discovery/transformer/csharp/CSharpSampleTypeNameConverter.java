@@ -84,7 +84,7 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
-    // Maps are special-cased so we return Map.Entry types.
+    // Maps are special-cased so we return KeyValuePair types.
     if (typeInfo.isMap()) {
       TypeName mapTypeName =
           typeNameConverter.getTypeName("System.Collections.Generic.KeyValuePair");
