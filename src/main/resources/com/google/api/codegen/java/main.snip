@@ -89,11 +89,14 @@
    *
    * <pre>
    * <code>
-   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} = {@xapiClassDoc.settingsClassName}.defaultBuilder()
-   *     .provideChannelWith(myCredentials)
-   *     .build();
-   * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} = \
-       {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
+   * InstantiatingChannelProvider channelProvider =
+   *     {@xapiClassDoc.settingsClassName}.defaultChannelProviderBuilder()
+   *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+   *         .build();
+   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+   *     {@xapiClassDoc.settingsClassName}.defaultBuilder().setChannelProvider(channelProvider).build();
+   * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
+   *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
    * </code>
    * </pre>
    */
@@ -156,8 +159,8 @@
 
 @private members(xapiClass)
   private final {@xapiClass.settingsClassName} settings;
-  private final ManagedChannel channel;
   private final ScheduledExecutorService executor;
+  private final ManagedChannel channel;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   @join apiCallable : xapiClass.apiCallableMembers
@@ -203,8 +206,9 @@
    */
   protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
     this.settings = settings;
-    this.executor = settings.getExecutorProvider().getOrBuildExecutor();
-    this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
+    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
+    this.executor = channelAndExecutor.getExecutor();
+    this.channel = channelAndExecutor.getChannel();
 
     @join apiCallable : xapiClass.apiCallableMembers
       @switch apiCallable.type
@@ -445,7 +449,12 @@
 
 @private builderSetCalls(requestObjectParams)
   @join requestObjectParam : requestObjectParams
-    .{@requestObjectParam.setCallName}({@requestObjectParam.name})
+    @if requestObjectParam.hasTransformParamFunction
+      .{@requestObjectParam.setCallName}(\
+        {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name}))
+    @else
+      .{@requestObjectParam.setCallName}({@requestObjectParam.name})
+    @end
   @end
 @end
 

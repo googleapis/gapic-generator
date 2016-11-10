@@ -17,7 +17,9 @@ language_settings:
 interfaces:
 - name: google.example.library.v1.LibraryService
   collections:
-  - name_pattern: archives/{archive_path=**}/books/{book}
+  - name_pattern: archives/{archive}/books/{book_path=**}
+    entity_name: book_path
+  - name_pattern: archives/{archive}/books/{book}
     entity_name: book
   - name_pattern: bookShelves/{book_shelf}
     entity_name: book_shelf
@@ -268,6 +270,21 @@ interfaces:
     retry_params_name: default
     field_name_patterns:
       name: book
+    timeout_millis: 60000
+  - name: GetBookFromAnywhere
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - alt_book_name
+    required_fields:
+    - name
+    - alt_book_name
+    request_object_method: true
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book_path
     timeout_millis: 60000
   - name: UpdateBookIndex
     flattening:

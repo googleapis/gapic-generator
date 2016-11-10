@@ -49,6 +49,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String settingsGetterName();
 
+  public abstract String modifyMethodName();
+
   public abstract List<RequestObjectParamView> methodParams();
 
   @Nullable // Used in C#
@@ -113,6 +115,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder callableName(String name);
 
     public abstract Builder settingsGetterName(String name);
+
+    public abstract Builder modifyMethodName(String name);
 
     public abstract Builder methodParams(List<RequestObjectParamView> methodParams);
 

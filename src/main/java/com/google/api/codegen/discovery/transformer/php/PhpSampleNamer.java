@@ -12,11 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.php;
+package com.google.api.codegen.discovery.transformer.php;
 
-import com.google.api.codegen.util.php.PhpTypeTable;
+import com.google.api.codegen.discovery.transformer.SampleNamer;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.php.PhpNameFormatter;
 
-/** A PhpContext provides functionality specific to a context in PHP. */
-public interface PhpContext {
-  void resetState(PhpTypeTable phpTypeTable);
+public class PhpSampleNamer extends SampleNamer {
+
+  public PhpSampleNamer() {
+    super(new PhpNameFormatter());
+  }
+
+  @Override
+  public String getServiceVarName(String apiTypeName) {
+    return localVarName(Name.lowerCamel("service"));
+  }
 }

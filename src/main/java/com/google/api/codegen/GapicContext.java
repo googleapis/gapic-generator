@@ -15,10 +15,10 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -78,14 +78,8 @@ public class GapicContext extends CodegenContext {
   }
 
   /** Get collection configuration for a method. */
-  public CollectionConfig getCollectionConfig(Interface service, String entityName) {
-    CollectionConfig result =
-        getApiConfig().getInterfaceConfig(service).getCollectionConfig(entityName);
-    if (result == null) {
-      throw new IllegalStateException(
-          "A collection config was not present for entity name " + entityName);
-    }
-    return result;
+  public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
+    return getApiConfig().getSingleResourceNameConfig(entityName);
   }
 
   /**

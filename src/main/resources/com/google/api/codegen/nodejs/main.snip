@@ -287,14 +287,14 @@
 @end
 
 @private pathTemplateSection(service)
-  @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+  @if context.getApiConfig.getSingleResourceNameConfigs()
+    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
       var {@pathTemplateName(collectionConfig)} = new gax.PathTemplate(
           '{@collectionConfig.getNamePattern}');
     @end
 
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
 
       {@createResourceFunction(service, collectionConfig)}
 
@@ -348,13 +348,13 @@
 
 @private createResourceFunctionParams(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@context.lowerUnderscoreToLowerCamel(param)}
+    {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
   @end
 @end
 
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    {@param}: {@context.lowerUnderscoreToLowerCamel(param)}
+    {@param}: {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
   @end
 @end
 

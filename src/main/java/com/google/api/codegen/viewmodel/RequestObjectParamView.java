@@ -30,15 +30,26 @@ public abstract class RequestObjectParamView {
 
   public abstract String setCallName();
 
+  @Nullable
+  public abstract String transformParamFunctionName();
+
   public abstract boolean isMap();
 
   public abstract boolean isArray();
+
+  public boolean isCollection() {
+    return isMap() || isArray();
+  }
 
   @Nullable // Used in C#
   public abstract String defaultValue();
 
   public boolean hasDefaultValue() {
     return defaultValue() != null;
+  }
+
+  public boolean hasTransformParamFunction() {
+    return transformParamFunctionName() != null;
   }
 
   public static Builder newBuilder() {
@@ -56,6 +67,8 @@ public abstract class RequestObjectParamView {
     public abstract Builder typeName(String val);
 
     public abstract Builder setCallName(String val);
+
+    public abstract Builder transformParamFunctionName(String val);
 
     public abstract Builder isMap(boolean val);
 

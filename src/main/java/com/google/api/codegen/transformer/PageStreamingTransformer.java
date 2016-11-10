@@ -71,7 +71,6 @@ public class PageStreamingTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    FeatureConfig featureConfig = context.getFeatureConfig();
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
@@ -105,7 +104,7 @@ public class PageStreamingTransformer {
     desc.responseTokenGetFunction(
         namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
     desc.resourcesFieldGetFunction(
-        namer.getFieldGetFunctionName(featureConfig, pageStreaming.getResourcesFieldConfig()));
+        namer.getFieldGetFunctionName(pageStreaming.getResourcesField()));
 
     return desc.build();
   }

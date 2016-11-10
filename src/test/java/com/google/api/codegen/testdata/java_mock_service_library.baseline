@@ -35,6 +35,16 @@ public class MockLabeler implements MockGrpcService  {
   }
 
   @Override
+  public void addResponse(GeneratedMessageV3 response) {
+    serviceImpl.addResponse(response);
+  }
+
+  @Override
+  public void addException(Exception exception) {
+    serviceImpl.addException(exception);
+  }
+
+  @Override
   public void setResponses(List<GeneratedMessageV3> responses) {
     serviceImpl.setResponses(responses);
   }
@@ -83,6 +93,16 @@ public class MockLibraryService implements MockGrpcService  {
   @Override
   public List<GeneratedMessageV3> getRequests() {
     return serviceImpl.getRequests();
+  }
+
+  @Override
+  public void addResponse(GeneratedMessageV3 response) {
+    serviceImpl.addResponse(response);
+  }
+
+  @Override
+  public void addException(Exception exception) {
+    serviceImpl.addException(exception);
   }
 
   @Override

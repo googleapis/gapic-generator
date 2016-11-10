@@ -55,7 +55,7 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getServiceTypeName(String apiTypeName) {
-    return new TypeName(apiTypeName);
+    return new TypeName(apiTypeName.toLowerCase());
   }
 
   @Override
@@ -78,6 +78,9 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
+    if (typeInfo.kind() == Field.Kind.TYPE_UNKNOWN) {
+      return new TypeName("Object");
+    }
     String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(typeInfo.kind());
     if (primitiveTypeName != null) {
       return new TypeName(primitiveTypeName);
@@ -88,7 +91,7 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
     // Don't call getTypeName; we don't need to import these.
-    if (typeInfo.isMap()) {
+    if (typeInfo.isMap() || typeInfo.kind() == Field.Kind.TYPE_UNKNOWN) {
       return TypedValue.create(new TypeName("Object"), "{}");
     }
     if (typeInfo.isArray()) {

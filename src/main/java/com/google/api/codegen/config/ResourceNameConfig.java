@@ -12,6 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.go;
+package com.google.api.codegen.config;
 
-public interface GoContext {}
+public interface ResourceNameConfig {
+
+  /** Returns the name used as a basis for generating methods. */
+  String getEntityName();
+
+  /** Returns the resource name type. */
+  ResourceNameType getResourceNameType();
+}

@@ -37,7 +37,8 @@ public class PythonSphinxCommentFixer {
       return comment;
     }
     do {
-      m.appendReplacement(sb, String.format("``%s``", m.group(1)));
+      // proto display name may contain '$' which needs to be escaped using Matcher.quoteReplacement
+      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("``%s``", m.group(1))));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
@@ -51,7 +52,9 @@ public class PythonSphinxCommentFixer {
       return comment;
     }
     do {
-      m.appendReplacement(sb, String.format("`%s <%s>`_", m.group(1), m.group(2)));
+      // absolute markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
+      m.appendReplacement(
+          sb, Matcher.quoteReplacement(String.format("`%s <%s>`_", m.group(1), m.group(2))));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
@@ -65,8 +68,11 @@ public class PythonSphinxCommentFixer {
       return comment;
     }
     do {
+      // cloud markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
       m.appendReplacement(
-          sb, String.format("`%s <https://cloud.google.com%s>`_", m.group(1), m.group(2)));
+          sb,
+          Matcher.quoteReplacement(
+              String.format("`%s <https://cloud.google.com%s>`_", m.group(1), m.group(2))));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();

@@ -23,16 +23,16 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
-/** CollectionConfig represents the collection configuration for a method. */
+/** SingleResourceNameConfig represents the collection configuration for a method. */
 @AutoValue
-public abstract class CollectionConfig {
+public abstract class SingleResourceNameConfig implements ResourceNameConfig {
 
   /**
-   * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will be
-   * returned, and diagnostics are reported to the diag collector.
+   * Creates an instance of SingleResourceNameConfig based on CollectionConfigProto. On errors, null
+   * will be returned, and diagnostics are reported to the diag collector.
    */
   @Nullable
-  public static CollectionConfig createCollection(
+  public static SingleResourceNameConfig createSingleResourceName(
       DiagCollector diagCollector, CollectionConfigProto collectionConfigProto) {
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
@@ -43,15 +43,21 @@ public abstract class CollectionConfig {
       return null;
     }
     String entityName = collectionConfigProto.getEntityName();
-    return new AutoValue_CollectionConfig(namePattern, nameTemplate, entityName);
+    return new AutoValue_SingleResourceNameConfig(namePattern, nameTemplate, entityName);
   }
 
-  /** Returns the name pattern for resources in the collection. */
+  /** Returns the name pattern for the resource name config. */
   public abstract String getNamePattern();
 
-  /** Returns the name template for resources in the collection. */
+  /** Returns the name template for the resource name config. */
   public abstract PathTemplate getNameTemplate();
 
   /** Returns the name used as a basis for generating methods. */
+  @Override
   public abstract String getEntityName();
+
+  @Override
+  public ResourceNameType getResourceNameType() {
+    return ResourceNameType.SINGLE;
+  }
 }

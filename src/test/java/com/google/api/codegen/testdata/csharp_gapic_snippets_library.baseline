@@ -18,7 +18,6 @@
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
 using Google.Example.Library.V1;
-using Google.Example.Library.V1.UpdateBookIndexRequest.Types;
 using Google.Longrunning;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -517,7 +516,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task ListStringsAsync()
+        public async Task ListStringsAsync1()
         {
             // Snippet: ListStringsAsync(string,int?,CallSettings)
             // Create client
@@ -550,7 +549,7 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public void ListStrings()
+        public void ListStrings1()
         {
             // Snippet: ListStrings(string,int?,CallSettings)
             // Create client
@@ -560,6 +559,71 @@ namespace Google.Example.Library.V1.Snippets
             // Make the request
             IPagedEnumerable<ListStringsResponse,string> response =
                 libraryServiceClient.ListStrings();
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (string item in response)
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            }
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (string item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+            // End snippet
+        }
+
+        public async Task ListStringsAsync2()
+        {
+            // Snippet: ListStringsAsync(string,string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string name = "";
+            // Make the request
+            IPagedAsyncEnumerable<ListStringsResponse,string> response =
+                libraryServiceClient.ListStringsAsync(name);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            await response.ForEachAsync((string item) =>
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            });
+
+            // Or iterate over fixed-sized pages, lazily performing RPCs as required
+            int pageSize = 10;
+            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
+            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (string item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            });
+            // End snippet
+        }
+
+        public void ListStrings2()
+        {
+            // Snippet: ListStrings(string,string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string name = "";
+            // Make the request
+            IPagedEnumerable<ListStringsResponse,string> response =
+                libraryServiceClient.ListStrings(name);
 
             // Iterate over all response items, lazily performing RPCs as required
             foreach (string item in response)
@@ -595,8 +659,8 @@ namespace Google.Example.Library.V1.Snippets
                 new Comment
                 {
                     Comment = ByteString.CopyFromUtf8(""),
-                    Stage = Stage.Unset,
-                    Alignment = Alignment.Char,
+                    Stage = Comment.Types.Stage.Unset,
+                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
                 },
             };
             // Make the request
@@ -616,8 +680,8 @@ namespace Google.Example.Library.V1.Snippets
                 new Comment
                 {
                     Comment = ByteString.CopyFromUtf8(""),
-                    Stage = Stage.Unset,
-                    Alignment = Alignment.Char,
+                    Stage = Comment.Types.Stage.Unset,
+                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
                 },
             };
             // Make the request
@@ -634,7 +698,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
             // Make the request
-            Book response = await libraryServiceClient.GetBookFromArchiveAsync(formattedName);
+            BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(formattedName);
             // End snippet
         }
 
@@ -646,7 +710,34 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
             // Make the request
-            Book response = libraryServiceClient.GetBookFromArchive(formattedName);
+            BookFromArchive response = libraryServiceClient.GetBookFromArchive(formattedName);
+            // End snippet
+        }
+
+        public async Task GetBookFromAnywhereAsync()
+        {
+            // Snippet: GetBookFromAnywhereAsync(string,string,CallSettings)
+            // Additional: GetBookFromAnywhereAsync(string,string,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string name = "";
+            string formattedAltBookName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name, formattedAltBookName);
+            // End snippet
+        }
+
+        public void GetBookFromAnywhere()
+        {
+            // Snippet: GetBookFromAnywhere(string,string,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            string name = "";
+            string formattedAltBookName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name, formattedAltBookName);
             // End snippet
         }
 

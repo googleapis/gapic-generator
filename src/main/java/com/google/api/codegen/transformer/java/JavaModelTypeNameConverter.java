@@ -15,6 +15,8 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -208,13 +210,12 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     return new TypeName(longName, shortName);
   }
 
-  @Override
-  public TypeName getTypeNameForTypedResourceName(
-      ProtoElement elem, TypeRef type, String resourceName) {
-    String packageName = getProtoElementPackage(elem);
-    String longName = packageName + "." + resourceName;
+  private TypeName getTypeNameForTypedResourceName(
+      FieldConfig fieldConfig, TypeRef type, String typedResourceShortName) {
+    String packageName = getResourceNamePackage(fieldConfig);
+    String longName = packageName + "." + typedResourceShortName;
 
-    TypeName simpleTypeName = new TypeName(longName, resourceName);
+    TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
 
     if (type.isMap()) {
       throw new IllegalArgumentException("Map type not supported for typed resource name");
@@ -225,6 +226,35 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     } else {
       return simpleTypeName;
     }
+  }
+
+  private static String getResourceNamePackage(FieldConfig fieldConfig) {
+    ResourceNameType resourceNameType = fieldConfig.getResourceNameType();
+    switch (resourceNameType) {
+      case ANY:
+        return "com.google.api.resourcenames";
+      case FIXED:
+      case SINGLE:
+      case ONEOF:
+        return getJavaPackage(fieldConfig.getField().getFile());
+      case NONE:
+      default:
+        throw new IllegalArgumentException("Unexpected ResourceNameType: " + resourceNameType);
+    }
+  }
+
+  @Override
+  public TypeName getTypeNameForTypedResourceName(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType(), typedResourceShortName);
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType().makeOptional(), typedResourceShortName);
   }
 
   private static String getShortName(ProtoElement elem) {
@@ -243,7 +273,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     return name;
   }
 
-  private static String getJavaPackage(ProtoFile file) {
+  public static String getJavaPackage(ProtoFile file) {
     String packageName = file.getProto().getOptions().getJavaPackage();
     if (Strings.isNullOrEmpty(packageName)) {
       return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.getFullName();

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
@@ -230,7 +231,14 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName) {
+      FieldConfig fieldConfig, String typedResourceShortName) {
     throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by Go");
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    throw new UnsupportedOperationException(
+        "getTypeNameForResourceNameElementType not supported by Go");
   }
 }

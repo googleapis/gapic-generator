@@ -17,8 +17,6 @@
 
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
-using Google.Example.Library.V1;
-using Google.Example.Library.V1.UpdateBookIndexRequest.Types;
 using Google.Longrunning;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -69,6 +67,7 @@ namespace Google.Example.Library.V1
             ListStringsSettings = existing.ListStringsSettings;
             AddCommentsSettings = existing.AddCommentsSettings;
             GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings;
+            GetBookFromAnywhereSettings = existing.GetBookFromAnywhereSettings;
             UpdateBookIndexSettings = existing.UpdateBookIndexSettings;
             FindRelatedBooksSettings = existing.FindRelatedBooksSettings;
             AddTagSettings = existing.AddTagSettings;
@@ -586,6 +585,36 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.GetBookFromAnywhere</c> and <c>LibraryServiceClient.GetBookFromAnywhereAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.GetBookFromAnywhere</c> and
+        /// <c>LibraryServiceClient.GetBookFromAnywhereAsync</c> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings GetBookFromAnywhereSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <c>LibraryServiceClient.UpdateBookIndex</c> and <c>LibraryServiceClient.UpdateBookIndexAsync</c>.
         /// </summary>
         /// <remarks>
@@ -808,7 +837,7 @@ namespace Google.Example.Library.V1
         /// <item><description>bookId</description></item>
         /// </list>
         /// </summary>
-        public static PathTemplate ArchivedBookTemplate { get; } = new PathTemplate("archives/{archive_path=**}/books/{book_id}");
+        public static PathTemplate ArchivedBookTemplate { get; } = new PathTemplate("archives/{archive_path}/books/{book_id=**}");
 
         /// <summary>
         /// Creates a archived_book resource name from its component IDs.
@@ -819,6 +848,27 @@ namespace Google.Example.Library.V1
         /// The full archived_book resource name.
         /// </returns>
         public static string FormatArchivedBookName(string archivePathId, string bookIdId) => ArchivedBookTemplate.Expand(archivePathId, bookIdId);
+
+        /// <summary>
+        /// Path template for a return resource. Parameters:
+        /// <list type="bullet">
+        /// <item><description>shelf</description></item>
+        /// <item><description>book</description></item>
+        /// <item><description>return</description></item>
+        /// </list>
+        /// </summary>
+        public static PathTemplate ReturnTemplate { get; } = new PathTemplate("shelves/{shelf}/books/{book}/returns/{return}");
+
+        /// <summary>
+        /// Creates a return resource name from its component IDs.
+        /// </summary>
+        /// <param name="shelfId">The shelf ID.</param>
+        /// <param name="bookId">The book ID.</param>
+        /// <param name="returnId">The return ID.</param>
+        /// <returns>
+        /// The full return resource name.
+        /// </returns>
+        public static string FormatReturnName(string shelfId, string bookId, string returnId) => ReturnTemplate.Expand(shelfId, bookId, returnId);
 
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
@@ -1944,6 +1994,64 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// </returns>
+        public virtual IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+            string name,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="string"/> resources.
+        /// </returns>
+        public virtual IPagedEnumerable<ListStringsResponse, string> ListStrings(
+            string name,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Adds comments to a book
         /// </summary>
         /// <param name="name">
@@ -2024,7 +2132,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Book> GetBookFromArchiveAsync(
+        public virtual Task<BookFromArchive> GetBookFromArchiveAsync(
             string name,
             CallSettings callSettings = null)
         {
@@ -2043,7 +2151,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Book> GetBookFromArchiveAsync(
+        public virtual Task<BookFromArchive> GetBookFromArchiveAsync(
             string name,
             CancellationToken cancellationToken) => GetBookFromArchiveAsync(
                 name,
@@ -2061,8 +2169,80 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Book GetBookFromArchive(
+        public virtual BookFromArchive GetBookFromArchive(
             string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a book from a shelf or archive.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<BookFromAnywhere> GetBookFromAnywhereAsync(
+            string name,
+            string altBookName,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a book from a shelf or archive.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<BookFromAnywhere> GetBookFromAnywhereAsync(
+            string name,
+            string altBookName,
+            CancellationToken cancellationToken) => GetBookFromAnywhereAsync(
+                name,
+                altBookName,
+                CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Gets a book from a shelf or archive.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual BookFromAnywhere GetBookFromAnywhere(
+            string name,
+            string altBookName,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
@@ -2444,7 +2624,8 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<MoveBookRequest, Book> _callMoveBook;
         private readonly ApiCall<ListStringsRequest, ListStringsResponse> _callListStrings;
         private readonly ApiCall<AddCommentsRequest, Empty> _callAddComments;
-        private readonly ApiCall<GetBookFromArchiveRequest, Book> _callGetBookFromArchive;
+        private readonly ApiCall<GetBookFromArchiveRequest, BookFromArchive> _callGetBookFromArchive;
+        private readonly ApiCall<GetBookFromAnywhereRequest, BookFromAnywhere> _callGetBookFromAnywhere;
         private readonly ApiCall<UpdateBookIndexRequest, Empty> _callUpdateBookIndex;
         private readonly ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> _callFindRelatedBooks;
         private readonly ApiCall<AddTagRequest, AddTagResponse> _callAddTag;
@@ -2490,8 +2671,10 @@ namespace Google.Example.Library.V1
                 GrpcClient.ListStringsAsync, GrpcClient.ListStrings, effectiveSettings.ListStringsSettings);
             _callAddComments = _clientHelper.BuildApiCall<AddCommentsRequest, Empty>(
                 GrpcClient.AddCommentsAsync, GrpcClient.AddComments, effectiveSettings.AddCommentsSettings);
-            _callGetBookFromArchive = _clientHelper.BuildApiCall<GetBookFromArchiveRequest, Book>(
+            _callGetBookFromArchive = _clientHelper.BuildApiCall<GetBookFromArchiveRequest, BookFromArchive>(
                 GrpcClient.GetBookFromArchiveAsync, GrpcClient.GetBookFromArchive, effectiveSettings.GetBookFromArchiveSettings);
+            _callGetBookFromAnywhere = _clientHelper.BuildApiCall<GetBookFromAnywhereRequest, BookFromAnywhere>(
+                GrpcClient.GetBookFromAnywhereAsync, GrpcClient.GetBookFromAnywhere, effectiveSettings.GetBookFromAnywhereSettings);
             _callUpdateBookIndex = _clientHelper.BuildApiCall<UpdateBookIndexRequest, Empty>(
                 GrpcClient.UpdateBookIndexAsync, GrpcClient.UpdateBookIndex, effectiveSettings.UpdateBookIndexSettings);
             _callFindRelatedBooks = _clientHelper.BuildApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse>(
@@ -2509,6 +2692,29 @@ namespace Google.Example.Library.V1
         /// </summary>
         public override LibraryService.LibraryServiceClient GrpcClient { get; }
 
+        // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
+        partial void Modify_CreateShelfRequest(ref CreateShelfRequest request, ref CallSettings settings);
+        partial void Modify_GetShelfRequest(ref GetShelfRequest request, ref CallSettings settings);
+        partial void Modify_ListShelvesRequest(ref ListShelvesRequest request, ref CallSettings settings);
+        partial void Modify_DeleteShelfRequest(ref DeleteShelfRequest request, ref CallSettings settings);
+        partial void Modify_MergeShelvesRequest(ref MergeShelvesRequest request, ref CallSettings settings);
+        partial void Modify_CreateBookRequest(ref CreateBookRequest request, ref CallSettings settings);
+        partial void Modify_PublishSeriesRequest(ref PublishSeriesRequest request, ref CallSettings settings);
+        partial void Modify_GetBookRequest(ref GetBookRequest request, ref CallSettings settings);
+        partial void Modify_ListBooksRequest(ref ListBooksRequest request, ref CallSettings settings);
+        partial void Modify_DeleteBookRequest(ref DeleteBookRequest request, ref CallSettings settings);
+        partial void Modify_UpdateBookRequest(ref UpdateBookRequest request, ref CallSettings settings);
+        partial void Modify_MoveBookRequest(ref MoveBookRequest request, ref CallSettings settings);
+        partial void Modify_ListStringsRequest(ref ListStringsRequest request, ref CallSettings settings);
+        partial void Modify_AddCommentsRequest(ref AddCommentsRequest request, ref CallSettings settings);
+        partial void Modify_GetBookFromArchiveRequest(ref GetBookFromArchiveRequest request, ref CallSettings settings);
+        partial void Modify_GetBookFromAnywhereRequest(ref GetBookFromAnywhereRequest request, ref CallSettings settings);
+        partial void Modify_UpdateBookIndexRequest(ref UpdateBookIndexRequest request, ref CallSettings settings);
+        partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref CallSettings settings);
+        partial void Modify_AddTagRequest(ref AddTagRequest request, ref CallSettings settings);
+        partial void Modify_AddLabelRequest(ref AddLabelRequest request, ref CallSettings settings);
+        partial void Modify_GetBookRequest(ref GetBookRequest request, ref CallSettings settings);
+
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
         /// </summary>
@@ -2523,12 +2729,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Task<Shelf> CreateShelfAsync(
             Shelf shelf,
-            CallSettings callSettings = null) => _callCreateShelf.Async(
-                new CreateShelfRequest
-                {
-                    Shelf = shelf,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            CreateShelfRequest request = new CreateShelfRequest
+            {
+                Shelf = shelf,
+            };
+            Modify_CreateShelfRequest(ref request, ref callSettings);
+            return _callCreateShelf.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
@@ -2544,12 +2753,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Shelf CreateShelf(
             Shelf shelf,
-            CallSettings callSettings = null) => _callCreateShelf.Sync(
-                new CreateShelfRequest
-                {
-                    Shelf = shelf,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            CreateShelfRequest request = new CreateShelfRequest
+            {
+                Shelf = shelf,
+            };
+            Modify_CreateShelfRequest(ref request, ref callSettings);
+            return _callCreateShelf.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a shelf.
@@ -2565,12 +2777,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Task<Shelf> GetShelfAsync(
             string name,
-            CallSettings callSettings = null) => _callGetShelf.Async(
-                new GetShelfRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+            };
+            Modify_GetShelfRequest(ref request, ref callSettings);
+            return _callGetShelf.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a shelf.
@@ -2586,12 +2801,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Shelf GetShelf(
             string name,
-            CallSettings callSettings = null) => _callGetShelf.Sync(
-                new GetShelfRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+            };
+            Modify_GetShelfRequest(ref request, ref callSettings);
+            return _callGetShelf.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a shelf.
@@ -2611,13 +2829,16 @@ namespace Google.Example.Library.V1
         public override Task<Shelf> GetShelfAsync(
             string name,
             SomeMessage message,
-            CallSettings callSettings = null) => _callGetShelf.Async(
-                new GetShelfRequest
-                {
-                    Name = name,
-                    Message = message,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+            };
+            Modify_GetShelfRequest(ref request, ref callSettings);
+            return _callGetShelf.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a shelf.
@@ -2637,13 +2858,16 @@ namespace Google.Example.Library.V1
         public override Shelf GetShelf(
             string name,
             SomeMessage message,
-            CallSettings callSettings = null) => _callGetShelf.Sync(
-                new GetShelfRequest
-                {
-                    Name = name,
-                    Message = message,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+            };
+            Modify_GetShelfRequest(ref request, ref callSettings);
+            return _callGetShelf.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a shelf.
@@ -2667,14 +2891,17 @@ namespace Google.Example.Library.V1
             string name,
             SomeMessage message,
             StringBuilder stringBuilder,
-            CallSettings callSettings = null) => _callGetShelf.Async(
-                new GetShelfRequest
-                {
-                    Name = name,
-                    Message = message,
-                    StringBuilder = stringBuilder,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+                StringBuilder = stringBuilder,
+            };
+            Modify_GetShelfRequest(ref request, ref callSettings);
+            return _callGetShelf.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a shelf.
@@ -2698,14 +2925,17 @@ namespace Google.Example.Library.V1
             string name,
             SomeMessage message,
             StringBuilder stringBuilder,
-            CallSettings callSettings = null) => _callGetShelf.Sync(
-                new GetShelfRequest
-                {
-                    Name = name,
-                    Message = message,
-                    StringBuilder = stringBuilder,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+                StringBuilder = stringBuilder,
+            };
+            Modify_GetShelfRequest(ref request, ref callSettings);
+            return _callGetShelf.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Lists shelves.
@@ -2727,15 +2957,17 @@ namespace Google.Example.Library.V1
         public override IPagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
             string pageToken = null,
             int? pageSize = null,
-            CallSettings callSettings = null) => new PagedAsyncEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(
-                _callListShelves,
-                new ListShelvesRequest
-                {
+            CallSettings callSettings = null)
+        {
+            ListShelvesRequest request = new ListShelvesRequest
+            {
 
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListShelvesRequest(ref request, ref callSettings);
+            return new PagedAsyncEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(_callListShelves, request, callSettings);
+        }
 
         /// <summary>
         /// Lists shelves.
@@ -2757,15 +2989,17 @@ namespace Google.Example.Library.V1
         public override IPagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
             string pageToken = null,
             int? pageSize = null,
-            CallSettings callSettings = null) => new PagedEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(
-                _callListShelves,
-                new ListShelvesRequest
-                {
+            CallSettings callSettings = null)
+        {
+            ListShelvesRequest request = new ListShelvesRequest
+            {
 
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListShelvesRequest(ref request, ref callSettings);
+            return new PagedEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(_callListShelves, request, callSettings);
+        }
 
         /// <summary>
         /// Deletes a shelf.
@@ -2781,12 +3015,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Task DeleteShelfAsync(
             string name,
-            CallSettings callSettings = null) => _callDeleteShelf.Async(
-                new DeleteShelfRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            DeleteShelfRequest request = new DeleteShelfRequest
+            {
+                Name = name,
+            };
+            Modify_DeleteShelfRequest(ref request, ref callSettings);
+            return _callDeleteShelf.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Deletes a shelf.
@@ -2802,12 +3039,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override void DeleteShelf(
             string name,
-            CallSettings callSettings = null) => _callDeleteShelf.Sync(
-                new DeleteShelfRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            DeleteShelfRequest request = new DeleteShelfRequest
+            {
+                Name = name,
+            };
+            Modify_DeleteShelfRequest(ref request, ref callSettings);
+            _callDeleteShelf.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Merges two shelves by adding all books from the shelf named
@@ -2829,13 +3069,16 @@ namespace Google.Example.Library.V1
         public override Task<Shelf> MergeShelvesAsync(
             string name,
             string otherShelfName,
-            CallSettings callSettings = null) => _callMergeShelves.Async(
-                new MergeShelvesRequest
-                {
-                    Name = name,
-                    OtherShelfName = otherShelfName,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            MergeShelvesRequest request = new MergeShelvesRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+            Modify_MergeShelvesRequest(ref request, ref callSettings);
+            return _callMergeShelves.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Merges two shelves by adding all books from the shelf named
@@ -2857,13 +3100,16 @@ namespace Google.Example.Library.V1
         public override Shelf MergeShelves(
             string name,
             string otherShelfName,
-            CallSettings callSettings = null) => _callMergeShelves.Sync(
-                new MergeShelvesRequest
-                {
-                    Name = name,
-                    OtherShelfName = otherShelfName,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            MergeShelvesRequest request = new MergeShelvesRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+            Modify_MergeShelvesRequest(ref request, ref callSettings);
+            return _callMergeShelves.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Creates a book.
@@ -2883,13 +3129,16 @@ namespace Google.Example.Library.V1
         public override Task<Book> CreateBookAsync(
             string name,
             Book book,
-            CallSettings callSettings = null) => _callCreateBook.Async(
-                new CreateBookRequest
-                {
-                    Name = name,
-                    Book = book,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            CreateBookRequest request = new CreateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+            Modify_CreateBookRequest(ref request, ref callSettings);
+            return _callCreateBook.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Creates a book.
@@ -2909,13 +3158,16 @@ namespace Google.Example.Library.V1
         public override Book CreateBook(
             string name,
             Book book,
-            CallSettings callSettings = null) => _callCreateBook.Sync(
-                new CreateBookRequest
-                {
-                    Name = name,
-                    Book = book,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            CreateBookRequest request = new CreateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+            Modify_CreateBookRequest(ref request, ref callSettings);
+            return _callCreateBook.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Creates a series of books.
@@ -2939,14 +3191,17 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
-            CallSettings callSettings = null) => _callPublishSeries.Async(
-                new PublishSeriesRequest
-                {
-                    Shelf = shelf,
-                    Books = { books },
-                    Edition = edition,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            PublishSeriesRequest request = new PublishSeriesRequest
+            {
+                Shelf = shelf,
+                Books = { books },
+                Edition = edition,
+            };
+            Modify_PublishSeriesRequest(ref request, ref callSettings);
+            return _callPublishSeries.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Creates a series of books.
@@ -2970,14 +3225,17 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
-            CallSettings callSettings = null) => _callPublishSeries.Sync(
-                new PublishSeriesRequest
-                {
-                    Shelf = shelf,
-                    Books = { books },
-                    Edition = edition,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            PublishSeriesRequest request = new PublishSeriesRequest
+            {
+                Shelf = shelf,
+                Books = { books },
+                Edition = edition,
+            };
+            Modify_PublishSeriesRequest(ref request, ref callSettings);
+            return _callPublishSeries.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a book.
@@ -2993,12 +3251,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Task<Book> GetBookAsync(
             string name,
-            CallSettings callSettings = null) => _callGetBook.Async(
-                new GetBookRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetBookRequest request = new GetBookRequest
+            {
+                Name = name,
+            };
+            Modify_GetBookRequest(ref request, ref callSettings);
+            return _callGetBook.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a book.
@@ -3014,12 +3275,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Book GetBook(
             string name,
-            CallSettings callSettings = null) => _callGetBook.Sync(
-                new GetBookRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetBookRequest request = new GetBookRequest
+            {
+                Name = name,
+            };
+            Modify_GetBookRequest(ref request, ref callSettings);
+            return _callGetBook.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Lists books in a shelf.
@@ -3049,16 +3313,18 @@ namespace Google.Example.Library.V1
             string filter,
             string pageToken = null,
             int? pageSize = null,
-            CallSettings callSettings = null) => new PagedAsyncEnumerable<ListBooksRequest, ListBooksResponse, Book>(
-                _callListBooks,
-                new ListBooksRequest
-                {
-                    Name = name,
-                    Filter = filter,
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            ListBooksRequest request = new ListBooksRequest
+            {
+                Name = name,
+                Filter = filter,
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListBooksRequest(ref request, ref callSettings);
+            return new PagedAsyncEnumerable<ListBooksRequest, ListBooksResponse, Book>(_callListBooks, request, callSettings);
+        }
 
         /// <summary>
         /// Lists books in a shelf.
@@ -3088,16 +3354,18 @@ namespace Google.Example.Library.V1
             string filter,
             string pageToken = null,
             int? pageSize = null,
-            CallSettings callSettings = null) => new PagedEnumerable<ListBooksRequest, ListBooksResponse, Book>(
-                _callListBooks,
-                new ListBooksRequest
-                {
-                    Name = name,
-                    Filter = filter,
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            ListBooksRequest request = new ListBooksRequest
+            {
+                Name = name,
+                Filter = filter,
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListBooksRequest(ref request, ref callSettings);
+            return new PagedEnumerable<ListBooksRequest, ListBooksResponse, Book>(_callListBooks, request, callSettings);
+        }
 
         /// <summary>
         /// Deletes a book.
@@ -3113,12 +3381,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Task DeleteBookAsync(
             string name,
-            CallSettings callSettings = null) => _callDeleteBook.Async(
-                new DeleteBookRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            DeleteBookRequest request = new DeleteBookRequest
+            {
+                Name = name,
+            };
+            Modify_DeleteBookRequest(ref request, ref callSettings);
+            return _callDeleteBook.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Deletes a book.
@@ -3134,12 +3405,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override void DeleteBook(
             string name,
-            CallSettings callSettings = null) => _callDeleteBook.Sync(
-                new DeleteBookRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            DeleteBookRequest request = new DeleteBookRequest
+            {
+                Name = name,
+            };
+            Modify_DeleteBookRequest(ref request, ref callSettings);
+            _callDeleteBook.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Updates a book.
@@ -3159,13 +3433,16 @@ namespace Google.Example.Library.V1
         public override Task<Book> UpdateBookAsync(
             string name,
             Book book,
-            CallSettings callSettings = null) => _callUpdateBook.Async(
-                new UpdateBookRequest
-                {
-                    Name = name,
-                    Book = book,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+            Modify_UpdateBookRequest(ref request, ref callSettings);
+            return _callUpdateBook.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Updates a book.
@@ -3185,13 +3462,16 @@ namespace Google.Example.Library.V1
         public override Book UpdateBook(
             string name,
             Book book,
-            CallSettings callSettings = null) => _callUpdateBook.Sync(
-                new UpdateBookRequest
-                {
-                    Name = name,
-                    Book = book,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+            Modify_UpdateBookRequest(ref request, ref callSettings);
+            return _callUpdateBook.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Updates a book.
@@ -3219,15 +3499,18 @@ namespace Google.Example.Library.V1
             Book book,
             FieldMask updateMask,
             FieldMask physicalMask,
-            CallSettings callSettings = null) => _callUpdateBook.Async(
-                new UpdateBookRequest
-                {
-                    Name = name,
-                    Book = book,
-                    UpdateMask = updateMask,
-                    PhysicalMask = physicalMask,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+                UpdateMask = updateMask,
+                PhysicalMask = physicalMask,
+            };
+            Modify_UpdateBookRequest(ref request, ref callSettings);
+            return _callUpdateBook.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Updates a book.
@@ -3255,15 +3538,18 @@ namespace Google.Example.Library.V1
             Book book,
             FieldMask updateMask,
             FieldMask physicalMask,
-            CallSettings callSettings = null) => _callUpdateBook.Sync(
-                new UpdateBookRequest
-                {
-                    Name = name,
-                    Book = book,
-                    UpdateMask = updateMask,
-                    PhysicalMask = physicalMask,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+                UpdateMask = updateMask,
+                PhysicalMask = physicalMask,
+            };
+            Modify_UpdateBookRequest(ref request, ref callSettings);
+            return _callUpdateBook.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
@@ -3283,13 +3569,16 @@ namespace Google.Example.Library.V1
         public override Task<Book> MoveBookAsync(
             string name,
             string otherShelfName,
-            CallSettings callSettings = null) => _callMoveBook.Async(
-                new MoveBookRequest
-                {
-                    Name = name,
-                    OtherShelfName = otherShelfName,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            MoveBookRequest request = new MoveBookRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+            Modify_MoveBookRequest(ref request, ref callSettings);
+            return _callMoveBook.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
@@ -3309,13 +3598,16 @@ namespace Google.Example.Library.V1
         public override Book MoveBook(
             string name,
             string otherShelfName,
-            CallSettings callSettings = null) => _callMoveBook.Sync(
-                new MoveBookRequest
-                {
-                    Name = name,
-                    OtherShelfName = otherShelfName,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            MoveBookRequest request = new MoveBookRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+            Modify_MoveBookRequest(ref request, ref callSettings);
+            return _callMoveBook.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
@@ -3337,15 +3629,17 @@ namespace Google.Example.Library.V1
         public override IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
             string pageToken = null,
             int? pageSize = null,
-            CallSettings callSettings = null) => new PagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(
-                _callListStrings,
-                new ListStringsRequest
-                {
+            CallSettings callSettings = null)
+        {
+            ListStringsRequest request = new ListStringsRequest
+            {
 
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListStringsRequest(ref request, ref callSettings);
+            return new PagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+        }
 
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
@@ -3367,15 +3661,89 @@ namespace Google.Example.Library.V1
         public override IPagedEnumerable<ListStringsResponse, string> ListStrings(
             string pageToken = null,
             int? pageSize = null,
-            CallSettings callSettings = null) => new PagedEnumerable<ListStringsRequest, ListStringsResponse, string>(
-                _callListStrings,
-                new ListStringsRequest
-                {
+            CallSettings callSettings = null)
+        {
+            ListStringsRequest request = new ListStringsRequest
+            {
 
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListStringsRequest(ref request, ref callSettings);
+            return new PagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+        }
+
+        /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// </returns>
+        public override IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+            string name,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            ListStringsRequest request = new ListStringsRequest
+            {
+                Name = name,
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListStringsRequest(ref request, ref callSettings);
+            return new PagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+        }
+
+        /// <summary>
+        /// Lists a primitive resource. To test go page streaming.
+        /// </summary>
+        /// <param name="name">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="string"/> resources.
+        /// </returns>
+        public override IPagedEnumerable<ListStringsResponse, string> ListStrings(
+            string name,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null)
+        {
+            ListStringsRequest request = new ListStringsRequest
+            {
+                Name = name,
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_ListStringsRequest(ref request, ref callSettings);
+            return new PagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+        }
 
         /// <summary>
         /// Adds comments to a book
@@ -3395,13 +3763,16 @@ namespace Google.Example.Library.V1
         public override Task AddCommentsAsync(
             string name,
             IEnumerable<Comment> comments,
-            CallSettings callSettings = null) => _callAddComments.Async(
-                new AddCommentsRequest
-                {
-                    Name = name,
-                    Comments = { comments },
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            AddCommentsRequest request = new AddCommentsRequest
+            {
+                Name = name,
+                Comments = { comments },
+            };
+            Modify_AddCommentsRequest(ref request, ref callSettings);
+            return _callAddComments.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Adds comments to a book
@@ -3421,13 +3792,16 @@ namespace Google.Example.Library.V1
         public override void AddComments(
             string name,
             IEnumerable<Comment> comments,
-            CallSettings callSettings = null) => _callAddComments.Sync(
-                new AddCommentsRequest
-                {
-                    Name = name,
-                    Comments = { comments },
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            AddCommentsRequest request = new AddCommentsRequest
+            {
+                Name = name,
+                Comments = { comments },
+            };
+            Modify_AddCommentsRequest(ref request, ref callSettings);
+            _callAddComments.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a book from an archive.
@@ -3441,14 +3815,17 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public override Task<Book> GetBookFromArchiveAsync(
+        public override Task<BookFromArchive> GetBookFromArchiveAsync(
             string name,
-            CallSettings callSettings = null) => _callGetBookFromArchive.Async(
-                new GetBookFromArchiveRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
+            {
+                Name = name,
+            };
+            Modify_GetBookFromArchiveRequest(ref request, ref callSettings);
+            return _callGetBookFromArchive.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Gets a book from an archive.
@@ -3462,14 +3839,77 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public override Book GetBookFromArchive(
+        public override BookFromArchive GetBookFromArchive(
             string name,
-            CallSettings callSettings = null) => _callGetBookFromArchive.Sync(
-                new GetBookFromArchiveRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
+            {
+                Name = name,
+            };
+            Modify_GetBookFromArchiveRequest(ref request, ref callSettings);
+            return _callGetBookFromArchive.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Gets a book from a shelf or archive.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override Task<BookFromAnywhere> GetBookFromAnywhereAsync(
+            string name,
+            string altBookName,
+            CallSettings callSettings = null)
+        {
+            GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
+            {
+                Name = name,
+                AltBookName = altBookName,
+            };
+            Modify_GetBookFromAnywhereRequest(ref request, ref callSettings);
+            return _callGetBookFromAnywhere.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Gets a book from a shelf or archive.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="altBookName">
+        /// An alternate book name, used to test restricting flattened field to a
+        /// single resource name type in a oneof.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override BookFromAnywhere GetBookFromAnywhere(
+            string name,
+            string altBookName,
+            CallSettings callSettings = null)
+        {
+            GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
+            {
+                Name = name,
+                AltBookName = altBookName,
+            };
+            Modify_GetBookFromAnywhereRequest(ref request, ref callSettings);
+            return _callGetBookFromAnywhere.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Updates the index of a book.
@@ -3493,14 +3933,17 @@ namespace Google.Example.Library.V1
             string name,
             string indexName,
             IDictionary<string, string> indexMap,
-            CallSettings callSettings = null) => _callUpdateBookIndex.Async(
-                new UpdateBookIndexRequest
-                {
-                    Name = name,
-                    IndexName = indexName,
-                    IndexMap = indexMap,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            UpdateBookIndexRequest request = new UpdateBookIndexRequest
+            {
+                Name = name,
+                IndexName = indexName,
+                IndexMap = { indexMap },
+            };
+            Modify_UpdateBookIndexRequest(ref request, ref callSettings);
+            return _callUpdateBookIndex.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Updates the index of a book.
@@ -3524,14 +3967,17 @@ namespace Google.Example.Library.V1
             string name,
             string indexName,
             IDictionary<string, string> indexMap,
-            CallSettings callSettings = null) => _callUpdateBookIndex.Sync(
-                new UpdateBookIndexRequest
-                {
-                    Name = name,
-                    IndexName = indexName,
-                    IndexMap = indexMap,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            UpdateBookIndexRequest request = new UpdateBookIndexRequest
+            {
+                Name = name,
+                IndexName = indexName,
+                IndexMap = { indexMap },
+            };
+            Modify_UpdateBookIndexRequest(ref request, ref callSettings);
+            _callUpdateBookIndex.Sync(request, callSettings);
+        }
 
         /// <summary>
         ///
@@ -3561,16 +4007,18 @@ namespace Google.Example.Library.V1
             IEnumerable<string> shelves,
             string pageToken = null,
             int? pageSize = null,
-            CallSettings callSettings = null) => new PagedAsyncEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, string>(
-                _callFindRelatedBooks,
-                new FindRelatedBooksRequest
-                {
-                    Names = { names },
-                    Shelves = { shelves },
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            FindRelatedBooksRequest request = new FindRelatedBooksRequest
+            {
+                Names = { names },
+                Shelves = { shelves },
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_FindRelatedBooksRequest(ref request, ref callSettings);
+            return new PagedAsyncEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, string>(_callFindRelatedBooks, request, callSettings);
+        }
 
         /// <summary>
         ///
@@ -3600,16 +4048,18 @@ namespace Google.Example.Library.V1
             IEnumerable<string> shelves,
             string pageToken = null,
             int? pageSize = null,
-            CallSettings callSettings = null) => new PagedEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, string>(
-                _callFindRelatedBooks,
-                new FindRelatedBooksRequest
-                {
-                    Names = { names },
-                    Shelves = { shelves },
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            FindRelatedBooksRequest request = new FindRelatedBooksRequest
+            {
+                Names = { names },
+                Shelves = { shelves },
+                PageToken = pageToken ?? "",
+                PageSize = pageSize ?? 0,
+            };
+            Modify_FindRelatedBooksRequest(ref request, ref callSettings);
+            return new PagedEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, string>(_callFindRelatedBooks, request, callSettings);
+        }
 
         /// <summary>
         /// Adds a tag to the book. This RPC is a mixin.
@@ -3631,13 +4081,16 @@ namespace Google.Example.Library.V1
         public override Task<AddTagResponse> AddTagAsync(
             string resource,
             string tag,
-            CallSettings callSettings = null) => _callAddTag.Async(
-                new AddTagRequest
-                {
-                    Resource = resource,
-                    Tag = tag,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            AddTagRequest request = new AddTagRequest
+            {
+                Resource = resource,
+                Tag = tag,
+            };
+            Modify_AddTagRequest(ref request, ref callSettings);
+            return _callAddTag.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Adds a tag to the book. This RPC is a mixin.
@@ -3659,13 +4112,16 @@ namespace Google.Example.Library.V1
         public override AddTagResponse AddTag(
             string resource,
             string tag,
-            CallSettings callSettings = null) => _callAddTag.Sync(
-                new AddTagRequest
-                {
-                    Resource = resource,
-                    Tag = tag,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            AddTagRequest request = new AddTagRequest
+            {
+                Resource = resource,
+                Tag = tag,
+            };
+            Modify_AddTagRequest(ref request, ref callSettings);
+            return _callAddTag.Sync(request, callSettings);
+        }
 
         /// <summary>
         /// Adds a label to the entity.
@@ -3687,13 +4143,16 @@ namespace Google.Example.Library.V1
         public override Task<AddLabelResponse> AddLabelAsync(
             string resource,
             string label,
-            CallSettings callSettings = null) => _callAddLabel.Async(
-                new AddLabelRequest
-                {
-                    Resource = resource,
-                    Label = label,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            AddLabelRequest request = new AddLabelRequest
+            {
+                Resource = resource,
+                Label = label,
+            };
+            Modify_AddLabelRequest(ref request, ref callSettings);
+            return _callAddLabel.Async(request, callSettings);
+        }
 
         /// <summary>
         /// Adds a label to the entity.
@@ -3715,13 +4174,16 @@ namespace Google.Example.Library.V1
         public override AddLabelResponse AddLabel(
             string resource,
             string label,
-            CallSettings callSettings = null) => _callAddLabel.Sync(
-                new AddLabelRequest
-                {
-                    Resource = resource,
-                    Label = label,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            AddLabelRequest request = new AddLabelRequest
+            {
+                Resource = resource,
+                Label = label,
+            };
+            Modify_AddLabelRequest(ref request, ref callSettings);
+            return _callAddLabel.Sync(request, callSettings);
+        }
 
         /// <summary>
         ///
@@ -3737,12 +4199,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Task<Operation> GetBigBookAsync(
             string name,
-            CallSettings callSettings = null) => _callGetBigBook.Async(
-                new GetBookRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetBookRequest request = new GetBookRequest
+            {
+                Name = name,
+            };
+            Modify_GetBookRequest(ref request, ref callSettings);
+            return _callGetBigBook.Async(request, callSettings);
+        }
 
         /// <summary>
         ///
@@ -3758,12 +4223,15 @@ namespace Google.Example.Library.V1
         /// </returns>
         public override Operation GetBigBook(
             string name,
-            CallSettings callSettings = null) => _callGetBigBook.Sync(
-                new GetBookRequest
-                {
-                    Name = name,
-                },
-                callSettings);
+            CallSettings callSettings = null)
+        {
+            GetBookRequest request = new GetBookRequest
+            {
+                Name = name,
+            };
+            Modify_GetBookRequest(ref request, ref callSettings);
+            return _callGetBigBook.Sync(request, callSettings);
+        }
 
     }
 
@@ -3788,6 +4256,18 @@ namespace Google.Example.Library.V1
         /// Returns an enumerator that iterates through the resources in this response.
         /// </summary>
         public IEnumerator<Book> GetEnumerator() => Books.GetEnumerator();
+
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    public partial class ListStringsRequest : IPageRequest { }
+    public partial class ListStringsResponse : IPageResponse<string>
+    {
+        /// <summary>
+        /// Returns an enumerator that iterates through the resources in this response.
+        /// </summary>
+        public IEnumerator<string> GetEnumerator() => Strings.GetEnumerator();
 
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

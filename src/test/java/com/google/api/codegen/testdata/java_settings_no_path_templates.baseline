@@ -16,9 +16,14 @@
  */
 package com.google.gcloud.example;
 
-import com.google.api.gax.core.ConnectionSettings;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.gax.grpc.CallContext;
+import com.google.api.gax.grpc.ChannelProvider;
+import com.google.api.gax.grpc.ExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingChannelProvider;
+import com.google.api.gax.grpc.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
 import com.google.api.gax.grpc.ServiceApiSettings;
@@ -63,11 +68,37 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
     return incrementSettings;
   }
 
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return InstantiatingExecutorProvider.newBuilder();
+  }
+
   /**
    * Returns the default service port.
    */
   public static int getDefaultServicePort() {
     return DEFAULT_SERVICE_PORT;
+  }
+
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        ;
+  }
+
+  /**
+   * Returns a builder for the default ChannelProvider for this service.
+   */
+  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
+    return InstantiatingChannelProvider.newBuilder()
+        .setPort(DEFAULT_SERVICE_PORT)
+        .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }
 
   /**
@@ -92,12 +123,8 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
   }
 
   private NoTemplatesApiServiceSettings(Builder settingsBuilder) throws IOException {
-    super(settingsBuilder.getChannelProvider(),
-          settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getGeneratorName(),
-          settingsBuilder.getGeneratorVersion(),
-          settingsBuilder.getClientLibName(),
-          settingsBuilder.getClientLibVersion());
+    super(settingsBuilder.getExecutorProvider(),
+          settingsBuilder.getChannelProvider());
 
     incrementSettings = settingsBuilder.incrementSettings().build();
   }
@@ -129,6 +156,7 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
     }
 
     private Builder() {
+      super((InstantiatingChannelProvider) null);
 
       incrementSettings = SimpleCallSettings.newBuilder(NoTemplatesAPIServiceGrpc.METHOD_INCREMENT);
 
@@ -157,48 +185,15 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
       );
     }
 
-    private static ConnectionSettings.Builder s_getDefaultConnectionSettingsBuilder() {
-      return ConnectionSettings.newBuilder()
-        .setPort(DEFAULT_SERVICE_PORT)
-        ;
-    }
     @Override
-    protected ConnectionSettings.Builder getDefaultConnectionSettingsBuilder() {
-      return s_getDefaultConnectionSettingsBuilder();
-    }
-    @Override
-    public Builder provideExecutorWith(ScheduledExecutorService executor, boolean shouldAutoClose) {
-      super.provideExecutorWith(executor, shouldAutoClose);
+    public Builder setExecutorProvider(ExecutorProvider executorProvider) {
+      super.setExecutorProvider(executorProvider);
       return this;
     }
+
     @Override
-    public Builder provideChannelWith(ManagedChannel channel, boolean shouldAutoClose) {
-      super.provideChannelWith(channel, shouldAutoClose);
-      return this;
-    }
-    @Override
-    public Builder provideChannelWith(ConnectionSettings settings) {
-      super.provideChannelWith(settings);
-      return this;
-    }
-    @Override
-    public Builder provideChannelWith(Credentials credentials) {
-      super.provideChannelWith(credentials);
-      return this;
-    }
-    @Override
-    public Builder provideChannelWith(List<String> scopes) {
-      super.provideChannelWith(scopes);
-      return this;
-    }
-    @Override
-    public Builder setGeneratorHeader(String name, String version) {
-      super.setGeneratorHeader(name, version);
-      return this;
-    }
-    @Override
-    public Builder setClientLibHeader(String name, String version) {
-      super.setClientLibHeader(name, version);
+    public Builder setChannelProvider(ChannelProvider channelProvider) {
+      super.setChannelProvider(channelProvider);
       return this;
     }
 

@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Queue;
 
 @javax.annotation.Generated("by GAPIC")
-public class MockLabelerImpl extends LabelerImplBase  {
+public class MockLabelerImpl extends LabelerImplBase {
   private ArrayList<GeneratedMessageV3> requests;
-  private Queue<GeneratedMessageV3> responses;
+  private Queue<Object> responses;
 
   public MockLabelerImpl() {
     requests = new ArrayList<>();
@@ -41,8 +41,16 @@ public class MockLabelerImpl extends LabelerImplBase  {
     return requests;
   }
 
+  public void addResponse(GeneratedMessageV3 response) {
+    responses.add(response);
+  }
+
   public void setResponses(List<GeneratedMessageV3> responses) {
-    this.responses = Lists.newLinkedList(responses);
+    this.responses = new LinkedList<Object>(responses);
+  }
+
+  public void addException(Exception exception) {
+    responses.add(exception);
   }
 
   public void reset() {
@@ -53,10 +61,16 @@ public class MockLabelerImpl extends LabelerImplBase  {
   @Override
   public void addLabel(AddLabelRequest request,
     StreamObserver<AddLabelResponse> responseObserver) {
-    AddLabelResponse response = (AddLabelResponse) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof AddLabelResponse) {
+      requests.add(request);
+      responseObserver.onNext((AddLabelResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
 }
@@ -81,6 +95,8 @@ package com.google.gcloud.pubsub.spi;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.BookFromAnywhere;
+import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
@@ -89,6 +105,7 @@ import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
@@ -121,9 +138,9 @@ import java.util.List;
 import java.util.Queue;
 
 @javax.annotation.Generated("by GAPIC")
-public class MockLibraryServiceImpl extends LibraryServiceImplBase  {
+public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   private ArrayList<GeneratedMessageV3> requests;
-  private Queue<GeneratedMessageV3> responses;
+  private Queue<Object> responses;
 
   public MockLibraryServiceImpl() {
     requests = new ArrayList<>();
@@ -134,8 +151,16 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase  {
     return requests;
   }
 
+  public void addResponse(GeneratedMessageV3 response) {
+    responses.add(response);
+  }
+
   public void setResponses(List<GeneratedMessageV3> responses) {
-    this.responses = Lists.newLinkedList(responses);
+    this.responses = new LinkedList<Object>(responses);
+  }
+
+  public void addException(Exception exception) {
+    responses.add(exception);
   }
 
   public void reset() {
@@ -146,174 +171,303 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase  {
   @Override
   public void createShelf(CreateShelfRequest request,
     StreamObserver<Shelf> responseObserver) {
-    Shelf response = (Shelf) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Shelf) {
+      requests.add(request);
+      responseObserver.onNext((Shelf) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void getShelf(GetShelfRequest request,
     StreamObserver<Shelf> responseObserver) {
-    Shelf response = (Shelf) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Shelf) {
+      requests.add(request);
+      responseObserver.onNext((Shelf) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void listShelves(ListShelvesRequest request,
     StreamObserver<ListShelvesResponse> responseObserver) {
-    ListShelvesResponse response = (ListShelvesResponse) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof ListShelvesResponse) {
+      requests.add(request);
+      responseObserver.onNext((ListShelvesResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void deleteShelf(DeleteShelfRequest request,
     StreamObserver<Empty> responseObserver) {
-    Empty response = (Empty) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Empty) {
+      requests.add(request);
+      responseObserver.onNext((Empty) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void mergeShelves(MergeShelvesRequest request,
     StreamObserver<Shelf> responseObserver) {
-    Shelf response = (Shelf) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Shelf) {
+      requests.add(request);
+      responseObserver.onNext((Shelf) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void createBook(CreateBookRequest request,
     StreamObserver<Book> responseObserver) {
-    Book response = (Book) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Book) {
+      requests.add(request);
+      responseObserver.onNext((Book) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void publishSeries(PublishSeriesRequest request,
     StreamObserver<PublishSeriesResponse> responseObserver) {
-    PublishSeriesResponse response = (PublishSeriesResponse) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof PublishSeriesResponse) {
+      requests.add(request);
+      responseObserver.onNext((PublishSeriesResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void getBook(GetBookRequest request,
     StreamObserver<Book> responseObserver) {
-    Book response = (Book) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Book) {
+      requests.add(request);
+      responseObserver.onNext((Book) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void listBooks(ListBooksRequest request,
     StreamObserver<ListBooksResponse> responseObserver) {
-    ListBooksResponse response = (ListBooksResponse) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof ListBooksResponse) {
+      requests.add(request);
+      responseObserver.onNext((ListBooksResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void deleteBook(DeleteBookRequest request,
     StreamObserver<Empty> responseObserver) {
-    Empty response = (Empty) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Empty) {
+      requests.add(request);
+      responseObserver.onNext((Empty) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void updateBook(UpdateBookRequest request,
     StreamObserver<Book> responseObserver) {
-    Book response = (Book) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Book) {
+      requests.add(request);
+      responseObserver.onNext((Book) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void moveBook(MoveBookRequest request,
     StreamObserver<Book> responseObserver) {
-    Book response = (Book) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Book) {
+      requests.add(request);
+      responseObserver.onNext((Book) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void listStrings(ListStringsRequest request,
     StreamObserver<ListStringsResponse> responseObserver) {
-    ListStringsResponse response = (ListStringsResponse) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof ListStringsResponse) {
+      requests.add(request);
+      responseObserver.onNext((ListStringsResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void addComments(AddCommentsRequest request,
     StreamObserver<Empty> responseObserver) {
-    Empty response = (Empty) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Empty) {
+      requests.add(request);
+      responseObserver.onNext((Empty) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void getBookFromArchive(GetBookFromArchiveRequest request,
-    StreamObserver<Book> responseObserver) {
-    Book response = (Book) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    StreamObserver<BookFromArchive> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof BookFromArchive) {
+      requests.add(request);
+      responseObserver.onNext((BookFromArchive) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void getBookFromAnywhere(GetBookFromAnywhereRequest request,
+    StreamObserver<BookFromAnywhere> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof BookFromAnywhere) {
+      requests.add(request);
+      responseObserver.onNext((BookFromAnywhere) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void updateBookIndex(UpdateBookIndexRequest request,
     StreamObserver<Empty> responseObserver) {
-    Empty response = (Empty) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Empty) {
+      requests.add(request);
+      responseObserver.onNext((Empty) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void streamShelves(StreamShelvesRequest request,
     StreamObserver<StreamShelvesResponse> responseObserver) {
-    StreamShelvesResponse response = (StreamShelvesResponse) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof StreamShelvesResponse) {
+      requests.add(request);
+      responseObserver.onNext((StreamShelvesResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void streamBooks(StreamBooksRequest request,
     StreamObserver<Book> responseObserver) {
-    Book response = (Book) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Book) {
+      requests.add(request);
+      responseObserver.onNext((Book) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public StreamObserver<DiscussBookRequest> discussBook(
       final StreamObserver<Comment> responseObserver) {
-    final Comment response = (Comment) responses.remove();
+    final Object response = responses.remove();
     StreamObserver<DiscussBookRequest> requestObserver =
         new StreamObserver<DiscussBookRequest>() {
       @Override
       public void onNext(DiscussBookRequest value) {
-        responseObserver.onNext(response);
+        if (response instanceof Comment) {
+          responseObserver.onNext((Comment) response);
+        } else if (response instanceof Exception) {
+          responseObserver.onError((Exception) response);
+        } else {
+          responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+        }
       }
 
       @Override
@@ -332,28 +486,46 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase  {
   @Override
   public void findRelatedBooks(FindRelatedBooksRequest request,
     StreamObserver<FindRelatedBooksResponse> responseObserver) {
-    FindRelatedBooksResponse response = (FindRelatedBooksResponse) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof FindRelatedBooksResponse) {
+      requests.add(request);
+      responseObserver.onNext((FindRelatedBooksResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void addTag(AddTagRequest request,
     StreamObserver<AddTagResponse> responseObserver) {
-    AddTagResponse response = (AddTagResponse) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof AddTagResponse) {
+      requests.add(request);
+      responseObserver.onNext((AddTagResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
   public void getBigBook(GetBookRequest request,
     StreamObserver<Operation> responseObserver) {
-    Operation response = (Operation) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof Operation) {
+      requests.add(request);
+      responseObserver.onNext((Operation) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
 }

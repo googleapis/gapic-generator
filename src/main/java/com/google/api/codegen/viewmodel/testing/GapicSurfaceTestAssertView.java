@@ -15,12 +15,20 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class GapicSurfaceTestAssertView {
   public abstract String actualValueGetter();
 
   public abstract String expectedValueIdentifier();
+
+  @Nullable
+  public abstract String expectedValueTransformFunction();
+
+  public boolean hasExpectedValueTransformFunction() {
+    return expectedValueTransformFunction() != null;
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_GapicSurfaceTestAssertView.Builder();
@@ -31,6 +39,8 @@ public abstract class GapicSurfaceTestAssertView {
     public abstract Builder actualValueGetter(String val);
 
     public abstract Builder expectedValueIdentifier(String val);
+
+    public abstract Builder expectedValueTransformFunction(String val);
 
     public abstract GapicSurfaceTestAssertView build();
   }

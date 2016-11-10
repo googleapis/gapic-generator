@@ -1,14 +1,14 @@
 @extends "java/common.snip"
 
-@snippet generate(mockServiceImpl)
-  {@renderFileHeader(mockServiceImpl.fileHeader)}
+@snippet generate(mockServiceImplFile)
+  {@renderFileHeader(mockServiceImplFile.fileHeader)}
 
   @@javax.annotation.Generated("by GAPIC")
-  public class {@mockServiceImpl.name} extends {@mockServiceImpl.grpcClassName}  {
+  public class {@mockServiceImplFile.serviceImpl.name} extends {@mockServiceImplFile.serviceImpl.grpcClassName} {
     private ArrayList<GeneratedMessageV3> requests;
-    private Queue<GeneratedMessageV3> responses;
+    private Queue<Object> responses;
 
-    public {@mockServiceImpl.name}() {
+    public {@mockServiceImplFile.serviceImpl.name}() {
       requests = new ArrayList<>();
       responses = new LinkedList<>();
     }
@@ -17,8 +17,16 @@
       return requests;
     }
 
+    public void addResponse(GeneratedMessageV3 response) {
+      responses.add(response);
+    }
+
     public void setResponses(List<GeneratedMessageV3> responses) {
-      this.responses = Lists.newLinkedList(responses);
+      this.responses = new LinkedList<Object>(responses);
+    }
+
+    public void addException(Exception exception) {
+      responses.add(exception);
     }
 
     public void reset() {
@@ -26,7 +34,7 @@
       responses = new LinkedList<>();
     }
 
-    @join method : mockServiceImpl.grpcMethods
+    @join method : mockServiceImplFile.serviceImpl.grpcMethods
      {@grpcMethod(method)}
 
     @end
@@ -52,10 +60,16 @@
   @@Override
   public void {@method.name}({@method.requestTypeName} request,
     StreamObserver<{@method.responseTypeName}> responseObserver) {
-    {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
-    requests.add(request);
-    responseObserver.onNext(response);
-    responseObserver.onCompleted();
+    Object response = responses.remove();
+    if (response instanceof {@method.responseTypeName}) {
+      requests.add(request);
+      responseObserver.onNext(({@method.responseTypeName}) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 @end
 
@@ -63,12 +77,18 @@
   @@Override
   public StreamObserver<{@method.requestTypeName}> {@method.name}(
       final StreamObserver<{@method.responseTypeName}> responseObserver) {
-    final {@method.responseTypeName} response = ({@method.responseTypeName}) responses.remove();
+    final Object response = responses.remove();
     StreamObserver<{@method.requestTypeName}> requestObserver =
         new StreamObserver<{@method.requestTypeName}>() {
       @@Override
       public void onNext({@method.requestTypeName} value) {
-        responseObserver.onNext(response);
+        if (response instanceof {@method.responseTypeName}) {
+          responseObserver.onNext(({@method.responseTypeName}) response);
+        } else if (response instanceof Exception) {
+          responseObserver.onError((Exception) response);
+        } else {
+          responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+        }
       }
 
       @@Override

@@ -38,6 +38,7 @@ use google\example\library\v1\CreateShelfRequest;
 use google\example\library\v1\DeleteBookRequest;
 use google\example\library\v1\DeleteShelfRequest;
 use google\example\library\v1\FindRelatedBooksRequest;
+use google\example\library\v1\GetBookFromAnywhereRequest;
 use google\example\library\v1\GetBookFromArchiveRequest;
 use google\example\library\v1\GetBookRequest;
 use google\example\library\v1\GetShelfRequest;
@@ -117,6 +118,7 @@ class LibraryServiceApi
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
     private static $archivedBookNameTemplate;
+    private static $returnNameTemplate;
 
     private $grpcCredentialsHelper;
     private $libraryServiceStub;
@@ -161,6 +163,19 @@ class LibraryServiceApi
     }
 
     /**
+     * Formats a string containing the fully-qualified path to represent
+     * a return resource.
+     */
+    public static function formatReturnName($shelf, $book, $return)
+    {
+        return self::getReturnNameTemplate()->render([
+            'shelf' => $shelf,
+            'book' => $book,
+            'return' => $return,
+        ]);
+    }
+
+    /**
      * Parses the shelf_id from the given fully-qualified path which
      * represents a shelf resource.
      */
@@ -189,7 +204,7 @@ class LibraryServiceApi
 
     /**
      * Parses the archive_path from the given fully-qualified path which
-     * represents a archivedBook resource.
+     * represents a archived_book resource.
      */
     public static function parseArchivePathFromArchivedBookName($archivedBookName)
     {
@@ -198,11 +213,38 @@ class LibraryServiceApi
 
     /**
      * Parses the book_id from the given fully-qualified path which
-     * represents a archivedBook resource.
+     * represents a archived_book resource.
      */
     public static function parseBookIdFromArchivedBookName($archivedBookName)
     {
         return self::getArchivedBookNameTemplate()->match($archivedBookName)['book_id'];
+    }
+
+    /**
+     * Parses the shelf from the given fully-qualified path which
+     * represents a return resource.
+     */
+    public static function parseShelfFromReturnName($returnName)
+    {
+        return self::getReturnNameTemplate()->match($returnName)['shelf'];
+    }
+
+    /**
+     * Parses the book from the given fully-qualified path which
+     * represents a return resource.
+     */
+    public static function parseBookFromReturnName($returnName)
+    {
+        return self::getReturnNameTemplate()->match($returnName)['book'];
+    }
+
+    /**
+     * Parses the return from the given fully-qualified path which
+     * represents a return resource.
+     */
+    public static function parseReturnFromReturnName($returnName)
+    {
+        return self::getReturnNameTemplate()->match($returnName)['return'];
     }
 
 
@@ -227,10 +269,19 @@ class LibraryServiceApi
     private static function getArchivedBookNameTemplate()
     {
         if (self::$archivedBookNameTemplate == null) {
-            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path=**}/books/{book_id}');
+            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path}/books/{book_id=**}');
         }
 
         return self::$archivedBookNameTemplate;
+    }
+
+    private static function getReturnNameTemplate()
+    {
+        if (self::$returnNameTemplate == null) {
+            self::$returnNameTemplate = new PathTemplate('shelves/{shelf}/books/{book}/returns/{return}');
+        }
+
+        return self::$returnNameTemplate;
     }
 
     private static function getPageStreamingDescriptors()
@@ -350,6 +401,7 @@ class LibraryServiceApi
             'listStrings' => $defaultDescriptors,
             'addComments' => $defaultDescriptors,
             'getBookFromArchive' => $defaultDescriptors,
+            'getBookFromAnywhere' => $defaultDescriptors,
             'updateBookIndex' => $defaultDescriptors,
             'findRelatedBooks' => $defaultDescriptors,
             'addTag' => $defaultDescriptors,
@@ -1188,7 +1240,7 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return google\example\library\v1\BookFromArchive
      *
      * @throws Google\GAX\ApiException if the remote call fails
      */
@@ -1201,6 +1253,57 @@ class LibraryServiceApi
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBookFromArchive', $mergedSettings, $this->descriptors['getBookFromArchive']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Gets a book from a shelf or archive.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $name = "";
+     *     $formattedAltBookName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $response = $libraryServiceApi->getBookFromAnywhere($name, $formattedAltBookName);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
+     * ```
+     *
+     * @param string $name The name of the book to retrieve.
+     * @param string $altBookName An alternate book name, used to test restricting flattened field to a
+     * single resource name type in a oneof.
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeoutMillis is ignored.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return google\example\library\v1\BookFromAnywhere
+     *
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
+    public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
+    {
+        $request = new GetBookFromAnywhereRequest();
+        $request->setName($name);
+        $request->setAltBookName($altBookName);
+
+        $mergedSettings = $this->defaultCallSettings['getBookFromAnywhere']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'GetBookFromAnywhere', $mergedSettings, $this->descriptors['getBookFromAnywhere']);
 
         return $callable(
             $request,

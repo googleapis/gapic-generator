@@ -26,6 +26,7 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
   /** A map from primitive types in proto to Go counterparts. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
+          .put(Field.Kind.TYPE_UNKNOWN, "interface")
           .put(Field.Kind.TYPE_BOOL, "bool")
           .put(Field.Kind.TYPE_INT32, "int32")
           .put(Field.Kind.TYPE_INT64, "int64")
@@ -40,6 +41,7 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
   /** A map from primitive types in proto to zero value in Go. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
+          .put(Field.Kind.TYPE_UNKNOWN, "interface{}")
           .put(Field.Kind.TYPE_BOOL, "false")
           .put(Field.Kind.TYPE_INT32, "int64(0)")
           .put(Field.Kind.TYPE_INT64, "int64(0)")

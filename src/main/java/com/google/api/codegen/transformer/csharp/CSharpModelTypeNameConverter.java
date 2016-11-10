@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -28,6 +29,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.List;
 
 public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
@@ -125,20 +127,18 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   public TypeName getTypeName(ProtoElement elem) {
     // Handle nested types, construct the required type prefix
     ProtoElement parentEl = elem.getParent();
-    String prefix = "";
+    String shortNamePrefix = "";
     while (parentEl != null && parentEl instanceof MessageType) {
-      prefix = parentEl.getSimpleName() + ".Types." + prefix;
+      shortNamePrefix = parentEl.getSimpleName() + "+Types+" + shortNamePrefix;
       parentEl = parentEl.getParent();
     }
+    String prefix = "";
     if (parentEl instanceof ProtoFile) {
-      String filePrefix = "";
       for (String name : Splitter.on('.').split(parentEl.getFullName())) {
-        filePrefix += Name.from(name).toUpperCamel() + ".";
+        prefix += Name.from(name).toUpperCamelAndDigits() + ".";
       }
-      prefix = filePrefix + prefix;
     }
-
-    String shortName = elem.getSimpleName();
+    String shortName = shortNamePrefix + elem.getSimpleName();
     return new TypeName(prefix + shortName, shortName);
   }
 
@@ -168,8 +168,10 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     } else if (type.isEnum()) {
       TypeName enumTypeName = getTypeName(type);
       EnumValue enumValue = type.getEnumType().getValues().get(0);
+      List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
+      String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
       String enumValueName =
-          enumNamer.getEnumValueName(enumTypeName.getNickname(), enumValue.getSimpleName());
+          enumNamer.getEnumValueName(enumShortTypeName, enumValue.getSimpleName());
       return TypedValue.create(enumTypeName, "%s." + enumValueName);
     } else {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
@@ -206,7 +208,14 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName) {
+      FieldConfig fieldConfig, String typedResourceShortName) {
     throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by C#");
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    throw new UnsupportedOperationException(
+        "getTypeNameForResourceNameElementType not supported by C#");
   }
 }

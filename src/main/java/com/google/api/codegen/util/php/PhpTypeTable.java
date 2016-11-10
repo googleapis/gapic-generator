@@ -103,12 +103,12 @@ public class PhpTypeTable implements TypeTable {
   }
 
   /**
-   * A set of PHP keywords and built-ins. keywords: http://php.net/manual/en/reserved.keywords.php
+   * : A set of PHP keywords and built-ins. Keywords:
+   * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
    */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
           .add(
-              "__halt_compiler",
               "abstract",
               "and",
               "array",
@@ -174,14 +174,6 @@ public class PhpTypeTable implements TypeTable {
               "var",
               "while",
               "xor",
-              "yield",
-              "__CLASS__",
-              "__DIR__",
-              "__FILE__",
-              "__FUNCTION__",
-              "__LINE__",
-              "__METHOD__",
-              "__NAMESPACE__",
-              "__TRAIT__")
+              "yield")
           .build();
 }

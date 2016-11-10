@@ -15,10 +15,10 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -248,6 +248,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.stubName(namer.getStubName(context.getTargetInterface()));
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
+    methodViewBuilder.modifyMethodName(namer.getModifyMethodName(context.getMethod()));
     methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     ServiceMessages messages = new ServiceMessages();
@@ -272,12 +273,7 @@ public class ApiMethodTransformer {
     String resourceTypeName;
 
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
-      resourceTypeName =
-          namer.getAndSaveResourceTypeName(
-              typeTable,
-              resourceField,
-              resourceField.getType().makeOptional(),
-              resourceFieldConfig.getEntityName());
+      resourceTypeName = namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
     } else {
       resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
     }
@@ -442,9 +438,7 @@ public class ApiMethodTransformer {
         methodViewBuilder.responseTypeName(syncNickname);
         break;
       case GrpcStreaming:
-        String streamingReturnTypeFullName =
-            namer.getStaticLangStreamingReturnTypeName(
-                context.getMethod(), context.getMethodConfig());
+        String streamingReturnTypeFullName = namer.getStreamingClientName(context.getMethod());
         String streamingNickname =
             context.getTypeTable().getAndSaveNicknameFor(streamingReturnTypeFullName);
         methodViewBuilder.responseTypeName(streamingNickname);
@@ -464,13 +458,14 @@ public class ApiMethodTransformer {
           context.getMethodConfig().getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
-        CollectionConfig collectionConfig = context.getCollectionConfig(entityName);
-        if (collectionConfig == null) {
+        SingleResourceNameConfig resourceNameConfig =
+            context.getSimpleResourceNameConfig(entityName);
+        if (resourceNameConfig == null) {
           throw new IllegalStateException("No collection config with id '" + entityName + "'");
         }
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
         check.pathTemplateName(
-            context.getNamer().getPathTemplateName(context.getInterface(), collectionConfig));
+            context.getNamer().getPathTemplateName(context.getInterface(), resourceNameConfig));
         check.paramName(context.getNamer().getVariableName(field));
         check.allowEmptyString(shouldAllowEmpty(context, field));
         check.validationMessageContext(
@@ -504,13 +499,15 @@ public class ApiMethodTransformer {
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
+    InitCodeOutputType initCodeOutputType =
+        context.getMethod().getRequestStreaming()
+            ? InitCodeOutputType.SingleObject
+            : InitCodeOutputType.FieldList;
     apiMethod.initCode(
         initCodeTransformer.generateInitCode(
             context.cloneWithEmptyTypeTable(),
             createInitCodeContext(
-                context,
-                context.getMethodConfig().getRequiredFieldConfigs(),
-                InitCodeOutputType.FieldList)));
+                context, context.getMethodConfig().getRequiredFieldConfigs(), initCodeOutputType)));
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
@@ -657,15 +654,11 @@ public class ApiMethodTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (namer.shouldImportRequestObjectParamType(field)) {
-        typeName =
-            namer.getAndSaveResourceTypeName(
-                typeTable, field, field.getType(), fieldConfig.getEntityName());
+        typeName = namer.getAndSaveResourceTypeName(typeTable, fieldConfig);
       }
       if (namer.shouldImportRequestObjectParamElementType(field)) {
         // Use makeOptional to remove repeated property from type
-        elementTypeName =
-            namer.getAndSaveResourceTypeName(
-                typeTable, field, field.getType().makeOptional(), fieldConfig.getEntityName());
+        elementTypeName = namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig);
       }
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {
@@ -677,6 +670,11 @@ public class ApiMethodTransformer {
     }
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, fieldConfig);
+    String transformParamFunctionName = null;
+    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
+        && fieldConfig.hasDifferentMessageResourceNameConfig()) {
+      transformParamFunctionName = namer.getResourceOneofCreateMethod(typeTable, fieldConfig);
+    }
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
@@ -684,6 +682,7 @@ public class ApiMethodTransformer {
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);
+    param.transformParamFunctionName(transformParamFunctionName);
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
     return param.build();

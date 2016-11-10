@@ -151,6 +151,7 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'listStrings',
     'addComments',
     'getBookFromArchive',
+    'getBookFromAnywhere',
     'updateBookIndex',
     'streamShelves',
     'streamBooks',
@@ -195,7 +196,10 @@ var BOOK_PATH_TEMPLATE = new gax.PathTemplate(
     'shelves/{shelf_id}/books/{book_id}');
 
 var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
-    'archives/{archive_path=**}/books/{book_id}');
+    'archives/{archive_path}/books/{book_id=**}');
+
+var RETURN_PATH_TEMPLATE = new gax.PathTemplate(
+    'shelves/{shelf}/books/{book}/returns/{return}');
 
 /**
  * Returns a fully-qualified shelf resource name string.
@@ -282,6 +286,51 @@ LibraryServiceApi.prototype.matchArchivePathFromArchivedBookName = function(arch
  */
 LibraryServiceApi.prototype.matchBookIdFromArchivedBookName = function(archivedBookName) {
   return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).book_id;
+};
+
+/**
+ * Returns a fully-qualified return resource name string.
+ * @param {String} shelf
+ * @param {String} book
+ * @param {String} return
+ * @returns {String}
+ */
+LibraryServiceApi.prototype.returnPath = function(shelf, book, return_) {
+  return RETURN_PATH_TEMPLATE.render({
+    shelf: shelf,
+    book: book,
+    return: return_
+  });
+};
+
+/**
+ * Parses the returnName from a return resource.
+ * @param {String} returnName
+ *   A fully-qualified path representing a return resources.
+ * @returns {String} - A string representing the shelf.
+ */
+LibraryServiceApi.prototype.matchShelfFromReturnName = function(returnName) {
+  return RETURN_PATH_TEMPLATE.match(returnName).shelf;
+};
+
+/**
+ * Parses the returnName from a return resource.
+ * @param {String} returnName
+ *   A fully-qualified path representing a return resources.
+ * @returns {String} - A string representing the book.
+ */
+LibraryServiceApi.prototype.matchBookFromReturnName = function(returnName) {
+  return RETURN_PATH_TEMPLATE.match(returnName).book;
+};
+
+/**
+ * Parses the returnName from a return resource.
+ * @param {String} returnName
+ *   A fully-qualified path representing a return resources.
+ * @returns {String} - A string representing the return.
+ */
+LibraryServiceApi.prototype.matchReturnFromReturnName = function(returnName) {
+  return RETURN_PATH_TEMPLATE.match(returnName).return;
 };
 
 // Service calls
@@ -967,7 +1016,7 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}
+ *   The second parameter to the callback is an object representing [BookFromArchive]{@link BookFromArchive}
  * @returns {Promise} - The promise which resolves to the response object.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -990,6 +1039,52 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
     options = {};
   }
   return this._getBookFromArchive(request, options, callback);
+};
+
+/**
+ * Gets a book from a shelf or archive.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.name
+ *   The name of the book to retrieve.
+ * @param {string} request.altBookName
+ *   An alternate book name, used to test restricting flattened field to a
+ *   single resource name type in a oneof.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link BookFromAnywhere}
+ * @returns {Promise} - The promise which resolves to the response object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
+ *
+ * @example
+ *
+ * var api = libraryV1.libraryServiceApi();
+ * var name = '';
+ * var formattedAltBookName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var request = {
+ *     name: name,
+ *     altBookName: formattedAltBookName
+ * };
+ * api.getBookFromAnywhere(request).then(function(response) {
+ *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceApi.prototype.getBookFromAnywhere = function(request, options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+  return this._getBookFromAnywhere(request, options, callback);
 };
 
 /**
@@ -1111,8 +1206,11 @@ LibraryServiceApi.prototype.streamBooks = function(request, options) {
  *     // doThingsWith(response);
  * });
  * var name = '';
+ * var request = {
+ *     name : name
+ * };
  * // Write request objects.
- * stream.write({name: name});
+ * stream.write(request);
  */
 LibraryServiceApi.prototype.discussBook = function(options) {
   if (options === undefined) {

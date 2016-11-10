@@ -117,10 +117,16 @@ module Library
       private_constant :BOOK_PATH_TEMPLATE
 
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive_path=**}/books/{book_id}"
+        "archives/{archive_path}/books/{book_id=**}"
       )
 
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
+
+      RETURN_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf}/books/{book}/returns/{return}"
+      )
+
+      private_constant :RETURN_PATH_TEMPLATE
 
       # Returns a fully-qualified shelf resource name string.
       # @param shelf_id [String]
@@ -150,6 +156,19 @@ module Library
         ARCHIVED_BOOK_PATH_TEMPLATE.render(
           :"archive_path" => archive_path,
           :"book_id" => book_id
+        )
+      end
+
+      # Returns a fully-qualified return resource name string.
+      # @param shelf [String]
+      # @param book [String]
+      # @param return_ [String]
+      # @return [String]
+      def self.return_path shelf, book, return_
+        RETURN_PATH_TEMPLATE.render(
+          :"shelf" => shelf,
+          :"book" => book,
+          :"return" => return_
         )
       end
 
@@ -186,6 +205,27 @@ module Library
       # @return [String]
       def self.match_book_id_from_archived_book_name archived_book_name
         ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["book_id"]
+      end
+
+      # Parses the shelf from a return resource.
+      # @param return_name [String]
+      # @return [String]
+      def self.match_shelf_from_return_name return_name
+        RETURN_PATH_TEMPLATE.match(return_name)["shelf"]
+      end
+
+      # Parses the book from a return resource.
+      # @param return_name [String]
+      # @return [String]
+      def self.match_book_from_return_name return_name
+        RETURN_PATH_TEMPLATE.match(return_name)["book"]
+      end
+
+      # Parses the return from a return resource.
+      # @param return_name [String]
+      # @return [String]
+      def self.match_return_from_return_name return_name
+        RETURN_PATH_TEMPLATE.match(return_name)["return"]
       end
 
       # @param service_path [String]
@@ -321,9 +361,25 @@ module Library
           @library_service_stub.method(:get_book_from_archive),
           defaults["get_book_from_archive"]
         )
+        @get_book_from_anywhere = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_book_from_anywhere),
+          defaults["get_book_from_anywhere"]
+        )
         @update_book_index = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book_index),
           defaults["update_book_index"]
+        )
+        @stream_shelves = Google::Gax.create_api_call(
+          @library_service_stub.method(:stream_shelves),
+          defaults["stream_shelves"]
+        )
+        @stream_books = Google::Gax.create_api_call(
+          @library_service_stub.method(:stream_books),
+          defaults["stream_books"]
+        )
+        @discuss_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:discuss_book),
+          defaults["discuss_book"]
         )
         @find_related_books = Google::Gax.create_api_call(
           @library_service_stub.method(:find_related_books),
@@ -394,8 +450,8 @@ module Library
       #
       #   library_service_api = LibraryServiceApi.new
       #   formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
-      #   options = ''
-      #   response = library_service_api.get_shelf(formatted_name, options)
+      #   options_ = ''
+      #   response = library_service_api.get_shelf(formatted_name, options_)
 
       def get_shelf \
           name,
@@ -858,7 +914,7 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
-      # @return [Google::Example::Library::V1::Book]
+      # @return [Google::Example::Library::V1::BookFromArchive]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1/library_service_api"
@@ -876,6 +932,39 @@ module Library
           name: name
         }.delete_if { |_, v| v.nil? })
         @get_book_from_archive.call(req, options)
+      end
+
+      # Gets a book from a shelf or archive.
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param alt_book_name [String]
+      #   An alternate book name, used to test restricting flattened field to a
+      #   single resource name type in a oneof.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::BookFromAnywhere]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1/library_service_api"
+      #
+      #   LibraryServiceApi = Library::V1::LibraryServiceApi
+      #
+      #   library_service_api = LibraryServiceApi.new
+      #   name = ''
+      #   formatted_alt_book_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   response = library_service_api.get_book_from_anywhere(name, formatted_alt_book_name)
+
+      def get_book_from_anywhere \
+          name,
+          alt_book_name,
+          options: nil
+        req = Google::Example::Library::V1::GetBookFromAnywhereRequest.new({
+          name: name,
+          alt_book_name: alt_book_name
+        }.delete_if { |_, v| v.nil? })
+        @get_book_from_anywhere.call(req, options)
       end
 
       # Updates the index of a book.
@@ -913,6 +1002,100 @@ module Library
           index_map: index_map
         }.delete_if { |_, v| v.nil? })
         @update_book_index.call(req, options)
+      end
+
+      # Test server streaming
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      #
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Enumerable<Google::Example::Library::V1::StreamShelvesResponse>]
+      #   An enumerable of Google::Example::Library::V1::StreamShelvesResponse instances.
+      #
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1/library_service_api"
+      #
+      #   LibraryServiceApi = Library::V1::LibraryServiceApi
+      #
+      #   library_service_api = LibraryServiceApi.new
+      #   library_service_api.stream_shelves.each do |element|
+      #     # Process element.
+      #   end
+
+      def stream_shelves options: nil
+        req = Google::Example::Library::V1::StreamShelvesRequest.new
+        @stream_shelves.call(req, options)
+      end
+
+      # Test server streaming, non-paged responses.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      #
+      # @param name [String]
+      #   The name of the shelf whose books we'd like to list.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Enumerable<Google::Example::Library::V1::Book>]
+      #   An enumerable of Google::Example::Library::V1::Book instances.
+      #
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1/library_service_api"
+      #
+      #   LibraryServiceApi = Library::V1::LibraryServiceApi
+      #
+      #   library_service_api = LibraryServiceApi.new
+      #   name = ''
+      #   library_service_api.stream_books(name).each do |element|
+      #     # Process element.
+      #   end
+
+      def stream_books \
+          name,
+          options: nil
+        req = Google::Example::Library::V1::StreamBooksRequest.new({
+          name: name
+        }.delete_if { |_, v| v.nil? })
+        @stream_books.call(req, options)
+      end
+
+      # Test bidi-streaming.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      #
+      # @param reqs [Enumerable<Google::Example::Library::V1::DiscussBookRequest>]
+      #   The input requests.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Enumerable<Google::Example::Library::V1::Comment>]
+      #   An enumerable of Google::Example::Library::V1::Comment instances.
+      #
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      #
+      # @note
+      #   EXPERIMENTAL:
+      #     Streaming requests are still undergoing review.
+      #     This method interface might change in the future.
+      #
+      # @example
+      #   require "library/v1/library_service_api"
+      #
+      #   DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
+      #   LibraryServiceApi = Library::V1::LibraryServiceApi
+      #
+      #   library_service_api = LibraryServiceApi.new
+      #   name = ''
+      #   request = DiscussBookRequest.new
+      #   request.name = name
+      #   requests = [request]
+      #   library_service_api.discuss_book(requests).each do |element|
+      #     # Process element.
+      #   end
+
+      def discuss_book reqs, options: nil
+        @discuss_book.call(reqs, options)
       end
 
       # @param names [Array<String>]

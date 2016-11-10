@@ -31,8 +31,13 @@ public abstract class NameFormatterDelegator implements NameFormatter {
   }
 
   @Override
-  public String className(Name name) {
-    return formatter.className(name);
+  public String publicClassName(Name name) {
+    return formatter.publicClassName(name);
+  }
+
+  @Override
+  public String privateClassName(Name name) {
+    return formatter.privateClassName(name);
   }
 
   @Override

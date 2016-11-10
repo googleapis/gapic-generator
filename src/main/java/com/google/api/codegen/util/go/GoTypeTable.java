@@ -18,7 +18,6 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
-import com.google.common.collect.ImmutableSet;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -84,79 +83,4 @@ public class GoTypeTable implements TypeTable {
       String containerFullName, String innerTypeShortName) {
     throw new UnsupportedOperationException("getAndSaveNicknameForInnerType not supported by Go");
   }
-
-  /**
-   * A set of Go reserved identifiers. See https://golang.org/ref/spec#Keywords
-   * https://golang.org/ref/spec#Predeclared_identifiers
-   */
-  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
-      ImmutableSet.<String>builder()
-          .add(
-              // Keywords
-              "break",
-              "case",
-              "chan",
-              "const",
-              "continue",
-              "default",
-              "defer",
-              "else",
-              "fallthrough",
-              "for",
-              "func",
-              "go",
-              "goto",
-              "if",
-              "import",
-              "interface",
-              "map",
-              "package",
-              "range",
-              "return",
-              "select",
-              "struct",
-              "switch",
-              "type",
-              "var",
-              // Predeclared identifiers
-              "bool",
-              "byte",
-              "complex64",
-              "complex128",
-              "error",
-              "float32",
-              "float64",
-              "int",
-              "int8",
-              "int16",
-              "int32",
-              "int64",
-              "rune",
-              "string",
-              "uint",
-              "uint8",
-              "uint16",
-              "uint32",
-              "uint64",
-              "uintptr",
-              "true",
-              "false",
-              "iota",
-              "nil",
-              "append",
-              "cap",
-              "close",
-              "complex",
-              "copy",
-              "delete",
-              "imag",
-              "len",
-              "make",
-              "new",
-              "panic",
-              "print",
-              "println",
-              "real",
-              "recover")
-          .build();
 }

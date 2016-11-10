@@ -12,21 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.php;
+package com.google.api.codegen.viewmodel;
 
-import com.google.api.tools.framework.snippet.Doc;
+import com.google.auto.value.AutoValue;
 
-/** Entry points for a PHP snippet set. */
-interface PhpSnippetSet<Element> {
-  /** Generates the result filename for the generated document. */
-  Doc generateFilename(Element element);
+@AutoValue
+public abstract class ModifyMethodView {
+  public abstract String name();
 
-  /** Generates the body of the class for the service interface. */
-  Doc generateBody(Element element);
+  public abstract String requestTypeName();
 
-  /**
-   * Generates the result class, based on the result for the body, and a set of accumulated types to
-   * be imported.
-   */
-  Doc generateClass(Element element, Doc body, Iterable<String> imports);
+  public static Builder builder() {
+    return new AutoValue_ModifyMethodView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder name(String val);
+
+    public abstract Builder requestTypeName(String val);
+
+    public abstract ModifyMethodView build();
+  }
 }
