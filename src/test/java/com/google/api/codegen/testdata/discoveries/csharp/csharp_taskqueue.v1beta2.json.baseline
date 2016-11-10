@@ -7,9 +7,12 @@
 // 2. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
 using System;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -30,7 +33,7 @@ namespace TaskqueueSample
             // The id of the taskqueue to get the properties of.
             string taskqueue = "";  // TODO: Update placeholder value.
 
-            TaskqueuesResource.GetRequest request = taskqueueService.Taskqueues().Get(project, taskqueue);
+            TaskqueuesResource.GetRequest request = taskqueueService.Taskqueues.Get(project, taskqueue);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TaskQueue response = request.Execute();
@@ -60,8 +63,10 @@ namespace TaskqueueSample
 // 2. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
+
 
 namespace TaskqueueSample
 {
@@ -85,7 +90,7 @@ namespace TaskqueueSample
             // The id of the task to delete.
             string task = "";  // TODO: Update placeholder value.
 
-            TasksResource.DeleteRequest request = taskqueueService.Tasks().Delete(project, taskqueue, task);
+            TasksResource.DeleteRequest request = taskqueueService.Tasks.Delete(project, taskqueue, task);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
@@ -112,9 +117,12 @@ namespace TaskqueueSample
 // 2. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
 using System;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -138,7 +146,7 @@ namespace TaskqueueSample
             // The task to get properties of.
             string task = "";  // TODO: Update placeholder value.
 
-            TasksResource.GetRequest request = taskqueueService.Tasks().Get(project, taskqueue, task);
+            TasksResource.GetRequest request = taskqueueService.Tasks.Get(project, taskqueue, task);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Task response = request.Execute();
@@ -168,9 +176,12 @@ namespace TaskqueueSample
 // 2. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
 using System;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -194,7 +205,7 @@ namespace TaskqueueSample
             // TODO: Assign values to desired fields of `requestBody`:
             Data.Task requestBody = new Data.Task();
 
-            TasksResource.InsertRequest request = taskqueueService.Tasks().Insert(project, taskqueue, requestBody);
+            TasksResource.InsertRequest request = taskqueueService.Tasks.Insert(requestBody, project, taskqueue);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Task response = request.Execute();
@@ -224,9 +235,12 @@ namespace TaskqueueSample
 // 2. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
 using System;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -253,7 +267,7 @@ namespace TaskqueueSample
             // The lease in seconds.
             int leaseSecs = 0;  // TODO: Update placeholder value.
 
-            TasksResource.LeaseRequest request = taskqueueService.Tasks().Lease(project, taskqueue, numTasks, leaseSecs);
+            TasksResource.LeaseRequest request = taskqueueService.Tasks.Lease(project, taskqueue, numTasks, leaseSecs);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Tasks response = request.Execute();
@@ -283,9 +297,12 @@ namespace TaskqueueSample
 // 2. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
 using System;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -306,7 +323,7 @@ namespace TaskqueueSample
             // The id of the taskqueue to list tasks from.
             string taskqueue = "";  // TODO: Update placeholder value.
 
-            TasksResource.ListRequest request = taskqueueService.Tasks().List(project, taskqueue);
+            TasksResource.ListRequest request = taskqueueService.Tasks.List(project, taskqueue);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Tasks2 response = request.Execute();
@@ -336,9 +353,12 @@ namespace TaskqueueSample
 // 2. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
 using System;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -367,7 +387,7 @@ namespace TaskqueueSample
             // fields will be changed:
             Data.Task requestBody = new Data.Task();
 
-            TasksResource.PatchRequest request = taskqueueService.Tasks().Patch(project, taskqueue, task, newLeaseSeconds, requestBody);
+            TasksResource.PatchRequest request = taskqueueService.Tasks.Patch(requestBody, project, taskqueue, task, newLeaseSeconds);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Task response = request.Execute();
@@ -397,9 +417,12 @@ namespace TaskqueueSample
 // 2. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
 using System;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -427,7 +450,7 @@ namespace TaskqueueSample
             // TODO: Assign values to desired fields of `requestBody`:
             Data.Task requestBody = new Data.Task();
 
-            TasksResource.UpdateRequest request = taskqueueService.Tasks().Update(project, taskqueue, task, newLeaseSeconds, requestBody);
+            TasksResource.UpdateRequest request = taskqueueService.Tasks.Update(requestBody, project, taskqueue, task, newLeaseSeconds);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Task response = request.Execute();
