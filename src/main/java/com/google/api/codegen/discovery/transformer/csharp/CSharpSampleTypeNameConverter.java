@@ -16,6 +16,7 @@ package com.google.api.codegen.discovery.transformer.csharp;
 
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleTypeNameConverter;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
@@ -39,7 +40,6 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_FLOAT, "float")
           .put(Field.Kind.TYPE_DOUBLE, "double")
           .put(Field.Kind.TYPE_STRING, "string")
-          .put(Field.Kind.TYPE_ENUM, "string")
           .build();
 
   /** A map from primitive types in proto to zero value in C#. */
@@ -54,7 +54,6 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_FLOAT, "0.0f")
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
           .put(Field.Kind.TYPE_STRING, "\"\"")
-          .put(Field.Kind.TYPE_ENUM, "\"\"")
           .build();
 
   private final TypeNameConverter typeNameConverter;
@@ -78,10 +77,7 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
     if (typeInfo.isMessage()) {
-      // We take the first segment of the type so we use the right namespace.
-      String[] pieces = typeInfo.message().typeName().split("\\.");
-      return new TypeName(
-          Joiner.on('.').join(packagePrefix, pieces[0]), typeInfo.message().typeName());
+      return new TypeName(typeInfo.message().typeName());
     }
     return getNonMessageTypeName(typeInfo);
   }
@@ -142,17 +138,22 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
   /** Returns the zero value for typeInfo. */
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
-    if (typeInfo.isMap()) {
-      return TypedValue.create(
-          typeNameConverter.getTypeName("System.Collections.Generic.Dictionary"), "new %s<>()");
-    }
-    if (typeInfo.isArray()) {
-      return TypedValue.create(
-          typeNameConverter.getTypeName("System.Collections.Generic.List"), "new %s<>()");
+    if (typeInfo.isMap() || typeInfo.isArray()) {
+      return TypedValue.create(getTypeName(typeInfo), "new %s()");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(typeInfo.kind())) {
       return TypedValue.create(getTypeName(typeInfo), PRIMITIVE_ZERO_VALUE.get(typeInfo.kind()));
     }
     throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
+  }
+
+  // TODO(saicheems): C# is the only language to use the name of a field to
+  // change its type's name... So this special method allows for enums to be
+  // handled correctly. We need to refactor to align this with the rest of the
+  // abstraction.
+  public static TypedValue getEnumZeroValue(String requestTypeName, String fieldName) {
+    String typeName =
+        Joiner.on('.').join(requestTypeName, Name.lowerCamel(fieldName, "enum").toUpperCamel());
+    return TypedValue.create(new TypeName(typeName), "(%s) 0");
   }
 }

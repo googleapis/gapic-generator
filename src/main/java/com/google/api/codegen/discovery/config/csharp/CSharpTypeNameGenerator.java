@@ -46,18 +46,20 @@ public class CSharpTypeNameGenerator extends TypeNameGenerator {
 
   @Override
   public String getRequestTypeName(List<String> methodNameComponents) {
-    LinkedList<String> copy = new LinkedList<>(methodNameComponents);
-    copy.removeFirst();
-    String requestTypeName = Name.lowerCamel(copy.removeLast(), "request").toUpperCamel();
-    if (copy.size() > 0) {
-      return Joiner.on('.')
-          .join(Name.lowerCamel(copy.getLast(), "resource").toUpperCamel(), requestTypeName);
+    List<String> copy = getMethodNameComponents(methodNameComponents);
+    String requestTypeName = copy.remove(copy.size() - 1) + "Request";
+    String path = "";
+    for (String s : copy) {
+      path += s + "Resource.";
     }
-    return requestTypeName;
+    return path + requestTypeName;
   }
 
   @Override
   public String getMessageTypeName(String messageTypeName) {
+    if (messageTypeName.contains(".")) {
+      messageTypeName = messageTypeName + "Data";
+    }
     return Joiner.on('.').join("Data", messageTypeName);
   }
 }

@@ -24,6 +24,10 @@
         using {@import.fullName};
     @end
 
+    @if class.dataNamespace
+        using Data = {@class.dataNamespace};
+    @end
+
     namespace {@class.namespaceName}
     {
         public class {@class.className}
@@ -87,7 +91,7 @@
         @if class.hasMediaDownload
             // TODO: Download media content if desired. See:
             // https://developers.google.com/api-client-library/dotnet/guide/media_download
- 
+
         @end
         @if class.isPageStreaming
             {@class.responseTypeName} {@class.responseVarName};
@@ -137,10 +141,10 @@
 @end
 
 @private getCredentialFunc(class)
-    public static UserCredential GetCredential()
-    {
-        @switch class.auth.type
-        @case "OAUTH_3L"
+    @switch class.auth.type
+    @case "OAUTH_3L"
+        public static UserCredential GetCredential()
+        {
             // TODO: Change placeholder below to generate authentication credentials. See:
             // {@class.auth.instructionsUrl}
             //
@@ -153,19 +157,22 @@
                 //    {@scope}
             @end
             return null;
-        @default
+        }
+    @default
+        public static GoogleCredential GetCredential()
+        {
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-            return credential;
-        @end
-    }
+           return credential;
+        }
+    @end
 @end
 
 @private callChain(methodNameComponents)
-  @join resource : methodNameComponents on "()."
+  @join resource : methodNameComponents on "."
     {@resource}
   @end
 @end

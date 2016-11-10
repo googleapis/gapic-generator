@@ -131,6 +131,9 @@ public abstract class SampleView implements ViewModel {
 
   // C# specific section...
   @Nullable
+  public abstract String dataNamespace();
+
+  @Nullable
   public abstract String namespaceName();
 
   public static Builder newBuilder() {
@@ -217,6 +220,8 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder serviceRequirePath(String val);
 
     public abstract Builder serviceTypeNamespace(String val);
+
+    public abstract Builder dataNamespace(String val);
 
     public abstract Builder namespaceName(String val);
 

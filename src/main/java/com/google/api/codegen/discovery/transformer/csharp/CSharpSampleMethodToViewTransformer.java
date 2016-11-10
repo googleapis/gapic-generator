@@ -30,9 +30,12 @@ import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Joiner;
+import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,20 +85,21 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     String requestTypeName =
         typeTable.getAndSaveNicknameForRequestType(config.apiTypeName(), methodInfo.requestType());
 
-    List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
-    for (FieldInfo field : methodInfo.fields().values()) {
-      SampleFieldView sampleFieldView = createSampleFieldView(field, typeTable, symbolTable);
-      fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
-    }
-
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(typeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
       fieldVarNames.add(requestBodyVarName);
+    }
+
+    List<SampleFieldView> fields = new ArrayList<>();
+    for (FieldInfo field : methodInfo.fields().values()) {
+      SampleFieldView sampleFieldView =
+          createSampleFieldView(methodInfo, field, typeTable, symbolTable);
+      fields.add(sampleFieldView);
+      fieldVarNames.add(sampleFieldView.name());
     }
 
     if (methodInfo.isPageStreaming()) {
@@ -107,6 +111,11 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
       builder.responseVarName(symbolTable.getNewSymbol(namer.getResponseVarName()));
       builder.responseTypeName(typeTable.getAndSaveNicknameFor(methodInfo.responseType()));
       typeTable.saveNicknameFor("System.Console");
+    }
+
+    String dataNamespace = "";
+    if (hasRequestBody || hasResponse) {
+      dataNamespace = Joiner.on('.').join(config.packagePrefix(), "Data");
     }
 
     return builder
@@ -131,6 +140,7 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
+        .dataNamespace(dataNamespace)
         .namespaceName(config.apiCanonicalName().replace(" ", "") + "Sample")
         .imports(importTypeTransformer.generateImports(typeTable.getImports()))
         .build();
@@ -167,7 +177,7 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
-    builder.resourceFieldName(namer.publicFieldName(Name.lowerCamel(fieldInfo.name())));
+    builder.resourceFieldName(Name.lowerCamel(fieldInfo.name()).toUpperCamel());
     String resourceTypeName = typeTable.getAndSaveNickNameForElementType(fieldInfo.type());
     builder.resourceElementTypeName(resourceTypeName);
     String resourceVarName =
@@ -180,12 +190,29 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
   }
 
   private SampleFieldView createSampleFieldView(
-      FieldInfo field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
+      MethodInfo methodInfo,
+      FieldInfo field,
+      SampleTypeTable sampleTypeTable,
+      SymbolTable symbolTable) {
     TypeInfo typeInfo = field.type();
-    String defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+
+    String defaultValue = "";
+    String typeName = "";
+    // TODO(saicheems): Ugly hack to get around enum naming in C# for the time being.
+    // Longer explanation in CSharpSampleTypeNameConverter.
+    if (typeInfo.kind() == Field.Kind.TYPE_ENUM) {
+      TypedValue typedValue =
+          CSharpSampleTypeNameConverter.getEnumZeroValue(
+              methodInfo.requestType().message().typeName(), field.name());
+      typeName = typedValue.getTypeName().getNickname();
+      defaultValue = String.format(typedValue.getValuePattern(), typeName);
+    } else {
+      defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+      typeName = sampleTypeTable.getAndSaveNicknameFor(typeInfo);
+    }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
-        .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
+        .typeName(typeName)
         .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
