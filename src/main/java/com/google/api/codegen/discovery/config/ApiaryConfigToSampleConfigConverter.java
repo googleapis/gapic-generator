@@ -70,7 +70,9 @@ public class ApiaryConfigToSampleConfigConverter {
         .apiName(apiName)
         .apiVersion(apiVersion)
         .apiTypeName(apiTypeName)
-        .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
+        .packagePrefix(
+            typeNameGenerator.getPackagePrefix(
+                apiName, apiaryConfig.getServiceCanonicalName(), apiVersion))
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
         .authInstructionsUrl(apiaryConfig.getAuthInstructionsUrl())
@@ -104,7 +106,7 @@ public class ApiaryConfigToSampleConfigConverter {
     boolean isPageStreaming = isPageStreaming(method);
     FieldInfo pageStreamingResourceField = null;
     if (isPageStreaming) {
-      Type containerType = apiaryConfig.getType(responseTypeUrl);
+      Type containerType = apiaryConfig.getType(method.getResponseTypeUrl());
       Field field = getPageStreamingResourceField(containerType);
       // If field is null, then the page streaming resource field is not
       // repeated. We allow null to be stored, and leave it to the overrides

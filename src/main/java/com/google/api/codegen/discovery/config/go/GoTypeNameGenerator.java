@@ -51,7 +51,7 @@ public class GoTypeNameGenerator extends TypeNameGenerator {
   }
 
   @Override
-  public String getPackagePrefix(String apiName, String apiVersion) {
+  public String getPackagePrefix(String apiName, String apiCanonicalName, String apiVersion) {
     return "google.golang.org/api/" + apiName + "/" + apiVersion;
   }
 
