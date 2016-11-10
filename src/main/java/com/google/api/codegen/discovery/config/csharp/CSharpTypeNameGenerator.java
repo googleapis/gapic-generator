@@ -57,6 +57,7 @@ public class CSharpTypeNameGenerator extends TypeNameGenerator {
 
   @Override
   public String getMessageTypeName(String messageTypeName) {
+    // A rule for cases like DatasetList.Datasets
     if (messageTypeName.contains(".")) {
       messageTypeName = messageTypeName + "Data";
     }

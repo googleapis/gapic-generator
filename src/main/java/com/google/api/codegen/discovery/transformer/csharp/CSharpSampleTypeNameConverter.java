@@ -96,22 +96,18 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
           "%s<%i, %i>",
           keyTypeName,
           valueTypeName);
+    } else if (typeInfo.kind() == Field.Kind.TYPE_MESSAGE) {
+      return getTypeName(typeInfo);
     }
     String primitiveTypeName = PRIMIVITVE_TYPE_MAP.get(typeInfo.kind());
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
-        // For fully-qualified type names, use the regular resolver. These types are already boxed,
-        // and so we can skip boxing logic.
+        // For fully-qualified type names, use the regular resolver.
         return typeNameConverter.getTypeName(primitiveTypeName);
       }
       return new TypeName(primitiveTypeName);
     }
-    switch (typeInfo.kind()) {
-      case TYPE_MESSAGE:
-        return getTypeName(typeInfo);
-      default:
-        throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
-    }
+    throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
   }
 
   private TypeName getNonMessageTypeName(TypeInfo typeInfo) {
