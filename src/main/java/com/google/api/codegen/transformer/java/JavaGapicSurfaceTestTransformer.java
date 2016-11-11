@@ -51,10 +51,12 @@ import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FileHeaderView;
+import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
+import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
@@ -185,11 +187,17 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       InitCodeLineView line = settingsView.initCodeLine();
       if (line.lineType() == InitCodeLineType.SimpleInitLine) {
         SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
+        String projectVarName =
+            namer.localVarName(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
         if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
           ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
-          return initValue
-              .formatArgs()
-              .contains(namer.localVarName(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME)));
+          return initValue.formatArgs().contains(projectVarName);
+        } else if (simpleLine.initValue() instanceof SimpleInitValueView) {
+          SimpleInitValueView initValue = (SimpleInitValueView) simpleLine.initValue();
+          return initValue.initialValue().equals(projectVarName);
+        } else if (simpleLine.initValue() instanceof FormattedInitValueView) {
+          FormattedInitValueView initValue = (FormattedInitValueView) simpleLine.initValue();
+          return initValue.formatArgs().contains(projectVarName);
         }
       }
     }

@@ -22,6 +22,7 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
+import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FieldSettingView;
@@ -359,11 +360,13 @@ public class InitCodeTransformer {
       SimpleInitValueView.Builder initValue = SimpleInitValueView.newBuilder();
 
       if (initValueConfig.hasSimpleInitialValue()) {
-        initValue.initialValue(
-            context
-                .getTypeTable()
-                .renderPrimitiveValue(
-                    item.getType(), initValueConfig.getInitialValue().getValue()));
+        String value = initValueConfig.getInitialValue().getValue();
+        if (initValueConfig.getInitialValue().getType() == InitValueType.Literal) {
+          value = context.getTypeTable().renderPrimitiveValue(item.getType(), value);
+        } else {
+          value = context.getNamer().localVarName(Name.from(value));
+        }
+        initValue.initialValue(value);
       } else {
         initValue.initialValue(
             context.getTypeTable().getZeroValueAndSaveNicknameFor(item.getType()));
