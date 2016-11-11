@@ -101,21 +101,25 @@
 
 @private methodCallSampleCodeForPagedResponse(apiMethod)
     var options = {autoPaginate: false};
-    api.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options).then(function(responses) {
-        // The actual resources in the response.
+    function callback(responses) {
+        // The actual resources in a response.
         var resources = responses[0];
         // The next request if the response shows there's more responses.
         var nextRequest = responses[1];
+        // The actual response object, in case want to refer.
+        // var rawResponse = responses[2];
         for (var i = 0; i < resources.length; ++i) {
-            // doThingsWith(resources[0])
+            // doThingsWith(resources[i]);
         }
         if (nextRequest) {
-            // fetch the next page.
-            return api.{@apiMethod.name}(nextRequest, options);
+            return api.{@apiMethod.name}(nextRequest, options).then(callback);
         }
-    }).catch(function(err) {
-        console.error(err);
-    });
+    }
+    api.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
+        .then(callback)
+        .catch(function(err) {
+            console.error(err);
+        });
 @end
 
 @private methodCallSampleCodePrefix(apiMethod)

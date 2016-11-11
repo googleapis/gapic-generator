@@ -351,7 +351,8 @@ LibraryServiceApi.prototype.matchReturnFromReturnName = function(returnName) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -399,7 +400,8 @@ LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -438,19 +440,18 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @param {function(?Error, ?Object)=} callback
+ * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is Array of [Shelf]{@link Shelf}.
  *
- *   When autoPaginate: false is specified through options, the result is
- *   an object representing [ListShelvesResponse]{@link ListShelvesResponse}
- *   and the third item will be set if the response contains the token for the further
- *   results and can be reused to `pageToken` field in the options in the next request.
- * @returns {Promise} - The promise which resolves to the response object.
+ *   When autoPaginate: false is specified through options, it contains the result
+ *   in a single response. If the response indicates the next page exists, the third
+ *   parameter is set to be used for the next request object. The fourth parameter keeps
+ *   the raw response object of an object representing [ListShelvesResponse]{@link ListShelvesResponse}.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
- *   Or this resolves to an object representing [ListShelvesResponse]{@link ListShelvesResponse}
- *   when `autoPaginate: false` is specified through options.
  *
  * @example
  *
@@ -468,21 +469,25 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
  *
  * // Or obtain the paged response.
  * var options = {autoPaginate: false};
- * api.listShelves({}, options).then(function(responses) {
- *     // The actual resources in the response.
+ * function callback(responses) {
+ *     // The actual resources in a response.
  *     var resources = responses[0];
  *     // The next request if the response shows there's more responses.
  *     var nextRequest = responses[1];
+ *     // The actual response object, in case want to refer.
+ *     // var rawResponse = responses[2];
  *     for (var i = 0; i < resources.length; ++i) {
- *         // doThingsWith(resources[0])
+ *         // doThingsWith(resources[i]);
  *     }
  *     if (nextRequest) {
- *         // fetch the next page.
- *         return api.listShelves(nextRequest, options);
+ *         return api.listShelves(nextRequest, options).then(callback);
  *     }
- * }).catch(function(err) {
- *     console.error(err);
- * });
+ * }
+ * api.listShelves({}, options)
+ *     .then(callback)
+ *     .catch(function(err) {
+ *         console.error(err);
+ *     });
  */
 LibraryServiceApi.prototype.listShelves = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
@@ -551,7 +556,8 @@ LibraryServiceApi.prototype.listShelvesStream = function(request, options) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -592,7 +598,8 @@ LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -641,7 +648,8 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -696,7 +704,8 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [PublishSeriesResponse]{@link PublishSeriesResponse}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -741,7 +750,8 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -785,19 +795,18 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @param {function(?Error, ?Object)=} callback
+ * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is Array of [Book]{@link Book}.
  *
- *   When autoPaginate: false is specified through options, the result is
- *   an object representing [ListBooksResponse]{@link ListBooksResponse}
- *   and the third item will be set if the response contains the token for the further
- *   results and can be reused to `pageToken` field in the options in the next request.
- * @returns {Promise} - The promise which resolves to the response object.
+ *   When autoPaginate: false is specified through options, it contains the result
+ *   in a single response. If the response indicates the next page exists, the third
+ *   parameter is set to be used for the next request object. The fourth parameter keeps
+ *   the raw response object of an object representing [ListBooksResponse]{@link ListBooksResponse}.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
- *   Or this resolves to an object representing [ListBooksResponse]{@link ListBooksResponse}
- *   when `autoPaginate: false` is specified through options.
  *
  * @example
  *
@@ -815,21 +824,25 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
  *
  * // Or obtain the paged response.
  * var options = {autoPaginate: false};
- * api.listBooks({name: formattedName}, options).then(function(responses) {
- *     // The actual resources in the response.
+ * function callback(responses) {
+ *     // The actual resources in a response.
  *     var resources = responses[0];
  *     // The next request if the response shows there's more responses.
  *     var nextRequest = responses[1];
+ *     // The actual response object, in case want to refer.
+ *     // var rawResponse = responses[2];
  *     for (var i = 0; i < resources.length; ++i) {
- *         // doThingsWith(resources[0])
+ *         // doThingsWith(resources[i]);
  *     }
  *     if (nextRequest) {
- *         // fetch the next page.
- *         return api.listBooks(nextRequest, options);
+ *         return api.listBooks(nextRequest, options).then(callback);
  *     }
- * }).catch(function(err) {
- *     console.error(err);
- * });
+ * }
+ * api.listBooks({name: formattedName}, options)
+ *     .then(callback)
+ *     .catch(function(err) {
+ *         console.error(err);
+ *     });
  */
 LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
@@ -904,7 +917,8 @@ LibraryServiceApi.prototype.listBooksStream = function(request, options) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -953,7 +967,8 @@ LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1000,7 +1015,8 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1046,19 +1062,18 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @param {function(?Error, ?Object)=} callback
+ * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is Array of string.
  *
- *   When autoPaginate: false is specified through options, the result is
- *   an object representing [ListStringsResponse]{@link ListStringsResponse}
- *   and the third item will be set if the response contains the token for the further
- *   results and can be reused to `pageToken` field in the options in the next request.
- * @returns {Promise} - The promise which resolves to the response object.
+ *   When autoPaginate: false is specified through options, it contains the result
+ *   in a single response. If the response indicates the next page exists, the third
+ *   parameter is set to be used for the next request object. The fourth parameter keeps
+ *   the raw response object of an object representing [ListStringsResponse]{@link ListStringsResponse}.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
- *   Or this resolves to an object representing [ListStringsResponse]{@link ListStringsResponse}
- *   when `autoPaginate: false` is specified through options.
  *
  * @example
  *
@@ -1076,21 +1091,25 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  *
  * // Or obtain the paged response.
  * var options = {autoPaginate: false};
- * api.listStrings({}, options).then(function(responses) {
- *     // The actual resources in the response.
+ * function callback(responses) {
+ *     // The actual resources in a response.
  *     var resources = responses[0];
  *     // The next request if the response shows there's more responses.
  *     var nextRequest = responses[1];
+ *     // The actual response object, in case want to refer.
+ *     // var rawResponse = responses[2];
  *     for (var i = 0; i < resources.length; ++i) {
- *         // doThingsWith(resources[0])
+ *         // doThingsWith(resources[i]);
  *     }
  *     if (nextRequest) {
- *         // fetch the next page.
- *         return api.listStrings(nextRequest, options);
+ *         return api.listStrings(nextRequest, options).then(callback);
  *     }
- * }).catch(function(err) {
- *     console.error(err);
- * });
+ * }
+ * api.listStrings({}, options)
+ *     .then(callback)
+ *     .catch(function(err) {
+ *         console.error(err);
+ *     });
  */
 LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
@@ -1163,7 +1182,8 @@ LibraryServiceApi.prototype.listStringsStream = function(request, options) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1213,7 +1233,8 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [BookFromArchive]{@link BookFromArchive}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1256,7 +1277,8 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1303,7 +1325,8 @@ LibraryServiceApi.prototype.getBookFromAnywhere = function(request, options, cal
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1441,19 +1464,18 @@ LibraryServiceApi.prototype.discussBook = function(options) {
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @param {function(?Error, ?Object)=} callback
+ * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is Array of string.
  *
- *   When autoPaginate: false is specified through options, the result is
- *   an object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}
- *   and the third item will be set if the response contains the token for the further
- *   results and can be reused to `pageToken` field in the options in the next request.
- * @returns {Promise} - The promise which resolves to the response object.
+ *   When autoPaginate: false is specified through options, it contains the result
+ *   in a single response. If the response indicates the next page exists, the third
+ *   parameter is set to be used for the next request object. The fourth parameter keeps
+ *   the raw response object of an object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
- *   Or this resolves to an object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}
- *   when `autoPaginate: false` is specified through options.
  *
  * @example
  *
@@ -1477,21 +1499,25 @@ LibraryServiceApi.prototype.discussBook = function(options) {
  *
  * // Or obtain the paged response.
  * var options = {autoPaginate: false};
- * api.findRelatedBooks(request, options).then(function(responses) {
- *     // The actual resources in the response.
+ * function callback(responses) {
+ *     // The actual resources in a response.
  *     var resources = responses[0];
  *     // The next request if the response shows there's more responses.
  *     var nextRequest = responses[1];
+ *     // The actual response object, in case want to refer.
+ *     // var rawResponse = responses[2];
  *     for (var i = 0; i < resources.length; ++i) {
- *         // doThingsWith(resources[0])
+ *         // doThingsWith(resources[i]);
  *     }
  *     if (nextRequest) {
- *         // fetch the next page.
- *         return api.findRelatedBooks(nextRequest, options);
+ *         return api.findRelatedBooks(nextRequest, options).then(callback);
  *     }
- * }).catch(function(err) {
- *     console.error(err);
- * });
+ * }
+ * api.findRelatedBooks(request, options)
+ *     .then(callback)
+ *     .catch(function(err) {
+ *         console.error(err);
+ *     });
  */
 LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
@@ -1576,7 +1602,8 @@ LibraryServiceApi.prototype.findRelatedBooksStream = function(request, options) 
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [AddTagResponse]{@link AddTagResponse}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1625,7 +1652,8 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [AddLabelResponse]{@link AddLabelResponse}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1668,7 +1696,8 @@ LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is an object representing [google.longrunning.Operation]{@link external:"google.longrunning.Operation"}.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @returns {Promise} - The promise which resolves to an array
+ *   of the same parameters to the callback except for the Error.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example

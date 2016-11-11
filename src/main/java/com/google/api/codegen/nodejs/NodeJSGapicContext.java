@@ -325,8 +325,14 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
     String classInfo = jsTypeName(method.getOutputType());
 
-    String callbackType =
-        isEmpty ? "function(?Error)" : String.format("function(?Error, ?%s)", classInfo);
+    String callbackType;
+    if (isEmpty) {
+      callbackType = "function(?Error)";
+    } else if (config.isPageStreaming()) {
+      callbackType = String.format("function(?Error, ?Array, ?Object, ?%s)", classInfo);
+    } else {
+      callbackType = String.format("function(?Error, ?%s)", classInfo);
+    }
     String callbackMessage =
         "@param {"
             + callbackType
@@ -336,10 +342,12 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       callbackMessage += "\n\n  The second parameter to the callback is " + returnTypeDoc + ".";
       if (config.isPageStreaming()) {
         callbackMessage +=
-            "\n\n  When autoPaginate: false is specified through options, the result is\n  "
+            "\n\n  When autoPaginate: false is specified through options, it contains the result\n"
+                + "  in a single response. If the response indicates the next page exists, the third\n"
+                + "  parameter is set to be used for the next request object. The fourth parameter keeps\n"
+                + "  the raw response object of "
                 + typeDocument(method.getOutputType())
-                + "\n  and the third item will be set if the response contains the token for the further\n"
-                + "  results and can be reused to `pageToken` field in the options in the next request.";
+                + ".";
       }
     }
 
@@ -350,16 +358,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           + linkForMessage(method.getInputType().getMessageType())
           + " for write() method.";
     }
-    String returnedType =
-        "@returns {Promise} - The promise which resolves to the response object.\n"
-            + "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
-    if (config.isPageStreaming()) {
-      returnedType +=
-          "\n  Or this resolves to "
-              + typeDocument(method.getOutputType())
-              + "\n  when `autoPaginate: false` is specified through options.";
-    }
-    return callbackMessage + "\n" + returnedType;
+    return callbackMessage
+        + "\n@returns {Promise} - The promise which resolves to an array\n"
+        + "  of the same parameters to the callback except for the Error.\n"
+        + "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
   }
 
   /** Return the list of messages within element which should be documented in Node.JS. */
