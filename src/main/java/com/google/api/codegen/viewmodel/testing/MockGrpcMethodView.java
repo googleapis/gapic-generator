@@ -25,6 +25,8 @@ public abstract class MockGrpcMethodView {
 
   public abstract String responseTypeName();
 
+  public abstract String streamHandleTypeName();
+
   public abstract GrpcStreamingType grpcStreamingType();
 
   public static Builder newBuilder() {
@@ -39,6 +41,8 @@ public abstract class MockGrpcMethodView {
     public abstract Builder requestTypeName(String val);
 
     public abstract Builder responseTypeName(String val);
+
+    public abstract Builder streamHandleTypeName(String val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 

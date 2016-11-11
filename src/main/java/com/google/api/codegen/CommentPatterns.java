@@ -26,6 +26,7 @@ public final class CommentPatterns {
       Pattern.compile("\\[([^\\]]+)\\]\\((\\p{Alpha}+:[^\\)]+)\\)");
   public static final Pattern CLOUD_LINK_PATTERN =
       Pattern.compile("\\[([^\\]]+)\\]\\(((?!\\p{Alpha}+:)[^\\)]+)\\)");
-  public static final Pattern PROTO_LINK_PATTERN = Pattern.compile("\\[([^\\]]+)\\]\\[[^\\]]*\\]");
+  public static final Pattern PROTO_LINK_PATTERN =
+      Pattern.compile("\\[([^\\]]+)\\]\\[([A-Za-z_][A-Za-z_.0-9]*)?\\]");
   public static final Pattern HEADLINE_PATTERN = Pattern.compile("^#+", Pattern.MULTILINE);
 }

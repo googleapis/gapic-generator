@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
-import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -85,21 +84,20 @@ public class InitCodeTransformer {
     SurfaceNamer namer = context.getNamer();
     // Add request fields checking
     for (InitCodeNode fieldItemTree : rootNode.getChildren().values()) {
+      FieldConfig fieldConfig = fieldItemTree.getFieldConfig();
 
-      String getterMethod;
-      if (context.getFeatureConfig().useResourceNameFormatOption(fieldItemTree.getFieldConfig())) {
-        getterMethod =
-            namer.getResourceNameFieldGetFunctionName(
-                fieldItemTree.getType(), Name.from(fieldItemTree.getKey()));
-      } else {
-        getterMethod =
-            namer.getFieldGetFunctionName(
-                fieldItemTree.getType(), Name.from(fieldItemTree.getKey()));
-      }
+      String getterMethod = namer.getFieldGetFunctionName(context.getFeatureConfig(), fieldConfig);
 
       String expectedValueIdentifier = getVariableName(context, fieldItemTree);
+      String expectedTransformFunction = null;
+      if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
+          && fieldConfig.hasDifferentMessageResourceNameConfig()) {
+        expectedTransformFunction =
+            namer.getResourceOneofCreateMethod(context.getTypeTable(), fieldConfig);
+      }
 
-      assertViews.add(createAssertView(expectedValueIdentifier, getterMethod));
+      assertViews.add(
+          createAssertView(expectedValueIdentifier, expectedTransformFunction, getterMethod));
     }
     return assertViews;
   }
@@ -124,9 +122,11 @@ public class InitCodeTransformer {
     return mapBuilder.build();
   }
 
-  private GapicSurfaceTestAssertView createAssertView(String expected, String actual) {
+  private GapicSurfaceTestAssertView createAssertView(
+      String expected, String expectedTransformFunction, String actual) {
     return GapicSurfaceTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
+        .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueGetter(actual)
         .build();
   }
@@ -203,9 +203,17 @@ public class InitCodeTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.SimpleInitLine);
 
-    if (context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())) {
-      surfaceLine.typeName(
-          namer.getAndSaveResourceTypeName(typeTable, fieldConfig, item.getType()));
+    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      if (!context.isFlattenedMethodContext()) {
+        // In a non-flattened context, we always use the resource name type set on the message
+        // instead of set on the flattened method
+        fieldConfig = fieldConfig.getMessageFieldConfig();
+      }
+      if (item.getType().isRepeated()) {
+        surfaceLine.typeName(namer.getAndSaveResourceTypeName(typeTable, fieldConfig));
+      } else {
+        surfaceLine.typeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig));
+      }
     } else {
       surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
     }
@@ -242,8 +250,7 @@ public class InitCodeTransformer {
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-      surfaceLine.elementTypeName(
-          namer.getAndSaveResourceTypeName(typeTable, fieldConfig, item.getType().makeOptional()));
+      surfaceLine.elementTypeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig));
     } else {
       surfaceLine.elementTypeName(
           typeTable.getAndSaveNicknameForElementType(item.getType().makeOptional()));
@@ -293,36 +300,44 @@ public class InitCodeTransformer {
   private InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {
 
     SurfaceNamer namer = context.getNamer();
+    ModelTypeTable typeTable = context.getTypeTable();
     InitValueConfig initValueConfig = item.getInitValueConfig();
     FieldConfig fieldConfig = item.getFieldConfig();
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
         && !item.getType().isRepeated()) {
       // For a repeated type, we want to use a SimpleInitValueView
-      ResourceNameType resourceNameType = fieldConfig.getResourceNameType();
-      SingleResourceNameConfig resourceNameConfig;
-      switch (resourceNameType) {
+      if (!context.isFlattenedMethodContext()) {
+        // In a non-flattened context, we always use the resource name type set on the message
+        // instead of set on the flattened method
+        fieldConfig = fieldConfig.getMessageFieldConfig();
+      }
+      SingleResourceNameConfig singleResourceNameConfig;
+      switch (fieldConfig.getResourceNameType()) {
         case ANY:
           // TODO(michaelbausor): handle case where there are no other resource names at all...
-          resourceNameConfig =
+          singleResourceNameConfig =
               Iterables.get(context.getApiConfig().getSingleResourceNameConfigs(), 0);
-          return createResourceNameInitValueView(context, item, resourceNameConfig);
+          FieldConfig anyResourceNameFieldConfig =
+              fieldConfig.withResourceNameConfig(singleResourceNameConfig);
+          return createResourceNameInitValueView(context, anyResourceNameFieldConfig, item);
         case FIXED:
           throw new UnsupportedOperationException("entity name invalid");
         case ONEOF:
           ResourceNameOneofConfig oneofConfig =
               (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
-          resourceNameConfig = Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
+          singleResourceNameConfig = Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
+          FieldConfig singleResourceNameFieldConfig =
+              fieldConfig.withResourceNameConfig(singleResourceNameConfig);
           ResourceNameInitValueView initView =
-              createResourceNameInitValueView(context, item, resourceNameConfig);
+              createResourceNameInitValueView(context, singleResourceNameFieldConfig, item);
           return ResourceNameOneofInitValueView.newBuilder()
-              .resourceOneofTypeName(namer.getResourceTypeName(fieldConfig.getResourceNameConfig()))
+              .resourceOneofTypeName(
+                  namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
               .specificResourceNameView(initView)
               .build();
         case SINGLE:
-          resourceNameConfig =
-              (SingleResourceNameConfig) item.getFieldConfig().getResourceNameConfig();
-          return createResourceNameInitValueView(context, item, resourceNameConfig);
+          return createResourceNameInitValueView(context, fieldConfig, item);
         case NONE:
         default:
           throw new UnsupportedOperationException("unexpected entity name type");
@@ -359,11 +374,12 @@ public class InitCodeTransformer {
   }
 
   private ResourceNameInitValueView createResourceNameInitValueView(
-      MethodTransformerContext context,
-      InitCodeNode item,
-      SingleResourceNameConfig resourceNameConfig) {
-    String resourceName = context.getNamer().getResourceTypeName(resourceNameConfig);
-    List<String> varList = Lists.newArrayList(resourceNameConfig.getNameTemplate().vars());
+      MethodTransformerContext context, FieldConfig fieldConfig, InitCodeNode item) {
+    String resourceName =
+        context.getNamer().getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig);
+    SingleResourceNameConfig singleResourceNameConfig =
+        (SingleResourceNameConfig) fieldConfig.getResourceNameConfig();
+    List<String> varList = Lists.newArrayList(singleResourceNameConfig.getNameTemplate().vars());
 
     return ResourceNameInitValueView.newBuilder()
         .resourceTypeName(resourceName)
@@ -404,8 +420,7 @@ public class InitCodeTransformer {
       FieldConfig fieldConfig = item.getFieldConfig();
 
       if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-        fieldSetting.fieldSetFunction(
-            namer.getResourceNameFieldSetFunctionName(item.getType(), Name.from(item.getKey())));
+        fieldSetting.fieldSetFunction(namer.getResourceNameFieldSetFunctionName(fieldConfig));
       } else {
         fieldSetting.fieldSetFunction(
             namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));

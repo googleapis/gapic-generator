@@ -32,8 +32,13 @@ public class PhpNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String className(Name name) {
+  public String publicClassName(Name name) {
     return wrapIfKeywordOrBuiltIn(name.toUpperCamel());
+  }
+
+  @Override
+  public String privateClassName(Name name) {
+    return publicClassName(name);
   }
 
   @Override

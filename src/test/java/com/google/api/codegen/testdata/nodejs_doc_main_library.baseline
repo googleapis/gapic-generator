@@ -1246,6 +1246,9 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  *   The request object that will be sent.
  * @param {string} request.name
  *   The name of the book to retrieve.
+ * @param {string} request.altBookName
+ *   An alternate book name, used to test restricting flattened field to a
+ *   single resource name type in a oneof.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -1260,7 +1263,12 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  *
  * var api = libraryV1.libraryServiceApi();
  * var name = '';
- * api.getBookFromAnywhere({name: name}).then(function(responses) {
+ * var formattedAltBookName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var request = {
+ *     name: name,
+ *     altBookName: formattedAltBookName
+ * };
+ * api.getBookFromAnywhere(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {

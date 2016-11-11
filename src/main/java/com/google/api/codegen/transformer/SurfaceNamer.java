@@ -81,13 +81,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The full path to the source file */
-  public String getSourceFilePath(String path, String className) {
+  public String getSourceFilePath(String path, String publicClassName) {
     return getNotImplementedString("SurfaceNamer.getSourceFilePath");
   }
 
   /** The name of the class that implements a particular proto interface. */
   public String getApiWrapperClassName(Interface interfaze) {
-    return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
@@ -97,17 +97,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the class that implements snippets for a particular proto interface. */
   public String getApiSnippetsClassName(Interface interfaze) {
-    return className(Name.upperCamel(interfaze.getSimpleName(), "ApiSnippets"));
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ApiSnippets"));
   }
 
   /** The name of the class that contains paged list response wrappers. */
   public String getPagedResponseWrappersClassName() {
-    return className(Name.upperCamel("PagedResponseWrappers"));
-  }
-
-  /** The name of the generated resource type from the entity name. */
-  public String getResourceTypeName(ResourceNameConfig resourceNameConfig) {
-    return className(getResourceTypeNameObject(resourceNameConfig));
+    return publicClassName(Name.upperCamel("PagedResponseWrappers"));
   }
 
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
@@ -157,9 +152,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.from("iterate_all_elements"));
   }
 
+  public String getResourceOneofCreateMethod(ModelTypeTable typeTable, FieldConfig fieldConfig) {
+    return getAndSaveResourceTypeName(typeTable, fieldConfig.getMessageFieldConfig())
+        + "."
+        + publicMethodName(Name.from("from"));
+  }
+
   /** The name of the constructor for the service client. The client is VKit generated, not GRPC. */
   public String getApiWrapperClassConstructorName(Interface interfaze) {
-    return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
 
   /**
@@ -195,7 +196,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of the settings class for a particular proto interface; not used in most languages.
    */
   public String getApiSettingsClassName(Interface interfaze) {
-    return className(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
   }
 
   /** The function name to retrieve default client option */
@@ -233,7 +234,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
       return getFieldSetFunctionName(field);
     }
@@ -255,13 +256,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getResourceNameFieldSetFunctionName(TypeRef type, Name identifier) {
+  public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
+    TypeRef type = fieldConfig.getField().getType();
+    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldSetFunctionName:map-type");
     } else if (type.isRepeated()) {
-      return publicMethodName(Name.from("add", "all").join(identifier).join("with_resources"));
+      return publicMethodName(
+          Name.from("add", "all").join(identifier).join("with").join(resourceName).join("list"));
     } else {
-      return publicMethodName(Name.from("set").join(identifier).join("with_resource"));
+      return publicMethodName(Name.from("set").join(identifier).join("with").join(resourceName));
     }
   }
 
@@ -269,7 +274,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     Field field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
+      return getResourceNameFieldGetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
       return getFieldGetFunctionName(field);
     }
@@ -289,13 +294,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getResourceNameFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
+    TypeRef type = fieldConfig.getField().getType();
+    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
     } else if (type.isRepeated()) {
-      return publicMethodName(Name.from("get").join(identifier).join("list").join("as_resources"));
+      return publicMethodName(
+          Name.from("get").join(identifier).join("list_as").join(resourceName).join("list"));
     } else {
-      return publicMethodName(Name.from("get").join(identifier).join("as_resource"));
+      return publicMethodName(Name.from("get").join(identifier).join("as").join(resourceName));
     }
   }
 
@@ -483,13 +492,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The type name of the Grpc server class. This needs to match what Grpc generates for the
+   * particular language.
+   */
+  public String getGrpcServerTypeName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getGrpcServerTypeName");
+  }
+
+  /**
    * The type name of the Grpc client class. This needs to match what Grpc generates for the
    * particular language.
    */
   public String getGrpcClientTypeName(Interface service) {
-    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
-    String className = className(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Client"));
-    return qualifiedName(namePath.withHead(className));
+    return getNotImplementedString("SurfaceNamer.getGrpcClientTypeName");
   }
 
   /**
@@ -498,8 +513,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcContainerTypeName(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
-    String className = className(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
-    return qualifiedName(namePath.withHead(className));
+    String publicClassName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
+    return qualifiedName(namePath.withHead(publicClassName));
   }
 
   /**
@@ -509,9 +525,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getGrpcServiceClassName(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
     String grpcContainerName =
-        className(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
     String serviceClassName =
-        className(Name.upperCamelKeepUpperAcronyms(service.getSimpleName(), "ImplBase"));
+        publicClassName(Name.upperCamelKeepUpperAcronyms(service.getSimpleName(), "ImplBase"));
     return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
   }
 
@@ -669,9 +685,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getStaticLangAsyncReturnTypeName(method, methodConfig);
   }
 
-  /** The GRPC streaming return type name in a static language for a given method. */
-  public String getStaticLangStreamingReturnTypeName(Method method, MethodConfig methodConfig) {
-    return getNotImplementedString("SurfaceNamer.getStaticLangStreamingReturnTypeName");
+  /** The GRPC streaming server type name for a given method. */
+  public String getStreamingServerName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getStreamingServerName");
+  }
+
+  /** The GRPC streaming client type name for a given method. */
+  public String getStreamingClientName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getStreamingClientName");
   }
 
   /** The name of the paged callable variant of the given method. */
@@ -720,7 +741,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The type name of call options */
   public String getCallSettingsTypeName(Interface service) {
-    return className(Name.upperCamel(service.getSimpleName(), "Settings"));
+    return publicClassName(Name.upperCamel(service.getSimpleName(), "Settings"));
   }
 
   /** The function name to retrieve default call option */
@@ -778,11 +799,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The class name of the generated resource type from the entity name. */
-  public String getAndSaveResourceTypeName(
-      ModelTypeTable typeTable, FieldConfig fieldConfig, TypeRef type) {
-    String resourceClassName = getResourceTypeName(fieldConfig.getResourceNameConfig());
-    return typeTable.getAndSaveNicknameForTypedResourceName(
-        fieldConfig.getField(), type, resourceClassName);
+  public String getAndSaveResourceTypeName(ModelTypeTable typeTable, FieldConfig fieldConfig) {
+    String resourceClassName =
+        publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    return typeTable.getAndSaveNicknameForTypedResourceName(fieldConfig, resourceClassName);
+  }
+
+  /** The class name of the generated resource type from the entity name. */
+  public String getAndSaveElementResourceTypeName(
+      ModelTypeTable typeTable, FieldConfig fieldConfig) {
+    String resourceClassName =
+        publicClassName(getResourceTypeNameObject(fieldConfig.getResourceNameConfig()));
+    return typeTable.getAndSaveNicknameForResourceNameElementType(fieldConfig, resourceClassName);
   }
 
   /** The test case name for the given method. */
@@ -800,17 +828,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The unit test class name for the given API service. */
   public String getUnitTestClassName(Interface service) {
-    return className(Name.upperCamel(service.getSimpleName(), "Test"));
+    return publicClassName(Name.upperCamel(service.getSimpleName(), "Test"));
   }
 
   /** The smoke test class name for the given API service. */
   public String getSmokeTestClassName(Interface service) {
-    return className(Name.upperCamel(service.getSimpleName(), "Smoke", "Test"));
+    return publicClassName(Name.upperCamel(service.getSimpleName(), "Smoke", "Test"));
   }
 
   /** The class name of the mock gRPC service for the given API service. */
   public String getMockServiceClassName(Interface service) {
-    return className(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName()));
+    return publicClassName(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName()));
   }
 
   /** The class name of a variable to hold the mock gRPC service for the given API service. */
@@ -820,7 +848,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The class name of the mock gRPC service implementation for the given API service. */
   public String getMockGrpcServiceImplName(Interface service) {
-    return className(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName(), "Impl"));
+    return publicClassName(
+        Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName(), "Impl"));
   }
 
   /** The file name for an API service. */

@@ -31,8 +31,13 @@ public class GoNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String className(Name name) {
+  public String publicClassName(Name name) {
     return name.toUpperCamel();
+  }
+
+  @Override
+  public String privateClassName(Name name) {
+    return name.toLowerCamel();
   }
 
   @Override

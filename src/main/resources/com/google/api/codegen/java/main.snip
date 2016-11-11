@@ -449,7 +449,12 @@
 
 @private builderSetCalls(requestObjectParams)
   @join requestObjectParam : requestObjectParams
-    .{@requestObjectParam.setCallName}({@requestObjectParam.name})
+    @if requestObjectParam.hasTransformParamFunction
+      .{@requestObjectParam.setCallName}(\
+        {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name}))
+    @else
+      .{@requestObjectParam.setCallName}({@requestObjectParam.name})
+    @end
   @end
 @end
 
