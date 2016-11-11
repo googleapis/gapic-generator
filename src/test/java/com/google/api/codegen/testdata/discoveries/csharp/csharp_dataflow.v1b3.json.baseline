@@ -6,8 +6,10 @@
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -20,38 +22,24 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
-
 namespace DataflowSample
 {
     public class DataflowServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Create` method:
-
             // The project which owns the job.
-            string projectId = "{MY-PROJECT-ID}";
+            string projectId = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.Job requestBody = new Data.Job();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.JobsResource.CreateRequest request = dataflowService.Projects.Jobs.Create(requestBody, projectId);
 
@@ -62,6 +50,16 @@ namespace DataflowSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -71,8 +69,10 @@ namespace DataflowSample
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -85,41 +85,27 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
-
 namespace DataflowSample
 {
     public class DataflowServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `GetConfig` method:
-
             // The project id.
-            string projectId = "{MY-PROJECT-ID}";
+            string projectId = "";  // TODO: Update placeholder value.
 
             // The job id.
-            string jobId = "{MY-JOB-ID}";
+            string jobId = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.GetDebugConfigRequest requestBody = new Data.GetDebugConfigRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.JobsResource.DebugResource.GetConfigRequest request = dataflowService.Projects.Jobs.Debug.GetConfig(requestBody, projectId, jobId);
 
@@ -130,6 +116,16 @@ namespace DataflowSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -139,8 +135,10 @@ namespace DataflowSample
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -153,41 +151,27 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
-
 namespace DataflowSample
 {
     public class DataflowServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `SendCapture` method:
-
             // The project id.
-            string projectId = "{MY-PROJECT-ID}";
+            string projectId = "";  // TODO: Update placeholder value.
 
             // The job id.
-            string jobId = "{MY-JOB-ID}";
+            string jobId = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.SendDebugCaptureRequest requestBody = new Data.SendDebugCaptureRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.JobsResource.DebugResource.SendCaptureRequest request = dataflowService.Projects.Jobs.Debug.SendCapture(requestBody, projectId, jobId);
 
@@ -198,6 +182,16 @@ namespace DataflowSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -207,8 +201,10 @@ namespace DataflowSample
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -221,37 +217,24 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
-
 namespace DataflowSample
 {
     public class DataflowServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Get` method:
-
             // The project which owns the job.
-            string projectId = "{MY-PROJECT-ID}";
+            string projectId = "";  // TODO: Update placeholder value.
 
             // Identifies a single job.
-            string jobId = "{MY-JOB-ID}";
-
+            string jobId = "";  // TODO: Update placeholder value.
 
             ProjectsResource.JobsResource.GetRequest request = dataflowService.Projects.Jobs.Get(projectId, jobId);
 
@@ -262,69 +245,15 @@ namespace DataflowSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Dataflow API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataflow
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Dataflow.v1b3.Data;
-
-
-namespace DataflowSample
-{
-    public class DataflowServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google-DataflowSample/0.1",
-            });
-
-
-            // TODO: Change placeholders below to desired parameter values for the `GetMetrics` method:
-
-            // A project id.
-            string projectId = "{MY-PROJECT-ID}";
-
-            // The job to get messages for.
-            string jobId = "{MY-JOB-ID}";
-
-
-            ProjectsResource.JobsResource.GetMetricsRequest request = dataflowService.Projects.Jobs.GetMetrics(projectId, jobId);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.JobMetrics response = request.Execute();
-            // Data.JobMetrics response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -335,8 +264,10 @@ namespace DataflowSample
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -349,6 +280,68 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
+namespace DataflowSample
+{
+    public class DataflowServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+
+                ApplicationName = "Google-DataflowSample/0.1",
+            });
+
+            // A project id.
+            string projectId = "";  // TODO: Update placeholder value.
+
+            // The job to get messages for.
+            string jobId = "";  // TODO: Update placeholder value.
+
+            ProjectsResource.JobsResource.GetMetricsRequest request = dataflowService.Projects.Jobs.GetMetrics(projectId, jobId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.JobMetrics response = request.Execute();
+            // Data.JobMetrics response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataflow
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Dataflow.v1b3;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -356,27 +349,15 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
-
             // The project which owns the jobs.
-            string projectId = "{MY-PROJECT-ID}";
-
+            string projectId = "";  // TODO: Update placeholder value.
 
             ProjectsResource.JobsResource.ListRequest request = dataflowService.Projects.Jobs.List(projectId);
 
@@ -399,6 +380,16 @@ namespace DataflowSample
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -408,8 +399,10 @@ namespace DataflowSample
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -422,37 +415,24 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
-
 namespace DataflowSample
 {
     public class DataflowServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `List` method:
-
             // A project id.
-            string projectId = "{MY-PROJECT-ID}";
+            string projectId = "";  // TODO: Update placeholder value.
 
             // The job to get messages about.
-            string jobId = "{MY-JOB-ID}";
-
+            string jobId = "";  // TODO: Update placeholder value.
 
             ProjectsResource.JobsResource.MessagesResource.ListRequest request = dataflowService.Projects.Jobs.Messages.List(projectId, jobId);
 
@@ -475,6 +455,16 @@ namespace DataflowSample
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -484,8 +474,10 @@ namespace DataflowSample
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -498,41 +490,27 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
-
 namespace DataflowSample
 {
     public class DataflowServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Update` method:
-
             // The project which owns the job.
-            string projectId = "{MY-PROJECT-ID}";
+            string projectId = "";  // TODO: Update placeholder value.
 
             // Identifies a single job.
-            string jobId = "{MY-JOB-ID}";
+            string jobId = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.Job requestBody = new Data.Job();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.JobsResource.UpdateRequest request = dataflowService.Projects.Jobs.Update(requestBody, projectId, jobId);
 
@@ -543,6 +521,16 @@ namespace DataflowSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -552,8 +540,10 @@ namespace DataflowSample
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -566,41 +556,27 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
-
 namespace DataflowSample
 {
     public class DataflowServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Lease` method:
-
             // Identifies the project this worker belongs to.
-            string projectId = "{MY-PROJECT-ID}";
+            string projectId = "";  // TODO: Update placeholder value.
 
             // Identifies the workflow job this worker belongs to.
-            string jobId = "{MY-JOB-ID}";
+            string jobId = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.LeaseWorkItemRequest requestBody = new Data.LeaseWorkItemRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.JobsResource.WorkItemsResource.LeaseRequest request = dataflowService.Projects.Jobs.WorkItems.Lease(requestBody, projectId, jobId);
 
@@ -611,6 +587,16 @@ namespace DataflowSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -620,8 +606,10 @@ namespace DataflowSample
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -634,41 +622,27 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
-
 namespace DataflowSample
 {
     public class DataflowServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `ReportStatus` method:
-
             // The project which owns the WorkItem's job.
-            string projectId = "{MY-PROJECT-ID}";
+            string projectId = "";  // TODO: Update placeholder value.
 
             // The job which the WorkItem is part of.
-            string jobId = "{MY-JOB-ID}";
+            string jobId = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.ReportWorkItemStatusRequest requestBody = new Data.ReportWorkItemStatusRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.JobsResource.WorkItemsResource.ReportStatusRequest request = dataflowService.Projects.Jobs.WorkItems.ReportStatus(requestBody, projectId, jobId);
 
@@ -679,70 +653,15 @@ namespace DataflowSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Dataflow API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataflow
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Dataflow.v1b3.Data;
-
-
-namespace DataflowSample
-{
-    public class DataflowServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google-DataflowSample/0.1",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Create` method:
-
-            // The project which owns the job.
-            string projectId = "{MY-PROJECT-ID}";
-
-
-            Data.CreateJobFromTemplateRequest requestBody = new Data.CreateJobFromTemplateRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
-
-            ProjectsResource.TemplatesResource.CreateRequest request = dataflowService.Projects.Templates.Create(requestBody, projectId);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Job response = request.Execute();
-            // Data.Job response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -753,8 +672,10 @@ namespace DataflowSample
 //    https://console.developers.google.com/apis/api/dataflow
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -767,6 +688,68 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Dataflow.v1b3.Data;
 
+namespace DataflowSample
+{
+    public class DataflowServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+
+                ApplicationName = "Google-DataflowSample/0.1",
+            });
+
+            // The project which owns the job.
+            string projectId = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired fields of `requestBody`:
+            Data.CreateJobFromTemplateRequest requestBody = new Data.CreateJobFromTemplateRequest();
+
+            ProjectsResource.TemplatesResource.CreateRequest request = dataflowService.Projects.Templates.Create(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Job response = request.Execute();
+            // Data.Job response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataflow
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Dataflow.v1b3;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -774,31 +757,18 @@ namespace DataflowSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             DataflowService dataflowService = new DataflowService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-DataflowSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `WorkerMessages` method:
-
             // The project to send the WorkerMessages to.
-            string projectId = "{MY-PROJECT-ID}";
+            string projectId = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.SendWorkerMessagesRequest requestBody = new Data.SendWorkerMessagesRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.WorkerMessagesRequest request = dataflowService.Projects.WorkerMessages(requestBody, projectId);
 
@@ -808,6 +778,16 @@ namespace DataflowSample
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
