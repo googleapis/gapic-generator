@@ -74,7 +74,8 @@
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod)
     // Iterate over all elements.
-    {@methodCallSampleCodePrefix(apiMethod)}.then(function(resources) {
+    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+        var resources = responses[0];
         for (var i = 0; i < resources.length; ++i) {
             // doThingsWith(resources[i])
         }
@@ -99,18 +100,22 @@
 @end
 
 @private methodCallSampleCodeForPagedResponse(apiMethod)
-    function callback(err, response, nextPageToken) {
-        if (err) {
-            console.error(err);
-            return;
+    var options = {autoPaginate: false};
+    api.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options).then(function(responses) {
+        // The actual resources in the response.
+        var resources = responses[0];
+        // The next request if the response shows there's more responses.
+        var nextRequest = responses[1];
+        for (var i = 0; i < resources.length; ++i) {
+            // doThingsWith(resources[0])
         }
-        // doThingsWith(response)
-        if (nextPageToken) {
+        if (nextRequest) {
             // fetch the next page.
-            api.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}{autoPaginate: false, pageToken: nextPageToken}, callback);
+            return api.{@apiMethod.name}(nextRequest, options);
         }
-    }
-    api.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}{autoPaginate: false}, callback);
+    }).catch(function(err) {
+        console.error(err);
+    });
 @end
 
 @private methodCallSampleCodePrefix(apiMethod)
@@ -123,7 +128,8 @@
 @end
 
 @private methodCallSampleCodeWithReturnValue(apiMethod)
-    {@methodCallSampleCodePrefix(apiMethod)}.then(function(response) {
+    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+        var response = responses[0];
         // doThingsWith(response)
     }).catch(function(err) {
         console.error(err);
@@ -206,10 +212,7 @@
 @private sampleMethodCallArgList(apiMethod)
     @switch apiMethod.requiredRequestObjectParams.size.toString
     @case "0"
-        @if apiMethod.optionalRequestObjectParamsNoPageToken.isEmpty
-        @else
-            {}
-        @end
+        {}
     @case "1"
         @let field = apiMethod.initCode.fieldSettings.get(0)
             {{@field.requestFieldName}: {@field.identifier}}

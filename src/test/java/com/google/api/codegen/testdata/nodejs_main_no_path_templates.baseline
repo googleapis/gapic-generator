@@ -107,6 +107,8 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
  *         and trailing
  *    whitespace.
  *
+ * @param {Object=} request
+ *   The request object that will be sent.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -119,11 +121,11 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
  *
  * var api = exampleV1.noTemplatesApiServiceApi();
  *
- * api.increment().catch(function(err) {
+ * api.increment({}).catch(function(err) {
  *     console.error(err);
  * });
  */
-NoTemplatesAPIServiceApi.prototype.increment = function(options, callback) {
+NoTemplatesAPIServiceApi.prototype.increment = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -131,7 +133,10 @@ NoTemplatesAPIServiceApi.prototype.increment = function(options, callback) {
   if (options === undefined) {
     options = {};
   }
-  return this._increment({}, options, callback);
+  if (request === undefined) {
+    request = {};
+  }
+  return this._increment(request, options, callback);
 };
 
 function NoTemplatesAPIServiceApiBuilder(gaxGrpc) {

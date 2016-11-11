@@ -358,7 +358,8 @@ LibraryServiceApi.prototype.matchReturnFromReturnName = function(returnName) {
  *
  * var api = libraryV1.libraryServiceApi();
  * var shelf = {};
- * api.createShelf({shelf: shelf}).then(function(response) {
+ * api.createShelf({shelf: shelf}).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -372,6 +373,7 @@ LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._createShelf(request, options, callback);
 };
 
@@ -409,7 +411,8 @@ LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
  *     name: formattedName,
  *     options: options
  * };
- * api.getShelf(request).then(function(response) {
+ * api.getShelf(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -423,12 +426,15 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._getShelf(request, options, callback);
 };
 
 /**
  * Lists shelves.
  *
+ * @param {Object=} request
+ *   The request object that will be sent.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -451,7 +457,8 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
  * var api = libraryV1.libraryServiceApi();
  *
  * // Iterate over all elements.
- * api.listShelves().then(function(resources) {
+ * api.listShelves({}).then(function(responses) {
+ *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
  *     }
@@ -460,20 +467,24 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
  * });
  *
  * // Or obtain the paged response.
- * function callback(err, response, nextPageToken) {
- *     if (err) {
- *         console.error(err);
- *         return;
+ * var options = {autoPaginate: false};
+ * api.listShelves({}, options).then(function(responses) {
+ *     // The actual resources in the response.
+ *     var resources = responses[0];
+ *     // The next request if the response shows there's more responses.
+ *     var nextRequest = responses[1];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[0])
  *     }
- *     // doThingsWith(response)
- *     if (nextPageToken) {
+ *     if (nextRequest) {
  *         // fetch the next page.
- *         api.listShelves({autoPaginate: false, pageToken: nextPageToken}, callback);
+ *         return api.listShelves(nextRequest, options);
  *     }
- * }
- * api.listShelves({autoPaginate: false}, callback);
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
  */
-LibraryServiceApi.prototype.listShelves = function(options, callback) {
+LibraryServiceApi.prototype.listShelves = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -481,7 +492,10 @@ LibraryServiceApi.prototype.listShelves = function(options, callback) {
   if (options === undefined) {
     options = {};
   }
-  return this._listShelves({}, options, callback);
+  if (request === undefined) {
+    request = {};
+  }
+  return this._listShelves(request, options, callback);
 };
 
 /**
@@ -497,6 +511,8 @@ LibraryServiceApi.prototype.listShelves = function(options, callback) {
  *
  * @see {@link https://nodejs.org/api/stream.html}
  *
+ * @param {Object=} request
+ *   The request object that will be sent.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -507,17 +523,20 @@ LibraryServiceApi.prototype.listShelves = function(options, callback) {
  *
  * var api = libraryV1.libraryServiceApi();
  *
- * api.listShelvesStream().on('data', function(element) {
+ * api.listShelvesStream({}).on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', funciton(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.listShelvesStream = function(options) {
+LibraryServiceApi.prototype.listShelvesStream = function(request, options) {
   if (options === undefined) {
     options = {};
   }
-  return PAGE_DESCRIPTORS.listShelves.createStream(this._listShelves, {}, options);
+  if (request === undefined) {
+    request = {};
+  }
+  return PAGE_DESCRIPTORS.listShelves.createStream(this._listShelves, request, options);
 };
 
 /**
@@ -551,6 +570,7 @@ LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._deleteShelf(request, options, callback);
 };
 
@@ -584,7 +604,8 @@ LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * api.mergeShelves(request).then(function(response) {
+ * api.mergeShelves(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -598,6 +619,7 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
   if (options === undefined) {
     options = {};
   }
+
   return this._mergeShelves(request, options, callback);
 };
 
@@ -631,7 +653,8 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
  *     name: formattedName,
  *     book: book
  * };
- * api.createBook(request).then(function(response) {
+ * api.createBook(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -645,6 +668,7 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._createBook(request, options, callback);
 };
 
@@ -684,7 +708,8 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
  *     shelf: shelf,
  *     books: books
  * };
- * api.publishSeries(request).then(function(response) {
+ * api.publishSeries(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -698,6 +723,7 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
   if (options === undefined) {
     options = {};
   }
+
   return this._publishSeries(request, options, callback);
 };
 
@@ -722,7 +748,8 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * api.getBook({name: formattedName}).then(function(response) {
+ * api.getBook({name: formattedName}).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -736,6 +763,7 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._getBook(request, options, callback);
 };
 
@@ -776,7 +804,8 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.shelfPath("[SHELF_ID]");
  * // Iterate over all elements.
- * api.listBooks({name: formattedName}).then(function(resources) {
+ * api.listBooks({name: formattedName}).then(function(responses) {
+ *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
  *     }
@@ -785,18 +814,22 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
  * });
  *
  * // Or obtain the paged response.
- * function callback(err, response, nextPageToken) {
- *     if (err) {
- *         console.error(err);
- *         return;
+ * var options = {autoPaginate: false};
+ * api.listBooks({name: formattedName}, options).then(function(responses) {
+ *     // The actual resources in the response.
+ *     var resources = responses[0];
+ *     // The next request if the response shows there's more responses.
+ *     var nextRequest = responses[1];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[0])
  *     }
- *     // doThingsWith(response)
- *     if (nextPageToken) {
+ *     if (nextRequest) {
  *         // fetch the next page.
- *         api.listBooks({name: formattedName}, {autoPaginate: false, pageToken: nextPageToken}, callback);
+ *         return api.listBooks(nextRequest, options);
  *     }
- * }
- * api.listBooks({name: formattedName}, {autoPaginate: false}, callback);
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
  */
 LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
@@ -806,6 +839,7 @@ LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._listBooks(request, options, callback);
 };
 
@@ -854,6 +888,7 @@ LibraryServiceApi.prototype.listBooksStream = function(request, options) {
   if (options === undefined) {
     options = {};
   }
+
   return PAGE_DESCRIPTORS.listBooks.createStream(this._listBooks, request, options);
 };
 
@@ -888,6 +923,7 @@ LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._deleteBook(request, options, callback);
 };
 
@@ -929,7 +965,8 @@ LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
  *     name: formattedName,
  *     book: book
  * };
- * api.updateBook(request).then(function(response) {
+ * api.updateBook(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -943,6 +980,7 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._updateBook(request, options, callback);
 };
 
@@ -974,7 +1012,8 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * api.moveBook(request).then(function(response) {
+ * api.moveBook(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -988,6 +1027,7 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._moveBook(request, options, callback);
 };
 
@@ -1025,7 +1065,8 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  * var api = libraryV1.libraryServiceApi();
  *
  * // Iterate over all elements.
- * api.listStrings({}).then(function(resources) {
+ * api.listStrings({}).then(function(responses) {
+ *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
  *     }
@@ -1034,18 +1075,22 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  * });
  *
  * // Or obtain the paged response.
- * function callback(err, response, nextPageToken) {
- *     if (err) {
- *         console.error(err);
- *         return;
+ * var options = {autoPaginate: false};
+ * api.listStrings({}, options).then(function(responses) {
+ *     // The actual resources in the response.
+ *     var resources = responses[0];
+ *     // The next request if the response shows there's more responses.
+ *     var nextRequest = responses[1];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[0])
  *     }
- *     // doThingsWith(response)
- *     if (nextPageToken) {
+ *     if (nextRequest) {
  *         // fetch the next page.
- *         api.listStrings({}, {autoPaginate: false, pageToken: nextPageToken}, callback);
+ *         return api.listStrings(nextRequest, options);
  *     }
- * }
- * api.listStrings({}, {autoPaginate: false}, callback);
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
  */
 LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
@@ -1055,6 +1100,7 @@ LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._listStrings(request, options, callback);
 };
 
@@ -1100,6 +1146,7 @@ LibraryServiceApi.prototype.listStringsStream = function(request, options) {
   if (options === undefined) {
     options = {};
   }
+
   return PAGE_DESCRIPTORS.listStrings.createStream(this._listStrings, request, options);
 };
 
@@ -1148,6 +1195,7 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._addComments(request, options, callback);
 };
 
@@ -1172,7 +1220,8 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
- * api.getBookFromArchive({name: formattedName}).then(function(response) {
+ * api.getBookFromArchive({name: formattedName}).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -1186,6 +1235,7 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
   if (options === undefined) {
     options = {};
   }
+
   return this._getBookFromArchive(request, options, callback);
 };
 
@@ -1210,7 +1260,8 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  *
  * var api = libraryV1.libraryServiceApi();
  * var name = '';
- * api.getBookFromAnywhere({name: name}).then(function(response) {
+ * api.getBookFromAnywhere({name: name}).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -1224,6 +1275,7 @@ LibraryServiceApi.prototype.getBookFromAnywhere = function(request, options, cal
   if (options === undefined) {
     options = {};
   }
+
   return this._getBookFromAnywhere(request, options, callback);
 };
 
@@ -1270,6 +1322,7 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
   if (options === undefined) {
     options = {};
   }
+
   return this._updateBookIndex(request, options, callback);
 };
 
@@ -1277,6 +1330,8 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
  * Test server streaming
  * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
  *
+ * @param {Object=} request
+ *   The request object that will be sent.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -1287,15 +1342,18 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
  *
  * var api = libraryV1.libraryServiceApi();
  *
- * api.streamShelves().on('data', function(response) {
+ * api.streamShelves({}).on('data', function(response) {
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.streamShelves = function(options) {
+LibraryServiceApi.prototype.streamShelves = function(request, options) {
   if (options === undefined) {
     options = {};
   }
-  return this._streamShelves({}, options);
+  if (request === undefined) {
+    request = {};
+  }
+  return this._streamShelves(request, options);
 };
 
 /**
@@ -1324,6 +1382,7 @@ LibraryServiceApi.prototype.streamBooks = function(request, options) {
   if (options === undefined) {
     options = {};
   }
+
   return this._streamBooks(request, options);
 };
 
@@ -1356,6 +1415,7 @@ LibraryServiceApi.prototype.discussBook = function(options) {
   if (options === undefined) {
     options = {};
   }
+
   return this._discussBook(options);
 };
 
@@ -1398,7 +1458,8 @@ LibraryServiceApi.prototype.discussBook = function(options) {
  *     shelves: shelves
  * };
  * // Iterate over all elements.
- * api.findRelatedBooks(request).then(function(resources) {
+ * api.findRelatedBooks(request).then(function(responses) {
+ *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
  *     }
@@ -1407,18 +1468,22 @@ LibraryServiceApi.prototype.discussBook = function(options) {
  * });
  *
  * // Or obtain the paged response.
- * function callback(err, response, nextPageToken) {
- *     if (err) {
- *         console.error(err);
- *         return;
+ * var options = {autoPaginate: false};
+ * api.findRelatedBooks(request, options).then(function(responses) {
+ *     // The actual resources in the response.
+ *     var resources = responses[0];
+ *     // The next request if the response shows there's more responses.
+ *     var nextRequest = responses[1];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[0])
  *     }
- *     // doThingsWith(response)
- *     if (nextPageToken) {
+ *     if (nextRequest) {
  *         // fetch the next page.
- *         api.findRelatedBooks(request, {autoPaginate: false, pageToken: nextPageToken}, callback);
+ *         return api.findRelatedBooks(nextRequest, options);
  *     }
- * }
- * api.findRelatedBooks(request, {autoPaginate: false}, callback);
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
  */
 LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
@@ -1428,6 +1493,7 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
   if (options === undefined) {
     options = {};
   }
+
   return this._findRelatedBooks(request, options, callback);
 };
 
@@ -1480,6 +1546,7 @@ LibraryServiceApi.prototype.findRelatedBooksStream = function(request, options) 
   if (options === undefined) {
     options = {};
   }
+
   return PAGE_DESCRIPTORS.findRelatedBooks.createStream(this._findRelatedBooks, request, options);
 };
 
@@ -1513,7 +1580,8 @@ LibraryServiceApi.prototype.findRelatedBooksStream = function(request, options) 
  *     resource: formattedResource,
  *     tag: tag
  * };
- * api.addTag(request).then(function(response) {
+ * api.addTag(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -1527,6 +1595,7 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._addTag(request, options, callback);
 };
 
@@ -1560,7 +1629,8 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
  *     resource: formattedResource,
  *     label: label
  * };
- * api.addLabel(request).then(function(response) {
+ * api.addLabel(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -1574,6 +1644,7 @@ LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._addLabel(request, options, callback);
 };
 
@@ -1596,7 +1667,8 @@ LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
  *
  * var api = libraryV1.libraryServiceApi();
  * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * api.getBigBook({name: formattedName}).then(function(response) {
+ * api.getBigBook({name: formattedName}).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
@@ -1610,6 +1682,7 @@ LibraryServiceApi.prototype.getBigBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._getBigBook(request, options, callback);
 };
 

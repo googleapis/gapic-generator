@@ -410,7 +410,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           removePageTokenFromFields(config.getOptionalFields(), config);
       if (config.getRequiredFields().iterator().hasNext() || optionalParams.iterator().hasNext()) {
         paramTypesBuilder.append(
-            "@param {Object} request\n" + "  The request object that will be sent.\n");
+            "@param {Object} request\n  The request object that will be sent.\n");
+      } else {
+        paramTypesBuilder.append(
+            "@param {Object=} request\n  The request object that will be sent.\n");
       }
       for (Field field : config.getRequiredFields()) {
         paramTypesBuilder.append(fieldParamComment(field, null, false));

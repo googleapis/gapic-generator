@@ -408,6 +408,7 @@
       if (options === undefined) {
         options = {};
       }
+      {@maybeHandleRequest(apiMethodView)}
       return this._{@methodName(method)}({@requestObject(apiMethodView)}options{@callbackParams(apiMethodView)});
     };
     @switch apiMethodView.type.toString
@@ -438,6 +439,7 @@
         if (options === undefined) {
           options = {};
         }
+        {@maybeHandleRequest(apiMethodView)}
         return PAGE_DESCRIPTORS.{@methodName(method)}.createStream(this._{@methodName(method)}, {@requestObject(apiMethodView)}options);
       };
     @default
@@ -450,6 +452,20 @@
     callback = options;
     options = {};
   }
+@end
+
+@private maybeHandleRequest(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ClientStreaming"
+  @case "BidiStreaming"
+  @default
+    @if and(apiMethodView.requiredRequestObjectParams.isEmpty, \
+            apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty)
+      if (request === undefined) {
+        request = {};
+      }
+    @end
+  @end
 @end
 
 @private callbackParams(apiMethodView)
@@ -465,42 +481,19 @@
 @private requestObject(apiMethodView)
   @switch apiMethodView.grpcStreamingType.toString
   @case "ServerStreaming"
-    {@requestObjectInternal(apiMethodView)}
-  @case "NonStreaming"
-    {@requestObjectInternal(apiMethodView)}
-  @default
-  @end
-@end
-
-@private requestObjectInternal(apiMethodView)
-  @if apiMethodView.requiredRequestObjectParams.isEmpty
-    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
-      {}, {@""}
-    @else
-      request, {@""}
-    @end
-  @else
     request, {@""}
+  @case "NonStreaming"
+    request, {@""}
+  @default
   @end
 @end
 
 @private methodRequestParameters(apiMethodView)
   @switch apiMethodView.grpcStreamingType.toString
   @case "ServerStreaming"
-    {@methodRequestParametersInternal(apiMethodView)}
-  @case "NonStreaming"
-    {@methodRequestParametersInternal(apiMethodView)}
-  @default
-  @end
-@end
-
-@private methodRequestParametersInternal(apiMethodView)
-  @if apiMethodView.requiredRequestObjectParams.isEmpty
-    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
-    @else
-      request, {@""}
-    @end
-  @else
     request, {@""}
+  @case "NonStreaming"
+    request, {@""}
+  @default
   @end
 @end
