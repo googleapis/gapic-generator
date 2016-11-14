@@ -6,8 +6,10 @@
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -15,11 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
-using System;
 using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
 
 namespace LoggingSample
 {
@@ -27,37 +25,33 @@ namespace LoggingSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
+            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+
+                ApplicationName = "Google-LoggingSample/0.1",
+            });
+
+            // Required. The resource name of the log to delete.  Example:
+            // `"projects/my-project/logs/syslog"`.
+            string logName = "";  // TODO: Update placeholder value.
+            // ex: "billingAccounts/my-billingAccount/logs/my-log"
+
+            BillingAccountsResource.LogsResource.DeleteRequest request = loggingService.BillingAccounts.Logs.Delete(logName);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google-LoggingSample/0.1",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
-
-            // Required. The resource name of the log to delete.  Example:
-            // `"projects/my-project/logs/syslog"`.
-            string logName = "billingAccounts/{MY-BILLINGACCOUNT}/logs/{MY-LOG}";
-
-
-            BillingAccountsResource.LogsResource.DeleteRequest request = loggingService.BillingAccounts.Logs.Delete(logName);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -68,8 +62,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -82,31 +78,21 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
-
 namespace LoggingSample
 {
     public class LoggingServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
 
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.ListLogEntriesRequest requestBody = new Data.ListLogEntriesRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             EntriesResource.ListRequest request = loggingService.Entries.List(requestBody);
 
@@ -129,63 +115,15 @@ namespace LoggingSample
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Stackdriver Logging API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
-
-namespace LoggingSample
-{
-    public class LoggingServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google-LoggingSample/0.1",
-            });
-
-            Data.WriteLogEntriesRequest requestBody = new Data.WriteLogEntriesRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
-
-            EntriesResource.WriteRequest request = loggingService.Entries.Write(requestBody);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.WriteLogEntriesResponse response = request.Execute();
-            // Data.WriteLogEntriesResponse response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -196,8 +134,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -210,6 +150,65 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
+namespace LoggingSample
+{
+    public class LoggingServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+
+                ApplicationName = "Google-LoggingSample/0.1",
+            });
+
+            // TODO: Assign values to desired fields of `requestBody`:
+            Data.WriteLogEntriesRequest requestBody = new Data.WriteLogEntriesRequest();
+
+            EntriesResource.WriteRequest request = loggingService.Entries.Write(requestBody);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.WriteLogEntriesResponse response = request.Execute();
+            // Data.WriteLogEntriesResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Logging.v2beta1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -217,18 +216,10 @@ namespace LoggingSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
 
@@ -253,6 +244,16 @@ namespace LoggingSample
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -262,8 +263,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -271,11 +274,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
-using System;
 using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
 
 namespace LoggingSample
 {
@@ -283,37 +282,33 @@ namespace LoggingSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
-
             // Required. The resource name of the log to delete.  Example:
             // `"projects/my-project/logs/syslog"`.
-            string logName = "organizations/{MY-ORGANIZATION}/logs/{MY-LOG}";
-
+            string logName = "";  // TODO: Update placeholder value.
+            // ex: "organizations/my-organization/logs/my-log"
 
             OrganizationsResource.LogsResource.DeleteRequest request = loggingService.Organizations.Logs.Delete(logName);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
 
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -324,8 +319,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -333,11 +330,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
-using System;
 using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
 
 namespace LoggingSample
 {
@@ -345,37 +338,33 @@ namespace LoggingSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
-
             // Required. The resource name of the log to delete.  Example:
             // `"projects/my-project/logs/syslog"`.
-            string logName = "projects/{MY-PROJECT}/logs/{MY-LOG}";
-
+            string logName = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project/logs/my-log"
 
             ProjectsResource.LogsResource.DeleteRequest request = loggingService.Projects.Logs.Delete(logName);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
 
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -386,8 +375,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -400,40 +391,27 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
-
 namespace LoggingSample
 {
     public class LoggingServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Create` method:
 
             // The resource name of the project in which to create the metric.
             // Example: `"projects/my-project-id"`.
             // The new metric must be provided in the request.
-            string parent = "projects/{MY-PROJECT}";
+            string parent = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project"
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.LogMetric requestBody = new Data.LogMetric();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.MetricsResource.CreateRequest request = loggingService.Projects.Metrics.Create(requestBody, parent);
 
@@ -444,67 +422,15 @@ namespace LoggingSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Stackdriver Logging API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
-
-namespace LoggingSample
-{
-    public class LoggingServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google-LoggingSample/0.1",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
-
-            // The resource name of the metric to delete.
-            // Example: `"projects/my-project-id/metrics/my-metric-id"`.
-            string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
-
-
-            ProjectsResource.MetricsResource.DeleteRequest request = loggingService.Projects.Metrics.Delete(metricName);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -515,8 +441,66 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Logging.v2beta1;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace LoggingSample
+{
+    public class LoggingServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+
+                ApplicationName = "Google-LoggingSample/0.1",
+            });
+
+            // The resource name of the metric to delete.
+            // Example: `"projects/my-project-id/metrics/my-metric-id"`.
+            string metricName = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project/metrics/my-metric"
+
+            ProjectsResource.MetricsResource.DeleteRequest request = loggingService.Projects.Metrics.Delete(metricName);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -529,35 +513,23 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
-
 namespace LoggingSample
 {
     public class LoggingServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
             // The resource name of the desired metric.
             // Example: `"projects/my-project-id/metrics/my-metric-id"`.
-            string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
-
+            string metricName = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project/metrics/my-metric"
 
             ProjectsResource.MetricsResource.GetRequest request = loggingService.Projects.Metrics.Get(metricName);
 
@@ -568,6 +540,16 @@ namespace LoggingSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -577,8 +559,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -591,35 +575,23 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
-
 namespace LoggingSample
 {
     public class LoggingServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
-
             // Required. The resource name containing the metrics.
             // Example: `"projects/my-project-id"`.
-            string parent = "projects/{MY-PROJECT}";
-
+            string parent = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project"
 
             ProjectsResource.MetricsResource.ListRequest request = loggingService.Projects.Metrics.List(parent);
 
@@ -642,6 +614,16 @@ namespace LoggingSample
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -651,8 +633,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -665,42 +649,29 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
-
 namespace LoggingSample
 {
     public class LoggingServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Update` method:
 
             // The resource name of the metric to update.
             // Example: `"projects/my-project-id/metrics/my-metric-id"`.
             // The updated metric must be provided in the request and have the
             // same identifier that is specified in `metricName`.
             // If the metric does not exist, it is created.
-            string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
+            string metricName = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project/metrics/my-metric"
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.LogMetric requestBody = new Data.LogMetric();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.MetricsResource.UpdateRequest request = loggingService.Projects.Metrics.Update(requestBody, metricName);
 
@@ -711,6 +682,16 @@ namespace LoggingSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -720,8 +701,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -734,40 +717,27 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
-
 namespace LoggingSample
 {
     public class LoggingServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Create` method:
 
             // Required. The resource in which to create the sink.
             // Example: `"projects/my-project-id"`.
             // The new sink must be provided in the request.
-            string parent = "projects/{MY-PROJECT}";
+            string parent = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project"
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.LogSink requestBody = new Data.LogSink();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.SinksResource.CreateRequest request = loggingService.Projects.Sinks.Create(requestBody, parent);
 
@@ -778,69 +748,15 @@ namespace LoggingSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Stackdriver Logging API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/logging
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2beta1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Logging.v2beta1.Data;
-
-
-namespace LoggingSample
-{
-    public class LoggingServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google-LoggingSample/0.1",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
-
-            // Required. The resource name of the sink to delete, including the parent
-            // resource and the sink identifier.  Example:
-            // `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
-            // does not exist.
-            string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
-
-
-            ProjectsResource.SinksResource.DeleteRequest request = loggingService.Projects.Sinks.Delete(sinkName);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -851,8 +767,68 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Logging.v2beta1;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace LoggingSample
+{
+    public class LoggingServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+
+                ApplicationName = "Google-LoggingSample/0.1",
+            });
+
+            // Required. The resource name of the sink to delete, including the parent
+            // resource and the sink identifier.  Example:
+            // `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
+            // does not exist.
+            string sinkName = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project/sinks/my-sink"
+
+            ProjectsResource.SinksResource.DeleteRequest request = loggingService.Projects.Sinks.Delete(sinkName);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -865,35 +841,23 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
-
 namespace LoggingSample
 {
     public class LoggingServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
             // Required. The resource name of the sink to return.
             // Example: `"projects/my-project-id/sinks/my-sink-id"`.
-            string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
-
+            string sinkName = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project/sinks/my-sink"
 
             ProjectsResource.SinksResource.GetRequest request = loggingService.Projects.Sinks.Get(sinkName);
 
@@ -904,6 +868,16 @@ namespace LoggingSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -913,8 +887,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -927,35 +903,23 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
-
 namespace LoggingSample
 {
     public class LoggingServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
-
             // Required. The cloud resource containing the sinks.
             // Example: `"projects/my-logging-project"`.
-            string parent = "projects/{MY-PROJECT}";
-
+            string parent = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project"
 
             ProjectsResource.SinksResource.ListRequest request = loggingService.Projects.Sinks.List(parent);
 
@@ -978,6 +942,16 @@ namespace LoggingSample
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -987,8 +961,10 @@ namespace LoggingSample
 //    https://console.developers.google.com/apis/api/logging
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1001,40 +977,27 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Logging.v2beta1.Data;
 
-
 namespace LoggingSample
 {
     public class LoggingServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             LoggingService loggingService = new LoggingService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-LoggingSample/0.1",
             });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Update` method:
 
             // Required. The resource name of the sink to update, including the parent
             // resource and the sink identifier.  If the sink does not exist, this method
             // creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
-            string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
+            string sinkName = "";  // TODO: Update placeholder value.
+            // ex: "projects/my-project/sinks/my-sink"
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.LogSink requestBody = new Data.LogSink();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.SinksResource.UpdateRequest request = loggingService.Projects.Sinks.Update(requestBody, sinkName);
 
@@ -1044,6 +1007,16 @@ namespace LoggingSample
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }

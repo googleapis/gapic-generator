@@ -18,15 +18,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.csharp.CSharpDiscoveryContext;
-import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
+import com.google.api.codegen.discovery.config.csharp.CSharpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.go.GoTypeNameGenerator;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
 import com.google.api.codegen.discovery.config.nodejs.NodeJSTypeNameGenerator;
 import com.google.api.codegen.discovery.config.php.PhpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.ruby.RubyTypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.csharp.CSharpSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.go.GoSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleMethodToViewTransformer;
@@ -64,19 +64,23 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
 
   private static final Map<String, Class<? extends SampleMethodToViewTransformer>>
       SAMPLE_METHOD_TO_VIEW_TRANSFORMER_MAP =
-          ImmutableMap.of(
-              GO, GoSampleMethodToViewTransformer.class,
-              JAVA, JavaSampleMethodToViewTransformer.class,
-              NODEJS, NodeJSSampleMethodToViewTransformer.class,
-              PHP, PhpSampleMethodToViewTransformer.class,
-              RUBY, RubySampleMethodToViewTransformer.class);
+          ImmutableMap.<String, Class<? extends SampleMethodToViewTransformer>>builder()
+              .put(CSHARP, CSharpSampleMethodToViewTransformer.class)
+              .put(GO, GoSampleMethodToViewTransformer.class)
+              .put(JAVA, JavaSampleMethodToViewTransformer.class)
+              .put(NODEJS, NodeJSSampleMethodToViewTransformer.class)
+              .put(PHP, PhpSampleMethodToViewTransformer.class)
+              .put(RUBY, RubySampleMethodToViewTransformer.class)
+              .build();
   private static final Map<String, Class<? extends TypeNameGenerator>> TYPE_NAME_GENERATOR_MAP =
-      ImmutableMap.of(
-          GO, GoTypeNameGenerator.class,
-          JAVA, JavaTypeNameGenerator.class,
-          NODEJS, NodeJSTypeNameGenerator.class,
-          PHP, PhpTypeNameGenerator.class,
-          RUBY, RubyTypeNameGenerator.class);
+      ImmutableMap.<String, Class<? extends TypeNameGenerator>>builder()
+          .put(CSHARP, CSharpTypeNameGenerator.class)
+          .put(GO, GoTypeNameGenerator.class)
+          .put(JAVA, JavaTypeNameGenerator.class)
+          .put(NODEJS, NodeJSTypeNameGenerator.class)
+          .put(PHP, PhpTypeNameGenerator.class)
+          .put(RUBY, RubyTypeNameGenerator.class)
+          .build();
 
   public static DiscoveryProvider defaultCreate(
       Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
@@ -93,15 +97,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       }
     }
 
-    if (id.equals(CSHARP)) {
-      return CommonDiscoveryProvider.newBuilder()
-          .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(
-              new CSharpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
-          .build();
-
-    } else if (id.equals(PYTHON)) {
+    if (id.equals(PYTHON)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new PythonDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(

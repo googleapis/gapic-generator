@@ -6,8 +6,10 @@
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -20,25 +22,16 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
 
-
 namespace StoragetransferSample
 {
     public class StoragetransferServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
@@ -51,6 +44,16 @@ namespace StoragetransferSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -60,8 +63,10 @@ namespace StoragetransferSample
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -74,35 +79,22 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
 
-
 namespace StoragetransferSample
 {
     public class StoragetransferServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
             // The ID of the Google Developers Console project that the Google service account is associated with.
             // Required.
-            string projectId = "{MY-PROJECT-ID}";
-
+            string projectId = "";  // TODO: Update placeholder value.
 
             GoogleServiceAccountsResource.GetRequest request = storagetransferService.GoogleServiceAccounts.Get(projectId);
 
@@ -113,6 +105,16 @@ namespace StoragetransferSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -122,8 +124,10 @@ namespace StoragetransferSample
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -136,31 +140,21 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
 
-
 namespace StoragetransferSample
 {
     public class StoragetransferServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.TransferJob requestBody = new Data.TransferJob();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             TransferJobsResource.CreateRequest request = storagetransferService.TransferJobs.Create(requestBody);
 
@@ -171,66 +165,15 @@ namespace StoragetransferSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Storage Transfer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storagetransfer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Storagetransfer.v1;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Storagetransfer.v1.Data;
-
-
-namespace StoragetransferSample
-{
-    public class StoragetransferServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google-StoragetransferSample/0.1",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
-            // The job to get. Required.
-            string jobName = "{MY-JOB-NAME}";
-
-
-            TransferJobsResource.GetRequest request = storagetransferService.TransferJobs.Get(jobName);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.TransferJob response = request.Execute();
-            // Data.TransferJob response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -241,8 +184,10 @@ namespace StoragetransferSample
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -255,6 +200,65 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
 
+namespace StoragetransferSample
+{
+    public class StoragetransferServiceExample
+    {
+        public static void Main(string[] args)
+        {
+            StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+
+                ApplicationName = "Google-StoragetransferSample/0.1",
+            });
+
+            // The job to get. Required.
+            string jobName = "";  // TODO: Update placeholder value.
+
+            TransferJobsResource.GetRequest request = storagetransferService.TransferJobs.Get(jobName);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.TransferJob response = request.Execute();
+            // Data.TransferJob response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Storage Transfer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storagetransfer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Storagetransfer.v1;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -262,18 +266,10 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
@@ -298,6 +294,16 @@ namespace StoragetransferSample
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -307,8 +313,10 @@ namespace StoragetransferSample
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -321,38 +329,25 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
 
-
 namespace StoragetransferSample
 {
     public class StoragetransferServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Patch` method:
-
             // The name of job to update. Required.
-            string jobName = "{MY-JOB-NAME}";
+            string jobName = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired fields of `requestBody`. Only assigned
+            // fields will be changed:
             Data.UpdateTransferJobRequest requestBody = new Data.UpdateTransferJobRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
 
             TransferJobsResource.PatchRequest request = storagetransferService.TransferJobs.Patch(requestBody, jobName);
 
@@ -363,6 +358,16 @@ namespace StoragetransferSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -372,8 +377,10 @@ namespace StoragetransferSample
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -381,11 +388,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using System;
 using System.Threading.Tasks;
-
-using Data = Google.Apis.Storagetransfer.v1.Data;
-
 
 namespace StoragetransferSample
 {
@@ -393,36 +396,31 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Cancel` method:
-
             // The name of the operation resource to be cancelled.
-            string name = "{MY-NAME}";
-
+            string name = "";  // TODO: Update placeholder value.
 
             TransferOperationsResource.CancelRequest request = storagetransferService.TransferOperations.Cancel(name);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
 
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -433,8 +431,10 @@ namespace StoragetransferSample
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -442,11 +442,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using System;
 using System.Threading.Tasks;
-
-using Data = Google.Apis.Storagetransfer.v1.Data;
-
 
 namespace StoragetransferSample
 {
@@ -454,36 +450,31 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
-
             // The name of the operation resource to be deleted.
-            string name = "{MY-NAME}";
-
+            string name = "";  // TODO: Update placeholder value.
 
             TransferOperationsResource.DeleteRequest request = storagetransferService.TransferOperations.Delete(name);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
 
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -494,8 +485,10 @@ namespace StoragetransferSample
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -508,34 +501,21 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
 
-
 namespace StoragetransferSample
 {
     public class StoragetransferServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
             // The name of the operation resource.
-            string name = "{MY-NAME}";
-
+            string name = "";  // TODO: Update placeholder value.
 
             TransferOperationsResource.GetRequest request = storagetransferService.TransferOperations.Get(name);
 
@@ -546,6 +526,16 @@ namespace StoragetransferSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -555,8 +545,10 @@ namespace StoragetransferSample
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -569,34 +561,21 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
 
-
 namespace StoragetransferSample
 {
     public class StoragetransferServiceExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
-
             // The value `transferOperations`.
-            string name = "{MY-NAME}";
-
+            string name = "";  // TODO: Update placeholder value.
 
             TransferOperationsResource.ListRequest request = storagetransferService.TransferOperations.List(name);
 
@@ -619,70 +598,15 @@ namespace StoragetransferSample
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Storage Transfer API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storagetransfer
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Storagetransfer.v1;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Storagetransfer.v1.Data;
-
-
-namespace StoragetransferSample
-{
-    public class StoragetransferServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google-StoragetransferSample/0.1",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Pause` method:
-
-            // The name of the transfer operation. Required.
-            string name = "{MY-NAME}";
-
-
-            Data.PauseTransferOperationRequest requestBody = new Data.PauseTransferOperationRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
-
-            TransferOperationsResource.PauseRequest request = storagetransferService.TransferOperations.Pause(requestBody, name);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -693,8 +617,10 @@ namespace StoragetransferSample
 //    https://console.developers.google.com/apis/api/storagetransfer
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
+//    https://cloud.google.com/sdk and run
 //    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -702,11 +628,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using System;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
-
 
 namespace StoragetransferSample
 {
@@ -714,40 +638,93 @@ namespace StoragetransferSample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
+            StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+
+                ApplicationName = "Google-StoragetransferSample/0.1",
+            });
+
+            // The name of the transfer operation. Required.
+            string name = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired fields of `requestBody`:
+            Data.PauseTransferOperationRequest requestBody = new Data.PauseTransferOperationRequest();
+
+            TransferOperationsResource.PauseRequest request = storagetransferService.TransferOperations.Pause(requestBody, name);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Storage Transfer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storagetransfer
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`
+//    For more information, see:
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Storagetransfer.v1;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
+
+namespace StoragetransferSample
+{
+    public class StoragetransferServiceExample
+    {
+        public static void Main(string[] args)
+        {
             StoragetransferService storagetransferService = new StoragetransferService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
+                HttpClientInitializer = GetCredential(),
+
                 ApplicationName = "Google-StoragetransferSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Resume` method:
-
             // The name of the transfer operation. Required.
-            string name = "{MY-NAME}";
+            string name = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired fields of `requestBody`:
             Data.ResumeTransferOperationRequest requestBody = new Data.ResumeTransferOperationRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             TransferOperationsResource.ResumeRequest request = storagetransferService.TransferOperations.Resume(requestBody, name);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
 
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }

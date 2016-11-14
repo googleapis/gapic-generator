@@ -129,6 +129,13 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract String serviceTypeNamespace();
 
+  // C# specific section...
+  @Nullable
+  public abstract String dataNamespace();
+
+  @Nullable
+  public abstract String namespaceName();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
   }
@@ -213,6 +220,10 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder serviceRequirePath(String val);
 
     public abstract Builder serviceTypeNamespace(String val);
+
+    public abstract Builder dataNamespace(String val);
+
+    public abstract Builder namespaceName(String val);
 
     public abstract SampleView build();
   }

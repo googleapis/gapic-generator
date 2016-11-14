@@ -70,7 +70,9 @@ public class ApiaryConfigToSampleConfigConverter {
         .apiName(apiName)
         .apiVersion(apiVersion)
         .apiTypeName(apiTypeName)
-        .packagePrefix(typeNameGenerator.getPackagePrefix(apiName, apiVersion))
+        .packagePrefix(
+            typeNameGenerator.getPackagePrefix(
+                apiName, apiaryConfig.getServiceCanonicalName(), apiVersion))
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
         .authInstructionsUrl(apiaryConfig.getAuthInstructionsUrl())
