@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableSet;
 public class RubyNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {
-    if (KEYWORD_BUILT_IN_SET.contains(name)) {
+    if (RESERVED_IDENTIFIER_SET.contains(name)) {
       return name + "_";
     } else {
       return name;
@@ -101,10 +101,10 @@ public class RubyNameFormatter implements NameFormatter {
   }
 
   /**
-   * : A set of ruby keywords and built-ins. keywords:
+   * A set of Ruby keywords and built-ins. See:
    * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
    */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
           .add(
               "__ENCODING__",

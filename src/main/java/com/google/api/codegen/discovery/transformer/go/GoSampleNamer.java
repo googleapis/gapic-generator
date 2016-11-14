@@ -71,7 +71,7 @@ public class GoSampleNamer extends SampleNamer {
   }
 
   @Override
-  public String getRequestBodyVarName() {
+  public String getRequestBodyVarName(String requestBodyTypeName) {
     return "rb";
   }
 }

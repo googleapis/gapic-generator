@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.ruby;
+package com.google.api.codegen.discovery.transformer.py;
 
+import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -27,31 +28,24 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.ruby.RubyNameFormatter;
-import com.google.api.codegen.util.ruby.RubyTypeTable;
+import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RubySampleMethodToViewTransformer implements SampleMethodToViewTransformer {
+public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
-  private static final String TEMPLATE_FILENAME = "ruby/sample.snip";
+  private static final String TEMPLATE_FILENAME = "py/sample.snip";
 
-  // Map of rename rules for fields.
-  // Could be done through overrides, but this is a rule implemented in the Ruby
-  // client library generator.
-  private static final ImmutableMap<String, String> FIELD_RENAMES =
-      ImmutableMap.of("objectId", "object_id_");
-
-  public RubySampleMethodToViewTransformer() {}
+  public PythonSampleMethodToViewTransformer() {}
 
   @Override
   public ViewModel transform(Method method, SampleConfig config) {
     SampleTypeTable typeTable =
-        new SampleTypeTable(new RubyTypeTable(""), new RubySampleTypeNameConverter());
-    SampleNamer namer = new RubySampleNamer();
+        new SampleTypeTable(new PythonTypeTable(""), new PythonSampleTypeNameConverter());
+    SampleNamer namer = new PythonSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(config, typeTable, namer, method.getName());
     return createSampleView(context);
@@ -62,14 +56,11 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(RubyNameFormatter.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(PythonTypeTable.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
-    String serviceTypeName = typeTable.getServiceTypeName(config.apiTypeName()).getNickname();
-    String serviceTypeNamespace =
-        RubySampleNamer.getServiceTypeNamespace(config.apiName(), config.apiVersion());
 
     if (methodInfo.isPageStreaming()) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
@@ -79,12 +70,9 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> fields = new ArrayList<>();
-    List<String> fieldVarNames = new ArrayList<>();
+    List<String> methodParamAssigments = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       String name = namer.localVarName(Name.lowerCamel(field.name()));
-      if (FIELD_RENAMES.containsKey(field.name())) {
-        name = FIELD_RENAMES.get(field.name());
-      }
       SampleFieldView sampleFieldView =
           SampleFieldView.newBuilder()
               .name(name)
@@ -93,16 +81,17 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
               .description(field.description())
               .build();
       fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+      // Ex: "fooBar=foo_bar"
+      methodParamAssigments.add(field.name() + "=" + name);
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
     if (hasRequestBody) {
-      String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
+      String requestBodyVarName =
+          symbolTable.getNewSymbol(
+              namer.getRequestBodyVarName(methodInfo.requestBodyType().message().typeName()));
       builder.requestBodyVarName(requestBodyVarName);
-      builder.requestBodyTypeName(
-          typeTable.getTypeName(methodInfo.requestBodyType()).getNickname());
-      fieldVarNames.add(requestBodyVarName);
+      methodParamAssigments.add("body=" + requestBodyVarName);
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -110,26 +99,29 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
       builder.responseVarName(symbolTable.getNewSymbol(namer.getResponseVarName()));
     }
 
+    String credentialsVarName =
+        config.authType() == AuthType.API_KEY ? "developerKey" : "credentials";
+
     return builder
         .templateFileName(TEMPLATE_FILENAME)
-        .outputPath(context.getMethodName() + ".frag.rb")
+        .outputPath(context.getMethodName() + ".frag.py")
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
         .auth(sampleAuthView)
         .serviceVarName(serviceVarName)
-        .serviceTypeName(serviceTypeName)
         .methodVerb(methodInfo.verb())
         .methodNameComponents(methodInfo.nameComponents())
+        .requestVarName(namer.getRequestVarName())
         .hasRequestBody(hasRequestBody)
         .hasResponse(hasResponse)
         .fields(fields)
-        .fieldVarNames(fieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
-        .serviceRequirePath(config.packagePrefix())
-        .serviceTypeNamespace(serviceTypeNamespace)
+        .credentialsVarName(credentialsVarName)
+        .lastMethodNameComponent(Iterables.getLast(methodInfo.nameComponents()))
+        .methodParamAssigments(methodParamAssigments)
         .build();
   }
 
@@ -156,14 +148,13 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
-    builder.resourceFieldName(namer.publicFieldName(Name.lowerCamel(fieldInfo.name())));
+    builder.resourceFieldName(fieldInfo.name());
     if (fieldInfo.type().isMap()) {
       // Assume that the value in the map is a message.
       if (!fieldInfo.type().mapValue().isMessage()) {
         throw new IllegalArgumentException("expected map value to be a message");
       }
-      builder.resourceKeyVarName(
-          symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("name"))));
+      builder.resourceKeyVarName(symbolTable.getNewSymbol("name"));
       String resourceValueVarName =
           namer.localVarName(Name.upperCamel(fieldInfo.type().mapValue().message().typeName()));
       builder.resourceValueVarName(symbolTable.getNewSymbol(resourceValueVarName));
@@ -174,8 +165,8 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
       builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
     }
     builder.isResourceMap(fieldInfo.type().isMap());
-    builder.pageVarName(
-        symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name()))));
+    builder.pageVarName(symbolTable.getNewSymbol(fieldInfo.name()));
+    builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
     return builder.build();
   }
 }

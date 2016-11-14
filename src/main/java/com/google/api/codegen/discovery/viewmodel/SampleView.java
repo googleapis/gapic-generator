@@ -136,6 +136,16 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract String namespaceName();
 
+  // Python specific section...
+  @Nullable
+  public abstract String credentialsVarName();
+
+  @Nullable
+  public abstract String lastMethodNameComponent();
+
+  @Nullable
+  public abstract List<String> methodParamAssigments();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
   }
@@ -224,6 +234,12 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder dataNamespace(String val);
 
     public abstract Builder namespaceName(String val);
+
+    public abstract Builder credentialsVarName(String val);
+
+    public abstract Builder lastMethodNameComponent(String val);
+
+    public abstract Builder methodParamAssigments(List<String> val);
 
     public abstract SampleView build();
   }

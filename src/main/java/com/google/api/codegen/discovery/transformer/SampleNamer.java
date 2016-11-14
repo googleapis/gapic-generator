@@ -68,8 +68,12 @@ public class SampleNamer extends NameFormatterDelegator {
     return localVarName(Name.lowerCamel("request"));
   }
 
-  /** Returns the variable name of the request body. */
   public String getRequestBodyVarName() {
+    return getRequestBodyVarName("");
+  }
+
+  /** Returns the variable name of the request body. */
+  public String getRequestBodyVarName(String requestBodyTypeName) {
     return localVarName(Name.lowerCamel("requestBody"));
   }
 

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util.ruby;
+package com.google.api.codegen.util.py;
 
 import com.google.api.codegen.util.DynamicLangTypeTable;
 import com.google.api.codegen.util.NamePath;
@@ -20,21 +20,22 @@ import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableSet;
 import java.util.Map;
 import java.util.TreeMap;
 
-/** The TypeTable for Ruby. */
-public class RubyTypeTable implements TypeTable {
+/** The TypeTable for Python. */
+public class PythonTypeTable implements TypeTable {
 
   private final DynamicLangTypeTable dynamicTypeTable;
 
-  public RubyTypeTable(String implicitPackageName) {
-    dynamicTypeTable = new DynamicLangTypeTable(implicitPackageName, "::");
+  public PythonTypeTable(String implicitPackageName) {
+    dynamicTypeTable = new DynamicLangTypeTable(implicitPackageName, ".");
   }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new RubyTypeTable(dynamicTypeTable.getImplicitPackageName());
+    return new PythonTypeTable(dynamicTypeTable.getImplicitPackageName());
   }
 
   @Override
@@ -88,4 +89,44 @@ public class RubyTypeTable implements TypeTable {
       String containerFullName, String innerTypeShortName) {
     return dynamicTypeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
   }
+
+  /**
+   * A set of Python reserved keywords. See
+   * https://docs.python.org/2/reference/lexical_analysis.html#keywords
+   */
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
+      ImmutableSet.<String>builder()
+          .add(
+              "and",
+              "del",
+              "from",
+              "not",
+              "while",
+              "as",
+              "elif",
+              "global",
+              "or",
+              "with",
+              "assert",
+              "else",
+              "if",
+              "pass",
+              "yield",
+              "break",
+              "except",
+              "import",
+              "print",
+              "class",
+              "exec",
+              "in",
+              "raise",
+              "continue",
+              "finally",
+              "is",
+              "return",
+              "def",
+              "for",
+              "lambda",
+              "try")
+          .build();
 }
