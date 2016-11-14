@@ -19,7 +19,6 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -114,10 +113,6 @@ public abstract class SurfaceTransformerContext {
       throw new IllegalArgumentException(
           "Interface config does not exist for method: " + method.getSimpleName());
     }
-  }
-
-  public Iterable<SingleResourceNameConfig> getSimpleResourceNameConfigs() {
-    return getApiConfig().getSingleResourceNameConfigs();
   }
 
   public MethodTransformerContext asFlattenedMethodContext(
