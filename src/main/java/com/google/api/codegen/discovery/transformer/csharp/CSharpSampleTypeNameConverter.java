@@ -29,7 +29,7 @@ import com.google.protobuf.Field;
 class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
 
   /** A map from primitive types in proto to C# counterparts. */
-  private static final ImmutableMap<Field.Kind, String> PRIMIVITVE_TYPE_MAP =
+  private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_UNKNOWN, "System.Object")
           .put(Field.Kind.TYPE_BOOL, "bool")
@@ -99,7 +99,7 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
     } else if (typeInfo.kind() == Field.Kind.TYPE_MESSAGE) {
       return getTypeName(typeInfo);
     }
-    String primitiveTypeName = PRIMIVITVE_TYPE_MAP.get(typeInfo.kind());
+    String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(typeInfo.kind());
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
         // For fully-qualified type names, use the regular resolver.
