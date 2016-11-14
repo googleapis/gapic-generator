@@ -85,7 +85,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
     if (dotIndex >= 0) {
       typeName = typeName.substring(dotIndex + 1);
     }
-    return className(Name.anyCamel(typeName).join("iterator"));
+    return publicClassName(Name.anyCamel(typeName).join("iterator"));
   }
 
   private static String lowerFirstLetter(String s) {
@@ -96,13 +96,18 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getGrpcServerTypeName(Interface service) {
+    return converter.getTypeName(service).getNickname() + "Server";
+  }
+
+  @Override
   public String getGrpcClientTypeName(Interface service) {
     return converter.getTypeName(service).getNickname() + "Client";
   }
 
   @Override
   public String getCallSettingsTypeName(Interface service) {
-    return className(clientNamePrefix(service).join("call").join("options"));
+    return publicClassName(clientNamePrefix(service).join("call").join("options"));
   }
 
   @Override
@@ -124,7 +129,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassName(Interface service) {
-    return className(clientNamePrefix(service).join("client"));
+    return publicClassName(clientNamePrefix(service).join("client"));
   }
 
   @Override
@@ -207,12 +212,21 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangStreamingReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStreamingServerName(Method method) {
+    // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesServer",
+    // neither camel or underscore.
+    return converter.getTypeName(method.getParent()).getNickname()
+        + "_"
+        + publicClassName(Name.upperCamel(method.getSimpleName()).join("server"));
+  }
+
+  @Override
+  public String getStreamingClientName(Method method) {
     // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
     // neither camel or underscore.
     return converter.getTypeName(method.getParent()).getNickname()
         + "_"
-        + className(Name.upperCamel(method.getSimpleName()).join("client"));
+        + publicClassName(Name.upperCamel(method.getSimpleName()).join("client"));
   }
 
   @Override
@@ -239,5 +253,10 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return publicMethodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
         + "_"
         + functionName;
+  }
+
+  @Override
+  public String getMockGrpcServiceImplName(Interface service) {
+    return privateClassName(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName()));
   }
 }

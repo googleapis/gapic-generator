@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.php;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -177,7 +178,14 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName) {
+      FieldConfig fieldConfig, String typedResourceShortName) {
     throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by PHP");
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    throw new UnsupportedOperationException(
+        "getTypeNameForResourceNameElementType not supported by PHP");
   }
 }
