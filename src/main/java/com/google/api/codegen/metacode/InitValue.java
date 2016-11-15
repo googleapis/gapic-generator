@@ -20,9 +20,12 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class InitValue {
   public enum InitValueType {
-    Literal, // Literal values such as strings and numbers
-    Variable, // Variable references
-    Random, // Random value which needs to be randomized at runtime
+    /** Literal values such as strings and numbers */
+    Literal,
+    /** Variable references */
+    Variable,
+    /** Random value which needs to be randomized at runtime */
+    Random,
   }
 
   public static InitValue create(String value, InitValueType type) {

@@ -365,7 +365,7 @@ public class InitCodeTransformer {
             value = context.getTypeTable().renderPrimitiveValue(item.getType(), value);
             break;
           case Random:
-            value = context.getNamer().getRandomStringValue(value);
+            value = context.getNamer().injectRandomStringGeneratorCode(value);
             break;
           case Variable:
             value = context.getNamer().localVarName(Name.from(value));
@@ -410,7 +410,7 @@ public class InitCodeTransformer {
             entityValue = context.getNamer().localVarName(Name.from(initValue.getValue()));
             break;
           case Random:
-            entityValue = context.getNamer().getRandomStringValue(initValue.getValue());
+            entityValue = context.getNamer().injectRandomStringGeneratorCode(initValue.getValue());
             break;
           case Literal:
             entityValue = initValue.getValue();

@@ -951,8 +951,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return localVarName(Name.upperCamel(field.getParent().getSimpleName()));
   }
 
-  /** The random value string. */
-  public String getRandomStringValue(String randomString) {
+  /** Inject random value generator code to the given string. */
+  public String injectRandomStringGeneratorCode(String randomString) {
     return getNotImplementedString("SurfaceNamer.getRandomStringValue");
   }
 }
