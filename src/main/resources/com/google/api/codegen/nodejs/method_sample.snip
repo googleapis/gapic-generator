@@ -106,12 +106,13 @@
         var resources = responses[0];
         // The next request if the response shows there's more responses.
         var nextRequest = responses[1];
-        // The actual response object, in case want to refer.
+        // The actual response object, if necessary.
         // var rawResponse = responses[2];
         for (var i = 0; i < resources.length; ++i) {
             // doThingsWith(resources[i]);
         }
         if (nextRequest) {
+            // Fetch the next page.
             return api.{@apiMethod.name}(nextRequest, options).then(callback);
         }
     }
