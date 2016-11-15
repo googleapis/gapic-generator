@@ -16,11 +16,11 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.metacode.FieldStructureParser;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
@@ -151,10 +151,9 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String injectRandomStringGeneratorCode(String randomString) {
-    String randomValueGen = "System.currentTimeMillis()";
     String delimiter = ",";
     String[] split =
-        FieldStructureParser.stripQuotes(randomString)
+        CommonRenderingUtil.stripQuotes(randomString)
             .replace(
                 InitFieldConfig.RANDOM_TOKEN, delimiter + InitFieldConfig.RANDOM_TOKEN + delimiter)
             .split(delimiter);
@@ -162,7 +161,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     for (String token : split) {
       if (token.length() > 0) {
         if (token.equals(InitFieldConfig.RANDOM_TOKEN)) {
-          stringParts.add(randomValueGen);
+          stringParts.add("System.currentTimeMillis()");
         } else {
           stringParts.add("\"" + token + "\"");
         }
