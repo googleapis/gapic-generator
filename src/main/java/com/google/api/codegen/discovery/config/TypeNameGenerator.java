@@ -63,7 +63,7 @@ public class TypeNameGenerator {
   }
 
   /** Returns the package prefix for the API. */
-  public String getPackagePrefix(String apiName, String apiVersion) {
+  public String getPackagePrefix(String apiName, String apiCanonicalName, String apiVersion) {
     return "";
   }
 

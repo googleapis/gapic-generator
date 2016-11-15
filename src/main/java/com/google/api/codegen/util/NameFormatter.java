@@ -20,8 +20,11 @@ package com.google.api.codegen.util;
  */
 public interface NameFormatter {
 
-  /** Formats the name as a class name. */
-  String className(Name name);
+  /** Formats the name as a public class name. */
+  String publicClassName(Name name);
+
+  /** Formats the name as a private class name. */
+  String privateClassName(Name name);
 
   /** Formats the name as a public field name. */
   String publicFieldName(Name name);

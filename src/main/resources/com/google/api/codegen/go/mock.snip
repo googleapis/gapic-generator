@@ -1,0 +1,129 @@
+@extends "go/header.snip"
+
+@snippet generate(view)
+    {@headerComment(view.fileHeader)}
+
+    package {@view.fileHeader.localPackageName}
+
+    import (
+        {@imports(view.fileHeader.imports)}
+    )
+
+    import (
+        "io"
+
+        "golang.org/x/net/context"
+    )
+
+    var _ = io.EOF
+
+    @join impl : view.serviceImpls
+        type {@impl.name} struct {
+            reqs []interface{}
+
+            // If set, all calls return this error.
+            err error
+
+            // responses to return if err == nil
+            resps []interface{}
+        }
+
+        var _ {@impl.grpcClassName} = &{@impl.name}{}
+
+        @join method : impl.grpcMethods
+            @switch method.grpcStreamingType
+            @case "BidiStreaming"
+                {@bidiMethod(impl, method)}
+            @case "ClientStreaming"
+                {@clientStreamMethod(impl, method)}
+            @case "ServerStreaming"
+                {@serverStreamMethod(impl, method)}
+            @case "NonStreaming"
+                {@simpleMethod(impl, method)}
+            @end
+
+
+        @end
+    @end
+@end
+
+@private simpleMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(_ context.Context, req {@method.requestTypeName}) ({@method.responseTypeName}, error) {
+        s.reqs = append(s.reqs, req)
+        if s.err != nil {
+            return nil, s.err
+        }
+        return s.resps[0].({@method.responseTypeName}), nil
+    }
+@end
+
+@private serverStreamMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(req {@method.requestTypeName}, stream {@method.streamHandleTypeName}) error {
+        s.reqs = append(s.reqs, req)
+        if s.err != nil {
+            return s.err
+        }
+        for _, v := range s.resps {
+            if err := stream.Send(v.({@method.responseTypeName})); err != nil {
+                return err
+            }
+        }
+        return nil
+    }
+@end
+
+@private clientStreamMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandleTypeName}) error {
+        if s.err != nil {
+            return s.err
+        }
+        for {
+            if req, err := stream.Recv(); err == io.EOF {
+                return stream.SendAndClose(s.resps[0].({@method.responseTypeName}))
+            } else if err != nil {
+                return err
+            } else {
+                s.reqs = append(s.reqs, req)
+            }
+        }
+    }
+@end
+
+@private bidiMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandleTypeName}) error {
+        if s.err != nil {
+            return s.err
+        }
+
+        ch := make(chan error, 2)
+        go func() {
+            for {
+                if req, err := stream.Recv(); err == io.EOF {
+                    ch <- nil
+                    return
+                } else if err != nil {
+                    ch <- err
+                    return
+                } else {
+                    s.reqs = append(s.reqs, req)
+                }
+            }
+        }()
+        go func() {
+            for _, v := range s.resps {
+                if err := stream.Send(v.({@method.responseTypeName})); err != nil {
+                    ch <- err
+                    return
+                }
+            }
+            ch <- nil
+        }()
+
+        // Doesn't really matter which one we get.
+        err := <-ch
+        if err2 := <-ch; err == nil {
+            err = err2
+        }
+        return err
+    }
+@end

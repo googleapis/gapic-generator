@@ -165,12 +165,13 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassName(Interface interfaze) {
-    return className(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override
   public String getApiSnippetsClassName(Interface interfaze) {
-    return className(Name.upperCamel("Generated", interfaze.getSimpleName(), "ClientSnippets"));
+    return publicClassName(
+        Name.upperCamel("Generated", interfaze.getSimpleName(), "ClientSnippets"));
   }
 
   @Override
@@ -245,7 +246,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcContainerTypeName(Interface service) {
-    return className(Name.upperCamel(service.getSimpleName()));
+    return publicClassName(Name.upperCamel(service.getSimpleName()));
   }
 
   @Override
@@ -267,9 +268,9 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcServiceClassName(Interface service) {
-    return className(Name.upperCamel(service.getSimpleName()))
+    return publicClassName(Name.upperCamel(service.getSimpleName()))
         + "."
-        + className(Name.upperCamel(service.getSimpleName(), "Client"));
+        + publicClassName(Name.upperCamel(service.getSimpleName(), "Client"));
   }
 
   @Override
@@ -279,7 +280,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassImplName(Interface interfaze) {
-    return className(Name.upperCamel(interfaze.getSimpleName(), "ClientImpl"));
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientImpl"));
   }
 
   @Override

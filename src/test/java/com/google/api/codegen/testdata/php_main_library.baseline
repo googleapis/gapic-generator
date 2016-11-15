@@ -1268,7 +1268,8 @@ class LibraryServiceApi
      * try {
      *     $libraryServiceApi = new LibraryServiceApi();
      *     $name = "";
-     *     $response = $libraryServiceApi->getBookFromAnywhere($name);
+     *     $formattedAltBookName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $response = $libraryServiceApi->getBookFromAnywhere($name, $formattedAltBookName);
      * } finally {
      *     if (isset($libraryServiceApi)) {
      *         $libraryServiceApi->close();
@@ -1277,6 +1278,8 @@ class LibraryServiceApi
      * ```
      *
      * @param string $name The name of the book to retrieve.
+     * @param string $altBookName An alternate book name, used to test restricting flattened field to a
+     * single resource name type in a oneof.
      * @param array $optionalArgs {
      *     Optional.
      *     @type Google\GAX\RetrySettings $retrySettings
@@ -1291,10 +1294,11 @@ class LibraryServiceApi
      *
      * @throws Google\GAX\ApiException if the remote call fails
      */
-    public function getBookFromAnywhere($name, $optionalArgs = [])
+    public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
     {
         $request = new GetBookFromAnywhereRequest();
         $request->setName($name);
+        $request->setAltBookName($altBookName);
 
         $mergedSettings = $this->defaultCallSettings['getBookFromAnywhere']->merge(
             new CallSettings($optionalArgs));

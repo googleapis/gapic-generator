@@ -14,33 +14,17 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
-import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.viewmodel.FileHeaderView;
-import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class MockServiceImplView implements ViewModel {
-
-  public abstract FileHeaderView fileHeader();
+public abstract class MockServiceImplView {
 
   public abstract String name();
 
   public abstract String grpcClassName();
 
   public abstract List<MockGrpcMethodView> grpcMethods();
-
-  @Override
-  public String resourceRoot() {
-    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
-  }
-
-  @Override
-  public abstract String templateFileName();
-
-  @Override
-  public abstract String outputPath();
 
   public static Builder newBuilder() {
     return new AutoValue_MockServiceImplView.Builder();
@@ -49,15 +33,9 @@ public abstract class MockServiceImplView implements ViewModel {
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder fileHeader(FileHeaderView val);
-
     public abstract Builder name(String val);
 
     public abstract Builder grpcClassName(String val);
-
-    public abstract Builder outputPath(String val);
-
-    public abstract Builder templateFileName(String val);
 
     public abstract Builder grpcMethods(List<MockGrpcMethodView> val);
 

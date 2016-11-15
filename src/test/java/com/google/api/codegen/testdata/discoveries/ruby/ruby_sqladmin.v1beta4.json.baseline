@@ -1361,14 +1361,10 @@ project = ''  # TODO: Update placeholder value.
 # Database instance ID. This does not include the project ID.
 instance = ''  # TODO: Update placeholder value.
 
-items = service.fetch_all(items: :items) do |token|
-  service.list_users(project, instance, page_token: token)
-end
+response = service.list_users(project, instance)
 
-items.each do |user|
-  # TODO: Change code below to process each `user` resource:
-  puts JSON.pretty_generate(user)
-end
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API

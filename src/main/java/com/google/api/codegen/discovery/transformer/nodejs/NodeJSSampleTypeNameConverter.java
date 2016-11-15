@@ -26,7 +26,6 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
   /** A map from primitive types in proto to NodeJS counterparts. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
-          .put(Field.Kind.TYPE_UNKNOWN, "Object")
           .put(Field.Kind.TYPE_BOOL, "boolean")
           .put(Field.Kind.TYPE_INT32, "number")
           .put(Field.Kind.TYPE_INT64, "number")
@@ -41,7 +40,6 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
   /** A map from primitive types in proto to zero value in NodeJS */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
-          .put(Field.Kind.TYPE_UNKNOWN, "{}")
           .put(Field.Kind.TYPE_BOOL, "false")
           .put(Field.Kind.TYPE_INT32, "0")
           .put(Field.Kind.TYPE_INT64, "''")
@@ -80,6 +78,9 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
+    if (typeInfo.kind() == Field.Kind.TYPE_UNKNOWN) {
+      return new TypeName("Object");
+    }
     String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(typeInfo.kind());
     if (primitiveTypeName != null) {
       return new TypeName(primitiveTypeName);
@@ -90,7 +91,7 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
     // Don't call getTypeName; we don't need to import these.
-    if (typeInfo.isMap()) {
+    if (typeInfo.isMap() || typeInfo.kind() == Field.Kind.TYPE_UNKNOWN) {
       return TypedValue.create(new TypeName("Object"), "{}");
     }
     if (typeInfo.isArray()) {
