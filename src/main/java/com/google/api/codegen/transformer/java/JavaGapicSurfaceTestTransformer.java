@@ -236,14 +236,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
             .symbolTable(table)
             .fieldConfigMap(fieldConfigMap);
-
     if (context.getMethodConfig().isFlattening()) {
-      ArrayList<Field> initFields = new ArrayList<>();
-      for (FieldConfig fieldConfig :
-          context.getFlatteningConfig().getFlattenedFieldConfigs().values()) {
-        initFields.add(fieldConfig.getField());
-      }
-      contextBuilder.initFields(initFields);
+      contextBuilder.initFields(context.getFlatteningConfig().getFlattenedFields());
     }
     return contextBuilder.build();
   }
