@@ -41,7 +41,6 @@ import (
 var (
     libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}")
     libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}/books/{book_id}")
-    libraryArchivedBookPathTemplate = gax.MustCompilePathTemplate("archives/{archive_path}/books/{book_id=**}")
     libraryReturnPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}/returns/{return}")
 )
 
@@ -204,18 +203,6 @@ func LibraryShelfPath(shelfId string) string {
 func LibraryBookPath(shelfId, bookId string) string {
     path, err := libraryBookPathTemplate.Render(map[string]string{
         "shelf_id": shelfId,
-        "book_id": bookId,
-    })
-    if err != nil {
-        panic(err)
-    }
-    return path
-}
-
-// LibraryArchivedBookPath returns the path for the archived book resource.
-func LibraryArchivedBookPath(archivePath, bookId string) string {
-    path, err := libraryArchivedBookPathTemplate.Render(map[string]string{
-        "archive_path": archivePath,
         "book_id": bookId,
     })
     if err != nil {

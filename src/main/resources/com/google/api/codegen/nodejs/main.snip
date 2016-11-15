@@ -287,14 +287,14 @@
 @end
 
 @private pathTemplateSection(service)
-  @if context.getApiConfig.getSingleResourceNameConfigs()
-    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
+  @if context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
 
       var {@pathTemplateName(collectionConfig)} = new gax.PathTemplate(
           '{@collectionConfig.getNamePattern}');
     @end
 
-    @join collectionConfig : context.getApiConfig.getSingleResourceNameConfigs()
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
 
       {@createResourceFunction(service, collectionConfig)}
 

@@ -186,9 +186,6 @@ public class LibraryServiceApi implements AutoCloseable {
   private static final PathTemplate BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}/books/{book_id}");
 
-  private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("archives/{archive_path}/books/{book_id=**}");
-
   private static final PathTemplate RETURN_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}/returns/{return}");
 
@@ -208,16 +205,6 @@ public class LibraryServiceApi implements AutoCloseable {
   public static final String formatBookName(String shelfId, String bookId) {
     return BOOK_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId,
-        "book_id", bookId);
-  }
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a archived_book resource.
-   */
-  public static final String formatArchivedBookName(String archivePath, String bookId) {
-    return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
-        "archive_path", archivePath,
         "book_id", bookId);
   }
 
@@ -254,22 +241,6 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public static final String parseBookIdFromBookName(String bookName) {
     return BOOK_PATH_TEMPLATE.parse(bookName).get("book_id");
-  }
-
-  /**
-   * Parses the archive_path from the given fully-qualified path which
-   * represents a archived_book resource.
-   */
-  public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
-    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
-  }
-
-  /**
-   * Parses the book_id from the given fully-qualified path which
-   * represents a archived_book resource.
-   */
-  public static final String parseBookIdFromArchivedBookName(String archivedBookName) {
-    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book_id");
   }
 
   /**

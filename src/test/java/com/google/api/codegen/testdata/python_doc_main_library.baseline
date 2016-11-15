@@ -118,8 +118,6 @@ class LibraryServiceApi(object):
         'shelves/{shelf_id}')
     _BOOK_PATH_TEMPLATE = path_template.PathTemplate(
         'shelves/{shelf_id}/books/{book_id}')
-    _ARCHIVED_BOOK_PATH_TEMPLATE = path_template.PathTemplate(
-        'archives/{archive_path}/books/{book_id=**}')
     _RETURN_PATH_TEMPLATE = path_template.PathTemplate(
         'shelves/{shelf}/books/{book}/returns/{return}')
 
@@ -135,14 +133,6 @@ class LibraryServiceApi(object):
         """Returns a fully-qualified book resource name string."""
         return cls._BOOK_PATH_TEMPLATE.render({
             'shelf_id': shelf_id,
-            'book_id': book_id,
-        })
-
-    @classmethod
-    def archived_book_path(cls, archive_path, book_id):
-        """Returns a fully-qualified archived_book resource name string."""
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.render({
-            'archive_path': archive_path,
             'book_id': book_id,
         })
 
@@ -193,32 +183,6 @@ class LibraryServiceApi(object):
           A string representing the book_id.
         """
         return cls._BOOK_PATH_TEMPLATE.match(book_name).get('book_id')
-
-    @classmethod
-    def match_archive_path_from_archived_book_name(cls, archived_book_name):
-        """Parses the archive_path from a archived_book resource.
-
-        Args:
-          archived_book_name (string): A fully-qualified path representing a archived_book
-            resource.
-
-        Returns:
-          A string representing the archive_path.
-        """
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('archive_path')
-
-    @classmethod
-    def match_book_id_from_archived_book_name(cls, archived_book_name):
-        """Parses the book_id from a archived_book resource.
-
-        Args:
-          archived_book_name (string): A fully-qualified path representing a archived_book
-            resource.
-
-        Returns:
-          A string representing the book_id.
-        """
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('book_id')
 
     @classmethod
     def match_shelf_from_return_name(cls, return_name):
