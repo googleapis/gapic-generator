@@ -71,10 +71,10 @@
 
   @switch method.type
   @case "PagedFlattenedMethod"
-    PageAccessor<{@method.responseTypeName}> pageAccessor =
+    {@method.responseTypeName} pagedResponse =
         api.{@method.name}(\
           {@sampleMethodCallArgList(method.initCode.fieldSettings)});
-    System.out.println(ReflectionToStringBuilder.toString(pageAccessor));
+    System.out.println(ReflectionToStringBuilder.toString(pagedResponse));
   @case "FlattenedMethod"
     @if method.hasReturnValue
       {@method.responseTypeName} response = \
