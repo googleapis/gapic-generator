@@ -22,7 +22,6 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
-import com.google.api.codegen.metacode.InitValue.InitValueType;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FieldSettingView;
@@ -361,10 +360,18 @@ public class InitCodeTransformer {
 
       if (initValueConfig.hasSimpleInitialValue()) {
         String value = initValueConfig.getInitialValue().getValue();
-        if (initValueConfig.getInitialValue().getType() == InitValueType.Literal) {
-          value = context.getTypeTable().renderPrimitiveValue(item.getType(), value);
-        } else {
-          value = context.getNamer().localVarName(Name.from(value));
+        switch (initValueConfig.getInitialValue().getType()) {
+          case Literal:
+            value = context.getTypeTable().renderPrimitiveValue(item.getType(), value);
+            break;
+          case Random:
+            value = context.getNamer().getRandomStringValue(value);
+            break;
+          case Variable:
+            value = context.getNamer().localVarName(Name.from(value));
+            break;
+          default:
+            throw new IllegalArgumentException("Unhandled init value type");
         }
         initValue.initialValue(value);
       } else {
@@ -401,6 +408,9 @@ public class InitCodeTransformer {
         switch (initValue.getType()) {
           case Variable:
             entityValue = context.getNamer().localVarName(Name.from(initValue.getValue()));
+            break;
+          case Random:
+            entityValue = context.getNamer().getRandomStringValue(initValue.getValue());
             break;
           case Literal:
             entityValue = initValue.getValue();

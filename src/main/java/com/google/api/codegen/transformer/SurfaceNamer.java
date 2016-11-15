@@ -950,4 +950,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getIamResourceParamName(Field field) {
     return localVarName(Name.upperCamel(field.getParent().getSimpleName()));
   }
+
+  /** The random value string. */
+  public String getRandomStringValue(String randomString) {
+    return getNotImplementedString("SurfaceNamer.getRandomStringValue");
+  }
 }

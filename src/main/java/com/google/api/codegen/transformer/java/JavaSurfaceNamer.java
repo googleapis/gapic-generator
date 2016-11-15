@@ -16,6 +16,8 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.metacode.FieldStructureParser;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -28,6 +30,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -143,5 +146,26 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(Interface service) {
     return getPackageName() + "." + getApiWrapperClassName(service);
+  }
+
+  @Override
+  public String getRandomStringValue(String randomString) {
+    String randomValueGen = "System.currentTimeMillis()";
+    String delimiter = ",";
+    String[] splitted =
+        FieldStructureParser.stripQuotes(randomString)
+            .replace(InitFieldConfig.RANDOM_TOKEN, delimiter + randomValueGen + delimiter)
+            .split(delimiter);
+    ArrayList<String> stringParts = new ArrayList<>();
+    for (String token : splitted) {
+      if (token.length() > 0) {
+        if (token.equals(randomValueGen)) {
+          stringParts.add(token);
+        } else {
+          stringParts.add("\"" + token + "\"");
+        }
+      }
+    }
+    return String.join(" + ", stringParts);
   }
 }

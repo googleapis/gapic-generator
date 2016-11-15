@@ -61,6 +61,18 @@ public class FieldStructureParser {
         fieldConfig.fieldPath(), InitCodeLineType.Unknown, valueConfig, null);
   }
 
+  /** Strips the surrounding quotes from the given string */
+  public static String stripQuotes(String value) {
+    Matcher singleQuoteMatcher = singleQuoteStringPattern.matcher(value);
+    Matcher doubleQuoteMatcher = doubleQuoteStringPattern.matcher(value);
+    if (singleQuoteMatcher.matches()) {
+      value = singleQuoteMatcher.group(1);
+    } else if (doubleQuoteMatcher.matches()) {
+      value = doubleQuoteMatcher.group(1);
+    }
+    return value;
+  }
+
   private static InitValueConfig createInitValueConfig(
       InitFieldConfig fieldConfig, Map<String, InitValueConfig> initValueConfigMap) {
     if (fieldConfig.isFormattedConfig()
@@ -132,16 +144,5 @@ public class FieldStructureParser {
       return item;
     }
     return parsePartialDottedPathToInitCodeNode(partialDottedPath, nextType, null, item);
-  }
-
-  private static String stripQuotes(String value) {
-    Matcher singleQuoteMatcher = singleQuoteStringPattern.matcher(value);
-    Matcher doubleQuoteMatcher = doubleQuoteStringPattern.matcher(value);
-    if (singleQuoteMatcher.matches()) {
-      value = singleQuoteMatcher.group(1);
-    } else if (doubleQuoteMatcher.matches()) {
-      value = doubleQuoteMatcher.group(1);
-    }
-    return value;
   }
 }
