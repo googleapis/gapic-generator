@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
@@ -166,6 +167,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         }
       }
     }
-    return String.join(" + ", stringParts);
+    return StringUtils.join(stringParts, " + ");
   }
 }
