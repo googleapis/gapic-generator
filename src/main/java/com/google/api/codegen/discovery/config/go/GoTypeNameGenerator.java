@@ -33,7 +33,10 @@ public class GoTypeNameGenerator extends TypeNameGenerator {
     // Don't edit the original object.
     copy.removeFirst();
     for (int i = 0; i < copy.size(); i++) {
-      copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
+      // Name components in Go are first converted to lower-case and then
+      // capitalized.
+      // Ex: "DnsKeys.Get" to "Dnskeys.Get"
+      copy.set(i, Name.lowerCamel(copy.get(i).toLowerCase()).toUpperCamel());
     }
     return copy;
   }
