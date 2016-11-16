@@ -582,6 +582,7 @@ class LibraryServiceApi(object):
             books,
             edition=None,
             review_copy=None,
+            series_uuid=b'',
             options=None):
         """
         Creates a series of books.
@@ -599,6 +600,7 @@ class LibraryServiceApi(object):
           books (list[:class:`google.example.library.v1.library_pb2.Book`]): The books to publish in the series.
           edition (int): The edition of the series
           review_copy (bool): If the book is in a pre-publish state
+          series_uuid (bytes): Uniquely identifies the series to the publishing house.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -613,7 +615,8 @@ class LibraryServiceApi(object):
             shelf=shelf,
             books=books,
             edition=edition,
-            review_copy=review_copy)
+            review_copy=review_copy,
+            series_uuid=series_uuid)
         return self._publish_series(request, options)
 
     def get_book(
@@ -864,7 +867,7 @@ class LibraryServiceApi(object):
           >>> from google.example.library.v1 import library_pb2
           >>> api = library_service_api.LibraryServiceApi()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>> comment = ''
+          >>> comment = b''
           >>> stage = enums.Comment.Stage.UNSET
           >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
           >>> comments_element = library_pb2.Comment(comment, stage, alignment)
