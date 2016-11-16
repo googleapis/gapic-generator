@@ -54,6 +54,35 @@ public class RubyCodeGeneratorTest {
   }
 
   @RunWith(Parameterized.class)
+  public static class RubyOperationsBaseline extends GapicTestBase {
+
+    public RubyOperationsBaseline(
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, snippetName);
+      getTestDataLocator()
+          .addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
+    }
+
+    /**
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
+     */
+    @Parameters(name = "{0}")
+    public static List<Object[]> testedConfigs() {
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.RUBY, new String[] {"ruby_gapic.yaml", "operations_gapic.yaml"});
+    }
+
+    // Tests
+    // =====
+
+    @Test
+    public void operations() throws Exception {
+      test("operations");
+    }
+  }
+
+  @RunWith(Parameterized.class)
   public static class RubyLibraryDocBaseline extends GapicTestBase {
 
     public RubyLibraryDocBaseline(
