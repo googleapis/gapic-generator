@@ -55,7 +55,9 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String stubName();
 
-  public abstract boolean isLongRunning();
+  public abstract boolean isLongrunningOperation();
+
+  public abstract boolean isOperationsServiceMethod();
 
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
@@ -98,7 +100,9 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder stubName(String val);
 
-    public abstract Builder isLongRunning(boolean val);
+    public abstract Builder isLongrunningOperation(boolean val);
+
+    public abstract Builder isOperationsServiceMethod(boolean val);
 
     public abstract OptionalArrayMethodView build();
   }

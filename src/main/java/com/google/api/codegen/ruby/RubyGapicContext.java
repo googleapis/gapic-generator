@@ -144,7 +144,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
   /** Return YARD return type string for the given method, or null if the return type is nil. */
   @Nullable
-  private String returnTypeComment(Method method, MethodConfig config) {
+  private String returnTypeComment(Method method, MethodConfig config, Interface service) {
     MessageType returnMessageType = method.getOutputMessage();
     if (returnMessageType.getFullName().equals("google.protobuf.Empty")) {
       return null;
@@ -170,7 +170,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
           + "  See Google::Gax::PagedEnumerable documentation for other\n"
           + "  operations such as per-page iteration or access to the response\n"
           + "  object.";
-    } else if (isLongRunning(method)) {
+    } else if (isWrappedOperation(method, service)) {
       return "@return [Google::Gax::Operation]";
     } else {
       return "@return [" + classInfo + "]";
@@ -210,7 +210,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         }
       }
     }
-    if (isLongRunning(method)) {
+    if (isWrappedOperation(method, service)) {
       paramTypesBuilder.append(
           "@param operations_api [Google::Longrunning::OperationsApi] \n"
               + "  The client that will be used to reload the operation returned by\n"
@@ -222,7 +222,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
             + "  retries, etc.");
     String paramTypes = paramTypesBuilder.toString();
 
-    String returnType = returnTypeComment(method, config);
+    String returnType = returnTypeComment(method, config, service);
 
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
@@ -385,19 +385,30 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         new RubyFeatureConfig());
   }
 
-  public boolean isLongRunning(Method method) {
+  public boolean isLongrunning(Method method) {
     return new ServiceMessages().isLongRunningOperationType(method.getOutputType());
   }
 
-  public boolean hasLongRunningMethod(Interface service) {
+  public boolean hasLongrunningMethod(Interface service) {
+    if (isOperationsService(service)) {
+      return false;
+    }
+
     for (Method method : getSupportedMethodsV2(service)) {
-      if (isLongRunning(method)) {
+      if (isLongrunning(method)) {
         return true;
       }
     }
     return false;
   }
 
+  public boolean isOperationsService(Interface service) {
+    return "google.longrunning.Operations".equals(service.getFullName());
+  }
+
+  public boolean isWrappedOperation(Method method, Interface service) {
+    return isLongrunning(method) && !isOperationsService(service);
+  }
   // Constants
   // =========
 

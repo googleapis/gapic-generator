@@ -533,8 +533,11 @@ public class ApiMethodTransformer {
     apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     ServiceMessages messages = new ServiceMessages();
-    apiMethod.isLongRunning(
+    apiMethod.isLongrunningOperation(
         messages.isLongRunningOperationType(context.getMethod().getOutputType()));
+
+    apiMethod.isOperationsServiceMethod(
+        "google.longrunning.Operations".equals(context.getInterface().getFullName()));
 
     return apiMethod.build();
   }

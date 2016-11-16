@@ -15,18 +15,18 @@
   @join alias : apiMethod.initCode.imports
     {@alias.nickname} = {@alias.fullName}
   @end
-  @if apiMethod.isLongRunning
+  @if isWrappedOperationMethod(apiMethod)
     OperationsApi = Google::Longrunning::OperationsApi
   @end
 
   {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
-  @if apiMethod.isLongRunning
-    operations_api = OperationsApi.new
+  @if isWrappedOperationMethod(apiMethod)
+    operations_client = OperationsApi.new
   @end
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
   @end
-  @if apiMethod.isLongRunning
+  @if isWrappedOperationMethod(apiMethod)
     {@longRunningMethodSampleCode(apiMethod)}
   @else
     @switch apiMethod.type.toString
@@ -42,26 +42,31 @@
 
 @private longRunningMethodSampleCode(apiMethod)
 
-  @# Add a callback during the method call.
-  operation = {@longRunningMethodCallSampleCode(apiMethod)} do |operation|
-    results = operation.results
+  @# Register a callback during the method call.
+  operation = {@longRunningMethodCallSampleCode(apiMethod)} do |op|
+    raise op.results.message if op.error?
+    results = op.results
     @# Process the results.
+
+    metadata = op.metadata
+    @# Process the metadata.
   end
 
-  @# Or use the return value to add a callback.
-  operation.on_done do |operation|
-    results = operation.results
+  @# Or use the return value to register a callback.
+  operation.on_done do |op|
+    raise op.results.message if op.error?
+    results = op.results
     @# Process the results.
+
+    metadata = op.metadata
+    @# Process the metadata.
   end
 
-  @# Check status.
-  operation.done?
-
-  @# Reload the status.
+  @# Manually reload the operation.
   operation.reload!
-  operation.done?
 
-  @# Wait.
+  @# Or block until the operation completes, triggering callbacks on
+  @# completion.
   operation.wait_until_done!
 @end
 
@@ -128,9 +133,9 @@
   @let fieldSettings = apiMethod.initCode.fieldSettings
     @if fieldSettings
       {@apiMethod.apiVariableName}.{@apiMethod.name}\
-        ({@sampleMethodCallArgList(fieldSettings)}, operations_api)
+        ({@sampleMethodCallArgList(fieldSettings)}, operations_client)
     @else
-      {@apiMethod.apiVariableName}.{@apiMethod.name}(operations_api)
+      {@apiMethod.apiVariableName}.{@apiMethod.name}(operations_client)
     @end
   @end
 @end
@@ -209,5 +214,14 @@
       ({@varList(initValue.formatArgs)})
   @default
     $unhandledCase: {@initValue.type}$
+  @end
+@end
+
+@private isWrappedOperationMethod(apiMethod)
+  @if apiMethod.isLongrunningOperation
+    @if apiMethod.isOperationsServiceMethod
+    @else
+      isWrappedOperationMethod: true
+    @end
   @end
 @end

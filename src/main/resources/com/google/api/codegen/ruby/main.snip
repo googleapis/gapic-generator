@@ -45,7 +45,8 @@
   require "pathname"
 
   require "google/gax"
-  @if context.hasLongRunningMethod(service)
+  @if context.hasLongrunningMethod(service)
+    require "google/gax/operation"
     require "google/longrunning/operations_api"
 
   @end
@@ -409,8 +410,8 @@
             @if optionalParams
               {@optionalParameterValues(optionalParams)},
             @end
-            @if operationsApiParam(method)
-              {@operationsApiParam(method)}
+            @if operationsApiParam(method, service)
+              {@operationsApiParam(method, service)}
             @end
             options: nil
           req = {@inputTypeName}.new({
@@ -425,30 +426,30 @@
               {@namedParameters(optionalParams)}
             @end
           }.delete_if { |_, v| v.nil? })
-          {@methodCall(method)}
+          {@methodCall(method, service)}
         end
       @else
-        def {@methodName} {@operationsApiParam(method)}options: nil
+        def {@methodName} {@operationsApiParam(method, service)}options: nil
           req = {@inputTypeName}.new
-          {@methodCall(method)}
+          {@methodCall(method, service)}
         end
       @end
     @end
   @end
 @end
 
-@private operationsApiParam(method)
-  @if context.isLongRunning(method)
-    operations_api, {@""}
+@private operationsApiParam(method, service)
+  @if context.isWrappedOperation(method, service)
+    operations_client, {@""}
   @end
 @end
 
-@private methodCall(method)
+@private methodCall(method, service)
   @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName())
-    @if context.isLongRunning(method)
+    @if context.isWrappedOperation(method, service)
       operation = Google::Gax::Operation.new(
         @@{@methodName}.call(req, options),
-        operations_api,
+        operations_client,
         call_options: options
       )
       operation.on_done { |operation| yield(operation) } if block_given?
