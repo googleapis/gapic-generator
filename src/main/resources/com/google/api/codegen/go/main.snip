@@ -244,7 +244,7 @@
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) *{@method.responseTypeName} {
         {@mergeMetadata()}
         it := &{@method.responseTypeName}{}
-        it.{@internalFetch(view)} = func(pageSize int, pageToken string) ([]{@method.listMethod.resourceTypeName}, string, error) {
+        it.InternalFetch = func(pageSize int, pageToken string) ([]{@method.listMethod.resourceTypeName}, string, error) {
             var resp {@method.listMethod.responseObjectTypeName}
             req.PageToken = pageToken
             if pageSize > math.MaxInt32 {
@@ -260,7 +260,7 @@
             return resp.{@method.listMethod.resourceFieldName}, resp.NextPageToken, err
         }
         fetch := func(pageSize int, pageToken string) (string, error) {
-            items, nextPageToken, err := it.{@internalFetch(view)}(pageSize, pageToken)
+            items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
             if err != nil {
                 return "", err
             }
@@ -279,12 +279,13 @@
         pageInfo *iterator.PageInfo
         nextFunc func() error
 
-        // {@internalFetch(view)} is for use by the Google Cloud Libraries only.
+        // InternalFetch is for use by the Google Cloud Libraries only.
+        // It is not part of the stable interface of this package.
         //
-        // {@internalFetch(view)} returns results from a single call to the underlying RPC.
+        // InternalFetch returns results from a single call to the underlying RPC.
         // The number of results is no greater than pageSize.
         // If there are no more results, nextPageToken is empty and err is nil.
-        {@internalFetch(view)} func(pageSize int, pageToken string) (results []{@iter.resourceTypeName}, nextPageToken string, err error)
+        InternalFetch func(pageSize int, pageToken string) (results []{@iter.resourceTypeName}, nextPageToken string, err error)
     }
 
     // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
@@ -324,12 +325,4 @@
 @private mergeMetadata()
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
-@end
-
-@private internalFetch(view)
-    @if view.hasInternalFetch
-        InternalFetch
-    @else
-        internalFetch
-    @end
 @end

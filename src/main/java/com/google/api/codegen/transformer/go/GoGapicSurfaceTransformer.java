@@ -160,7 +160,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         pageStreamingTransformer.generateDescriptorClasses(context)) {
       iterators.put(desc.typeName(), desc);
     }
-    view.hasInternalFetch(apiConfig.hasInternalFetch());
     view.pageStreamingDescriptorClasses(
         new ArrayList<PageStreamingDescriptorClassView>(iterators.values()));
 

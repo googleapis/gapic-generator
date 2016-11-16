@@ -69,8 +69,6 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract String serviceAddress();
 
-  public abstract boolean hasInternalFetch();
-
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptorClasses();
 
   public static Builder newBuilder() {
@@ -121,8 +119,6 @@ public abstract class StaticLangClientFileView implements ViewModel {
     public abstract Builder servicePort(Integer val);
 
     public abstract Builder templateFileName(String val);
-
-    public abstract Builder hasInternalFetch(boolean val);
 
     public abstract Builder pageStreamingDescriptorClasses(
         List<PageStreamingDescriptorClassView> val);

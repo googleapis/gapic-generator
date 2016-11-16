@@ -52,9 +52,6 @@ public abstract class ApiConfig {
   /** Returns the location of the domain layer, if any. */
   public abstract String getDomainLayerLocation();
 
-  /** Returns whether we should generate low-level fetch functionality. */
-  public abstract boolean hasInternalFetch();
-
   /** Returns the resource name messages configuration. If none was specified, returns null. */
   @Nullable
   public abstract ResourceNameMessageConfigs getResourceNameMessageConfigs();
@@ -116,7 +113,6 @@ public abstract class ApiConfig {
           interfaceConfigMap,
           settings.getPackageName(),
           settings.getDomainLayerLocation(),
-          settings.getInternalFetch(),
           messageConfigs,
           copyrightLines,
           licenseLines,
@@ -141,7 +137,6 @@ public abstract class ApiConfig {
         interfaceConfigMap,
         packageName,
         domainLayerLocation,
-        false,
         messageConfigs,
         ImmutableList.<String>of(),
         ImmutableList.<String>of(),
