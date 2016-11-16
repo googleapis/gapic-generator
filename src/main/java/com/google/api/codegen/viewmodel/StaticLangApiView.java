@@ -56,6 +56,8 @@ public abstract class StaticLangApiView {
 
   public abstract boolean hasDefaultInstance();
 
+  public abstract boolean hasLongRunningOperations();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiView.Builder();
   }
@@ -92,6 +94,8 @@ public abstract class StaticLangApiView {
     public abstract Builder modifyMethods(List<ModifyMethodView> val);
 
     public abstract Builder hasDefaultInstance(boolean val);
+
+    public abstract Builder hasLongRunningOperations(boolean val);
 
     public abstract StaticLangApiView build();
   }

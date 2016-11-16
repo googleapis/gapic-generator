@@ -27,6 +27,7 @@ import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
+import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -446,36 +447,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("bundling_desc"));
   }
 
-  /** Adds the imports used in the implementation of page streaming descriptors. */
-  public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
-    // do nothing
-  }
-
-  /** Adds the imports used in the implementation of paged list response factories. */
-  public void addPagedListResponseFactoryImports(ModelTypeTable typeTable) {
-    // do nothing
-  }
-
-  /** Adds the imports used in the implementation of paged list responses. */
-  public void addPagedListResponseImports(ModelTypeTable typeTable) {
-    // do nothing
-  }
-
-  /** Adds the imports used in the implementation of bundling descriptors. */
-  public void addBundlingDescriptorImports(ModelTypeTable typeTable) {
-    // do nothing
-  }
-
-  /** Adds the imports used for page streaming call settings. */
-  public void addPageStreamingCallSettingsImports(ModelTypeTable typeTable) {
-    // do nothing
-  }
-
-  /** Adds the imports used for bundling call settings. */
-  public void addBundlingCallSettingsImports(ModelTypeTable typeTable) {
-    // do nothing
-  }
-
   /** The key to use in a dictionary for the given method. */
   public String getMethodKey(Method method) {
     return keyName(Name.upperCamel(method.getSimpleName()));
@@ -556,8 +527,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the async surface method which can call the given API method. */
-  public String getAsyncApiMethodName(Method method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName()).join("async"));
+  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+    return visibility.methodName(this, Name.upperCamel(method.getSimpleName()).join("async"));
   }
 
   /** The name of the example for the method. */
@@ -565,8 +536,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(method, VisibilityConfig.PUBLIC);
   }
 
-  public String getAsyncApiMethodExampleName(Method method) {
-    return getNotImplementedString("SurfaceNamer.getAsyncApiMethodExampleName");
+  public String getAsyncApiMethodExampleName(Interface interfaze, Method method) {
+    return getAsyncApiMethodName(method, VisibilityConfig.PUBLIC);
   }
 
   /** The name of the GRPC streaming surface method which can call the given API method. */
@@ -680,6 +651,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
   }
 
+  public String getAndSaveOperationResponseTypeName(
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getAndSaveOperationResponseTypeName");
+  }
+
   /** The async return type name in a static language that is used by the caller */
   public String getStaticLangCallerAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     return getStaticLangAsyncReturnTypeName(method, methodConfig);
@@ -690,9 +666,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getStreamingServerName");
   }
 
-  /** The GRPC streaming client type name for a given method. */
-  public String getStreamingClientName(Method method) {
-    return getNotImplementedString("SurfaceNamer.getStreamingClientName");
+  public String getGrpcStreamingApiReturnTypeName(Method method) {
+    return publicClassName(
+        Name.upperCamel(method.getOutputType().getMessageType().getSimpleName()));
   }
 
   /** The name of the paged callable variant of the given method. */
@@ -709,6 +685,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getPagedCallableName(Method method) {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
   }
+
   /** The name of the plain callable variant of the given method. */
   public String getCallableMethodName(Method method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "Callable"));
@@ -719,9 +696,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getCallableMethodName(method);
   }
 
+  /** The name of the plain callable variant of the given method. */
+  public String getOperationCallableMethodName(Method method) {
+    return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
+  }
+
+  public String getOperationCallableMethodExampleName(Interface interfaze, Method method) {
+    return getOperationCallableMethodName(method);
+  }
+
   /** The name of the plain callable for the given method. */
   public String getCallableName(Method method) {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "Callable"));
+  }
+
+  public String getOperationCallableName(Method method) {
+    return privateFieldName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
   }
 
   /** The name of the settings member name for the given method. */
@@ -954,5 +944,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** Inject random value generator code to the given string. */
   public String injectRandomStringGeneratorCode(String randomString) {
     return getNotImplementedString("SurfaceNamer.getRandomStringValue");
+  }
+
+  /** The type name of the API callable class for this service method type. */
+  public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
+    return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");
   }
 }

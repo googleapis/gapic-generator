@@ -28,12 +28,6 @@ public abstract class ListMethodDetailView {
 
   public abstract String iterateMethodName();
 
-  /**
-   * Distinct from resourceTypeName(). Eg, resourceTypeName: "Shelf" responseObjectTypeName:
-   * "ListShelvesResponse"
-   */
-  public abstract String responseObjectTypeName();
-
   public abstract String resourcesFieldGetFunction();
 
   public static Builder newBuilder() {
@@ -51,8 +45,6 @@ public abstract class ListMethodDetailView {
     public abstract Builder resourceFieldName(String name);
 
     public abstract Builder iterateMethodName(String name);
-
-    public abstract Builder responseObjectTypeName(String name);
 
     public abstract Builder resourcesFieldGetFunction(String name);
 
