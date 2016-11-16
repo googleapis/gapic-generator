@@ -14,59 +14,51 @@
  */
 package com.google.api.codegen.metadatagen;
 
+import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
-import org.yaml.snakeyaml.Yaml;
 
 /*
  * A Context object to be passed into the snippet template rendering phase of package metadata
  * generation.
  */
-public class PackageMetadataContext {
-  private Map<String, Object> dependenciesMap = new HashMap<>();
+public class PackageMetadataContext implements ViewModel {
+  private final Map<String, Object> dependenciesMap;
 
-  private Map<String, Object> defaultsMap = new HashMap<>();
+  private final Map<String, Object> defaultsMap;
 
   private Doc copierResults;
 
   private ApiNameInfo apiNameInfo;
 
+  private String templateFileName;
+
+  private final String resourceRoot = SnippetSetRunner.SNIPPET_RESOURCE_ROOT + "/metadatagen";
+
   /**
    * Constructor.
    *
+   * @param templateFileName The name of the template to be parsed. Must have the same name as the
+   *     file to be output, plus an extension. For example, a template that renders a file called
+   *     "setup.py" might be named "setup.py.snip".
    * @param apiNameInfo Represents naming information for the given API.
    * @param copierResults Results from the copier phase of package metadata generation.
+   * @param dependenciesMap The parsed YAML dependencies configuration file.
+   * @param defaultsMap The parsed YAML defaults configuration file.
    */
-  public PackageMetadataContext(ApiNameInfo apiNameInfo, Doc copierResults) {
+  public PackageMetadataContext(
+      String templateFileName,
+      ApiNameInfo apiNameInfo,
+      Doc copierResults,
+      Map<String, Object> dependenciesMap,
+      Map<String, Object> defaultsMap) {
+    this.templateFileName = templateFileName;
     this.apiNameInfo = apiNameInfo;
     this.copierResults = copierResults;
-  }
-
-  /**
-   * Initializes package metadata configuration. Should be called before passing this context to a
-   * snippet template environment.
-   *
-   * @param dependenciesFile The path to the dependencies file
-   * @param defaultsFile The path to the defaults file
-   * @throws IOException
-   */
-  @SuppressWarnings("unchecked")
-  public void loadConfigurationFromFile(String dependenciesFile, String defaultsFile)
-      throws IOException {
-    Yaml yaml = new Yaml();
-
-    String dependencies =
-        new String(Files.readAllBytes(Paths.get(dependenciesFile)), StandardCharsets.UTF_8);
-    this.dependenciesMap = (Map<String, Object>) yaml.load(dependencies);
-
-    String defaults =
-        new String(Files.readAllBytes(Paths.get(defaultsFile)), StandardCharsets.UTF_8);
-    this.defaultsMap = (Map<String, Object>) yaml.load(defaults);
+    this.dependenciesMap = dependenciesMap;
+    this.defaultsMap = defaultsMap;
   }
 
   public String getDependencyValue(String keySpecifier) {
@@ -102,5 +94,22 @@ public class PackageMetadataContext {
 
   public Doc getCopierResults() {
     return copierResults;
+  }
+
+  @Override
+  public String resourceRoot() {
+    return resourceRoot;
+  }
+
+  @Override
+  public String templateFileName() {
+    return templateFileName;
+  }
+
+  @Override
+  public String outputPath() {
+    String baseName = Paths.get(templateFileName).getFileName().toString();
+    int extensionIndex = baseName.lastIndexOf(".");
+    return baseName.substring(0, extensionIndex);
   }
 }

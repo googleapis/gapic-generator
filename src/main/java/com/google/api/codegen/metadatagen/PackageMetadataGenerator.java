@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.metadatagen;
 
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -25,8 +25,12 @@ import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * ToolDriver for PackageMetadataGenerator; creates and sets the ToolOptions and builds the Model
@@ -102,18 +106,24 @@ public class PackageMetadataGenerator extends ToolDriverBase {
     // Copy gRPC package and add non-top-level files
     Map<String, Doc> copierResults = packageCopier.run(options, copierMetadataKey);
 
-    PackageMetadataSnippetSetRunner runner = new PackageMetadataSnippetSetRunner();
+    Yaml yaml = new Yaml();
+
+    String dependencies =
+        new String(
+            Files.readAllBytes(Paths.get(options.get(DEPENDENCIES_FILE))), StandardCharsets.UTF_8);
+    Map<String, Object> dependenciesMap = (Map<String, Object>) yaml.load(dependencies);
+
+    String defaults =
+        new String(
+            Files.readAllBytes(Paths.get(options.get(API_DEFAULTS_FILE))), StandardCharsets.UTF_8);
+    Map<String, Object> defaultsMap = (Map<String, Object>) yaml.load(defaults);
+
     ApiNameInfo apiNameInfo =
         ApiNameInfo.create(
             options.get(LONG_API_NAME),
             options.get(SHORT_API_NAME),
             options.get(API_VERSION),
             options.get(API_PATH));
-
-    PackageMetadataContext context =
-        new PackageMetadataContext(apiNameInfo, copierResults.get(copierMetadataKey));
-    context.loadConfigurationFromFile(
-        options.get(DEPENDENCIES_FILE), options.get(API_DEFAULTS_FILE));
 
     // Add top-level doc files
     ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
@@ -123,9 +133,17 @@ public class PackageMetadataGenerator extends ToolDriverBase {
       }
     }
     for (String snippetFilename : snippetFilenames) {
-      GeneratedResult result = runner.generate(model, snippetFilename, context);
-      if (!result.getDoc().isWhitespace()) {
-        docs.put(result.getFilename(), result.getDoc());
+      PackageMetadataContext context =
+          new PackageMetadataContext(
+              snippetFilename,
+              apiNameInfo,
+              copierResults.get(copierMetadataKey),
+              dependenciesMap,
+              defaultsMap);
+      CommonSnippetSetRunner runner = new CommonSnippetSetRunner(context);
+      Doc result = runner.generate(context);
+      if (!result.isWhitespace()) {
+        docs.put(context.outputPath(), result);
       }
     }
     return docs.build();
