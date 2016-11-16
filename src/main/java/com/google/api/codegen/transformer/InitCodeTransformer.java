@@ -362,7 +362,11 @@ public class InitCodeTransformer {
         String value = initValueConfig.getInitialValue().getValue();
         switch (initValueConfig.getInitialValue().getType()) {
           case Literal:
-            value = context.getTypeTable().renderPrimitiveValue(item.getType(), value);
+            if (item.getType().isEnum()) {
+              value = context.getTypeTable().getEnumValue(item.getType(), value);
+            } else {
+              value = context.getTypeTable().renderPrimitiveValue(item.getType(), value);
+            }
             break;
           case Random:
             value = context.getNamer().injectRandomStringGeneratorCode(value);

@@ -67,6 +67,11 @@ public class ModelTypeTable implements ModelTypeFormatter {
     return typeFormatter.renderPrimitiveValue(type, value);
   }
 
+  /** Returns the enum value string */
+  public String getEnumValue(TypeRef type, String value) {
+    return typeNameConverter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(typeTable);
+  }
+
   /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */
   public ModelTypeTable cloneEmpty() {
     return new ModelTypeTable(typeTable.cloneEmpty(), typeNameConverter);

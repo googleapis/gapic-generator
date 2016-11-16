@@ -67,11 +67,12 @@ interfaces:
   - name_pattern: shelves/{shelf}/books/{book}/returns/{return}
     entity_name: return
   smoke_test:
-    method: GetBook
+    method: UpdateBook
     init_fields:
       - name%shelf_id="testShelf-$RANDOM"
       - name%book_id=$PROJECT_ID
-    flattening_group_name: get_book_1
+      - book.rating=GOOD
+    flattening_group_name: update_book_1
   experimental_features:
     iam_resources:
     - type: google.example.library.v1.Book
@@ -261,7 +262,8 @@ interfaces:
   - name: UpdateBook
     flattening:
       groups:
-      - parameters:
+      - flattening_group_name: update_book_1
+        parameters:
         - name
         - book
       - parameters:
