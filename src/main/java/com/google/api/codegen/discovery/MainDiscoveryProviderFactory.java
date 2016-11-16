@@ -18,15 +18,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.csharp.CSharpDiscoveryContext;
-import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
+import com.google.api.codegen.discovery.config.csharp.CSharpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.go.GoTypeNameGenerator;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
 import com.google.api.codegen.discovery.config.nodejs.NodeJSTypeNameGenerator;
 import com.google.api.codegen.discovery.config.php.PhpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.ruby.RubyTypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.csharp.CSharpSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.go.GoSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleMethodToViewTransformer;
@@ -38,8 +38,13 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.protobuf.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.NotImplementedException;
 
 /*
@@ -59,40 +64,40 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
 
   private static final Map<String, Class<? extends SampleMethodToViewTransformer>>
       SAMPLE_METHOD_TO_VIEW_TRANSFORMER_MAP =
-          ImmutableMap.of(
-              GO, GoSampleMethodToViewTransformer.class,
-              JAVA, JavaSampleMethodToViewTransformer.class,
-              NODEJS, NodeJSSampleMethodToViewTransformer.class,
-              PHP, PhpSampleMethodToViewTransformer.class,
-              RUBY, RubySampleMethodToViewTransformer.class);
+          ImmutableMap.<String, Class<? extends SampleMethodToViewTransformer>>builder()
+              .put(CSHARP, CSharpSampleMethodToViewTransformer.class)
+              .put(GO, GoSampleMethodToViewTransformer.class)
+              .put(JAVA, JavaSampleMethodToViewTransformer.class)
+              .put(NODEJS, NodeJSSampleMethodToViewTransformer.class)
+              .put(PHP, PhpSampleMethodToViewTransformer.class)
+              .put(RUBY, RubySampleMethodToViewTransformer.class)
+              .build();
   private static final Map<String, Class<? extends TypeNameGenerator>> TYPE_NAME_GENERATOR_MAP =
-      ImmutableMap.of(
-          GO, GoTypeNameGenerator.class,
-          JAVA, JavaTypeNameGenerator.class,
-          NODEJS, NodeJSTypeNameGenerator.class,
-          PHP, PhpTypeNameGenerator.class,
-          RUBY, RubyTypeNameGenerator.class);
+      ImmutableMap.<String, Class<? extends TypeNameGenerator>>builder()
+          .put(CSHARP, CSharpTypeNameGenerator.class)
+          .put(GO, GoTypeNameGenerator.class)
+          .put(JAVA, JavaTypeNameGenerator.class)
+          .put(NODEJS, NodeJSTypeNameGenerator.class)
+          .put(PHP, PhpTypeNameGenerator.class)
+          .put(RUBY, RubyTypeNameGenerator.class)
+          .build();
 
   public static DiscoveryProvider defaultCreate(
       Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
-    // If the JSON object has a language field at root that matches the current
-    // language, use that node instead. Conversely, if there is no language
-    // field, set sampleConfigOverrides to null.
-    if (sampleConfigOverrides != null && sampleConfigOverrides.has(id)) {
-      sampleConfigOverrides = sampleConfigOverrides.get(id);
-    } else {
-      sampleConfigOverrides = null;
+    // Use nodes corresponding to language pattern fields matching current language.
+    List<JsonNode> overrides = new ArrayList<JsonNode>();
+    // Sort patterns to ensure deterministic ordering of overrides
+    if (sampleConfigOverrides != null) {
+      List<String> languagePatterns = Lists.newArrayList(sampleConfigOverrides.fieldNames());
+      Collections.sort(languagePatterns);
+      for (String languagePattern : languagePatterns) {
+        if (Pattern.matches(languagePattern, id)) {
+          overrides.add(sampleConfigOverrides.get(languagePattern));
+        }
+      }
     }
 
-    if (id.equals(CSHARP)) {
-      return CommonDiscoveryProvider.newBuilder()
-          .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(
-              new CSharpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
-          .build();
-
-    } else if (id.equals(PYTHON)) {
+    if (id.equals(PYTHON)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new PythonDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(
@@ -120,7 +125,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
         .setApiaryConfig(apiaryConfig)
         .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
         .setMethodToViewTransformer(sampleMethodToViewTransformer)
-        .setOverrides(sampleConfigOverrides)
+        .setOverrides(overrides)
         .setTypeNameGenerator(typeNameGenerator)
         .setOutputRoot(
             "autogenerated/"

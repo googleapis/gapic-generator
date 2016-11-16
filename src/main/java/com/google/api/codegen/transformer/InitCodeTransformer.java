@@ -359,11 +359,21 @@ public class InitCodeTransformer {
       SimpleInitValueView.Builder initValue = SimpleInitValueView.newBuilder();
 
       if (initValueConfig.hasSimpleInitialValue()) {
-        initValue.initialValue(
-            context
-                .getTypeTable()
-                .renderPrimitiveValue(
-                    item.getType(), initValueConfig.getInitialValue().getValue()));
+        String value = initValueConfig.getInitialValue().getValue();
+        switch (initValueConfig.getInitialValue().getType()) {
+          case Literal:
+            value = context.getTypeTable().renderPrimitiveValue(item.getType(), value);
+            break;
+          case Random:
+            value = context.getNamer().injectRandomStringGeneratorCode(value);
+            break;
+          case Variable:
+            value = context.getNamer().localVarName(Name.from(value));
+            break;
+          default:
+            throw new IllegalArgumentException("Unhandled init value type");
+        }
+        initValue.initialValue(value);
       } else {
         initValue.initialValue(
             context.getTypeTable().getZeroValueAndSaveNicknameFor(item.getType()));
@@ -398,6 +408,9 @@ public class InitCodeTransformer {
         switch (initValue.getType()) {
           case Variable:
             entityValue = context.getNamer().localVarName(Name.from(initValue.getValue()));
+            break;
+          case Random:
+            entityValue = context.getNamer().injectRandomStringGeneratorCode(initValue.getValue());
             break;
           case Literal:
             entityValue = initValue.getValue();

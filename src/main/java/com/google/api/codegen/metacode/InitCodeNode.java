@@ -15,6 +15,7 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -238,6 +239,8 @@ public class InitCodeNode {
         }
       }
       subTrees = newSubTrees;
+    } else if (context.outputType() == InitCodeOutputType.FieldList) {
+      throw new IllegalArgumentException("Init field array is not set for flattened method.");
     }
     if (context.additionalInitCodeNodes() != null) {
       subTrees.addAll(Lists.newArrayList(context.additionalInitCodeNodes()));

@@ -26,7 +26,7 @@ public class JavaTypeNameGenerator extends TypeNameGenerator {
   private static final String NON_REQUEST_SUBPACKAGE = "model";
 
   @Override
-  public String getPackagePrefix(String apiName, String apiVersion) {
+  public String getPackagePrefix(String apiName, String apiCanonicalName, String apiVersion) {
     // Most Java libraries don't include the apiVersion in their package.
     return Joiner.on('.').join(PACKAGE_PREFIX, apiName);
   }

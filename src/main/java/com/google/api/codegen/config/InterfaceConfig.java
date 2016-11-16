@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -68,6 +69,8 @@ public abstract class InterfaceConfig {
 
   public abstract ImmutableList<String> getRequiredConstructorParams();
 
+  public abstract ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
+
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up method configurations
    * with specified methods in methodConfigMap. On errors, null will be returned, and diagnostics
@@ -119,6 +122,23 @@ public abstract class InterfaceConfig {
       }
     }
 
+    ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
+    for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
+      String entityName = collectionConfigProto.getEntityName();
+      ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
+      if (resourceName == null || !(resourceName instanceof SingleResourceNameConfig)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Inconsistent configuration - single resource name %s specified for interface, "
+                    + " but was not found in ApiConfig configuration.",
+                entityName));
+        return null;
+      }
+      resourcesBuilder.add((SingleResourceNameConfig) resourceName);
+    }
+    ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
+
     if (diagCollector.hasErrors()) {
       return null;
     } else {
@@ -129,7 +149,8 @@ public abstract class InterfaceConfig {
           retryCodesDefinition,
           retrySettingsDefinition,
           iamResources,
-          requiredConstructorParams);
+          requiredConstructorParams,
+          singleResourceNames);
     }
   }
 

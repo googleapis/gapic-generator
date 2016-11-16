@@ -79,7 +79,7 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
   }
 
   @Override
-  public String getPackagePrefix(String apiName, String apiVersion) {
+  public String getPackagePrefix(String apiName, String apiCanonicalName, String apiVersion) {
     return "google/apis/" + Name.from(apiName, apiVersion).toLowerUnderscore();
   }
 

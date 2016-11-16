@@ -26,6 +26,10 @@ license_header:
 collections:
   - name_pattern: shelves/{shelf_id}
     entity_name: shelf
+  # This pattern is present here and not in the interface configuration to test
+  # the restriction of generated parse/format methods
+  - name_pattern: archives/{archive_path}/books/{book_id=**}
+    entity_name: archived_book
 fixed_resource_name_values:
   - entity_name: deleted_book
     fixed_value: _deleted-book_
@@ -58,8 +62,6 @@ interfaces:
     entity_name: shelf
   - name_pattern: shelves/{shelf_id}/books/{book_id}
     entity_name: book
-  - name_pattern: archives/{archive_path}/books/{book_id=**}
-    entity_name: archived_book
   # To test the case that entity name / variable which happens to be
   # a language keyword. See: https://github.com/googleapis/toolkit/issues/618
   - name_pattern: shelves/{shelf}/books/{book}/returns/{return}

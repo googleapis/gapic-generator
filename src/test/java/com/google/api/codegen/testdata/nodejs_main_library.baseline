@@ -195,9 +195,6 @@ var SHELF_PATH_TEMPLATE = new gax.PathTemplate(
 var BOOK_PATH_TEMPLATE = new gax.PathTemplate(
     'shelves/{shelf_id}/books/{book_id}');
 
-var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
-    'archives/{archive_path}/books/{book_id=**}');
-
 var RETURN_PATH_TEMPLATE = new gax.PathTemplate(
     'shelves/{shelf}/books/{book}/returns/{return}');
 
@@ -253,39 +250,6 @@ LibraryServiceApi.prototype.matchShelfIdFromBookName = function(bookName) {
  */
 LibraryServiceApi.prototype.matchBookIdFromBookName = function(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).book_id;
-};
-
-/**
- * Returns a fully-qualified archived_book resource name string.
- * @param {String} archivePath
- * @param {String} bookId
- * @returns {String}
- */
-LibraryServiceApi.prototype.archivedBookPath = function(archivePath, bookId) {
-  return ARCHIVED_BOOK_PATH_TEMPLATE.render({
-    archive_path: archivePath,
-    book_id: bookId
-  });
-};
-
-/**
- * Parses the archivedBookName from a archived_book resource.
- * @param {String} archivedBookName
- *   A fully-qualified path representing a archived_book resources.
- * @returns {String} - A string representing the archive_path.
- */
-LibraryServiceApi.prototype.matchArchivePathFromArchivedBookName = function(archivedBookName) {
-  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).archive_path;
-};
-
-/**
- * Parses the archivedBookName from a archived_book resource.
- * @param {String} archivedBookName
- *   A fully-qualified path representing a archived_book resources.
- * @returns {String} - A string representing the book_id.
- */
-LibraryServiceApi.prototype.matchBookIdFromArchivedBookName = function(archivedBookName) {
-  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).book_id;
 };
 
 /**
