@@ -603,6 +603,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   /////////////////////////////////// Imports //////////////////////////////////////
 
   private void addUnitTestImports(SurfaceTransformerContext context) {
+    addCommonImports(context);
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("org.junit.After");
     typeTable.saveNicknameFor("org.junit.AfterClass");
@@ -611,25 +612,20 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("org.junit.BeforeClass");
     typeTable.saveNicknameFor("org.junit.Test");
     typeTable.saveNicknameFor("java.io.IOException");
-    typeTable.saveNicknameFor("java.util.ArrayList");
-    typeTable.saveNicknameFor("java.util.Arrays");
-    typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiException");
-    typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
     typeTable.saveNicknameFor("io.grpc.Status");
     typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
   }
 
   private void addSmokeTestImports(SurfaceTransformerContext context) {
+    addCommonImports(context);
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("java.util.logging.Level");
     typeTable.saveNicknameFor("java.util.logging.Logger");
-    typeTable.saveNicknameFor("java.util.List");
-    typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
     typeTable.saveNicknameFor("org.apache.commons.lang.builder.ReflectionToStringBuilder");
     typeTable.saveNicknameFor("org.apache.commons.lang.builder.ToStringStyle");
@@ -641,29 +637,36 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private void addMockServiceImplImports(SurfaceTransformerContext context) {
+    addCommonImports(context);
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("java.util.ArrayList");
-    typeTable.saveNicknameFor("java.util.List");
-    typeTable.saveNicknameFor("java.util.LinkedList");
-    typeTable.saveNicknameFor("java.util.Queue");
-    typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
     typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
   }
 
   private void addMockServiceImports(SurfaceTransformerContext context) {
+    addCommonImports(context);
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
     typeTable.saveNicknameFor("io.grpc.ServerServiceDefinition");
   }
 
   private void addGrpcStreamingTestImport(SurfaceTransformerContext context) {
+    addCommonImports(context);
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingCallable");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockStreamObserver");
     typeTable.saveNicknameFor("io.grpc.stub.StreamObserver");
     typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
+  }
+
+  private void addCommonImports(SurfaceTransformerContext context) {
+    ModelTypeTable typeTable = context.getTypeTable();
+    typeTable.saveNicknameFor("java.util.ArrayList");
+    typeTable.saveNicknameFor("java.util.Arrays");
+    typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.LinkedList");
+    typeTable.saveNicknameFor("java.util.Queue");
+    typeTable.saveNicknameFor("com.google.common.collect.Lists");
   }
 }
