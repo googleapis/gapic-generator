@@ -351,17 +351,35 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       }
     }
 
+    String returnMessage;
     if (method.getRequestStreaming()) {
-      return callbackMessage
-          + "\n@returns {Stream} - A writable stream which accepts objects representing\n"
-          + "  "
-          + linkForMessage(method.getInputType().getMessageType())
-          + " for write() method.";
+      returnMessage =
+          "@return {Stream} - A writable stream which accepts objects representing\n  "
+              + linkForMessage(method.getInputType().getMessageType())
+              + " for write() method.";
+    } else {
+      if (isEmpty) {
+        returnMessage = "@return {Promise} - The promise which resolves when API call finishes.\n";
+      } else {
+        returnMessage =
+            "@return {Promise} - The promise which resolves to an array.\n"
+                + "  The first element of the array is "
+                + returnTypeDoc
+                + ".\n";
+        if (config.isPageStreaming()) {
+          returnMessage +=
+              "  When autoPaginate: false is specified through options, the first element contains the result\n"
+                  + "  in a single response. If the response indicates the next page exists, the second\n"
+                  + "  element is set to be used for the next request object. The third element\n"
+                  + "  is the raw response object of "
+                  + typeDocument(method.getOutputType())
+                  + ".\n";
+        }
+      }
+      returnMessage +=
+          "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
     }
-    return callbackMessage
-        + "\n@returns {Promise} - The promise which resolves to an array\n"
-        + "  of the same parameters to the callback except for the Error.\n"
-        + "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
+    return callbackMessage + "\n" + returnMessage;
   }
 
   /** Return the list of messages within element which should be documented in Node.JS. */
