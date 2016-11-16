@@ -23,8 +23,8 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class InitFieldConfig {
   public static final String PROJECT_ID_VARIABLE_NAME = "project_id";
+  public static final String RANDOM_TOKEN = "$RANDOM";
 
-  private static final String RANDOM_TOKEN = "$RANDOM";
   private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
 
   public abstract String fieldPath();
@@ -47,7 +47,7 @@ public abstract class InitFieldConfig {
     if (equalsParts.length > 2) {
       throw new IllegalArgumentException("Inconsistent: found multiple '=' characters");
     } else if (equalsParts.length == 2) {
-      value = parseValueString(equalsParts[1], equalsParts[0]);
+      value = parseValueString(equalsParts[1]);
     }
 
     String[] fieldSpecs = equalsParts[0].split("[%]");
@@ -72,12 +72,10 @@ public abstract class InitFieldConfig {
     return entityName() != null && value() != null;
   }
 
-  private static InitValue parseValueString(String valueString, String stringToHash) {
+  private static InitValue parseValueString(String valueString) {
     InitValue initValue = InitValue.createLiteral(valueString);
     if (valueString.contains(RANDOM_TOKEN)) {
-      String randomValue = Integer.toString(Math.abs(stringToHash.hashCode()));
-      valueString = valueString.replace(RANDOM_TOKEN, randomValue);
-      initValue = InitValue.createLiteral(valueString);
+      initValue = InitValue.createRandom(valueString);
     } else if (valueString.contains(PROJECT_ID_TOKEN)) {
       if (!valueString.equals(PROJECT_ID_TOKEN)) {
         throw new IllegalArgumentException("Inconsistent: found project ID as a substring ");
