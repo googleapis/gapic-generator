@@ -381,23 +381,22 @@
 
 @private flattenedMethod(service, method)
   @let serviceName = context.getApiWrapperName(service), \
-       documentation = comments(context.methodComments(service, method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
        apiMethodView = context.getApiMethodView(service, method)
-    @if documentation
-      /**
-       {@documentation}
+    /**
+     @if context.defaultComments(method)
+       {@comments(context.defaultComments(method))}
        *
-       * @@example
-       *
-       @join sampleLine : util.getDocLines({@decorateSampleCodeSegment(apiMethodView)})
-         {@""}* {@sampleLine}
-       @end
-       */
-    @end
-
+     @end
+     {@comments(util.getDocLines(context.paramComments(service, method)))}
+     {@comments(util.getDocLines(context.returnTypeComment(method, methodConfig)))}
+     *
+     * @@example
+     *
+     {@comments(util.getDocLines(decorateSampleCodeSegment(apiMethodView)))}
+     */
     {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options{@callbackParams(apiMethodView)}) {
       @switch apiMethodView.grpcStreamingType.toString
       @case "ClientStreaming"
@@ -409,8 +408,42 @@
       if (options === undefined) {
         options = {};
       }
+      {@maybeHandleRequest(apiMethodView)}
       return this._{@methodName(method)}({@requestObject(apiMethodView)}options{@callbackParams(apiMethodView)});
     };
+    @switch apiMethodView.type.toString
+    @case "PagedOptionalArrayMethod"
+
+      /**
+       * Equivalent to {@@link {@methodName(method)}}, but returns a NodeJS Stream object.
+       *
+       * This fetches the paged responses for {@@link {@methodName(method)}} continuously
+       * and invokes the callback registered for 'data' event for each element in the
+       * responses.
+       *
+       * The returned object has 'end' method when no more elements are required.
+       *
+       * autoPaginate option will be ignored.
+       *
+       * @@see {@@link https://nodejs.org/api/stream.html}
+       *
+       {@comments(util.getDocLines(context.paramComments(service, method)))}
+       * @@return {Stream}
+       *   An object stream which emits {@context.typeDocument(methodConfig.getPageStreaming.getResourcesField.getType)} on 'data' event.
+       *
+       * @@example
+       *
+       {@comments(util.getDocLines(decorateSampleCode(apiMethodView, sampleCodePageStreaming(apiMethodView))))}
+       */
+      {@serviceName}.prototype.{@methodName(method)}Stream = function({@methodRequestParameters(apiMethodView)}options) {
+        if (options === undefined) {
+          options = {};
+        }
+        {@maybeHandleRequest(apiMethodView)}
+        return PAGE_DESCRIPTORS.{@methodName(method)}.createStream(this._{@methodName(method)}, {@requestObject(apiMethodView)}options);
+      };
+    @default
+    @end
   @end
 @end
 
@@ -419,6 +452,20 @@
     callback = options;
     options = {};
   }
+@end
+
+@private maybeHandleRequest(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ClientStreaming"
+  @case "BidiStreaming"
+  @default
+    @if and(apiMethodView.requiredRequestObjectParams.isEmpty, \
+            apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty)
+      if (request === undefined) {
+        request = {};
+      }
+    @end
+  @end
 @end
 
 @private callbackParams(apiMethodView)
@@ -434,42 +481,19 @@
 @private requestObject(apiMethodView)
   @switch apiMethodView.grpcStreamingType.toString
   @case "ServerStreaming"
-    {@requestObjectInternal(apiMethodView)}
-  @case "NonStreaming"
-    {@requestObjectInternal(apiMethodView)}
-  @default
-  @end
-@end
-
-@private requestObjectInternal(apiMethodView)
-  @if apiMethodView.requiredRequestObjectParams.isEmpty
-    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
-      {}, {@""}
-    @else
-      request, {@""}
-    @end
-  @else
     request, {@""}
+  @case "NonStreaming"
+    request, {@""}
+  @default
   @end
 @end
 
 @private methodRequestParameters(apiMethodView)
   @switch apiMethodView.grpcStreamingType.toString
   @case "ServerStreaming"
-    {@methodRequestParametersInternal(apiMethodView)}
-  @case "NonStreaming"
-    {@methodRequestParametersInternal(apiMethodView)}
-  @default
-  @end
-@end
-
-@private methodRequestParametersInternal(apiMethodView)
-  @if apiMethodView.requiredRequestObjectParams.isEmpty
-    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
-    @else
-      request, {@""}
-    @end
-  @else
     request, {@""}
+  @case "NonStreaming"
+    request, {@""}
+  @default
   @end
 @end
