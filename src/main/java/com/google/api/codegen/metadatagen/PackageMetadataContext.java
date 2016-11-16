@@ -70,11 +70,11 @@ public class PackageMetadataContext {
   }
 
   public String getDependencyValue(String keySpecifier) {
-    return getUncheckedMapValue(dependenciesMap, keySpecifier);
+    return nestedGet(dependenciesMap, keySpecifier);
   }
 
   public String getDefaultsValue(String keySpecifier) {
-    return getUncheckedMapValue(defaultsMap, keySpecifier);
+    return nestedGet(defaultsMap, keySpecifier);
   }
 
   @SuppressWarnings("unchecked")
@@ -83,7 +83,7 @@ public class PackageMetadataContext {
   // TODO (geigerj): this is a hack to port the dynamic Javascript configuration from Packman to
   // Java. To hew closer to Java style, investigate defining configuration information in a
   // well-defined format that can be converted properly to Java types.
-  private String getUncheckedMapValue(Map<String, Object> map, String keySpecifier) {
+  private String nestedGet(Map<String, Object> map, String keySpecifier) {
     String[] keys = keySpecifier.split("\\.");
     Map<String, Object> current = map;
     for (int i = 0; i < keys.length - 1; i++) {
