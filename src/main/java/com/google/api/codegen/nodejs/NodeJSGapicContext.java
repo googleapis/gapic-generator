@@ -368,12 +368,14 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
                 + ".\n";
         if (config.isPageStreaming()) {
           returnMessage +=
-              "  When autoPaginate: false is specified through options, the first element contains the result\n"
-                  + "  in a single response. If the response indicates the next page exists, the second\n"
-                  + "  element is set to be used for the next request object. The third element\n"
-                  + "  is the raw response object of "
+              "\n  When autoPaginate: false is specified through options, the array has three elements.\n"
+                  + "  The first element is "
+                  + returnTypeDoc
+                  + " in a single response.\n"
+                  + "  The second element is the next request object if the response\n"
+                  + "  indicates the next page exists, or null. The third element is\n  "
                   + typeDocument(method.getOutputType())
-                  + ".\n";
+                  + ".\n\n";
         }
       }
       returnMessage +=
