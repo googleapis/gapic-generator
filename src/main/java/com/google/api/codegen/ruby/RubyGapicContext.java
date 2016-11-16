@@ -210,12 +210,6 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         }
       }
     }
-    if (isWrappedOperation(method, service)) {
-      paramTypesBuilder.append(
-          "@param operations_api [Google::Longrunning::OperationsApi] \n"
-              + "  The client that will be used to reload the operation returned by\n"
-              + "  this api call.\n");
-    }
     paramTypesBuilder.append(
         "@param options [Google::Gax::CallOptions] \n"
             + "  Overrides the default settings for this call, e.g, timeout,\n"

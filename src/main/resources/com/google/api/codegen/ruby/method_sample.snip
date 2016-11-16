@@ -15,14 +15,8 @@
   @join alias : apiMethod.initCode.imports
     {@alias.nickname} = {@alias.fullName}
   @end
-  @if isWrappedOperationMethod(apiMethod)
-    OperationsApi = Google::Longrunning::OperationsApi
-  @end
 
   {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
-  @if isWrappedOperationMethod(apiMethod)
-    operations_client = OperationsApi.new
-  @end
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
   @end
@@ -43,7 +37,7 @@
 @private longRunningMethodSampleCode(apiMethod)
 
   @# Register a callback during the method call.
-  operation = {@longRunningMethodCallSampleCode(apiMethod)} do |op|
+  operation = {@methodCallSampleCode(apiMethod)} do |op|
     raise op.results.message if op.error?
     results = op.results
     @# Process the results.
@@ -127,17 +121,6 @@
       @# Process element.
     end
   end
-@end
-
-@private longRunningMethodCallSampleCode(apiMethod)
-  @let fieldSettings = apiMethod.initCode.fieldSettings
-    @if fieldSettings
-      {@apiMethod.apiVariableName}.{@apiMethod.name}\
-        ({@sampleMethodCallArgList(fieldSettings)}, operations_client)
-    @else
-      {@apiMethod.apiVariableName}.{@apiMethod.name}(operations_client)
-    @end
-  @end
 @end
 
 @private methodCallSampleCode(apiMethod)

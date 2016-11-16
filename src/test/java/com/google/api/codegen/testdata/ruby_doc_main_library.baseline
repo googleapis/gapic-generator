@@ -234,6 +234,18 @@ module Library
         require "library_services_pb"
         require "tagger_services_pb"
 
+        @operations_client = Google::Longrunning::OperationsApi.new(
+          service_path: service_path,
+          port: port,
+          channel: channel,
+          chan_creds: chan_creds,
+          scopes: scopes,
+          client_config: client_config,
+          timeout: timeout,
+          app_name: app_name,
+          app_version: app_version
+        )
+
         google_api_client = "#{app_name}/#{app_version} " \
           "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " \
           "ruby/#{RUBY_VERSION}".freeze
@@ -1191,9 +1203,6 @@ module Library
 
       # @param name [String]
       #   The name of the book to retrieve.
-      # @param operations_api [Google::Longrunning::OperationsApi]
-      #   The client that will be used to reload the operation returned by
-      #   this api call.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -1203,14 +1212,12 @@ module Library
       #   require "library/v1/library_service_api"
       #
       #   LibraryServiceApi = Library::V1::LibraryServiceApi
-      #   OperationsApi = Google::Longrunning::OperationsApi
       #
       #   library_service_api = LibraryServiceApi.new
-      #   operations_client = OperationsApi.new
       #   formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # Register a callback during the method call.
-      #   operation = library_service_api.get_big_book(formatted_name, operations_client) do |op|
+      #   operation = library_service_api.get_big_book(formatted_name) do |op|
       #     raise op.results.message if op.error?
       #     results = op.results
       #     # Process the results.
@@ -1238,14 +1245,13 @@ module Library
 
       def get_big_book \
           name,
-          operations_client,
           options: nil
         req = Google::Example::Library::V1::GetBookRequest.new({
           name: name
         }.delete_if { |_, v| v.nil? })
         operation = Google::Gax::Operation.new(
           @get_big_book.call(req, options),
-          operations_client,
+          @operations_client,
           call_options: options
         )
         operation.on_done { |operation| yield(operation) } if block_given?
