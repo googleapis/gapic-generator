@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.metadatagen;
 
-import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.model.Model;
@@ -22,9 +21,9 @@ import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
 /** A SnippetSetRunner for package metadata template rendering. */
-public class PackageMetadataSnippetSetRunner implements SnippetSetRunner.Generator<Model> {
-  @Override
-  public GeneratedResult generate(Model model, String snippetFileName, CodegenContext context) {
+public class PackageMetadataSnippetSetRunner {
+  public GeneratedResult generate(
+      Model model, String snippetFileName, PackageMetadataContext context) {
     PackageMetadataSnippetSet snippets =
         SnippetSet.createSnippetInterface(
             PackageMetadataSnippetSet.class,

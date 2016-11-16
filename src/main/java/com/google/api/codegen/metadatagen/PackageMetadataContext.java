@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.metadatagen;
 
-import com.google.api.codegen.CodegenContext;
 import com.google.api.tools.framework.snippet.Doc;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +27,7 @@ import org.yaml.snakeyaml.Yaml;
  * A Context object to be passed into the snippet template rendering phase of package metadata
  * generation.
  */
-public class PackageMetadataContext extends CodegenContext {
+public class PackageMetadataContext {
   private Map<String, Object> dependenciesMap = new HashMap<>();
 
   private Map<String, Object> defaultsMap = new HashMap<>();
