@@ -78,13 +78,13 @@ public class PackageMetadataContext {
   }
 
   @SuppressWarnings("unchecked")
-  // Note: Snippets doesn't seem to support variadic args, so we use ":" as a separator.
+  // Note: Snippets doesn't seem to support variadic args, so we use "." as a separator.
   //
   // TODO (geigerj): this is a hack to port the dynamic Javascript configuration from Packman to
   // Java. To hew closer to Java style, investigate defining configuration information in a
   // well-defined format that can be converted properly to Java types.
   private String getUncheckedMapValue(Map<String, Object> map, String keySpecifier) {
-    String[] keys = keySpecifier.split(":");
+    String[] keys = keySpecifier.split("\\.");
     Map<String, Object> current = map;
     for (int i = 0; i < keys.length - 1; i++) {
       current = (Map<String, Object>) current.get(keys[i]);
@@ -94,24 +94,6 @@ public class PackageMetadataContext {
 
   public ApiNameInfo getApiNameInfo() {
     return apiNameInfo;
-  }
-
-  // TODO (geigerj): accessing apiNameInfo directly in the snippets leads to errors, hence these
-  // aliases in the context. Investigate whether these are truly needed.
-  public String getShortName() {
-    return apiNameInfo.shortName();
-  }
-
-  public String getFullName() {
-    return apiNameInfo.fullName();
-  }
-
-  public String getVersion() {
-    return apiNameInfo.majorVersion();
-  }
-
-  public String getPath() {
-    return apiNameInfo.path();
   }
 
   public String getPackageName() {

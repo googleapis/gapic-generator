@@ -25,14 +25,14 @@ public abstract class ApiNameInfo {
   }
 
   /** The full name of the API, including branding. E.g., "Stackdriver Logging". */
-  abstract String fullName();
+  public abstract String fullName();
 
   /** A single-word short name of the API. E.g., "logging". */
-  abstract String shortName();
+  public abstract String shortName();
 
   /** The major version of the API, as used in the package name. E.g., "v1". */
-  abstract String majorVersion();
+  public abstract String majorVersion();
 
   /** The path to the API protos in the googleapis repo. */
-  abstract String path();
+  public abstract String protoPath();
 }
