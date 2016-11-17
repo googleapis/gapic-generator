@@ -20,7 +20,6 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,6 +41,7 @@ public class PythonPackageCopier implements PackageCopier {
     ImmutableMap.Builder<String, Doc> docBuilder = new ImmutableMap.Builder<String, Doc>();
     List<String> pythonNamespacePackages = new ArrayList<>();
     Path inputPath;
+    Path outputPath;
     String apiVersion;
 
     /**
@@ -50,16 +50,17 @@ public class PythonPackageCopier implements PackageCopier {
      * @param inputPath The path to the (unprocessed) gRPC source code.
      * @param apiVersion The major version of the API.
      */
-    public PythonPackageFileVisitor(Path inputPath, String apiVersion) {
+    public PythonPackageFileVisitor(Path inputPath, Path outputPath, String apiVersion) {
       this.inputPath = inputPath;
+      this.outputPath = outputPath;
       this.apiVersion = apiVersion;
     }
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
-      String outFile = inputPath.relativize(file).toString();
-      docBuilder.put(
-          outFile, Doc.text(new String(Files.readAllBytes(file), StandardCharsets.UTF_8)));
+      Path destination = outputPath.resolve(inputPath.relativize(file));
+      Files.createDirectories(destination.getParent());
+      Files.copy(file, destination);
       return FileVisitResult.CONTINUE;
     }
 
@@ -101,6 +102,7 @@ public class PythonPackageCopier implements PackageCopier {
     PythonPackageFileVisitor visitor =
         new PythonPackageFileVisitor(
             Paths.get(options.get(PackageMetadataGenerator.INPUT_DIR)),
+            Paths.get(options.get(PackageMetadataGenerator.OUTPUT_DIR)),
             options.get(PackageMetadataGenerator.API_VERSION));
 
     Files.walkFileTree(Paths.get(options.get(PackageMetadataGenerator.INPUT_DIR)), visitor);

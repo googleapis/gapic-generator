@@ -15,8 +15,19 @@
 package com.google.api.codegen.metadatagen;
 
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.collect.ImmutableMap;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.annotation.Nullable;
 import org.junit.Test;
 
@@ -33,6 +44,26 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
   private void test(String name, String language) throws Exception {
     this.language = language;
     test(name);
+  }
+
+  private class OutputCollector extends SimpleFileVisitor<Path> {
+    Map<String, Doc> collectedFiles = new TreeMap<>();
+    Path testDir;
+
+    OutputCollector(Path testDir) {
+      this.testDir = testDir;
+    }
+
+    @Override
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
+      collectedFiles.put(
+          testDir.relativize(file).toString(), Doc.text(new String(Files.readAllBytes(file))));
+      return FileVisitResult.CONTINUE;
+    }
+
+    public Map<String, Doc> getResults() {
+      return collectedFiles;
+    }
   }
 
   @Override
@@ -54,11 +85,18 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     options.set(PackageMetadataGenerator.LONG_API_NAME, "Google Library Example");
     options.set(PackageMetadataGenerator.API_VERSION, "v1");
     options.set(PackageMetadataGenerator.API_PATH, "google/example/library");
-    return new PackageMetadataGenerator(
-            options,
-            PackageMetadataGeneratorTool.getSnippets(language),
-            PackageMetadataGeneratorTool.getCopier(language))
-        .generateDocs(model);
+    Map<String, Doc> generatedDocs =
+        new PackageMetadataGenerator(
+                options,
+                PackageMetadataGeneratorTool.getSnippets(language),
+                PackageMetadataGeneratorTool.getCopier(language))
+            .generateDocs(model);
+    OutputCollector collector = new OutputCollector(Paths.get(outFile));
+    Files.walkFileTree(Paths.get(outFile), collector);
+    return new ImmutableMap.Builder<String, Doc>()
+        .putAll(generatedDocs)
+        .putAll(collector.getResults())
+        .build();
   }
 
   // Tests
