@@ -463,53 +463,52 @@ public class InitCodeNode {
    * if the provided type is not supported or doesn't match the value.
    */
   private static void validateValue(TypeRef type, String value) {
-    if (type.isEnum()) {
-      for (EnumValue enumValue : type.getEnumType().getValues()) {
-        if (enumValue.getSimpleName().equals(value)) {
+    Type descType = type.getKind();
+    switch (descType) {
+      case TYPE_ENUM:
+        for (EnumValue enumValue : type.getEnumType().getValues()) {
+          if (enumValue.getSimpleName().equals(value)) {
+            return;
+          }
+        }
+        break;
+      case TYPE_BOOL:
+        String lowerCaseValue = value.toLowerCase();
+        if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {
           return;
         }
-      }
-    } else {
-      Type descType = type.getKind();
-      switch (descType) {
-        case TYPE_BOOL:
-          String lowerCaseValue = value.toLowerCase();
-          if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {
-            return;
-          }
-          break;
-        case TYPE_DOUBLE:
-        case TYPE_FLOAT:
-          if (Pattern.matches("[+-]?([0-9]*[.])?[0-9]+", value)) {
-            return;
-          }
-          break;
-        case TYPE_INT64:
-        case TYPE_UINT64:
-        case TYPE_SINT64:
-        case TYPE_FIXED64:
-        case TYPE_SFIXED64:
-        case TYPE_INT32:
-        case TYPE_UINT32:
-        case TYPE_SINT32:
-        case TYPE_FIXED32:
-        case TYPE_SFIXED32:
-          if (Pattern.matches("[+-]?[0-9]+", value)) {
-            return;
-          }
-          break;
-        case TYPE_STRING:
-        case TYPE_BYTES:
-          Matcher matcher = Pattern.compile("([^\\\"']*)").matcher(value);
-          if (matcher.matches()) {
-            return;
-          }
-          break;
-        default:
-          // Throw an exception if a value is unsupported for the given type.
-          throw new IllegalArgumentException(
-              "Tried to assign value for unsupported type " + type + "; value " + value);
-      }
+        break;
+      case TYPE_DOUBLE:
+      case TYPE_FLOAT:
+        if (Pattern.matches("[+-]?([0-9]*[.])?[0-9]+", value)) {
+          return;
+        }
+        break;
+      case TYPE_INT64:
+      case TYPE_UINT64:
+      case TYPE_SINT64:
+      case TYPE_FIXED64:
+      case TYPE_SFIXED64:
+      case TYPE_INT32:
+      case TYPE_UINT32:
+      case TYPE_SINT32:
+      case TYPE_FIXED32:
+      case TYPE_SFIXED32:
+        if (Pattern.matches("[+-]?[0-9]+", value)) {
+          return;
+        }
+        break;
+      case TYPE_STRING:
+      case TYPE_BYTES:
+        Matcher matcher = Pattern.compile("([^\\\"']*)").matcher(value);
+        if (matcher.matches()) {
+          return;
+        }
+        break;
+      default:
+        // Throw an exception if a value is unsupported for the given type.
+        throw new IllegalArgumentException(
+            "Tried to assign value for unsupported type " + type + "; value " + value);
     }
     throw new IllegalArgumentException("Could not assign value '" + value + "' to type " + type);
   }
