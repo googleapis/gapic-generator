@@ -20,10 +20,10 @@ import com.google.common.base.Strings;
 public class NodeJSUtils {
   /**
    * Returns true if the current API is a part of gcloud (i.e. cloud API). This can be known if the
-   * package name configuration is in the pattern of "@google-cloud/(API_NAME)".
+   * domain_layer_location is "google-cloud".
    */
   public static boolean isGcloud(ApiConfig config) {
-    String packageName = config.getPackageName();
-    return !Strings.isNullOrEmpty(packageName) && packageName.startsWith("@google-cloud/");
+    String domainName = config.getDomainLayerLocation();
+    return !Strings.isNullOrEmpty(domainName) && domainName.equals("google-cloud");
   }
 }
