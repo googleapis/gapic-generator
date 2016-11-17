@@ -28,11 +28,11 @@ public class PackageMetadataContext implements ViewModel {
 
   private final Map<String, Object> defaultsMap;
 
-  private String copierResults;
+  private final String copierResults;
 
-  private ApiNameInfo apiNameInfo;
+  private final ApiNameInfo apiNameInfo;
 
-  private String templateFileName;
+  private final String templateFileName;
 
   private final String resourceRoot = SnippetSetRunner.SNIPPET_RESOURCE_ROOT + "/metadatagen";
 
