@@ -33,19 +33,6 @@ import org.junit.Test;
 
 public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
 
-  private String language;
-
-  @Override
-  protected boolean suppressDiagnosis() {
-    // Suppress linter warnings
-    return true;
-  }
-
-  private void test(String name, String language) throws Exception {
-    this.language = language;
-    test(name);
-  }
-
   private class OutputCollector extends SimpleFileVisitor<Path> {
     Map<String, Doc> collectedFiles = new TreeMap<>();
     Path testDir;
@@ -64,6 +51,19 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     public Map<String, Doc> getResults() {
       return collectedFiles;
     }
+  }
+
+  private String language;
+
+  @Override
+  protected boolean suppressDiagnosis() {
+    // Suppress linter warnings
+    return true;
+  }
+
+  private void test(String name, String language) throws Exception {
+    this.language = language;
+    test(name);
   }
 
   @Override
