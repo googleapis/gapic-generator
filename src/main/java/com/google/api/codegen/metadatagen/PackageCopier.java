@@ -21,5 +21,5 @@ import java.io.IOException;
 public interface PackageCopier {
 
   /** Returns a map of Docs to be output, as well any package metadata generated in this phase. */
-  public PackageCopierResult run(ToolOptions options, String copierMetadataKey) throws IOException;
+  public PackageCopierResult run(ToolOptions options) throws IOException;
 }

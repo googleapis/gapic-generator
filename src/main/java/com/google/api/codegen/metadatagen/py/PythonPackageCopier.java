@@ -96,7 +96,7 @@ public class PythonPackageCopier implements PackageCopier {
 
   @SuppressWarnings("unchecked")
   @Override
-  public PackageCopierResult run(ToolOptions options, String copierMetadataKey) throws IOException {
+  public PackageCopierResult run(ToolOptions options) throws IOException {
     // Copy files from dir into map, and fill in namespace result
     // Run __init__ snippet in each dir that deserves it
     PythonPackageFileVisitor visitor =

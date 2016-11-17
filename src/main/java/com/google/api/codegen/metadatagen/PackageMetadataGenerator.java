@@ -99,12 +99,8 @@ public class PackageMetadataGenerator extends ToolDriverBase {
 
   @SuppressWarnings("unchecked")
   protected Map<String, Doc> generateDocs(Model model) throws IOException {
-    // Used to create a "special" Doc that can then be fed into the main generation to propagate
-    // the results of the copy phase.
-    String copierMetadataKey = "_PACKAGE_COPIER_RESULTS_METADATA";
-
-    // Copy gRPC package and add non-top-level files
-    PackageCopierResult copierResults = packageCopier.run(options, copierMetadataKey);
+    // Copy gRPC package and create non-top-level files
+    PackageCopierResult copierResults = packageCopier.run(options);
 
     Yaml yaml = new Yaml();
 
