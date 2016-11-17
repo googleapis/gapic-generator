@@ -178,4 +178,9 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
     throw new UnsupportedOperationException(
         "getTypeNameForResourceNameElementType not supported by Ruby");
   }
+
+  @Override
+  public TypedValue getEnumValue(TypeRef type, String value) {
+    throw new UnsupportedOperationException("getEnumValue not supported by Ruby");
+  }
 }
