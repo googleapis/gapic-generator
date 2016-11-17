@@ -15,6 +15,7 @@
 package com.google.api.codegen.metadatagen.py;
 
 import com.google.api.codegen.metadatagen.PackageCopier;
+import com.google.api.codegen.metadatagen.PackageCopierResult;
 import com.google.api.codegen.metadatagen.PackageMetadataGenerator;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -28,7 +29,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A PackageCopier specialized to calculate Python namespace packages and generate __init__.py
@@ -96,7 +96,7 @@ public class PythonPackageCopier implements PackageCopier {
 
   @SuppressWarnings("unchecked")
   @Override
-  public Map<String, Doc> run(ToolOptions options, String copierMetadataKey) throws IOException {
+  public PackageCopierResult run(ToolOptions options, String copierMetadataKey) throws IOException {
     // Copy files from dir into map, and fill in namespace result
     // Run __init__ snippet in each dir that deserves it
     PythonPackageFileVisitor visitor =
@@ -116,7 +116,6 @@ public class PythonPackageCopier implements PackageCopier {
     }
     namespacePackages.append("]");
 
-    docBuilder.put(copierMetadataKey, Doc.text(namespacePackages.toString()));
-    return docBuilder.build();
+    return PackageCopierResult.create(namespacePackages.toString(), docBuilder.build());
   }
 }

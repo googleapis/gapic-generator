@@ -104,7 +104,7 @@ public class PackageMetadataGenerator extends ToolDriverBase {
     String copierMetadataKey = "_PACKAGE_COPIER_RESULTS_METADATA";
 
     // Copy gRPC package and add non-top-level files
-    Map<String, Doc> copierResults = packageCopier.run(options, copierMetadataKey);
+    PackageCopierResult copierResults = packageCopier.run(options, copierMetadataKey);
 
     Yaml yaml = new Yaml();
 
@@ -125,21 +125,12 @@ public class PackageMetadataGenerator extends ToolDriverBase {
             options.get(API_VERSION),
             options.get(API_PATH));
 
-    // Add top-level doc files
     ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
-    for (String key : copierResults.keySet()) {
-      if (!key.equals(copierMetadataKey)) {
-        docs.put(key, copierResults.get(key));
-      }
-    }
+    docs.putAll(copierResults.docs());
     for (String snippetFilename : snippetFilenames) {
       PackageMetadataContext context =
           new PackageMetadataContext(
-              snippetFilename,
-              apiNameInfo,
-              copierResults.get(copierMetadataKey),
-              dependenciesMap,
-              defaultsMap);
+              snippetFilename, apiNameInfo, copierResults.metadata(), dependenciesMap, defaultsMap);
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(context);
       Doc result = runner.generate(context);
       if (!result.isWhitespace()) {

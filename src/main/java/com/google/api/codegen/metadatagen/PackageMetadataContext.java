@@ -16,7 +16,6 @@ package com.google.api.codegen.metadatagen;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.snippet.Doc;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class PackageMetadataContext implements ViewModel {
 
   private final Map<String, Object> defaultsMap;
 
-  private Doc copierResults;
+  private String copierResults;
 
   private ApiNameInfo apiNameInfo;
 
@@ -51,7 +50,7 @@ public class PackageMetadataContext implements ViewModel {
   public PackageMetadataContext(
       String templateFileName,
       ApiNameInfo apiNameInfo,
-      Doc copierResults,
+      String copierResults,
       Map<String, Object> dependenciesMap,
       Map<String, Object> defaultsMap) {
     this.templateFileName = templateFileName;
@@ -92,7 +91,7 @@ public class PackageMetadataContext implements ViewModel {
     return "grpc-google-" + apiNameInfo.shortName() + "-" + apiNameInfo.majorVersion();
   }
 
-  public Doc getCopierResults() {
+  public String getCopierResults() {
     return copierResults;
   }
 

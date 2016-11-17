@@ -14,12 +14,22 @@
  */
 package com.google.api.codegen.metadatagen;
 
-import com.google.api.tools.framework.tools.ToolOptions;
-import java.io.IOException;
+import com.google.api.tools.framework.snippet.Doc;
+import com.google.auto.value.AutoValue;
+import java.util.Map;
 
-/** Interface for the package copying phase of package metadata generation. */
-public interface PackageCopier {
+@AutoValue
+public abstract class PackageCopierResult {
+  public static AutoValue_PackageCopierResult create(String metadata, Map<String, Doc> docs) {
+    return new AutoValue_PackageCopierResult(metadata, docs);
+  }
 
-  /** Returns a map of Docs to be output, as well any package metadata generated in this phase. */
-  public PackageCopierResult run(ToolOptions options, String copierMetadataKey) throws IOException;
+  /**
+   * The metadata computed by the PackageCopier phase that will be passed into the template
+   * rendering phase.
+   */
+  public abstract String metadata();
+
+  /** Docs to be added to the output doc map in the template rendering phase. */
+  public abstract Map<String, Doc> docs();
 }
