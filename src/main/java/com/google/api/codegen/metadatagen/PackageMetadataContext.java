@@ -28,7 +28,7 @@ public class PackageMetadataContext implements ViewModel {
 
   private final Map<String, Object> defaultsMap;
 
-  private final String copierResults;
+  private final PackageCopierResult.Metadata copierResults;
 
   private final ApiNameInfo apiNameInfo;
 
@@ -50,7 +50,7 @@ public class PackageMetadataContext implements ViewModel {
   public PackageMetadataContext(
       String templateFileName,
       ApiNameInfo apiNameInfo,
-      String copierResults,
+      PackageCopierResult.Metadata copierResults,
       Map<String, Object> dependenciesMap,
       Map<String, Object> defaultsMap) {
     this.templateFileName = templateFileName;
@@ -91,7 +91,7 @@ public class PackageMetadataContext implements ViewModel {
     return "grpc-google-" + apiNameInfo.shortName() + "-" + apiNameInfo.majorVersion();
   }
 
-  public String getCopierResults() {
+  public PackageCopierResult.Metadata getCopierMetadata() {
     return copierResults;
   }
 

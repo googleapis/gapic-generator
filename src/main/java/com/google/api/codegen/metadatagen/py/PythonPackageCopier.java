@@ -110,12 +110,6 @@ public class PythonPackageCopier implements PackageCopier {
     List<String> pythonNamespacePackages = visitor.getNamespacePackages();
     ImmutableMap.Builder<String, Doc> docBuilder = visitor.getDocBuilder();
 
-    StringBuilder namespacePackages = new StringBuilder("[");
-    for (String namespacePackage : pythonNamespacePackages) {
-      namespacePackages.append("'" + namespacePackage + "', ");
-    }
-    namespacePackages.append("]");
-
-    return PackageCopierResult.create(namespacePackages.toString(), docBuilder.build());
+    return PackageCopierResult.createPython(pythonNamespacePackages, docBuilder.build());
   }
 }

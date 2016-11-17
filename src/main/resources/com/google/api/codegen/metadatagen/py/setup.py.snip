@@ -39,8 +39,14 @@
       install_requires=install_requires,
       license='{@context.getDefaultsValue("license")}',
       packages=find_packages(),
-      namespace_packages={@context.getCopierResults},
+      namespace_packages=[{@quotedList(context.getCopierMetadata.pythonNamespacePackages)}],
       url='{@context.getDefaultsValue("homepage")}'
     )
 
+@end
+
+@snippet quotedList(list)
+    @join element : list on ", "
+        '{@element}'
+    @end
 @end

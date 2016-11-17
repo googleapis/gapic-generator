@@ -16,19 +16,38 @@ package com.google.api.codegen.metadatagen;
 
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.auto.value.AutoValue;
+import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class PackageCopierResult {
-  public static AutoValue_PackageCopierResult create(String metadata, Map<String, Doc> docs) {
-    return new AutoValue_PackageCopierResult(metadata, docs);
+
+  @AutoValue
+  public abstract static class Metadata {
+    // Add new constructor when adding a metadata type
+    public static AutoValue_PackageCopierResult_Metadata createPython(
+        List<String> namespacePackages) {
+      return new AutoValue_PackageCopierResult_Metadata(namespacePackages);
+    }
+
+    /**
+     * A list of Python package names that should be declared as namespace packages in the package.
+     */
+    @Nullable
+    public abstract List<String> pythonNamespacePackages();
+  }
+
+  public static AutoValue_PackageCopierResult createPython(
+      List<String> namespacePackages, Map<String, Doc> docs) {
+    return new AutoValue_PackageCopierResult(Metadata.createPython(namespacePackages), docs);
   }
 
   /**
    * The metadata computed by the PackageCopier phase that will be passed into the template
    * rendering phase.
    */
-  public abstract String metadata();
+  public abstract Metadata metadata();
 
   /** Docs to be added to the output doc map in the template rendering phase. */
   public abstract Map<String, Doc> docs();
