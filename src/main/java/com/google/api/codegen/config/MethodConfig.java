@@ -26,6 +26,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
@@ -331,6 +332,12 @@ public abstract class MethodConfig {
   /** Returns true if the method is a streaming method */
   public static boolean isGrpcStreamingMethod(Method method) {
     return method.getRequestStreaming() || method.getResponseStreaming();
+  }
+
+  /** Returns true if the method returns empty message */
+  public static boolean isReturnEmptyMessageMethod(Method method) {
+    MessageType returnMessageType = method.getOutputMessage();
+    return returnMessageType.getFields().size() == 0;
   }
 
   /** Returns true if this method has page streaming configured. */
