@@ -23,13 +23,13 @@ public enum ApiCallableImplType {
   InitialOperationApiCallable(ServiceMethodType.UnaryMethod),
   OperationApiCallable(ServiceMethodType.LongRunningMethod);
 
-  public ServiceMethodType serviceMethodType() {
-    return serviceMethodType;
-  }
+  private ServiceMethodType serviceMethodType;
 
   ApiCallableImplType(ServiceMethodType serviceMethodType) {
     this.serviceMethodType = serviceMethodType;
   }
 
-  private ServiceMethodType serviceMethodType;
+  public ServiceMethodType serviceMethodType() {
+    return serviceMethodType;
+  }
 }

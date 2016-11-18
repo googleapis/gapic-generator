@@ -710,7 +710,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
   }
 
-  /** The ame of the example for the operation callable variant of the given method. */
+  /** The name of the example for the operation callable variant of the given method. */
   public String getOperationCallableMethodExampleName(Interface interfaze, Method method) {
     return getOperationCallableMethodName(method);
   }

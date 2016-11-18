@@ -496,21 +496,17 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       } else if (methodConfig.isLongRunningOperation()) {
         context.getTypeTable().saveNicknameFor("com.google.api.gax.grpc.OperationCallable");
         if (methodConfig.isFlattening()) {
-          if (methodConfig.isFlattening()) {
-            for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-              MethodTransformerContext flattenedMethodContext =
-                  context.asFlattenedMethodContext(method, flatteningGroup);
-              apiMethods.add(
-                  apiMethodTransformer.generateAsyncOperationFlattenedMethod(
-                      flattenedMethodContext));
-            }
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+            MethodTransformerContext flattenedMethodContext =
+                context.asFlattenedMethodContext(method, flatteningGroup);
+            apiMethods.add(
+                apiMethodTransformer.generateAsyncOperationFlattenedMethod(flattenedMethodContext));
           }
-          apiMethods.add(
-              apiMethodTransformer.generateAsyncOperationRequestObjectMethod(requestMethodContext));
-          apiMethods.add(
-              apiMethodTransformer.generateOperationCallableMethod(requestMethodContext));
-          apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
         }
+        apiMethods.add(
+            apiMethodTransformer.generateAsyncOperationRequestObjectMethod(requestMethodContext));
+        apiMethods.add(apiMethodTransformer.generateOperationCallableMethod(requestMethodContext));
+        apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
       } else {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
