@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public enum ApiCallableType {
-  SimpleApiCallable,
-  PagedApiCallable,
-  BundlingApiCallable,
-  StreamingApiCallable
+/** The type of the underlying method in the service API. */
+public enum ServiceMethodType {
+  UnaryMethod,
+  GrpcStreamingMethod,
+  LongRunningMethod
 }

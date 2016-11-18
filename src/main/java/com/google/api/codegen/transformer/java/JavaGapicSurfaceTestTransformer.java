@@ -26,6 +26,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -48,13 +49,14 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.util.testing.JavaValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
-import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
+import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -73,6 +75,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,10 +169,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     SurfaceNamer namer = context.getNamer();
 
-    ApiMethodType methodType = ApiMethodType.FlattenedMethod;
+    ClientMethodType methodType = ClientMethodType.FlattenedMethod;
     String responseTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
     if (context.getMethodConfig().isPageStreaming()) {
-      methodType = ApiMethodType.PagedFlattenedMethod;
+      methodType = ClientMethodType.PagedFlattenedMethod;
       Field resourcesField = context.getMethodConfig().getPageStreaming().getResourcesField();
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(method, context.getTypeTable(), resourcesField);
@@ -180,7 +183,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return TestMethodView.newBuilder()
         .name(namer.getApiMethodName(method, context.getMethodConfig().getVisibility()))
         .responseTypeName(responseTypeName)
-        .type(methodType)
+        .clientMethodType(methodType)
         .initCode(initCodeView)
         .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
         .build();
@@ -345,17 +348,31 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
     String surfaceMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
 
-    ApiMethodType type = ApiMethodType.FlattenedMethod;
+    ClientMethodType type = ClientMethodType.FlattenedMethod;
     if (methodConfig.isPageStreaming()) {
       Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(
               method, methodContext.getTypeTable(), resourcesField);
-      type = ApiMethodType.PagedFlattenedMethod;
+      type = ClientMethodType.PagedFlattenedMethod;
     } else if (methodConfig.isGrpcStreaming()) {
-      type = ApiMethodType.CallableMethod;
+      type = ClientMethodType.CallableMethod;
       surfaceMethodName = namer.getCallableMethodName(method);
       addGrpcStreamingTestImport(methodContext.getSurfaceTransformerContext());
+    } else if (methodConfig.isLongRunningOperation()) {
+      type = ClientMethodType.AsyncOperationFlattenedMethod;
+      surfaceMethodName = namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC);
+      responseTypeName =
+          methodContext
+              .getTypeTable()
+              .getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getReturnType());
+    }
+
+    ServiceMethodType serviceMethodType = ServiceMethodType.UnaryMethod;
+    if (methodConfig.isGrpcStreaming()) {
+      serviceMethodType = ServiceMethodType.GrpcStreamingMethod;
+    } else if (methodConfig.isLongRunningOperation()) {
+      serviceMethodType = ServiceMethodType.LongRunningMethod;
     }
 
     List<GapicSurfaceTestAssertView> requestAssertViews =
@@ -369,12 +386,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .requestTypeName(requestTypeName)
         .responseTypeName(responseTypeName)
         .initCode(initCodeView)
-        .methodType(type)
+        .clientMethodType(type)
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
         .asserts(requestAssertViews)
         .mockResponse(createMockResponseView(methodContext, initSymbolTable))
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
+        .serviceMethodType(serviceMethodType)
         .build();
   }
 
@@ -462,13 +480,17 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private InitCodeContext createResponseInitCodeContext(
       MethodTransformerContext context, SymbolTable symbolTable) {
     ArrayList<Field> primitiveFields = new ArrayList<>();
-    for (Field field : context.getMethod().getOutputMessage().getFields()) {
+    TypeRef outputType = context.getMethod().getOutputType();
+    if (context.getMethodConfig().isLongRunningOperation()) {
+      outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    }
+    for (Field field : outputType.getMessageType().getFields()) {
       if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
         primitiveFields.add(field);
       }
     }
     return InitCodeContext.newBuilder()
-        .initObjectType(context.getMethod().getOutputType())
+        .initObjectType(outputType)
         .symbolTable(symbolTable)
         .suggestedName(Name.from("expected_response"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
@@ -631,12 +653,17 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockGrpcService");
-    typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiException");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
     typeTable.saveNicknameFor("io.grpc.Status");
     typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
+    if (context.getInterfaceConfig().hasPageStreamingMethods()) {
+      typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
+    }
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      typeTable.saveNicknameFor("com.google.protobuf.Any");
+    }
   }
 
   private void addSmokeTestImports(SurfaceTransformerContext context) {

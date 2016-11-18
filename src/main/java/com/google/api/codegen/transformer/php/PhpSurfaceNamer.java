@@ -18,7 +18,6 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
@@ -52,11 +51,6 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   public String getPathTemplateName(
       Interface service, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
-  }
-
-  @Override
-  public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("Google\\GAX\\PageStreamingDescriptor");
   }
 
   @Override

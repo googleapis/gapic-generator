@@ -21,11 +21,11 @@ import javax.annotation.Nullable;
 
 /**
  * View of a single api method. This is a union class that is capable of holding the data for any
- * type of static api method; the type is maintained as a value of the ApiMethodType enum.
+ * type of static api method; the type is maintained as a value of the ClientMethodType enum.
  */
 @AutoValue
 public abstract class StaticLangApiMethodView implements ApiMethodView {
-  public abstract ApiMethodType type();
+  public abstract ClientMethodType type();
 
   public abstract String apiClassName();
 
@@ -35,9 +35,11 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract ApiMethodDocView doc();
 
-  public abstract String apiRequestTypeName();
+  public abstract String serviceRequestTypeName();
 
-  public abstract String apiRequestTypeConstructor();
+  public abstract String serviceRequestTypeConstructor();
+
+  public abstract String serviceResponseTypeName();
 
   public abstract String responseTypeName();
 
@@ -59,8 +61,6 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   public abstract List<PathTemplateCheckView> pathTemplateChecks();
 
   public abstract boolean hasReturnValue();
-
-  public abstract boolean isLongRunning();
 
   public abstract List<RequestObjectParamView> requestObjectParams();
 
@@ -84,6 +84,9 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   @Nullable
   public abstract RequestObjectMethodDetailView requestObjectMethod();
 
+  @Nullable
+  public abstract LongRunningOperationDetailView operationMethod();
+
   public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
@@ -92,7 +95,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder type(ApiMethodType type);
+    public abstract Builder type(ClientMethodType type);
 
     public abstract Builder apiClassName(String apiClassName);
 
@@ -102,9 +105,11 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder doc(ApiMethodDocView doc);
 
-    public abstract Builder apiRequestTypeName(String requestTypeName);
+    public abstract Builder serviceRequestTypeName(String requestTypeName);
 
-    public abstract Builder apiRequestTypeConstructor(String requestTypeConstructor);
+    public abstract Builder serviceRequestTypeConstructor(String requestTypeConstructor);
+
+    public abstract Builder serviceResponseTypeName(String val);
 
     public abstract Builder responseTypeName(String responseTypeName);
 
@@ -126,8 +131,6 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder hasReturnValue(boolean hasReturnValue);
 
-    public abstract Builder isLongRunning(boolean isLongRunning);
-
     public abstract Builder requestObjectParams(List<RequestObjectParamView> requestObjectParams);
 
     public abstract Builder listMethod(ListMethodDetailView details);
@@ -137,6 +140,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder callableMethod(CallableMethodDetailView details);
 
     public abstract Builder requestObjectMethod(RequestObjectMethodDetailView details);
+
+    public abstract Builder operationMethod(LongRunningOperationDetailView details);
 
     public abstract Builder stubName(String stubName);
 

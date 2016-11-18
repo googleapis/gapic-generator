@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.FlatteningGroupProto;
+import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
@@ -80,6 +81,9 @@ public abstract class MethodConfig {
   public abstract String getRerouteToGrpcInterface();
 
   public abstract VisibilityConfig getVisibility();
+
+  @Nullable
+  public abstract LongRunningConfig getLongRunningConfig();
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -222,6 +226,16 @@ public abstract class MethodConfig {
       }
     }
 
+    LongRunningConfig longRunningConfig = null;
+    if (!LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
+      longRunningConfig =
+          LongRunningConfig.createLongRunningConfig(
+              method.getModel(), diagCollector, methodConfigProto.getLongRunning());
+      if (longRunningConfig == null) {
+        error = true;
+      }
+    }
+
     if (error) {
       return null;
     } else {
@@ -241,7 +255,8 @@ public abstract class MethodConfig {
           fieldNamePatterns,
           sampleCodeInitFields,
           rerouteToGrpcInterface,
-          visibility);
+          visibility,
+          longRunningConfig);
     }
   }
 
@@ -360,6 +375,10 @@ public abstract class MethodConfig {
   /** Returns true if this method has bundling configured. */
   public boolean isBundling() {
     return getBundling() != null;
+  }
+
+  public boolean isLongRunningOperation() {
+    return getLongRunningConfig() != null;
   }
 
   public Iterable<Field> getRequiredFields() {
