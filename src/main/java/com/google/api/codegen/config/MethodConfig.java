@@ -34,6 +34,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Empty;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -334,10 +335,10 @@ public abstract class MethodConfig {
     return method.getRequestStreaming() || method.getResponseStreaming();
   }
 
-  /** Returns true if the method returns empty message */
+  /** Returns true if the method returns google.protobuf.empty message */
   public static boolean isReturnEmptyMessageMethod(Method method) {
     MessageType returnMessageType = method.getOutputMessage();
-    return returnMessageType.getFields().size() == 0;
+    return Empty.getDescriptor().getFullName().equals(returnMessageType.getFullName());
   }
 
   /** Returns true if this method has page streaming configured. */
