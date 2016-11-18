@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class PythonPackageCopier implements PackageCopier {
     public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
       Path destination = outputPath.resolve(inputPath.relativize(file));
       Files.createDirectories(destination.getParent());
-      Files.copy(file, destination);
+      Files.copy(file, destination, StandardCopyOption.REPLACE_EXISTING);
       return FileVisitResult.CONTINUE;
     }
 
