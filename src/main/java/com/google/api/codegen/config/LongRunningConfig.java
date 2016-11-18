@@ -15,8 +15,10 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.LongRunningConfigProto;
+import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
@@ -33,17 +35,28 @@ public abstract class LongRunningConfig {
   public static LongRunningConfig createLongRunningConfig(
       Model model, DiagCollector diagCollector, LongRunningConfigProto longRunningConfigProto) {
 
+    boolean error = false;
+
     TypeRef returnType = model.getSymbolTable().lookupType(longRunningConfigProto.getReturnType());
-    // TODO switch to diag message
+
     if (returnType == null) {
-      throw new IllegalArgumentException(
-          "type not found: " + longRunningConfigProto.getReturnType());
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Type not found for long running config: '%s'",
+              longRunningConfigProto.getReturnType()));
+      error = true;
     }
     if (!returnType.isMessage()) {
-      throw new IllegalArgumentException("type must be a message: " + returnType);
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Type for long running config is not a message: '%s'",
+              longRunningConfigProto.getReturnType()));
+      error = true;
     }
 
-    if (diagCollector.hasErrors()) {
+    if (error) {
       return null;
     } else {
       return new AutoValue_LongRunningConfig(returnType);

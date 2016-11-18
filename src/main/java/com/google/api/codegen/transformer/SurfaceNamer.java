@@ -153,6 +153,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.from("iterate_all_elements"));
   }
 
+  /** The name of the create method for the resource one-of for the given field config */
   public String getResourceOneofCreateMethod(ModelTypeTable typeTable, FieldConfig fieldConfig) {
     return getAndSaveResourceTypeName(typeTable, fieldConfig.getMessageFieldConfig())
         + "."
@@ -257,6 +258,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  /** The function name to set a field that is a resource name class. */
   public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
     TypeRef type = fieldConfig.getField().getType();
     Name identifier = Name.from(fieldConfig.getField().getSimpleName());
@@ -295,6 +297,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  /** The function name to get a field that is a resource name class. */
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
     TypeRef type = fieldConfig.getField().getType();
     Name identifier = Name.from(fieldConfig.getField().getSimpleName());
@@ -536,6 +539,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(method, VisibilityConfig.PUBLIC);
   }
 
+  /** The name of the example for the async variant of the given method. */
   public String getAsyncApiMethodExampleName(Interface interfaze, Method method) {
     return getAsyncApiMethodName(method, VisibilityConfig.PUBLIC);
   }
@@ -651,6 +655,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
   }
 
+  /**
+   * Computes the nickname of the operation response type name for the given method, saves it in the
+   * given type table, and returns it.
+   */
   public String getAndSaveOperationResponseTypeName(
       Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getAndSaveOperationResponseTypeName");
@@ -666,6 +674,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getStreamingServerName");
   }
 
+  /** The name of the return type of the given grpc streaming method. */
   public String getGrpcStreamingApiReturnTypeName(Method method) {
     return publicClassName(
         Name.upperCamel(method.getOutputType().getMessageType().getSimpleName()));
@@ -696,11 +705,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getCallableMethodName(method);
   }
 
-  /** The name of the plain callable variant of the given method. */
+  /** The name of the operation callable variant of the given method. */
   public String getOperationCallableMethodName(Method method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
   }
 
+  /** The ame of the example for the operation callable variant of the given method. */
   public String getOperationCallableMethodExampleName(Interface interfaze, Method method) {
     return getOperationCallableMethodName(method);
   }
@@ -710,6 +720,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
+  /** The name of the operation callable for the given method. */
   public String getOperationCallableName(Method method) {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
   }
@@ -756,6 +767,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 
+  /** The inner type name of the paged response type for the given method and resources field. */
   public String getPagedResponseTypeInnerName(
       Method method, ModelTypeTable typeTable, Field resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeInnerName");
