@@ -27,6 +27,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
@@ -34,6 +35,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Empty;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -346,6 +348,12 @@ public abstract class MethodConfig {
   /** Returns true if the method is a streaming method */
   public static boolean isGrpcStreamingMethod(Method method) {
     return method.getRequestStreaming() || method.getResponseStreaming();
+  }
+
+  /** Returns true if the method returns google.protobuf.empty message */
+  public static boolean isReturnEmptyMessageMethod(Method method) {
+    MessageType returnMessageType = method.getOutputMessage();
+    return Empty.getDescriptor().getFullName().equals(returnMessageType.getFullName());
   }
 
   /** Returns true if this method has page streaming configured. */
