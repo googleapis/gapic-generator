@@ -30,7 +30,9 @@ public abstract class MockCombinedView implements ViewModel {
 
   public abstract List<MockServiceImplView> serviceImpls();
 
-  // TODO(pongad): Add the tests
+  public abstract List<GapicSurfaceTestClassView> tests();
+
+  public abstract List<MockServiceUsageView> mockServices();
 
   @Override
   public String resourceRoot() {
@@ -52,6 +54,10 @@ public abstract class MockCombinedView implements ViewModel {
     public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder serviceImpls(List<MockServiceImplView> val);
+
+    public abstract Builder tests(List<GapicSurfaceTestClassView> val);
+
+    public abstract Builder mockServices(List<MockServiceUsageView> val);
 
     public abstract Builder outputPath(String val);
 

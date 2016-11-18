@@ -14,40 +14,45 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
+import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.FileHeaderView;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView.Builder;
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
-public abstract class GapicSurfaceTestClassView {
+public abstract class GapicSurfaceTestFileView implements ViewModel {
 
-  public abstract String name();
+  public abstract FileHeaderView fileHeader();
 
-  public abstract String apiClassName();
+  public abstract GapicSurfaceTestClassView test();
 
-  public abstract String apiSettingsClassName();
+  @Override
+  public String resourceRoot() {
+    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
+  }
 
-  public abstract List<MockServiceUsageView> mockServices();
+  @Override
+  public abstract String templateFileName();
 
-  public abstract List<GapicSurfaceTestCaseView> testCases();
+  @Override
+  public abstract String outputPath();
 
   public static Builder newBuilder() {
-    return new AutoValue_GapicSurfaceTestClassView.Builder();
+    return new AutoValue_GapicSurfaceTestFileView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder name(String val);
+    public abstract Builder fileHeader(FileHeaderView val);
 
-    public abstract Builder apiClassName(String val);
+    public abstract Builder test(GapicSurfaceTestClassView val);
 
-    public abstract Builder apiSettingsClassName(String val);
+    public abstract Builder outputPath(String val);
 
-    public abstract Builder mockServices(List<MockServiceUsageView> val);
+    public abstract Builder templateFileName(String val);
 
-    public abstract Builder testCases(List<GapicSurfaceTestCaseView> val);
-
-    public abstract GapicSurfaceTestClassView build();
+    public abstract GapicSurfaceTestFileView build();
   }
 }

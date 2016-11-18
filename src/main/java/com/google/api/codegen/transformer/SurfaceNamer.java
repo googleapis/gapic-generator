@@ -955,4 +955,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String injectRandomStringGeneratorCode(String randomString) {
     return getNotImplementedString("SurfaceNamer.getRandomStringValue");
   }
+
+  /** Function used to register the GRPC server. */
+  public String getServerRegisterFunctionName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getServerRegisterFunctionName");
+  }
 }

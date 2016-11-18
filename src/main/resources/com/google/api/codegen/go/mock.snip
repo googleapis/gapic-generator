@@ -10,9 +10,19 @@
     )
 
     import (
+        "flag"
+        "fmt"
         "io"
+        "log"
+        "math/rand"
+        "net"
+        "os"
+        "reflect"
+        "testing"
 
         "golang.org/x/net/context"
+        "google.golang.org/api/option"
+        "google.golang.org/grpc"
     )
 
     var _ = io.EOF
@@ -28,8 +38,6 @@
             resps []interface{}
         }
 
-        var _ {@impl.grpcClassName} = &{@impl.name}{}
-
         @join method : impl.grpcMethods
             @switch method.grpcStreamingType
             @case "BidiStreaming"
@@ -43,6 +51,45 @@
             @end
 
 
+        @end
+    @end
+
+    // clientOpt is the option tests should use to connect to the test server.
+    // It is initialized by TestMain.
+    var clientOpt option.ClientOption
+
+    var (
+        @join service : view.mockServices
+            {@service.varName} {@service.implName}
+        @end
+    )
+
+    func TestMain(m *testing.M) {
+        flag.Parse()
+
+        serv := grpc.NewServer()
+        @join service : view.mockServices
+            {@service.registerFunctionName}(serv, &{@service.varName})
+        @end
+
+        lis, err := net.Listen("tcp", "localhost:0")
+        if err != nil {
+            log.Fatal(err)
+        }
+        go serv.Serve(lis)
+
+        conn, err := grpc.Dial(lis.Addr().String(), grpc.WithInsecure())
+        if err != nil {
+            log.Fatal(err)
+        }
+        clientOpt = option.WithGRPCConn(conn)
+
+        os.Exit(m.Run())
+    }
+
+    @join testClass : view.tests
+        @join testCase : testClass.testCases
+            {@testError(testCase)}
         @end
     @end
 @end
@@ -125,5 +172,60 @@
             err = err2
         }
         return err
+    }
+@end
+
+@private testError(test)
+    func {@test.nameWithException}(t *testing.T) {
+        expErr := fmt.Errorf("test err %d", rand.Int())
+        {@test.mockServiceVarName}.err = expErr
+
+        c, err := {@test.serviceConstructorName}(context.Background(), clientOpt)
+        if err != nil {
+            t.Fatal(err)
+        }
+
+        var req {@test.requestTypeName}
+
+        # TODO(pongad): Use struct initializer instead of reflection.
+        # The type name has the pointer-star: "*pkg.Type", so we can't use it to initialize.
+        # This should fall off from initializing requests in happy-case test.
+        reflect.ValueOf(&req).Elem().Set(reflect.New(reflect.TypeOf(req).Elem()))
+
+        @switch test.grpcStreamingType
+        @case "BidiStreaming"
+            stream, err := c.{@test.surfaceMethodName}(context.Background())
+            if err != nil {
+                t.Fatal(err)
+            }
+            _, err = stream.Recv()
+        @case "ServerStreaming"
+            stream, err := c.{@test.surfaceMethodName}(context.Background())
+            if err != nil {
+                t.Fatal(err)
+            }
+            _, err = stream.Recv()
+        @case "ClientStreaming"
+            stream, err := c.{@test.surfaceMethodName}(context.Background())
+            if err != nil {
+                t.Fatal(err)
+            }
+            _, err = stream.CloseAndRecv()
+        @case "NonStreaming"
+            @switch test.methodType
+            @case "PagedRequestObjectMethod"
+                _, err = c.{@test.surfaceMethodName}(context.Background(), req).Next()
+            @case "RequestObjectMethod"
+                @if test.hasReturnValue
+                    _, err = c.{@test.surfaceMethodName}(context.Background(), req)
+                @else
+                    err = c.{@test.surfaceMethodName}(context.Background(), req)
+                @end
+            @end
+        @end
+
+        if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
+            t.Errorf("got error %q, want %q", desc, expErr)
+        }
     }
 @end

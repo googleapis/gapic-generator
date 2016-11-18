@@ -46,6 +46,8 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract String mockServiceVarName();
 
+  public abstract String serviceConstructorName();
+
   public abstract GrpcStreamingType grpcStreamingType();
 
   public boolean isGrpcStreaming() {
@@ -81,6 +83,8 @@ public abstract class GapicSurfaceTestCaseView {
     public abstract Builder mockResponse(MockGrpcResponseView val);
 
     public abstract Builder mockServiceVarName(String val);
+
+    public abstract Builder serviceConstructorName(String val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
