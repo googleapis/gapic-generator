@@ -89,7 +89,7 @@ public class PackageMetadataGeneratorTool {
             .required(true)
             .build());
     options.addOption(
-        Option.builder("d")
+        Option.builder("c")
             .longOpt("defaults_config")
             .desc("The defaults configuration file.")
             .hasArg()
