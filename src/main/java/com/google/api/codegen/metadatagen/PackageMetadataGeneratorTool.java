@@ -97,14 +97,6 @@ public class PackageMetadataGeneratorTool {
             .required(true)
             .build());
     options.addOption(
-        Option.builder()
-            .longOpt("python_pkg_config")
-            .desc("The python_pkg configuration file.")
-            .hasArg()
-            .argName("PYTHON-PKG-FILE")
-            .required(false)
-            .build());
-    options.addOption(
         Option.builder("l")
             .longOpt("language")
             .desc("The language for which to generate package metadata.")
@@ -126,8 +118,7 @@ public class PackageMetadataGeneratorTool {
         cl.getOptionValue("output"),
         cl.getOptionValue("language"),
         cl.getOptionValue("dependencies_config"),
-        cl.getOptionValue("defaults_config"),
-        cl.getOptionValue("python_pkg_config"));
+        cl.getOptionValue("defaults_config"));
   }
 
   private static void generate(
@@ -137,8 +128,7 @@ public class PackageMetadataGeneratorTool {
       String outputDir,
       String language,
       String dependenciesConfig,
-      String defaultsConfig,
-      String pythonPackageConfig) {
+      String defaultsConfig) {
     ToolOptions options = ToolOptions.create();
     options.set(PackageMetadataGenerator.INPUT_DIR, inputDir);
     options.set(PackageMetadataGenerator.OUTPUT_DIR, outputDir);
@@ -146,7 +136,6 @@ public class PackageMetadataGeneratorTool {
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
     options.set(PackageMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfig);
     options.set(PackageMetadataGenerator.API_DEFAULTS_FILE, defaultsConfig);
-    options.set(PackageMetadataGenerator.PYTHON_PACKAGE_FILE, pythonPackageConfig);
     PackageMetadataGenerator generator =
         new PackageMetadataGenerator(options, getSnippets(language), getCopier(language));
     generator.run();

@@ -56,13 +56,8 @@ public class PackageMetadataGenerator extends ToolDriverBase {
           "dependencies_file",
           "The name of the yaml file that configures package dependencies.",
           "");
-  // TODO (jgeiger): Support this input to configure Python common protos namespace packages.
-  public static final Option<String> PYTHON_PACKAGE_FILE =
-      ToolOptions.createOption(
-          String.class,
-          "python_package_file",
-          "The name of the yaml file that configures Python-specific package information.",
-          "");
+  // TODO (jgeiger): Support python_package_file input to configure Python common protos namespace
+  // packages.
   public static final Option<String> API_DEFAULTS_FILE =
       ToolOptions.createOption(
           String.class,
