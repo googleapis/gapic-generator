@@ -39,6 +39,7 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
@@ -146,7 +147,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
-    view.apiMethods(generateApiMethods(context, context.getSupportedMethods()));
+
+    List<StaticLangApiMethodView> apiMethods =
+        generateApiMethods(context, context.getSupportedMethods());
+    view.apiMethods(apiMethods);
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
     if (!apiConfig.getInterfaceConfig(service).getIamResources().isEmpty()) {
@@ -162,6 +166,16 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     view.pageStreamingDescriptorClasses(
         new ArrayList<PageStreamingDescriptorClassView>(iterators.values()));
+
+    // Same with long running operations.
+    Map<String, LongRunningOperationDetailView> lros = new TreeMap<>();
+    for (StaticLangApiMethodView apiMethod : apiMethods) {
+      LongRunningOperationDetailView lro = apiMethod.operationMethod();
+      if (lro != null) {
+        lros.put(lro.operationReturnType(), lro);
+      }
+    }
+    view.lroDetailViews(new ArrayList<LongRunningOperationDetailView>(lros.values()));
 
     ServiceConfig serviceConfig = new ServiceConfig();
     view.serviceAddress(serviceConfig.getServiceAddress(service));
@@ -381,9 +395,5 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
                   ImportContext.EXAMPLE,
                   ImportKind.SERVER_STREAM,
                   ImmutableList.<String>of("io;;;"))
-              .put(
-                  ImportContext.EXAMPLE,
-                  ImportKind.LRO,
-                  ImmutableList.<String>of("github.com/golang/protobuf/ptypes;;;"))
               .build();
 }

@@ -51,11 +51,8 @@ import java.util.List;
 
 /** ApiMethodTransformer generates view objects from method definitions. */
 public class ApiMethodTransformer {
-  private InitCodeTransformer initCodeTransformer;
-
-  public ApiMethodTransformer() {
-    this.initCodeTransformer = new InitCodeTransformer();
-  }
+  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(MethodTransformerContext context) {
     return generatePagedFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
@@ -271,6 +268,7 @@ public class ApiMethodTransformer {
         namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setRequestObjectMethodFields(
         context, namer.getCallableMethodName(context.getMethod()), methodViewBuilder);
+    methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 

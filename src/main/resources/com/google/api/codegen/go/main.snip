@@ -174,6 +174,10 @@
     @join iter : view.pageStreamingDescriptorClasses
         {@iterator(view, iter)}
     @end
+
+    @join lro : view.lroDetailViews
+        {@lroWrapper(view, lro)}
+    @end
 @end
 
 @private simpleMethod(view, method)
@@ -193,7 +197,7 @@
 @end
 
 @private lroMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) (*longrunning.Operation, error) {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) (*{@method.operationMethod.operationReturnType}, error) {
         {@mergeMetadata()}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
@@ -204,7 +208,9 @@
         if err != nil {
             return nil, err
         }
-        return longrunning.InternalNewOperation(c.Connection(), resp), nil
+        return &{@method.operationMethod.operationReturnType}{
+            Operation: longrunning.InternalNewOperation(c.Connection(), resp),
+        }, nil
     }
 @end
 
@@ -312,6 +318,20 @@
         return b
     }
 
+@end
+
+@private lroWrapper(view, lro)
+    type {@lro.operationReturnType} struct {
+        *longrunning.Operation
+    }
+
+    func (op *{@lro.operationReturnType}) Wait(ctx context.Context) (*{@lro.operationResponseType}, error) {
+        var resp {@lro.operationResponseType}
+        if err := op.Operation.Wait(ctx, &resp); err != nil {
+            return nil, err
+        }
+        return &resp, nil
+    }
 @end
 
 @private pathTemplateParams(args)

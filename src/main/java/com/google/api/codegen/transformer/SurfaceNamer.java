@@ -664,6 +664,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAndSaveOperationResponseTypeName");
   }
 
+  /**
+   * In languages with pointers, strip the pointer, leaving only the base type. Eg, in C, "int*"
+   * would become "int".
+   */
+  public String plainType(String type) {
+    return getNotImplementedString("SurfaceNamer.plainType");
+  }
+
   /** The async return type name in a static language that is used by the caller */
   public String getStaticLangCallerAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     return getStaticLangAsyncReturnTypeName(method, methodConfig);

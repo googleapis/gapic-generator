@@ -77,22 +77,48 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return super.getDocLines(getApiMethodName(method, methodConfig.getVisibility()) + " " + text);
   }
 
-  @Override
-  public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
-    String typeName = converter.getTypeNameForElementType(resourcesField.getType()).getNickname();
-    int dotIndex = typeName.indexOf('.');
-    if (dotIndex >= 0) {
-      typeName = typeName.substring(dotIndex + 1);
-    }
-    return publicClassName(Name.anyCamel(typeName).join("iterator"));
-  }
-
   private static String lowerFirstLetter(String s) {
     if (s.length() > 0) {
       s = Character.toLowerCase(s.charAt(0)) + s.substring(1);
     }
     return s;
+  }
+
+  @Override
+  public String getAndSavePagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, Field resourcesField) {
+    String typeName = converter.getTypeNameForElementType(resourcesField.getType()).getNickname();
+    typeName = unqualifyTypeName(typeName);
+    return publicClassName(Name.anyCamel(typeName).join("iterator"));
+  }
+
+  @Override
+  public String getAndSaveOperationResponseTypeName(
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+    String typeName =
+        converter
+            .getTypeNameForElementType(methodConfig.getLongRunningConfig().getReturnType())
+            .getNickname();
+    typeName = unqualifyTypeName(typeName);
+    return publicClassName(Name.anyCamel(typeName).join("operation"));
+  }
+
+  @Override
+  public String plainType(String type) {
+    for (int i = 0; i < type.length(); i++) {
+      if (type.charAt(i) != '*') {
+        return type.substring(i);
+      }
+    }
+    return "";
+  }
+
+  private String unqualifyTypeName(String typeName) {
+    int dotIndex = typeName.indexOf('.');
+    if (dotIndex >= 0) {
+      typeName = typeName.substring(dotIndex + 1);
+    }
+    return typeName;
   }
 
   @Override

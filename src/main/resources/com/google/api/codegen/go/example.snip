@@ -170,11 +170,12 @@
             // TODO: Handle error.
         }
 
-        var resp ptypes.DynamicAny // resp can also be concrete protobuf-generated types.
-        if err := op.Wait(ctx, &resp); err != nil {
+        resp, err := op.Wait(ctx)
+        if err != nil {
             // TODO: Handle error.
         }
         // TODO: Use resp.
+        _ = resp
     }
 @end
 

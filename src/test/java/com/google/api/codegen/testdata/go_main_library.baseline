@@ -636,7 +636,7 @@ func (c *Client) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*
 }
 
 // GetBigBook test long-running operations
-func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*longrunning.Operation, error) {
+func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*BookOperation, error) {
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     var resp *longrunningpb.Operation
@@ -648,7 +648,9 @@ func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) 
     if err != nil {
         return nil, err
     }
-    return longrunning.InternalNewOperation(c.Connection(), resp), nil
+    return &BookOperation{
+        Operation: longrunning.InternalNewOperation(c.Connection(), resp),
+    }, nil
 }
 
 
@@ -775,3 +777,15 @@ func (it *StringIterator) takeBuf() interface{} {
     return b
 }
 
+
+type BookOperation struct {
+    *longrunning.Operation
+}
+
+func (op *BookOperation) Wait(ctx context.Context) (*librarypb.Book, error) {
+    var resp librarypb.Book
+    if err := op.Operation.Wait(ctx, &resp); err != nil {
+        return nil, err
+    }
+    return &resp, nil
+}

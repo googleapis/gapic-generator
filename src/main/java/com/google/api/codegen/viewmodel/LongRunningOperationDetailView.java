@@ -21,6 +21,8 @@ public abstract class LongRunningOperationDetailView {
 
   public abstract String operationReturnType();
 
+  public abstract String operationResponseType();
+
   public static Builder newBuilder() {
     return new AutoValue_LongRunningOperationDetailView.Builder();
   }
@@ -28,6 +30,8 @@ public abstract class LongRunningOperationDetailView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder operationReturnType(String val);
+
+    public abstract Builder operationResponseType(String val);
 
     public abstract LongRunningOperationDetailView build();
   }
