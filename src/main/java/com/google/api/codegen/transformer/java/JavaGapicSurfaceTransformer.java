@@ -379,18 +379,20 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
+    typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
+    typeTable.saveNicknameFor("javax.annotation.Generated");
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationFuture");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.FixedChannelProvider");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.FixedExecutorProvider");
-      typeTable.saveNicknameFor("com.google.longrunning.OperationsApi");
+      typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
       typeTable.saveNicknameFor("com.google.longrunning.OperationsSettings");
     }
   }
@@ -401,10 +403,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ClientSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingExecutorProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ServiceApiSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallSettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
@@ -413,19 +415,21 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableSet");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.common.collect.Sets");
+    typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("io.grpc.Status");
     typeTable.saveNicknameFor("org.joda.time.Duration");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
+    typeTable.saveNicknameFor("javax.annotation.Generated");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasPageStreamingMethods()) {
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     }
     if (interfaceConfig.hasBundlingMethods()) {
@@ -445,12 +449,14 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private void addPagedResponseWrapperImports(ModelTypeTable typeTable) {
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.common.base.Function");
     typeTable.saveNicknameFor("com.google.common.collect.Iterables");
+    typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
+    typeTable.saveNicknameFor("javax.annotation.Generated");
   }
 
   public SettingsDocView generateSettingsDoc(

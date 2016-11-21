@@ -962,6 +962,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getServerRegisterFunctionName(Interface service) {
     return getNotImplementedString("SurfaceNamer.getServerRegisterFunctionName");
   }
+
   /** The type name of the API callable class for this service method type. */
   public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
     return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");

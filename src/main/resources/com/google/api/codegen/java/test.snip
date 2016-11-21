@@ -10,7 +10,7 @@
       private static {@mockService.className} {@mockService.varName};
     @end
     private static MockServiceHelper serviceHelper;
-    private {@xapiTest.testClass.apiClassName} api;
+    private {@xapiTest.testClass.apiClassName} client;
 
     @@BeforeClass
     public static void startStaticServer() {
@@ -32,12 +32,12 @@
       {@xapiTest.testClass.apiSettingsClassName} settings = {@xapiTest.testClass.apiSettingsClassName}.defaultBuilder()
           .setChannelProvider(serviceHelper.createChannelProvider())
           .build();
-      api = {@xapiTest.testClass.apiClassName}.create(settings);
+      client = {@xapiTest.testClass.apiClassName}.create(settings);
     }
 
     @@After
     public void tearDown() throws Exception {
-      api.close();
+      client.close();
     }
 
     @join test : xapiTest.testClass.testCases
@@ -85,7 +85,7 @@
     try {
       {@initCode(test.initCode)}
 
-      api.{@test.surfaceMethodName}(\
+      client.{@test.surfaceMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)});
       Assert.fail("No exception raised");
     } catch (ApiException e) {
@@ -155,7 +155,7 @@
     try {
       {@initCode(test.initCode)}
 
-      api.{@test.surfaceMethodName}(\
+      client.{@test.surfaceMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
       Assert.fail("No exception raised");
     } catch (ExecutionException e) {
@@ -194,7 +194,7 @@
   MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
 
   StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
-      api.{@test.surfaceMethodName}();
+      client.{@test.surfaceMethodName}();
   StreamObserver<{@test.requestTypeName}> requestObserver =
       callable.bidiStreamingCall(responseObserver);
 
@@ -205,7 +205,7 @@
   MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
   StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
-      api.{@test.surfaceMethodName}();
+      client.{@test.surfaceMethodName}();
   callable.serverStreamingCall(request, responseObserver);
 @end
 
@@ -222,7 +222,7 @@
 @private methodCall(test)
   @switch test.clientMethodType
   @case "PagedFlattenedMethod"
-    {@test.responseTypeName} pagedListResponse = api.{@test.surfaceMethodName}(\
+    {@test.responseTypeName} pagedListResponse = client.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
 
     @join pageStreamingResponseView : test.pageStreamingResponseViews
@@ -233,11 +233,11 @@
   @case "FlattenedMethod"
     @if test.hasReturnValue
       {@test.responseTypeName} actualResponse =
-          api.{@test.surfaceMethodName}(\
+          client.{@test.surfaceMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)});
       Assert.assertEquals(expectedResponse, actualResponse);
     @else
-      api.{@test.surfaceMethodName}(\
+      client.{@test.surfaceMethodName}(\
             {@sampleMethodCallArgList(test.initCode.fieldSettings)});
     @end
   @default
@@ -247,7 +247,7 @@
 
 @private longRunningMethodCall(test)
   {@test.responseTypeName} actualResponse =
-      api.{@test.surfaceMethodName}(\
+      client.{@test.surfaceMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
   Assert.assertEquals(expectedResponse, actualResponse);
 @end
