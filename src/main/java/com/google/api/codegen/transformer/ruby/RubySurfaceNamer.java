@@ -37,6 +37,33 @@ public class RubySurfaceNamer extends SurfaceNamer {
         packageName);
   }
 
+  @Override
+  /** The name of the class that implements a particular proto interface. */
+  public String getApiWrapperClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  /** The name of the constructor for the service client. The client is VKit generated, not GRPC. */
+  public String getApiWrapperClassConstructorName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  /**
+   * The name of a variable that holds an instance of the class that implements a particular proto
+   * interface.
+   */
+  public String getApiWrapperVariableName(Interface interfaze) {
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  /** The name of the class that implements snippets for a particular proto interface. */
+  public String getApiSnippetsClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
+  }
+
   /** The function name to set a field having the given type and name. */
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
