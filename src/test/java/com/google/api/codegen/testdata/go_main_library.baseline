@@ -41,7 +41,6 @@ import (
 var (
     libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}")
     libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}/books/{book_id}")
-    libraryArchivedBookPathTemplate = gax.MustCompilePathTemplate("archives/{archive_path}/books/{book_id=**}")
     libraryReturnPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}/returns/{return}")
 )
 
@@ -212,18 +211,6 @@ func LibraryBookPath(shelfId, bookId string) string {
     return path
 }
 
-// LibraryArchivedBookPath returns the path for the archived book resource.
-func LibraryArchivedBookPath(archivePath, bookId string) string {
-    path, err := libraryArchivedBookPathTemplate.Render(map[string]string{
-        "archive_path": archivePath,
-        "book_id": bookId,
-    })
-    if err != nil {
-        panic(err)
-    }
-    return path
-}
-
 // LibraryReturnPath returns the path for the return resource.
 func LibraryReturnPath(shelf, book, return_ string) string {
     path, err := libraryReturnPathTemplate.Render(map[string]string{
@@ -280,8 +267,7 @@ func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequ
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     it := &ShelfIterator{}
-
-    fetch := func(pageSize int, pageToken string) (string, error) {
+    it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Shelf, string, error) {
         var resp *librarypb.ListShelvesResponse
         req.PageToken = pageToken
         if pageSize > math.MaxInt32 {
@@ -294,20 +280,17 @@ func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequ
             resp, err = c.client.ListShelves(ctx, req)
             return err
         }, c.CallOptions.ListShelves...)
+        return resp.Shelves, resp.NextPageToken, err
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
         if err != nil {
             return "", err
         }
-        it.items = append(it.items, resp.Shelves...)
-        return resp.NextPageToken, nil
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
     }
-    bufLen := func() int { return len(it.items) }
-    takeBuf := func() interface{} {
-        b := it.items
-        it.items = nil
-        return b
-    }
-
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     return it
 }
 
@@ -394,8 +377,7 @@ func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest)
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     it := &BookIterator{}
-
-    fetch := func(pageSize int, pageToken string) (string, error) {
+    it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Book, string, error) {
         var resp *librarypb.ListBooksResponse
         req.PageToken = pageToken
         if pageSize > math.MaxInt32 {
@@ -408,20 +390,17 @@ func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest)
             resp, err = c.client.ListBooks(ctx, req)
             return err
         }, c.CallOptions.ListBooks...)
+        return resp.Books, resp.NextPageToken, err
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
         if err != nil {
             return "", err
         }
-        it.items = append(it.items, resp.Books...)
-        return resp.NextPageToken, nil
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
     }
-    bufLen := func() int { return len(it.items) }
-    takeBuf := func() interface{} {
-        b := it.items
-        it.items = nil
-        return b
-    }
-
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     return it
 }
 
@@ -474,8 +453,7 @@ func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequ
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     it := &StringIterator{}
-
-    fetch := func(pageSize int, pageToken string) (string, error) {
+    it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
         var resp *librarypb.ListStringsResponse
         req.PageToken = pageToken
         if pageSize > math.MaxInt32 {
@@ -488,20 +466,17 @@ func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequ
             resp, err = c.client.ListStrings(ctx, req)
             return err
         }, c.CallOptions.ListStrings...)
+        return resp.Strings, resp.NextPageToken, err
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
         if err != nil {
             return "", err
         }
-        it.items = append(it.items, resp.Strings...)
-        return resp.NextPageToken, nil
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
     }
-    bufLen := func() int { return len(it.items) }
-    takeBuf := func() interface{} {
-        b := it.items
-        it.items = nil
-        return b
-    }
-
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     return it
 }
 
@@ -617,8 +592,7 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     it := &StringIterator{}
-
-    fetch := func(pageSize int, pageToken string) (string, error) {
+    it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
         var resp *librarypb.FindRelatedBooksResponse
         req.PageToken = pageToken
         if pageSize > math.MaxInt32 {
@@ -631,20 +605,17 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
             resp, err = c.client.FindRelatedBooks(ctx, req)
             return err
         }, c.CallOptions.FindRelatedBooks...)
+        return resp.Names, resp.NextPageToken, err
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
         if err != nil {
             return "", err
         }
-        it.items = append(it.items, resp.Names...)
-        return resp.NextPageToken, nil
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
     }
-    bufLen := func() int { return len(it.items) }
-    takeBuf := func() interface{} {
-        b := it.items
-        it.items = nil
-        return b
-    }
-
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     return it
 }
 
@@ -686,6 +657,14 @@ type BookIterator struct {
     items    []*librarypb.Book
     pageInfo *iterator.PageInfo
     nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []*librarypb.Book, nextPageToken string, err error)
 }
 
 // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
@@ -704,11 +683,29 @@ func (it *BookIterator) Next() (*librarypb.Book, error) {
     return item, nil
 }
 
+func (it *BookIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *BookIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
+}
+
 // ShelfIterator manages a stream of *librarypb.Shelf.
 type ShelfIterator struct {
     items    []*librarypb.Shelf
     pageInfo *iterator.PageInfo
     nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []*librarypb.Shelf, nextPageToken string, err error)
 }
 
 // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
@@ -727,11 +724,29 @@ func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
     return item, nil
 }
 
+func (it *ShelfIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *ShelfIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
+}
+
 // StringIterator manages a stream of string.
 type StringIterator struct {
     items    []string
     pageInfo *iterator.PageInfo
     nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []string, nextPageToken string, err error)
 }
 
 // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
@@ -748,5 +763,15 @@ func (it *StringIterator) Next() (string, error) {
     item := it.items[0]
     it.items = it.items[1:]
     return item, nil
+}
+
+func (it *StringIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *StringIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
 }
 

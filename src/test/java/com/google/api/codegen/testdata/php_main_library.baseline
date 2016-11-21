@@ -117,7 +117,6 @@ class LibraryServiceApi
 
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
-    private static $archivedBookNameTemplate;
     private static $returnNameTemplate;
 
     private $grpcCredentialsHelper;
@@ -146,18 +145,6 @@ class LibraryServiceApi
     {
         return self::getBookNameTemplate()->render([
             'shelf_id' => $shelfId,
-            'book_id' => $bookId,
-        ]);
-    }
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a archived_book resource.
-     */
-    public static function formatArchivedBookName($archivePath, $bookId)
-    {
-        return self::getArchivedBookNameTemplate()->render([
-            'archive_path' => $archivePath,
             'book_id' => $bookId,
         ]);
     }
@@ -200,24 +187,6 @@ class LibraryServiceApi
     public static function parseBookIdFromBookName($bookName)
     {
         return self::getBookNameTemplate()->match($bookName)['book_id'];
-    }
-
-    /**
-     * Parses the archive_path from the given fully-qualified path which
-     * represents a archived_book resource.
-     */
-    public static function parseArchivePathFromArchivedBookName($archivedBookName)
-    {
-        return self::getArchivedBookNameTemplate()->match($archivedBookName)['archive_path'];
-    }
-
-    /**
-     * Parses the book_id from the given fully-qualified path which
-     * represents a archived_book resource.
-     */
-    public static function parseBookIdFromArchivedBookName($archivedBookName)
-    {
-        return self::getArchivedBookNameTemplate()->match($archivedBookName)['book_id'];
     }
 
     /**
@@ -264,15 +233,6 @@ class LibraryServiceApi
         }
 
         return self::$bookNameTemplate;
-    }
-
-    private static function getArchivedBookNameTemplate()
-    {
-        if (self::$archivedBookNameTemplate == null) {
-            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path}/books/{book_id=**}');
-        }
-
-        return self::$archivedBookNameTemplate;
     }
 
     private static function getReturnNameTemplate()
@@ -782,6 +742,8 @@ class LibraryServiceApi
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
+     *     @type string $seriesUuid
+     *          Uniquely identifies the series to the publishing house.
      *     @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
@@ -806,6 +768,9 @@ class LibraryServiceApi
         }
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
+        }
+        if (isset($optionalArgs['seriesUuid'])) {
+            $request->setSeriesUuid($optionalArgs['seriesUuid']);
         }
 
         $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(

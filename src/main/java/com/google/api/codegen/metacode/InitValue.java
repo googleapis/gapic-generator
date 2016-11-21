@@ -20,8 +20,12 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class InitValue {
   public enum InitValueType {
+    /** Literal values such as strings and numbers */
     Literal,
+    /** Variable references */
     Variable,
+    /** Random value which needs to be randomized at runtime */
+    Random,
   }
 
   public static InitValue create(String value, InitValueType type) {
@@ -34,6 +38,10 @@ public abstract class InitValue {
 
   public static InitValue createVariable(String variableName) {
     return new AutoValue_InitValue(variableName, InitValueType.Variable);
+  }
+
+  public static InitValue createRandom(String randomValueString) {
+    return new AutoValue_InitValue(randomValueString, InitValueType.Random);
   }
 
   public abstract String getValue();

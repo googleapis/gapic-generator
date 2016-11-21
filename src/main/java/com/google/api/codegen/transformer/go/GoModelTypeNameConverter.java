@@ -241,4 +241,9 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
     throw new UnsupportedOperationException(
         "getTypeNameForResourceNameElementType not supported by Go");
   }
+
+  @Override
+  public TypedValue getEnumValue(TypeRef type, String value) {
+    throw new UnsupportedOperationException("getEnumValue not supported by Go");
+  }
 }

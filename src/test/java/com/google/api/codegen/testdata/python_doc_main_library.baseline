@@ -118,8 +118,6 @@ class LibraryServiceApi(object):
         'shelves/{shelf_id}')
     _BOOK_PATH_TEMPLATE = path_template.PathTemplate(
         'shelves/{shelf_id}/books/{book_id}')
-    _ARCHIVED_BOOK_PATH_TEMPLATE = path_template.PathTemplate(
-        'archives/{archive_path}/books/{book_id=**}')
     _RETURN_PATH_TEMPLATE = path_template.PathTemplate(
         'shelves/{shelf}/books/{book}/returns/{return}')
 
@@ -135,14 +133,6 @@ class LibraryServiceApi(object):
         """Returns a fully-qualified book resource name string."""
         return cls._BOOK_PATH_TEMPLATE.render({
             'shelf_id': shelf_id,
-            'book_id': book_id,
-        })
-
-    @classmethod
-    def archived_book_path(cls, archive_path, book_id):
-        """Returns a fully-qualified archived_book resource name string."""
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.render({
-            'archive_path': archive_path,
             'book_id': book_id,
         })
 
@@ -195,32 +185,6 @@ class LibraryServiceApi(object):
         return cls._BOOK_PATH_TEMPLATE.match(book_name).get('book_id')
 
     @classmethod
-    def match_archive_path_from_archived_book_name(cls, archived_book_name):
-        """Parses the archive_path from a archived_book resource.
-
-        Args:
-          archived_book_name (string): A fully-qualified path representing a archived_book
-            resource.
-
-        Returns:
-          A string representing the archive_path.
-        """
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('archive_path')
-
-    @classmethod
-    def match_book_id_from_archived_book_name(cls, archived_book_name):
-        """Parses the book_id from a archived_book resource.
-
-        Args:
-          archived_book_name (string): A fully-qualified path representing a archived_book
-            resource.
-
-        Returns:
-          A string representing the book_id.
-        """
-        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('book_id')
-
-    @classmethod
     def match_shelf_from_return_name(cls, return_name):
         """Parses the shelf from a return resource.
 
@@ -264,8 +228,8 @@ class LibraryServiceApi(object):
             service_path=SERVICE_ADDRESS,
             port=DEFAULT_SERVICE_PORT,
             channel=None,
-            metadata_transformer=None,
-            ssl_creds=None,
+            credentials=None,
+            ssl_credentials=None,
             scopes=None,
             client_config=None,
             app_name='gax',
@@ -277,16 +241,18 @@ class LibraryServiceApi(object):
           port (int): The port on which to connect to the remote host.
           channel (:class:`grpc.Channel`): A ``Channel`` instance through
             which to make calls.
-          ssl_creds (:class:`grpc.ChannelCredentials`): A
+          credentials (object): The authorization credentials to attach to
+            requests. These credentials identify this application to the
+            service.
+          ssl_credentials (:class:`grpc.ChannelCredentials`): A
             ``ChannelCredentials`` instance for use with an SSL-enabled
             channel.
+          scopes (list[string]): A list of OAuth2 scopes to attach to requests.
           client_config (dict):
             A dictionary for call options for each method. See
             :func:`google.gax.construct_settings` for the structure of
             this data. Falls back to the default config if not specified
             or the specified config is missing data points.
-          metadata_transformer (Callable[[], list]): A function that creates
-             the metadata for requests.
           app_name (string): The codename of the calling service.
           app_version (string): The version of the calling service.
 
@@ -317,20 +283,20 @@ class LibraryServiceApi(object):
             page_descriptors=self._PAGE_DESCRIPTORS)
         self.library_service_stub = config.create_stub(
             library_pb2.LibraryServiceStub,
-            service_path,
-            port,
-            ssl_creds=ssl_creds,
             channel=channel,
-            metadata_transformer=metadata_transformer,
-            scopes=scopes)
+            service_path=service_path,
+            service_port=port,
+            credentials=credentials,
+            scopes=scopes,
+            ssl_credentials=ssl_credentials)
         self.labeler_stub = config.create_stub(
             tagger_pb2.LabelerStub,
-            service_path,
-            port,
-            ssl_creds=ssl_creds,
             channel=channel,
-            metadata_transformer=metadata_transformer,
-            scopes=scopes)
+            service_path=service_path,
+            service_port=port,
+            credentials=credentials,
+            scopes=scopes,
+            ssl_credentials=ssl_credentials)
 
         self._create_shelf = api_callable.create_api_call(
             self.library_service_stub.CreateShelf,
@@ -618,6 +584,7 @@ class LibraryServiceApi(object):
             books,
             edition=None,
             review_copy=None,
+            series_uuid=b'',
             options=None):
         """
         Creates a series of books.
@@ -635,6 +602,7 @@ class LibraryServiceApi(object):
           books (list[:class:`google.example.library.v1.library_pb2.Book`]): The books to publish in the series.
           edition (int): The edition of the series
           review_copy (bool): If the book is in a pre-publish state
+          series_uuid (bytes): Uniquely identifies the series to the publishing house.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -649,7 +617,8 @@ class LibraryServiceApi(object):
             shelf=shelf,
             books=books,
             edition=edition,
-            review_copy=review_copy)
+            review_copy=review_copy,
+            series_uuid=series_uuid)
         return self._publish_series(request, options)
 
     def get_book(
@@ -900,7 +869,7 @@ class LibraryServiceApi(object):
           >>> from google.example.library.v1 import library_pb2
           >>> api = library_service_api.LibraryServiceApi()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>> comment = ''
+          >>> comment = b''
           >>> stage = enums.Comment.Stage.UNSET
           >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
           >>> comments_element = library_pb2.Comment(comment, stage, alignment)

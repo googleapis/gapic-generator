@@ -167,15 +167,19 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
 
     ApiMethodType methodType = ApiMethodType.FlattenedMethod;
+    String responseTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
     if (context.getMethodConfig().isPageStreaming()) {
       methodType = ApiMethodType.PagedFlattenedMethod;
+      Field resourcesField = context.getMethodConfig().getPageStreaming().getResourcesField();
+      responseTypeName =
+          namer.getAndSavePagedResponseTypeName(method, context.getTypeTable(), resourcesField);
     }
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(context, createSmokeTestInitContext(context));
 
     return TestMethodView.newBuilder()
         .name(namer.getApiMethodName(method, context.getMethodConfig().getVisibility()))
-        .responseTypeName(context.getTypeTable().getAndSaveNicknameFor(method.getOutputType()))
+        .responseTypeName(responseTypeName)
         .type(methodType)
         .initCode(initCodeView)
         .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
@@ -217,14 +221,25 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       outputType = InitCodeOutputType.SingleObject;
       fieldConfigMap = null;
     }
-    return InitCodeContext.newBuilder()
-        .initObjectType(testConfig.getMethod().getInputType())
-        .suggestedName(Name.from("request"))
-        .outputType(outputType)
-        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
-        .fieldConfigMap(fieldConfigMap)
-        .build();
+
+    // Store project ID variable name into the symbol table since it is used by the execute method
+    // as a parameter. For more information please see smoke_test.snip.
+    SymbolTable table = new SymbolTable();
+    table.getNewSymbol(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
+
+    InitCodeContext.Builder contextBuilder =
+        InitCodeContext.newBuilder()
+            .initObjectType(testConfig.getMethod().getInputType())
+            .suggestedName(Name.from("request"))
+            .outputType(outputType)
+            .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
+            .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
+            .symbolTable(table)
+            .fieldConfigMap(fieldConfigMap);
+    if (context.getMethodConfig().isFlattening()) {
+      contextBuilder.initFields(context.getFlatteningConfig().getFlattenedFields());
+    }
+    return contextBuilder.build();
   }
 
   private FlatteningConfig getFlatteningGroup(
@@ -629,6 +644,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.logging.Level");
     typeTable.saveNicknameFor("java.util.logging.Logger");
     typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.Arrays");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
     typeTable.saveNicknameFor("org.apache.commons.lang.builder.ReflectionToStringBuilder");

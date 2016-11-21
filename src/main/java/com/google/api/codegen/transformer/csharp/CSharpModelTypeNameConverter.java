@@ -234,4 +234,9 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
       return simpleTypeName;
     }
   }
+
+  @Override
+  public TypedValue getEnumValue(TypeRef type, String value) {
+    throw new UnsupportedOperationException("getEnumValue not supported by C#");
+  }
 }

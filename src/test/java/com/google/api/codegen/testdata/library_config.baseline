@@ -127,18 +127,12 @@ interfaces:
       name: book_shelf
     timeout_millis: 60000
   - name: PublishSeries
-    flattening:
-      groups:
-      - parameters:
-        - shelf
-        - books
-        - edition
-        - review_copy
     required_fields:
     - shelf
     - books
     - edition
     - review_copy
+    - series_uuid
     request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default

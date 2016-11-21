@@ -277,41 +277,20 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return comment + "\n";
   }
 
+  /** Returns a string to explain the specified type. */
+  public String typeDocument(TypeRef typeRef) {
+    if (typeRef.isMessage()) {
+      return "an object representing " + linkForMessage(typeRef.getMessageType());
+    } else if (typeRef.isEnum()) {
+      return "a number of " + linkForMessage(typeRef.getEnumType());
+    }
+    return "a " + jsTypeName(typeRef);
+  }
+
   /** Return JSDoc callback comment and return type comment for the given method. */
   @Nullable
-  private String returnTypeComment(Method method, MethodConfig config) {
-    if (config.isPageStreaming()) {
-      String callbackMessage =
-          "@param {function(?Error, ?"
-              + jsTypeName(method.getOutputType())
-              + ", ?"
-              + jsTypeName(config.getPageStreaming().getResponseTokenField().getType())
-              + ")=} callback\n"
-              + "  When specified, the results are not streamed but this callback\n"
-              + "  will be called with the response object representing "
-              + linkForMessage(method.getOutputMessage())
-              + ".\n"
-              + "  The third item will be set if the response contains the token for the further results\n"
-              + "  and can be reused to `pageToken` field in the options in the next request.";
-      TypeRef resourceType = config.getPageStreaming().getResourcesField().getType();
-      String resourceTypeName;
-      if (resourceType.isMessage()) {
-        resourceTypeName =
-            "an object representing\n  " + linkForMessage(resourceType.getMessageType());
-      } else if (resourceType.isEnum()) {
-        resourceTypeName = "a number of\n  " + linkForMessage(resourceType.getEnumType());
-      } else {
-        resourceTypeName = "a " + jsTypeName(resourceType);
-      }
-      return callbackMessage
-          + "\n@returns {Stream|Promise}\n"
-          + "  An object stream which emits "
-          + resourceTypeName
-          + " on 'data' event.\n"
-          + "  When the callback is specified or streaming is suppressed through options,\n"
-          + "  it will return a promise that resolves to the response object. The promise\n"
-          + "  has a method named \"cancel\" which cancels the ongoing API call.";
-    } else if (method.getRequestStreaming() && method.getResponseStreaming()) {
+  public String returnTypeComment(Method method, MethodConfig config) {
+    if (method.getRequestStreaming() && method.getResponseStreaming()) {
       return "@returns {Stream}\n"
           + "  An object stream which is both readable and writable. It accepts objects\n"
           + "  representing "
@@ -327,34 +306,82 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           + " on 'data' event.";
     }
 
-    MessageType returnMessageType = method.getOutputMessage();
-    boolean isEmpty = returnMessageType.getFullName().equals("google.protobuf.Empty");
+    String returnTypeDoc;
+    if (config.isPageStreaming()) {
+      returnTypeDoc = "Array of ";
+      TypeRef resourcesType = config.getPageStreaming().getResourcesField().getType();
+      if (resourcesType.isMessage()) {
+        returnTypeDoc += linkForMessage(resourcesType.getMessageType());
+      } else if (resourcesType.isEnum()) {
+        returnTypeDoc += linkForMessage(resourcesType.getEnumType());
+      } else {
+        returnTypeDoc += jsTypeName(resourcesType);
+      }
+    } else {
+      returnTypeDoc = typeDocument(method.getOutputType());
+    }
+
+    boolean isEmpty = method.getOutputMessage().getFullName().equals("google.protobuf.Empty");
 
     String classInfo = jsTypeName(method.getOutputType());
 
-    String callbackType =
-        isEmpty ? "function(?Error)" : String.format("function(?Error, ?%s)", classInfo);
+    String callbackType;
+    if (isEmpty) {
+      callbackType = "function(?Error)";
+    } else if (config.isPageStreaming()) {
+      callbackType = String.format("function(?Error, ?Array, ?Object, ?%s)", classInfo);
+    } else {
+      callbackType = String.format("function(?Error, ?%s)", classInfo);
+    }
     String callbackMessage =
         "@param {"
             + callbackType
             + "=} callback\n"
             + "  The function which will be called with the result of the API call.";
     if (!isEmpty) {
-      callbackMessage +=
-          "\n\n  The second parameter to the callback is an object representing "
-              + linkForMessage(returnMessageType);
+      callbackMessage += "\n\n  The second parameter to the callback is " + returnTypeDoc + ".";
+      if (config.isPageStreaming()) {
+        callbackMessage +=
+            "\n\n  When autoPaginate: false is specified through options, it contains the result\n"
+                + "  in a single response. If the response indicates the next page exists, the third\n"
+                + "  parameter is set to be used for the next request object. The fourth parameter keeps\n"
+                + "  the raw response object of "
+                + typeDocument(method.getOutputType())
+                + ".";
+      }
     }
 
+    String returnMessage;
     if (method.getRequestStreaming()) {
-      return callbackMessage
-          + "\n@returns {Stream} - A writable stream which accepts objects representing\n"
-          + "  "
-          + linkForMessage(method.getInputType().getMessageType())
-          + " for write() method.";
+      returnMessage =
+          "@return {Stream} - A writable stream which accepts objects representing\n  "
+              + linkForMessage(method.getInputType().getMessageType())
+              + " for write() method.";
+    } else {
+      if (isEmpty) {
+        returnMessage = "@return {Promise} - The promise which resolves when API call finishes.\n";
+      } else {
+        returnMessage =
+            "@return {Promise} - The promise which resolves to an array.\n"
+                + "  The first element of the array is "
+                + returnTypeDoc
+                + ".\n";
+        if (config.isPageStreaming()) {
+          returnMessage +=
+              "\n  When autoPaginate: false is specified through options, the array has three elements.\n"
+                  + "  The first element is "
+                  + returnTypeDoc
+                  + " in a single response.\n"
+                  + "  The second element is the next request object if the response\n"
+                  + "  indicates the next page exists, or null. The third element is\n  "
+                  + typeDocument(method.getOutputType())
+                  + ".\n\n";
+        }
+      }
+      returnMessage +=
+          "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
     }
-    return callbackMessage
-        + "\n@returns {Promise} - The promise which resolves to the response object.\n"
-        + "  The promise has a method named \"cancel\" which cancels the ongoing API call.";
+    return callbackMessage + "\n" + returnMessage;
   }
 
   /** Return the list of messages within element which should be documented in Node.JS. */
@@ -396,20 +423,19 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return builder.build();
   }
 
-  /**
-   * Return comments lines for a given method, consisting of proto doc and parameter type
-   * documentation.
-   */
-  public List<String> methodComments(Interface service, Method msg) {
-    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(msg);
-    // Generate parameter types
+  /** Returns the comments for the parameters for the method. */
+  public String paramComments(Interface service, Method method) {
     StringBuilder paramTypesBuilder = new StringBuilder();
-    if (!msg.getRequestStreaming()) {
+    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    if (!method.getRequestStreaming()) {
       Iterable<Field> optionalParams =
           removePageTokenFromFields(config.getOptionalFields(), config);
       if (config.getRequiredFields().iterator().hasNext() || optionalParams.iterator().hasNext()) {
         paramTypesBuilder.append(
-            "@param {Object} request\n" + "  The request object that will be sent.\n");
+            "@param {Object} request\n  The request object that will be sent.\n");
+      } else {
+        paramTypesBuilder.append(
+            "@param {Object=} request\n  The request object that will be sent.\n");
       }
       for (Field field : config.getRequiredFields()) {
         paramTypesBuilder.append(fieldParamComment(field, null, false));
@@ -438,24 +464,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
             + "  Optional parameters. You can override the default settings for this call, e.g, timeout,\n"
             + "  retries, paginations, etc. See [gax.CallOptions]{@link "
             + "https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.");
-    String paramTypes = paramTypesBuilder.toString();
-
-    String returnType = returnTypeComment(msg, config);
-
-    // Generate comment contents
-    StringBuilder contentBuilder = new StringBuilder();
-    if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      contentBuilder.append(
-          JSDocCommentFixer.jsdocify(DocumentationUtil.getScopedDescription(msg)));
-      if (!Strings.isNullOrEmpty(paramTypes)) {
-        contentBuilder.append("\n\n");
-      }
-    }
-    contentBuilder.append(paramTypes);
-    if (returnType != null) {
-      contentBuilder.append("\n" + returnType);
-    }
-    return convertToCommentedBlock(contentBuilder.toString());
+    return paramTypesBuilder.toString();
   }
 
   /** Return a non-conflicting safe name if name is a JS reserved word. */

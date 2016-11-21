@@ -19,6 +19,7 @@ import com.google.api.codegen.config.FixedResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
@@ -52,7 +53,9 @@ public class PathTemplateTransformer {
   public List<PathTemplateView> generatePathTemplates(SurfaceTransformerContext context) {
     List<PathTemplateView> pathTemplates = new ArrayList<>();
 
-    for (SingleResourceNameConfig resourceNameConfig : context.getSimpleResourceNameConfigs()) {
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    for (SingleResourceNameConfig resourceNameConfig :
+        interfaceConfig.getSingleResourceNameConfigs()) {
       PathTemplateView.Builder pathTemplate = PathTemplateView.newBuilder();
       pathTemplate.name(
           context.getNamer().getPathTemplateName(context.getInterface(), resourceNameConfig));
@@ -213,7 +216,9 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Interface service = context.getInterface();
-    for (SingleResourceNameConfig resourceNameConfig : context.getSimpleResourceNameConfigs()) {
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    for (SingleResourceNameConfig resourceNameConfig :
+        interfaceConfig.getSingleResourceNameConfigs()) {
       FormatResourceFunctionView.Builder function = FormatResourceFunctionView.newBuilder();
       function.entityName(resourceNameConfig.getEntityName());
       function.name(namer.getFormatFunctionName(resourceNameConfig));
@@ -244,7 +249,9 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Interface service = context.getInterface();
-    for (SingleResourceNameConfig resourceNameConfig : context.getSimpleResourceNameConfigs()) {
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    for (SingleResourceNameConfig resourceNameConfig :
+        interfaceConfig.getSingleResourceNameConfigs()) {
       for (String var : resourceNameConfig.getNameTemplate().vars()) {
         ParseResourceFunctionView.Builder function = ParseResourceFunctionView.newBuilder();
         function.entityName(resourceNameConfig.getEntityName());
@@ -268,7 +275,9 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Interface service = context.getInterface();
-    for (SingleResourceNameConfig resourceNameConfig : context.getSimpleResourceNameConfigs()) {
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    for (SingleResourceNameConfig resourceNameConfig :
+        interfaceConfig.getSingleResourceNameConfigs()) {
       PathTemplateGetterFunctionView.Builder function = PathTemplateGetterFunctionView.newBuilder();
       function.name(namer.getPathTemplateNameGetter(service, resourceNameConfig));
       function.resourceName(namer.getPathTemplateResourcePhraseName(resourceNameConfig));
