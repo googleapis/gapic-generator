@@ -14,9 +14,25 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public enum ApiCallableType {
-  SimpleApiCallable,
-  PagedApiCallable,
-  BundlingApiCallable,
-  StreamingApiCallable
+/** The type of method on the client surface. */
+public enum ClientMethodType {
+  // Java
+  PagedFlattenedMethod,
+  PagedRequestObjectMethod,
+  PagedCallableMethod,
+  UnpagedListCallableMethod,
+  FlattenedMethod,
+  RequestObjectMethod,
+  CallableMethod,
+  OperationRequestObjectMethod,
+  AsyncOperationFlattenedMethod,
+  AsyncOperationRequestObjectMethod,
+  OperationCallableMethod,
+  // PHP
+  OptionalArrayMethod,
+  PagedOptionalArrayMethod,
+  // C#
+  FlattenedAsyncCallSettingsMethod,
+  FlattenedAsyncCancellationTokenMethod,
+  PagedFlattenedAsyncMethod,
 }

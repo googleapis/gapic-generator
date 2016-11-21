@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.FlatteningGroupProto;
+import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
@@ -26,6 +27,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
@@ -33,6 +35,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Empty;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -80,6 +83,9 @@ public abstract class MethodConfig {
   public abstract String getRerouteToGrpcInterface();
 
   public abstract VisibilityConfig getVisibility();
+
+  @Nullable
+  public abstract LongRunningConfig getLongRunningConfig();
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -222,6 +228,16 @@ public abstract class MethodConfig {
       }
     }
 
+    LongRunningConfig longRunningConfig = null;
+    if (!LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
+      longRunningConfig =
+          LongRunningConfig.createLongRunningConfig(
+              method.getModel(), diagCollector, methodConfigProto.getLongRunning());
+      if (longRunningConfig == null) {
+        error = true;
+      }
+    }
+
     if (error) {
       return null;
     } else {
@@ -241,7 +257,8 @@ public abstract class MethodConfig {
           fieldNamePatterns,
           sampleCodeInitFields,
           rerouteToGrpcInterface,
-          visibility);
+          visibility,
+          longRunningConfig);
     }
   }
 
@@ -333,6 +350,12 @@ public abstract class MethodConfig {
     return method.getRequestStreaming() || method.getResponseStreaming();
   }
 
+  /** Returns true if the method returns google.protobuf.empty message */
+  public static boolean isReturnEmptyMessageMethod(Method method) {
+    MessageType returnMessageType = method.getOutputMessage();
+    return Empty.getDescriptor().getFullName().equals(returnMessageType.getFullName());
+  }
+
   /** Returns true if this method has page streaming configured. */
   public boolean isPageStreaming() {
     return getPageStreaming() != null;
@@ -360,6 +383,10 @@ public abstract class MethodConfig {
   /** Returns true if this method has bundling configured. */
   public boolean isBundling() {
     return getBundling() != null;
+  }
+
+  public boolean isLongRunningOperation() {
+    return getLongRunningConfig() != null;
   }
 
   public Iterable<Field> getRequiredFields() {

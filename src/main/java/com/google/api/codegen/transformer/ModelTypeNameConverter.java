@@ -25,6 +25,9 @@ public interface ModelTypeNameConverter {
   /** Provides a TypeName for the given TypeRef. */
   TypeName getTypeName(TypeRef type);
 
+  /** Provides a TypedValue for the given enum TypeRef. */
+  TypedValue getEnumValue(TypeRef type, String value);
+
   /** Provides a TypeName for the element type of the given TypeRef. */
   TypeName getTypeNameForElementType(TypeRef type);
 

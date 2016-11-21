@@ -19,6 +19,7 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.Lists;
@@ -464,6 +465,13 @@ public class InitCodeNode {
   private static void validateValue(TypeRef type, String value) {
     Type descType = type.getKind();
     switch (descType) {
+      case TYPE_ENUM:
+        for (EnumValue enumValue : type.getEnumType().getValues()) {
+          if (enumValue.getSimpleName().equals(value)) {
+            return;
+          }
+        }
+        break;
       case TYPE_BOOL:
         String lowerCaseValue = value.toLowerCase();
         if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {

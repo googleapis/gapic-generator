@@ -12,15 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.viewmodel;
 
-import java.util.Comparator;
-
-/** A comparator for GeneratedResult for, e.g., ensuring determinism in test output. */
-public class GeneratedResultComparator implements Comparator<GeneratedResult> {
-
-  @Override
-  public int compare(GeneratedResult elt1, GeneratedResult elt2) {
-    return elt1.getFilename().compareTo(elt2.getFilename());
-  }
+/** The type of the underlying method in the service API. */
+public enum ServiceMethodType {
+  UnaryMethod,
+  GrpcStreamingMethod,
+  LongRunningMethod
 }

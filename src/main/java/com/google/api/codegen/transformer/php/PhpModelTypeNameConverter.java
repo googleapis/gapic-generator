@@ -188,4 +188,9 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
     throw new UnsupportedOperationException(
         "getTypeNameForResourceNameElementType not supported by PHP");
   }
+
+  @Override
+  public TypedValue getEnumValue(TypeRef type, String value) {
+    throw new UnsupportedOperationException("getEnumValue not supported by PHP");
+  }
 }

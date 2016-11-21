@@ -145,8 +145,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   /** Return YARD return type string for the given method, or null if the return type is nil. */
   @Nullable
   private String returnTypeComment(Method method, MethodConfig config, Interface service) {
-    MessageType returnMessageType = method.getOutputMessage();
-    if (returnMessageType.getFullName().equals("google.protobuf.Empty")) {
+    if (config.isReturnEmptyMessageMethod(method)) {
       return null;
     }
 

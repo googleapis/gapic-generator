@@ -221,7 +221,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStreamingClientName(Method method) {
+  public String getGrpcStreamingApiReturnTypeName(Method method) {
     // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
     // neither camel or underscore.
     return converter.getTypeName(method.getParent()).getNickname()

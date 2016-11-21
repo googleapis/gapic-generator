@@ -67,7 +67,7 @@ public class PythonGapicContext extends GapicContext {
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\'\'")
-          .put(Type.TYPE_BYTES, "\'\'")
+          .put(Type.TYPE_BYTES, "b\'\'")
           .build();
 
   /** A map from primitive types to their names in Python. */

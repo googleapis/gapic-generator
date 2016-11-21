@@ -90,7 +90,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     List<ViewModel> surfaceData = new ArrayList<>();
 
-    addXApiImports(context);
+    addApiImports(context);
 
     List<ApiMethodView> methods = generateApiMethods(context);
 
@@ -140,7 +140,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     return surfaceData;
   }
 
-  private void addXApiImports(SurfaceTransformerContext context) {
+  private void addApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("Google\\GAX\\AgentHeaderDescriptor");
     typeTable.saveNicknameFor("Google\\GAX\\ApiCallable");
@@ -148,6 +148,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("Google\\GAX\\GrpcConstants");
     typeTable.saveNicknameFor("Google\\GAX\\GrpcCredentialsHelper");
     typeTable.saveNicknameFor("Google\\GAX\\PathTemplate");
+
+    if (context.getInterfaceConfig().hasPageStreamingMethods()) {
+      typeTable.saveNicknameFor("Google\\GAX\\PageStreamingDescriptor");
+    }
   }
 
   private List<String> generateMethodKeys(SurfaceTransformerContext context) {

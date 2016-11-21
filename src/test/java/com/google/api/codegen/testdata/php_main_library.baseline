@@ -742,6 +742,8 @@ class LibraryServiceApi
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
+     *     @type string $seriesUuid
+     *          Uniquely identifies the series to the publishing house.
      *     @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
@@ -766,6 +768,9 @@ class LibraryServiceApi
         }
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
+        }
+        if (isset($optionalArgs['seriesUuid'])) {
+            $request->setSeriesUuid($optionalArgs['seriesUuid']);
         }
 
         $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(
@@ -1502,7 +1507,7 @@ class LibraryServiceApi
     }
 
     /**
-     *
+     * Test long-running operations
      *
      * Sample code:
      * ```

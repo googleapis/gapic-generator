@@ -387,14 +387,15 @@
 @end
 
 @private flattenedMethod(service, method)
-  @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
+  @let methodName = {@getMethodName(method)}, \
        inputTypeName = context.rubyTypeName(method.getInputType()), \
        documentation = comments(context.methodComments(service, method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
        methodView = context.getMethodView(service, method), \
-       sample = comments(util.getDocLines(sampleCode(methodView)))
+       sample = comments(util.getDocLines(sampleCode(methodView))), \
+       isReturnEmptyMessage = methodConfig.isReturnEmptyMessageMethod(method)
     @if documentation
       {@documentation}
       @if method.getRequestStreaming()
@@ -413,7 +414,7 @@
 
     @if method.getRequestStreaming()
       def {@methodName} reqs, options: nil
-        @@{@methodName}.call(reqs, options)
+        {@makeApiCall(method, service, "reqs", isReturnEmptyMessage)}
       end
     @else
       @if or(requiredParams, optionalParams)
@@ -437,30 +438,35 @@
               {@namedParameters(optionalParams)}
             @end
           }.delete_if { |_, v| v.nil? })
-          {@methodCall(method, service)}
+          {@makeApiCall(method, service, "req", isReturnEmptyMessage)}
         end
       @else
         def {@methodName} options: nil
           req = {@inputTypeName}.new
-          {@methodCall(method, service)}
+          {@makeApiCall(method, service, "req", isReturnEmptyMessage)}
         end
       @end
     @end
   @end
 @end
 
-@private methodCall(method, service)
-  @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName())
-    @if context.isWrappedOperation(method, service)
-      operation = Google::Gax::Operation.new(
-        @@{@methodName}.call(req, options),
-        @@operations_client,
-        call_options: options
-      )
-      operation.on_done { |operation| yield(operation) } if block_given?
-      operation
-    @else
-      @@{@methodName}.call(req, options)
+@private getMethodName(method)
+  {@context.upperCamelToLowerUnderscore(method.getSimpleName())}
+@end
+
+@private makeApiCall(method, service, request, isReturnEmptyMessage)
+  @if context.isWrappedOperation(method, service)
+    operation = Google::Gax::Operation.new(
+      @@{@getMethodName(method)}.call({@request}, options),
+      @@operations_client,
+      call_options: options
+    )
+    operation.on_done { |operation| yield(operation) } if block_given?
+    operation
+  @else
+    @@{@getMethodName(method)}.call({@request}, options)
+    @if isReturnEmptyMessage
+      nil
     @end
   @end
 @end
