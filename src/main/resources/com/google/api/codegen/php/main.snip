@@ -236,7 +236,7 @@
         return [
             @join descriptor : xapiClass.longRunningDescriptors
                 '{@descriptor.methodName}' => [
-                    'operationReturnType' => {@descriptor.operationReturnType}
+                    'operationReturnType' => '{@descriptor.operationReturnType}'
                 ],
             @end
         ];
@@ -320,7 +320,7 @@
             $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
         }
         $longRunningDescriptors = self::getLongRunningDescriptors();
-        foreach ($longRunningDescriptor as $method => $longRunningDescriptors) {
+        foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
             $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsApi' => $this->operationsApi];
         }
 
