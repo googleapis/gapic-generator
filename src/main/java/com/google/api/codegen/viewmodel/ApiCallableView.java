@@ -19,7 +19,9 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class ApiCallableView {
-  public abstract ApiCallableType type();
+  public abstract ApiCallableImplType type();
+
+  public abstract String interfaceTypeName();
 
   public abstract String requestTypeName();
 
@@ -51,7 +53,9 @@ public abstract class ApiCallableView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder type(ApiCallableType type);
+    public abstract Builder type(ApiCallableImplType type);
+
+    public abstract Builder interfaceTypeName(String val);
 
     public abstract Builder requestTypeName(String name);
 

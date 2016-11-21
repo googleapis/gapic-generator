@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
-import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
 
@@ -23,7 +23,7 @@ public abstract class TestMethodView {
 
   public abstract InitCodeView initCode();
 
-  public abstract ApiMethodType type();
+  public abstract ClientMethodType clientMethodType();
 
   public abstract String responseTypeName();
 
@@ -42,7 +42,7 @@ public abstract class TestMethodView {
 
     public abstract Builder initCode(InitCodeView val);
 
-    public abstract Builder type(ApiMethodType val);
+    public abstract Builder clientMethodType(ClientMethodType val);
 
     public abstract Builder responseTypeName(String val);
 

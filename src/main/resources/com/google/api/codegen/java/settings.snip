@@ -159,7 +159,7 @@
 
 @private methodMembers(xsettingsClass)
   @join settings : xsettingsClass.callSettings
-    @switch settings.type.toString
+    @switch settings.type
     @case "SimpleApiCallable"
       private final SimpleCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
@@ -173,8 +173,11 @@
     @case "StreamingApiCallable"
       private final StreamingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
+    @case "OperationApiCallable"
+      private final OperationCallSettings<{@settings.requestTypeName}, \
+          {@settings.operationResultTypeName}> {@settings.memberName};
     @default
-      $unhandledCase: {@settings.type.toString}$
+      $unhandledCase: {@settings.type}$
     @end
   @end
   {@BREAK}
@@ -185,7 +188,7 @@
     /**
      * Returns the object with the settings used for calls to {@settings.methodName}.
      */
-    @switch settings.type.toString
+    @switch settings.type
     @case "SimpleApiCallable"
         public SimpleCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
@@ -207,8 +210,13 @@
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
+    @case "OperationApiCallable"
+      public OperationCallSettings<{@settings.requestTypeName}, \
+            {@settings.operationResultTypeName}> {@settings.settingsGetFunction}() {
+        return {@settings.memberName};
+      }
     @default
-      $unhandledCase: {@settings.type.toString}$
+      $unhandledCase: {@settings.type}$
     @end
     {@""}
   @end
@@ -408,6 +416,9 @@
     @case "StreamingApiCallable"
       private final StreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
+    @case "OperationApiCallable"
+          private final OperationCallSettings.Builder<{@settings.requestTypeName}, \
+              {@settings.operationResultTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type.toString}$
     @end
@@ -476,6 +487,11 @@
                 .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
       @case "StreamingApiCallable"
         {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcTypeName}.{@settings.grpcMethodConstant});
+      @case "OperationApiCallable"
+        {@settings.memberName} = OperationCallSettings.newBuilder(
+            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
+            {@settings.operationResultTypeName}.class);
+
       @default
         $unhandledCase: {@settings.type.toString}$
       @end
@@ -492,9 +508,8 @@
     Builder builder = new Builder();
     @join settings : xsettingsClass.unaryCallSettings
       {@""}
+      # bundling settings
       @switch settings.type
-      @case "SimpleApiCallable"
-      @case "PagedApiCallable"
       @case "BundlingApiCallable"
         builder.{@settings.settingsGetFunction}().getBundlingSettingsBuilder()
             .setElementCountThreshold({@settings.bundlingConfig.elementCountThreshold})
@@ -504,9 +519,14 @@
             .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}))
             .setBlockingCallCountThreshold(1);
       @default
-        $unhandledCase: {@settings.type.toString}$
       @end
+      # retry settings
       builder.{@settings.settingsGetFunction}()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@settings.retryCodesName}"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@settings.retryParamsName}"));
+    @end
+    @join settings : xsettingsClass.longRunningCallSettings
+      builder.{@settings.settingsGetFunction}().getInitialCallSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@settings.retryCodesName}"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@settings.retryParamsName}"));
     @end
@@ -558,7 +578,7 @@
     /**
      * Returns the builder for the settings used for calls to {@settings.methodName}.
      */
-    @switch settings.type.toString
+    @switch settings.type
     @case "SimpleApiCallable"
       public SimpleCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
@@ -579,8 +599,13 @@
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
+    @case "OperationApiCallable"
+      public OperationCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.operationResultTypeName}> {@settings.settingsGetFunction}() {
+        return {@settings.memberName};
+      }
     @default
-      $unhandledCase: {@settings.type.toString}$
+      $unhandledCase: {@settings.type}$
     @end
     {@""}
   @end

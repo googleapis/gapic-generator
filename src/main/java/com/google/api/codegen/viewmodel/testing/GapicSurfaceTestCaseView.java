@@ -15,8 +15,9 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract MockGrpcResponseView mockResponse();
 
-  public abstract ApiMethodType methodType();
+  public abstract ClientMethodType clientMethodType();
 
   public abstract InitCodeView initCode();
 
@@ -50,9 +51,7 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract GrpcStreamingType grpcStreamingType();
 
-  public boolean isGrpcStreaming() {
-    return grpcStreamingType() != GrpcStreamingType.NonStreaming;
-  }
+  public abstract ServiceMethodType serviceMethodType();
 
   public static Builder newBuilder() {
     return new AutoValue_GapicSurfaceTestCaseView.Builder();
@@ -74,7 +73,7 @@ public abstract class GapicSurfaceTestCaseView {
 
     public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
 
-    public abstract Builder methodType(ApiMethodType val);
+    public abstract Builder clientMethodType(ClientMethodType val);
 
     public abstract Builder initCode(InitCodeView val);
 
@@ -87,6 +86,8 @@ public abstract class GapicSurfaceTestCaseView {
     public abstract Builder serviceConstructorName(String val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
+
+    public abstract Builder serviceMethodType(ServiceMethodType val);
 
     public abstract GapicSurfaceTestCaseView build();
   }

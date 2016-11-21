@@ -17,6 +17,10 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.grpc.ChannelAndExecutor;
+import com.google.api.gax.grpc.FixedChannelProvider;
+import com.google.api.gax.grpc.FixedExecutorProvider;
+import com.google.api.gax.grpc.OperationCallable;
+import com.google.api.gax.grpc.OperationFuture;
 import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
@@ -63,6 +67,8 @@ import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedR
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsApi;
+import com.google.longrunning.OperationsSettings;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.tagger.v1.AddLabelRequest;
@@ -149,6 +155,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final LibraryServiceSettings settings;
   private final ScheduledExecutorService executor;
   private final ManagedChannel channel;
+  private final OperationsApi operationsApi;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   private final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable;
@@ -179,6 +186,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
   private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
+  private final OperationCallable<GetBookRequest, Book> getBigBookOperationCallable;
 
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
@@ -294,6 +302,15 @@ public class LibraryServiceApi implements AutoCloseable {
     this.executor = channelAndExecutor.getExecutor();
     this.channel = channelAndExecutor.getChannel();
 
+    FixedExecutorProvider executorProvider = FixedExecutorProvider.create(this.executor);
+    FixedChannelProvider channelProvider = FixedChannelProvider.create(this.channel);
+    OperationsSettings operationsSettings =
+        OperationsSettings.defaultBuilder()
+            .setExecutorProvider(executorProvider)
+            .setChannelProvider(channelProvider)
+            .build();
+    this.operationsApi = OperationsApi.create(operationsSettings);
+
     this.createShelfCallable = UnaryCallable.create(settings.createShelfSettings(), this.channel, this.executor);
     this.getShelfCallable = UnaryCallable.create(settings.getShelfSettings(), this.channel, this.executor);
     this.listShelvesCallable = UnaryCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
@@ -328,7 +345,8 @@ public class LibraryServiceApi implements AutoCloseable {
         UnaryCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
     this.addTagCallable = UnaryCallable.create(settings.addTagSettings(), this.channel, this.executor);
     this.addLabelCallable = UnaryCallable.create(settings.addLabelSettings(), this.channel, this.executor);
-    this.getBigBookCallable = UnaryCallable.create(settings.getBigBookSettings(), this.channel, this.executor);
+    this.getBigBookCallable = UnaryCallable.create(settings.getBigBookSettings().getInitialCallSettings(), this.channel, this.executor);
+    this.getBigBookOperationCallable = OperationCallable.create(settings.getBigBookSettings(),this.channel, this.executor, this.operationsApi);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -354,6 +372,10 @@ public class LibraryServiceApi implements AutoCloseable {
     return settings;
   }
 
+  public final OperationsApi getOperationsApi() {
+    return operationsApi;
+  }
+
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a shelf, and returns the new Shelf.
@@ -370,6 +392,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf createShelf(Shelf shelf) {
+
     CreateShelfRequest request =
         CreateShelfRequest.newBuilder()
         .setShelf(shelf)
@@ -436,6 +459,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(ShelfName name) {
+
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setNameWithShelfName(name)
@@ -490,6 +514,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -654,6 +679,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void deleteShelf(ShelfName name) {
+
     DeleteShelfRequest request =
         DeleteShelfRequest.newBuilder()
         .setNameWithShelfName(name)
@@ -724,6 +750,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf mergeShelves(ShelfName name, ShelfName otherShelfName) {
+
     MergeShelvesRequest request =
         MergeShelvesRequest.newBuilder()
         .setNameWithShelfName(name)
@@ -801,6 +828,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book createBook(String name, Book book) {
+
     CreateBookRequest request =
         CreateBookRequest.newBuilder()
         .setName(name)
@@ -876,6 +904,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition) {
+
     PublishSeriesRequest request =
         PublishSeriesRequest.newBuilder()
         .setShelf(shelf)
@@ -948,6 +977,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book getBook(BookName name) {
+
     GetBookRequest request =
         GetBookRequest.newBuilder()
         .setNameWithBookName(name)
@@ -1120,6 +1150,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void deleteBook(BookName name) {
+
     DeleteBookRequest request =
         DeleteBookRequest.newBuilder()
         .setNameWithBookName(name)
@@ -1188,6 +1219,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book updateBook(BookName name, Book book) {
+
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setNameWithBookName(name)
@@ -1218,6 +1250,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book updateBook(BookName name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
+
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setNameWithBookName(name)
@@ -1293,6 +1326,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book moveBook(BookName name, ShelfName otherShelfName) {
+
     MoveBookRequest request =
         MoveBookRequest.newBuilder()
         .setNameWithBookName(name)
@@ -1579,6 +1613,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final BookFromArchive getBookFromArchive(ArchivedBookName name) {
+
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
         .setNameWithArchivedBookName(name)
@@ -1648,6 +1683,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final BookFromAnywhere getBookFromAnywhere(BookNameOneof name, BookName altBookName) {
+
     GetBookFromAnywhereRequest request =
         GetBookFromAnywhereRequest.newBuilder()
         .setNameWithBookNameOneof(name)
@@ -1725,6 +1761,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void updateBookIndex(BookName name, String indexName, Map<String, String> indexMap) {
+
     UpdateBookIndexRequest request =
         UpdateBookIndexRequest.newBuilder()
         .setNameWithBookName(name)
@@ -2174,30 +2211,31 @@ public class LibraryServiceApi implements AutoCloseable {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   *
+   * Test long-running operations
    *
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
-   *   Operation response = libraryServiceApi.getBigBook(name);
+   *   Book response = libraryServiceApi.getBigBookAsync(name).get();
    * }
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Operation getBigBook(BookName name) {
+  public final OperationFuture<Book> getBigBookAsync(BookName name) {
+
     GetBookRequest request =
         GetBookRequest.newBuilder()
         .setNameWithBookName(name)
         .build();
-    return getBigBook(request);
+    return getBigBookAsync(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   *
+   * Test long-running operations
    *
    * Sample code:
    * <pre><code>
@@ -2206,20 +2244,41 @@ public class LibraryServiceApi implements AutoCloseable {
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
    *     .build();
-   *   Operation response = libraryServiceApi.getBigBook(request);
+   *   Book response = libraryServiceApi.getBigBookAsync(request).get();
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Operation getBigBook(GetBookRequest request) {
-    return getBigBookCallable().call(request);
+  public final OperationFuture<Book> getBigBookAsync(GetBookRequest request) {
+    return getBigBookOperationCallable().futureCall(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Test long-running operations
    *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setNameWithBookName(name)
+   *     .build();
+   *   OperationFuture&lt;Operation&gt; future = libraryServiceApi.getBigBookOperationCallable().futureCall(request);
+   *   // Do something
+   *   Book response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final OperationCallable<GetBookRequest, Book> getBigBookOperationCallable() {
+    return getBigBookOperationCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations
    *
    * Sample code:
    * <pre><code>

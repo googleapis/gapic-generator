@@ -25,7 +25,7 @@ public abstract class GapicSurfaceTestFileView implements ViewModel {
 
   public abstract FileHeaderView fileHeader();
 
-  public abstract GapicSurfaceTestClassView test();
+  public abstract GapicSurfaceTestClassView testClass();
 
   @Override
   public String resourceRoot() {
@@ -47,7 +47,7 @@ public abstract class GapicSurfaceTestFileView implements ViewModel {
 
     public abstract Builder fileHeader(FileHeaderView val);
 
-    public abstract Builder test(GapicSurfaceTestClassView val);
+    public abstract Builder testClass(GapicSurfaceTestClassView val);
 
     public abstract Builder outputPath(String val);
 

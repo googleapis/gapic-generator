@@ -87,7 +87,7 @@
         os.Exit(m.Run())
     }
 
-    @join testClass : view.tests
+    @join testClass : view.testClasses
         @join testCase : testClass.testCases
             {@testError(testCase)}
         @end
@@ -212,7 +212,7 @@
             }
             _, err = stream.CloseAndRecv()
         @case "NonStreaming"
-            @switch test.methodType
+            @switch test.clientMethodType
             @case "PagedRequestObjectMethod"
                 _, err = c.{@test.surfaceMethodName}(context.Background(), req).Next()
             @case "RequestObjectMethod"

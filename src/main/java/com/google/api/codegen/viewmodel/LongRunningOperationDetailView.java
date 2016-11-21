@@ -14,20 +14,21 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public enum ApiMethodType {
-  // Java
-  PagedFlattenedMethod,
-  PagedRequestObjectMethod,
-  PagedCallableMethod,
-  UnpagedListCallableMethod,
-  FlattenedMethod,
-  RequestObjectMethod,
-  CallableMethod,
-  // PHP
-  OptionalArrayMethod,
-  PagedOptionalArrayMethod,
-  // C#
-  FlattenedAsyncCallSettingsMethod,
-  FlattenedAsyncCancellationTokenMethod,
-  PagedFlattenedAsyncMethod,
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class LongRunningOperationDetailView {
+
+  public abstract String operationReturnType();
+
+  public static Builder newBuilder() {
+    return new AutoValue_LongRunningOperationDetailView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder operationReturnType(String val);
+
+    public abstract LongRunningOperationDetailView build();
+  }
 }

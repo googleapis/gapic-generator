@@ -21,7 +21,7 @@ import java.util.List;
 @AutoValue
 public abstract class OptionalArrayMethodView implements ApiMethodView {
 
-  public abstract ApiMethodType type();
+  public abstract ClientMethodType type();
 
   public abstract String apiClassName();
 
@@ -61,7 +61,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder type(ApiMethodType val);
+    public abstract Builder type(ClientMethodType val);
 
     public abstract Builder apiClassName(String val);
 

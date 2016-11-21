@@ -30,7 +30,7 @@ public abstract class MockCombinedView implements ViewModel {
 
   public abstract List<MockServiceImplView> serviceImpls();
 
-  public abstract List<GapicSurfaceTestClassView> tests();
+  public abstract List<GapicSurfaceTestClassView> testClasses();
 
   public abstract List<MockServiceUsageView> mockServices();
 
@@ -55,7 +55,7 @@ public abstract class MockCombinedView implements ViewModel {
 
     public abstract Builder serviceImpls(List<MockServiceImplView> val);
 
-    public abstract Builder tests(List<GapicSurfaceTestClassView> val);
+    public abstract Builder testClasses(List<GapicSurfaceTestClassView> val);
 
     public abstract Builder mockServices(List<MockServiceUsageView> val);
 

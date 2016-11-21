@@ -495,6 +495,7 @@ module Library
           name: name
         }.delete_if { |_, v| v.nil? })
         @delete_shelf.call(req, options)
+        nil
       end
 
       # Merges two shelves by adding all books from the shelf named
@@ -715,6 +716,7 @@ module Library
           name: name
         }.delete_if { |_, v| v.nil? })
         @delete_book.call(req, options)
+        nil
       end
 
       # Updates a book.
@@ -876,6 +878,7 @@ module Library
           comments: comments
         }.delete_if { |_, v| v.nil? })
         @add_comments.call(req, options)
+        nil
       end
 
       # Gets a book from an archive.
@@ -973,6 +976,7 @@ module Library
           index_map: index_map
         }.delete_if { |_, v| v.nil? })
         @update_book_index.call(req, options)
+        nil
       end
 
       # Test server streaming
@@ -1190,6 +1194,8 @@ module Library
         @add_label.call(req, options)
       end
 
+      # Test long-running operations
+      #
       # @param name [String]
       #   The name of the book to retrieve.
       # @param options [Google::Gax::CallOptions]
