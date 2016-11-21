@@ -38,7 +38,7 @@ import org.junit.Test;
 public class NoTemplatesApiServiceTest {
   private static MockNoTemplatesAPIService mockNoTemplatesAPIService;
   private static MockServiceHelper serviceHelper;
-  private NoTemplatesApiServiceApi api;
+  private NoTemplatesApiServiceClient client;
 
   @BeforeClass
   public static void startStaticServer() {
@@ -58,12 +58,12 @@ public class NoTemplatesApiServiceTest {
     NoTemplatesApiServiceSettings settings = NoTemplatesApiServiceSettings.defaultBuilder()
         .setChannelProvider(serviceHelper.createChannelProvider())
         .build();
-    api = NoTemplatesApiServiceApi.create(settings);
+    client = NoTemplatesApiServiceClient.create(settings);
   }
 
   @After
   public void tearDown() throws Exception {
-    api.close();
+    client.close();
   }
 
 }
