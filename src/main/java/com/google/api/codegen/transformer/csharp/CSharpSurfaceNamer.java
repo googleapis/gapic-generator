@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -215,12 +216,22 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return getPackageName() + ".Snippets";
   }
 
+  @Override
+  public String getAnyFieldResourceTypeName() {
+    return "IResourceName";
+  }
+
   private String getResourceTypeName(ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
     if (resourceFieldConfig.getResourceNameConfig() == null) {
       return typeTable.getAndSaveNicknameForElementType(resourceFieldConfig.getField().getType());
     } else {
       return getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
     }
+  }
+
+  @Override
+  public String getResourceEnumName(ResourceNameConfig resourceNameConfig) {
+    return getResourceTypeNameObject(resourceNameConfig).toUpperCamel();
   }
 
   @Override

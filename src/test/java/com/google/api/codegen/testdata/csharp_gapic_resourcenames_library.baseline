@@ -25,6 +25,68 @@ namespace Google.Example.Library.V1
     public interface IResourceName{}// TODO: This will be in GAX
     public interface ISingleResourceName:IResourceName{} // TODO: Is this required?
 
+    public sealed class UnknownResourceName : IResourceName // TODO: This will be in GAX
+    {
+        public static UnknownResourceName Parse(string value) => new UnknownResourceName(value);
+
+        public static bool TryParse(string value, out UnknownResourceName result)
+        {
+            result = new UnknownResourceName(value);
+            return true;
+        }
+
+        public UnknownResourceName(string value)
+        {
+            Value = GaxPreconditions.CheckNotNull(value, nameof(value));
+        }
+
+        public string Value { get; }
+
+        public override string ToString() => Value;
+    }
+
+    public sealed class ResourceNameList<TResource> : IList<TResource> where TResource : IResourceName // TODO: This will be in GAX
+    {
+        public ResourceNameList(IList<string> underlyingList, Func<TResource, string> nameToString, Func<string, TResource> stringToName)
+        {
+            _underlyingList = GaxPreconditions.CheckNotNull(underlyingList, nameof(underlyingList));
+            _nameToString = GaxPreconditions.CheckNotNull(nameToString, nameof(nameToString));
+            _stringToName = GaxPreconditions.CheckNotNull(stringToName, nameof(stringToName));
+        }
+
+        private IList<string> _underlyingList;
+        private Func<TResource, string> _nameToString;
+        private Func<string, TResource> _stringToName;
+
+        public int Count => _underlyingList.Count;
+        public bool IsReadOnly => _underlyingList.IsReadOnly;
+        public TResource this[int i]
+        {
+            get { return _stringToName(_underlyingList[i]); }
+            set { _underlyingList[i] = _nameToString(value); }
+        }
+        public void Add(TResource value) => _underlyingList.Add(_nameToString(value));
+        public void Clear() => _underlyingList.Clear();
+        public bool Contains(TResource value) => _underlyingList.Contains(_nameToString(value));
+        public void CopyTo(TResource[] array, int arrayIndex)
+        {
+            // TODO: Improve exceptions
+            if (array == null) throw new ArgumentNullException();
+            if (arrayIndex < 0) throw new ArgumentOutOfRangeException();
+            if (Count > array.Length - arrayIndex) throw new ArgumentException();
+            for (int i = 0; i < Count; i++)
+            {
+                array[arrayIndex + i] = _stringToName(_underlyingList[i]);
+            }
+        }
+        public IEnumerator<TResource> GetEnumerator() => _underlyingList.Select(_stringToName).GetEnumerator();
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        public int IndexOf(TResource value) => _underlyingList.IndexOf(_nameToString(value));
+        public void Insert(int index, TResource item) => _underlyingList.Insert(index, _nameToString(item));
+        public bool Remove(TResource item) => _underlyingList.Remove(_nameToString(item));
+        public void RemoveAt(int index) => _underlyingList.RemoveAt(index);
+    }
+
     /// <summary>
     /// Resource name for a shelf.
     /// </summary>
@@ -263,11 +325,11 @@ namespace Google.Example.Library.V1
 
     public sealed partial class BookNameOneof : IResourceName
     {
-        public enum Type
+        public enum OneofType
         {
-            BOOK_NAME = 1,
-            ARCHIVED_BOOK_NAME = 2,
-            DELETED_BOOK_NAME_FIXED = 3,
+            BookName = 1,
+            ArchivedBookName = 2,
+            DeletedBookNameFixed = 3,
         }
 
         public static BookNameOneof Parse(string name)
@@ -285,57 +347,56 @@ namespace Google.Example.Library.V1
             BookName bookName;
             if (BookName.TryParse(name, out bookName))
             {
-                result = new BookNameOneof(Type.BOOK_NAME, bookName);
+                result = new BookNameOneof(OneofType.BookName, bookName);
                 return true;
             }
             ArchivedBookName archivedBookName;
             if (ArchivedBookName.TryParse(name, out archivedBookName))
             {
-                result = new BookNameOneof(Type.ARCHIVED_BOOK_NAME, archivedBookName);
+                result = new BookNameOneof(OneofType.ArchivedBookName, archivedBookName);
                 return true;
             }
             DeletedBookNameFixed deletedBookNameFixed;
             if (DeletedBookNameFixed.TryParse(name, out deletedBookNameFixed))
             {
-                result = new BookNameOneof(Type.DELETED_BOOK_NAME_FIXED, deletedBookNameFixed);
+                result = new BookNameOneof(OneofType.DeletedBookNameFixed, deletedBookNameFixed);
                 return true;
             }
             result = null;
             return false;
         }
 
-        public static BookNameOneof From(BookName bookName) => new BookNameOneof(Type.BOOK_NAME, bookName);
+        public static BookNameOneof From(BookName bookName) => new BookNameOneof(OneofType.BookName, bookName);
 
-        public static BookNameOneof From(ArchivedBookName archivedBookName) => new BookNameOneof(Type.ARCHIVED_BOOK_NAME, archivedBookName);
+        public static BookNameOneof From(ArchivedBookName archivedBookName) => new BookNameOneof(OneofType.ArchivedBookName, archivedBookName);
 
-        public static BookNameOneof From(DeletedBookNameFixed deletedBookNameFixed) => new BookNameOneof(Type.DELETED_BOOK_NAME_FIXED, deletedBookNameFixed);
+        public static BookNameOneof From(DeletedBookNameFixed deletedBookNameFixed) => new BookNameOneof(OneofType.DeletedBookNameFixed, deletedBookNameFixed);
 
-        public BookNameOneof(Type type, IResourceName value)
+        public BookNameOneof(OneofType type, IResourceName value)
         {
-            _type = type;
-            _value = GaxPreconditions.CheckNotNull(value, nameof(value));
+            Type = GaxPreconditions.CheckEnumValue<OneofType>(type, nameof(value));
+            Value = GaxPreconditions.CheckNotNull(value, nameof(value));
         }
 
-        private Type _type;
-        private IResourceName _value;
+        public OneofType Type { get; }
+        public IResourceName Value { get; }
 
-        // Possibly move to base class (if we have one?)
-        private T CheckAndReturn<T>(Type type)
+        private T CheckAndReturn<T>(OneofType type)
         {
-            if (_type != type)
+            if (Type != type)
             {
-                throw new InvalidOperationException($"Requested type {type}, but this one-of contains type {_type}");
+                throw new InvalidOperationException($"Requested type {type}, but this one-of contains type {Type}");
             }
-            return (T)_value;
+            return (T)Value;
         }
 
-        public BookName BookName => CheckAndReturn<BookName>(Type.BOOK_NAME);
+        public BookName BookName => CheckAndReturn<BookName>(OneofType.BookName);
 
-        public ArchivedBookName ArchivedBookName => CheckAndReturn<ArchivedBookName>(Type.ARCHIVED_BOOK_NAME);
+        public ArchivedBookName ArchivedBookName => CheckAndReturn<ArchivedBookName>(OneofType.ArchivedBookName);
 
-        public DeletedBookNameFixed DeletedBookNameFixed => CheckAndReturn<DeletedBookNameFixed>(Type.DELETED_BOOK_NAME_FIXED);
+        public DeletedBookNameFixed DeletedBookNameFixed => CheckAndReturn<DeletedBookNameFixed>(OneofType.DeletedBookNameFixed);
 
-        public override string ToString() => _value.ToString();
+        public override string ToString() => Value.ToString();
     }
 
     public sealed partial class DeletedBookNameFixed : IResourceName
@@ -378,21 +439,12 @@ namespace Google.Example.Library.V1
     public partial class FindRelatedBooksResponse
     {
         /// <summary>
-        /// A <see cref="IEnumerable<BookName>"/>-typed view over the <see cref="Names"/> resource-name property.
+        /// A <see cref="IList<BookName>"/>-typed view over the <see cref="Names"/> resource-name property.
         /// </summary>
-        public IEnumerable<BookName> NamesAsResources
-        {
-            get
-            {
-                return Names.Select(x => BookName.Parse(x));
-            }
-            set
-            {
-                GaxPreconditions.CheckNotNull(value, nameof(value));
-                Names.Clear();
-                Names.AddRange(value.Select(x => x.ToString()));
-            }
-        }
+        public IList<BookName> NamesAsResources =>
+            new ResourceNameList<BookName>(Names,
+                name => name.ToString(),
+                str => BookName.Parse(str));
 
     }
 
@@ -477,7 +529,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         public IResourceName NameAsResource
         {
-
+            get { return UnknownResourceName.Parse(Name); }
             set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
         }
 
@@ -647,38 +699,20 @@ namespace Google.Example.Library.V1
     public partial class FindRelatedBooksRequest
     {
         /// <summary>
-        /// A <see cref="IEnumerable<BookName>"/>-typed view over the <see cref="Names"/> resource-name property.
+        /// A <see cref="IList<BookName>"/>-typed view over the <see cref="Names"/> resource-name property.
         /// </summary>
-        public IEnumerable<BookName> NamesAsResources
-        {
-            get
-            {
-                return Names.Select(x => BookName.Parse(x));
-            }
-            set
-            {
-                GaxPreconditions.CheckNotNull(value, nameof(value));
-                Names.Clear();
-                Names.AddRange(value.Select(x => x.ToString()));
-            }
-        }
+        public IList<BookName> NamesAsResources =>
+            new ResourceNameList<BookName>(Names,
+                name => name.ToString(),
+                str => BookName.Parse(str));
 
         /// <summary>
-        /// A <see cref="IEnumerable<ShelfName>"/>-typed view over the <see cref="Shelves"/> resource-name property.
+        /// A <see cref="IList<ShelfName>"/>-typed view over the <see cref="Shelves"/> resource-name property.
         /// </summary>
-        public IEnumerable<ShelfName> ShelvesAsResources
-        {
-            get
-            {
-                return Shelves.Select(x => ShelfName.Parse(x));
-            }
-            set
-            {
-                GaxPreconditions.CheckNotNull(value, nameof(value));
-                Shelves.Clear();
-                Shelves.AddRange(value.Select(x => x.ToString()));
-            }
-        }
+        public IList<ShelfName> ShelvesAsResources =>
+            new ResourceNameList<ShelfName>(Shelves,
+                name => name.ToString(),
+                str => ShelfName.Parse(str));
 
     }
 

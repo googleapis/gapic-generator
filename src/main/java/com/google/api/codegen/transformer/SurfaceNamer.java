@@ -797,6 +797,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
   }
 
+  /** The name of the resource-name type for an "Any" resource. */
+  public String getAnyFieldResourceTypeName() {
+    return getNotImplementedString("SurfaceNamer.getAnyFieldResourceTypeName");
+  }
+
   /**
    * Computes the nickname of the paged response type name for the given method and resources field,
    * saves it in the given type table, and returns it.

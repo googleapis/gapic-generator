@@ -8,6 +8,68 @@
         public interface IResourceName{}// TODO: This will be in GAX
         public interface ISingleResourceName:IResourceName{} // TODO: Is this required?
 
+        public sealed class UnknownResourceName : IResourceName // TODO: This will be in GAX
+        {
+            public static UnknownResourceName Parse(string value) => new UnknownResourceName(value);
+            
+            public static bool TryParse(string value, out UnknownResourceName result)
+            {
+                result = new UnknownResourceName(value);
+                return true;
+            } 
+
+            public UnknownResourceName(string value)
+            {
+                Value = GaxPreconditions.CheckNotNull(value, nameof(value));
+            }
+
+            public string Value { get; }
+
+            public override string ToString() => Value;
+        }
+
+        public sealed class ResourceNameList<TResource> : IList<TResource> where TResource : IResourceName // TODO: This will be in GAX
+        {
+            public ResourceNameList(IList<string> underlyingList, Func<TResource, string> nameToString, Func<string, TResource> stringToName)
+            {
+                _underlyingList = GaxPreconditions.CheckNotNull(underlyingList, nameof(underlyingList));
+                _nameToString = GaxPreconditions.CheckNotNull(nameToString, nameof(nameToString));
+                _stringToName = GaxPreconditions.CheckNotNull(stringToName, nameof(stringToName));
+            }
+
+            private IList<string> _underlyingList;
+            private Func<TResource, string> _nameToString;
+            private Func<string, TResource> _stringToName;
+
+            public int Count => _underlyingList.Count;
+            public bool IsReadOnly => _underlyingList.IsReadOnly;
+            public TResource this[int i]
+            {
+                get { return _stringToName(_underlyingList[i]); }
+                set { _underlyingList[i] = _nameToString(value); }
+            }
+            public void Add(TResource value) => _underlyingList.Add(_nameToString(value));
+            public void Clear() => _underlyingList.Clear();
+            public bool Contains(TResource value) => _underlyingList.Contains(_nameToString(value));
+            public void CopyTo(TResource[] array, int arrayIndex)
+            {
+                // TODO: Improve exceptions
+                if (array == null) throw new ArgumentNullException();
+                if (arrayIndex < 0) throw new ArgumentOutOfRangeException();
+                if (Count > array.Length - arrayIndex) throw new ArgumentException();
+                for (int i = 0; i < Count; i++)
+                {
+                    array[arrayIndex + i] = _stringToName(_underlyingList[i]);
+                }
+            }
+            public IEnumerator<TResource> GetEnumerator() => _underlyingList.Select(_stringToName).GetEnumerator();
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+            public int IndexOf(TResource value) => _underlyingList.IndexOf(_nameToString(value));
+            public void Insert(int index, TResource item) => _underlyingList.Insert(index, _nameToString(item));
+            public bool Remove(TResource item) => _underlyingList.Remove(_nameToString(item));
+            public void RemoveAt(int index) => _underlyingList.RemoveAt(index);
+        }
+
         {@resourceClasses(resourceNames.resourceNames)}
 
         {@partialProtoClasses(resourceNames.resourceProtos)}
@@ -92,7 +154,7 @@
 @private resourceClassOneof(resource)
     public sealed partial class {@resource.typeName} : IResourceName
     {
-        public enum Type
+        public enum OneofType
         {
             @join child : resource.children
                 {@child.enumName} = {@child.index},
@@ -115,7 +177,7 @@
                 {@child.typeName} {@child.paramName};
                 if ({@child.typeName}.TryParse(name, out {@child.paramName}))
                 {
-                    result = new {@resource.typeName}(Type.{@child.enumName}, {@child.paramName});
+                    result = new {@resource.typeName}(OneofType.{@child.enumName}, {@child.paramName});
                     return true;
                 }
             @end
@@ -124,33 +186,32 @@
         }
 
         @join child : resource.children
-            public static {@resource.typeName} From({@child.typeName} {@child.paramName}) => new {@resource.typeName}(Type.{@child.enumName}, {@child.paramName});
+            public static {@resource.typeName} From({@child.typeName} {@child.paramName}) => new {@resource.typeName}(OneofType.{@child.enumName}, {@child.paramName});
 
         @end
-        public {@resource.typeName}(Type type, IResourceName value)
+        public {@resource.typeName}(OneofType type, IResourceName value)
         {
-            _type = type;
-            _value = GaxPreconditions.CheckNotNull(value, nameof(value));
+            Type = GaxPreconditions.CheckEnumValue<OneofType>(type, nameof(value));
+            Value = GaxPreconditions.CheckNotNull(value, nameof(value));
         }
 
-        private Type _type;
-        private IResourceName _value;
+        public OneofType Type { get; }
+        public IResourceName Value { get; }
 
-        // Possibly move to base class (if we have one?)
-        private T CheckAndReturn<T>(Type type)
+        private T CheckAndReturn<T>(OneofType type)
         {
-            if (_type != type)
+            if (Type != type)
             {
-                throw new InvalidOperationException($"Requested type {type}, but this one-of contains type {_type}");
+                throw new InvalidOperationException($"Requested type {type}, but this one-of contains type {Type}");
             }
-            return (T)_value;
+            return (T)Value;
         }
 
         @join child : resource.children
-            public {@child.typeName} {@child.propertyName} => CheckAndReturn<{@child.typeName}>(Type.{@child.enumName});
+            public {@child.typeName} {@child.propertyName} => CheckAndReturn<{@child.typeName}>(OneofType.{@child.enumName});
 
         @end
-        public override string ToString() => _value.ToString();
+        public override string ToString() => Value.ToString();
     }
 @end
 
@@ -218,32 +279,26 @@
                 /// <summary>
                 /// A <see cref="{@field.typeName}"/>-typed view over the <see cref="{@field.underlyingPropertyName}"/> resource-name property.
                 /// </summary>
-                public {@field.typeName} {@field.propertyName}
-                {
-                    @if field.isRepeated
+                @if field.isRepeated
+                    public {@field.typeName} {@field.propertyName} =>
+                        new ResourceNameList<{@field.elementTypeName}>({@field.underlyingPropertyName},
+                            name => name.ToString(),
+                            @if field.isAny
+                                str => UnknownResourceName.Parse(str));
+                            @else
+                                str => {@field.elementTypeName}.Parse(str));
+                            @end
+                @else
+                    public {@field.typeName} {@field.propertyName}
+                    {
                         @if field.isAny
-                        @else
-                            get
-                            {
-                                return {@field.underlyingPropertyName}.Select(x => {@field.elementTypeName}.Parse(x));
-                            }
-                        @end
-
-                        set
-                        {
-                            GaxPreconditions.CheckNotNull(value, nameof(value));
-                            {@field.underlyingPropertyName}.Clear();
-                            {@field.underlyingPropertyName}.AddRange(value.Select(x => x.ToString()));
-                        }
-                    @else
-                        @if field.isAny
+                            get { return UnknownResourceName.Parse({@field.underlyingPropertyName}); }
                         @else
                             get { return {@field.typeName}.Parse({@field.underlyingPropertyName}); }
                         @end
-
                         set { {@field.underlyingPropertyName} = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-                    @end
-                }
+                    }
+                @end
 
             @end
         }
