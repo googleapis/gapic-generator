@@ -130,6 +130,9 @@
     private $scopes;
     private $defaultCallSettings;
     private $descriptors;
+    @if xapiClass.hasLongRunningOperations
+      private $operationsApi;
+    @end
     {@""}
 @end
 
@@ -146,6 +149,7 @@
         {@pathTemplateGetterFunction(function)}
     @end
     {@pageStreamingDescriptorFunction(xapiClass)}
+    {@longRunningDescriptorFunction(xapiClass)}
 @end
 
 @private formatResourceFunction(function)
@@ -226,6 +230,20 @@
     {@""}
 @end
 
+@private longRunningDescriptorFunction(xapiClass)
+    private static function getLongRunningDescriptors()
+    {
+        return [
+            @join descriptor : xapiClass.longRunningDescriptors
+                '{@descriptor.methodName}' => [
+                    'operationReturnType' => {@descriptor.operationReturnType}
+                ],
+            @end
+        ];
+    }
+    {@""}
+@end
+
 @private constructor(xapiClass)
     // TODO(garrettjones): add channel (when supported in gRPC)
     /**
@@ -278,6 +296,10 @@
         ];
         $options = array_merge($defaultOptions, $options);
 
+        @if xapiClass.hasLongRunningOperations
+            $this->operationsApi = new OperationsApi(['serviceAddress' => $options['serviceAddress']]);
+        @end
+
         $headerDescriptor = new AgentHeaderDescriptor([
             'clientName' => $options['appName'],
             'clientVersion' => $options['appVersion'],
@@ -296,6 +318,10 @@
         $pageStreamingDescriptors = self::getPageStreamingDescriptors();
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
             $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
+        }
+        $longRunningDescriptors = self::getLongRunningDescriptors();
+        foreach ($longRunningDescriptor as $method => $longRunningDescriptors) {
+            $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsApi' => $this->operationsApi];
         }
 
         $clientConfigJsonString = file_get_contents(__DIR__ . '/{@xapiClass.clientConfigPath}');

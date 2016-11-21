@@ -132,6 +132,7 @@ class LibraryServiceClient
     private $scopes;
     private $defaultCallSettings;
     private $descriptors;
+    private $operationsApi;
 
     /**
      * Formats a string containing the fully-qualified path to represent
@@ -291,6 +292,15 @@ class LibraryServiceClient
         return $pageStreamingDescriptors;
     }
 
+    private static function getLongRunningDescriptors()
+    {
+        return [
+            'getBigBook' => [
+                'operationReturnType' => Book
+            ],
+        ];
+    }
+
     // TODO(garrettjones): add channel (when supported in gRPC)
     /**
      * Constructor.
@@ -341,6 +351,8 @@ class LibraryServiceClient
         ];
         $options = array_merge($defaultOptions, $options);
 
+        $this->operationsApi = new OperationsApi(['serviceAddress' => $options['serviceAddress']]);
+
         $headerDescriptor = new AgentHeaderDescriptor([
             'clientName' => $options['appName'],
             'clientVersion' => $options['appVersion'],
@@ -377,6 +389,10 @@ class LibraryServiceClient
         $pageStreamingDescriptors = self::getPageStreamingDescriptors();
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
             $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
+        }
+        $longRunningDescriptors = self::getLongRunningDescriptors();
+        foreach ($longRunningDescriptor as $method => $longRunningDescriptors) {
+            $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsApi' => $this->operationsApi];
         }
 
         $clientConfigJsonString = file_get_contents(__DIR__ . '/resources/library_service_client_config.json');

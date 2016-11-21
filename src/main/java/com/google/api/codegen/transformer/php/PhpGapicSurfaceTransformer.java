@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
@@ -31,10 +32,12 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
+import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -119,6 +122,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.pathTemplateGetterFunctions(
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
+    xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
+    xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
 
     xapiClass.methodKeys(generateMethodKeys(context));
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
@@ -140,6 +145,22 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     surfaceData.add(xapiClass.build());
 
     return surfaceData;
+  }
+
+  private List<LongRunningOperationDetailView> createLongRunningDescriptors(
+      SurfaceTransformerContext context) {
+    List<LongRunningOperationDetailView> result = new ArrayList<>();
+
+    for (Method method : context.getLongRunningMethods()) {
+      TypeRef returnType = context.getMethodConfig(method).getLongRunningConfig().getReturnType();
+      result.add(
+          LongRunningOperationDetailView.newBuilder()
+              .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
+              .operationReturnType(context.getTypeTable().getAndSaveNicknameFor(returnType))
+              .build());
+    }
+
+    return result;
   }
 
   private void addApiImports(SurfaceTransformerContext context) {

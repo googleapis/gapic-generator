@@ -48,6 +48,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
+  public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
+
   public abstract List<String> methodKeys();
 
   public abstract String clientConfigPath();
@@ -63,6 +65,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract String outputPath();
 
   public abstract List<ApiMethodView> apiMethods();
+
+  public abstract boolean hasLongRunningOperations();
 
   @Override
   public String resourceRoot() {
@@ -103,6 +107,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder pageStreamingDescriptors(List<PageStreamingDescriptorView> val);
 
+    public abstract Builder longRunningDescriptors(List<LongRunningOperationDetailView> val);
+
     public abstract Builder methodKeys(List<String> val);
 
     public abstract Builder clientConfigPath(String val);
@@ -118,6 +124,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder outputPath(String val);
 
     public abstract Builder apiMethods(List<ApiMethodView> val);
+
+    public abstract Builder hasLongRunningOperations(boolean val);
 
     public abstract DynamicLangXApiView build();
   }

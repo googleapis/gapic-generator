@@ -31,6 +31,8 @@ public abstract class LongRunningOperationDetailView {
 
   public abstract boolean implementsCancel();
 
+  public abstract String methodName();
+
   public static Builder newBuilder() {
     return new AutoValue_LongRunningOperationDetailView.Builder();
   }
@@ -48,6 +50,8 @@ public abstract class LongRunningOperationDetailView {
     public abstract Builder implementsDelete(boolean val);
 
     public abstract Builder implementsCancel(boolean val);
+
+    public abstract Builder methodName(String val);
 
     public abstract LongRunningOperationDetailView build();
   }
