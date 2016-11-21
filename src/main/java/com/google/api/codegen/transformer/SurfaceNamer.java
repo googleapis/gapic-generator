@@ -801,7 +801,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * saves it in the given type table, and returns it.
    */
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 
@@ -815,7 +815,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * the given type table, and returns it.
    */
   public String getAndSaveAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedAsyncResponseTypeName");
   }
 
@@ -824,8 +824,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * caller, saves it in the given type table, and returns it.
    */
   public String getAndSaveCallerPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
-    return getAndSavePagedResponseTypeName(method, typeTable, resourcesField);
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+    return getAndSavePagedResponseTypeName(method, typeTable, resourcesFieldConfig);
   }
 
   /**
@@ -833,8 +833,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * caller, saves it in the given type table, and returns it.
    */
   public String getAndSaveCallerAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
-    return getAndSaveAsyncPagedResponseTypeName(method, typeTable, resourcesField);
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+    return getAndSaveAsyncPagedResponseTypeName(method, typeTable, resourcesFieldConfig);
   }
 
   /** The class name of the generated resource type from the entity name. */

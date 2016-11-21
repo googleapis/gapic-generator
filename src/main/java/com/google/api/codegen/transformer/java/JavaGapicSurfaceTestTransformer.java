@@ -170,9 +170,11 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String responseTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
     if (context.getMethodConfig().isPageStreaming()) {
       methodType = ApiMethodType.PagedFlattenedMethod;
-      Field resourcesField = context.getMethodConfig().getPageStreaming().getResourcesField();
+      FieldConfig resourcesFieldConfig =
+          context.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
       responseTypeName =
-          namer.getAndSavePagedResponseTypeName(method, context.getTypeTable(), resourcesField);
+          namer.getAndSavePagedResponseTypeName(
+              method, context.getTypeTable(), resourcesFieldConfig);
     }
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(context, createSmokeTestInitContext(context));
@@ -347,10 +349,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     ApiMethodType type = ApiMethodType.FlattenedMethod;
     if (methodConfig.isPageStreaming()) {
-      Field resourcesField = methodConfig.getPageStreaming().getResourcesField();
+      FieldConfig resourcesFieldConfig = methodConfig.getPageStreaming().getResourcesFieldConfig();
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(
-              method, methodContext.getTypeTable(), resourcesField);
+              method, methodContext.getTypeTable(), resourcesFieldConfig);
       type = ApiMethodType.PagedFlattenedMethod;
     } else if (methodConfig.isGrpcStreaming()) {
       type = ApiMethodType.CallableMethod;

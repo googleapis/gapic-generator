@@ -78,65 +78,6 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
-    /// Resource name for a book.
-    /// </summary>
-    public sealed partial class BookName : ISingleResourceName
-    {
-        private static readonly PathTemplate s_template = new PathTemplate("shelves/{shelf_id}/books/{book_id}");
-
-        /// <summary>
-        /// Parses a book resource name in string form into a <see cref="BookName"/>.
-        /// </summary>
-        /// <param name="bookName">The book resource name in string form. Must not be <c>null</c>.</param>
-        public static BookName Parse(string bookName)
-        {
-            GaxPreconditions.CheckNotNull(bookName, nameof(bookName));
-            ResourceName resourceName = s_template.ParseName(bookName);
-            return new BookName(resourceName[0], resourceName[1]);
-        }
-
-        public static bool TryParse(string bookName, out BookName result)
-        {
-            GaxPreconditions.CheckNotNull(bookName, nameof(bookName));
-            ResourceName resourceName;
-            if (s_template.TryParseName(bookName, out resourceName))
-            {
-                result = new BookName(resourceName[0], resourceName[1]);
-                return true;
-            }
-            else
-            {
-                result = null;
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Constructs a book name from its component parts.
-        /// </summary>
-        /// <param name="shelfIdId">The shelfId ID. Must not be <c>null</c>.</param>
-        /// <param name="bookIdId">The bookId ID. Must not be <c>null</c>.</param>
-        public BookName(string shelfIdId, string bookIdId)
-        {
-            ShelfIdId = GaxPreconditions.CheckNotNull(shelfIdId, nameof(shelfIdId));
-            BookIdId = GaxPreconditions.CheckNotNull(bookIdId, nameof(bookIdId));
-        }
-
-        /// <summary>
-        /// The shelfId ID. Never <c>null</c>.
-        /// </summary>
-        public string ShelfIdId { get; }
-
-        /// <summary>
-        /// The bookId ID. Never <c>null</c>.
-        /// </summary>
-        public string BookIdId { get; }
-
-        /// <inheritdoc />
-        public override string ToString() => s_template.Expand(ShelfIdId, BookIdId);
-    }
-
-    /// <summary>
     /// Resource name for a archived_book.
     /// </summary>
     public sealed partial class ArchivedBookName : ISingleResourceName
@@ -193,6 +134,65 @@ namespace Google.Example.Library.V1
 
         /// <inheritdoc />
         public override string ToString() => s_template.Expand(ArchivePathId, BookIdId);
+    }
+
+    /// <summary>
+    /// Resource name for a book.
+    /// </summary>
+    public sealed partial class BookName : ISingleResourceName
+    {
+        private static readonly PathTemplate s_template = new PathTemplate("shelves/{shelf_id}/books/{book_id}");
+
+        /// <summary>
+        /// Parses a book resource name in string form into a <see cref="BookName"/>.
+        /// </summary>
+        /// <param name="bookName">The book resource name in string form. Must not be <c>null</c>.</param>
+        public static BookName Parse(string bookName)
+        {
+            GaxPreconditions.CheckNotNull(bookName, nameof(bookName));
+            ResourceName resourceName = s_template.ParseName(bookName);
+            return new BookName(resourceName[0], resourceName[1]);
+        }
+
+        public static bool TryParse(string bookName, out BookName result)
+        {
+            GaxPreconditions.CheckNotNull(bookName, nameof(bookName));
+            ResourceName resourceName;
+            if (s_template.TryParseName(bookName, out resourceName))
+            {
+                result = new BookName(resourceName[0], resourceName[1]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Constructs a book name from its component parts.
+        /// </summary>
+        /// <param name="shelfIdId">The shelfId ID. Must not be <c>null</c>.</param>
+        /// <param name="bookIdId">The bookId ID. Must not be <c>null</c>.</param>
+        public BookName(string shelfIdId, string bookIdId)
+        {
+            ShelfIdId = GaxPreconditions.CheckNotNull(shelfIdId, nameof(shelfIdId));
+            BookIdId = GaxPreconditions.CheckNotNull(bookIdId, nameof(bookIdId));
+        }
+
+        /// <summary>
+        /// The shelfId ID. Never <c>null</c>.
+        /// </summary>
+        public string ShelfIdId { get; }
+
+        /// <summary>
+        /// The bookId ID. Never <c>null</c>.
+        /// </summary>
+        public string BookIdId { get; }
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ShelfIdId, BookIdId);
     }
 
     /// <summary>

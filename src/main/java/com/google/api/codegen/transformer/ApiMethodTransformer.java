@@ -303,12 +303,12 @@ public class ApiMethodTransformer {
       case Sync:
         methodViewBuilder.responseTypeName(
             namer.getAndSavePagedResponseTypeName(
-                context.getMethod(), context.getTypeTable(), resourceField));
+                context.getMethod(), context.getTypeTable(), resourceFieldConfig));
         break;
       case Async:
         methodViewBuilder.responseTypeName(
             namer.getAndSaveAsyncPagedResponseTypeName(
-                context.getMethod(), context.getTypeTable(), resourceField));
+                context.getMethod(), context.getTypeTable(), resourceFieldConfig));
         break;
     }
   }

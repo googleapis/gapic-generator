@@ -721,7 +721,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = $unhandledCase: ResourceNameOneofInitValueView$;
+            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]"));
             BookName altBookName = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
             BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name, altBookName);
@@ -734,7 +734,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = $unhandledCase: ResourceNameOneofInitValueView$;
+            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]"));
             BookName altBookName = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
             BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name, altBookName);
@@ -788,7 +788,7 @@ namespace Google.Example.Library.V1.Snippets
             };
             IEnumerable<ShelfName> shelves = new List<string>();
             // Make the request
-            IPagedAsyncEnumerable<FindRelatedBooksResponse,string> response =
+            IPagedAsyncEnumerable<FindRelatedBooksResponse,BookName> response =
                 libraryServiceClient.FindRelatedBooksAsync(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -825,7 +825,7 @@ namespace Google.Example.Library.V1.Snippets
             };
             IEnumerable<ShelfName> shelves = new List<string>();
             // Make the request
-            IPagedEnumerable<FindRelatedBooksResponse,string> response =
+            IPagedEnumerable<FindRelatedBooksResponse,BookName> response =
                 libraryServiceClient.FindRelatedBooks(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required

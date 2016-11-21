@@ -26,7 +26,6 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -216,44 +215,52 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return getPackageName() + ".Snippets";
   }
 
+  private String getResourceTypeName(ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    if (resourceFieldConfig.getResourceNameConfig() == null) {
+      return typeTable.getAndSaveNicknameForElementType(resourceFieldConfig.getField().getType());
+    } else {
+      return getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
+    }
+  }
+
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
 
     String inputTypeName = typeTable.getAndSaveNicknameForElementType(method.getInputType());
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedEnumerable", inputTypeName, outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
 
     String inputTypeName = typeTable.getAndSaveNicknameForElementType(method.getInputType());
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedAsyncEnumerable", inputTypeName, outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveCallerPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
 
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.IPagedEnumerable", outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveCallerAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
 
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.IPagedAsyncEnumerable", outputTypeName, resourceTypeName);
   }

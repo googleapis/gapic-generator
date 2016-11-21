@@ -16,10 +16,10 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FixedResourceNameConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
-import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
@@ -99,14 +99,15 @@ public class PathTemplateTransformer {
   private ResourceNameSingleView generateResourceNameSingle(
       SurfaceTransformerContext context, int index, SingleResourceNameConfig config) {
     SurfaceNamer namer = context.getNamer();
-    ResourceNameSingleView.Builder builder = ResourceNameSingleView.newBuilder();
-    builder.typeName(namer.getResourceTypeName(config));
-    builder.paramName(namer.getResourceParameterName(config));
-    builder.propertyName(namer.getResourcePropertyName(config));
-    builder.enumName(namer.getResourceEnumName(config));
-    builder.docName(config.getEntityName());
-    builder.index(index);
-    builder.pattern(config.getNamePattern());
+    ResourceNameSingleView.Builder builder =
+        ResourceNameSingleView.newBuilder()
+            .typeName(namer.getResourceTypeName(config))
+            .paramName(namer.getResourceParameterName(config))
+            .propertyName(namer.getResourcePropertyName(config))
+            .enumName(namer.getResourceEnumName(config))
+            .docName(config.getEntityName())
+            .index(index)
+            .pattern(config.getNamePattern());
     List<ResourceNameParamView> params = new ArrayList<>();
     int varIndex = 0;
     for (String var : config.getNameTemplate().vars()) {
@@ -183,15 +184,15 @@ public class PathTemplateTransformer {
           fieldElementTypeName = "IResourceName";
         } else {
           ResourceNameConfig resourceNameConfig = resourceNameConfigs.get(fieldResourceName);
-          String fieldTypesimpleName = namer.getResourceTypeName(resourceNameConfig);
+          String fieldTypeSimpleName = namer.getResourceTypeName(resourceNameConfig);
           fieldTypeName =
               context
                   .getTypeTable()
-                  .getAndSaveNicknameForTypedResourceName(fieldConfig, fieldTypesimpleName);
+                  .getAndSaveNicknameForTypedResourceName(fieldConfig, fieldTypeSimpleName);
           fieldElementTypeName =
               context
                   .getTypeTable()
-                  .getAndSaveNicknameForResourceNameElementType(fieldConfig, fieldTypesimpleName);
+                  .getAndSaveNicknameForResourceNameElementType(fieldConfig, fieldTypeSimpleName);
         }
         ResourceProtoFieldView fieldView =
             ResourceProtoFieldView.newBuilder()

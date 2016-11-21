@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -129,12 +130,13 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
     // TODO(michaelbausor) make sure this uses the typeTable correctly
 
     String fullPackageWrapperName =
         typeTable.getImplicitPackageFullNameFor(getPagedResponseWrappersClassName());
-    String pagedResponseShortName = getPagedResponseTypeInnerName(method, typeTable, resourceField);
+    String pagedResponseShortName =
+        getPagedResponseTypeInnerName(method, typeTable, resourceFieldConfig.getField());
     return typeTable.getAndSaveNicknameForInnerType(fullPackageWrapperName, pagedResponseShortName);
   }
 

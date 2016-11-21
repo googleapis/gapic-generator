@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -79,8 +80,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
-    String typeName = converter.getTypeNameForElementType(resourcesField.getType()).getNickname();
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+    String typeName =
+        converter
+            .getTypeNameForElementType(resourcesFieldConfig.getField().getType())
+            .getNickname();
     int dotIndex = typeName.indexOf('.');
     if (dotIndex >= 0) {
       typeName = typeName.substring(dotIndex + 1);
