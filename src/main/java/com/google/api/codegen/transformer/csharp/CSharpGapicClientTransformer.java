@@ -38,9 +38,9 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
-import com.google.api.codegen.viewmodel.ApiCallableType;
+import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
-import com.google.api.codegen.viewmodel.ApiMethodType;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ModifyMethodView;
 import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
@@ -171,8 +171,9 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
     List<ApiCallableView> callables = new ArrayList<>();
     for (ApiCallableView call : apiCallableTransformer.generateStaticLangApiCallables(context)) {
-      if (call.type() == ApiCallableType.SimpleApiCallable
-          || call.type() == ApiCallableType.BundlingApiCallable) {
+      if (call.type() == ApiCallableImplType.SimpleApiCallable
+          || call.type() == ApiCallableImplType.BundlingApiCallable
+          || call.type() == ApiCallableImplType.InitialOperationApiCallable) {
         callables.add(call);
       }
     }
@@ -191,14 +192,15 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     }
     apiClass.apiMethodsImpl(methodsImpl);
     apiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
+    apiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
     apiClass.reroutedGrpcClients(generateReroutedGrpcView(context));
     apiClass.modifyMethods(generateModifyMethods(context));
 
     return apiClass.build();
   }
 
-  private boolean methodTypeHasImpl(ApiMethodType type) {
-    return type != ApiMethodType.FlattenedAsyncCancellationTokenMethod;
+  private boolean methodTypeHasImpl(ClientMethodType type) {
+    return type != ClientMethodType.FlattenedAsyncCancellationTokenMethod;
   }
 
   private StaticLangSettingsView generateSettingsClass(SurfaceTransformerContext context) {
@@ -312,12 +314,12 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
                 apiMethodTransformer.generateFlattenedAsyncMethod(
                     methodContext,
                     csharpCommonTransformer.callSettingsParam(),
-                    ApiMethodType.FlattenedAsyncCallSettingsMethod));
+                    ClientMethodType.FlattenedAsyncCallSettingsMethod));
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedAsyncMethod(
                     methodContext,
                     csharpCommonTransformer.cancellationTokenParam(),
-                    ApiMethodType.FlattenedAsyncCancellationTokenMethod));
+                    ClientMethodType.FlattenedAsyncCancellationTokenMethod));
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));

@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ApiCallSettingsView {
-  public abstract ApiCallableType type();
+  public abstract ApiCallableImplType type();
 
   public abstract String methodName();
 
@@ -54,6 +54,8 @@ public abstract class ApiCallSettingsView {
 
   public abstract String bundlingDescriptorName();
 
+  public abstract String operationResultTypeName();
+
   public abstract String retryCodesName();
 
   public abstract String retryParamsName();
@@ -76,7 +78,7 @@ public abstract class ApiCallSettingsView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder type(ApiCallableType type);
+    public abstract Builder type(ApiCallableImplType type);
 
     public abstract Builder methodName(String apiMethodName);
 
@@ -107,6 +109,8 @@ public abstract class ApiCallSettingsView {
     public abstract Builder bundlingDescriptorName(String val);
 
     public abstract Builder bundlingConfig(BundlingConfigView val);
+
+    public abstract Builder operationResultTypeName(String val);
 
     public abstract Builder retryCodesName(String val);
 

@@ -52,10 +52,32 @@
   @end
 @end
 
+@snippet asyncOperationMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}).get();
+@end
+
 @snippet callableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  ListenableFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = future.get();
+  @else
+    future.get();
+  @end
+@end
+
+@snippet asyncOperationCallableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  OperationFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  {@apiMethod.responseTypeName} response = future.get();
+@end
+
+@snippet streamingCallableMethodSampleCode(apiMethod)
   @switch apiMethod.grpcStreamingType
-  @case "NonStreaming"
-    {@nonStreamingCallableSampleCode(apiMethod)}
   @case "BidiStreaming"
     {@bidiStreamingCallableSampleCode(apiMethod)}
   @case "ServerStreaming"
@@ -64,17 +86,6 @@
     {@clientStreamingCallableSampleCode(apiMethod)}
   @default
     $unhandledCase: {@apiMethod.grpcStreamingType}$
-  @end
-@end
-
-@private nonStreamingCallableSampleCode(apiMethod)
-  {@initCode(apiMethod.initCode)}
-  ListenableFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
-  // Do something
-  @if apiMethod.hasReturnValue
-    {@apiMethod.responseTypeName} response = future.get();
-  @else
-    future.get();
   @end
 @end
 
