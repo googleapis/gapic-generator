@@ -30,6 +30,9 @@ public abstract class LongRunningConfig {
   /** Returns the message type returned from a completed operation. */
   public abstract TypeRef getReturnType();
 
+  /** Returns the message type returned from a completed operation. */
+  public abstract TypeRef getMetdataType();
+
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
   public static LongRunningConfig createLongRunningConfig(
@@ -38,6 +41,8 @@ public abstract class LongRunningConfig {
     boolean error = false;
 
     TypeRef returnType = model.getSymbolTable().lookupType(longRunningConfigProto.getReturnType());
+    TypeRef metadataType =
+        model.getSymbolTable().lookupType(longRunningConfigProto.getMetadataType());
 
     if (returnType == null) {
       diagCollector.addDiag(
@@ -46,8 +51,7 @@ public abstract class LongRunningConfig {
               "Type not found for long running config: '%s'",
               longRunningConfigProto.getReturnType()));
       error = true;
-    }
-    if (!returnType.isMessage()) {
+    } else if (!returnType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -56,10 +60,26 @@ public abstract class LongRunningConfig {
       error = true;
     }
 
+    if (metadataType == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Metadata type not found for long running config: '%s'",
+              longRunningConfigProto.getReturnType()));
+      error = true;
+    } else if (!metadataType.isMessage()) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Metadata type for long running config is not a message: '%s'",
+              longRunningConfigProto.getReturnType()));
+      error = true;
+    }
+
     if (error) {
       return null;
     } else {
-      return new AutoValue_LongRunningConfig(returnType);
+      return new AutoValue_LongRunningConfig(returnType, metadataType);
     }
   }
 }
