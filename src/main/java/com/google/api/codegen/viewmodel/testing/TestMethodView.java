@@ -14,22 +14,42 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
 public abstract class TestMethodView {
+
+  public abstract String surfaceMethodName();
 
   public abstract InitCodeView initCode();
 
   public abstract ClientMethodType clientMethodType();
 
+  public abstract MockGrpcResponseView mockResponse();
+
+  public abstract List<ClientTestAssertView> asserts();
+
+  public abstract String requestTypeName();
+
   public abstract String responseTypeName();
+
+  public abstract List<PageStreamingResponseView> pageStreamingResponseViews();
 
   public abstract String name();
 
+  public abstract String nameWithException();
+
+  public abstract String serviceConstructorName();
+
+  public abstract String mockServiceVarName();
+
   public abstract boolean hasReturnValue();
+
+  public abstract GrpcStreamingType grpcStreamingType();
 
   public static Builder newBuilder() {
     return new AutoValue_TestMethodView.Builder();
@@ -38,15 +58,33 @@ public abstract class TestMethodView {
   @AutoValue.Builder
   public abstract static class Builder {
 
+    public abstract Builder surfaceMethodName(String val);
+
     public abstract Builder name(String val);
+
+    public abstract Builder nameWithException(String val);
+
+    public abstract Builder serviceConstructorName(String val);
+
+    public abstract Builder mockServiceVarName(String val);
 
     public abstract Builder initCode(InitCodeView val);
 
     public abstract Builder clientMethodType(ClientMethodType val);
 
+    public abstract Builder mockResponse(MockGrpcResponseView val);
+
+    public abstract Builder asserts(List<ClientTestAssertView> val);
+
+    public abstract Builder requestTypeName(String val);
+
     public abstract Builder responseTypeName(String val);
 
+    public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
+
     public abstract Builder hasReturnValue(boolean val);
+
+    public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract TestMethodView build();
   }

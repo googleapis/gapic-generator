@@ -15,10 +15,8 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -33,15 +31,12 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.GoValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ClientMethodType;
-import com.google.api.codegen.viewmodel.InitCodeView;
-import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
-import com.google.api.codegen.viewmodel.testing.ClientTestCaseView;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
+import com.google.api.codegen.viewmodel.testing.TestMethodView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -125,73 +120,27 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .build();
   }
 
-  private List<ClientTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
-    ArrayList<ClientTestCaseView> testCaseViews = new ArrayList<>();
+  private List<TestMethodView> createTestCaseViews(SurfaceTransformerContext context) {
+    ArrayList<TestMethodView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
+      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
+      ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
+      if (methodContext.getMethodConfig().isPageStreaming()) {
+        clientMethodType = ClientMethodType.PagedRequestObjectMethod;
+      }
       testCaseViews.add(
-          createTestCaseView(
-              context.asRequestMethodContext(method),
+          mockServiceTransformer.createTestMethodView(
+              methodContext,
               testNameTable,
-              Collections.<FieldConfig>emptyList()));
+              initCodeTransformer.createRequestInitCodeContext(
+                  methodContext,
+                  new SymbolTable(),
+                  Collections.<FieldConfig>emptyList(),
+                  InitCodeOutputType.SingleObject,
+                  valueGenerator),
+              clientMethodType));
     }
     return testCaseViews;
-  }
-
-  private ClientTestCaseView createTestCaseView(
-      MethodTransformerContext methodContext,
-      SymbolTable testNameTable,
-      Iterable<FieldConfig> paramFieldConfigs) {
-    MethodConfig methodConfig = methodContext.getMethodConfig();
-    SurfaceNamer namer = methodContext.getNamer();
-    Method method = methodContext.getMethod();
-
-    // This symbol table is used to produce unique variable names used in the initialization code.
-    // Shared by both request and response views.
-    SymbolTable initSymbolTable = new SymbolTable();
-    InitCodeView initCodeView =
-        initCodeTransformer.generateInitCode(
-            methodContext,
-            initCodeTransformer.createRequestInitCodeContext(
-                methodContext,
-                initSymbolTable,
-                paramFieldConfigs,
-                InitCodeOutputType.SingleObject,
-                valueGenerator));
-
-    String requestTypeName =
-        methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
-    String surfaceMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
-
-    ClientMethodType type = ClientMethodType.RequestObjectMethod;
-    if (methodConfig.isPageStreaming()) {
-      type = ClientMethodType.PagedRequestObjectMethod;
-    }
-
-    List<ClientTestAssertView> requestAssertViews =
-        initCodeTransformer.generateRequestAssertViews(methodContext, paramFieldConfigs);
-
-    return ClientTestCaseView.newBuilder()
-        .name(namer.getTestCaseName(testNameTable, method))
-        .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
-        .surfaceMethodName(surfaceMethodName)
-        .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
-        .requestTypeName(requestTypeName)
-        .responseTypeName(
-            namer.getNotImplementedString(
-                "GoGapicSurfaceTestTransformer.createTestCaseView - responseTypeName"))
-        .initCode(initCodeView)
-        .clientMethodType(type)
-        .pageStreamingResponseViews(
-            mockServiceTransformer.createPageStreamingResponseViews(methodContext))
-        .asserts(requestAssertViews)
-        .mockResponse(mockServiceTransformer.createMockResponseView(methodContext, initSymbolTable))
-        .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
-        .grpcStreamingType(methodConfig.getGrpcStreamingType())
-        .serviceMethodType(ServiceMethodType.UnaryMethod)
-        .serviceConstructorName(
-            namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
-        .build();
   }
 }

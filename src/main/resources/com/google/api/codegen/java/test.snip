@@ -54,13 +54,22 @@
 @end
 
 @private testCase(test)
-  @switch test.serviceMethodType
-  @case "UnaryMethod"
-    {@unaryTestCase(test)}
-  @case "GrpcStreamingMethod"
-    {@grpcStreamingTestCase(test)}
-  @case "LongRunningMethod"
-    {@longRunningMethodTestCase(test)}
+  @switch test.grpcStreamingType
+  @case "BidiStreaming"
+      {@grpcStreamingTestCase(test)}
+  @case "ServerStreaming"
+      {@grpcStreamingTestCase(test)}
+  @case "ClientStreaming"
+      {@grpcStreamingTestCase(test)}
+  @case "NonStreaming"
+      @switch test.clientMethodType
+      @case "FlattenedMethod"
+          {@unaryTestCase(test)}
+      @case "PagedFlattenedMethod"
+          {@unaryTestCase(test)}
+      @case "AsyncOperationFlattenedMethod"
+          {@longRunningMethodTestCase(test)}
+      @end
   @end
 @end
 

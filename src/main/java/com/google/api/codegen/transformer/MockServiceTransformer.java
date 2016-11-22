@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.codegen.config.FieldConfig;
@@ -33,11 +34,13 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
+import com.google.api.codegen.viewmodel.testing.TestMethodView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -103,6 +106,57 @@ public class MockServiceTransformer {
     return mocks;
   }
 
+  public TestMethodView createTestMethodView(
+      MethodTransformerContext methodContext,
+      SymbolTable testNameTable,
+      InitCodeContext initCodeContext,
+      ClientMethodType clientMethodType) {
+    Method method = methodContext.getMethod();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    SurfaceNamer namer = methodContext.getNamer();
+
+    String surfaceMethodName;
+    String responseTypeName;
+    if (methodConfig.isPageStreaming()) {
+      surfaceMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
+      responseTypeName =
+          namer.getAndSavePagedResponseTypeName(
+              method,
+              methodContext.getTypeTable(),
+              methodConfig.getPageStreaming().getResourcesField());
+    } else if (methodConfig.isLongRunningOperation()) {
+      surfaceMethodName = namer.getAsyncApiMethodName(method, methodConfig.getVisibility());
+      responseTypeName =
+          methodContext
+              .getTypeTable()
+              .getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getReturnType());
+    } else if (clientMethodType == ClientMethodType.CallableMethod) {
+      surfaceMethodName = namer.getCallableMethodName(method);
+      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+    } else {
+      surfaceMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
+      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+    }
+
+    return TestMethodView.newBuilder()
+        .asserts(initCodeTransformer.generateRequestAssertViews(methodContext, initCodeContext))
+        .clientMethodType(clientMethodType)
+        .grpcStreamingType(methodConfig.getGrpcStreamingType())
+        .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
+        .initCode(initCodeTransformer.generateInitCode(methodContext, initCodeContext))
+        .mockResponse(createMockResponseView(methodContext, initCodeContext.symbolTable()))
+        .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
+        .name(namer.getTestCaseName(testNameTable, method))
+        .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
+        .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
+        .requestTypeName(methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType()))
+        .responseTypeName(responseTypeName)
+        .serviceConstructorName(
+            namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
+        .surfaceMethodName(surfaceMethodName)
+        .build();
+  }
+
   public List<MockServiceUsageView> createMockServices(
       SurfaceNamer namer, Model model, ApiConfig apiConfig) {
     List<MockServiceUsageView> mockServices = new ArrayList<>();
@@ -121,7 +175,7 @@ public class MockServiceTransformer {
     return mockServices;
   }
 
-  public List<PageStreamingResponseView> createPageStreamingResponseViews(
+  private List<PageStreamingResponseView> createPageStreamingResponseViews(
       MethodTransformerContext methodContext) {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
@@ -169,7 +223,7 @@ public class MockServiceTransformer {
     return pageStreamingResponseViews;
   }
 
-  public MockGrpcResponseView createMockResponseView(
+  private MockGrpcResponseView createMockResponseView(
       MethodTransformerContext methodContext, SymbolTable symbolTable) {
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
