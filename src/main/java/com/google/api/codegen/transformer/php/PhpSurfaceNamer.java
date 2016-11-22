@@ -41,6 +41,16 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiWrapperVariableName(Interface interfaze) {
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     if (type.isMap() || type.isRepeated()) {
       return publicMethodName(Name.from("add").join(identifier));
