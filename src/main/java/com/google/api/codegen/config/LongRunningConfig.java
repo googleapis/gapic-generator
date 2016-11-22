@@ -30,8 +30,8 @@ public abstract class LongRunningConfig {
   /** Returns the message type returned from a completed operation. */
   public abstract TypeRef getReturnType();
 
-  /** Returns the message type returned from a completed operation. */
-  public abstract TypeRef getMetdataType();
+  /** Returns the message type for the metadata field of an operation. */
+  public abstract TypeRef getMetadataType();
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
