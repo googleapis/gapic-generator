@@ -52,10 +52,10 @@ import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestClassView;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestFileView;
+import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
+import com.google.api.codegen.viewmodel.testing.ClientTestCaseView;
+import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
+import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
@@ -249,7 +249,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   ///////////////////////////////////// Unit Test /////////////////////////////////////////
 
-  private GapicSurfaceTestFileView createUnitTestFileView(SurfaceTransformerContext context) {
+  private ClientTestFileView createUnitTestFileView(SurfaceTransformerContext context) {
     addUnitTestImports(context);
 
     Interface service = context.getInterface();
@@ -257,7 +257,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     String name = namer.getUnitTestClassName(service);
 
-    GapicSurfaceTestClassView.Builder testClass = GapicSurfaceTestClassView.newBuilder();
+    ClientTestClassView.Builder testClass = ClientTestClassView.newBuilder();
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
     testClass.apiClassName(namer.getApiWrapperClassName(service));
     testClass.name(name);
@@ -266,7 +266,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         mockServiceTransformer.createMockServices(
             context.getNamer(), context.getModel(), context.getApiConfig()));
 
-    GapicSurfaceTestFileView.Builder testFile = GapicSurfaceTestFileView.newBuilder();
+    ClientTestFileView.Builder testFile = ClientTestFileView.newBuilder();
     testFile.testClass(testClass.build());
     testFile.outputPath(namer.getSourceFilePath(outputPath, name));
     testFile.templateFileName(UNIT_TEST_TEMPLATE_FILE);
@@ -278,8 +278,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testFile.build();
   }
 
-  private List<GapicSurfaceTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
-    ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
+  private List<ClientTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+    ArrayList<ClientTestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
@@ -310,7 +310,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   // TODO: Convert to use TestMethodView.
-  private GapicSurfaceTestCaseView createTestCaseView(
+  private ClientTestCaseView createTestCaseView(
       MethodTransformerContext methodContext,
       SymbolTable testNameTable,
       Iterable<FieldConfig> paramFieldConfigs) {
@@ -364,10 +364,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       serviceMethodType = ServiceMethodType.LongRunningMethod;
     }
 
-    List<GapicSurfaceTestAssertView> requestAssertViews =
+    List<ClientTestAssertView> requestAssertViews =
         initCodeTransformer.generateRequestAssertViews(methodContext, paramFieldConfigs);
 
-    return GapicSurfaceTestCaseView.newBuilder()
+    return ClientTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .surfaceMethodName(surfaceMethodName)

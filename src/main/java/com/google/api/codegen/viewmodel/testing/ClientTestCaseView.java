@@ -22,7 +22,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class GapicSurfaceTestCaseView {
+public abstract class ClientTestCaseView {
   public abstract String name();
 
   public abstract String nameWithException();
@@ -43,7 +43,7 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract InitCodeView initCode();
 
-  public abstract List<GapicSurfaceTestAssertView> asserts();
+  public abstract List<ClientTestAssertView> asserts();
 
   public abstract String mockServiceVarName();
 
@@ -54,7 +54,7 @@ public abstract class GapicSurfaceTestCaseView {
   public abstract ServiceMethodType serviceMethodType();
 
   public static Builder newBuilder() {
-    return new AutoValue_GapicSurfaceTestCaseView.Builder();
+    return new AutoValue_ClientTestCaseView.Builder();
   }
 
   @AutoValue.Builder
@@ -77,7 +77,7 @@ public abstract class GapicSurfaceTestCaseView {
 
     public abstract Builder initCode(InitCodeView val);
 
-    public abstract Builder asserts(List<GapicSurfaceTestAssertView> val);
+    public abstract Builder asserts(List<ClientTestAssertView> val);
 
     public abstract Builder mockResponse(MockGrpcResponseView val);
 
@@ -89,6 +89,6 @@ public abstract class GapicSurfaceTestCaseView {
 
     public abstract Builder serviceMethodType(ServiceMethodType val);
 
-    public abstract GapicSurfaceTestCaseView build();
+    public abstract ClientTestCaseView build();
   }
 }

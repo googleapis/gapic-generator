@@ -36,9 +36,9 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestClassView;
+import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
+import com.google.api.codegen.viewmodel.testing.ClientTestCaseView;
+import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
@@ -79,7 +79,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       Model model, ApiConfig apiConfig, SurfaceNamer namer) {
     ModelTypeTable typeTable = GoGapicSurfaceTransformer.createTypeTable();
     List<MockServiceImplView> impls = new ArrayList<>();
-    List<GapicSurfaceTestClassView> testClasses = new ArrayList<>();
+    List<ClientTestClassView> testClasses = new ArrayList<>();
 
     for (Interface service : mockServiceTransformer.getGrpcInterfacesToMock(model, apiConfig)) {
       SurfaceTransformerContext context =
@@ -101,7 +101,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               namer,
               featureConfig);
       testClasses.add(
-          GapicSurfaceTestClassView.newBuilder()
+          ClientTestClassView.newBuilder()
               .apiSettingsClassName(
                   namer.getNotImplementedString(
                       "GoGapicSurfaceTestTransformer.generateMockServiceView - apiSettingsClassName"))
@@ -125,8 +125,8 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .build();
   }
 
-  private List<GapicSurfaceTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
-    ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
+  private List<ClientTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+    ArrayList<ClientTestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
@@ -139,7 +139,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testCaseViews;
   }
 
-  private GapicSurfaceTestCaseView createTestCaseView(
+  private ClientTestCaseView createTestCaseView(
       MethodTransformerContext methodContext,
       SymbolTable testNameTable,
       Iterable<FieldConfig> paramFieldConfigs) {
@@ -169,10 +169,10 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       type = ClientMethodType.PagedRequestObjectMethod;
     }
 
-    List<GapicSurfaceTestAssertView> requestAssertViews =
+    List<ClientTestAssertView> requestAssertViews =
         initCodeTransformer.generateRequestAssertViews(methodContext, paramFieldConfigs);
 
-    return GapicSurfaceTestCaseView.newBuilder()
+    return ClientTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .surfaceMethodName(surfaceMethodName)

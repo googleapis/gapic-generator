@@ -39,7 +39,7 @@ import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
+import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -86,7 +86,7 @@ public class InitCodeTransformer {
   }
 
   /** Generates assert views for the test of the tested method and its fields. */
-  public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
+  public List<ClientTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
 
     ImmutableMap<String, FieldConfig> fieldConfigMap = FieldConfig.toFieldConfigMap(fieldConfigs);
@@ -101,7 +101,7 @@ public class InitCodeTransformer {
                 .fieldConfigMap(fieldConfigMap)
                 .build());
 
-    List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
+    List<ClientTestAssertView> assertViews = new ArrayList<>();
     SurfaceNamer namer = context.getNamer();
     // Add request fields checking
     for (InitCodeNode fieldItemTree : rootNode.getChildren().values()) {
@@ -143,9 +143,9 @@ public class InitCodeTransformer {
     return mapBuilder.build();
   }
 
-  private GapicSurfaceTestAssertView createAssertView(
+  private ClientTestAssertView createAssertView(
       String expected, String expectedTransformFunction, String actual) {
-    return GapicSurfaceTestAssertView.newBuilder()
+    return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueGetter(actual)
