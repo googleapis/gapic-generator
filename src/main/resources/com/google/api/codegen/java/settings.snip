@@ -4,8 +4,9 @@
   {@renderFileHeader(settingsFile.fileHeader)}
 
   {@settingsDoc(settingsFile.settings.doc)}
-  @@javax.annotation.Generated("by GAPIC")
-  public class {@settingsFile.settings.name} extends ServiceApiSettings {
+  @@Generated("by GAPIC")
+  @@ExperimentalApi
+  public class {@settingsFile.settings.name} extends ClientSettings {
     {@constants(settingsFile.settings)}
     {@members(settingsFile.settings)}
     {@constructors(settingsFile.settings)}
@@ -387,7 +388,7 @@
   /**
    * Builder for {@xsettingsClass.name}.
    */
-  public static class Builder extends ServiceApiSettings.Builder {
+  public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
     {@builderMembers(xsettingsClass)}
@@ -569,8 +570,8 @@
    *
    * Note: This method does not support applying settings to streaming methods.
    */
-  public Builder applyToAllApiMethods(UnaryCallSettings.Builder apiCallSettings) throws Exception {
-    super.applyToAllApiMethods(unaryMethodSettingsBuilders, apiCallSettings);
+  public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
+    super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
     return this;
   }
 

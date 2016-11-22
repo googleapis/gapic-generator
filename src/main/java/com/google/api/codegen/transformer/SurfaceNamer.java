@@ -958,6 +958,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getRandomStringValue");
   }
 
+  /** Function used to register the GRPC server. */
+  public String getServerRegisterFunctionName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getServerRegisterFunctionName");
+  }
+
   /** The type name of the API callable class for this service method type. */
   public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
     return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");

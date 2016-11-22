@@ -1,4 +1,4 @@
-============== file: src/Example/Library/V1/LibraryServiceApi.php ==============
+============== file: src/Example/Library/V1/LibraryServiceClient.php ==============
 <?php
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
@@ -66,10 +66,10 @@ use google\tagger\v1\LabelerClient;
  * resource model:
  *
  * - The API has a collection of [Shelf][google.example.library.v1.Shelf]
- *   resources, named ``bookShelves/*``
+ *   resources, named ``bookShelves/{@*}``
  *
  * - Each Shelf has a collection of [Book][google.example.library.v1.Book]
- *   resources, named `bookShelves/*/books/*`
+ *   resources, named `bookShelves/{@*}/books/{@*}`
  *
  * Check out [cloud docs!](/library/example/link).
  * This is [not a cloud link](http://www.google.com).
@@ -79,12 +79,12 @@ use google\tagger\v1\LabelerClient;
  *
  * ```
  * try {
- *     $libraryServiceApi = new LibraryServiceApi();
+ *     $libraryServiceClient = new LibraryServiceClient();
  *     $shelf = new Shelf();
- *     $response = $libraryServiceApi->createShelf($shelf);
+ *     $response = $libraryServiceClient->createShelf($shelf);
  * } finally {
- *     if (isset($libraryServiceApi)) {
- *         $libraryServiceApi->close();
+ *     if (isset($libraryServiceClient)) {
+ *         $libraryServiceClient->close();
  *     }
  * }
  * ```
@@ -94,7 +94,7 @@ use google\tagger\v1\LabelerClient;
  * a parse method to extract the individual identifiers contained within names that are
  * returned.
  */
-class LibraryServiceApi
+class LibraryServiceClient
 {
     /**
      * The default address of the service.
@@ -331,7 +331,6 @@ class LibraryServiceApi
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'appName' => 'gax',
             'appVersion' => self::_GAX_VERSION,
-            'credentialsLoader' => null,
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -385,7 +384,7 @@ class LibraryServiceApi
         $this->scopes = $options['scopes'];
 
         $createStubOptions = [];
-        if (!empty($options['sslCreds'])) {
+        if (array_key_exists('sslCreds', $options)) {
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
         $grpcCredentialsHelperOptions = array_diff_key($options, $defaultOptions);
@@ -415,12 +414,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
-     *     $response = $libraryServiceApi->createShelf($shelf);
+     *     $response = $libraryServiceClient->createShelf($shelf);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -462,13 +461,13 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
      *     $options = "";
-     *     $response = $libraryServiceApi->getShelf($formattedName, $options);
+     *     $response = $libraryServiceClient->getShelf($formattedName, $options);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -521,14 +520,14 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *
-     *     foreach ($libraryServiceApi->listShelves() as $element) {
+     *     foreach ($libraryServiceClient->listShelves() as $element) {
      *         // doThingsWith(element);
      *     }
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -576,12 +575,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     $libraryServiceApi->deleteShelf($formattedName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $libraryServiceClient->deleteShelf($formattedName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -623,13 +622,13 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     $formattedOtherShelfName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     $response = $libraryServiceApi->mergeShelves($formattedName, $formattedOtherShelfName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $response = $libraryServiceClient->mergeShelves($formattedName, $formattedOtherShelfName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -673,13 +672,13 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
      *     $book = new Book();
-     *     $response = $libraryServiceApi->createBook($formattedName, $book);
+     *     $response = $libraryServiceClient->createBook($formattedName, $book);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -723,13 +722,13 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
      *     $books = [];
-     *     $response = $libraryServiceApi->publishSeries($shelf, $books);
+     *     $response = $libraryServiceClient->publishSeries($shelf, $books);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -790,12 +789,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $response = $libraryServiceApi->getBook($formattedName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -837,14 +836,14 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     foreach ($libraryServiceApi->listBooks($formattedName) as $element) {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     foreach ($libraryServiceClient->listBooks($formattedName) as $element) {
      *         // doThingsWith(element);
      *     }
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -906,12 +905,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $libraryServiceApi->deleteBook($formattedName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -951,13 +950,13 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $book = new Book();
-     *     $response = $libraryServiceApi->updateBook($formattedName, $book);
+     *     $response = $libraryServiceClient->updateBook($formattedName, $book);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1011,13 +1010,13 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedOtherShelfName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     $response = $libraryServiceApi->moveBook($formattedName, $formattedOtherShelfName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1061,14 +1060,14 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *
-     *     foreach ($libraryServiceApi->listStrings() as $element) {
+     *     foreach ($libraryServiceClient->listStrings() as $element) {
      *         // doThingsWith(element);
      *     }
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1127,8 +1126,8 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $comment = "";
      *     $stage = Stage::UNSET;
      *     $alignment = Alignment::CHAR;
@@ -1137,10 +1136,10 @@ class LibraryServiceApi
      *     $commentsElement->setStage($stage);
      *     $commentsElement->setAlignment($alignment);
      *     $comments = [$commentsElement];
-     *     $libraryServiceApi->addComments($formattedName, $comments);
+     *     $libraryServiceClient->addComments($formattedName, $comments);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1184,12 +1183,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
-     *     $response = $libraryServiceApi->getBookFromArchive($formattedName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+     *     $response = $libraryServiceClient->getBookFromArchive($formattedName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1231,13 +1230,13 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *     $name = "";
-     *     $formattedAltBookName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $response = $libraryServiceApi->getBookFromAnywhere($name, $formattedAltBookName);
+     *     $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $response = $libraryServiceClient->getBookFromAnywhere($name, $formattedAltBookName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1282,15 +1281,15 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $indexName = "default index";
      *     $indexMapItem = "";
      *     $indexMap = ["default_key" => $indexMapItem,];
-     *     $libraryServiceApi->updateBookIndex($formattedName, $indexName, $indexMap);
+     *     $libraryServiceClient->updateBookIndex($formattedName, $indexName, $indexMap);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1336,16 +1335,16 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *     $namesElement = "";
      *     $names = [$namesElement];
      *     $shelves = [];
-     *     foreach ($libraryServiceApi->findRelatedBooks($names, $shelves) as $element) {
+     *     foreach ($libraryServiceClient->findRelatedBooks($names, $shelves) as $element) {
      *         // doThingsWith(element);
      *     }
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1408,13 +1407,13 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedResource = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $tag = "";
-     *     $response = $libraryServiceApi->addTag($formattedResource, $tag);
+     *     $response = $libraryServiceClient->addTag($formattedResource, $tag);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1460,13 +1459,13 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedResource = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $label = "";
-     *     $response = $libraryServiceApi->addLabel($formattedResource, $label);
+     *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
@@ -1512,12 +1511,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $response = $libraryServiceApi->getBigBook($formattedName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $response = $libraryServiceClient->getBigBook($formattedName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
      *     }
      * }
      * ```
