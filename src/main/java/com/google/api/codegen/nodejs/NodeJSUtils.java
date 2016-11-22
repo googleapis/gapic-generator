@@ -15,7 +15,6 @@
 package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.config.ApiConfig;
-import com.google.common.base.Strings;
 
 public class NodeJSUtils {
   /**
@@ -23,7 +22,6 @@ public class NodeJSUtils {
    * domain_layer_location is "google-cloud".
    */
   public static boolean isGcloud(ApiConfig config) {
-    String domainName = config.getDomainLayerLocation();
-    return !Strings.isNullOrEmpty(domainName) && domainName.equals("google-cloud");
+    return "google-cloud".equals(config.getDomainLayerLocation());
   }
 }
