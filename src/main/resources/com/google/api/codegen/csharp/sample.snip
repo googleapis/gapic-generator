@@ -49,11 +49,10 @@
         {
             @switch class.auth.type
             @case "API_KEY"
-                ApiKey = "",  // Update placeholder with desired API key.
+                ApiKey = "",  // TODO: Update placeholder with desired API key.
             @default
                 HttpClientInitializer = GetCredential(),
             @end
-
             ApplicationName = "{@class.appName}",
         });
 
@@ -107,7 +106,8 @@
                     continue;
                 }
                 @if class.pageStreaming.isResourceMap
-                    foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName}) {
+                    foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
+                    {
                         // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` element:
                         Console.WriteLine("[" + {@class.pageStreaming.resourceVarName}.Key + "] = " + {@class.pageStreaming.resourceVarName}.Value);
                     }
