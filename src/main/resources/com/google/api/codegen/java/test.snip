@@ -5,19 +5,19 @@
   {@renderFileHeader(xapiTest.fileHeader)}
 
   @@javax.annotation.Generated("by GAPIC")
-  public class {@xapiTest.name} {
-    @join mockService : xapiTest.mockServices
+  public class {@xapiTest.testClass.name} {
+    @join mockService : xapiTest.testClass.mockServices
       private static {@mockService.className} {@mockService.varName};
     @end
     private static MockServiceHelper serviceHelper;
-    private {@xapiTest.apiClassName} client;
+    private {@xapiTest.testClass.apiClassName} client;
 
     @@BeforeClass
     public static void startStaticServer() {
-      @join mockService : xapiTest.mockServices
+      @join mockService : xapiTest.testClass.mockServices
         {@mockService.varName} = new {@mockService.className}();
       @end
-      serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList({@mockServiceArgs(xapiTest.mockServices)}));
+      serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList({@mockServiceArgs(xapiTest.testClass.mockServices)}));
       serviceHelper.start();
     }
 
@@ -29,10 +29,10 @@
     @@Before
     public void setUp() throws IOException {
       serviceHelper.reset();
-      {@xapiTest.apiSettingsClassName} settings = {@xapiTest.apiSettingsClassName}.defaultBuilder()
+      {@xapiTest.testClass.apiSettingsClassName} settings = {@xapiTest.testClass.apiSettingsClassName}.defaultBuilder()
           .setChannelProvider(serviceHelper.createChannelProvider())
           .build();
-      client = {@xapiTest.apiClassName}.create(settings);
+      client = {@xapiTest.testClass.apiClassName}.create(settings);
     }
 
     @@After
@@ -40,7 +40,7 @@
       client.close();
     }
 
-    @join test : xapiTest.testCases
+    @join test : xapiTest.testClass.testCases
       {@testCase(test)}
 
     @end

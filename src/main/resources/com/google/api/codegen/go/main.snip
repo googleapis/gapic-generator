@@ -255,7 +255,10 @@
                 resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
                 return err
             }, c.CallOptions.{@method.settingsGetterName}...)
-            return resp.{@method.listMethod.resourceFieldName}, resp.NextPageToken, err
+            if err != nil {
+                return nil, "", err
+            }
+            return resp.{@method.listMethod.resourceFieldName}, resp.NextPageToken, nil
         }
         fetch := func(pageSize int, pageToken string) (string, error) {
             items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)

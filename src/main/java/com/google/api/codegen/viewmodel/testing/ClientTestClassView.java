@@ -14,35 +14,40 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
+import com.google.api.codegen.viewmodel.testing.MockServiceImplView.Builder;
 import com.google.auto.value.AutoValue;
-import javax.annotation.Nullable;
+import java.util.List;
 
 @AutoValue
-public abstract class MockServiceUsageView {
-  public abstract String className();
+public abstract class ClientTestClassView {
 
-  public abstract String varName();
+  public abstract String name();
 
-  public abstract String implName();
+  public abstract String apiClassName();
 
-  /** Used in Go. The function to register the GRPC server. */
-  @Nullable
-  public abstract String registerFunctionName();
+  public abstract String apiSettingsClassName();
+
+  public abstract List<MockServiceUsageView> mockServices();
+
+  public abstract List<ClientTestCaseView> testCases();
 
   public static Builder newBuilder() {
-    return new AutoValue_MockServiceUsageView.Builder();
+    return new AutoValue_ClientTestClassView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder className(String modifier);
 
-    public abstract Builder varName(String name);
+    public abstract Builder name(String val);
 
-    public abstract Builder implName(String name);
+    public abstract Builder apiClassName(String val);
 
-    public abstract Builder registerFunctionName(String val);
+    public abstract Builder apiSettingsClassName(String val);
 
-    public abstract MockServiceUsageView build();
+    public abstract Builder mockServices(List<MockServiceUsageView> val);
+
+    public abstract Builder testCases(List<ClientTestCaseView> val);
+
+    public abstract ClientTestClassView build();
   }
 }
