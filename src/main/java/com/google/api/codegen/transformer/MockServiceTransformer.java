@@ -26,7 +26,6 @@ import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
-import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
@@ -120,24 +119,6 @@ public class MockServiceTransformer {
     }
 
     return mockServices;
-  }
-
-  private InitCodeContext createRequestInitCodeContext(
-      MethodTransformerContext context,
-      SymbolTable symbolTable,
-      Iterable<FieldConfig> fieldConfigs,
-      InitCodeOutputType outputType) {
-    return InitCodeContext.newBuilder()
-        .initObjectType(context.getMethod().getInputType())
-        .symbolTable(symbolTable)
-        .suggestedName(Name.from("request"))
-        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
-        .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
-        .outputType(outputType)
-        .valueGenerator(valueGenerator)
-        .build();
   }
 
   public List<PageStreamingResponseView> createPageStreamingResponseViews(
