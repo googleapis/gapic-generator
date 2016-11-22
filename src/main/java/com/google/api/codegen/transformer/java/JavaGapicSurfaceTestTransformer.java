@@ -28,9 +28,9 @@ import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicTestTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportTypeTransformer;
@@ -81,9 +81,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportTypeTransformer());
-  private final TestValueGenerator valueGenerator = new TestValueGenerator(new JavaValueProducer());
-  private final GapicTestTransformer mockServiceTransformer =
-      new GapicTestTransformer(new JavaValueProducer());
+  private final JavaValueProducer valueProducer = new JavaValueProducer();
+  private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
+  private final MockServiceTransformer mockServiceTransformer =
+      new MockServiceTransformer(valueProducer);
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
@@ -327,8 +328,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
             methodContext,
-            mockServiceTransformer.createRequestInitCodeContext(
-                methodContext, initSymbolTable, paramFieldConfigs, outputType));
+            initCodeTransformer.createRequestInitCodeContext(
+                methodContext, initSymbolTable, paramFieldConfigs, outputType, valueGenerator));
 
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
@@ -382,7 +383,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
         .serviceMethodType(serviceMethodType)
-        .serviceConstructorName("UNUSED")
+        .serviceConstructorName(
+            namer.getNotImplementedString(
+                "JavaGapicSurfaceTestTransformer.createTestCaseView - serviceConstructorName"))
         .build();
   }
 

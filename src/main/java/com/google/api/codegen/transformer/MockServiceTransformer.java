@@ -51,13 +51,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/** GapicTestTransformer contains helper methods useful for creating mock and test views. */
-public class GapicTestTransformer {
+/** MockServiceTransformer contains helper methods useful for creating mock and test views. */
+public class MockServiceTransformer {
 
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
   private final TestValueGenerator valueGenerator;
 
-  public GapicTestTransformer(ValueProducer valueProducer) {
+  public MockServiceTransformer(ValueProducer valueProducer) {
     this.valueGenerator = new TestValueGenerator(valueProducer);
   }
 
@@ -122,7 +122,7 @@ public class GapicTestTransformer {
     return mockServices;
   }
 
-  public InitCodeContext createRequestInitCodeContext(
+  private InitCodeContext createRequestInitCodeContext(
       MethodTransformerContext context,
       SymbolTable symbolTable,
       Iterable<FieldConfig> fieldConfigs,

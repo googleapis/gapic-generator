@@ -26,10 +26,8 @@ import (
 
 import (
     "flag"
-    "fmt"
     "io"
     "log"
-    "math/rand"
     "net"
     "os"
     "reflect"
@@ -38,6 +36,7 @@ import (
     "golang.org/x/net/context"
     "google.golang.org/api/option"
     "google.golang.org/grpc"
+    "google.golang.org/grpc/codes"
 )
 
 var _ = io.EOF
@@ -326,8 +325,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestLibraryServiceCreateShelfError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -340,13 +339,13 @@ func TestLibraryServiceCreateShelfError(t *testing.T) {
 
     _, err = c.CreateShelf(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceGetShelfError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -359,13 +358,13 @@ func TestLibraryServiceGetShelfError(t *testing.T) {
 
     _, err = c.GetShelf(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceListShelvesError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -378,13 +377,13 @@ func TestLibraryServiceListShelvesError(t *testing.T) {
 
     _, err = c.ListShelves(context.Background(), req).Next()
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceDeleteShelfError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -397,13 +396,13 @@ func TestLibraryServiceDeleteShelfError(t *testing.T) {
 
     err = c.DeleteShelf(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceMergeShelvesError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -416,13 +415,13 @@ func TestLibraryServiceMergeShelvesError(t *testing.T) {
 
     _, err = c.MergeShelves(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceCreateBookError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -435,13 +434,13 @@ func TestLibraryServiceCreateBookError(t *testing.T) {
 
     _, err = c.CreateBook(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServicePublishSeriesError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -454,13 +453,13 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
 
     _, err = c.PublishSeries(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceGetBookError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -473,13 +472,13 @@ func TestLibraryServiceGetBookError(t *testing.T) {
 
     _, err = c.GetBook(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceListBooksError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -492,13 +491,13 @@ func TestLibraryServiceListBooksError(t *testing.T) {
 
     _, err = c.ListBooks(context.Background(), req).Next()
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceDeleteBookError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -511,13 +510,13 @@ func TestLibraryServiceDeleteBookError(t *testing.T) {
 
     err = c.DeleteBook(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceUpdateBookError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -530,13 +529,13 @@ func TestLibraryServiceUpdateBookError(t *testing.T) {
 
     _, err = c.UpdateBook(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceMoveBookError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -549,13 +548,13 @@ func TestLibraryServiceMoveBookError(t *testing.T) {
 
     _, err = c.MoveBook(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceListStringsError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -568,13 +567,13 @@ func TestLibraryServiceListStringsError(t *testing.T) {
 
     _, err = c.ListStrings(context.Background(), req).Next()
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceAddCommentsError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -587,13 +586,13 @@ func TestLibraryServiceAddCommentsError(t *testing.T) {
 
     err = c.AddComments(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -606,13 +605,13 @@ func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
 
     _, err = c.GetBookFromArchive(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -625,13 +624,13 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
 
     _, err = c.GetBookFromAnywhere(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -644,13 +643,13 @@ func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
 
     err = c.UpdateBookIndex(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceStreamShelvesError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -667,13 +666,13 @@ func TestLibraryServiceStreamShelvesError(t *testing.T) {
     }
     _, err = stream.Recv()
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceStreamBooksError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -690,13 +689,13 @@ func TestLibraryServiceStreamBooksError(t *testing.T) {
     }
     _, err = stream.Recv()
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceDiscussBookError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -713,13 +712,13 @@ func TestLibraryServiceDiscussBookError(t *testing.T) {
     }
     _, err = stream.Recv()
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceFindRelatedBooksError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -732,13 +731,13 @@ func TestLibraryServiceFindRelatedBooksError(t *testing.T) {
 
     _, err = c.FindRelatedBooks(context.Background(), req).Next()
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLabelerAddLabelError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLabeler.err = expErr
+    errCode := codes.Internal
+    mockLabeler.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -751,13 +750,13 @@ func TestLabelerAddLabelError(t *testing.T) {
 
     _, err = c.addLabel(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
 func TestLibraryServiceGetBigBookError(t *testing.T) {
-    expErr := fmt.Errorf("test err %d", rand.Int())
-    mockLibrary.err = expErr
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     c, err := NewClient(context.Background(), clientOpt)
     if err != nil {
@@ -770,7 +769,7 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
 
     _, err = c.GetBigBook(context.Background(), req)
 
-    if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-        t.Errorf("got error %q, want %q", desc, expErr)
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
     }
 }

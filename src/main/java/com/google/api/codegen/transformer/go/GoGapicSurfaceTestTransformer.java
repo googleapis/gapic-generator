@@ -22,15 +22,16 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicTestTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.GoValueProducer;
+import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
@@ -52,11 +53,13 @@ import java.util.List;
 public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "go/mock.snip";
 
+  private final GoValueProducer valueProducer = new GoValueProducer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new GoImportTransformer());
-  private final GapicTestTransformer mockServiceTransformer =
-      new GapicTestTransformer(new GoValueProducer());
+  private final MockServiceTransformer mockServiceTransformer =
+      new MockServiceTransformer(valueProducer);
   private final FeatureConfig featureConfig = new GoFeatureConfig();
+  private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
 
   @Override
@@ -99,9 +102,13 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               featureConfig);
       testClasses.add(
           GapicSurfaceTestClassView.newBuilder()
-              .apiSettingsClassName("UNUSED")
+              .apiSettingsClassName(
+                  namer.getNotImplementedString(
+                      "GoGapicSurfaceTestTransformer.generateMockServiceView - apiSettingsClassName"))
               .apiClassName(namer.getApiWrapperClassName(service))
-              .name("UNUSED")
+              .name(
+                  namer.getNotImplementedString(
+                      "GoGapicSurfaceTestTransformer.generateMockServiceView - name"))
               .testCases(createTestCaseViews(context))
               .mockServices(Collections.<MockServiceUsageView>emptyList())
               .build());
@@ -146,11 +153,12 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
             methodContext,
-            mockServiceTransformer.createRequestInitCodeContext(
+            initCodeTransformer.createRequestInitCodeContext(
                 methodContext,
                 initSymbolTable,
                 paramFieldConfigs,
-                InitCodeOutputType.SingleObject));
+                InitCodeOutputType.SingleObject,
+                valueGenerator));
 
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
@@ -170,7 +178,9 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .surfaceMethodName(surfaceMethodName)
         .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
         .requestTypeName(requestTypeName)
-        .responseTypeName("UNUSED")
+        .responseTypeName(
+            namer.getNotImplementedString(
+                "GoGapicSurfaceTestTransformer.createTestCaseView - responseTypeName"))
         .initCode(initCodeView)
         .clientMethodType(type)
         .pageStreamingResponseViews(

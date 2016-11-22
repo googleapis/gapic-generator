@@ -11,10 +11,8 @@
 
     import (
         "flag"
-        "fmt"
         "io"
         "log"
-        "math/rand"
         "net"
         "os"
         "reflect"
@@ -23,6 +21,7 @@
         "golang.org/x/net/context"
         "google.golang.org/api/option"
         "google.golang.org/grpc"
+        "google.golang.org/grpc/codes"
     )
 
     var _ = io.EOF
@@ -177,8 +176,8 @@
 
 @private testError(test)
     func {@test.nameWithException}(t *testing.T) {
-        expErr := fmt.Errorf("test err %d", rand.Int())
-        {@test.mockServiceVarName}.err = expErr
+        errCode := codes.Internal
+        {@test.mockServiceVarName}.err = grpc.Errorf(errCode, "test error")
 
         c, err := {@test.serviceConstructorName}(context.Background(), clientOpt)
         if err != nil {
@@ -224,8 +223,8 @@
             @end
         @end
 
-        if desc := grpc.ErrorDesc(err); desc != expErr.Error() {
-            t.Errorf("got error %q, want %q", desc, expErr)
+        if c := grpc.Code(err); c != errCode {
+            t.Errorf("got error code %q, want %q", c, errCode)
         }
     }
 @end

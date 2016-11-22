@@ -24,6 +24,8 @@ import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
@@ -62,6 +64,25 @@ public class InitCodeTransformer {
     } else {
       return buildInitCodeViewRequestObject(methodContext, rootNode);
     }
+  }
+
+  public InitCodeContext createRequestInitCodeContext(
+      MethodTransformerContext context,
+      SymbolTable symbolTable,
+      Iterable<FieldConfig> fieldConfigs,
+      InitCodeOutputType outputType,
+      TestValueGenerator valueGenerator) {
+    return InitCodeContext.newBuilder()
+        .initObjectType(context.getMethod().getInputType())
+        .symbolTable(symbolTable)
+        .suggestedName(Name.from("request"))
+        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
+        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
+        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+        .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
+        .outputType(outputType)
+        .valueGenerator(valueGenerator)
+        .build();
   }
 
   /** Generates assert views for the test of the tested method and its fields. */
