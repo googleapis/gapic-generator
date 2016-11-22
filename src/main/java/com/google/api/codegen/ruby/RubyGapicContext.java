@@ -15,8 +15,8 @@
 package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.GapicContext;
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
@@ -175,7 +175,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
           + "  See Google::Gax::PagedEnumerable documentation for other\n"
           + "  operations such as per-page iteration or access to the response\n"
           + "  object.";
-    } else if (isWrappedOperation(method, service)) {
+    } else if (isLongrunning(method, service)) {
       return "@return [Google::Gax::Operation]";
     } else {
       return "@return [" + classInfo + "]";
@@ -384,30 +384,29 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         new RubyFeatureConfig());
   }
 
-  public boolean isLongrunning(Method method) {
-    return new ServiceMessages().isLongRunningOperationType(method.getOutputType());
+  public LongRunningConfig getLongrunningConfig(Method method, Interface service) {
+    return getApiConfig()
+        .getInterfaceConfig(service)
+        .getMethodConfig(method)
+        .getLongRunningConfig();
+  }
+
+  public boolean isLongrunning(Method method, Interface service) {
+    return getApiConfig()
+        .getInterfaceConfig(service)
+        .getMethodConfig(method)
+        .isLongRunningOperation();
   }
 
   public boolean hasLongrunningMethod(Interface service) {
-    if (isOperationsService(service)) {
-      return false;
-    }
-
     for (Method method : getSupportedMethodsV2(service)) {
-      if (isLongrunning(method)) {
+      if (getLongrunningConfig(method, service) != null) {
         return true;
       }
     }
     return false;
   }
 
-  public boolean isOperationsService(Interface service) {
-    return "google.longrunning.Operations".equals(service.getFullName());
-  }
-
-  public boolean isWrappedOperation(Method method, Interface service) {
-    return isLongrunning(method) && !isOperationsService(service);
-  }
   // Constants
   // =========
 

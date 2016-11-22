@@ -20,7 +20,7 @@
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
   @end
-  @if isWrappedOperationMethod(apiMethod)
+  @if apiMethod.isLongrunningOperation
     {@longRunningMethodSampleCode(apiMethod)}
   @else
     @switch apiMethod.type.toString
@@ -197,14 +197,5 @@
       ({@varList(initValue.formatArgs)})
   @default
     $unhandledCase: {@initValue.type}$
-  @end
-@end
-
-@private isWrappedOperationMethod(apiMethod)
-  @if apiMethod.isLongrunningOperation
-    @if apiMethod.isOperationsServiceMethod
-    @else
-      isWrappedOperationMethod: true
-    @end
   @end
 @end

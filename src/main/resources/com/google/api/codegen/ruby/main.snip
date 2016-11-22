@@ -455,10 +455,12 @@
 @end
 
 @private makeApiCall(method, service, request, isReturnEmptyMessage)
-  @if context.isWrappedOperation(method, service)
+  @if context.isLongrunning(method, service)
     operation = Google::Gax::Operation.new(
       @@{@getMethodName(method)}.call({@request}, options),
       @@operations_client,
+      {@context.rubyTypeName(context.getLongrunningConfig(method, service).getReturnType)},
+      {@context.rubyTypeName(context.getLongrunningConfig(method, service).getMetadataType)},
       call_options: options
     )
     operation.on_done { |operation| yield(operation) } if block_given?

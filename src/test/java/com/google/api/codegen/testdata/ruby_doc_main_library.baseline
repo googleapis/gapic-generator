@@ -1262,6 +1262,8 @@ module Library
         operation = Google::Gax::Operation.new(
           @get_big_book.call(req, options),
           @operations_client,
+          Google::Example::Library::V1::Book,
+          Google::Example::Library::V1::GetBigBookMetadata,
           call_options: options
         )
         operation.on_done { |operation| yield(operation) } if block_given?
