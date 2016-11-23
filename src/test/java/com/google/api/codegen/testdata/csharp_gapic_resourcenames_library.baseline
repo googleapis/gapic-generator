@@ -685,18 +685,7 @@ namespace Google.Example.Library.V1
     }
 
 
-    public partial class FindRelatedBooksResponse
-    {
-        /// <summary>
-        /// A <see cref="IList<BookName>"/>-typed view over the <see cref="Names"/> resource-name property.
-        /// </summary>
-        public IList<BookName> BookNames =>
-            new ResourceNameList<BookName>(Names,
-                str => BookName.Parse(str));
-
-    }
-
-    public partial class DeleteBookRequest
+    public partial class Book
     {
         /// <summary>
         /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
@@ -704,176 +693,6 @@ namespace Google.Example.Library.V1
         public BookName BookName
         {
             get { return BookName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class ListBooksRequest
-    {
-        /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public ShelfName ShelfName
-        {
-            get { return ShelfName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class MoveBookRequest
-    {
-        /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public BookName BookName
-        {
-            get { return BookName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-        /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource-name property.
-        /// </summary>
-        public ShelfName OtherShelfNameAsShelfName
-        {
-            get { return ShelfName.Parse(OtherShelfName); }
-            set { OtherShelfName = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class UpdateBookRequest
-    {
-        /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public BookName BookName
-        {
-            get { return BookName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class GetBookRequest
-    {
-        /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public BookName BookName
-        {
-            get { return BookName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class ListStringsRequest
-    {
-        /// <summary>
-        /// A <see cref="IResourceName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public IResourceName AsResourceName
-        {
-            get { return UnknownResourceName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class GetBookFromAnywhereRequest
-    {
-        /// <summary>
-        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public BookNameOneof BookNameOneof
-        {
-            get { return BookNameOneof.Parse(Name, true); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-        /// <summary>
-        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="AltBookName"/> resource-name property.
-        /// </summary>
-        public BookNameOneof AltBookNameAsBookNameOneof
-        {
-            get { return BookNameOneof.Parse(AltBookName, true); }
-            set { AltBookName = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class GetShelfRequest
-    {
-        /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public ShelfName ShelfName
-        {
-            get { return ShelfName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class MergeShelvesRequest
-    {
-        /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public ShelfName ShelfName
-        {
-            get { return ShelfName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-        /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource-name property.
-        /// </summary>
-        public ShelfName OtherShelfNameAsShelfName
-        {
-            get { return ShelfName.Parse(OtherShelfName); }
-            set { OtherShelfName = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class GetBookFromArchiveRequest
-    {
-        /// <summary>
-        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public ArchivedBookName ArchivedBookName
-        {
-            get { return ArchivedBookName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class BookFromArchive
-    {
-        /// <summary>
-        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public ArchivedBookName ArchivedBookName
-        {
-            get { return ArchivedBookName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class DeleteShelfRequest
-    {
-        /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public ShelfName ShelfName
-        {
-            get { return ShelfName.Parse(Name); }
             set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
         }
 
@@ -892,7 +711,20 @@ namespace Google.Example.Library.V1
 
     }
 
-    public partial class Shelf
+    public partial class BookFromArchive
+    {
+        /// <summary>
+        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public ArchivedBookName ArchivedBookName
+        {
+            get { return ArchivedBookName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class CreateBookRequest
     {
         /// <summary>
         /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
@@ -905,7 +737,7 @@ namespace Google.Example.Library.V1
 
     }
 
-    public partial class Book
+    public partial class DeleteBookRequest
     {
         /// <summary>
         /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
@@ -918,20 +750,7 @@ namespace Google.Example.Library.V1
 
     }
 
-    public partial class UpdateBookIndexRequest
-    {
-        /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
-        /// </summary>
-        public BookName BookName
-        {
-            get { return BookName.Parse(Name); }
-            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
-        }
-
-    }
-
-    public partial class CreateBookRequest
+    public partial class DeleteShelfRequest
     {
         /// <summary>
         /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
@@ -959,6 +778,187 @@ namespace Google.Example.Library.V1
         public IList<ShelfName> ShelvesAsShelfName =>
             new ResourceNameList<ShelfName>(Shelves,
                 str => ShelfName.Parse(str));
+
+    }
+
+    public partial class FindRelatedBooksResponse
+    {
+        /// <summary>
+        /// A <see cref="IList<BookName>"/>-typed view over the <see cref="Names"/> resource-name property.
+        /// </summary>
+        public IList<BookName> BookNames =>
+            new ResourceNameList<BookName>(Names,
+                str => BookName.Parse(str));
+
+    }
+
+    public partial class GetBookFromAnywhereRequest
+    {
+        /// <summary>
+        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public BookNameOneof BookNameOneof
+        {
+            get { return BookNameOneof.Parse(Name, true); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+        /// <summary>
+        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="AltBookName"/> resource-name property.
+        /// </summary>
+        public BookNameOneof AltBookNameAsBookNameOneof
+        {
+            get { return BookNameOneof.Parse(AltBookName, true); }
+            set { AltBookName = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class GetBookFromArchiveRequest
+    {
+        /// <summary>
+        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public ArchivedBookName ArchivedBookName
+        {
+            get { return ArchivedBookName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class GetBookRequest
+    {
+        /// <summary>
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public BookName BookName
+        {
+            get { return BookName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class GetShelfRequest
+    {
+        /// <summary>
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public ShelfName ShelfName
+        {
+            get { return ShelfName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class ListBooksRequest
+    {
+        /// <summary>
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public ShelfName ShelfName
+        {
+            get { return ShelfName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class ListStringsRequest
+    {
+        /// <summary>
+        /// A <see cref="IResourceName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public IResourceName AsResourceName
+        {
+            get { return UnknownResourceName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class MergeShelvesRequest
+    {
+        /// <summary>
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public ShelfName ShelfName
+        {
+            get { return ShelfName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+        /// <summary>
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource-name property.
+        /// </summary>
+        public ShelfName OtherShelfNameAsShelfName
+        {
+            get { return ShelfName.Parse(OtherShelfName); }
+            set { OtherShelfName = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class MoveBookRequest
+    {
+        /// <summary>
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public BookName BookName
+        {
+            get { return BookName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+        /// <summary>
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource-name property.
+        /// </summary>
+        public ShelfName OtherShelfNameAsShelfName
+        {
+            get { return ShelfName.Parse(OtherShelfName); }
+            set { OtherShelfName = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class Shelf
+    {
+        /// <summary>
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public ShelfName ShelfName
+        {
+            get { return ShelfName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class UpdateBookIndexRequest
+    {
+        /// <summary>
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public BookName BookName
+        {
+            get { return BookName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
+
+    }
+
+    public partial class UpdateBookRequest
+    {
+        /// <summary>
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// </summary>
+        public BookName BookName
+        {
+            get { return BookName.Parse(Name); }
+            set { Name = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+        }
 
     }
 

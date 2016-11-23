@@ -46,6 +46,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -225,6 +227,14 @@ public class PathTemplateTransformer {
       protoBuilder.fields(fieldViews);
       protos.add(protoBuilder.build());
     }
+    Collections.sort(
+        protos,
+        new Comparator<ResourceProtoView>() {
+          @Override
+          public int compare(ResourceProtoView a, ResourceProtoView b) {
+            return a.protoClassName().compareTo(b.protoClassName());
+          }
+        });
     return protos;
   }
 
