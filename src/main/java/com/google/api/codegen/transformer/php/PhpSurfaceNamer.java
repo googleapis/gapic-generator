@@ -84,7 +84,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getRetrySettingsTypeName() {
-    return "Google\\GAX\\RetrySettings";
+    return "\\Google\\GAX\\RetrySettings";
   }
 
   @Override
@@ -98,7 +98,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
-      return "Google\\GAX\\PagedListResponse";
+      return "\\Google\\GAX\\PagedListResponse";
     }
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
   }
