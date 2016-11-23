@@ -27,6 +27,8 @@ public abstract class ResourceProtoFieldView {
 
   public abstract boolean isAny();
 
+  public abstract boolean isOneof();
+
   public abstract String propertyName();
 
   public abstract String underlyingPropertyName();
@@ -44,6 +46,8 @@ public abstract class ResourceProtoFieldView {
     public abstract Builder isRepeated(boolean val);
 
     public abstract Builder isAny(boolean val);
+
+    public abstract Builder isOneof(boolean val);
 
     public abstract Builder propertyName(String val);
 

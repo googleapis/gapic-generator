@@ -196,13 +196,28 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
     TypeRef type = fieldConfig.getField().getType();
-    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    String fieldName = fieldConfig.getField().getSimpleName();
+    Name identifier = Name.from(fieldName);
+    Name resourceName;
+    if (fieldConfig.getResourceNameConfig() == null) {
+      resourceName = Name.from("as_resource_name");
+    } else {
+      resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
+    }
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
     } else if (type.isRepeated()) {
-      return publicMethodName(identifier.join("as_resources"));
+      if (fieldName.toLowerCase().equals("names")) {
+        return publicMethodName(resourceName) + "s";
+      } else {
+        return publicMethodName(identifier.join("as").join(resourceName));
+      }
     } else {
-      return publicMethodName(identifier.join("as_resource"));
+      if (fieldName.toLowerCase().equals("name")) {
+        return publicMethodName(resourceName);
+      } else {
+        return publicMethodName(identifier.join("as").join(resourceName));
+      }
     }
   }
 

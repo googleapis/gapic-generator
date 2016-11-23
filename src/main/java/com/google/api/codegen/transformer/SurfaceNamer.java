@@ -328,30 +328,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The name of a field as a method. */
-  public String getFieldAsMethodName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    Field field = fieldConfig.getField();
-    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      return getResourceNameFieldAsMethodName(field.getType(), Name.from(field.getSimpleName()));
-    } else {
-      return getFieldAsMethodName(field);
-    }
-  }
-
-  public String getFieldAsMethodName(Field field) {
-    return publicMethodName(Name.from(field.getSimpleName()));
-  }
-
-  public String getResourceNameFieldAsMethodName(TypeRef type, Name identifier) {
-    if (type.isMap()) {
-      return getNotImplementedString("SurfaceNamer.getResourceNameFieldAsMethodName:map-type");
-    } else if (type.isRepeated()) {
-      return publicMethodName(identifier.join("as").join("resources"));
-    } else {
-      return publicMethodName(identifier.join("as").join("resource"));
-    }
-  }
-
   /**
    * The function name to get the count of elements in the given field.
    *

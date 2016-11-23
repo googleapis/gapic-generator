@@ -14,12 +14,15 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FixedResourceNameConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
@@ -178,13 +181,20 @@ public class PathTemplateTransformer {
       List<ResourceProtoFieldView> fieldViews = new ArrayList<>();
       for (Field field : fields) {
         String fieldName = field.getSimpleName();
-        FieldConfig fieldConfig = FieldConfig.createDefaultFieldConfig(field);
         String fieldResourceName = resourceConfigs.getFieldResourceName(field);
+        ResourceNameConfig resourceNameConfig = resourceNameConfigs.get(fieldResourceName);
+        FieldConfig fieldConfig =
+            FieldConfig.createFieldConfig(
+                field,
+                resourceNameConfig == null
+                    ? ResourceNameTreatment.NONE
+                    : ResourceNameTreatment.STATIC_TYPES,
+                resourceNameConfig);
         String fieldTypeSimpleName;
-        if (fieldResourceName.equals("*")) {
+        boolean isAny = fieldResourceName.equals(AnyResourceNameConfig.GAPIC_CONFIG_ANY_VALUE);
+        if (isAny) {
           fieldTypeSimpleName = namer.getAnyFieldResourceTypeName();
         } else {
-          ResourceNameConfig resourceNameConfig = resourceNameConfigs.get(fieldResourceName);
           fieldTypeSimpleName = namer.getResourceTypeName(resourceNameConfig);
         }
         String fieldTypeName =
@@ -202,8 +212,11 @@ public class PathTemplateTransformer {
             ResourceProtoFieldView.newBuilder()
                 .typeName(fieldTypeName)
                 .elementTypeName(fieldElementTypeName)
-                .isAny(fieldResourceName.equals("*"))
+                .isAny(isAny)
                 .isRepeated(field.getType().isRepeated())
+                .isOneof(
+                    resourceNameConfig != null
+                        && resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF)
                 .propertyName(namer.getResourceNameFieldGetFunctionName(fieldConfig))
                 .underlyingPropertyName(namer.publicMethodName(Name.from(fieldName)))
                 .build();
