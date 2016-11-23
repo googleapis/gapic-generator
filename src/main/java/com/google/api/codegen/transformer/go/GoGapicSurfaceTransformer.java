@@ -172,7 +172,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     for (StaticLangApiMethodView apiMethod : apiMethods) {
       LongRunningOperationDetailView lro = apiMethod.operationMethod();
       if (lro != null) {
-        lros.put(lro.operationReturnType(), lro);
+        lros.put(lro.returnType(), lro);
       }
     }
     view.lroDetailViews(new ArrayList<LongRunningOperationDetailView>(lros.values()));
@@ -390,7 +390,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
               .put(
                   ImportContext.CLIENT,
                   ImportKind.LRO,
-                  ImmutableList.<String>of("cloud.google.com/go/longrunning;;;"))
+                  ImmutableList.<String>of("cloud.google.com/go/support/longrunning;;;"))
               .put(
                   ImportContext.EXAMPLE,
                   ImportKind.SERVER_STREAM,

@@ -19,9 +19,13 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class LongRunningOperationDetailView {
 
-  public abstract String operationReturnType();
+  public abstract String constructorName();
 
-  public abstract String operationResponseType();
+  public abstract String returnType();
+
+  public abstract String responseType();
+
+  public abstract String metadataType();
 
   public static Builder newBuilder() {
     return new AutoValue_LongRunningOperationDetailView.Builder();
@@ -29,9 +33,13 @@ public abstract class LongRunningOperationDetailView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder operationReturnType(String val);
+    public abstract Builder constructorName(String val);
 
-    public abstract Builder operationResponseType(String val);
+    public abstract Builder returnType(String val);
+
+    public abstract Builder responseType(String val);
+
+    public abstract Builder metadataType(String val);
 
     public abstract LongRunningOperationDetailView build();
   }

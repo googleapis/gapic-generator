@@ -22,19 +22,19 @@ public class LongRunningTransformer {
   public LongRunningOperationDetailView generateDetailView(MethodTransformerContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
     LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();
-    String responseType =
-        context
-            .getTypeTable()
-            .getAndSaveNicknameFor(
-                context.getMethodConfig().getLongRunningConfig().getReturnType());
+    SurfaceNamer namer = context.getNamer();
+
+    String returnType =
+        namer.getAndSaveOperationResponseTypeName(
+            context.getMethod(), context.getTypeTable(), methodConfig);
+    String responseType = context.getTypeTable().getAndSaveNicknameFor(lroConfig.getReturnType());
+    String metadataType = context.getTypeTable().getAndSaveNicknameFor(lroConfig.getMetadataType());
 
     return LongRunningOperationDetailView.newBuilder()
-        .operationReturnType(
-            context
-                .getNamer()
-                .getAndSaveOperationResponseTypeName(
-                    context.getMethod(), context.getTypeTable(), methodConfig))
-        .operationResponseType(context.getNamer().plainType(responseType))
+        .constructorName(namer.getTypeConstructor(returnType))
+        .returnType(returnType)
+        .responseType(namer.plainType(responseType))
+        .metadataType(namer.plainType(metadataType))
         .build();
   }
 }
