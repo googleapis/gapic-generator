@@ -22,7 +22,6 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -120,7 +119,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    return typeNameConverter.getTypeName(elem.getFullName().replaceAll("\\.", "\\\\"));
+    return typeNameConverter.getTypeName("\\" + elem.getFullName().replaceAll("\\.", "\\\\"));
   }
 
   /**
@@ -169,11 +168,6 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
         // here
         return value;
     }
-  }
-
-  /** Gets the PHP package for the given proto file. */
-  private static String getPhpPackage(ProtoFile file) {
-    return file.getProto().getPackage().replaceAll("\\.", "\\\\");
   }
 
   @Override
