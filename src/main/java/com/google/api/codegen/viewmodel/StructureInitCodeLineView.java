@@ -25,6 +25,8 @@ public abstract class StructureInitCodeLineView implements InitCodeLineView {
 
   public abstract String typeName();
 
+  public abstract String typeConstructor();
+
   @Override
   public abstract String identifier();
 
@@ -39,6 +41,8 @@ public abstract class StructureInitCodeLineView implements InitCodeLineView {
     public abstract Builder lineType(InitCodeLineType val);
 
     public abstract Builder typeName(String val);
+
+    public abstract Builder typeConstructor(String val);
 
     public abstract Builder identifier(String val);
 

@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -136,7 +135,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               initCodeTransformer.createRequestInitCodeContext(
                   methodContext,
                   new SymbolTable(),
-                  Collections.<FieldConfig>emptyList(),
+                  methodContext.getMethodConfig().getRequiredFieldConfigs(),
                   InitCodeOutputType.SingleObject,
                   valueGenerator),
               clientMethodType));

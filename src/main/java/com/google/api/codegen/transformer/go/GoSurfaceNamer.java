@@ -62,6 +62,12 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPathTemplateNameGetter(
       Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return getFormatFunctionName(service, resourceNameConfig);
+  }
+
+  @Override
+  public String getFormatFunctionName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
         getReducedServiceName(service).join(resourceNameConfig.getEntityName()).join("path"));
   }

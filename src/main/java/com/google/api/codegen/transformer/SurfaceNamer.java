@@ -377,7 +377,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to format the entity for the given collection. */
-  public String getFormatFunctionName(SingleResourceNameConfig resourceNameConfig) {
+  public String getFormatFunctionName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from("format", resourceNameConfig.getEntityName(), "name"));
   }
 

@@ -57,7 +57,7 @@ public class PathTemplateTransformer {
         interfaceConfig.getSingleResourceNameConfigs()) {
       FormatResourceFunctionView.Builder function = FormatResourceFunctionView.newBuilder();
       function.entityName(resourceNameConfig.getEntityName());
-      function.name(namer.getFormatFunctionName(resourceNameConfig));
+      function.name(namer.getFormatFunctionName(service, resourceNameConfig));
       function.pathTemplateName(namer.getPathTemplateName(service, resourceNameConfig));
       function.pathTemplateGetterName(namer.getPathTemplateNameGetter(service, resourceNameConfig));
       function.pattern(resourceNameConfig.getNamePattern());

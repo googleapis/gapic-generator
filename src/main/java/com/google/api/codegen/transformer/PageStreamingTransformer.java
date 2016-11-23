@@ -85,12 +85,6 @@ public class PageStreamingTransformer {
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
     desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
 
-    // The resource fields are "repeated" in the proto.
-    // We `makeOptional` so that we get the zero value of the resource,
-    // not the zero value of the array/list of resources.
-    desc.resourceZeroValue(
-        context.getTypeTable().getZeroValueAndSaveNicknameFor(resourceType.makeOptional()));
-
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
     if (pageStreaming.hasPageSizeField()) {

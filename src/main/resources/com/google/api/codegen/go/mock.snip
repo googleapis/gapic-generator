@@ -1,4 +1,5 @@
 @extends "go/header.snip"
+@extends "go/initcode.snip"
 
 @snippet generate(view)
     {@headerComment(view.fileHeader)}
@@ -15,7 +16,6 @@
         "log"
         "net"
         "os"
-        "reflect"
         "testing"
 
         "golang.org/x/net/context"
@@ -88,7 +88,7 @@
 
     @join testClass : view.testClasses
         @join testCase : testClass.testCases
-            {@testError(testCase)}
+            {@testFunc(testCase)}
         @end
     @end
 @end
@@ -174,57 +174,69 @@
     }
 @end
 
-@private testError(test)
+@private testFunc(test)
+    func {@test.name}(t *testing.T) {
+        {@initCode(test.mockResponse.initCode)}
+
+        {@test.mockServiceVarName}.err = nil
+        {@test.mockServiceVarName}.resps = append({@test.mockServiceVarName}.resps, expectedResponse)
+        {@test.mockServiceVarName}.reqs = nil
+
+        {@initCode(test.initCode)}
+
+        _ = request
+    }
+
     func {@test.nameWithException}(t *testing.T) {
         errCode := codes.Internal
         {@test.mockServiceVarName}.err = grpc.Errorf(errCode, "test error")
 
-        c, err := {@test.serviceConstructorName}(context.Background(), clientOpt)
-        if err != nil {
-            t.Fatal(err)
-        }
+        {@initCode(test.initCode)}
+        _ = request
 
-        var req {@test.requestTypeName}
-
-        # TODO(pongad): Use struct initializer instead of reflection.
-        # The type name has the pointer-star: "*pkg.Type", so we can't use it to initialize.
-        # This should fall off from initializing requests in happy-case test.
-        reflect.ValueOf(&req).Elem().Set(reflect.New(reflect.TypeOf(req).Elem()))
-
-        @switch test.grpcStreamingType
-        @case "BidiStreaming"
-            stream, err := c.{@test.surfaceMethodName}(context.Background())
-            if err != nil {
-                t.Fatal(err)
-            }
-            _, err = stream.Recv()
-        @case "ServerStreaming"
-            stream, err := c.{@test.surfaceMethodName}(context.Background())
-            if err != nil {
-                t.Fatal(err)
-            }
-            _, err = stream.Recv()
-        @case "ClientStreaming"
-            stream, err := c.{@test.surfaceMethodName}(context.Background())
-            if err != nil {
-                t.Fatal(err)
-            }
-            _, err = stream.CloseAndRecv()
-        @case "NonStreaming"
-            @switch test.clientMethodType
-            @case "PagedRequestObjectMethod"
-                _, err = c.{@test.surfaceMethodName}(context.Background(), req).Next()
-            @case "RequestObjectMethod"
-                @if test.hasReturnValue
-                    _, err = c.{@test.surfaceMethodName}(context.Background(), req)
-                @else
-                    err = c.{@test.surfaceMethodName}(context.Background(), req)
-                @end
-            @end
-        @end
+        {@callMock(test)}
 
         if c := grpc.Code(err); c != errCode {
             t.Errorf("got error code %q, want %q", c, errCode)
         }
     }
+@end
+
+@private callMock(test)
+    c, err := {@test.serviceConstructorName}(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    @switch test.grpcStreamingType
+    @case "BidiStreaming"
+        stream, err := c.{@test.surfaceMethodName}(context.Background())
+        if err != nil {
+            t.Fatal(err)
+        }
+        _, err = stream.Recv()
+    @case "ServerStreaming"
+        stream, err := c.{@test.surfaceMethodName}(context.Background())
+        if err != nil {
+            t.Fatal(err)
+        }
+        _, err = stream.Recv()
+    @case "ClientStreaming"
+        stream, err := c.{@test.surfaceMethodName}(context.Background())
+        if err != nil {
+            t.Fatal(err)
+        }
+        _, err = stream.CloseAndRecv()
+    @case "NonStreaming"
+        @switch test.clientMethodType
+        @case "PagedRequestObjectMethod"
+            _, err = c.{@test.surfaceMethodName}(context.Background(), request).Next()
+        @case "RequestObjectMethod"
+            @if test.hasReturnValue
+                _, err = c.{@test.surfaceMethodName}(context.Background(), request)
+            @else
+                err = c.{@test.surfaceMethodName}(context.Background(), request)
+            @end
+        @end
+    @end
 @end
