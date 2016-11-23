@@ -482,6 +482,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * Gets the type name of the Grpc client class, saves it to the type table provided, and returns
+   * the nickname.
+   */
+  public String getAndSaveNicknameForGrpcClientTypeName(
+      ModelTypeTable typeTable, Interface service) {
+    return typeTable.getAndSaveNicknameFor(getGrpcClientTypeName(service));
+  }
+
+  /**
    * The type name of the Grpc container class. This needs to match what Grpc generates for the
    * particular language.
    */
