@@ -23,40 +23,40 @@
 
 namespace Google\Example\Library\V1;
 
-use Google\GAX\AgentHeaderDescriptor;
-use Google\GAX\ApiCallable;
-use Google\GAX\CallSettings;
-use Google\GAX\GrpcConstants;
-use Google\GAX\GrpcCredentialsHelper;
-use Google\GAX\PageStreamingDescriptor;
-use Google\GAX\PathTemplate;
-use google\example\library\v1\AddCommentsRequest;
-use google\example\library\v1\Book;
-use google\example\library\v1\Comment;
-use google\example\library\v1\CreateBookRequest;
-use google\example\library\v1\CreateShelfRequest;
-use google\example\library\v1\DeleteBookRequest;
-use google\example\library\v1\DeleteShelfRequest;
-use google\example\library\v1\FindRelatedBooksRequest;
-use google\example\library\v1\GetBookFromAnywhereRequest;
-use google\example\library\v1\GetBookFromArchiveRequest;
-use google\example\library\v1\GetBookRequest;
-use google\example\library\v1\GetShelfRequest;
-use google\example\library\v1\ListBooksRequest;
-use google\example\library\v1\ListShelvesRequest;
-use google\example\library\v1\ListStringsRequest;
-use google\example\library\v1\MergeShelvesRequest;
-use google\example\library\v1\MoveBookRequest;
-use google\example\library\v1\PublishSeriesRequest;
-use google\example\library\v1\Shelf;
-use google\example\library\v1\SomeMessage;
-use google\example\library\v1\StringBuilder;
-use google\example\library\v1\UpdateBookIndexRequest;
-use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
-use google\example\library\v1\UpdateBookRequest;
-use google\protobuf\FieldMask;
-use google\tagger\v1\AddLabelRequest;
-use google\tagger\v1\AddTagRequest;
+use \Google\GAX\AgentHeaderDescriptor;
+use \Google\GAX\ApiCallable;
+use \Google\GAX\CallSettings;
+use \Google\GAX\GrpcConstants;
+use \Google\GAX\GrpcCredentialsHelper;
+use \Google\GAX\PageStreamingDescriptor;
+use \Google\GAX\PathTemplate;
+use \google\example\library\v1\AddCommentsRequest;
+use \google\example\library\v1\Book;
+use \google\example\library\v1\Comment;
+use \google\example\library\v1\CreateBookRequest;
+use \google\example\library\v1\CreateShelfRequest;
+use \google\example\library\v1\DeleteBookRequest;
+use \google\example\library\v1\DeleteShelfRequest;
+use \google\example\library\v1\FindRelatedBooksRequest;
+use \google\example\library\v1\GetBookFromAnywhereRequest;
+use \google\example\library\v1\GetBookFromArchiveRequest;
+use \google\example\library\v1\GetBookRequest;
+use \google\example\library\v1\GetShelfRequest;
+use \google\example\library\v1\ListBooksRequest;
+use \google\example\library\v1\ListShelvesRequest;
+use \google\example\library\v1\ListStringsRequest;
+use \google\example\library\v1\MergeShelvesRequest;
+use \google\example\library\v1\MoveBookRequest;
+use \google\example\library\v1\PublishSeriesRequest;
+use \google\example\library\v1\Shelf;
+use \google\example\library\v1\SomeMessage;
+use \google\example\library\v1\StringBuilder;
+use \google\example\library\v1\UpdateBookIndexRequest;
+use \google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
+use \google\example\library\v1\UpdateBookRequest;
+use \google\protobuf\FieldMask;
+use \google\tagger\v1\AddLabelRequest;
+use \google\tagger\v1\AddTagRequest;
 
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
@@ -389,7 +389,7 @@ class LibraryServiceClient
         $this->grpcCredentialsHelper = new GrpcCredentialsHelper($this->scopes, $grpcCredentialsHelperOptions);
 
         $createLibraryServiceStubFunction = function ($hostname, $opts) {
-            return new google\example\library\v1\LibraryServiceClient($hostname, $opts);
+            return new \google\example\library\v1\LibraryServiceClient($hostname, $opts);
         };
         $this->libraryServiceStub = $this->grpcCredentialsHelper->createStub(
             $createLibraryServiceStubFunction,
@@ -397,7 +397,7 @@ class LibraryServiceClient
             $options['port'],
             $createStubOptions);
         $createLabelerStubFunction = function ($hostname, $opts) {
-            return new google\tagger\v1\LabelerClient($hostname, $opts);
+            return new \google\tagger\v1\LabelerClient($hostname, $opts);
         };
         $this->labelerStub = $this->grpcCredentialsHelper->createStub(
             $createLabelerStubFunction,
@@ -433,9 +433,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Shelf
+     * @return \google\example\library\v1\Shelf
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function createShelf($shelf, $optionalArgs = [])
     {
@@ -485,9 +485,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Shelf
+     * @return \google\example\library\v1\Shelf
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function getShelf($name, $options, $optionalArgs = [])
     {
@@ -547,7 +547,7 @@ class LibraryServiceClient
      *
      * @return Google\GAX\PagedListResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function listShelves($optionalArgs = [])
     {
@@ -594,7 +594,7 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function deleteShelf($name, $optionalArgs = [])
     {
@@ -643,9 +643,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Shelf
+     * @return \google\example\library\v1\Shelf
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function mergeShelves($name, $otherShelfName, $optionalArgs = [])
     {
@@ -693,9 +693,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return \google\example\library\v1\Book
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function createBook($name, $book, $optionalArgs = [])
     {
@@ -749,9 +749,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\PublishSeriesResponse
+     * @return \google\example\library\v1\PublishSeriesResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function publishSeries($shelf, $books, $optionalArgs = [])
     {
@@ -808,9 +808,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return \google\example\library\v1\Book
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function getBook($name, $optionalArgs = [])
     {
@@ -870,7 +870,7 @@ class LibraryServiceClient
      *
      * @return Google\GAX\PagedListResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function listBooks($name, $optionalArgs = [])
     {
@@ -924,7 +924,7 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function deleteBook($name, $optionalArgs = [])
     {
@@ -965,7 +965,7 @@ class LibraryServiceClient
      *     Optional.
      *     @type FieldMask $updateMask
      *          A field mask to apply, rendered as an HTTP parameter.
-     *     @type google\example\library\v1\FieldMask $physicalMask
+     *     @type \google\example\library\v1\FieldMask $physicalMask
      *          To test Python import clash resolution.
      *     @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
@@ -975,9 +975,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return \google\example\library\v1\Book
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function updateBook($name, $book, $optionalArgs = [])
     {
@@ -1031,9 +1031,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return \google\example\library\v1\Book
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function moveBook($name, $otherShelfName, $optionalArgs = [])
     {
@@ -1092,7 +1092,7 @@ class LibraryServiceClient
      *
      * @return Google\GAX\PagedListResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function listStrings($optionalArgs = [])
     {
@@ -1154,7 +1154,7 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function addComments($name, $comments, $optionalArgs = [])
     {
@@ -1202,9 +1202,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\BookFromArchive
+     * @return \google\example\library\v1\BookFromArchive
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function getBookFromArchive($name, $optionalArgs = [])
     {
@@ -1252,9 +1252,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\BookFromAnywhere
+     * @return \google\example\library\v1\BookFromAnywhere
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
     {
@@ -1305,7 +1305,7 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [])
     {
@@ -1370,7 +1370,7 @@ class LibraryServiceClient
      *
      * @return Google\GAX\PagedListResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function findRelatedBooks($names, $shelves, $optionalArgs = [])
     {
@@ -1430,9 +1430,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\tagger\v1\AddTagResponse
+     * @return \google\tagger\v1\AddTagResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function addTag($resource, $tag, $optionalArgs = [])
     {
@@ -1482,9 +1482,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\tagger\v1\AddLabelResponse
+     * @return \google\tagger\v1\AddLabelResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function addLabel($resource, $label, $optionalArgs = [])
     {
@@ -1530,9 +1530,9 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return google\longrunning\Operation
+     * @return \google\longrunning\Operation
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function getBigBook($name, $optionalArgs = [])
     {

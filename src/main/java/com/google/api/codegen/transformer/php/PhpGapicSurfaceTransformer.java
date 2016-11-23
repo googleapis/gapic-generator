@@ -143,15 +143,15 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private void addApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("Google\\GAX\\AgentHeaderDescriptor");
-    typeTable.saveNicknameFor("Google\\GAX\\ApiCallable");
-    typeTable.saveNicknameFor("Google\\GAX\\CallSettings");
-    typeTable.saveNicknameFor("Google\\GAX\\GrpcConstants");
-    typeTable.saveNicknameFor("Google\\GAX\\GrpcCredentialsHelper");
-    typeTable.saveNicknameFor("Google\\GAX\\PathTemplate");
+    typeTable.saveNicknameFor("\\Google\\GAX\\AgentHeaderDescriptor");
+    typeTable.saveNicknameFor("\\Google\\GAX\\ApiCallable");
+    typeTable.saveNicknameFor("\\Google\\GAX\\CallSettings");
+    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcConstants");
+    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
+    typeTable.saveNicknameFor("\\Google\\GAX\\PathTemplate");
 
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
-      typeTable.saveNicknameFor("Google\\GAX\\PageStreamingDescriptor");
+      typeTable.saveNicknameFor("\\Google\\GAX\\PageStreamingDescriptor");
     }
   }
 
