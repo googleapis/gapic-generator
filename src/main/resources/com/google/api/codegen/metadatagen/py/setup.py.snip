@@ -1,0 +1,52 @@
+@snippet generate(context)
+    """A setup module for the GRPC google-{@context.getApiNameInfo.shortName} service.
+
+    See:
+    https://packaging.python.org/en/latest/distributing.html
+    https://github.com/pypa/sampleproject
+    """
+
+    import setuptools
+
+    from setuptools import setup, find_packages
+
+    install_requires = [
+      'oauth2client>={@context.getDependencyValue("auth.python.version")}, <{@context.getDependencyValue("auth.python.next_version")}',
+      'grpcio>={@context.getDependencyValue("grpc.python.version")}, <{@context.getDependencyValue("grpc.python.next_version")}',
+      'googleapis-common-protos[grpc]>={@context.getDependencyValue("googleapis_common_protos.python.version")}, <{@context.getDependencyValue("googleapis_common_protos.python.next_version")}'
+    ]
+
+    setuptools.setup(
+      name='{@context.getPackageName}',
+      version='{@context.getDefaultsValue("semver.python")}',
+      author='{@context.getDefaultsValue("author")}',
+      author_email='{@context.getDefaultsValue("email")}',
+      classifiers=[
+        'Intended Audience :: Developers',
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: Implementation :: CPython',
+      ],
+      description='GRPC library for the {@context.getApiNameInfo.fullName} service',
+      long_description=open('README.rst').read(),
+      install_requires=install_requires,
+      license='{@context.getDefaultsValue("license")}',
+      packages=find_packages(),
+      namespace_packages=[{@quotedList(context.getCopierMetadata.pythonNamespacePackages)}],
+      url='{@context.getDefaultsValue("homepage")}'
+    )
+
+@end
+
+@snippet quotedList(list)
+    @join element : list on ", "
+        '{@element}'
+    @end
+@end
