@@ -283,7 +283,6 @@ public class PythonImportHandler {
   }
 
   private String protoPackageToPythonPackage(String protoPackage) {
-    // TODO(geigerj): What's the best place for this?
     for (String commonProto : COMMON_PROTOS) {
       if (protoPackage.startsWith(commonProto)) {
         return protoPackage;
