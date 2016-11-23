@@ -266,17 +266,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       if (methodConfig.isGrpcStreaming()) {
         addGrpcStreamingTestImport(context);
         MethodTransformerContext methodContext = context.asRequestMethodContext(method);
+        InitCodeContext initCodeContext =
+            initCodeTransformer.createRequestInitCodeContext(
+                methodContext,
+                new SymbolTable(),
+                methodConfig.getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject,
+                valueGenerator);
         testCaseViews.add(
             mockServiceTransformer.createTestMethodView(
-                methodContext,
-                testNameTable,
-                initCodeTransformer.createRequestInitCodeContext(
-                    methodContext,
-                    new SymbolTable(),
-                    methodConfig.getRequiredFieldConfigs(),
-                    InitCodeOutputType.SingleObject,
-                    valueGenerator),
-                ClientMethodType.CallableMethod));
+                methodContext, testNameTable, initCodeContext, ClientMethodType.CallableMethod));
       } else if (methodConfig.isFlattening()) {
         ClientMethodType clientMethodType;
         if (methodConfig.isPageStreaming()) {
@@ -289,17 +288,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           MethodTransformerContext methodContext =
               context.asFlattenedMethodContext(method, flatteningGroup);
+          InitCodeContext initCodeContext =
+              initCodeTransformer.createRequestInitCodeContext(
+                  methodContext,
+                  new SymbolTable(),
+                  flatteningGroup.getFlattenedFieldConfigs().values(),
+                  InitCodeOutputType.FieldList,
+                  valueGenerator);
           testCaseViews.add(
               mockServiceTransformer.createTestMethodView(
-                  methodContext,
-                  testNameTable,
-                  initCodeTransformer.createRequestInitCodeContext(
-                      methodContext,
-                      new SymbolTable(),
-                      flatteningGroup.getFlattenedFieldConfigs().values(),
-                      InitCodeOutputType.FieldList,
-                      valueGenerator),
-                  clientMethodType));
+                  methodContext, testNameTable, initCodeContext, clientMethodType));
         }
       } else {
         // TODO: Add support of non-flattening method

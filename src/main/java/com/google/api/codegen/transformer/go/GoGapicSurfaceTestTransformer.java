@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.go;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -129,17 +130,16 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedRequestObjectMethod;
       }
+      InitCodeContext initCodeContext =
+          initCodeTransformer.createRequestInitCodeContext(
+              methodContext,
+              new SymbolTable(),
+              Collections.<FieldConfig>emptyList(),
+              InitCodeOutputType.SingleObject,
+              valueGenerator);
       testCaseViews.add(
           mockServiceTransformer.createTestMethodView(
-              methodContext,
-              testNameTable,
-              initCodeTransformer.createRequestInitCodeContext(
-                  methodContext,
-                  new SymbolTable(),
-                  Collections.<FieldConfig>emptyList(),
-                  InitCodeOutputType.SingleObject,
-                  valueGenerator),
-              clientMethodType));
+              methodContext, testNameTable, initCodeContext, clientMethodType));
     }
     return testCaseViews;
   }
