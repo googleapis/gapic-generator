@@ -816,6 +816,8 @@ func (op *BookOperation) Wait(ctx context.Context) (*librarypb.Book, error) {
 
 // Poll fetches the latest state of the long-running operation.
 //
+// Poll also fetches the latest metadata, which can be retrieved by Metadata.
+//
 // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
 // the operation has completed with failure, the error is returned and op.Done will return true.
 // If Poll succeeds and the operation has completed successfully,
@@ -833,8 +835,7 @@ func (op *BookOperation) Poll(ctx context.Context) (*librarypb.Book, error) {
 }
 
 // Metadata returns metadata associated with the long-running operation.
-// Latest metadata can be fetched by Poll.
-// If the metadata is not availabe, the returned metadata and error are both nil.
+// If the metadata is not available, the returned metadata and error are both nil.
 func (op *BookOperation) Metadata() (*librarypb.GetBigBookMetadata, error) {
     var meta librarypb.GetBigBookMetadata
     if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
