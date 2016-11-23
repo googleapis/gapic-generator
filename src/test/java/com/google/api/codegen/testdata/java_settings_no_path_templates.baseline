@@ -20,10 +20,10 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.gax.grpc.ChannelProvider;
+import com.google.api.gax.grpc.ClientSettings;
 import com.google.api.gax.grpc.ExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import com.google.api.gax.grpc.InstantiatingExecutorProvider;
-import com.google.api.gax.grpc.ServiceApiSettings;
 import com.google.api.gax.grpc.SimpleCallSettings;
 import com.google.api.gax.grpc.UnaryCallSettings;
 import com.google.auth.Credentials;
@@ -35,19 +35,22 @@ import com.google.common.collect.Sets;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.example.noPathTemplates.v1.NoTemplatesAPIServiceGrpc;
 import com.google.protobuf.Empty;
+import com.google.protobuf.ExperimentalApi;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
 import org.joda.time.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
- * Settings class to configure an instance of {@link NoTemplatesApiServiceApi}.
+ * Settings class to configure an instance of {@link NoTemplatesApiServiceClient}.
  */
-@javax.annotation.Generated("by GAPIC")
-public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
+@Generated("by GAPIC")
+@ExperimentalApi
+public class NoTemplatesApiServiceSettings extends ClientSettings {
 
   /**
    * The default port of the service.
@@ -131,7 +134,7 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
   /**
    * Builder for NoTemplatesApiServiceSettings.
    */
-  public static class Builder extends ServiceApiSettings.Builder {
+  public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
     private final SimpleCallSettings.Builder<IncrementRequest, Empty> incrementSettings;
@@ -200,8 +203,8 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
      *
      * Note: This method does not support applying settings to streaming methods.
      */
-    public Builder applyToAllApiMethods(UnaryCallSettings.Builder apiCallSettings) throws Exception {
-      super.applyToAllApiMethods(unaryMethodSettingsBuilders, apiCallSettings);
+    public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
+      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
       return this;
     }
 

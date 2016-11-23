@@ -18,7 +18,7 @@ import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class GapicSurfaceTestAssertView {
+public abstract class ClientTestAssertView {
   public abstract String actualValueGetter();
 
   public abstract String expectedValueIdentifier();
@@ -31,7 +31,7 @@ public abstract class GapicSurfaceTestAssertView {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_GapicSurfaceTestAssertView.Builder();
+    return new AutoValue_ClientTestAssertView.Builder();
   }
 
   @AutoValue.Builder
@@ -42,6 +42,6 @@ public abstract class GapicSurfaceTestAssertView {
 
     public abstract Builder expectedValueTransformFunction(String val);
 
-    public abstract GapicSurfaceTestAssertView build();
+    public abstract ClientTestAssertView build();
   }
 }

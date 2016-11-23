@@ -25,6 +25,13 @@ class CSharpSampleNamer extends SampleNamer {
   }
 
   @Override
+  public String getSampleClassName(String apiCanonicalName) {
+    // Using the Name class causes replacements like "SQL" to "Sql", which we
+    // don't want in C#. So, we use regular concatenation.
+    return apiCanonicalName.replace(" ", "") + "Example";
+  }
+
+  @Override
   public String getServiceVarName(String apiTypeName) {
     return Name.upperCamel(apiTypeName).toLowerCamel();
   }
@@ -33,5 +40,9 @@ class CSharpSampleNamer extends SampleNamer {
   public String getResourceVarName(String resourceTypeName) {
     String[] pieces = resourceTypeName.split("\\.");
     return super.getResourceVarName(pieces[pieces.length - 1]);
+  }
+
+  public static String getNamespaceName(String apiCanonicalName) {
+    return apiCanonicalName.replace(" ", "") + "Sample";
   }
 }

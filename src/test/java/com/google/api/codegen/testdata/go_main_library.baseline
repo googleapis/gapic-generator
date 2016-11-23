@@ -280,7 +280,10 @@ func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequ
             resp, err = c.client.ListShelves(ctx, req)
             return err
         }, c.CallOptions.ListShelves...)
-        return resp.Shelves, resp.NextPageToken, err
+        if err != nil {
+            return nil, "", err
+        }
+        return resp.Shelves, resp.NextPageToken, nil
     }
     fetch := func(pageSize int, pageToken string) (string, error) {
         items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
@@ -390,7 +393,10 @@ func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest)
             resp, err = c.client.ListBooks(ctx, req)
             return err
         }, c.CallOptions.ListBooks...)
-        return resp.Books, resp.NextPageToken, err
+        if err != nil {
+            return nil, "", err
+        }
+        return resp.Books, resp.NextPageToken, nil
     }
     fetch := func(pageSize int, pageToken string) (string, error) {
         items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
@@ -466,7 +472,10 @@ func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequ
             resp, err = c.client.ListStrings(ctx, req)
             return err
         }, c.CallOptions.ListStrings...)
-        return resp.Strings, resp.NextPageToken, err
+        if err != nil {
+            return nil, "", err
+        }
+        return resp.Strings, resp.NextPageToken, nil
     }
     fetch := func(pageSize int, pageToken string) (string, error) {
         items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
@@ -605,7 +614,10 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
             resp, err = c.client.FindRelatedBooks(ctx, req)
             return err
         }, c.CallOptions.FindRelatedBooks...)
-        return resp.Names, resp.NextPageToken, err
+        if err != nil {
+            return nil, "", err
+        }
+        return resp.Names, resp.NextPageToken, nil
     }
     fetch := func(pageSize int, pageToken string) (string, error) {
         items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)

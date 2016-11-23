@@ -5,7 +5,8 @@
   {@renderFileHeader(apiFile.fileHeader)}
 
   {@serviceDoc(apiFile.api)}
-  @@javax.annotation.Generated("by GAPIC")
+  @@Generated("by GAPIC")
+  @@ExperimentalApi
   public class {@apiFile.api.name} implements AutoCloseable {
     {@members(apiFile.api)}
     {@statics(apiFile.api)}
@@ -162,7 +163,7 @@
   private final ScheduledExecutorService executor;
   private final ManagedChannel channel;
   @if xapiClass.hasLongRunningOperations
-    private final OperationsApi operationsApi;
+    private final OperationsClient operationsClient;
   @end
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
@@ -216,7 +217,7 @@
               .setExecutorProvider(executorProvider)
               .setChannelProvider(channelProvider)
               .build();
-      this.operationsApi = OperationsApi.create(operationsSettings);
+      this.operationsClient = OperationsClient.create(operationsSettings);
     @end
 
     @join apiCallable : xapiClass.apiCallableMembers
@@ -237,7 +238,7 @@
         this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), this.channel, this.executor);
       @case "OperationApiCallable"
         this.{@apiCallable.name} = OperationCallable.create(settings.{@apiCallable.settingsFunctionName}(),\
-            this.channel, this.executor, this.operationsApi);
+            this.channel, this.executor, this.operationsClient);
       @default
         $unhandledCase: {@apiCallable.type}$
       @end
@@ -271,8 +272,12 @@
   }
 
   @if xapiClass.hasLongRunningOperations
-    public final OperationsApi getOperationsApi() {
-      return operationsApi;
+    /**
+     * Returns the OperationsClient that can be used to query the status of a long-running
+     * operation returned by another API method call.
+     */
+    public final OperationsClient getOperationsClient() {
+      return operationsClient;
     }
   @end
   {@""}
