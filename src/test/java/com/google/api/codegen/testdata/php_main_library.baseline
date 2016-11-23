@@ -42,7 +42,6 @@ use google\example\library\v1\GetBookFromAnywhereRequest;
 use google\example\library\v1\GetBookFromArchiveRequest;
 use google\example\library\v1\GetBookRequest;
 use google\example\library\v1\GetShelfRequest;
-use google\example\library\v1\LibraryServiceClient;
 use google\example\library\v1\ListBooksRequest;
 use google\example\library\v1\ListShelvesRequest;
 use google\example\library\v1\ListStringsRequest;
@@ -58,7 +57,6 @@ use google\example\library\v1\UpdateBookRequest;
 use google\protobuf\FieldMask;
 use google\tagger\v1\AddLabelRequest;
 use google\tagger\v1\AddTagRequest;
-use google\tagger\v1\LabelerClient;
 
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
@@ -391,7 +389,7 @@ class LibraryServiceClient
         $this->grpcCredentialsHelper = new GrpcCredentialsHelper($this->scopes, $grpcCredentialsHelperOptions);
 
         $createLibraryServiceStubFunction = function ($hostname, $opts) {
-            return new LibraryServiceClient($hostname, $opts);
+            return new google\example\library\v1\LibraryServiceClient($hostname, $opts);
         };
         $this->libraryServiceStub = $this->grpcCredentialsHelper->createStub(
             $createLibraryServiceStubFunction,
@@ -399,7 +397,7 @@ class LibraryServiceClient
             $options['port'],
             $createStubOptions);
         $createLabelerStubFunction = function ($hostname, $opts) {
-            return new LabelerClient($hostname, $opts);
+            return new google\tagger\v1\LabelerClient($hostname, $opts);
         };
         $this->labelerStub = $this->grpcCredentialsHelper->createStub(
             $createLabelerStubFunction,
