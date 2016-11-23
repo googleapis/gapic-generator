@@ -19,22 +19,13 @@ import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView.Builder;
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
-public abstract class GapicSurfaceTestClassView implements ViewModel {
+public abstract class ClientTestFileView implements ViewModel {
 
   public abstract FileHeaderView fileHeader();
 
-  public abstract String name();
-
-  public abstract String apiClassName();
-
-  public abstract String apiSettingsClassName();
-
-  public abstract List<MockServiceUsageView> mockServices();
-
-  public abstract List<GapicSurfaceTestCaseView> testCases();
+  public abstract ClientTestClassView testClass();
 
   @Override
   public String resourceRoot() {
@@ -48,7 +39,7 @@ public abstract class GapicSurfaceTestClassView implements ViewModel {
   public abstract String outputPath();
 
   public static Builder newBuilder() {
-    return new AutoValue_GapicSurfaceTestClassView.Builder();
+    return new AutoValue_ClientTestFileView.Builder();
   }
 
   @AutoValue.Builder
@@ -56,20 +47,12 @@ public abstract class GapicSurfaceTestClassView implements ViewModel {
 
     public abstract Builder fileHeader(FileHeaderView val);
 
-    public abstract Builder name(String val);
-
-    public abstract Builder apiClassName(String val);
-
-    public abstract Builder apiSettingsClassName(String val);
-
-    public abstract Builder mockServices(List<MockServiceUsageView> val);
+    public abstract Builder testClass(ClientTestClassView val);
 
     public abstract Builder outputPath(String val);
 
     public abstract Builder templateFileName(String val);
 
-    public abstract Builder testCases(List<GapicSurfaceTestCaseView> val);
-
-    public abstract GapicSurfaceTestClassView build();
+    public abstract ClientTestFileView build();
   }
 }

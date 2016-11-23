@@ -20,12 +20,12 @@ import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.php.PhpTypeTable;
@@ -90,11 +90,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     List<ViewModel> surfaceData = new ArrayList<>();
 
-    addXApiImports(context);
+    addApiImports(context);
 
     List<ApiMethodView> methods = generateApiMethods(context);
 
-    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
+    ImportTypeTransformer importTypeTransformer = new PhpImportTypeTransformer();
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
@@ -124,7 +124,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
     xapiClass.interfaceKey(context.getInterface().getFullName());
     String grpcClientTypeName = namer.getGrpcClientTypeName(context.getInterface());
-    xapiClass.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
+    // Use fully qualified grpcClientTypeName to avoid a conflict with the generated <X>Client class
+    xapiClass.grpcClientTypeName(grpcClientTypeName);
 
     xapiClass.apiMethods(methods);
 
@@ -140,14 +141,18 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     return surfaceData;
   }
 
-  private void addXApiImports(SurfaceTransformerContext context) {
+  private void addApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("Google\\GAX\\AgentHeaderDescriptor");
-    typeTable.saveNicknameFor("Google\\GAX\\ApiCallable");
-    typeTable.saveNicknameFor("Google\\GAX\\CallSettings");
-    typeTable.saveNicknameFor("Google\\GAX\\GrpcConstants");
-    typeTable.saveNicknameFor("Google\\GAX\\GrpcCredentialsHelper");
-    typeTable.saveNicknameFor("Google\\GAX\\PathTemplate");
+    typeTable.saveNicknameFor("\\Google\\GAX\\AgentHeaderDescriptor");
+    typeTable.saveNicknameFor("\\Google\\GAX\\ApiCallable");
+    typeTable.saveNicknameFor("\\Google\\GAX\\CallSettings");
+    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcConstants");
+    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
+    typeTable.saveNicknameFor("\\Google\\GAX\\PathTemplate");
+
+    if (context.getInterfaceConfig().hasPageStreamingMethods()) {
+      typeTable.saveNicknameFor("\\Google\\GAX\\PageStreamingDescriptor");
+    }
   }
 
   private List<String> generateMethodKeys(SurfaceTransformerContext context) {

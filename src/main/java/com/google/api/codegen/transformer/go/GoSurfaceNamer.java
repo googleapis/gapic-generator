@@ -21,6 +21,7 @@ import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -103,6 +104,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcClientTypeName(Interface service) {
     return converter.getTypeName(service).getNickname() + "Client";
+  }
+
+  @Override
+  public String getServerRegisterFunctionName(Interface service) {
+    return converter.getTypeName(service).getNickname().replace(".", ".Register") + "Server";
   }
 
   @Override
@@ -221,7 +227,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStreamingClientName(Method method) {
+  public String getGrpcStreamingApiReturnTypeName(Method method) {
     // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
     // neither camel or underscore.
     return converter.getTypeName(method.getParent()).getNickname()
@@ -257,6 +263,28 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getMockGrpcServiceImplName(Interface service) {
-    return privateClassName(Name.upperCamelKeepUpperAcronyms("Mock", service.getSimpleName()));
+    return privateClassName(Name.from("mock").join(getReducedServiceName(service)).join("server"));
+  }
+
+  @Override
+  public String getMockServiceVarName(Interface service) {
+    return localVarName(Name.from("mock").join(getReducedServiceName(service)));
+  }
+
+  @Override
+  public String getTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName =
+        symbolTable.getNewSymbol(
+            Name.upperCamel("Test", method.getParent().getSimpleName(), method.getSimpleName()));
+    return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String getExceptionTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName =
+        symbolTable.getNewSymbol(
+            Name.upperCamel(
+                "Test", method.getParent().getSimpleName(), method.getSimpleName(), "Error"));
+    return publicMethodName(testCaseName);
   }
 }

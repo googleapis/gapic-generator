@@ -18,16 +18,17 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.php.PhpNameFormatter;
+import com.google.api.codegen.util.php.PhpRenderingUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import java.util.List;
 
 /** The SurfaceNamer for PHP. */
 public class PhpSurfaceNamer extends SurfaceNamer {
@@ -37,6 +38,16 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(packageName)),
         new PhpTypeTable(packageName),
         packageName);
+  }
+
+  @Override
+  public String getApiWrapperClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiWrapperVariableName(Interface interfaze) {
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override
@@ -55,11 +66,6 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("Google\\GAX\\PageStreamingDescriptor");
-  }
-
-  @Override
   public String getClientConfigPath(Interface service) {
     return "resources/"
         + Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore()
@@ -72,8 +78,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public List<String> getDocLines(String text) {
+    return PhpRenderingUtil.getDocLines(text);
+  }
+
+  @Override
   public String getRetrySettingsTypeName() {
-    return "Google\\GAX\\RetrySettings";
+    return "\\Google\\GAX\\RetrySettings";
   }
 
   @Override
@@ -87,7 +98,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
-      return "Google\\GAX\\PagedListResponse";
+      return "\\Google\\GAX\\PagedListResponse";
     }
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
   }

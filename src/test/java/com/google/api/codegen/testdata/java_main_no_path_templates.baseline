@@ -1,4 +1,4 @@
-============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceApi.java ==============
+============== file: src/main/java/com/google/gcloud/example/NoTemplatesApiServiceClient.java ==============
 /*
  * Copyright 2016, Google Inc. All rights reserved.
  *
@@ -21,12 +21,14 @@ import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.protobuf.Empty;
+import com.google.protobuf.ExperimentalApi;
 import io.grpc.ManagedChannel;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND SERVICE
 /**
@@ -37,14 +39,14 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  * <pre>
  * <code>
- * try (NoTemplatesApiServiceApi noTemplatesApiServiceApi = NoTemplatesApiServiceApi.create()) {
+ * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.create()) {
  *   IncrementRequest request = IncrementRequest.newBuilder().build();
- *   noTemplatesApiServiceApi.increment(request);
+ *   noTemplatesApiServiceClient.increment(request);
  * }
  * </code>
  * </pre>
  *
- * <p>Note: close() needs to be called on the noTemplatesApiServiceApi object to clean up resources such
+ * <p>Note: close() needs to be called on the noTemplatesApiServiceClient object to clean up resources such
  * as threads. In the example above, try-with-resources is used, which automatically calls
  * close().
  *
@@ -79,13 +81,14 @@ import java.util.concurrent.ScheduledExecutorService;
  *         .build();
  * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings =
  *     NoTemplatesApiServiceSettings.defaultBuilder().setChannelProvider(channelProvider).build();
- * NoTemplatesApiServiceApi noTemplatesApiServiceApi =
- *     NoTemplatesApiServiceApi.create(noTemplatesApiServiceSettings);
+ * NoTemplatesApiServiceClient noTemplatesApiServiceClient =
+ *     NoTemplatesApiServiceClient.create(noTemplatesApiServiceSettings);
  * </code>
  * </pre>
  */
-@javax.annotation.Generated("by GAPIC")
-public class NoTemplatesApiServiceApi implements AutoCloseable {
+@Generated("by GAPIC")
+@ExperimentalApi
+public class NoTemplatesApiServiceClient implements AutoCloseable {
   private final NoTemplatesApiServiceSettings settings;
   private final ScheduledExecutorService executor;
   private final ManagedChannel channel;
@@ -97,24 +100,25 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
 
 
   /**
-   * Constructs an instance of NoTemplatesApiServiceApi, using the given settings.
+   * Constructs an instance of NoTemplatesApiServiceClient, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
    */
-  public static final NoTemplatesApiServiceApi create(NoTemplatesApiServiceSettings settings) throws IOException {
-    return new NoTemplatesApiServiceApi(settings);
+  public static final NoTemplatesApiServiceClient create(NoTemplatesApiServiceSettings settings) throws IOException {
+    return new NoTemplatesApiServiceClient(settings);
   }
 
   /**
-   * Constructs an instance of NoTemplatesApiServiceApi, using the given settings.
+   * Constructs an instance of NoTemplatesApiServiceClient, using the given settings.
    * This is protected so that it easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected NoTemplatesApiServiceApi(NoTemplatesApiServiceSettings settings) throws IOException {
+  protected NoTemplatesApiServiceClient(NoTemplatesApiServiceSettings settings) throws IOException {
     this.settings = settings;
     ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
     this.executor = channelAndExecutor.getExecutor();
     this.channel = channelAndExecutor.getChannel();
+
 
     this.incrementCallable = UnaryCallable.create(settings.incrementSettings(), this.channel, this.executor);
 
@@ -142,6 +146,7 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
     return settings;
   }
 
+
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Increments something.
@@ -153,9 +158,9 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (NoTemplatesApiServiceApi noTemplatesApiServiceApi = NoTemplatesApiServiceApi.create()) {
+   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.create()) {
    *   IncrementRequest request = IncrementRequest.newBuilder().build();
-   *   noTemplatesApiServiceApi.increment(request);
+   *   noTemplatesApiServiceClient.increment(request);
    * }
    * </code></pre>
    *
@@ -177,9 +182,9 @@ public class NoTemplatesApiServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (NoTemplatesApiServiceApi noTemplatesApiServiceApi = NoTemplatesApiServiceApi.create()) {
+   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.create()) {
    *   IncrementRequest request = IncrementRequest.newBuilder().build();
-   *   ListenableFuture&lt;Void&gt; future = noTemplatesApiServiceApi.incrementCallable().futureCall(request);
+   *   ListenableFuture&lt;Void&gt; future = noTemplatesApiServiceClient.incrementCallable().futureCall(request);
    *   // Do something
    *   future.get();
    * }

@@ -1,7 +1,7 @@
 @extends "nodejs/common.snip"
 
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
-    var api = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName}();
+    var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName}();
     {@coreSampleCode}
 @end
 
@@ -19,7 +19,7 @@
 
 @snippet sampleCodePageStreaming(apiMethod)
     {@initCode(apiMethod)}
-    api.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)}).on('data', function(element) {
+    client.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)}).on('data', function(element) {
         // doThingsWith(element)
     }).on('error', funciton(err) {
         console.error(err);
@@ -27,7 +27,7 @@
 @end
 
 @private clientStreamingSampleCode(apiMethod)
-    var stream = api.{@apiMethod.name}(function(err, response) {
+    var stream = client.{@apiMethod.name}(function(err, response) {
         if (err) {
             console.error(err);
             return;
@@ -39,7 +39,7 @@
 @end
 
 @private bidiStreamingSampleCode(apiMethod)
-    var stream = api.{@apiMethod.name}().on('data', function(response) {
+    var stream = client.{@apiMethod.name}().on('data', function(response) {
         // doThingsWith(response);
     });
     {@initCode(apiMethod)}
@@ -88,7 +88,7 @@
 @end
 
 @private methodCallSampleCode(apiMethod)
-    api.{@apiMethod.name}(\
+    client.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod)})
 @end
 
@@ -113,10 +113,10 @@
         }
         if (nextRequest) {
             // Fetch the next page.
-            return api.{@apiMethod.name}(nextRequest, options).then(callback);
+            return client.{@apiMethod.name}(nextRequest, options).then(callback);
         }
     }
-    api.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
+    client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
         .then(callback)
         .catch(function(err) {
             console.error(err);
@@ -125,10 +125,10 @@
 
 @private methodCallSampleCodePrefix(apiMethod)
     @if sampleMethodCallArgList(apiMethod)
-        api.{@apiMethod.name}(\
+        client.{@apiMethod.name}(\
             {@sampleMethodCallArgList(apiMethod)})
     @else
-        api.{@apiMethod.name}()
+        client.{@apiMethod.name}()
     @end
 @end
 
@@ -208,7 +208,7 @@
     @case "SimpleInitValueView"
         {@initValue.initialValue}
     @case "FormattedInitValueView"
-        api.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+        client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
     @default
         $unhandledCase: {@initValue.type}$
     @end

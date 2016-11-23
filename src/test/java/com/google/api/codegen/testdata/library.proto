@@ -151,6 +151,7 @@ service LibraryService {
 
   // AddLabel intentionally left out to test the reroute_to_grpc_interface feature
 
+  // Test long-running operations
   rpc GetBigBook(GetBookRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:big" };
   }
@@ -563,4 +564,10 @@ message FindRelatedBooksRequest {
 message FindRelatedBooksResponse {
   repeated string names = 1;
   string next_page_token = 2;
+}
+
+// Metadata for a longrunning operation.
+message GetBigBookMetadata {
+    // Approximate percentage of the book processed thus far.
+    int32 progress_percent = 1;
 }

@@ -261,7 +261,6 @@
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'appName' => 'gax',
             'appVersion' => self::_GAX_VERSION,
-            'credentialsLoader' => null,
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -297,7 +296,7 @@
         $this->scopes = $options['scopes'];
 
         $createStubOptions = [];
-        if (!empty($options['sslCreds'])) {
+        if (array_key_exists('sslCreds', $options)) {
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
         $grpcCredentialsHelperOptions = array_diff_key($options, $defaultOptions);
@@ -413,7 +412,7 @@
          * @@return {@apiMethodDoc.returnTypeName}
     @end
      *
-     * @@throws Google\GAX\ApiException if the remote call fails
+     * @@throws \Google\GAX\ApiException if the remote call fails
      */
     {@""}
 @end

@@ -5,7 +5,8 @@
   {@renderFileHeader(apiFile.fileHeader)}
 
   {@serviceDoc(apiFile.api)}
-  @@javax.annotation.Generated("by GAPIC")
+  @@Generated("by GAPIC")
+  @@ExperimentalApi
   public class {@apiFile.api.name} implements AutoCloseable {
     {@members(apiFile.api)}
     {@statics(apiFile.api)}
@@ -161,6 +162,9 @@
   private final {@xapiClass.settingsClassName} settings;
   private final ScheduledExecutorService executor;
   private final ManagedChannel channel;
+  @if xapiClass.hasLongRunningOperations
+    private final OperationsClient operationsClient;
+  @end
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   @join apiCallable : xapiClass.apiCallableMembers
@@ -170,13 +174,8 @@
 @end
 
 @private apiCallableMember(apiCallable)
-  @if apiCallable.isStreaming
-    private final StreamingCallable<{@apiCallable.requestTypeName}, \
-      {@apiCallable.responseTypeName}> {@apiCallable.name};
-  @else
-    private final UnaryCallable<{@apiCallable.requestTypeName}, \
-      {@apiCallable.responseTypeName}> {@apiCallable.name};
-  @end
+  private final {@apiCallable.interfaceTypeName}<{@apiCallable.requestTypeName}, \
+    {@apiCallable.responseTypeName}> {@apiCallable.name};
 @end
 
 @private constructors(xapiClass)
@@ -210,6 +209,17 @@
     this.executor = channelAndExecutor.getExecutor();
     this.channel = channelAndExecutor.getChannel();
 
+    @if xapiClass.hasLongRunningOperations
+      FixedExecutorProvider executorProvider = FixedExecutorProvider.create(this.executor);
+      FixedChannelProvider channelProvider = FixedChannelProvider.create(this.channel);
+      OperationsSettings operationsSettings =
+          OperationsSettings.defaultBuilder()
+              .setExecutorProvider(executorProvider)
+              .setChannelProvider(channelProvider)
+              .build();
+      this.operationsClient = OperationsClient.create(operationsSettings);
+    @end
+
     @join apiCallable : xapiClass.apiCallableMembers
       @switch apiCallable.type
       @case "SimpleApiCallable"
@@ -224,8 +234,13 @@
         }
       @case "StreamingApiCallable"
         this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
+      @case "InitialOperationApiCallable"
+        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), this.channel, this.executor);
+      @case "OperationApiCallable"
+        this.{@apiCallable.name} = OperationCallable.create(settings.{@apiCallable.settingsFunctionName}(),\
+            this.channel, this.executor, this.operationsClient);
       @default
-        $unhandledCase: {@apiCallable.type.toString}$
+        $unhandledCase: {@apiCallable.type}$
       @end
     @end
 
@@ -255,6 +270,16 @@
   public final {@xapiClass.settingsClassName} getSettings() {
     return settings;
   }
+
+  @if xapiClass.hasLongRunningOperations
+    /**
+     * Returns the OperationsClient that can be used to query the status of a long-running
+     * operation returned by another API method call.
+     */
+    public final OperationsClient getOperationsClient() {
+      return operationsClient;
+    }
+  @end
   {@""}
 @end
 
@@ -274,7 +299,18 @@
     @case "RequestObjectMethod"
       {@requestObjectMethod(apiMethod)}
     @case "CallableMethod"
-      {@callableMethod(apiMethod)}
+    # TODO create a GrpcStreaming ApiMethodType
+      @if apiMethod.isStreaming
+        {@streamingCallableMethod(apiMethod)}
+      @else
+        {@callableMethod(apiMethod)}
+      @end
+    @case "AsyncOperationFlattenedMethod"
+      {@asyncOperationFlattenedMethod(apiMethod)}
+    @case "AsyncOperationRequestObjectMethod"
+      {@asyncOperationRequestObjectMethod(apiMethod)}
+    @case "OperationCallableMethod"
+      {@operationCallableMethod(apiMethod)}
     @default
       $unhandledCase: {@apiMethod.getClass.getSimpleName}$
     @end
@@ -304,8 +340,8 @@
     @join pathTemplateCheck : apiMethod.pathTemplateChecks
       {@pathTemplateCheckLine(pathTemplateCheck)}
     @end
-    {@apiMethod.apiRequestTypeName} request =
-        {@apiMethod.apiRequestTypeName}.newBuilder()
+    {@apiMethod.serviceRequestTypeName} request =
+        {@apiMethod.serviceRequestTypeName}.newBuilder()
         {@builderSetCalls(apiMethod.requestObjectParams)}
         .build();
     return {@apiMethod.name}(request);
@@ -317,7 +353,7 @@
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
-      {@apiMethod.name}({@apiMethod.apiRequestTypeName} request) {
+      {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
     return {@apiMethod.requestObjectMethod.callableMethodName}()
         .call(request);
   }
@@ -343,13 +379,7 @@
   @end
   public final {@apiMethod.responseTypeName} {@apiMethod.name}(\
        {@paramList(apiMethod.methodParams)}) {
-    @join pathTemplateCheck : apiMethod.pathTemplateChecks
-      {@pathTemplateCheckLine(pathTemplateCheck)}
-    @end
-    {@apiMethod.apiRequestTypeName} request =
-        {@apiMethod.apiRequestTypeName}.newBuilder()
-        {@builderSetCalls(apiMethod.requestObjectParams)}
-        .build();
+    {@flattenedRequestBuildingCode(apiMethod)}
     @if apiMethod.hasReturnValue
       return {@apiMethod.name}(request);
     @else
@@ -363,7 +393,7 @@
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
-      {@apiMethod.name}({@apiMethod.apiRequestTypeName} request) {
+      {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
     @if apiMethod.hasReturnValue
       return {@apiMethod.requestObjectMethod.callableMethodName}().call(request);
     @else
@@ -380,25 +410,62 @@
 @end
 
 @private callableMethodImpl(apiMethod)
-  @if apiMethod.isStreaming
-    {@streamingCallableMethod(apiMethod)}
-  @else
-    {@nonStreamingCallableMethod(apiMethod)}
-  @end
-@end
-
-@private nonStreamingCallableMethod(apiMethod)
-  public final UnaryCallable<{@apiMethod.apiRequestTypeName}, \
+  public final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }
 @end
 
 @private streamingCallableMethod(apiMethod)
-  public final StreamingCallable<{@apiMethod.apiRequestTypeName}, \
+  @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  public final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }
+@end
+
+@private asyncOperationFlattenedMethod(apiMethod)
+  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  public final OperationFuture<{@apiMethod.responseTypeName}> {@apiMethod.name}(\
+       {@paramList(apiMethod.methodParams)}) {
+    {@flattenedRequestBuildingCode(apiMethod)}
+    return {@apiMethod.name}(request);
+  }
+@end
+
+@private asyncOperationRequestObjectMethod(apiMethod)
+  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<{@apiMethod.responseTypeName}> \
+      {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
+    return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
+  }
+@end
+
+@private operationCallableMethod(apiMethod)
+  @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  public final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    return {@apiMethod.callableMethod.callableName};
+  }
+@end
+
+@private flattenedRequestBuildingCode(apiMethod)
+  @join pathTemplateCheck : apiMethod.pathTemplateChecks
+    {@pathTemplateCheckLine(pathTemplateCheck)}
+  @end
+
+  {@apiMethod.serviceRequestTypeName} request =
+      {@apiMethod.serviceRequestTypeName}.newBuilder()
+      {@builderSetCalls(apiMethod.requestObjectParams)}
+      .build();
 @end
 
 @private methodDoc(apiMethodDoc, methodSampleCode)

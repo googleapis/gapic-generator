@@ -62,14 +62,14 @@ public class LibraryServiceSmokeTest {
     }
   }
   public static void executeNoCatch(String projectId) throws Exception {
-    try (LibraryServiceApi api = LibraryServiceApi.create()) {
+    try (LibraryServiceClient client = LibraryServiceClient.create()) {
       BookName name = BookName.create("testShelf-" + System.currentTimeMillis(), projectId);
       Book.Rating rating = Book.Rating.GOOD;
       Book book = Book.newBuilder()
         .setRating(rating)
         .build();
 
-      Book response = api.updateBook(name, book);
+      Book response = client.updateBook(name, book);
       System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
     }
   }

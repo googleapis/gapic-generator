@@ -246,6 +246,9 @@ message MethodConfigProto {
 
   // Set the resource name treatment for fields
   ResourceNameTreatment resource_name_treatment = 15;
+
+  // Long-running settings.
+  LongRunningConfigProto long_running = 30;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
@@ -442,4 +445,15 @@ enum VisibilityProto {
   PUBLIC = 1;
   PRIVATE = 2;
   DISABLED = 3;
+}
+
+// LongRunningProto describes settings to use when generating API methods
+// that use the long-running operation pattern.
+message LongRunningConfigProto {
+  // The fully-qualified type that is returned from an Operation when it is
+  // complete.
+  string return_type = 1;
+
+  // The fully-qualified type of the metadata of an Operation.
+  string metadata_type = 2;
 }

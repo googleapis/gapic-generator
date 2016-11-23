@@ -25,6 +25,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -44,6 +45,26 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(packageName)),
         new JavaTypeTable(packageName),
         packageName);
+  }
+
+  @Override
+  public String getApiWrapperClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiWrapperClassConstructorName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiWrapperVariableName(Interface interfaze) {
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiSnippetsClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
   }
 
   @Override
@@ -71,51 +92,20 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
-  }
-
-  @Override
-  public void addPagedListResponseFactoryImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
-  }
-
-  @Override
-  public void addPagedListResponseImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
-    typeTable.saveNicknameFor("com.google.common.base.Function");
-    typeTable.saveNicknameFor("com.google.common.collect.Iterables");
-  }
-
-  @Override
-  public void addBundlingDescriptorImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingDescriptor");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.RequestIssuer");
-    typeTable.saveNicknameFor("java.util.ArrayList");
-    typeTable.saveNicknameFor("java.util.Collection");
-  }
-
-  @Override
-  public void addPageStreamingCallSettingsImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
-  }
-
-  @Override
-  public void addBundlingCallSettingsImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingCallSettings");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingSettings");
-  }
-
-  @Override
   public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "void";
     }
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+  }
+
+  @Override
+  public String getAndSaveOperationResponseTypeName(
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+    String responseTypeName =
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+    return typeTable.getAndSaveNicknameForContainer(
+        "com.google.api.gax.grpc.OperationFuture", responseTypeName);
   }
 
   @Override
@@ -168,5 +158,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       }
     }
     return Joiner.on(" + ").join(stringParts);
+  }
+
+  @Override
+  public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
+    switch (serviceMethodType) {
+      case UnaryMethod:
+        return "UnaryCallable";
+      case GrpcStreamingMethod:
+        return "StreamingCallable";
+      case LongRunningMethod:
+        return "OperationCallable";
+      default:
+        return getNotImplementedString("getApiCallableTypeName() for " + serviceMethodType);
+    }
   }
 }

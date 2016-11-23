@@ -51,13 +51,11 @@
             @switch method.type
             @case "PagedRequestObjectMethod"
                 {@pageStreamingMethod(view, method)}
+            @case "OperationRequestObjectMethod"
+                {@lroMethod(view, method)}
             @case "RequestObjectMethod"
                 @if method.hasReturnValue
-                    @if method.isLongRunning
-                        {@lroMethod(view, method)}
-                    @else
-                        {@simpleMethod(view, method)}
-                    @end
+                    {@simpleMethod(view, method)}
                 @else
                     {@emptyReturnMethod(view, method)}
                 @end
@@ -77,7 +75,7 @@
             // TODO: Handle error.
         }
         go func() {
-            reqs := []{@method.apiRequestTypeName}{
+            reqs := []{@method.serviceRequestTypeName}{
                 // TODO: Create requests.
             }
             for _, req := range reqs {
@@ -108,7 +106,7 @@
         if err != nil {
             // TODO: Handle error.
         }
-        reqs := []{@method.apiRequestTypeName}{
+        reqs := []{@method.serviceRequestTypeName}{
             // TODO: Create requests.
         }
         for _, req := range reqs {
@@ -219,7 +217,7 @@
 @end
 
 @private requestInit(view, method)
-    req := {@method.apiRequestTypeConstructor}{
+    req := {@method.serviceRequestTypeConstructor}{
         // TODO: Fill request struct fields.
     }
 @end

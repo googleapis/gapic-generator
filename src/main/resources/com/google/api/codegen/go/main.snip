@@ -158,13 +158,11 @@
             @switch method.type
             @case "PagedRequestObjectMethod"
                 {@pageStreamingMethod(view, method)}
+            @case "OperationRequestObjectMethod"
+                {@lroMethod(view, method)}
             @case "RequestObjectMethod"
                 @if method.hasReturnValue
-                    @if method.isLongRunning
-                        {@lroMethod(view, method)}
-                    @else
-                        {@simpleMethod(view, method)}
-                    @end
+                    {@simpleMethod(view, method)}
                 @else
                     {@emptyReturnMethod(view, method)}
                 @end
@@ -179,9 +177,9 @@
 @end
 
 @private simpleMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) ({@method.responseTypeName}, error) {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) ({@method.responseTypeName}, error) {
         {@mergeMetadata()}
-        var resp {@method.responseTypeName}
+        var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
@@ -195,9 +193,9 @@
 @end
 
 @private lroMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) (*longrunning.Operation, error) {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) (*longrunning.Operation, error) {
         {@mergeMetadata()}
-        var resp {@method.responseTypeName}
+        var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
@@ -215,7 +213,7 @@
 @private noRequestStreamMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context) ({@method.responseTypeName}, error) {
         {@mergeMetadata()}
-        var resp {@method.responseTypeName}
+        var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.name}(ctx)
@@ -229,7 +227,7 @@
 @end
 
 @private emptyReturnMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) error {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) error {
         {@mergeMetadata()}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
@@ -241,11 +239,11 @@
 @end
 
 @private pageStreamingMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) *{@method.responseTypeName} {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) *{@method.responseTypeName} {
         {@mergeMetadata()}
         it := &{@method.responseTypeName}{}
         it.InternalFetch = func(pageSize int, pageToken string) ([]{@method.listMethod.resourceTypeName}, string, error) {
-            var resp {@method.listMethod.responseObjectTypeName}
+            var resp {@method.serviceResponseTypeName}
             req.PageToken = pageToken
             if pageSize > math.MaxInt32 {
                 req.PageSize = math.MaxInt32
@@ -257,7 +255,10 @@
                 resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
                 return err
             }, c.CallOptions.{@method.settingsGetterName}...)
-            return resp.{@method.listMethod.resourceFieldName}, resp.NextPageToken, err
+            if err != nil {
+                return nil, "", err
+            }
+            return resp.{@method.listMethod.resourceFieldName}, resp.NextPageToken, nil
         }
         fetch := func(pageSize int, pageToken string) (string, error) {
             items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)

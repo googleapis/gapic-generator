@@ -338,4 +338,40 @@ public abstract class InterfaceConfig {
     }
     return fields.build();
   }
+
+  public boolean hasPageStreamingMethods() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isPageStreaming()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasBundlingMethods() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isBundling()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasGrpcStreamingMethods() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isGrpcStreaming()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasLongRunningOperations() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isLongRunningOperation()) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

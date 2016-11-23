@@ -65,6 +65,12 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return true;
   }
 
+  @Override
+  /** Return the name of the class which is the GAPIC wrapper for this service interface. */
+  public String getApiWrapperName(Interface service) {
+    return service.getSimpleName() + "Client";
+  }
+
   // Snippet Helpers
   // ===============
 
@@ -144,8 +150,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   /** Return YARD return type string for the given method, or null if the return type is nil. */
   @Nullable
   private String returnTypeComment(Method method, MethodConfig config) {
-    MessageType returnMessageType = method.getOutputMessage();
-    if (returnMessageType.getFullName().equals("google.protobuf.Empty")) {
+    if (config.isReturnEmptyMessageMethod(method)) {
       return null;
     }
 

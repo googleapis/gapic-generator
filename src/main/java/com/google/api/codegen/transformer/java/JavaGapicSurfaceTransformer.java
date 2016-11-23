@@ -40,8 +40,8 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
-import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PagedResponseIterateMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
@@ -180,6 +180,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         pathTemplateTransformer.generateParseResourceFunctions(context));
     xapiClass.apiMethods(methods);
     xapiClass.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
+    xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
 
     return xapiClass.build();
   }
@@ -190,11 +191,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = new JavaSurfaceNamer(apiConfig.getPackageName());
     ModelTypeTable typeTable = createTypeTable(apiConfig.getPackageName());
 
+    addPagedResponseWrapperImports(typeTable);
+
     StaticLangPagedResponseWrappersView.Builder pagedResponseWrappers =
         StaticLangPagedResponseWrappersView.newBuilder();
-
-    namer.addPagedListResponseImports(typeTable);
-    namer.addPageStreamingDescriptorImports(typeTable);
 
     pagedResponseWrappers.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
 
@@ -280,12 +280,12 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private StaticLangApiMethodView getExampleApiMethod(List<StaticLangApiMethodView> methods) {
     StaticLangApiMethodView exampleApiMethod =
-        searchExampleMethod(methods, ApiMethodType.FlattenedMethod);
+        searchExampleMethod(methods, ClientMethodType.FlattenedMethod);
     if (exampleApiMethod == null) {
-      exampleApiMethod = searchExampleMethod(methods, ApiMethodType.PagedFlattenedMethod);
+      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.PagedFlattenedMethod);
     }
     if (exampleApiMethod == null) {
-      exampleApiMethod = searchExampleMethod(methods, ApiMethodType.RequestObjectMethod);
+      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.RequestObjectMethod);
     }
     if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
@@ -294,7 +294,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangApiMethodView searchExampleMethod(
-      List<StaticLangApiMethodView> methods, ApiMethodType methodType) {
+      List<StaticLangApiMethodView> methods, ClientMethodType methodType) {
     for (StaticLangApiMethodView method : methods) {
       if (method.type().equals(methodType)) {
         return method;
@@ -336,7 +336,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
     xsettingsClass.callSettings(apiCallSettings);
-    xsettingsClass.unaryCallSettings(unaryCallSettings(apiCallSettings));
     xsettingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
     xsettingsClass.pagedListResponseFactories(
@@ -352,16 +351,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
 
     return xsettingsClass.build();
-  }
-
-  private List<ApiCallSettingsView> unaryCallSettings(List<ApiCallSettingsView> callSettings) {
-    ArrayList<ApiCallSettingsView> unaryCallSettings = new ArrayList<>();
-    for (ApiCallSettingsView settingsView : callSettings) {
-      if (!settingsView.isStreaming()) {
-        unaryCallSettings.add(settingsView);
-      }
-    }
-    return unaryCallSettings;
   }
 
   private PackageInfoView generatePackageInfo(
@@ -390,12 +379,22 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
+    typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
+    typeTable.saveNicknameFor("javax.annotation.Generated");
+
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationFuture");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.FixedChannelProvider");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.FixedExecutorProvider");
+      typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
+      typeTable.saveNicknameFor("com.google.longrunning.OperationsSettings");
+    }
   }
 
   private void addSettingsImports(SurfaceTransformerContext context) {
@@ -404,10 +403,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ClientSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingExecutorProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ServiceApiSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallSettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
@@ -416,22 +415,48 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableSet");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.common.collect.Sets");
+    typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("io.grpc.Status");
     typeTable.saveNicknameFor("org.joda.time.Duration");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
-    addStreamingSettingsImportIfNecessary(context);
+    typeTable.saveNicknameFor("javax.annotation.Generated");
+
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    if (interfaceConfig.hasPageStreamingMethods()) {
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
+    }
+    if (interfaceConfig.hasBundlingMethods()) {
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingDescriptor");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.RequestIssuer");
+      typeTable.saveNicknameFor("java.util.ArrayList");
+      typeTable.saveNicknameFor("java.util.Collection");
+    }
+    if (interfaceConfig.hasGrpcStreamingMethods()) {
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingCallSettings");
+    }
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationCallSettings");
+    }
   }
 
-  private void addStreamingSettingsImportIfNecessary(SurfaceTransformerContext context) {
-    for (Method method : context.getSupportedMethods()) {
-      if (MethodConfig.isGrpcStreamingMethod(method)) {
-        context.getTypeTable().saveNicknameFor("com.google.api.gax.grpc.StreamingCallSettings");
-        break;
-      }
-    }
+  private void addPagedResponseWrapperImports(ModelTypeTable typeTable) {
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
+    typeTable.saveNicknameFor("com.google.common.base.Function");
+    typeTable.saveNicknameFor("com.google.common.collect.Iterables");
+    typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
+    typeTable.saveNicknameFor("javax.annotation.Generated");
   }
 
   public SettingsDocView generateSettingsDoc(
@@ -473,6 +498,20 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
             apiMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
       } else if (methodConfig.isGrpcStreaming()) {
         context.getTypeTable().saveNicknameFor("com.google.api.gax.grpc.StreamingCallable");
+        apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
+      } else if (methodConfig.isLongRunningOperation()) {
+        context.getTypeTable().saveNicknameFor("com.google.api.gax.grpc.OperationCallable");
+        if (methodConfig.isFlattening()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+            MethodTransformerContext flattenedMethodContext =
+                context.asFlattenedMethodContext(method, flatteningGroup);
+            apiMethods.add(
+                apiMethodTransformer.generateAsyncOperationFlattenedMethod(flattenedMethodContext));
+          }
+        }
+        apiMethods.add(
+            apiMethodTransformer.generateAsyncOperationRequestObjectMethod(requestMethodContext));
+        apiMethods.add(apiMethodTransformer.generateOperationCallableMethod(requestMethodContext));
         apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
       } else {
         if (methodConfig.isFlattening()) {
