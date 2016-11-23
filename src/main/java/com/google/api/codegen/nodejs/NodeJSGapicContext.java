@@ -162,23 +162,47 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * The name for the module for this vkit module. This assumes that the service's full name will be
-   * in the format of 'google.some.apiname.version.ServiceName', and extracts the 'apiname' and
-   * 'version' part and combine them to lower-camelcased style (like pubsubV1).
+   * The name for the module for this vkit module. This assumes that the "package_name" in the API
+   * config is in the pattern of "apiname.version", and extracts the 'apiname' and 'version' part
+   * and combine them to lower-camelcased style (like pubsubV1).
    */
-  public String getModuleName(Interface service) {
-    List<String> names = Splitter.on(".").splitToList(service.getFullName());
-    return names.get(names.size() - 3) + lowerUnderscoreToUpperCamel(names.get(names.size() - 2));
+  public String getModuleName() {
+    List<String> names = Splitter.on(".").splitToList(getApiConfig().getPackageName());
+    if (names.size() < 2) {
+      return getApiConfig().getPackageName();
+    }
+    return names.get(0) + lowerUnderscoreToUpperCamel(names.get(names.size() - 1));
   }
 
   /**
-   * Returns the major version part in the API namespace. This assumes that the service's full name
-   * will be in the format of 'google.some.apiname.version.ServiceName', and extracts the 'version'
-   * part.
+   * Returns the major version part in the API namespace. This assumes that the "package_name" in
+   * the API config is in the pattern of "apiname.version".
    */
-  public String getApiVersion(Interface service) {
-    List<String> names = Splitter.on(".").splitToList(service.getFullName());
-    return names.get(names.size() - 2);
+  public String getApiVersion() {
+    String packageName = getApiConfig().getPackageName();
+    int dotPos = packageName.lastIndexOf(".");
+    if (dotPos < 0) {
+      return "";
+    }
+    return packageName.substring(dotPos + 1);
+  }
+
+  /**
+   * The name used for require statement for itself. This assumes that the "package_name" in the API
+   * config is in the pattern of "apiname.version".
+   */
+  public String getRequirePackageName() {
+    String packageName = getApiConfig().getPackageName();
+    int dotPos = packageName.lastIndexOf(".");
+    if (dotPos >= 0) {
+      packageName = packageName.substring(0, dotPos);
+    }
+    String scopeName = getApiConfig().getDomainLayerLocation();
+    if (Strings.isNullOrEmpty(scopeName)) {
+      return packageName;
+    } else {
+      return "@" + scopeName + "/" + packageName;
+    }
   }
 
   /** Returns the filename for documenting messages. */

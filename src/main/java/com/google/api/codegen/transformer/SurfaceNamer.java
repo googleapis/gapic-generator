@@ -190,7 +190,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of a variable that holds an instance of the module that contains the implementation of
    * a particular proto interface. So far it is used by just NodeJS.
    */
-  public String getApiWrapperModuleName(Interface interfaze) {
+  public String getApiWrapperModuleName() {
     return getNotImplementedString("SurfaceNamer.getApiWrapperModuleName");
   }
 
