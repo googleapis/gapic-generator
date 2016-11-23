@@ -206,7 +206,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of a variable that holds an instance of the module that contains the implementation of
    * a particular proto interface. So far it is used by just NodeJS.
    */
-  public String getApiWrapperModuleName(Interface interfaze) {
+  public String getApiWrapperModuleName() {
     return getNotImplementedString("SurfaceNamer.getApiWrapperModuleName");
   }
 
@@ -976,6 +976,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** Inject random value generator code to the given string. */
   public String injectRandomStringGeneratorCode(String randomString) {
     return getNotImplementedString("SurfaceNamer.getRandomStringValue");
+  }
+
+  /** Function used to register the GRPC server. */
+  public String getServerRegisterFunctionName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getServerRegisterFunctionName");
   }
 
   /** The type name of the API callable class for this service method type. */

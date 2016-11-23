@@ -24,6 +24,8 @@ import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
@@ -37,7 +39,7 @@ import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
+import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -64,8 +66,27 @@ public class InitCodeTransformer {
     }
   }
 
+  public InitCodeContext createRequestInitCodeContext(
+      MethodTransformerContext context,
+      SymbolTable symbolTable,
+      Iterable<FieldConfig> fieldConfigs,
+      InitCodeOutputType outputType,
+      TestValueGenerator valueGenerator) {
+    return InitCodeContext.newBuilder()
+        .initObjectType(context.getMethod().getInputType())
+        .symbolTable(symbolTable)
+        .suggestedName(Name.from("request"))
+        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
+        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
+        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+        .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
+        .outputType(outputType)
+        .valueGenerator(valueGenerator)
+        .build();
+  }
+
   /** Generates assert views for the test of the tested method and its fields. */
-  public List<GapicSurfaceTestAssertView> generateRequestAssertViews(
+  public List<ClientTestAssertView> generateRequestAssertViews(
       MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
 
     ImmutableMap<String, FieldConfig> fieldConfigMap = FieldConfig.toFieldConfigMap(fieldConfigs);
@@ -80,7 +101,7 @@ public class InitCodeTransformer {
                 .fieldConfigMap(fieldConfigMap)
                 .build());
 
-    List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
+    List<ClientTestAssertView> assertViews = new ArrayList<>();
     SurfaceNamer namer = context.getNamer();
     // Add request fields checking
     for (InitCodeNode fieldItemTree : rootNode.getChildren().values()) {
@@ -122,9 +143,9 @@ public class InitCodeTransformer {
     return mapBuilder.build();
   }
 
-  private GapicSurfaceTestAssertView createAssertView(
+  private ClientTestAssertView createAssertView(
       String expected, String expectedTransformFunction, String actual) {
-    return GapicSurfaceTestAssertView.newBuilder()
+    return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueGetter(actual)

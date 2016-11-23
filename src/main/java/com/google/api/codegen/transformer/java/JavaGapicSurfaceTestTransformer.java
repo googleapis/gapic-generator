@@ -15,26 +15,18 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.ResourceNameConfig;
-import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
-import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitFieldConfig;
-import com.google.api.codegen.metacode.InitValue;
-import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -60,22 +52,19 @@ import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
-import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestClassView;
-import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
+import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
+import com.google.api.codegen.viewmodel.testing.ClientTestCaseView;
+import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
+import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
-import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
-import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestMethodView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +81,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportTypeTransformer());
-  private final TestValueGenerator valueGenerator = new TestValueGenerator(new JavaValueProducer());
-  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
+  private final JavaValueProducer valueProducer = new JavaValueProducer();
+  private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
+  private final MockServiceTransformer mockServiceTransformer =
+      new MockServiceTransformer(valueProducer);
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
@@ -114,7 +105,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     List<ViewModel> views = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context = createContext(service, apiConfig);
-      views.add(createUnitTestClassView(context));
+      views.add(createUnitTestFileView(context));
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         context = createContext(service, apiConfig);
         views.add(createSmokeTestClassView(context));
@@ -260,7 +251,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   ///////////////////////////////////// Unit Test /////////////////////////////////////////
 
-  private GapicSurfaceTestClassView createUnitTestClassView(SurfaceTransformerContext context) {
+  private ClientTestFileView createUnitTestFileView(SurfaceTransformerContext context) {
     addUnitTestImports(context);
 
     Interface service = context.getInterface();
@@ -268,28 +259,34 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     String name = namer.getUnitTestClassName(service);
 
-    GapicSurfaceTestClassView.Builder testClass = GapicSurfaceTestClassView.newBuilder();
+    ClientTestClassView.Builder testClass = ClientTestClassView.newBuilder();
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
     testClass.apiClassName(namer.getApiWrapperClassName(service));
     testClass.name(name);
     testClass.testCases(createTestCaseViews(context));
-    testClass.mockServices(createMockServices(context));
-    testClass.outputPath(namer.getSourceFilePath(outputPath, name));
-    testClass.templateFileName(UNIT_TEST_TEMPLATE_FILE);
+    testClass.mockServices(
+        mockServiceTransformer.createMockServices(
+            context.getNamer(), context.getModel(), context.getApiConfig()));
+
+    ClientTestFileView.Builder testFile = ClientTestFileView.newBuilder();
+    testFile.testClass(testClass.build());
+    testFile.outputPath(namer.getSourceFilePath(outputPath, name));
+    testFile.templateFileName(UNIT_TEST_TEMPLATE_FILE);
 
     // Imports must be done as the last step to catch all imports.
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
-    testClass.fileHeader(fileHeader);
+    testFile.fileHeader(fileHeader);
 
-    return testClass.build();
+    return testFile.build();
   }
 
-  private List<GapicSurfaceTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
-    ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
+  private List<ClientTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+    ArrayList<ClientTestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (MethodConfig.isGrpcStreamingMethod(method)) {
+        addGrpcStreamingTestImport(context);
         MethodTransformerContext methodContext = context.asRequestMethodContext(method);
         testCaseViews.add(
             createTestCaseView(
@@ -315,7 +312,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   // TODO: Convert to use TestMethodView.
-  private GapicSurfaceTestCaseView createTestCaseView(
+  private ClientTestCaseView createTestCaseView(
       MethodTransformerContext methodContext,
       SymbolTable testNameTable,
       Iterable<FieldConfig> paramFieldConfigs) {
@@ -326,23 +323,15 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     // This symbol table is used to produce unique variable names used in the initialization code.
     // Shared by both request and response views.
     SymbolTable initSymbolTable = new SymbolTable();
-    InitCodeView initCodeView;
+    InitCodeOutputType outputType = InitCodeOutputType.FieldList;
     if (methodConfig.isGrpcStreaming()) {
-      initCodeView =
-          initCodeTransformer.generateInitCode(
-              methodContext,
-              createRequestInitCodeContext(
-                  methodContext,
-                  initSymbolTable,
-                  paramFieldConfigs,
-                  InitCodeOutputType.SingleObject));
-    } else {
-      initCodeView =
-          initCodeTransformer.generateInitCode(
-              methodContext,
-              createRequestInitCodeContext(
-                  methodContext, initSymbolTable, paramFieldConfigs, InitCodeOutputType.FieldList));
+      outputType = InitCodeOutputType.SingleObject;
     }
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            methodContext,
+            initCodeTransformer.createRequestInitCodeContext(
+                methodContext, initSymbolTable, paramFieldConfigs, outputType, valueGenerator));
 
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
@@ -377,10 +366,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       serviceMethodType = ServiceMethodType.LongRunningMethod;
     }
 
-    List<GapicSurfaceTestAssertView> requestAssertViews =
+    List<ClientTestAssertView> requestAssertViews =
         initCodeTransformer.generateRequestAssertViews(methodContext, paramFieldConfigs);
 
-    return GapicSurfaceTestCaseView.newBuilder()
+    return ClientTestCaseView.newBuilder()
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .surfaceMethodName(surfaceMethodName)
@@ -389,189 +378,20 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .responseTypeName(responseTypeName)
         .initCode(initCodeView)
         .clientMethodType(type)
-        .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
+        .pageStreamingResponseViews(
+            mockServiceTransformer.createPageStreamingResponseViews(methodContext))
         .asserts(requestAssertViews)
-        .mockResponse(createMockResponseView(methodContext, initSymbolTable))
+        .mockResponse(mockServiceTransformer.createMockResponseView(methodContext, initSymbolTable))
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
         .serviceMethodType(serviceMethodType)
+        .serviceConstructorName(
+            namer.getNotImplementedString(
+                "JavaGapicSurfaceTestTransformer.createTestCaseView - serviceConstructorName"))
         .build();
-  }
-
-  private List<PageStreamingResponseView> createPageStreamingResponseViews(
-      MethodTransformerContext methodContext) {
-    MethodConfig methodConfig = methodContext.getMethodConfig();
-    SurfaceNamer namer = methodContext.getNamer();
-
-    List<PageStreamingResponseView> pageStreamingResponseViews =
-        new ArrayList<PageStreamingResponseView>();
-
-    if (!methodConfig.isPageStreaming()) {
-      return pageStreamingResponseViews;
-    }
-
-    FieldConfig resourcesFieldConfig = methodConfig.getPageStreaming().getResourcesFieldConfig();
-    Field resourcesField = resourcesFieldConfig.getField();
-    String resourceTypeName =
-        methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
-    String resourcesFieldGetterName =
-        namer.getFieldGetFunctionName(
-            resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
-
-    pageStreamingResponseViews.add(
-        PageStreamingResponseView.newBuilder()
-            .resourceTypeName(resourceTypeName)
-            .resourcesFieldGetterName(resourcesFieldGetterName)
-            .resourcesIterateMethod(namer.getPagedResponseIterateMethod())
-            .resourcesVarName(namer.localVarName(Name.from("resources")))
-            .build());
-
-    if (methodContext.getFeatureConfig().useResourceNameFormatOption(resourcesFieldConfig)) {
-      resourceTypeName =
-          methodContext
-              .getNamer()
-              .getAndSaveElementResourceTypeName(
-                  methodContext.getTypeTable(), resourcesFieldConfig);
-
-      resourcesFieldGetterName = namer.getResourceNameFieldGetFunctionName(resourcesFieldConfig);
-      pageStreamingResponseViews.add(
-          PageStreamingResponseView.newBuilder()
-              .resourceTypeName(resourceTypeName)
-              .resourcesFieldGetterName(resourcesFieldGetterName)
-              .resourcesIterateMethod(
-                  namer.getPagedResponseIterateMethod(
-                      methodContext.getFeatureConfig(), resourcesFieldConfig))
-              .resourcesVarName(namer.localVarName(Name.from("resource_names")))
-              .build());
-    }
-
-    return pageStreamingResponseViews;
-  }
-
-  private MockGrpcResponseView createMockResponseView(
-      MethodTransformerContext methodContext, SymbolTable symbolTable) {
-    InitCodeView initCodeView =
-        initCodeTransformer.generateInitCode(
-            methodContext, createResponseInitCodeContext(methodContext, symbolTable));
-
-    String typeName =
-        methodContext
-            .getTypeTable()
-            .getAndSaveNicknameFor(methodContext.getMethod().getOutputType());
-    return MockGrpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
-  }
-
-  private InitCodeContext createRequestInitCodeContext(
-      MethodTransformerContext context,
-      SymbolTable symbolTable,
-      Iterable<FieldConfig> fieldConfigs,
-      InitCodeOutputType outputType) {
-    return InitCodeContext.newBuilder()
-        .initObjectType(context.getMethod().getInputType())
-        .symbolTable(symbolTable)
-        .suggestedName(Name.from("request"))
-        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
-        .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
-        .outputType(outputType)
-        .valueGenerator(valueGenerator)
-        .build();
-  }
-
-  private InitCodeContext createResponseInitCodeContext(
-      MethodTransformerContext context, SymbolTable symbolTable) {
-    ArrayList<Field> primitiveFields = new ArrayList<>();
-    TypeRef outputType = context.getMethod().getOutputType();
-    if (context.getMethodConfig().isLongRunningOperation()) {
-      outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
-    }
-    for (Field field : outputType.getMessageType().getFields()) {
-      if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(field);
-      }
-    }
-    return InitCodeContext.newBuilder()
-        .initObjectType(outputType)
-        .symbolTable(symbolTable)
-        .suggestedName(Name.from("expected_response"))
-        .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(primitiveFields)
-        .fieldConfigMap(createResponseFieldConfigMap(context))
-        .valueGenerator(valueGenerator)
-        .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
-        .build();
-  }
-
-  private ImmutableMap<String, FieldConfig> createResponseFieldConfigMap(
-      MethodTransformerContext context) {
-    ApiConfig apiConfig = context.getApiConfig();
-    ResourceNameMessageConfigs messageConfig = apiConfig.getResourceNameMessageConfigs();
-    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        apiConfig.getResourceNameConfigs();
-    ResourceNameTreatment treatment = context.getMethodConfig().getDefaultResourceNameTreatment();
-
-    if (messageConfig == null || treatment == ResourceNameTreatment.NONE) {
-      return ImmutableMap.of();
-    }
-    ImmutableMap.Builder<String, FieldConfig> builder = ImmutableMap.builder();
-    for (Field field : context.getMethod().getOutputMessage().getFields()) {
-      if (messageConfig.fieldHasResourceName(field)) {
-        ResourceNameConfig resourceNameConfig =
-            resourceNameConfigs.get(messageConfig.getFieldResourceName(field));
-        builder.put(
-            field.getFullName(),
-            FieldConfig.createFieldConfig(field, treatment, resourceNameConfig));
-      }
-    }
-    return builder.build();
-  }
-
-  private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(
-      MethodTransformerContext context) {
-    List<InitCodeNode> additionalSubTrees = new ArrayList<>();
-    if (context.getMethodConfig().isPageStreaming()) {
-      // Initialize one resource element if it is page-streaming.
-      PageStreamingConfig config = context.getMethodConfig().getPageStreaming();
-      String resourceFieldName = config.getResourcesFieldName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
-
-      // Set the initial value of the page token to empty, in order to indicate that no more pages
-      // are available
-      String responseTokenName = config.getResponseTokenField().getSimpleName();
-      additionalSubTrees.add(
-          InitCodeNode.createWithValue(
-              responseTokenName, InitValueConfig.createWithValue(InitValue.createLiteral(""))));
-    }
-    if (context.getMethodConfig().isBundling()) {
-      // Initialize one bundling element if it is bundling.
-      BundlingConfig config = context.getMethodConfig().getBundling();
-      String subResponseFieldName = config.getSubresponseField().getSimpleName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
-    }
-    return additionalSubTrees;
   }
 
   ///////////////////////////////////// Mock Service /////////////////////////////////////////
-
-  private List<MockServiceUsageView> createMockServices(SurfaceTransformerContext context) {
-    List<MockServiceUsageView> mockServices = new ArrayList<>();
-
-    SurfaceNamer namer = context.getNamer();
-    for (Interface service :
-        mockServiceTransformer.getGrpcInterfacesToMock(
-            context.getModel(), context.getApiConfig())) {
-      MockServiceUsageView mockService =
-          MockServiceUsageView.newBuilder()
-              .className(namer.getMockServiceClassName(service))
-              .varName(namer.getMockServiceVarName(service))
-              .build();
-      mockServices.add(mockService);
-    }
-
-    return mockServices;
-  }
 
   private MockServiceView createMockServiceView(SurfaceTransformerContext context) {
     addMockServiceImports(context);

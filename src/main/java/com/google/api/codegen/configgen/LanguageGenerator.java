@@ -142,12 +142,9 @@ public class LanguageGenerator {
   private static class NodeJSLanguageFormatter implements LanguageFormatter {
     public String getFormattedPackageName(String packageName) {
       List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
-      // NodeJS uses "@google-cloud/<APINAME>" for the package name of a Google Cloud API.
-      // Otherwise falls back to a pattern of "foo-bar" style with "gax-" prefix.
-      if (!isApiGoogleCloud(nameComponents)) {
-        return "gax-" + Joiner.on("-").join(nameComponents);
-      }
-      return "@google-cloud/" + nameComponents.get(nameComponents.size() - 2);
+      return nameComponents.get(nameComponents.size() - 2)
+          + "."
+          + nameComponents.get(nameComponents.size() - 1);
     }
   }
 

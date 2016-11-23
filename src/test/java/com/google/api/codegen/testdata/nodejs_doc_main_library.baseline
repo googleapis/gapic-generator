@@ -1,4 +1,4 @@
-============== file: src/v1/library_service_api.js ==============
+============== file: src/v1/library_service_client.js ==============
 /*
  * Copyright 2016 Google Inc. All rights reserved.
  *
@@ -88,17 +88,17 @@ var ALL_SCOPES = [
  *
  * This will be created through a builder function which can be obtained by the module.
  * See the following example of how to initialize the module and how to access to the builder.
- * @see {@link libraryServiceApi}
+ * @see {@link libraryServiceClient}
  *
  * @example
  * var libraryV1 = require('@google-cloud/library').v1({
  *   // optional auth parameters.
  * });
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  *
  * @class
  */
-function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
+function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   opts = opts || {};
   var servicePath = opts.servicePath || SERVICE_ADDRESS;
   var port = opts.port || DEFAULT_SERVICE_PORT;
@@ -203,7 +203,7 @@ var RETURN_PATH_TEMPLATE = new gax.PathTemplate(
  * @param {String} shelfId
  * @returns {String}
  */
-LibraryServiceApi.prototype.shelfPath = function(shelfId) {
+LibraryServiceClient.prototype.shelfPath = function(shelfId) {
   return SHELF_PATH_TEMPLATE.render({
     shelf_id: shelfId
   });
@@ -215,7 +215,7 @@ LibraryServiceApi.prototype.shelfPath = function(shelfId) {
  *   A fully-qualified path representing a shelf resources.
  * @returns {String} - A string representing the shelf_id.
  */
-LibraryServiceApi.prototype.matchShelfIdFromShelfName = function(shelfName) {
+LibraryServiceClient.prototype.matchShelfIdFromShelfName = function(shelfName) {
   return SHELF_PATH_TEMPLATE.match(shelfName).shelf_id;
 };
 
@@ -225,7 +225,7 @@ LibraryServiceApi.prototype.matchShelfIdFromShelfName = function(shelfName) {
  * @param {String} bookId
  * @returns {String}
  */
-LibraryServiceApi.prototype.bookPath = function(shelfId, bookId) {
+LibraryServiceClient.prototype.bookPath = function(shelfId, bookId) {
   return BOOK_PATH_TEMPLATE.render({
     shelf_id: shelfId,
     book_id: bookId
@@ -238,7 +238,7 @@ LibraryServiceApi.prototype.bookPath = function(shelfId, bookId) {
  *   A fully-qualified path representing a book resources.
  * @returns {String} - A string representing the shelf_id.
  */
-LibraryServiceApi.prototype.matchShelfIdFromBookName = function(bookName) {
+LibraryServiceClient.prototype.matchShelfIdFromBookName = function(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).shelf_id;
 };
 
@@ -248,7 +248,7 @@ LibraryServiceApi.prototype.matchShelfIdFromBookName = function(bookName) {
  *   A fully-qualified path representing a book resources.
  * @returns {String} - A string representing the book_id.
  */
-LibraryServiceApi.prototype.matchBookIdFromBookName = function(bookName) {
+LibraryServiceClient.prototype.matchBookIdFromBookName = function(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).book_id;
 };
 
@@ -259,7 +259,7 @@ LibraryServiceApi.prototype.matchBookIdFromBookName = function(bookName) {
  * @param {String} return
  * @returns {String}
  */
-LibraryServiceApi.prototype.returnPath = function(shelf, book, return_) {
+LibraryServiceClient.prototype.returnPath = function(shelf, book, return_) {
   return RETURN_PATH_TEMPLATE.render({
     shelf: shelf,
     book: book,
@@ -273,7 +273,7 @@ LibraryServiceApi.prototype.returnPath = function(shelf, book, return_) {
  *   A fully-qualified path representing a return resources.
  * @returns {String} - A string representing the shelf.
  */
-LibraryServiceApi.prototype.matchShelfFromReturnName = function(returnName) {
+LibraryServiceClient.prototype.matchShelfFromReturnName = function(returnName) {
   return RETURN_PATH_TEMPLATE.match(returnName).shelf;
 };
 
@@ -283,7 +283,7 @@ LibraryServiceApi.prototype.matchShelfFromReturnName = function(returnName) {
  *   A fully-qualified path representing a return resources.
  * @returns {String} - A string representing the book.
  */
-LibraryServiceApi.prototype.matchBookFromReturnName = function(returnName) {
+LibraryServiceClient.prototype.matchBookFromReturnName = function(returnName) {
   return RETURN_PATH_TEMPLATE.match(returnName).book;
 };
 
@@ -293,7 +293,7 @@ LibraryServiceApi.prototype.matchBookFromReturnName = function(returnName) {
  *   A fully-qualified path representing a return resources.
  * @returns {String} - A string representing the return.
  */
-LibraryServiceApi.prototype.matchReturnFromReturnName = function(returnName) {
+LibraryServiceClient.prototype.matchReturnFromReturnName = function(returnName) {
   return RETURN_PATH_TEMPLATE.match(returnName).return;
 };
 
@@ -321,16 +321,16 @@ LibraryServiceApi.prototype.matchReturnFromReturnName = function(returnName) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  * var shelf = {};
- * api.createShelf({shelf: shelf}).then(function(responses) {
+ * client.createShelf({shelf: shelf}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
+LibraryServiceClient.prototype.createShelf = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -370,21 +370,21 @@ LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
  * var options = '';
  * var request = {
  *     name: formattedName,
  *     options: options
  * };
- * api.getShelf(request).then(function(responses) {
+ * client.getShelf(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
+LibraryServiceClient.prototype.getShelf = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -426,10 +426,10 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  *
  * // Iterate over all elements.
- * api.listShelves({}).then(function(responses) {
+ * client.listShelves({}).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
@@ -452,16 +452,16 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
  *     }
  *     if (nextRequest) {
  *         // Fetch the next page.
- *         return api.listShelves(nextRequest, options).then(callback);
+ *         return client.listShelves(nextRequest, options).then(callback);
  *     }
  * }
- * api.listShelves({}, options)
+ * client.listShelves({}, options)
  *     .then(callback)
  *     .catch(function(err) {
  *         console.error(err);
  *     });
  */
-LibraryServiceApi.prototype.listShelves = function(request, options, callback) {
+LibraryServiceClient.prototype.listShelves = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -498,15 +498,15 @@ LibraryServiceApi.prototype.listShelves = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  *
- * api.listShelvesStream({}).on('data', function(element) {
+ * client.listShelvesStream({}).on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', funciton(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.listShelvesStream = function(request, options) {
+LibraryServiceClient.prototype.listShelvesStream = function(request, options) {
   if (options === undefined) {
     options = {};
   }
@@ -533,13 +533,13 @@ LibraryServiceApi.prototype.listShelvesStream = function(request, options) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
- * api.deleteShelf({name: formattedName}).catch(function(err) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
+ * client.deleteShelf({name: formattedName}).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
+LibraryServiceClient.prototype.deleteShelf = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -575,21 +575,21 @@ LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
- * var formattedOtherShelfName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
+ * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
  * var request = {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * api.mergeShelves(request).then(function(responses) {
+ * client.mergeShelves(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) {
+LibraryServiceClient.prototype.mergeShelves = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -625,21 +625,21 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
  * var book = {};
  * var request = {
  *     name: formattedName,
  *     book: book
  * };
- * api.createBook(request).then(function(responses) {
+ * client.createBook(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.createBook = function(request, options, callback) {
+LibraryServiceClient.prototype.createBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -683,21 +683,21 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  * var shelf = {};
  * var books = [];
  * var request = {
  *     shelf: shelf,
  *     books: books
  * };
- * api.publishSeries(request).then(function(responses) {
+ * client.publishSeries(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.publishSeries = function(request, options, callback) {
+LibraryServiceClient.prototype.publishSeries = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -729,16 +729,16 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * api.getBook({name: formattedName}).then(function(responses) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * client.getBook({name: formattedName}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.getBook = function(request, options, callback) {
+LibraryServiceClient.prototype.getBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -790,10 +790,10 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
  * // Iterate over all elements.
- * api.listBooks({name: formattedName}).then(function(responses) {
+ * client.listBooks({name: formattedName}).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
@@ -816,16 +816,16 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
  *     }
  *     if (nextRequest) {
  *         // Fetch the next page.
- *         return api.listBooks(nextRequest, options).then(callback);
+ *         return client.listBooks(nextRequest, options).then(callback);
  *     }
  * }
- * api.listBooks({name: formattedName}, options)
+ * client.listBooks({name: formattedName}, options)
  *     .then(callback)
  *     .catch(function(err) {
  *         console.error(err);
  *     });
  */
-LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
+LibraryServiceClient.prototype.listBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -870,15 +870,15 @@ LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
- * api.listBooksStream({name: formattedName}).on('data', function(element) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
+ * client.listBooksStream({name: formattedName}).on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', funciton(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.listBooksStream = function(request, options) {
+LibraryServiceClient.prototype.listBooksStream = function(request, options) {
   if (options === undefined) {
     options = {};
   }
@@ -903,13 +903,13 @@ LibraryServiceApi.prototype.listBooksStream = function(request, options) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * api.deleteBook({name: formattedName}).catch(function(err) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * client.deleteBook({name: formattedName}).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
+LibraryServiceClient.prototype.deleteBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -953,21 +953,21 @@ LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var book = {};
  * var request = {
  *     name: formattedName,
  *     book: book
  * };
- * api.updateBook(request).then(function(responses) {
+ * client.updateBook(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
+LibraryServiceClient.prototype.updateBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1001,21 +1001,21 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * var formattedOtherShelfName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
  * var request = {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * api.moveBook(request).then(function(responses) {
+ * client.moveBook(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
+LibraryServiceClient.prototype.moveBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1064,10 +1064,10 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  *
  * // Iterate over all elements.
- * api.listStrings({}).then(function(responses) {
+ * client.listStrings({}).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
@@ -1090,16 +1090,16 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  *     }
  *     if (nextRequest) {
  *         // Fetch the next page.
- *         return api.listStrings(nextRequest, options).then(callback);
+ *         return client.listStrings(nextRequest, options).then(callback);
  *     }
  * }
- * api.listStrings({}, options)
+ * client.listStrings({}, options)
  *     .then(callback)
  *     .catch(function(err) {
  *         console.error(err);
  *     });
  */
-LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
+LibraryServiceClient.prototype.listStrings = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1141,15 +1141,15 @@ LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  *
- * api.listStringsStream({}).on('data', function(element) {
+ * client.listStringsStream({}).on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', funciton(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.listStringsStream = function(request, options) {
+LibraryServiceClient.prototype.listStringsStream = function(request, options) {
   if (options === undefined) {
     options = {};
   }
@@ -1175,11 +1175,11 @@ LibraryServiceApi.prototype.listStringsStream = function(request, options) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var comment = '';
- * var stage = Stage.UNSET;
- * var alignment = Alignment.CHAR;
+ * var stage = libraryV1.Comment.Stage.UNSET;
+ * var alignment = libraryV1.SomeMessage2.SomeMessage3.Alignment.CHAR;
  * var commentsElement = {
  *     comment : comment,
  *     stage : stage,
@@ -1190,11 +1190,11 @@ LibraryServiceApi.prototype.listStringsStream = function(request, options) {
  *     name: formattedName,
  *     comments: comments
  * };
- * api.addComments(request).catch(function(err) {
+ * client.addComments(request).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.addComments = function(request, options, callback) {
+LibraryServiceClient.prototype.addComments = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1226,16 +1226,16 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
- * api.getBookFromArchive({name: formattedName}).then(function(responses) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+ * client.getBookFromArchive({name: formattedName}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.getBookFromArchive = function(request, options, callback) {
+LibraryServiceClient.prototype.getBookFromArchive = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1270,21 +1270,21 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  * var name = '';
- * var formattedAltBookName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var request = {
  *     name: name,
  *     altBookName: formattedAltBookName
  * };
- * api.getBookFromAnywhere(request).then(function(responses) {
+ * client.getBookFromAnywhere(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.getBookFromAnywhere = function(request, options, callback) {
+LibraryServiceClient.prototype.getBookFromAnywhere = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1317,8 +1317,8 @@ LibraryServiceApi.prototype.getBookFromAnywhere = function(request, options, cal
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var indexName = 'default index';
  * var indexMapItem = '';
  * var indexMap = {'default_key' : indexMapItem,};
@@ -1327,11 +1327,11 @@ LibraryServiceApi.prototype.getBookFromAnywhere = function(request, options, cal
  *     indexName: indexName,
  *     indexMap: indexMap
  * };
- * api.updateBookIndex(request).catch(function(err) {
+ * client.updateBookIndex(request).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.updateBookIndex = function(request, options, callback) {
+LibraryServiceClient.prototype.updateBookIndex = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1357,13 +1357,13 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  *
- * api.streamShelves({}).on('data', function(response) {
+ * client.streamShelves({}).on('data', function(response) {
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.streamShelves = function(request, options) {
+LibraryServiceClient.prototype.streamShelves = function(request, options) {
   if (options === undefined) {
     options = {};
   }
@@ -1389,13 +1389,13 @@ LibraryServiceApi.prototype.streamShelves = function(request, options) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  * var name = '';
- * api.streamBooks({name: name}).on('data', function(response) {
+ * client.streamBooks({name: name}).on('data', function(response) {
  *     // doThingsWith(response)
  * });
  */
-LibraryServiceApi.prototype.streamBooks = function(request, options) {
+LibraryServiceClient.prototype.streamBooks = function(request, options) {
   if (options === undefined) {
     options = {};
   }
@@ -1417,8 +1417,8 @@ LibraryServiceApi.prototype.streamBooks = function(request, options) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var stream = api.discussBook().on('data', function(response) {
+ * var client = libraryV1.libraryServiceClient();
+ * var stream = client.discussBook().on('data', function(response) {
  *     // doThingsWith(response);
  * });
  * var name = '';
@@ -1428,7 +1428,7 @@ LibraryServiceApi.prototype.streamBooks = function(request, options) {
  * // Write request objects.
  * stream.write(request);
  */
-LibraryServiceApi.prototype.discussBook = function(options) {
+LibraryServiceClient.prototype.discussBook = function(options) {
   if (options === undefined) {
     options = {};
   }
@@ -1472,7 +1472,7 @@ LibraryServiceApi.prototype.discussBook = function(options) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  * var namesElement = '';
  * var names = [namesElement];
  * var shelves = [];
@@ -1481,7 +1481,7 @@ LibraryServiceApi.prototype.discussBook = function(options) {
  *     shelves: shelves
  * };
  * // Iterate over all elements.
- * api.findRelatedBooks(request).then(function(responses) {
+ * client.findRelatedBooks(request).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
@@ -1504,16 +1504,16 @@ LibraryServiceApi.prototype.discussBook = function(options) {
  *     }
  *     if (nextRequest) {
  *         // Fetch the next page.
- *         return api.findRelatedBooks(nextRequest, options).then(callback);
+ *         return client.findRelatedBooks(nextRequest, options).then(callback);
  *     }
  * }
- * api.findRelatedBooks(request, options)
+ * client.findRelatedBooks(request, options)
  *     .then(callback)
  *     .catch(function(err) {
  *         console.error(err);
  *     });
  */
-LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callback) {
+LibraryServiceClient.prototype.findRelatedBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1556,7 +1556,7 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  * var namesElement = '';
  * var names = [namesElement];
  * var shelves = [];
@@ -1564,13 +1564,13 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
  *     names: names,
  *     shelves: shelves
  * };
- * api.findRelatedBooksStream(request).on('data', function(element) {
+ * client.findRelatedBooksStream(request).on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', funciton(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.findRelatedBooksStream = function(request, options) {
+LibraryServiceClient.prototype.findRelatedBooksStream = function(request, options) {
   if (options === undefined) {
     options = {};
   }
@@ -1602,21 +1602,21 @@ LibraryServiceApi.prototype.findRelatedBooksStream = function(request, options) 
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedResource = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var tag = '';
  * var request = {
  *     resource: formattedResource,
  *     tag: tag
  * };
- * api.addTag(request).then(function(responses) {
+ * client.addTag(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.addTag = function(request, options, callback) {
+LibraryServiceClient.prototype.addTag = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1652,21 +1652,21 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedResource = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var label = '';
  * var request = {
  *     resource: formattedResource,
  *     label: label
  * };
- * api.addLabel(request).then(function(responses) {
+ * client.addLabel(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
+LibraryServiceClient.prototype.addLabel = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1698,16 +1698,16 @@ LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * api.getBigBook({name: formattedName}).then(function(responses) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * client.getBigBook({name: formattedName}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.getBigBook = function(request, options, callback) {
+LibraryServiceClient.prototype.getBigBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1719,9 +1719,9 @@ LibraryServiceApi.prototype.getBigBook = function(request, options, callback) {
   return this._getBigBook(request, options, callback);
 };
 
-function LibraryServiceApiBuilder(gaxGrpc) {
-  if (!(this instanceof LibraryServiceApiBuilder)) {
-    return new LibraryServiceApiBuilder(gaxGrpc);
+function LibraryServiceClientBuilder(gaxGrpc) {
+  if (!(this instanceof LibraryServiceClientBuilder)) {
+    return new LibraryServiceClientBuilder(gaxGrpc);
   }
 
   var libraryServiceClient = gaxGrpc.load([{
@@ -1742,7 +1742,7 @@ function LibraryServiceApiBuilder(gaxGrpc) {
   };
 
   /**
-   * Build a new instance of {@link LibraryServiceApi}.
+   * Build a new instance of {@link LibraryServiceClient}.
    *
    * @param {Object=} opts - The optional parameters.
    * @param {String=} opts.servicePath
@@ -1759,11 +1759,11 @@ function LibraryServiceApiBuilder(gaxGrpc) {
    * @param {String=} opts.appVersion
    *   The version of the calling service.
    */
-  this.libraryServiceApi = function(opts) {
-    return new LibraryServiceApi(gaxGrpc, grpcClients, opts);
+  this.libraryServiceClient = function(opts) {
+    return new LibraryServiceClient(gaxGrpc, grpcClients, opts);
   };
-  extend(this.libraryServiceApi, LibraryServiceApi);
+  extend(this.libraryServiceClient, LibraryServiceClient);
 }
-module.exports = LibraryServiceApiBuilder;
+module.exports = LibraryServiceClientBuilder;
 module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
 module.exports.ALL_SCOPES = ALL_SCOPES;

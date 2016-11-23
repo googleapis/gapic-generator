@@ -620,7 +620,7 @@ public class ApiMethodTransformer {
     }
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
-    apiMethod.apiModuleName(namer.getApiWrapperModuleName(context.getInterface()));
+    apiMethod.apiModuleName(namer.getApiWrapperModuleName());
     InitCodeOutputType initCodeOutputType =
         context.getMethod().getRequestStreaming()
             ? InitCodeOutputType.SingleObject

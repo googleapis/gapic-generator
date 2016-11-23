@@ -193,18 +193,19 @@
      * @@see {@@link {@context.upperCamelToLowerCamel(serviceName)}}
      *
      * @@example
-     @let moduleName = context.getModuleName(service)
-       @if context.isGcloud
-       * var {@moduleName} = require('{@context.getApiConfig().getPackageName()}').{@context.getApiVersion(service)}({
-       *   // optional auth parameters.
-       * });
+     @let moduleName = context.getModuleName(), \
+          apiVersion = context.getApiVersion()
+       @if apiVersion
+         * var {@moduleName} = require('{@context.getRequirePackageName()}').{@context.getApiVersion()}({
+         *   // optional auth parameters.
+         * });
        @else
-       * var {@moduleName} = require('{@context.getApiConfig().getPackageName()}')({
-       *   // optional auth parameters.
-       * });
+         * var {@moduleName} = require('{@context.getRequirePackageName()}')({
+         *   // optional auth parameters.
+         * });
        @end
 
-       * var api = {@moduleName}.{@context.upperCamelToLowerCamel(serviceName)}();
+       * var client = {@moduleName}.{@context.upperCamelToLowerCamel(serviceName)}();
      @end
      *
      * @@class

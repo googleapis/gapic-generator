@@ -120,7 +120,7 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
         .appName(namer.getSampleApplicationName(config.apiCanonicalName()))
-        .className(namer.getSampleClassName(config.apiTypeName()))
+        .className(namer.getSampleClassName(config.apiCanonicalName()))
         .auth(createSampleAuthView(context))
         .serviceVarName(serviceVarName)
         .serviceTypeName(serviceTypeName)
@@ -136,7 +136,7 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
         .dataNamespace(dataNamespace)
-        .namespaceName(config.apiCanonicalName().replace(" ", "") + "Sample")
+        .namespaceName(CSharpSampleNamer.getNamespaceName(config.apiCanonicalName()))
         .imports(importTypeTransformer.generateImports(typeTable.getImports()))
         .build();
   }

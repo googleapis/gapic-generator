@@ -15,10 +15,16 @@
 package com.google.api.codegen.util.nodejs;
 
 import com.google.api.codegen.util.DynamicLangTypeTable;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import java.lang.Character;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /** The TypeTable for NodeJS. */
@@ -37,7 +43,26 @@ public class NodeJSTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    return dynamicTypeTable.getTypeName(fullName);
+    // Assumes the namespace part starts with lowercase while others start
+    // with uppercase.
+    ArrayList<String> shortNameParts = new ArrayList<>();
+    boolean namespacesFinished = false;
+    for (String name : Splitter.on(".").split(fullName)) {
+      if (Character.isLowerCase(name.charAt(0))) {
+        continue;
+      } else {
+        namespacesFinished = true;
+      }
+      if (namespacesFinished) {
+        shortNameParts.add(name);
+      }
+    }
+    String shortName = Joiner.on(".").join(shortNameParts);
+    List<String> packageParts =
+        Splitter.on(".").splitToList(dynamicTypeTable.getImplicitPackageName());
+    String packagePrefix =
+        Name.from(packageParts.toArray(new String[packageParts.size()])).toLowerCamel();
+    return new TypeName(fullName, packagePrefix + "." + shortName);
   }
 
   @Override
