@@ -43,19 +43,34 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   /**
    * NodeJS uses a special format for ApiWrapperModuleName.
    *
-   * <p>The name for the module for this vkit module. This assumes that the service's full name will
-   * be in the format of 'google.some.apiname.version.ServiceName', and extracts the 'apiname' and
-   * 'version' part and combine them to lower-camelcased style (like pubsubV1).
+   * <p>The name for the module for this vkit module. This assumes that the package_name in the API
+   * config will be in the format of 'apiname.version', and extracts the 'apiname' and 'version'
+   * part and combine them to lower-camelcased style (like pubsubV1).
    *
    * <p>Based on {@link com.google.api.codegen.nodejs.NodeJSGapicContext#getModuleName}.
    */
-  public String getApiWrapperModuleName(Interface interfaze) {
-    List<String> names = Splitter.on(".").splitToList(interfaze.getFullName());
-    if (names.size() < 3) {
-      throw new IllegalArgumentException(interfaze.getFullName());
+  @Override
+  public String getApiWrapperModuleName() {
+    List<String> names = Splitter.on(".").splitToList(getPackageName());
+    if (names.size() < 2) {
+      return getPackageName();
     }
+    return names.get(0) + Name.from(names.get(1)).toUpperCamel();
+  }
 
-    return names.get(names.size() - 3) + Name.from(names.get(names.size() - 2)).toUpperCamel();
+  @Override
+  public String getApiWrapperClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiWrapperClassConstructorName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiWrapperVariableName(Interface interfaze) {
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override

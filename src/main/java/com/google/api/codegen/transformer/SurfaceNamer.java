@@ -190,7 +190,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of a variable that holds an instance of the module that contains the implementation of
    * a particular proto interface. So far it is used by just NodeJS.
    */
-  public String getApiWrapperModuleName(Interface interfaze) {
+  public String getApiWrapperModuleName() {
     return getNotImplementedString("SurfaceNamer.getApiWrapperModuleName");
   }
 
@@ -480,6 +480,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcClientTypeName(Interface service) {
     return getNotImplementedString("SurfaceNamer.getGrpcClientTypeName");
+  }
+
+  /**
+   * Gets the type name of the Grpc client class, saves it to the type table provided, and returns
+   * the nickname.
+   */
+  public String getAndSaveNicknameForGrpcClientTypeName(
+      ModelTypeTable typeTable, Interface service) {
+    return typeTable.getAndSaveNicknameFor(getGrpcClientTypeName(service));
   }
 
   /**

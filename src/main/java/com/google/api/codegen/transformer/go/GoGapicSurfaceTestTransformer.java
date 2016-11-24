@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -26,6 +27,7 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.GoValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -35,7 +37,7 @@ import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
-import com.google.api.codegen.viewmodel.testing.TestMethodView;
+import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -50,11 +52,11 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final GoValueProducer valueProducer = new GoValueProducer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new GoImportTransformer());
-  private final MockServiceTransformer mockServiceTransformer =
-      new MockServiceTransformer(valueProducer);
+  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -119,8 +121,8 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .build();
   }
 
-  private List<TestMethodView> createTestCaseViews(SurfaceTransformerContext context) {
-    ArrayList<TestMethodView> testCaseViews = new ArrayList<>();
+  private List<TestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+    ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
       MethodTransformerContext methodContext = context.asRequestMethodContext(method);
@@ -128,17 +130,16 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedRequestObjectMethod;
       }
-      testCaseViews.add(
-          mockServiceTransformer.createTestMethodView(
+      InitCodeContext initCodeContext =
+          initCodeTransformer.createRequestInitCodeContext(
               methodContext,
-              testNameTable,
-              initCodeTransformer.createRequestInitCodeContext(
-                  methodContext,
-                  new SymbolTable(),
-                  methodContext.getMethodConfig().getRequiredFieldConfigs(),
-                  InitCodeOutputType.SingleObject,
-                  valueGenerator),
-              clientMethodType));
+              new SymbolTable(),
+              methodContext.getMethodConfig().getRequiredFieldConfigs(),
+              InitCodeOutputType.SingleObject,
+              valueGenerator);
+      testCaseViews.add(
+          testCaseTransformer.createTestCaseView(
+              methodContext, testNameTable, initCodeContext, clientMethodType));
     }
     return testCaseViews;
   }

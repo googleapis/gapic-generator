@@ -34,6 +34,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -55,7 +56,7 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
-import com.google.api.codegen.viewmodel.testing.TestMethodView;
+import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -77,8 +78,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       new FileHeaderTransformer(new StandardImportTypeTransformer());
   private final JavaValueProducer valueProducer = new JavaValueProducer();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
-  private final MockServiceTransformer mockServiceTransformer =
-      new MockServiceTransformer(valueProducer);
+  private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
+  private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
 
   public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
@@ -133,15 +134,15 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    TestMethodView testMethodView = createSmokeTestMethodView(methodContext);
+    TestCaseView testCaseView = createSmokeTestCaseView(methodContext);
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
     testClass.apiClassName(namer.getApiWrapperClassName(service));
     testClass.name(name);
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
-    testClass.method(testMethodView);
-    testClass.requireProjectId(requireProjectId(testMethodView.initCode(), context.getNamer()));
+    testClass.method(testCaseView);
+    testClass.requireProjectId(requireProjectId(testCaseView.initCode(), context.getNamer()));
 
     // Imports must be done as the last step to catch all imports.
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
@@ -150,13 +151,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testClass.build();
   }
 
-  private TestMethodView createSmokeTestMethodView(MethodTransformerContext context) {
+  private TestCaseView createSmokeTestCaseView(MethodTransformerContext context) {
     ClientMethodType methodType = ClientMethodType.FlattenedMethod;
     if (context.getMethodConfig().isPageStreaming()) {
       methodType = ClientMethodType.PagedFlattenedMethod;
     }
 
-    return mockServiceTransformer.createTestMethodView(
+    return testCaseTransformer.createTestCaseView(
         context, new SymbolTable(), createSmokeTestInitContext(context), methodType);
   }
 
@@ -258,25 +259,24 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testFile.build();
   }
 
-  private List<TestMethodView> createTestCaseViews(SurfaceTransformerContext context) {
-    ArrayList<TestMethodView> testCaseViews = new ArrayList<>();
+  private List<TestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+    ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.isGrpcStreaming()) {
         addGrpcStreamingTestImport(context);
         MethodTransformerContext methodContext = context.asRequestMethodContext(method);
-        testCaseViews.add(
-            mockServiceTransformer.createTestMethodView(
+        InitCodeContext initCodeContext =
+            initCodeTransformer.createRequestInitCodeContext(
                 methodContext,
-                testNameTable,
-                initCodeTransformer.createRequestInitCodeContext(
-                    methodContext,
-                    new SymbolTable(),
-                    methodConfig.getRequiredFieldConfigs(),
-                    InitCodeOutputType.SingleObject,
-                    valueGenerator),
-                ClientMethodType.CallableMethod));
+                new SymbolTable(),
+                methodConfig.getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject,
+                valueGenerator);
+        testCaseViews.add(
+            testCaseTransformer.createTestCaseView(
+                methodContext, testNameTable, initCodeContext, ClientMethodType.CallableMethod));
       } else if (methodConfig.isFlattening()) {
         ClientMethodType clientMethodType;
         if (methodConfig.isPageStreaming()) {
@@ -289,17 +289,16 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           MethodTransformerContext methodContext =
               context.asFlattenedMethodContext(method, flatteningGroup);
-          testCaseViews.add(
-              mockServiceTransformer.createTestMethodView(
+          InitCodeContext initCodeContext =
+              initCodeTransformer.createRequestInitCodeContext(
                   methodContext,
-                  testNameTable,
-                  initCodeTransformer.createRequestInitCodeContext(
-                      methodContext,
-                      new SymbolTable(),
-                      flatteningGroup.getFlattenedFieldConfigs().values(),
-                      InitCodeOutputType.FieldList,
-                      valueGenerator),
-                  clientMethodType));
+                  new SymbolTable(),
+                  flatteningGroup.getFlattenedFieldConfigs().values(),
+                  InitCodeOutputType.FieldList,
+                  valueGenerator);
+          testCaseViews.add(
+              testCaseTransformer.createTestCaseView(
+                  methodContext, testNameTable, initCodeContext, clientMethodType));
         }
       } else {
         // TODO: Add support of non-flattening method

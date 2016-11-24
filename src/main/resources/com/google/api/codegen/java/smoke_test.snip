@@ -72,16 +72,16 @@
   @switch method.clientMethodType
   @case "PagedFlattenedMethod"
     {@method.responseTypeName} pagedResponse =
-        client.{@method.surfaceMethodName}(\
+        client.{@method.clientMethodName}(\
           {@sampleMethodCallArgList(method.initCode.fieldSettings)});
     System.out.println(ReflectionToStringBuilder.toString(pagedResponse));
   @case "FlattenedMethod"
     @if method.hasReturnValue
       {@method.responseTypeName} response = \
-        client.{@method.surfaceMethodName}({@args(method.initCode.fieldSettings)});
+        client.{@method.clientMethodName}({@args(method.initCode.fieldSettings)});
       System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
     @else
-      client.{@method.surfaceMethodName}(\
+      client.{@method.clientMethodName}(\
         {@sampleMethodCallArgList(method.initCode.fieldSettings)});
     @end
   @end

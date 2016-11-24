@@ -1,4 +1,4 @@
-============== file: src/no_templates_api_service_api.js ==============
+============== file: src/v1/no_templates_api_service_client.js ==============
 /*
  * Copyright 2016 Google Inc. All rights reserved.
  *
@@ -48,17 +48,17 @@ var ALL_SCOPES = [
 /**
  * This will be created through a builder function which can be obtained by the module.
  * See the following example of how to initialize the module and how to access to the builder.
- * @see {@link noTemplatesApiServiceApi}
+ * @see {@link noTemplatesApiServiceClient}
  *
  * @example
- * var exampleV1 = require('google-example-no-path-template')({
+ * var example = require('example')({
  *   // optional auth parameters.
  * });
- * var api = exampleV1.noTemplatesApiServiceApi();
+ * var client = example.noTemplatesApiServiceClient();
  *
  * @class
  */
-function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
+function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
   opts = opts || {};
   var servicePath = opts.servicePath || SERVICE_ADDRESS;
   var port = opts.port || DEFAULT_SERVICE_PORT;
@@ -119,13 +119,13 @@ function NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts) {
  *
  * @example
  *
- * var api = exampleV1.noTemplatesApiServiceApi();
+ * var client = example.noTemplatesApiServiceClient();
  *
- * api.increment({}).catch(function(err) {
+ * client.increment({}).catch(function(err) {
  *     console.error(err);
  * });
  */
-NoTemplatesAPIServiceApi.prototype.increment = function(request, options, callback) {
+NoTemplatesAPIServiceClient.prototype.increment = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -139,9 +139,9 @@ NoTemplatesAPIServiceApi.prototype.increment = function(request, options, callba
   return this._increment(request, options, callback);
 };
 
-function NoTemplatesAPIServiceApiBuilder(gaxGrpc) {
-  if (!(this instanceof NoTemplatesAPIServiceApiBuilder)) {
-    return new NoTemplatesAPIServiceApiBuilder(gaxGrpc);
+function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
+  if (!(this instanceof NoTemplatesAPIServiceClientBuilder)) {
+    return new NoTemplatesAPIServiceClientBuilder(gaxGrpc);
   }
 
   var noTemplatesApiServiceClient = require('grpc-google-cloud-example-v1').client;
@@ -152,7 +152,7 @@ function NoTemplatesAPIServiceApiBuilder(gaxGrpc) {
   };
 
   /**
-   * Build a new instance of {@link NoTemplatesAPIServiceApi}.
+   * Build a new instance of {@link NoTemplatesAPIServiceClient}.
    *
    * @param {Object=} opts - The optional parameters.
    * @param {String=} opts.servicePath
@@ -169,11 +169,11 @@ function NoTemplatesAPIServiceApiBuilder(gaxGrpc) {
    * @param {String=} opts.appVersion
    *   The version of the calling service.
    */
-  this.noTemplatesApiServiceApi = function(opts) {
-    return new NoTemplatesAPIServiceApi(gaxGrpc, grpcClients, opts);
+  this.noTemplatesApiServiceClient = function(opts) {
+    return new NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts);
   };
-  extend(this.noTemplatesApiServiceApi, NoTemplatesAPIServiceApi);
+  extend(this.noTemplatesApiServiceClient, NoTemplatesAPIServiceClient);
 }
-module.exports = NoTemplatesAPIServiceApiBuilder;
+module.exports = NoTemplatesAPIServiceClientBuilder;
 module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
 module.exports.ALL_SCOPES = ALL_SCOPES;

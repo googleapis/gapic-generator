@@ -21,9 +21,9 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class TestMethodView {
+public abstract class TestCaseView {
 
-  public abstract String surfaceMethodName();
+  public abstract String clientMethodName();
 
   public abstract InitCodeView initCode();
 
@@ -52,13 +52,13 @@ public abstract class TestMethodView {
   public abstract GrpcStreamingType grpcStreamingType();
 
   public static Builder newBuilder() {
-    return new AutoValue_TestMethodView.Builder();
+    return new AutoValue_TestCaseView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder surfaceMethodName(String val);
+    public abstract Builder clientMethodName(String val);
 
     public abstract Builder name(String val);
 
@@ -86,6 +86,6 @@ public abstract class TestMethodView {
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
-    public abstract TestMethodView build();
+    public abstract TestCaseView build();
   }
 }
