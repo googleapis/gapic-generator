@@ -16,5 +16,6 @@ package com.google.api.codegen.util;
 
 public enum ImportType {
   SimpleImport,
-  StaticImport
+  StaticImport,
+  AliasedImport
 }
