@@ -69,7 +69,7 @@ public class TestCaseTransformer {
           namer.getAndSavePagedResponseTypeName(
               method,
               methodContext.getTypeTable(),
-              methodConfig.getPageStreaming().getResourcesField());
+              methodConfig.getPageStreaming().getResourcesFieldConfig());
     } else if (methodConfig.isLongRunningOperation()) {
       clientMethodName = namer.getAsyncApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
