@@ -155,6 +155,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+    return visibility.methodName(this, Name.upperCamel(method.getSimpleName()));
+  }
+
+  @Override
   public String getLocalPackageName() {
     // packagePath is in form "cloud.google.com/go/library/apiv1";
     // we want "library".
