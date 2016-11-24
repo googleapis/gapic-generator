@@ -230,11 +230,11 @@
         {
             switch (type)
             {
-            case OneofType.Unknown: return true; // Anything goes with Unknown.
-            @join child : resource.children
-                case OneofType.{@child.enumName}: return name is {@child.typeName};
-            @end
-            default: return false;
+                case OneofType.Unknown: return true; // Anything goes with Unknown.
+                @join child : resource.children
+                    case OneofType.{@child.enumName}: return name is {@child.typeName};
+                @end
+                default: return false;
             }
         }
 
@@ -402,7 +402,7 @@
         {
             @join field : proto.fields
                 /// <summary>
-                /// A <see cref="{@field.typeName}"/>-typed view over the <see cref="{@field.underlyingPropertyName}"/> resource-name property.
+                /// A <see cref="{@field.typeName}"/>-typed view over the <see cref="{@field.underlyingPropertyName}"/> resource name property.
                 /// </summary>
                 @if field.isRepeated
                     public {@field.typeName} {@field.propertyName} =>

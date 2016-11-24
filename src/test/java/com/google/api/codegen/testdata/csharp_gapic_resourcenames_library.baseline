@@ -523,11 +523,11 @@ namespace Google.Example.Library.V1
         {
             switch (type)
             {
-            case OneofType.Unknown: return true; // Anything goes with Unknown.
-            case OneofType.BookName: return name is BookName;
-            case OneofType.ArchivedBookName: return name is ArchivedBookName;
-            case OneofType.DeletedBookNameFixed: return name is DeletedBookNameFixed;
-            default: return false;
+                case OneofType.Unknown: return true; // Anything goes with Unknown.
+                case OneofType.BookName: return name is BookName;
+                case OneofType.ArchivedBookName: return name is ArchivedBookName;
+                case OneofType.DeletedBookNameFixed: return name is DeletedBookNameFixed;
+                default: return false;
             }
         }
 
@@ -688,7 +688,7 @@ namespace Google.Example.Library.V1
     public partial class Book
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -701,7 +701,7 @@ namespace Google.Example.Library.V1
     public partial class BookFromAnywhere
     {
         /// <summary>
-        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookNameOneof BookNameOneof
         {
@@ -714,7 +714,7 @@ namespace Google.Example.Library.V1
     public partial class BookFromArchive
     {
         /// <summary>
-        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ArchivedBookName ArchivedBookName
         {
@@ -727,7 +727,7 @@ namespace Google.Example.Library.V1
     public partial class CreateBookRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -740,7 +740,7 @@ namespace Google.Example.Library.V1
     public partial class DeleteBookRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -753,7 +753,7 @@ namespace Google.Example.Library.V1
     public partial class DeleteShelfRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -766,16 +766,16 @@ namespace Google.Example.Library.V1
     public partial class FindRelatedBooksRequest
     {
         /// <summary>
-        /// A <see cref="IList<BookName>"/>-typed view over the <see cref="Names"/> resource-name property.
+        /// A <see cref="IList<BookName>"/>-typed view over the <see cref="Names"/> resource name property.
         /// </summary>
         public IList<BookName> BookNames =>
             new ResourceNameList<BookName>(Names,
                 str => BookName.Parse(str));
 
         /// <summary>
-        /// A <see cref="IList<ShelfName>"/>-typed view over the <see cref="Shelves"/> resource-name property.
+        /// A <see cref="IList<ShelfName>"/>-typed view over the <see cref="Shelves"/> resource name property.
         /// </summary>
-        public IList<ShelfName> ShelvesAsShelfName =>
+        public IList<ShelfName> ShelvesAsShelfNames =>
             new ResourceNameList<ShelfName>(Shelves,
                 str => ShelfName.Parse(str));
 
@@ -784,7 +784,7 @@ namespace Google.Example.Library.V1
     public partial class FindRelatedBooksResponse
     {
         /// <summary>
-        /// A <see cref="IList<BookName>"/>-typed view over the <see cref="Names"/> resource-name property.
+        /// A <see cref="IList<BookName>"/>-typed view over the <see cref="Names"/> resource name property.
         /// </summary>
         public IList<BookName> BookNames =>
             new ResourceNameList<BookName>(Names,
@@ -795,7 +795,7 @@ namespace Google.Example.Library.V1
     public partial class GetBookFromAnywhereRequest
     {
         /// <summary>
-        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookNameOneof BookNameOneof
         {
@@ -804,7 +804,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="AltBookName"/> resource-name property.
+        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="AltBookName"/> resource name property.
         /// </summary>
         public BookNameOneof AltBookNameAsBookNameOneof
         {
@@ -817,7 +817,7 @@ namespace Google.Example.Library.V1
     public partial class GetBookFromArchiveRequest
     {
         /// <summary>
-        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ArchivedBookName ArchivedBookName
         {
@@ -830,7 +830,7 @@ namespace Google.Example.Library.V1
     public partial class GetBookRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -843,7 +843,7 @@ namespace Google.Example.Library.V1
     public partial class GetShelfRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -856,7 +856,7 @@ namespace Google.Example.Library.V1
     public partial class ListBooksRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -869,7 +869,7 @@ namespace Google.Example.Library.V1
     public partial class ListStringsRequest
     {
         /// <summary>
-        /// A <see cref="IResourceName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="IResourceName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public IResourceName AsResourceName
         {
@@ -882,7 +882,7 @@ namespace Google.Example.Library.V1
     public partial class MergeShelvesRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -891,7 +891,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource-name property.
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource name property.
         /// </summary>
         public ShelfName OtherShelfNameAsShelfName
         {
@@ -904,7 +904,7 @@ namespace Google.Example.Library.V1
     public partial class MoveBookRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -913,7 +913,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource-name property.
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource name property.
         /// </summary>
         public ShelfName OtherShelfNameAsShelfName
         {
@@ -926,7 +926,7 @@ namespace Google.Example.Library.V1
     public partial class Shelf
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -939,7 +939,7 @@ namespace Google.Example.Library.V1
     public partial class UpdateBookIndexRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -952,7 +952,7 @@ namespace Google.Example.Library.V1
     public partial class UpdateBookRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource-name property.
+        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {

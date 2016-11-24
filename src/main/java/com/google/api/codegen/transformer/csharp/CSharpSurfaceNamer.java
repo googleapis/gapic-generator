@@ -210,7 +210,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       if (fieldName.toLowerCase().equals("names")) {
         return publicMethodName(resourceName) + "s";
       } else {
-        return publicMethodName(identifier.join("as").join(resourceName));
+        return publicMethodName(identifier.join("as").join(resourceName)) + "s";
       }
     } else {
       if (fieldName.toLowerCase().equals("name")) {
