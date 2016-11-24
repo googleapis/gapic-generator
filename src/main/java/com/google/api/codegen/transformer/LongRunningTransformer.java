@@ -24,17 +24,19 @@ public class LongRunningTransformer {
     LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();
     SurfaceNamer namer = context.getNamer();
 
-    String returnType =
+    String clientReturnTypeName =
         namer.getAndSaveOperationResponseTypeName(
             context.getMethod(), context.getTypeTable(), methodConfig);
-    String responseType = context.getTypeTable().getAndSaveNicknameFor(lroConfig.getReturnType());
-    String metadataType = context.getTypeTable().getAndSaveNicknameFor(lroConfig.getMetadataType());
+    String operationPayloadTypeName =
+        context.getTypeTable().getAndSaveNicknameFor(lroConfig.getReturnType());
+    String metadataTypeName =
+        context.getTypeTable().getAndSaveNicknameFor(lroConfig.getMetadataType());
 
     return LongRunningOperationDetailView.newBuilder()
-        .constructorName(namer.getTypeConstructor(returnType))
-        .returnType(returnType)
-        .responseType(namer.plainType(responseType))
-        .metadataType(namer.plainType(metadataType))
+        .constructorName(namer.getTypeConstructor(clientReturnTypeName))
+        .clientReturnTypeName(clientReturnTypeName)
+        .operationPayloadTypeName(namer.valueType(operationPayloadTypeName))
+        .metadataTypeName(namer.valueType(metadataTypeName))
         .build();
   }
 }

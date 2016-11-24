@@ -41,7 +41,7 @@ public abstract class LongRunningConfig {
     boolean error = false;
 
     TypeRef returnType = model.getSymbolTable().lookupType(longRunningConfigProto.getReturnType());
-    TypeRef metadataType =
+    TypeRef metadataTypeName =
         model.getSymbolTable().lookupType(longRunningConfigProto.getMetadataType());
 
     if (returnType == null) {
@@ -60,14 +60,14 @@ public abstract class LongRunningConfig {
       error = true;
     }
 
-    if (metadataType == null) {
+    if (metadataTypeName == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type not found for long running config: '%s'",
               longRunningConfigProto.getReturnType()));
       error = true;
-    } else if (!metadataType.isMessage()) {
+    } else if (!metadataTypeName.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -79,7 +79,7 @@ public abstract class LongRunningConfig {
     if (error) {
       return null;
     } else {
-      return new AutoValue_LongRunningConfig(returnType, metadataType);
+      return new AutoValue_LongRunningConfig(returnType, metadataTypeName);
     }
   }
 }

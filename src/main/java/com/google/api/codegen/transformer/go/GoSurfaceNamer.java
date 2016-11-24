@@ -105,7 +105,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String plainType(String type) {
+  public String valueType(String type) {
     for (int i = 0; i < type.length(); i++) {
       if (type.charAt(i) != '*') {
         return type.substring(i);

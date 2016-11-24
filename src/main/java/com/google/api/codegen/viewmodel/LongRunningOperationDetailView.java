@@ -21,11 +21,11 @@ public abstract class LongRunningOperationDetailView {
 
   public abstract String constructorName();
 
-  public abstract String returnType();
+  public abstract String clientReturnTypeName();
 
-  public abstract String responseType();
+  public abstract String operationPayloadTypeName();
 
-  public abstract String metadataType();
+  public abstract String metadataTypeName();
 
   public static Builder newBuilder() {
     return new AutoValue_LongRunningOperationDetailView.Builder();
@@ -35,11 +35,11 @@ public abstract class LongRunningOperationDetailView {
   public abstract static class Builder {
     public abstract Builder constructorName(String val);
 
-    public abstract Builder returnType(String val);
+    public abstract Builder clientReturnTypeName(String val);
 
-    public abstract Builder responseType(String val);
+    public abstract Builder operationPayloadTypeName(String val);
 
-    public abstract Builder metadataType(String val);
+    public abstract Builder metadataTypeName(String val);
 
     public abstract LongRunningOperationDetailView build();
   }

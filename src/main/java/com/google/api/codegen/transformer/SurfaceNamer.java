@@ -668,8 +668,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * In languages with pointers, strip the pointer, leaving only the base type. Eg, in C, "int*"
    * would become "int".
    */
-  public String plainType(String type) {
-    return getNotImplementedString("SurfaceNamer.plainType");
+  public String valueType(String type) {
+    return getNotImplementedString("SurfaceNamer.valueType");
   }
 
   /** The async return type name in a static language that is used by the caller */
