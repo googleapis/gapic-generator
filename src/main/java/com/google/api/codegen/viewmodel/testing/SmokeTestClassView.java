@@ -30,7 +30,7 @@ public abstract class SmokeTestClassView implements ViewModel {
 
   public abstract String apiSettingsClassName();
 
-  public abstract TestMethodView method();
+  public abstract TestCaseView method();
 
   public abstract boolean requireProjectId();
 
@@ -64,7 +64,7 @@ public abstract class SmokeTestClassView implements ViewModel {
 
     public abstract Builder templateFileName(String val);
 
-    public abstract Builder method(TestMethodView val);
+    public abstract Builder method(TestCaseView val);
 
     public abstract Builder requireProjectId(boolean val);
 

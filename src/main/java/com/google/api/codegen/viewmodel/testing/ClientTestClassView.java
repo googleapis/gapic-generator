@@ -29,7 +29,7 @@ public abstract class ClientTestClassView {
 
   public abstract List<MockServiceUsageView> mockServices();
 
-  public abstract List<TestMethodView> testCases();
+  public abstract List<TestCaseView> testCases();
 
   public static Builder newBuilder() {
     return new AutoValue_ClientTestClassView.Builder();
@@ -46,7 +46,7 @@ public abstract class ClientTestClassView {
 
     public abstract Builder mockServices(List<MockServiceUsageView> val);
 
-    public abstract Builder testCases(List<TestMethodView> val);
+    public abstract Builder testCases(List<TestCaseView> val);
 
     public abstract ClientTestClassView build();
   }
