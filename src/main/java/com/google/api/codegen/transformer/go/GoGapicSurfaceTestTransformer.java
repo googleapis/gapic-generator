@@ -90,12 +90,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       // We don't need any import here.
       SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service,
-              apiConfig,
-              GoGapicSurfaceTransformer.createTypeTable(),
-              namer,
-              featureConfig);
+          SurfaceTransformerContext.create(service, apiConfig, typeTable, namer, featureConfig);
       testClasses.add(
           ClientTestClassView.newBuilder()
               .apiSettingsClassName(
@@ -129,6 +124,8 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedRequestObjectMethod;
+      } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+        clientMethodType = ClientMethodType.OperationRequestObjectMethod;
       }
       InitCodeContext initCodeContext =
           initCodeTransformer.createRequestInitCodeContext(
