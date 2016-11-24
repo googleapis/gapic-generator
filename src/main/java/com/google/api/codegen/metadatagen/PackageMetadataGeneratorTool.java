@@ -104,6 +104,38 @@ public class PackageMetadataGeneratorTool {
             .argName("LANGUAGE")
             .required(true)
             .build());
+    options.addOption(
+        Option.builder("s")
+            .longOpt("short_name")
+            .desc("The short name for the API.")
+            .hasArg()
+            .argName("SHORT-NAME")
+            .required(true)
+            .build());
+    options.addOption(
+        Option.builder("n")
+            .longOpt("name")
+            .desc("The full name for the API, including branding.")
+            .hasArg()
+            .argName("NAME")
+            .required(true)
+            .build());
+    options.addOption(
+        Option.builder("g")
+            .longOpt("googleapis_path")
+            .desc("The path to the API protos under googleapis.")
+            .hasArg()
+            .argName("GOOGLEAPIS-PATH")
+            .required(true)
+            .build());
+    options.addOption(
+        Option.builder("v")
+            .longOpt("version")
+            .desc("The major version of the API.")
+            .hasArg()
+            .argName("VERSION")
+            .required(true)
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -118,7 +150,11 @@ public class PackageMetadataGeneratorTool {
         cl.getOptionValue("output"),
         cl.getOptionValue("language"),
         cl.getOptionValue("dependencies_config"),
-        cl.getOptionValue("defaults_config"));
+        cl.getOptionValue("defaults_config"),
+        cl.getOptionValue("short_name"),
+        cl.getOptionValue("name"),
+        cl.getOptionValue("googleapis_path"),
+        cl.getOptionValue("version"));
   }
 
   private static void generate(
@@ -128,7 +164,11 @@ public class PackageMetadataGeneratorTool {
       String outputDir,
       String language,
       String dependenciesConfig,
-      String defaultsConfig) {
+      String defaultsConfig,
+      String shortName,
+      String name,
+      String googleapisPath,
+      String version) {
     ToolOptions options = ToolOptions.create();
     options.set(PackageMetadataGenerator.INPUT_DIR, inputDir);
     options.set(PackageMetadataGenerator.OUTPUT_DIR, outputDir);
@@ -136,6 +176,10 @@ public class PackageMetadataGeneratorTool {
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
     options.set(PackageMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfig);
     options.set(PackageMetadataGenerator.API_DEFAULTS_FILE, defaultsConfig);
+    options.set(PackageMetadataGenerator.SHORT_API_NAME, shortName);
+    options.set(PackageMetadataGenerator.LONG_API_NAME, name);
+    options.set(PackageMetadataGenerator.API_PATH, googleapisPath);
+    options.set(PackageMetadataGenerator.API_VERSION, version);
     PackageMetadataGenerator generator =
         new PackageMetadataGenerator(options, getSnippets(language), getCopier(language));
     generator.run();
