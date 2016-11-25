@@ -12,16 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.nodejs;
+package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.config.ApiConfig;
+import com.google.auto.value.AutoValue;
+import java.util.List;
 
-public class NodeJSUtils {
-  /**
-   * Returns true if the current API is a part of gcloud (i.e. cloud API). This can be known if the
-   * domain_layer_location is "google-cloud".
-   */
-  public static boolean isGcloud(ApiConfig config) {
-    return "google-cloud".equals(config.getDomainLayerLocation());
+@AutoValue
+public abstract class ResourceProtoView {
+
+  public abstract String protoClassName();
+
+  public abstract List<ResourceProtoFieldView> fields();
+
+  public static Builder newBuilder() {
+    return new AutoValue_ResourceProtoView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder protoClassName(String val);
+
+    public abstract Builder fields(List<ResourceProtoFieldView> val);
+
+    public abstract ResourceProtoView build();
   }
 }

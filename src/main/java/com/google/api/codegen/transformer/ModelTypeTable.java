@@ -90,6 +90,11 @@ public class ModelTypeTable implements ModelTypeFormatter {
     return typeTable.getAndSaveNicknameFor(fullName);
   }
 
+  /** Adds the given type alias to the import set, and returns the nickname. */
+  public String getAndSaveNicknameFor(TypeAlias typeAlias) {
+    return typeTable.getAndSaveNicknameFor(typeAlias);
+  }
+
   /**
    * Computes the nickname for the given container full name and inner type short name, adds the
    * full inner type name to the static import set, and returns the nickname.

@@ -94,6 +94,7 @@
     }
 @end
 
+# snippetMethod: StaticLangApiMethodSnippetView
 @private pagedFlattenedMethodAsync(snippetMethod)
     public async Task {@snippetMethod.snippetMethodName}()
     {
@@ -211,7 +212,21 @@
         {@initValue.initialValue}
     @case "FormattedInitValueView"
         {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+    @case "ResourceNameInitValueView"
+        {@renderResourceName(initValue)}
+    @case "ResourceNameOneofInitValueView"
+        {@initValue.resourceOneofTypeName}.From({@renderResourceName(initValue.specificResourceNameView)})
     @default
         $unhandledCase: {@initValue.type}$
+    @end
+@end
+
+@private renderResourceName(initValue)
+    new {@initValue.resourceTypeName}({@formatResourceNameArgs(initValue.formatArgs)})
+@end
+
+@private formatResourceNameArgs(args)
+    @join arg : args on ", "
+        {@arg}
     @end
 @end

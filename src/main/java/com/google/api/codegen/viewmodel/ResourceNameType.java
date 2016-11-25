@@ -12,16 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.nodejs;
+package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.config.ApiConfig;
-
-public class NodeJSUtils {
-  /**
-   * Returns true if the current API is a part of gcloud (i.e. cloud API). This can be known if the
-   * domain_layer_location is "google-cloud".
-   */
-  public static boolean isGcloud(ApiConfig config) {
-    return "google-cloud".equals(config.getDomainLayerLocation());
-  }
+public enum ResourceNameType {
+  SINGLE,
+  FIXED,
+  ONEOF,
 }

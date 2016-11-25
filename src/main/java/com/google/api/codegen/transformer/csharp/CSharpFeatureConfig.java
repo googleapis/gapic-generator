@@ -21,4 +21,9 @@ public class CSharpFeatureConfig extends FeatureConfig {
   public boolean enableMixins() {
     return true;
   }
+
+  @Override
+  public boolean resourceNameTypesEnabled() {
+    return true;
+  }
 }

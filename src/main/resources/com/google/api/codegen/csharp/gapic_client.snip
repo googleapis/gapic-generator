@@ -1,5 +1,6 @@
 @extends "csharp/common.snip"
 
+# common: StaticLangApiAndSettingsFileView
 @snippet generate(common)
     {@renderFileHeader(common.fileHeader)}
 
@@ -16,6 +17,7 @@
 
 @end
 
+# api: StaticLangApiView, settings: StaticLangSettingsView
 @private settings(api, settings)
     /// <summary>
     /// Settings for a <see cref="{@api.name}"/>.
@@ -151,6 +153,7 @@
     }
 @end
 
+# api: StaticLangApiView, settings: StaticLangSettingsView
 @private abstractClient(api, settings)
     /// <summary>
     /// {@api.grpcServiceName} client wrapper, for convenient use.
@@ -279,6 +282,7 @@
     }
 @end
 
+# api: StaticLangApiView, settings: StaticLangSettingsView
 @private implClient(api, settings)
     /// <summary>
     /// {@api.grpcServiceName} client wrapper implementation, for convenient use.
@@ -327,6 +331,7 @@
     }
 @end
 
+# method: StaticLangApiMethodView, isImpl: boolean
 @private method(method, isImpl)
     @switch method.type.toString
     @case "FlattenedMethod"
@@ -344,6 +349,7 @@
     @end
 @end
 
+# method: StaticLangApiMethodView, isImpl: boolean
 @private flattenedMethodSync(method, isImpl)
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
@@ -369,6 +375,7 @@
     @end
 @end
 
+# method: StaticLangApiMethodView, isImpl: boolean
 @private flattenedMethodAsyncCallSettings(method, isImpl)
     @if isImpl
         public override {@method.responseTypeName} {@method.name}(
@@ -390,6 +397,7 @@
     @end
 @end
 
+# method: StaticLangApiMethodView, isImpl: boolean
 @private flattenedMethodAsyncCancellationToken(method, isImpl)
     @if isImpl
         *** ERROR: Should never get here ***
@@ -401,6 +409,7 @@
     @end
 @end
 
+# method: StaticLangApiMethodView, isImpl: boolean
 @private pagedFlattenedMethodSync(method, isImpl)
     @if isImpl
         public override IPagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
@@ -424,6 +433,7 @@
     @end
 @end
 
+# method: StaticLangApiMethodView, isImp: boolean
 @private pagedFlattenedMethodAsync(method, isImpl)
     @if isImpl
         public override IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
@@ -447,16 +457,26 @@
     @end
 @end
 
+# params: List[RequestObjectParamView]
 @private requestProperties(params)
     @join param : params
-        @if param.isCollection
-            {@param.nameAsMethodName} = { {@param.name} },
+        @if param.hasTransformParamFunction
+            @if param.isCollection
+                {@param.nameAsMethodName} = { {@param.name}.Select(x => {@param.transformParamFunctionName}(x) },
+            @else
+                {@param.nameAsMethodName} = {@param.transformParamFunctionName}({@param.name}),
+            @end
         @else
-            {@param.nameAsMethodName} = {@param.name},
+            @if param.isCollection
+                {@param.nameAsMethodName} = { {@param.name} },
+            @else
+                {@param.nameAsMethodName} = {@param.name},
+            @end
         @end
     @end
 @end
 
+# api: StaticLangApiView, settings: StaticLangSettingsView
 @private partialPageStreaming(api, settings)
     // Partial classes to enable page-streaming
 

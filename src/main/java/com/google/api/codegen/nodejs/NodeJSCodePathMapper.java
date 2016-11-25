@@ -24,18 +24,11 @@ public class NodeJSCodePathMapper implements GapicCodePathMapper {
   @Override
   public String getOutputPath(ProtoElement element, ApiConfig config) {
     String apiVersion = "";
-    // For the gcloud package, the generated file would be a sub part of
-    // the package, under the versioned directory. For example, Speech V1 API
-    // would be a part of "@google-cloud/speech" package, and loaded as
-    //    var speechV1 = require("@google-cloud/speech").v1();
-    // To do this, we fetch the version number from the service full name.
-    if (NodeJSUtils.isGcloud(config)) {
-      List<String> packages = Splitter.on(".").splitToList(element.getFullName());
-      if (packages.size() > 2) {
-        String parentName = packages.get(packages.size() - 2);
-        if (parentName.matches("v[0-9]+((alpha|beta)[0-9]+)?")) {
-          apiVersion = parentName;
-        }
+    List<String> packages = Splitter.on(".").splitToList(element.getFullName());
+    if (packages.size() > 2) {
+      String parentName = packages.get(packages.size() - 2);
+      if (parentName.matches("v[0-9]+((alpha|beta)[0-9]+)?")) {
+        apiVersion = parentName;
       }
     }
     return apiVersion.isEmpty() ? "src" : ("src/" + apiVersion);

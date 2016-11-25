@@ -18,9 +18,11 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpRenderingUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
@@ -84,7 +86,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getRetrySettingsTypeName() {
-    return "Google\\GAX\\RetrySettings";
+    return "\\Google\\GAX\\RetrySettings";
   }
 
   @Override
@@ -98,7 +100,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
-      return "Google\\GAX\\PagedListResponse";
+      return "\\Google\\GAX\\PagedListResponse";
     }
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
   }
@@ -110,10 +112,23 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcClientTypeName(Interface service) {
+    return qualifiedName(getGrpcClientTypeName(service, "Client"));
+  }
+
+  @Override
+  public String getAndSaveNicknameForGrpcClientTypeName(
+      ModelTypeTable typeTable, Interface service) {
+    String grpcClientTypeName = getGrpcClientTypeName(service);
+    String aliasNickname = getGrpcClientTypeName(service, "GrpcClient").getHead();
+    return typeTable.getAndSaveNicknameFor(
+        TypeAlias.createAliasedImport(grpcClientTypeName, aliasNickname));
+  }
+
+  private NamePath getGrpcClientTypeName(Interface service, String suffix) {
     NamePath namePath =
         getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
     String publicClassName =
-        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Client"));
-    return qualifiedName(namePath.withHead(publicClassName));
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), suffix));
+    return namePath.withHead(publicClassName);
   }
 }

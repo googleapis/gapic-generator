@@ -113,7 +113,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
       case ANY:
         return Name.from("resource_name");
       case FIXED:
-        throw new UnsupportedOperationException("entity name invalid");
+        return Name.from(entityName).join("name_fixed");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
@@ -132,6 +132,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
       original = original.substring(0, original.length() - suffix.length());
     }
     return original;
+  }
+
+  public String getResourceTypeName(ResourceNameConfig resourceNameConfig) {
+    return publicClassName(getResourceTypeNameObject(resourceNameConfig));
+  }
+
+  public String getResourceParameterName(ResourceNameConfig resourceNameConfig) {
+    return localVarName(getResourceTypeNameObject(resourceNameConfig));
+  }
+
+  public String getResourcePropertyName(ResourceNameConfig resourceNameConfig) {
+    return publicMethodName(getResourceTypeNameObject(resourceNameConfig));
+  }
+
+  public String getResourceEnumName(ResourceNameConfig resourceNameConfig) {
+    return getResourceTypeNameObject(resourceNameConfig).toUpperUnderscore().toUpperCase();
   }
 
   /**
@@ -190,7 +206,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of a variable that holds an instance of the module that contains the implementation of
    * a particular proto interface. So far it is used by just NodeJS.
    */
-  public String getApiWrapperModuleName(Interface interfaze) {
+  public String getApiWrapperModuleName() {
     return getNotImplementedString("SurfaceNamer.getApiWrapperModuleName");
   }
 
@@ -405,6 +421,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return localVarName(Name.from(var));
   }
 
+  public String getPropertyName(String var) {
+    return publicMethodName(Name.from(var));
+  }
+
   /** The documentation name of a parameter for the given lower-case field name. */
   public String getParamDocName(String var) {
     return localVarName(Name.from(var));
@@ -479,6 +499,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcClientTypeName(Interface service) {
     return getNotImplementedString("SurfaceNamer.getGrpcClientTypeName");
+  }
+
+  /**
+   * Gets the type name of the Grpc client class, saves it to the type table provided, and returns
+   * the nickname.
+   */
+  public String getAndSaveNicknameForGrpcClientTypeName(
+      ModelTypeTable typeTable, Interface service) {
+    return typeTable.getAndSaveNicknameFor(getGrpcClientTypeName(service));
   }
 
   /**
@@ -563,11 +592,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getVariableName(Field field) {
     return localVarName(Name.from(field.getSimpleName()));
-  }
-
-  /** The name of a field as a method. */
-  public String getFieldAsMethodName(Field field) {
-    return privateMethodName(Name.from(field.getSimpleName()));
   }
 
   /** Returns true if the request object param type for the given field should be imported. */
@@ -766,12 +790,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
   }
 
+  /** The name of the resource-name type for an "Any" resource. */
+  public String getAnyFieldResourceTypeName() {
+    return getNotImplementedString("SurfaceNamer.getAnyFieldResourceTypeName");
+  }
+
   /**
    * Computes the nickname of the paged response type name for the given method and resources field,
    * saves it in the given type table, and returns it.
    */
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 
@@ -786,7 +815,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * the given type table, and returns it.
    */
   public String getAndSaveAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedAsyncResponseTypeName");
   }
 
@@ -795,8 +824,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * caller, saves it in the given type table, and returns it.
    */
   public String getAndSaveCallerPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
-    return getAndSavePagedResponseTypeName(method, typeTable, resourcesField);
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+    return getAndSavePagedResponseTypeName(method, typeTable, resourcesFieldConfig);
   }
 
   /**
@@ -804,8 +833,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * caller, saves it in the given type table, and returns it.
    */
   public String getAndSaveCallerAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
-    return getAndSaveAsyncPagedResponseTypeName(method, typeTable, resourcesField);
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+    return getAndSaveAsyncPagedResponseTypeName(method, typeTable, resourcesFieldConfig);
   }
 
   /** The class name of the generated resource type from the entity name. */
