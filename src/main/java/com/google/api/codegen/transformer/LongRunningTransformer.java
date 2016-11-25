@@ -37,6 +37,8 @@ public class LongRunningTransformer {
         .clientReturnTypeName(clientReturnTypeName)
         .operationPayloadTypeName(namer.valueType(operationPayloadTypeName))
         .metadataTypeName(namer.valueType(metadataTypeName))
+        .implementsDelete(lroConfig.implementsDelete())
+        .implementsCancel(lroConfig.implementsCancel())
         .build();
   }
 }

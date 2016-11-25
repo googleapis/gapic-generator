@@ -33,6 +33,12 @@ public abstract class LongRunningConfig {
   /** Returns the message type for the metadata field of an operation. */
   public abstract TypeRef getMetadataType();
 
+  /** Reports whether or not the service implements delete. */
+  public abstract boolean implementsDelete();
+
+  /** Reports whether or not the service implements cancel. */
+  public abstract boolean implementsCancel();
+
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
   public static LongRunningConfig createLongRunningConfig(
@@ -41,7 +47,7 @@ public abstract class LongRunningConfig {
     boolean error = false;
 
     TypeRef returnType = model.getSymbolTable().lookupType(longRunningConfigProto.getReturnType());
-    TypeRef metadataTypeName =
+    TypeRef metadataType =
         model.getSymbolTable().lookupType(longRunningConfigProto.getMetadataType());
 
     if (returnType == null) {
@@ -60,14 +66,14 @@ public abstract class LongRunningConfig {
       error = true;
     }
 
-    if (metadataTypeName == null) {
+    if (metadataType == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type not found for long running config: '%s'",
               longRunningConfigProto.getReturnType()));
       error = true;
-    } else if (!metadataTypeName.isMessage()) {
+    } else if (!metadataType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -79,7 +85,11 @@ public abstract class LongRunningConfig {
     if (error) {
       return null;
     } else {
-      return new AutoValue_LongRunningConfig(returnType, metadataTypeName);
+      return new AutoValue_LongRunningConfig(
+          returnType,
+          metadataType,
+          longRunningConfigProto.getImplementsDelete(),
+          longRunningConfigProto.getImplementsCancel());
     }
   }
 }

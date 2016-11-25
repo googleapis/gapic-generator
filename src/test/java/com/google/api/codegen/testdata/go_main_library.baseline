@@ -796,7 +796,7 @@ type BookOperation struct {
 }
 
 // BookOperation returns a new BookOperation from a given name.
-// The name must refer to a long-running operation created by the same service.
+// The name must be that of a previously created BookOperation, possibly from a different process.
 func (c *Client) BookOperation(name string) *BookOperation {
     return &BookOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
@@ -835,6 +835,8 @@ func (op *BookOperation) Poll(ctx context.Context) (*librarypb.Book, error) {
 }
 
 // Metadata returns metadata associated with the long-running operation.
+// Metadata itself does not contact the server, but Poll does.
+// To get the latest metadata, call this method after a successful call to Poll.
 // If the metadata is not available, the returned metadata and error are both nil.
 func (op *BookOperation) Metadata() (*librarypb.GetBigBookMetadata, error) {
     var meta librarypb.GetBigBookMetadata
@@ -859,7 +861,6 @@ func (op *BookOperation) Name() string {
 
 // Cancel starts asynchronous cancellation on a long-running operation.
 // The server makes a best effort to cancel the operation, but success is not guaranteed.
-// If the server doesn't support this method, it returns grpc.Code(error) == codes.Unimplemented.
 // Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
 // completed despite cancellation. On successful cancellation, the operation is not deleted;
 // instead, op.Poll returns an error with code Canceled.
@@ -867,10 +868,3 @@ func (op *BookOperation) Cancel(ctx context.Context) error {
     return op.lro.Cancel(ctx)
 }
 
-// Delete deletes a long-running operation.
-// This method indicates that the client is no longer interested in the operation result.
-// It does not cancel the operation.
-// If the server doesn't support this method, grpc.Code(error) == codes.Unimplemented.
-func (op *BookOperation) Delete(ctx context.Context) error {
-    return op.lro.Delete(ctx)
-}

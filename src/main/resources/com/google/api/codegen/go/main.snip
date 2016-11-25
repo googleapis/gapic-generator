@@ -330,7 +330,7 @@
     }
 
     // {@lro.constructorName} returns a new {@lro.clientReturnTypeName} from a given name.
-    // The name must refer to a long-running operation created by the same service.
+    // The name must be that of a previously created {@lro.clientReturnTypeName}, possibly from a different process.
     func (c *{@view.clientTypeName}) {@lro.constructorName}(name string) *{@lro.clientReturnTypeName} {
         return &{@lro.clientReturnTypeName}{
             lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
@@ -369,6 +369,8 @@
     }
 
     // Metadata returns metadata associated with the long-running operation.
+    // Metadata itself does not contact the server, but Poll does.
+    // To get the latest metadata, call this method after a successful call to Poll.
     // If the metadata is not available, the returned metadata and error are both nil.
     func (op *{@lro.clientReturnTypeName}) Metadata() (*{@lro.metadataTypeName}, error) {
         var meta {@lro.metadataTypeName}
@@ -391,23 +393,25 @@
         return op.lro.Name()
     }
 
-    // Cancel starts asynchronous cancellation on a long-running operation.
-    // The server makes a best effort to cancel the operation, but success is not guaranteed.
-    // If the server doesn't support this method, it returns grpc.Code(error) == codes.Unimplemented.
-    // Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
-    // completed despite cancellation. On successful cancellation, the operation is not deleted;
-    // instead, op.Poll returns an error with code Canceled.
-    func (op *{@lro.clientReturnTypeName}) Cancel(ctx context.Context) error {
-        return op.lro.Cancel(ctx)
-    }
+    @if lro.implementsCancel
+        // Cancel starts asynchronous cancellation on a long-running operation.
+        // The server makes a best effort to cancel the operation, but success is not guaranteed.
+        // Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
+        // completed despite cancellation. On successful cancellation, the operation is not deleted;
+        // instead, op.Poll returns an error with code Canceled.
+        func (op *{@lro.clientReturnTypeName}) Cancel(ctx context.Context) error {
+            return op.lro.Cancel(ctx)
+        }
+    @end
 
-    // Delete deletes a long-running operation.
-    // This method indicates that the client is no longer interested in the operation result.
-    // It does not cancel the operation.
-    // If the server doesn't support this method, grpc.Code(error) == codes.Unimplemented.
-    func (op *{@lro.clientReturnTypeName}) Delete(ctx context.Context) error {
-        return op.lro.Delete(ctx)
-    }
+    @if lro.implementsDelete
+        // Delete deletes a long-running operation.
+        // This method indicates that the client is no longer interested in the operation result.
+        // It does not cancel the operation.
+        func (op *{@lro.clientReturnTypeName}) Delete(ctx context.Context) error {
+            return op.lro.Delete(ctx)
+        }
+    @end
 @end
 
 @private pathTemplateParams(args)

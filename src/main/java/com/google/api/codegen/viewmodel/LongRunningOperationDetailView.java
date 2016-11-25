@@ -27,6 +27,10 @@ public abstract class LongRunningOperationDetailView {
 
   public abstract String metadataTypeName();
 
+  public abstract boolean implementsDelete();
+
+  public abstract boolean implementsCancel();
+
   public static Builder newBuilder() {
     return new AutoValue_LongRunningOperationDetailView.Builder();
   }
@@ -40,6 +44,10 @@ public abstract class LongRunningOperationDetailView {
     public abstract Builder operationPayloadTypeName(String val);
 
     public abstract Builder metadataTypeName(String val);
+
+    public abstract Builder implementsDelete(boolean val);
+
+    public abstract Builder implementsCancel(boolean val);
 
     public abstract LongRunningOperationDetailView build();
   }
