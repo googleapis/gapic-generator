@@ -793,63 +793,6 @@ namespace Google.Example.Library.V1
 
         private static readonly ChannelPool s_channelPool = new ChannelPool(DefaultScopes);
 
-        /// <summary>
-        /// Path template for a shelf resource. Parameters:
-        /// <list type="bullet">
-        /// <item><description>shelfId</description></item>
-        /// </list>
-        /// </summary>
-        public static PathTemplate ShelfTemplate { get; } = new PathTemplate("shelves/{shelf_id}");
-
-        /// <summary>
-        /// Creates a shelf resource name from its component IDs.
-        /// </summary>
-        /// <param name="shelfIdId">The shelfId ID.</param>
-        /// <returns>
-        /// The full shelf resource name.
-        /// </returns>
-        public static string FormatShelfName(string shelfIdId) => ShelfTemplate.Expand(shelfIdId);
-
-        /// <summary>
-        /// Path template for a book resource. Parameters:
-        /// <list type="bullet">
-        /// <item><description>shelfId</description></item>
-        /// <item><description>bookId</description></item>
-        /// </list>
-        /// </summary>
-        public static PathTemplate BookTemplate { get; } = new PathTemplate("shelves/{shelf_id}/books/{book_id}");
-
-        /// <summary>
-        /// Creates a book resource name from its component IDs.
-        /// </summary>
-        /// <param name="shelfIdId">The shelfId ID.</param>
-        /// <param name="bookIdId">The bookId ID.</param>
-        /// <returns>
-        /// The full book resource name.
-        /// </returns>
-        public static string FormatBookName(string shelfIdId, string bookIdId) => BookTemplate.Expand(shelfIdId, bookIdId);
-
-        /// <summary>
-        /// Path template for a return resource. Parameters:
-        /// <list type="bullet">
-        /// <item><description>shelf</description></item>
-        /// <item><description>book</description></item>
-        /// <item><description>return</description></item>
-        /// </list>
-        /// </summary>
-        public static PathTemplate ReturnTemplate { get; } = new PathTemplate("shelves/{shelf}/books/{book}/returns/{return}");
-
-        /// <summary>
-        /// Creates a return resource name from its component IDs.
-        /// </summary>
-        /// <param name="shelfId">The shelf ID.</param>
-        /// <param name="bookId">The book ID.</param>
-        /// <param name="returnId">The return ID.</param>
-        /// <returns>
-        /// The full return resource name.
-        /// </returns>
-        public static string FormatReturnName(string shelfId, string bookId, string returnId) => ReturnTemplate.Expand(shelfId, bookId, returnId);
-
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
         // Pros:
