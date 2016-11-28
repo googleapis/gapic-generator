@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.SnippetSetRunner;
@@ -37,6 +38,7 @@ import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
+import com.google.api.codegen.transformer.ruby.RubyTestsTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
@@ -296,17 +298,21 @@ public class MainGapicProviderFactory
 
     } else if (id.equals(RUBY) || id.equals(RUBY_DOC)) {
       if (generatorConfig.enableSurfaceGenerator()) {
+        // Object with utility methods for the main and test snippets.
+        GapicContext snippetContext = new RubyGapicContext(model, apiConfig);
+
         GapicCodePathMapper rubyPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("lib")
                 .setShouldAppendPackage(true)
                 .setPackageFilePathNameFormatter(new RubyNameFormatter())
                 .build();
+
         GapicProvider<? extends Object> mainProvider =
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new RubyGapicContext(model, apiConfig))
+                .setContext(snippetContext)
                 .setSnippetSetRunner(
                     new RubySnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
                 .setSnippetFileNames(Arrays.asList("ruby/main.snip"))
@@ -323,8 +329,16 @@ public class MainGapicProviderFactory
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(rubyPathMapper)
                 .build();
+        GapicProvider<?> testsProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(snippetContext))
+                .setModelToViewTransformer(new RubyTestsTransformer())
+                .build();
 
         providers.add(mainProvider);
+        providers.add(testsProvider);
         providers.add(clientConfigProvider);
 
         if (id.equals(RUBY_DOC)) {

@@ -12,10 +12,18 @@
 @snippet sampleCode_(apiMethod)
   require "{@apiMethod.initCode.apiFileName}"
 
+  {@sampleCodeAliases(apiMethod)}
+
+  {@sampleCodeBody(apiMethod)}
+@end
+
+@snippet sampleCodeAliases(apiMethod)
   @join alias : apiMethod.initCode.imports
     {@alias.nickname} = {@alias.fullName}
   @end
+@end
 
+@snippet sampleCodeBody(apiMethod)
   {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}

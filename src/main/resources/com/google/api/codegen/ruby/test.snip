@@ -1,0 +1,166 @@
+@extends "ruby/method_sample.snip"
+
+# TODO: rename testClass -> testedApi? Unlike in Java, each Ruby unit test file
+# isn't one class only.
+@snippet generate(testClass)
+  # TODO: Use testClass.fileHeader here and in main.snip.
+  @# Copyright 2016 Google Inc. All rights reserved.
+  @#
+  @# Licensed under the Apache License, Version 2.0 (the "License");
+  @# you may not use this file except in compliance with the License.
+  @# You may obtain a copy of the License at
+  @#
+  @#     http://www.apache.org/licenses/LICENSE-2.0
+  @#
+  @# Unless required by applicable law or agreed to in writing, software
+  @# distributed under the License is distributed on an "AS IS" BASIS,
+  @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  @# See the License for the specific language governing permissions and
+  @# limitations under the License.
+
+  require "minitest/autorun"
+  # TODO(jcanizales): I can get this from:
+  # new RubySurfaceNamer(apiConfig.getPackageName()).getServiceFileName(service)
+  # How should we expose it?
+  require "google/cloud/language/v1beta1/language_service_api"
+  # include Google::Cloud::Language::V1beta1
+  include {@util.getStubs(testClass.service).get(0).namespace}
+
+  # describe LanguageServiceApi do
+  describe {@testClass.apiClassName} do
+
+    @let gRPCClass = util.getStubs(testClass.service).get(0).grpcClientTypeName
+      def stub_grpc_client
+        mock_client = Minitest::Mock.new
+
+        @# Implement "method" method for the mock.
+        def mock_client.method(name_symbol)
+          @# We return a lambda (an instance of Proc) instead of a Method, because
+          @# the latter can't be easily constructed on the fly. In practice, most
+          @# operations performed on Methods work on Procs. The differences are:
+          @# Proc implements: :yield, :lambda?, :binding
+          @# Method implements: :receiver, :name, :original_name, :owner, :unbind,
+          @#                    and :super_method
+          lambda { |*args| public_send(name_symbol, *args) }
+        end
+
+        # TODO(jcanizales): Instead of mock_client, pass a block that verifies
+        # the host string and that the 2nd argument isn't
+        # :this_channel_is_insecure.
+        # LanguageService::Stub.stub(:new, mock_client) { yield(mock_client) }
+        {@gRPCClass}::Stub.stub(:new, mock_client) { yield(mock_client) }
+      end
+
+      @join testCase : testClass.testCases
+        @let methodName = testCase.surfaceMethodName
+          # TODO(jcanizales): Undo this join-if hack.
+          @join method : util.getSupportedMethodsV2(testClass.service)
+            @if util.upperCamelToLowerUnderscore(method.getSimpleName()).equals(methodName)
+              @let methodView = util.getMethodView(testClass.service, method)
+                # describe "#annotate_text" do
+                describe "#{@methodName}" do
+                  it "forwards calls to {@gRPCClass}::Stub" do
+                    stub_grpc_client do |mock_client|
+                      # TODO(jcanizales): Initialize enums with the second value, strings
+                      # with "sample", arrays with 1 element, etc. Do the same with the
+                      # mocked response.
+                      # TODO(jcanizales): Instead of aliasing all used types,
+                      # include Google::Cloud::Language::V1beta1 in the sample.
+                      {@sampleCodeAliases(methodView)}
+
+                      # expected_request = AnnotateTextRequest.new(            
+                      expected_request = {@testCase.requestTypeName}.new(
+                        {@initRequest(methodView.initCode)}
+                      )
+
+                      # mocked_response = AnnotateTextResponse.new
+                      mocked_response = {@testCase.responseTypeName}.new
+                      # TODO(jcanizales): testCase.mockResponse.initCode
+
+                      mock_client.expect(
+                        :{@methodName},
+                        mocked_response,
+                        [expected_request, Hash],
+                      )
+
+                      {@sampleCodeBody(methodView)}
+
+                      @# Verification:
+                      response.must_equal mocked_response
+                    end
+                  end
+                end
+
+              @end
+            @end
+          @end
+        @end
+      @end
+    @end    
+  end
+
+@end
+
+# The following were adapted from method_sample.snip.
+# TODO(jcanizales): Is there a way to reduce redundancy with them?
+
+@private initRequest(initCodeSpec)
+  @join line : initCodeSpec.lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@structureArg(line)},
+    @case "ListInitLine"
+      {@listArg(line)},
+    @case "MapInitLine"
+      {@mapArg(line)},
+    @case "SimpleInitLine"
+      {@scalarArg(line)},
+    @default
+      $unhandledCase: {@line.lineType.toString}$
+    @end
+  @end
+@end
+
+@private structureArg(line)
+  {@line.identifier}: {@line.typeName}.new(
+    @join fieldSetting : line.fieldSettings
+      {@fieldSetting.fieldSetFunction}: {@fieldSetting.identifier}
+    @end
+  )
+@end
+
+@private listArg(line)
+  {@line.identifier}: [{@joinedByComma(line.elementIdentifiers)}]
+@end
+
+@snippet joinedByComma(args)
+  @join arg : args on ", "
+    {@arg}
+  @end
+@end
+
+@private mapArg(line)
+  {@line.identifier}: { {@asMapLiteral(line.initEntries)} }
+@end
+
+@private asMapLiteral(mapEntries)
+  @join mapEntry : mapEntries on ", "
+    {@mapEntry.key} => {@mapEntry.valueString}
+  @end
+@end
+
+@private scalarArg(line)
+  {@line.identifier}: {@renderArgument(line.initValue)}
+@end
+
+@private renderArgument(initValue)
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}\
+      ({@joinedByComma(initValue.formatArgs)})
+  @default
+    $unhandledCase: {@initValue.type}$
+  @end
+@end

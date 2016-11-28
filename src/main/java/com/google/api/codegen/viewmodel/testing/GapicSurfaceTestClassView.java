@@ -18,11 +18,14 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView.Builder;
+import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
 public abstract class GapicSurfaceTestClassView implements ViewModel {
+
+  public abstract Interface service();
 
   public abstract FileHeaderView fileHeader();
 
@@ -53,6 +56,8 @@ public abstract class GapicSurfaceTestClassView implements ViewModel {
 
   @AutoValue.Builder
   public abstract static class Builder {
+
+    public abstract Builder service(Interface val);
 
     public abstract Builder fileHeader(FileHeaderView val);
 
