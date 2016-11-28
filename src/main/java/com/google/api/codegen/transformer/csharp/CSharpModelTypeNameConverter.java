@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.client.util.Strings;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.Name;
@@ -134,8 +135,14 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     }
     String prefix = "";
     if (parentEl instanceof ProtoFile) {
-      for (String name : Splitter.on('.').split(parentEl.getFullName())) {
-        prefix += Name.from(name).toUpperCamelAndDigits() + ".";
+      ProtoFile protoFile = (ProtoFile) parentEl;
+      String namespace = protoFile.getProto().getOptions().getCsharpNamespace();
+      if (Strings.isNullOrEmpty(namespace)) {
+        for (String name : Splitter.on('.').split(parentEl.getFullName())) {
+          prefix += Name.from(name).toUpperCamelAndDigits() + ".";
+        }
+      } else {
+        prefix = namespace + ".";
       }
     }
     String shortName = shortNamePrefix + elem.getSimpleName();
