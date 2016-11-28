@@ -21,6 +21,8 @@ public abstract class ResourceProtoFieldView {
 
   public abstract String typeName();
 
+  public abstract String docTypeName();
+
   public abstract String elementTypeName();
 
   public abstract boolean isRepeated();
@@ -40,6 +42,8 @@ public abstract class ResourceProtoFieldView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder typeName(String val);
+
+    public abstract Builder docTypeName(String val);
 
     public abstract Builder elementTypeName(String val);
 

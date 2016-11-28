@@ -205,6 +205,7 @@ public class PathTemplateTransformer {
         if (field.getType().isRepeated()) {
           fieldTypeName = fieldTypeName.replaceFirst("IEnumerable", "IList");
         }
+        String fieldDocTypeName = fieldTypeName.replace('<', '{').replace('>', '}');
         String fieldElementTypeName =
             context
                 .getTypeTable()
@@ -212,6 +213,7 @@ public class PathTemplateTransformer {
         ResourceProtoFieldView fieldView =
             ResourceProtoFieldView.newBuilder()
                 .typeName(fieldTypeName)
+                .docTypeName(fieldDocTypeName)
                 .elementTypeName(fieldElementTypeName)
                 .isAny(isAny)
                 .isRepeated(field.getType().isRepeated())
