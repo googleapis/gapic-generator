@@ -1,4 +1,4 @@
-============== file: google/cloud/gapic/example/library/v1/library_service_api.py ==============
+============== file: google/cloud/gapic/example/library/v1/library_service_client.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ _BundleDesc = google.gax.BundleDescriptor
 _PageDesc = google.gax.PageDescriptor
 
 
-class LibraryServiceApi(object):
+class LibraryServiceClient(object):
     """
     This API represents a simple digital library.  It lets you manage Shelf
     resources and Book resources in the library. It defines the following
@@ -257,7 +257,7 @@ class LibraryServiceApi(object):
           app_version (string): The version of the calling service.
 
         Returns:
-          A LibraryServiceApi object.
+          A LibraryServiceClient object.
         """
         if scopes is None:
             scopes = self._ALL_SCOPES
@@ -380,9 +380,9 @@ class LibraryServiceApi(object):
         Creates a shelf, and returns the new Shelf.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.example.library.v1 import library_pb2
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>> shelf = library_pb2.Shelf()
           >>> response = api.create_shelf(shelf)
 
@@ -413,8 +413,8 @@ class LibraryServiceApi(object):
         Gets a shelf.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.shelf_path('[SHELF_ID]')
           >>> options_ = ''
           >>> response = api.get_shelf(name, options_)
@@ -452,9 +452,9 @@ class LibraryServiceApi(object):
         Lists shelves.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.gax import CallOptions, INITIAL_PAGE
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>>
           >>> # Iterate over all results
           >>> for element in api.list_shelves():
@@ -491,8 +491,8 @@ class LibraryServiceApi(object):
         Deletes a shelf.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.shelf_path('[SHELF_ID]')
           >>> api.delete_shelf(name)
 
@@ -520,8 +520,8 @@ class LibraryServiceApi(object):
         ``other_shelf_name``. Returns the updated shelf.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.shelf_path('[SHELF_ID]')
           >>> other_shelf_name = api.shelf_path('[SHELF_ID]')
           >>> response = api.merge_shelves(name, other_shelf_name)
@@ -553,9 +553,9 @@ class LibraryServiceApi(object):
         Creates a book.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.example.library.v1 import library_pb2
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.shelf_path('[SHELF_ID]')
           >>> book = library_pb2.Book()
           >>> response = api.create_book(name, book)
@@ -590,9 +590,9 @@ class LibraryServiceApi(object):
         Creates a series of books.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.example.library.v1 import library_pb2
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>> shelf = library_pb2.Shelf()
           >>> books = []
           >>> response = api.publish_series(shelf, books)
@@ -629,8 +629,8 @@ class LibraryServiceApi(object):
         Gets a book.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> response = api.get_book(name)
 
@@ -660,9 +660,9 @@ class LibraryServiceApi(object):
         Lists books in a shelf.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.gax import CallOptions, INITIAL_PAGE
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.shelf_path('[SHELF_ID]')
           >>>
           >>> # Iterate over all results
@@ -711,8 +711,8 @@ class LibraryServiceApi(object):
         Deletes a book.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> api.delete_book(name)
 
@@ -740,9 +740,9 @@ class LibraryServiceApi(object):
         Updates a book.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.example.library.v1 import library_pb2
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> book = library_pb2.Book()
           >>> response = api.update_book(name, book)
@@ -782,8 +782,8 @@ class LibraryServiceApi(object):
         Moves a book to another shelf, and returns the new book.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> other_shelf_name = api.shelf_path('[SHELF_ID]')
           >>> response = api.move_book(name, other_shelf_name)
@@ -815,9 +815,9 @@ class LibraryServiceApi(object):
         Lists a primitive resource. To test go page streaming.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.gax import CallOptions, INITIAL_PAGE
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>>
           >>> # Iterate over all results
           >>> for element in api.list_strings():
@@ -864,10 +864,10 @@ class LibraryServiceApi(object):
         Adds comments to a book
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.cloud.gapic.example.library.v1 import enums
           >>> from google.example.library.v1 import library_pb2
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> comment = b''
           >>> stage = enums.Comment.Stage.UNSET
@@ -899,8 +899,8 @@ class LibraryServiceApi(object):
         Gets a book from an archive.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
           >>> response = api.get_book_from_archive(name)
 
@@ -929,8 +929,8 @@ class LibraryServiceApi(object):
         Gets a book from a shelf or archive.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = ''
           >>> alt_book_name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> response = api.get_book_from_anywhere(name, alt_book_name)
@@ -964,8 +964,8 @@ class LibraryServiceApi(object):
         Updates the index of a book.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> index_name = ''
           >>> index_map_item = ''
@@ -997,8 +997,8 @@ class LibraryServiceApi(object):
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> for element in api.stream_shelves():
           >>>   # process element
           >>>   pass
@@ -1025,8 +1025,8 @@ class LibraryServiceApi(object):
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = ''
           >>> for element in api.stream_books(name):
           >>>   # process element
@@ -1059,9 +1059,9 @@ class LibraryServiceApi(object):
         EXPERIMENTAL: This method interface might change in the future.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.example.library.v1 import library_pb2
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = ''
           >>> request = library_pb2.DiscussBookRequest(name)
           >>> requests = [request]
@@ -1092,9 +1092,9 @@ class LibraryServiceApi(object):
         """
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
           >>> from google.gax import CallOptions, INITIAL_PAGE
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> api = library_service_client.LibraryServiceClient()
           >>> names_element = ''
           >>> names = [names_element]
           >>> shelves = []
@@ -1146,8 +1146,8 @@ class LibraryServiceApi(object):
         Adds a tag to the book. This RPC is a mixin.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> resource = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> tag = ''
           >>> response = api.add_tag(resource, tag)
@@ -1178,8 +1178,8 @@ class LibraryServiceApi(object):
         Adds a label to the entity.
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> resource = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> label = ''
           >>> response = api.add_label(resource, label)
@@ -1209,8 +1209,8 @@ class LibraryServiceApi(object):
         Test long-running operations
 
         Example:
-          >>> from google.cloud.gapic.example.library.v1 import library_service_api
-          >>> api = library_service_api.LibraryServiceApi()
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> response = api.get_big_book(name)
 
