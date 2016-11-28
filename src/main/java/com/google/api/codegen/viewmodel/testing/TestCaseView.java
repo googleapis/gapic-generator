@@ -17,19 +17,21 @@ package com.google.api.codegen.viewmodel.testing;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
-import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class ClientTestCaseView {
-  public abstract String name();
+public abstract class TestCaseView {
 
-  public abstract String nameWithException();
+  public abstract String clientMethodName();
 
-  public abstract String surfaceMethodName();
+  public abstract InitCodeView initCode();
 
-  public abstract boolean hasReturnValue();
+  public abstract ClientMethodType clientMethodType();
+
+  public abstract MockGrpcResponseView mockResponse();
+
+  public abstract List<ClientTestAssertView> asserts();
 
   public abstract String requestTypeName();
 
@@ -37,35 +39,42 @@ public abstract class ClientTestCaseView {
 
   public abstract List<PageStreamingResponseView> pageStreamingResponseViews();
 
-  public abstract MockGrpcResponseView mockResponse();
+  public abstract String name();
 
-  public abstract ClientMethodType clientMethodType();
-
-  public abstract InitCodeView initCode();
-
-  public abstract List<ClientTestAssertView> asserts();
-
-  public abstract String mockServiceVarName();
+  public abstract String nameWithException();
 
   public abstract String serviceConstructorName();
 
+  public abstract String mockServiceVarName();
+
+  public abstract boolean hasReturnValue();
+
   public abstract GrpcStreamingType grpcStreamingType();
 
-  public abstract ServiceMethodType serviceMethodType();
-
   public static Builder newBuilder() {
-    return new AutoValue_ClientTestCaseView.Builder();
+    return new AutoValue_TestCaseView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder surfaceMethodName(String val);
+
+    public abstract Builder clientMethodName(String val);
 
     public abstract Builder name(String val);
 
     public abstract Builder nameWithException(String val);
 
-    public abstract Builder hasReturnValue(boolean val);
+    public abstract Builder serviceConstructorName(String val);
+
+    public abstract Builder mockServiceVarName(String val);
+
+    public abstract Builder initCode(InitCodeView val);
+
+    public abstract Builder clientMethodType(ClientMethodType val);
+
+    public abstract Builder mockResponse(MockGrpcResponseView val);
+
+    public abstract Builder asserts(List<ClientTestAssertView> val);
 
     public abstract Builder requestTypeName(String val);
 
@@ -73,22 +82,10 @@ public abstract class ClientTestCaseView {
 
     public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
 
-    public abstract Builder clientMethodType(ClientMethodType val);
-
-    public abstract Builder initCode(InitCodeView val);
-
-    public abstract Builder asserts(List<ClientTestAssertView> val);
-
-    public abstract Builder mockResponse(MockGrpcResponseView val);
-
-    public abstract Builder mockServiceVarName(String val);
-
-    public abstract Builder serviceConstructorName(String val);
+    public abstract Builder hasReturnValue(boolean val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
-    public abstract Builder serviceMethodType(ServiceMethodType val);
-
-    public abstract ClientTestCaseView build();
+    public abstract TestCaseView build();
   }
 }

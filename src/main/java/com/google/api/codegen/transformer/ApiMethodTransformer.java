@@ -415,12 +415,12 @@ public class ApiMethodTransformer {
       case Sync:
         methodViewBuilder.responseTypeName(
             namer.getAndSavePagedResponseTypeName(
-                context.getMethod(), context.getTypeTable(), resourceField));
+                context.getMethod(), context.getTypeTable(), resourceFieldConfig));
         break;
       case Async:
         methodViewBuilder.responseTypeName(
             namer.getAndSaveAsyncPagedResponseTypeName(
-                context.getMethod(), context.getTypeTable(), resourceField));
+                context.getMethod(), context.getTypeTable(), resourceFieldConfig));
         break;
     }
   }
@@ -776,7 +776,7 @@ public class ApiMethodTransformer {
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
-    param.nameAsMethodName(namer.getFieldAsMethodName(field));
+    param.nameAsMethodName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);

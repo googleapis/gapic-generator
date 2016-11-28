@@ -193,19 +193,19 @@
 
         @switch test.grpcStreamingType
         @case "BidiStreaming"
-            stream, err := c.{@test.surfaceMethodName}(context.Background())
+            stream, err := c.{@test.clientMethodName}(context.Background())
             if err != nil {
                 t.Fatal(err)
             }
             _, err = stream.Recv()
         @case "ServerStreaming"
-            stream, err := c.{@test.surfaceMethodName}(context.Background())
+            stream, err := c.{@test.clientMethodName}(context.Background())
             if err != nil {
                 t.Fatal(err)
             }
             _, err = stream.Recv()
         @case "ClientStreaming"
-            stream, err := c.{@test.surfaceMethodName}(context.Background())
+            stream, err := c.{@test.clientMethodName}(context.Background())
             if err != nil {
                 t.Fatal(err)
             }
@@ -213,12 +213,12 @@
         @case "NonStreaming"
             @switch test.clientMethodType
             @case "PagedRequestObjectMethod"
-                _, err = c.{@test.surfaceMethodName}(context.Background(), req).Next()
+                _, err = c.{@test.clientMethodName}(context.Background(), req).Next()
             @case "RequestObjectMethod"
                 @if test.hasReturnValue
-                    _, err = c.{@test.surfaceMethodName}(context.Background(), req)
+                    _, err = c.{@test.clientMethodName}(context.Background(), req)
                 @else
-                    err = c.{@test.surfaceMethodName}(context.Background(), req)
+                    err = c.{@test.clientMethodName}(context.Background(), req)
                 @end
             @end
         @end

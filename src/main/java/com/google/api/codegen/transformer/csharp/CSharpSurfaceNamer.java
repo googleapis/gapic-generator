@@ -15,7 +15,9 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -25,7 +27,6 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -193,6 +194,34 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
+    TypeRef type = fieldConfig.getField().getType();
+    String fieldName = fieldConfig.getField().getSimpleName();
+    Name identifier = Name.from(fieldName);
+    Name resourceName;
+    if (fieldConfig.getResourceNameConfig() == null) {
+      resourceName = Name.from("as_resource_name");
+    } else {
+      resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
+    }
+    if (type.isMap()) {
+      return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
+    } else if (type.isRepeated()) {
+      if (fieldName.toLowerCase().equals("names")) {
+        return publicMethodName(resourceName) + "s";
+      } else {
+        return publicMethodName(identifier.join("as").join(resourceName)) + "s";
+      }
+    } else {
+      if (fieldName.toLowerCase().equals("name")) {
+        return publicMethodName(resourceName);
+      } else {
+        return publicMethodName(identifier.join("as").join(resourceName));
+      }
+    }
+  }
+
+  @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return privateMethodName(identifier);
   }
@@ -203,45 +232,63 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getAnyFieldResourceTypeName() {
+    return "IResourceName";
+  }
+
+  private String getResourceTypeName(ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    if (resourceFieldConfig.getResourceNameConfig() == null) {
+      return typeTable.getAndSaveNicknameForElementType(resourceFieldConfig.getField().getType());
+    } else {
+      return getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
+    }
+  }
+
+  @Override
+  public String getResourceEnumName(ResourceNameConfig resourceNameConfig) {
+    return getResourceTypeNameObject(resourceNameConfig).toUpperCamel();
+  }
+
+  @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
 
     String inputTypeName = typeTable.getAndSaveNicknameForElementType(method.getInputType());
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedEnumerable", inputTypeName, outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
 
     String inputTypeName = typeTable.getAndSaveNicknameForElementType(method.getInputType());
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedAsyncEnumerable", inputTypeName, outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveCallerPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
 
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
-        "Google.Api.Gax.IPagedEnumerable", outputTypeName, resourceTypeName);
+        "Google.Api.Gax.PagedEnumerable", outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveCallerAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
 
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
-        "Google.Api.Gax.IPagedAsyncEnumerable", outputTypeName, resourceTypeName);
+        "Google.Api.Gax.PagedAsyncEnumerable", outputTypeName, resourceTypeName);
   }
 
   @Override
@@ -291,6 +338,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getParamName(String var) {
     return localVarName(Name.from(var).join("id"));
+  }
+
+  @Override
+  public String getPropertyName(String var) {
+    return publicMethodName(Name.from(var).join("id"));
   }
 
   @Override

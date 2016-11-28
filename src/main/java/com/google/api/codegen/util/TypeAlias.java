@@ -40,6 +40,11 @@ public abstract class TypeAlias {
     return new AutoValue_TypeAlias(fullName, nickname, parentName, ImportType.StaticImport);
   }
 
+  /** Creates a type alias with the given fullName and nickname that represents an aliased import */
+  public static TypeAlias createAliasedImport(String fullName, String nickname) {
+    return new AutoValue_TypeAlias(fullName, nickname, null, ImportType.AliasedImport);
+  }
+
   /** The full name of the alias. */
   public abstract String getFullName();
 

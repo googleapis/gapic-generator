@@ -12,10 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util;
+package com.google.api.codegen.viewmodel;
 
-public enum ImportType {
-  SimpleImport,
-  StaticImport,
-  AliasedImport
+public interface ResourceNameView {
+  public ResourceNameType type();
+
+  public String typeName();
+
+  public String paramName();
+
+  public String propertyName();
+
+  public String enumName();
+
+  public String docName();
+
+  public int index();
 }

@@ -12,62 +12,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel.testing;
+package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.viewmodel.FileHeaderView;
-import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
-public abstract class SmokeTestClassView implements ViewModel {
+public abstract class StaticLangResourceNamesView implements ViewModel {
+  @Override
+  public abstract String templateFileName();
 
   public abstract FileHeaderView fileHeader();
 
-  public abstract String name();
+  public abstract List<ResourceNameView> resourceNames();
 
-  public abstract String apiClassName();
+  public abstract List<ResourceProtoView> resourceProtos();
 
-  public abstract String apiSettingsClassName();
-
-  public abstract TestCaseView method();
-
-  public abstract boolean requireProjectId();
+  @Override
+  public abstract String outputPath();
 
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
-  @Override
-  public abstract String templateFileName();
-
-  @Override
-  public abstract String outputPath();
-
   public static Builder newBuilder() {
-    return new AutoValue_SmokeTestClassView.Builder().requireProjectId(false);
+    return new AutoValue_StaticLangResourceNamesView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
+    public abstract Builder templateFileName(String val);
 
     public abstract Builder fileHeader(FileHeaderView val);
 
-    public abstract Builder name(String val);
+    public abstract Builder resourceNames(List<ResourceNameView> val);
 
-    public abstract Builder apiClassName(String val);
-
-    public abstract Builder apiSettingsClassName(String val);
+    public abstract Builder resourceProtos(List<ResourceProtoView> val);
 
     public abstract Builder outputPath(String val);
 
-    public abstract Builder templateFileName(String val);
-
-    public abstract Builder method(TestCaseView val);
-
-    public abstract Builder requireProjectId(boolean val);
-
-    public abstract SmokeTestClassView build();
+    public abstract StaticLangResourceNamesView build();
   }
 }

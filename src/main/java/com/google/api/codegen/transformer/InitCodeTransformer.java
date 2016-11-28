@@ -87,34 +87,32 @@ public class InitCodeTransformer {
 
   /** Generates assert views for the test of the tested method and its fields. */
   public List<ClientTestAssertView> generateRequestAssertViews(
-      MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
-
-    ImmutableMap<String, FieldConfig> fieldConfigMap = FieldConfig.toFieldConfigMap(fieldConfigs);
-
+      MethodTransformerContext methodContext, InitCodeContext initContext) {
     InitCodeNode rootNode =
         InitCodeNode.createTree(
             InitCodeContext.newBuilder()
-                .initObjectType(context.getMethod().getInputType())
-                .initFields(FieldConfig.toFieldIterable(fieldConfigs))
-                .initValueConfigMap(createCollectionMap(context))
+                .initObjectType(methodContext.getMethod().getInputType())
+                .initFields(initContext.initFields())
+                .initValueConfigMap(createCollectionMap(methodContext))
                 .suggestedName(Name.from("request"))
-                .fieldConfigMap(fieldConfigMap)
+                .fieldConfigMap(initContext.fieldConfigMap())
                 .build());
 
     List<ClientTestAssertView> assertViews = new ArrayList<>();
-    SurfaceNamer namer = context.getNamer();
+    SurfaceNamer namer = methodContext.getNamer();
     // Add request fields checking
     for (InitCodeNode fieldItemTree : rootNode.getChildren().values()) {
       FieldConfig fieldConfig = fieldItemTree.getFieldConfig();
 
-      String getterMethod = namer.getFieldGetFunctionName(context.getFeatureConfig(), fieldConfig);
+      String getterMethod =
+          namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), fieldConfig);
 
-      String expectedValueIdentifier = getVariableName(context, fieldItemTree);
+      String expectedValueIdentifier = getVariableName(methodContext, fieldItemTree);
       String expectedTransformFunction = null;
-      if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
+      if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
           && fieldConfig.hasDifferentMessageResourceNameConfig()) {
         expectedTransformFunction =
-            namer.getResourceOneofCreateMethod(context.getTypeTable(), fieldConfig);
+            namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
       }
 
       assertViews.add(

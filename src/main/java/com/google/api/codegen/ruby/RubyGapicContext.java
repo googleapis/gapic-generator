@@ -65,12 +65,6 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return true;
   }
 
-  @Override
-  /** Return the name of the class which is the GAPIC wrapper for this service interface. */
-  public String getApiWrapperName(Interface service) {
-    return service.getSimpleName() + "Client";
-  }
-
   // Snippet Helpers
   // ===============
 
