@@ -31,9 +31,9 @@ public class PythonProtoElements {
     return filename.substring(0, filename.length() - ".proto".length()) + "_pb2";
   }
 
-  /** Returns whether the given MessageType has no fields */
+  /** Returns whether the given MessageType is google.protobuf.Empty */
   public static boolean isEmptyMessage(MessageType msgType) {
-    return msgType.getFields().size() == 0;
+    return msgType.getFullName().equals("google.protobuf.Empty");
   }
 
   /**
