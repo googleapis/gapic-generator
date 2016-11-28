@@ -415,6 +415,14 @@
     @end
 @end
 
+@private callLine(method, request)
+    @if pyproto.isEmptyMessage(method.getOutputMessage)
+        self._{@methodName(method)}({@request}, options)
+    @else
+        return self._{@methodName(method)}({@request}, options)
+    @end
+@end
+
 @private methodName(method)
     {@context.upperCamelToLowerUnderscore(method.getSimpleName())}
 @end
@@ -433,7 +441,7 @@
                 @if documentation
                     {@documentation}
                 @end
-                return self._{@methodName(method)}(requests, options)
+                {@callLine(method, "requests")}
         @else
             @if or(requiredParams, optionalParams)
                 def {@methodName(method)}(
@@ -468,7 +476,7 @@
                         request = {@methodInputElementPath}(
                             {@namedParameters(optionalParams)})
                     @end
-                    return self._{@methodName(method)}(request, options)
+                    {@callLine(method, "request")}
             @else
                 def {@methodName(method)}(
                         self,
@@ -477,7 +485,7 @@
                         {@documentation}
                     @end
                     request = {@methodInputElementPath}()
-                    return self._{@methodName(method)}(request, options)
+                    {@callLine(method, "request")}
             @end
         @end
     @end
