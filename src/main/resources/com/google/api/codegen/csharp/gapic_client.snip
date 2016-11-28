@@ -184,29 +184,6 @@
 
         private static readonly ChannelPool s_channelPool = new ChannelPool(DefaultScopes);
 
-        @join format : api.formatResourceFunctions
-            /// <summary>
-            /// Path template for a {@format.entityName} resource. Parameters:
-            /// <list type="bullet">
-            @join param : format.resourceIdParams
-                /// <item><description>{@param.docName}</description></item>
-            @end
-            /// </list>
-            /// </summary>
-            public static PathTemplate {@format.pathTemplateName} { get; } = new PathTemplate("{@format.pattern}");
-        
-            /// <summary>
-            /// Creates a {@format.entityName} resource name from its component IDs.
-            /// </summary>
-            @join param : format.resourceIdParams
-                /// <param name="{@param.name}">The {@param.docName} ID.</param>
-            @end
-            /// <returns>
-            /// The full {@format.entityName} resource name.
-            /// </returns>
-            public static string {@format.name}({@formatResourceParams(format.resourceIdParams)}) => {@format.pathTemplateName}.Expand({@formatResourceArgs(format.resourceIdParams)});
-
-        @end
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
         // Pros:
