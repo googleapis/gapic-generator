@@ -149,7 +149,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedAsyncEnumerable<ListShelvesResponse,Shelf> response =
+            PagedAsyncEnumerable<ListShelvesResponse,Shelf> response =
                 libraryServiceClient.ListShelvesAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -159,10 +159,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             });
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            IAsyncEnumerable<FixedSizePage<Shelf>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-            await fixedSizePages.ForEachAsync((FixedSizePage<Shelf> page) =>
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListShelvesResponse page) =>
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -171,6 +169,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Shelf> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Shelf item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -182,7 +192,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedEnumerable<ListShelvesResponse,Shelf> response =
+            PagedEnumerable<ListShelvesResponse,Shelf> response =
                 libraryServiceClient.ListShelves();
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -192,9 +202,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             }
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            foreach (FixedSizePage<Shelf> page in response.AsPages().WithFixedSize(pageSize))
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListShelvesResponse page in response.AsRawResponses())
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -203,6 +212,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Shelf> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Shelf item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -348,7 +369,7 @@ namespace Google.Example.Library.V1.Snippets
             ShelfName name = new ShelfName("[SHELF_ID]");
             string filter = "";
             // Make the request
-            IPagedAsyncEnumerable<ListBooksResponse,Book> response =
+            PagedAsyncEnumerable<ListBooksResponse,Book> response =
                 libraryServiceClient.ListBooksAsync(name, filter);
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -358,10 +379,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             });
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            IAsyncEnumerable<FixedSizePage<Book>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-            await fixedSizePages.ForEachAsync((FixedSizePage<Book> page) =>
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListBooksResponse page) =>
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -370,6 +389,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Book> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Book item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -382,7 +413,7 @@ namespace Google.Example.Library.V1.Snippets
             ShelfName name = new ShelfName("[SHELF_ID]");
             string filter = "";
             // Make the request
-            IPagedEnumerable<ListBooksResponse,Book> response =
+            PagedEnumerable<ListBooksResponse,Book> response =
                 libraryServiceClient.ListBooks(name, filter);
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -392,9 +423,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             }
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            foreach (FixedSizePage<Book> page in response.AsPages().WithFixedSize(pageSize))
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListBooksResponse page in response.AsRawResponses())
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -403,6 +433,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Book> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Book item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -524,7 +566,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedAsyncEnumerable<ListStringsResponse,string> response =
+            PagedAsyncEnumerable<ListStringsResponse,string> response =
                 libraryServiceClient.ListStringsAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -534,10 +576,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             });
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListStringsResponse page) =>
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -546,6 +586,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (string item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -557,7 +609,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedEnumerable<ListStringsResponse,string> response =
+            PagedEnumerable<ListStringsResponse,string> response =
                 libraryServiceClient.ListStrings();
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -567,9 +619,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             }
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListStringsResponse page in response.AsRawResponses())
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -578,6 +629,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<string> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (string item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -589,7 +652,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             ResourceName name = new ShelfName("[SHELF_ID]");
             // Make the request
-            IPagedAsyncEnumerable<ListStringsResponse,string> response =
+            PagedAsyncEnumerable<ListStringsResponse,string> response =
                 libraryServiceClient.ListStringsAsync(name);
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -599,10 +662,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             });
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListStringsResponse page) =>
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -611,6 +672,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (string item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -622,7 +695,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             ResourceName name = new ShelfName("[SHELF_ID]");
             // Make the request
-            IPagedEnumerable<ListStringsResponse,string> response =
+            PagedEnumerable<ListStringsResponse,string> response =
                 libraryServiceClient.ListStrings(name);
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -632,9 +705,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             }
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListStringsResponse page in response.AsRawResponses())
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -643,6 +715,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<string> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (string item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -788,7 +872,7 @@ namespace Google.Example.Library.V1.Snippets
             };
             IEnumerable<ShelfName> shelves = new List<string>();
             // Make the request
-            IPagedAsyncEnumerable<FindRelatedBooksResponse,BookName> response =
+            PagedAsyncEnumerable<FindRelatedBooksResponse,BookName> response =
                 libraryServiceClient.FindRelatedBooksAsync(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -798,10 +882,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             });
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            IAsyncEnumerable<FixedSizePage<BookName>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-            await fixedSizePages.ForEachAsync((FixedSizePage<BookName> page) =>
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -810,6 +892,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<BookName> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (BookName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -825,7 +919,7 @@ namespace Google.Example.Library.V1.Snippets
             };
             IEnumerable<ShelfName> shelves = new List<string>();
             // Make the request
-            IPagedEnumerable<FindRelatedBooksResponse,BookName> response =
+            PagedEnumerable<FindRelatedBooksResponse,BookName> response =
                 libraryServiceClient.FindRelatedBooks(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -835,9 +929,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             }
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            foreach (FixedSizePage<BookName> page in response.AsPages().WithFixedSize(pageSize))
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (FindRelatedBooksResponse page in response.AsRawResponses())
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -846,6 +939,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<BookName> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (BookName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 

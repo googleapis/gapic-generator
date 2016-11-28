@@ -78,10 +78,9 @@
             // Do something with each item
             Console.WriteLine(item);
         }
-        
-        // Or iterate over fixed-sized pages, lazily performing RPCs as required
-        int pageSize = 10;
-        foreach (FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page in response.AsPages().WithFixedSize(pageSize))
+
+        // Or iterate over pages (of server-defined size), performing one RPC per page
+        foreach ({@snippetMethod.method.listMethod.responseTypeName} page in response.AsRawResponses())
         {
             // Do something with each page of items
             Console.WriteLine("A page of results:");
@@ -90,6 +89,18 @@
                 Console.WriteLine(item);
             }
         }
+
+        // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+        int pageSize = 10;
+        Page<{@snippetMethod.method.listMethod.resourceTypeName}> singlePage = response.ReadPage(pageSize);
+        // Do something with the page of items
+        Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in singlePage)
+        {
+            Console.WriteLine(item);
+        }
+        // Store the pageToken, for when the next page is required.
+        string nextPageToken = singlePage.NextPageToken;
         // End snippet
     }
 @end
@@ -109,11 +120,9 @@
             // Do something with each item
             Console.WriteLine(item);
         });
-        
-        // Or iterate over fixed-sized pages, lazily performing RPCs as required
-        int pageSize = 10;
-        IAsyncEnumerable<FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-        await fixedSizePages.ForEachAsync((FixedSizePage<{@snippetMethod.method.listMethod.resourceTypeName}> page) =>
+
+        // Or iterate over pages (of server-defined size), performing one RPC per page
+        await response.AsRawResponses().ForEachAsync(({@snippetMethod.method.listMethod.responseTypeName} page) =>
         {
             // Do something with each page of items
             Console.WriteLine("A page of results:");
@@ -122,6 +131,18 @@
                 Console.WriteLine(item);
             }
         });
+
+        // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+        int pageSize = 10;
+        Page<{@snippetMethod.method.listMethod.resourceTypeName}> singlePage = await response.ReadPageAsync(pageSize);
+        // Do something with the page of items
+        Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+        foreach ({@snippetMethod.method.listMethod.resourceTypeName} item in singlePage)
+        {
+            Console.WriteLine(item);
+        }
+        // Store the pageToken, for when the next page is required.
+        string nextPageToken = singlePage.NextPageToken;
         // End snippet
     }
 @end
