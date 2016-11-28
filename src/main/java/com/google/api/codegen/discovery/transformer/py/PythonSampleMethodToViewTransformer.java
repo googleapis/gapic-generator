@@ -70,7 +70,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> fields = new ArrayList<>();
-    List<String> methodParamAssigments = new ArrayList<>();
+    List<String> methodParamAssignments = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       String name = namer.localVarName(Name.lowerCamel(field.name()));
       SampleFieldView sampleFieldView =
@@ -82,7 +82,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
               .build();
       fields.add(sampleFieldView);
       // Ex: "fooBar=foo_bar"
-      methodParamAssigments.add(field.name() + "=" + name);
+      methodParamAssignments.add(field.name() + "=" + name);
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
@@ -91,7 +91,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
           symbolTable.getNewSymbol(
               namer.getRequestBodyVarName(methodInfo.requestBodyType().message().typeName()));
       builder.requestBodyVarName(requestBodyVarName);
-      methodParamAssigments.add("body=" + requestBodyVarName);
+      methodParamAssignments.add("body=" + requestBodyVarName);
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -121,7 +121,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
         .hasMediaDownload(methodInfo.hasMediaDownload())
         .credentialsVarName(credentialsVarName)
         .lastMethodNameComponent(Iterables.getLast(methodInfo.nameComponents()))
-        .methodParamAssigments(methodParamAssigments)
+        .methodParamAssigments(methodParamAssignments)
         .build();
   }
 
