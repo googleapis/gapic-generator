@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 
 public class PythonProtoElements {
@@ -29,11 +28,6 @@ public class PythonProtoElements {
             .getName()
             .substring(element.getFile().getProto().getName().lastIndexOf("/") + 1);
     return filename.substring(0, filename.length() - ".proto".length()) + "_pb2";
-  }
-
-  /** Returns whether the given MessageType has no fields */
-  public static boolean isEmptyMessage(MessageType msgType) {
-    return msgType.getFields().size() == 0;
   }
 
   /**
