@@ -583,7 +583,13 @@ public class ApiMethodTransformer {
         SingleResourceNameConfig resourceNameConfig =
             context.getSimpleResourceNameConfig(entityName);
         if (resourceNameConfig == null) {
-          throw new IllegalStateException("No collection config with id '" + entityName + "'");
+          String methodName = context.getMethod().getSimpleName();
+          throw new IllegalStateException(
+              "No collection config with id '"
+                  + entityName
+                  + "' required by configuration for method '"
+                  + methodName
+                  + "'");
         }
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
         check.pathTemplateName(

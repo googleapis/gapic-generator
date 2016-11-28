@@ -18,6 +18,7 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -199,7 +200,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     String fieldName = fieldConfig.getField().getSimpleName();
     Name identifier = Name.from(fieldName);
     Name resourceName;
-    if (fieldConfig.getResourceNameConfig() == null) {
+    if (fieldConfig.getResourceNameType() == null
+        || fieldConfig.getResourceNameType() == ResourceNameType.ANY) {
       resourceName = Name.from("as_resource_name");
     } else {
       resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());

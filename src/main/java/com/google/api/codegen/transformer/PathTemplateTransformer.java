@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FixedResourceNameConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -182,21 +181,15 @@ public class PathTemplateTransformer {
       List<ResourceProtoFieldView> fieldViews = new ArrayList<>();
       for (Field field : fields) {
         String fieldName = field.getSimpleName();
-        String fieldResourceName = resourceConfigs.getFieldResourceName(field);
-        ResourceNameConfig resourceNameConfig = resourceNameConfigs.get(fieldResourceName);
         FieldConfig fieldConfig =
-            FieldConfig.createFieldConfig(
-                field,
-                resourceNameConfig == null
-                    ? ResourceNameTreatment.NONE
-                    : ResourceNameTreatment.STATIC_TYPES,
-                resourceNameConfig);
+            FieldConfig.createMessageFieldConfig(
+                resourceConfigs, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES);
         String fieldTypeSimpleName;
-        boolean isAny = fieldResourceName.equals(AnyResourceNameConfig.GAPIC_CONFIG_ANY_VALUE);
+        boolean isAny = fieldConfig.getResourceNameType() == ResourceNameType.ANY;
         if (isAny) {
           fieldTypeSimpleName = namer.getAnyFieldResourceTypeName();
         } else {
-          fieldTypeSimpleName = namer.getResourceTypeName(resourceNameConfig);
+          fieldTypeSimpleName = namer.getResourceTypeName(fieldConfig.getResourceNameConfig());
         }
         String fieldTypeName =
             context
@@ -217,9 +210,7 @@ public class PathTemplateTransformer {
                 .elementTypeName(fieldElementTypeName)
                 .isAny(isAny)
                 .isRepeated(field.getType().isRepeated())
-                .isOneof(
-                    resourceNameConfig != null
-                        && resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF)
+                .isOneof(fieldConfig.getResourceNameType() == ResourceNameType.ONEOF)
                 .propertyName(namer.getResourceNameFieldGetFunctionName(fieldConfig))
                 .underlyingPropertyName(namer.publicMethodName(Name.from(fieldName)))
                 .build();
