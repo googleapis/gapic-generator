@@ -225,7 +225,7 @@ public class PythonGapicContext extends GapicContext {
   private String returnTypeComment(
       Method method, MethodConfig config, PythonImportHandler importHandler) {
     MessageType returnMessageType = method.getOutputMessage();
-    if (PythonProtoElements.isEmptyMessage(returnMessageType)) {
+    if (MethodConfig.isReturnEmptyMessageMethod(method)) {
       return null;
     }
 
