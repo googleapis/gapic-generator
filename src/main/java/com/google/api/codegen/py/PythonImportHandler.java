@@ -284,18 +284,26 @@ public class PythonImportHandler {
     }
   }
 
-  public String protoPackageToPythonPackage(String protoPackage) {
+  private String protoPackageToPythonPackage(String protoPackage) {
+    return protoPackageToPythonPackage(protoPackage, ".");
+  }
+
+  public String protoPackageToPythonPackage(String protoPackage, String sep) {
     for (String commonProto : COMMON_PROTOS) {
-      if (protoPackage.startsWith(commonProto)) {
+      String canonical = Joiner.on(".").join(Splitter.on(sep).split(protoPackage));
+      if (canonical.startsWith(commonProto)) {
         return protoPackage;
       }
     }
-    List<String> packages = Lists.newArrayList(Splitter.on(".").split(protoPackage));
+    List<String> packages = Lists.newArrayList(Splitter.on(sep).split(protoPackage));
     if (packages.get(0).equals("google")) {
       if (packages.size() > 1 && packages.get(1).equals("cloud")) {
-        return "google.cloud.grpc." + Joiner.on(".").join(packages.subList(2, packages.size()));
+        packages = packages.subList(2, packages.size());
+      } else {
+        packages = packages.subList(1, packages.size());
       }
-      return "google.cloud.grpc." + Joiner.on(".").join(packages.subList(1, packages.size()));
+      packages.addAll(0, Lists.newArrayList("google", "cloud", "grpc"));
+      return Joiner.on(sep).join(packages);
     }
     return protoPackage;
   }

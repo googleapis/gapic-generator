@@ -111,7 +111,7 @@ public class PythonGapicContext extends GapicContext {
 
   public String filePath(ProtoFile file, PythonImportHandler importHandler) {
     return importHandler
-        .protoPackageToPythonPackage(file.getSimpleName())
+        .protoPackageToPythonPackage(file.getSimpleName(), "/")
         .replace(".proto", "_pb2.py");
   }
 
