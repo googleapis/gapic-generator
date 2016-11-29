@@ -117,7 +117,7 @@ public class GoGapicSurfaceTransformerTest {
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("math");
     Truth.assertThat(context.getTypeTable().getImports())
-        .containsKey("cloud.google.com/go/support/longrunning");
+        .containsKey("cloud.google.com/go/longrunning");
   }
 
   @Test
