@@ -48,13 +48,12 @@ public class PythonSphinxCommentFixer {
         sb.append("\n");
       }
       first = false;
-      sb.append(line);
+      sb.append(line.replace("\"", "\\\""));
     }
     return sb.toString().trim();
   }
 
   private static String applyTransformations(String line) {
-    line = line.replace("\"", "\\\"");
     line = CommentPatterns.BACK_QUOTE_PATTERN.matcher(line).replaceAll("``");
     line = sphinxifyProtoMarkdownLinks(line);
     line = sphinxifyAbsoluteMarkdownLinks(line);
