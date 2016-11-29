@@ -33,6 +33,12 @@ public abstract class LongRunningConfig {
   /** Returns the message type for the metadata field of an operation. */
   public abstract TypeRef getMetadataType();
 
+  /** Reports whether or not the service implements delete. */
+  public abstract boolean implementsDelete();
+
+  /** Reports whether or not the service implements cancel. */
+  public abstract boolean implementsCancel();
+
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
   public static LongRunningConfig createLongRunningConfig(
@@ -79,7 +85,11 @@ public abstract class LongRunningConfig {
     if (error) {
       return null;
     } else {
-      return new AutoValue_LongRunningConfig(returnType, metadataType);
+      return new AutoValue_LongRunningConfig(
+          returnType,
+          metadataType,
+          longRunningConfigProto.getImplementsDelete(),
+          longRunningConfigProto.getImplementsCancel());
     }
   }
 }

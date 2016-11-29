@@ -79,6 +79,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return super.getDocLines(getApiMethodName(method, methodConfig.getVisibility()) + " " + text);
   }
 
+  private static String lowerFirstLetter(String s) {
+    if (s.length() > 0) {
+      s = Character.toLowerCase(s.charAt(0)) + s.substring(1);
+    }
+    return s;
+  }
+
   @Override
   public String getAndSavePagedResponseTypeName(
       Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
@@ -93,11 +100,33 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return publicClassName(Name.anyCamel(typeName).join("iterator"));
   }
 
-  private static String lowerFirstLetter(String s) {
-    if (s.length() > 0) {
-      s = Character.toLowerCase(s.charAt(0)) + s.substring(1);
+  @Override
+  public String getAndSaveOperationResponseTypeName(
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+    String typeName =
+        converter
+            .getTypeNameForElementType(methodConfig.getLongRunningConfig().getReturnType())
+            .getNickname();
+    typeName = unqualifyTypeName(typeName);
+    return publicClassName(Name.anyCamel(typeName).join("operation"));
+  }
+
+  @Override
+  public String valueType(String type) {
+    for (int i = 0; i < type.length(); i++) {
+      if (type.charAt(i) != '*') {
+        return type.substring(i);
+      }
     }
-    return s;
+    return "";
+  }
+
+  private String unqualifyTypeName(String typeName) {
+    int dotIndex = typeName.indexOf('.');
+    if (dotIndex >= 0) {
+      typeName = typeName.substring(dotIndex + 1);
+    }
+    return typeName;
   }
 
   @Override
