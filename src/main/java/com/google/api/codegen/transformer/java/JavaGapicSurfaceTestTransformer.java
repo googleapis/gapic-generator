@@ -47,6 +47,7 @@ import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
+import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -171,6 +172,11 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
           ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
           return initValue.formatArgs().contains(projectVarName);
+        } else if (simpleLine.initValue() instanceof ResourceNameOneofInitValueView) {
+          ResourceNameOneofInitValueView initValue =
+              (ResourceNameOneofInitValueView) simpleLine.initValue();
+          ResourceNameInitValueView subValue = initValue.specificResourceNameView();
+          return subValue.formatArgs().contains(projectVarName);
         } else if (simpleLine.initValue() instanceof SimpleInitValueView) {
           SimpleInitValueView initValue = (SimpleInitValueView) simpleLine.initValue();
           return initValue.initialValue().equals(projectVarName);
