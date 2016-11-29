@@ -29,4 +29,5 @@ public final class CommentPatterns {
   public static final Pattern PROTO_LINK_PATTERN =
       Pattern.compile("\\[([^\\]]+)\\]\\[([A-Za-z_][A-Za-z_.0-9]*)?\\]");
   public static final Pattern HEADLINE_PATTERN = Pattern.compile("^#+", Pattern.MULTILINE);
+  public static final Pattern CODE_BLOCK_PATTERN = Pattern.compile("\\s{4}.*");
 }
