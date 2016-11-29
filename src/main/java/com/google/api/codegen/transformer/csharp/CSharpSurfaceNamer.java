@@ -234,7 +234,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   protected Name getAnyResourceTypeName() {
-    return Name.from("i_resource_name");
+    return Name.anyCamel("IResourceName");
   }
 
   private String getResourceTypeName(ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
