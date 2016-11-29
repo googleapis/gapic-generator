@@ -111,7 +111,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
     switch (resourceNameType) {
       case ANY:
-        return Name.from("resource_name");
+        return getAnyResourceTypeName();
       case FIXED:
         return Name.from(entityName).join("name_fixed");
       case ONEOF:
@@ -125,6 +125,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
       default:
         throw new UnsupportedOperationException("unexpected entity name type");
     }
+  }
+
+  protected Name getAnyResourceTypeName() {
+    return Name.from("resource_name");
   }
 
   private static String removeSuffix(String original, String suffix) {
@@ -780,11 +784,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGenericAwareResponseTypeName(TypeRef outputType) {
     return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
-  }
-
-  /** The name of the resource-name type for an "Any" resource. */
-  public String getAnyFieldResourceTypeName() {
-    return getNotImplementedString("SurfaceNamer.getAnyFieldResourceTypeName");
   }
 
   /**

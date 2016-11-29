@@ -184,13 +184,7 @@ public class PathTemplateTransformer {
         FieldConfig fieldConfig =
             FieldConfig.createMessageFieldConfig(
                 resourceConfigs, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES);
-        String fieldTypeSimpleName;
-        boolean isAny = fieldConfig.getResourceNameType() == ResourceNameType.ANY;
-        if (isAny) {
-          fieldTypeSimpleName = namer.getAnyFieldResourceTypeName();
-        } else {
-          fieldTypeSimpleName = namer.getResourceTypeName(fieldConfig.getResourceNameConfig());
-        }
+        String fieldTypeSimpleName = namer.getResourceTypeName(fieldConfig.getResourceNameConfig());
         String fieldTypeName =
             context
                 .getTypeTable()
@@ -208,7 +202,7 @@ public class PathTemplateTransformer {
                 .typeName(fieldTypeName)
                 .docTypeName(fieldDocTypeName)
                 .elementTypeName(fieldElementTypeName)
-                .isAny(isAny)
+                .isAny(fieldConfig.getResourceNameType() == ResourceNameType.ANY)
                 .isRepeated(field.getType().isRepeated())
                 .isOneof(fieldConfig.getResourceNameType() == ResourceNameType.ONEOF)
                 .propertyName(namer.getResourceNameFieldGetFunctionName(fieldConfig))

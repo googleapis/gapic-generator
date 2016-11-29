@@ -200,8 +200,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     String fieldName = fieldConfig.getField().getSimpleName();
     Name identifier = Name.from(fieldName);
     Name resourceName;
-    if (fieldConfig.getResourceNameType() == null
-        || fieldConfig.getResourceNameType() == ResourceNameType.ANY) {
+    if (fieldConfig.getResourceNameType() == ResourceNameType.ANY) {
       resourceName = Name.from("as_resource_name");
     } else {
       resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
@@ -234,8 +233,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getAnyFieldResourceTypeName() {
-    return "IResourceName";
+  protected Name getAnyResourceTypeName() {
+    return Name.from("i_resource_name");
   }
 
   private String getResourceTypeName(ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
