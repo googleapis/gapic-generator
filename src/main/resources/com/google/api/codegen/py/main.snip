@@ -415,8 +415,8 @@
     @end
 @end
 
-@private callLine(method, request)
-    @if pyproto.isEmptyMessage(method.getOutputMessage)
+@private callLine(methodConfig, method, request)
+    @if methodConfig.isReturnEmptyMessageMethod(method)
         self._{@methodName(method)}({@request}, options)
     @else
         return self._{@methodName(method)}({@request}, options)
@@ -441,7 +441,7 @@
                 @if documentation
                     {@documentation}
                 @end
-                {@callLine(method, "requests")}
+                {@callLine(methodConfig, method, "requests")}
         @else
             @if or(requiredParams, optionalParams)
                 def {@methodName(method)}(
@@ -476,7 +476,7 @@
                         request = {@methodInputElementPath}(
                             {@namedParameters(optionalParams)})
                     @end
-                    {@callLine(method, "request")}
+                    {@callLine(methodConfig, method, "request")}
             @else
                 def {@methodName(method)}(
                         self,
@@ -485,7 +485,7 @@
                         {@documentation}
                     @end
                     request = {@methodInputElementPath}()
-                    {@callLine(method, "request")}
+                    {@callLine(methodConfig, method, "request")}
             @end
         @end
     @end
