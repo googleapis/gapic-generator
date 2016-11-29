@@ -14,14 +14,23 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.codegen.ProtoFileView;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+import java.util.Set;
 
 public class PythonProtoFileInitializer implements PythonSnippetSetInputInitializer<ProtoFile> {
 
+  private Set<ProtoFile> importableProtoFiles = null;
+
   @Override
   public PythonImportHandler getImportHandler(ProtoFile file) {
-    return new PythonImportHandler(file);
+    if (importableProtoFiles == null) {
+      importableProtoFiles =
+          Sets.newHashSet((new ProtoFileView()).getElementIterable(file.getModel()));
+    }
+    return new PythonImportHandler(file, importableProtoFiles);
   }
 
   @Override

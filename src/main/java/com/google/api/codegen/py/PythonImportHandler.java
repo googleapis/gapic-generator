@@ -33,6 +33,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class PythonImportHandler {
 
@@ -104,14 +105,15 @@ public class PythonImportHandler {
   }
 
   /** This constructor is used for doc messages. */
-  public PythonImportHandler(ProtoFile file) {
+  public PythonImportHandler(ProtoFile file, Set<ProtoFile> importableProtoFiles) {
     for (MessageType message : file.getMessages()) {
       for (Field field : message.getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         // Don't include imports to messages in the same file.
-        if (!messageType.getFile().equals(file)) {
+        ProtoFile importFile = messageType.getFile();
+        if (!importFile.equals(file) && importableProtoFiles.contains(importFile)) {
           addImport(
-              messageType.getFile(),
+              importFile,
               PythonImport.create(
                   ImportType.APP,
                   protoPackageToPythonPackage(messageType.getFile().getProto().getPackage()),

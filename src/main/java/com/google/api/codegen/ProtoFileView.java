@@ -45,6 +45,9 @@ public class ProtoFileView implements InputElementView<ProtoFile> {
         for (Field field : method.getInputType().getMessageType().getFields()) {
           files.addAll(protoFiles(field));
         }
+        for (Field field : method.getOutputType().getMessageType().getFields()) {
+          files.addAll(protoFiles(field));
+        }
       }
     }
     return files;

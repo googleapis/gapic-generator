@@ -45,6 +45,98 @@ var FieldMask = {
     CARDBOARD: 4
   }
 }
+============== file: src/doc_google_api_monitored_resource.js ==============
+/*
+ * Copyright 2016 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Note: this file is purely for documentation. Any contents are not expected
+ * to be loaded as the JS file.
+ */
+
+/**
+ * An object that describes the schema of a {@link MonitoredResource} object using a
+ * type name and a set of labels.  For example, the monitored resource
+ * descriptor for Google Compute Engine VM instances has a type of
+ * `"gce_instance"` and specifies the use of the labels `"instance_id"` and
+ * `"zone"` to identify particular VM instances.
+ *
+ * Different APIs can support different monitored resource types. APIs generally
+ * provide a `list` method that returns the monitored resource descriptors used
+ * by the API.
+ *
+ * @external "google.api.MonitoredResourceDescriptor"
+ * @property {string} name
+ *   Optional. The resource name of the monitored resource descriptor:
+ *   `"projects/{project_id}/monitoredResourceDescriptors/{type}"` where
+ *   {type} is the value of the `type` field in this object and
+ *   {project_id} is a project ID that provides API-specific context for
+ *   accessing the type.  APIs that do not use project information can use the
+ *   resource name format `"monitoredResourceDescriptors/{type}"`.
+ *
+ * @property {string} type
+ *   Required. The monitored resource type. For example, the type
+ *   `"cloudsql_database"` represents databases in Google Cloud SQL.
+ *
+ * @property {string} displayName
+ *   Optional. A concise name for the monitored resource type that might be
+ *   displayed in user interfaces. For example, `"Google Cloud SQL Database"`.
+ *
+ * @property {string} description
+ *   Optional. A detailed description of the monitored resource type that might
+ *   be used in documentation.
+ *
+ * @property {Object[]} labels
+ *   Required. A set of labels used to describe instances of this monitored
+ *   resource type. For example, an individual Google Cloud SQL database is
+ *   identified by values for the labels `"database_id"` and `"zone"`.
+ *
+ *   This object should have the same structure as [google.api.LabelDescriptor]{@link external:"google.api.LabelDescriptor"}
+ *
+ * @see [google.api.MonitoredResourceDescriptor definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/api/monitored_resource.proto}
+ */;
+
+/**
+ * An object representing a resource that can be used for monitoring, logging,
+ * billing, or other purposes. Examples include virtual machine instances,
+ * databases, and storage devices such as disks. The `type` field identifies a
+ * {@link MonitoredResourceDescriptor} object that describes the resource's
+ * schema. Information in the `labels` field identifies the actual resource and
+ * its attributes according to the schema. For example, a particular Compute
+ * Engine VM instance could be represented by the following object, because the
+ * {@link MonitoredResourceDescriptor} for `"gce_instance"` has labels
+ * `"instance_id"` and `"zone"`:
+ *
+ *     { "type": "gce_instance",
+ *       "labels": { "instance_id": "my-instance",
+ *                   "zone": "us-central1-a" }}
+ *
+ * @external "google.api.MonitoredResource"
+ * @property {string} type
+ *   Required. The monitored resource type. This field must match
+ *   the `type` field of a {@link MonitoredResourceDescriptor} object. For
+ *   example, the type of a Cloud SQL database is `"cloudsql_database"`.
+ *
+ * @property {Object.<string, string>} labels
+ *   Required. Values for all of the labels listed in the associated monitored
+ *   resource descriptor. For example, Cloud SQL databases use the labels
+ *   `"database_id"` and `"zone"`.
+ *
+ * @see [google.api.MonitoredResource definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/api/monitored_resource.proto}
+ */
 ============== file: src/doc_google_protobuf_any.js ==============
 /*
  * Copyright 2016 Google Inc. All rights reserved.
@@ -415,6 +507,94 @@ var FieldMask = {
  *
  * @see [google.protobuf.FieldMask definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/field_mask.proto}
  */
+============== file: src/doc_google_protobuf_struct.js ==============
+/*
+ * Copyright 2016 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Note: this file is purely for documentation. Any contents are not expected
+ * to be loaded as the JS file.
+ */
+
+/**
+ * `Struct` represents a structured data value, consisting of fields
+ * which map to dynamically typed values. In some languages, `Struct`
+ * might be supported by a native representation. For example, in
+ * scripting languages like JS a struct is represented as an
+ * object. The details of that representation are described together
+ * with the proto support for the language.
+ *
+ * The JSON representation for `Struct` is JSON object.
+ *
+ * @external "google.protobuf.Struct"
+ * @property {Object.<string, Object>} fields
+ *   Unordered map of dynamically typed values.
+ *
+ * @see [google.protobuf.Struct definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/struct.proto}
+ */;
+
+/**
+ * `Value` represents a dynamically typed value which can be either
+ * null, a number, a string, a boolean, a recursive struct value, or a
+ * list of values. A producer of value is expected to set one of that
+ * variants, absence of any variant indicates an error.
+ *
+ * The JSON representation for `Value` is JSON value.
+ *
+ * @external "google.protobuf.Value"
+ * @property {number} nullValue
+ *   Represents a null value.
+ *
+ *   The number should be among the values of [google.protobuf.NullValue]{@link external:"google.protobuf.NullValue"}
+ *
+ * @property {number} numberValue
+ *   Represents a double value.
+ *
+ * @property {string} stringValue
+ *   Represents a string value.
+ *
+ * @property {boolean} boolValue
+ *   Represents a boolean value.
+ *
+ * @property {Object} structValue
+ *   Represents a structured value.
+ *
+ *   This object should have the same structure as [google.protobuf.Struct]{@link external:"google.protobuf.Struct"}
+ *
+ * @property {Object} listValue
+ *   Represents a repeated `Value`.
+ *
+ *   This object should have the same structure as [google.protobuf.ListValue]{@link external:"google.protobuf.ListValue"}
+ *
+ * @see [google.protobuf.Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/struct.proto}
+ */;
+
+/**
+ * `ListValue` is a wrapper around a repeated field of values.
+ *
+ * The JSON representation for `ListValue` is JSON array.
+ *
+ * @external "google.protobuf.ListValue"
+ * @property {Object[]} values
+ *   Repeated field of dynamically typed values.
+ *
+ *   This object should have the same structure as [google.protobuf.Value]{@link external:"google.protobuf.Value"}
+ *
+ * @see [google.protobuf.ListValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/struct.proto}
+ */
 ============== file: src/doc_google_protobuf_timestamp.js ==============
 /*
  * Copyright 2016 Google Inc. All rights reserved.
@@ -635,6 +815,99 @@ var FieldMask = {
  *
  * @see [google.protobuf.BytesValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
+============== file: src/doc_google_rpc_status.js ==============
+/*
+ * Copyright 2016 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Note: this file is purely for documentation. Any contents are not expected
+ * to be loaded as the JS file.
+ */
+
+/**
+ * The `Status` type defines a logical error model that is suitable for different
+ * programming environments, including REST APIs and RPC APIs. It is used by
+ * [gRPC](https://github.com/grpc). The error model is designed to be:
+ *
+ * - Simple to use and understand for most users
+ * - Flexible enough to meet unexpected needs
+ *
+ * # Overview
+ *
+ * The `Status` message contains three pieces of data: error code, error message,
+ * and error details. The error code should be an enum value of
+ * {@link google.rpc.Code}, but it may accept additional error codes if needed.  The
+ * error message should be a developer-facing English message that helps
+ * developers *understand* and *resolve* the error. If a localized user-facing
+ * error message is needed, put the localized message in the error details or
+ * localize it in the client. The optional error details may contain arbitrary
+ * information about the error. There is a predefined set of error detail types
+ * in the package `google.rpc` which can be used for common error conditions.
+ *
+ * # Language mapping
+ *
+ * The `Status` message is the logical representation of the error model, but it
+ * is not necessarily the actual wire format. When the `Status` message is
+ * exposed in different client libraries and different wire protocols, it can be
+ * mapped differently. For example, it will likely be mapped to some exceptions
+ * in Java, but more likely mapped to some error codes in C.
+ *
+ * # Other uses
+ *
+ * The error model and the `Status` message can be used in a variety of
+ * environments, either with or without APIs, to provide a
+ * consistent developer experience across different environments.
+ *
+ * Example uses of this error model include:
+ *
+ * - Partial errors. If a service needs to return partial errors to the client,
+ *     it may embed the `Status` in the normal response to indicate the partial
+ *     errors.
+ *
+ * - Workflow errors. A typical workflow has multiple steps. Each step may
+ *     have a `Status` message for error reporting purpose.
+ *
+ * - Batch operations. If a client uses batch request and batch response, the
+ *     `Status` message should be used directly inside batch response, one for
+ *     each error sub-response.
+ *
+ * - Asynchronous operations. If an API call embeds asynchronous operation
+ *     results in its response, the status of those operations should be
+ *     represented directly using the `Status` message.
+ *
+ * - Logging. If some API errors are stored in logs, the message `Status` could
+ *     be used directly after any stripping needed for security/privacy reasons.
+ *
+ * @external "google.rpc.Status"
+ * @property {number} code
+ *   The status code, which should be an enum value of {@link google.rpc.Code}.
+ *
+ * @property {string} message
+ *   A developer-facing error message, which should be in English. Any
+ *   user-facing error message should be localized and sent in the
+ *   {@link google.rpc.Status.details} field, or localized by the client.
+ *
+ * @property {Object[]} details
+ *   A list of messages that carry the error details.  There will be a
+ *   common set of message types for APIs to use.
+ *
+ *   This object should have the same structure as [google.protobuf.Any]{@link external:"google.protobuf.Any"}
+ *
+ * @see [google.rpc.Status definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto}
+ */
 ============== file: src/doc_library.js ==============
 /*
  * Copyright 2016 Google Inc. All rights reserved.
@@ -733,6 +1006,12 @@ var FieldMask = {
  * @property {Object.<number, string>} mapStringValue
  *
  * @property {Object.<string, Object>} mapMessageValue
+ *
+ * @property {Object} resource
+ *   Tests Python doc generation: should generate a dummy file for monitored
+ *   resource, but *not* its import, label.
+ *
+ *   This object should have the same structure as [google.api.MonitoredResource]{@link external:"google.api.MonitoredResource"}
  *
  * @class
  * @see [google.example.library.v1.Book definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
