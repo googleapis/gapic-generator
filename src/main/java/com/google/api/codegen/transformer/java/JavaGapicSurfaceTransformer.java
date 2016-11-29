@@ -20,6 +20,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -128,7 +129,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       surfaceDocs.add(settingsFile);
     }
 
-    surfaceDocs.add(generatePagedResponseWrappers(model, apiConfig));
+    StaticLangPagedResponseWrappersView pagedResponseWrappers =
+        generatePagedResponseWrappers(model, apiConfig);
+    if (pagedResponseWrappers != null) {
+      surfaceDocs.add(pagedResponseWrappers);
+    }
 
     PackageInfoView packageInfo = generatePackageInfo(model, apiConfig, namer, serviceDocs);
     surfaceDocs.add(packageInfo);
@@ -213,6 +218,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         }
       }
     }
+
+    if (pagedResponseWrappersList.size() == 0) {
+      return null;
+    }
+
     pagedResponseWrappers.pagedResponseWrapperList(pagedResponseWrappersList);
 
     // must be done as the last step to catch all imports
@@ -248,6 +258,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<PagedResponseIterateMethodView> getIterateMethods(MethodTransformerContext context) {
 
+    SurfaceNamer namer = context.getNamer();
+
     List<PagedResponseIterateMethodView> iterateMethods = new ArrayList<>();
 
     FieldConfig resourceFieldConfig =
@@ -256,21 +268,25 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
 
       String resourceTypeName =
-          context
-              .getNamer()
-              .getAndSaveElementResourceTypeName(context.getTypeTable(), resourceFieldConfig);
+          namer.getAndSaveElementResourceTypeName(context.getTypeTable(), resourceFieldConfig);
       String resourceTypeIterateMethodName =
-          context
-              .getNamer()
-              .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
+          namer.getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
+
+      String concreteResourceTypeName;
+      if (resourceFieldConfig.getResourceNameType() == ResourceNameType.ANY) {
+        concreteResourceTypeName = namer.publicClassName(Name.from("untyped_resource_name"));
+      } else {
+        concreteResourceTypeName = resourceTypeName;
+      }
+      String parseMethodName =
+          concreteResourceTypeName + "." + namer.publicMethodName(Name.from("parse"));
 
       PagedResponseIterateMethodView.Builder iterateMethod =
           PagedResponseIterateMethodView.newBuilder()
               .overloadResourceTypeName(resourceTypeName)
-              .overloadResourceTypeParseFunctionName(
-                  context.getNamer().publicMethodName(Name.from("parse")))
+              .overloadResourceTypeParseFunctionName(parseMethodName)
               .overloadResourceTypeIterateMethodName(resourceTypeIterateMethodName)
-              .iterateMethodName(context.getNamer().getPagedResponseIterateMethod());
+              .iterateMethodName(namer.getPagedResponseIterateMethod());
 
       iterateMethods.add(iterateMethod.build());
     }

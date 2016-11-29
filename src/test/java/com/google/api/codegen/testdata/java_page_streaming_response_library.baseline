@@ -20,6 +20,7 @@ import com.google.api.gax.grpc.CallContext;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseImpl;
 import com.google.api.gax.grpc.UnaryCallable;
+import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.example.library.v1.Book;
@@ -81,7 +82,15 @@ public class PagedResponseWrappers {
         CallContext context) {
       super(callable, pageDescriptor, request, context);
     }
-
+    public Iterable<ResourceName> iterateAllAsResourceName() {
+      return Iterables.transform(iterateAllElements(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 

@@ -557,16 +557,6 @@ public class ApiMethodTransformer {
     methodViewBuilder.responseTypeName(returnTypeNickname);
   }
 
-  private void setStaticLangAsyncOperationReturnTypeName(
-      MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
-    String returnTypeNickname =
-        context
-            .getNamer()
-            .getAndSaveOperationResponseTypeName(
-                context.getMethod(), context.getTypeTable(), context.getMethodConfig());
-    methodViewBuilder.responseTypeName(returnTypeNickname);
-  }
-
   private List<PathTemplateCheckView> generatePathTemplateChecks(
       MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();

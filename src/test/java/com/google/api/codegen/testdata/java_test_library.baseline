@@ -789,11 +789,11 @@ public class LibraryServiceTest {
   @SuppressWarnings("all")
   public void listStringsTest() {
     String nextPageToken = "";
-    String stringsElement = "stringsElement474465855";
-    List<String> strings = Arrays.asList(stringsElement);
+    ResourceName stringsElement = ShelfName.create("[SHELF_ID]");
+    List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllStrings(strings)
+      .addAllStringsWithResourceNameList(strings)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -804,6 +804,9 @@ public class LibraryServiceTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
+    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(expectedResponse.getStringsListAsResourceNameList().get(0), resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -831,11 +834,11 @@ public class LibraryServiceTest {
   @SuppressWarnings("all")
   public void listStringsTest2() {
     String nextPageToken = "";
-    String stringsElement = "stringsElement474465855";
-    List<String> strings = Arrays.asList(stringsElement);
+    ResourceName stringsElement = ShelfName.create("[SHELF_ID]");
+    List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
-      .addAllStrings(strings)
+      .addAllStringsWithResourceNameList(strings)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -846,6 +849,9 @@ public class LibraryServiceTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
+    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(expectedResponse.getStringsListAsResourceNameList().get(0), resourceNames.get(0));
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());

@@ -1883,7 +1883,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -1908,7 +1908,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -1936,7 +1936,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             IResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -1965,7 +1965,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             IResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -3549,7 +3549,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public override PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public override PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -3561,7 +3561,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -3581,7 +3581,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public override PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public override PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -3593,7 +3593,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -3616,7 +3616,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public override PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public override PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             IResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -3629,7 +3629,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -3652,7 +3652,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public override PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public override PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             IResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -3665,7 +3665,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -4185,24 +4185,24 @@ namespace Google.Example.Library.V1
     }
 
     public partial class ListStringsRequest : IPageRequest { }
-    public partial class ListStringsResponse : IPageResponse<string>
+    public partial class ListStringsResponse : IPageResponse<IResourceName>
     {
         /// <summary>
         /// Returns an enumerator that iterates through the resources in this response.
         /// </summary>
-        public IEnumerator<string> GetEnumerator() => Strings.GetEnumerator();
+        public IEnumerator<IResourceName> GetEnumerator() => StringsAsAsResourceNames.GetEnumerator();
 
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public partial class ListStringsRequest : IPageRequest { }
-    public partial class ListStringsResponse : IPageResponse<string>
+    public partial class ListStringsResponse : IPageResponse<IResourceName>
     {
         /// <summary>
         /// Returns an enumerator that iterates through the resources in this response.
         /// </summary>
-        public IEnumerator<string> GetEnumerator() => Strings.GetEnumerator();
+        public IEnumerator<IResourceName> GetEnumerator() => StringsAsAsResourceNames.GetEnumerator();
 
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
