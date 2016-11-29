@@ -50,7 +50,6 @@ public class PythonSphinxCommentFixer {
       first = false;
       sb.append(line);
     }
-
     return sb.toString().trim();
   }
 
