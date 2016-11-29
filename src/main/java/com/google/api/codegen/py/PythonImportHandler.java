@@ -284,7 +284,7 @@ public class PythonImportHandler {
     }
   }
 
-  private String protoPackageToPythonPackage(String protoPackage) {
+  public String protoPackageToPythonPackage(String protoPackage) {
     for (String commonProto : COMMON_PROTOS) {
       if (protoPackage.startsWith(commonProto)) {
         return protoPackage;

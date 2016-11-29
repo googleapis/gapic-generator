@@ -109,8 +109,10 @@ public class PythonGapicContext extends GapicContext {
   // Snippet Helpers
   // ===============
 
-  public String filePath(ProtoFile file) {
-    return file.getSimpleName().replace(".proto", "_pb2.py");
+  public String filePath(ProtoFile file, PythonImportHandler importHandler) {
+    return importHandler
+        .protoPackageToPythonPackage(file.getSimpleName())
+        .replace(".proto", "_pb2.py");
   }
 
   /** Return comments lines for a given proto element, extracted directly from the proto doc */
