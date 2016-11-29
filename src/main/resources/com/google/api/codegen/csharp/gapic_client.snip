@@ -184,29 +184,6 @@
 
         private static readonly ChannelPool s_channelPool = new ChannelPool(DefaultScopes);
 
-        @join format : api.formatResourceFunctions
-            /// <summary>
-            /// Path template for a {@format.entityName} resource. Parameters:
-            /// <list type="bullet">
-            @join param : format.resourceIdParams
-                /// <item><description>{@param.docName}</description></item>
-            @end
-            /// </list>
-            /// </summary>
-            public static PathTemplate {@format.pathTemplateName} { get; } = new PathTemplate("{@format.pattern}");
-        
-            /// <summary>
-            /// Creates a {@format.entityName} resource name from its component IDs.
-            /// </summary>
-            @join param : format.resourceIdParams
-                /// <param name="{@param.name}">The {@param.docName} ID.</param>
-            @end
-            /// <returns>
-            /// The full {@format.entityName} resource name.
-            /// </returns>
-            public static string {@format.name}({@formatResourceParams(format.resourceIdParams)}) => {@format.pathTemplateName}.Expand({@formatResourceArgs(format.resourceIdParams)});
-
-        @end
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
         // Pros:
@@ -412,7 +389,7 @@
 # method: StaticLangApiMethodView, isImpl: boolean
 @private pagedFlattenedMethodSync(method, isImpl)
     @if isImpl
-        public override IPagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public override PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@objectParams(method.methodParams)})
         {
             {@method.serviceRequestTypeName} request = new {@method.serviceRequestTypeName}
@@ -422,10 +399,10 @@
                 PageSize = pageSize ?? 0,
             };
             {@method.modifyMethodName}(ref request, ref callSettings);
-            return new PagedEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
+            return new GrpcPagedEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
         }
     @else
-        public virtual IPagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public virtual PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();
@@ -436,7 +413,7 @@
 # method: StaticLangApiMethodView, isImp: boolean
 @private pagedFlattenedMethodAsync(method, isImpl)
     @if isImpl
-        public override IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public override PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@objectParams(method.methodParams)})
         {
             {@method.serviceRequestTypeName} request = new {@method.serviceRequestTypeName}
@@ -446,10 +423,10 @@
                 PageSize = pageSize ?? 0,
             };
             {@method.modifyMethodName}(ref request, ref callSettings);
-            return new PagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
+            return new GrpcPagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
         }
     @else
-        public virtual IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+        public virtual PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
             {@objectParams(method.methodParams)})
         {
             throw new NotImplementedException();

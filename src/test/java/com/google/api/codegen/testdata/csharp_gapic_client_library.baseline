@@ -18,7 +18,6 @@
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
 using Google.Longrunning;
-using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Google.Tagger.V1;
 using Grpc.Core;
@@ -794,63 +793,6 @@ namespace Google.Example.Library.V1
 
         private static readonly ChannelPool s_channelPool = new ChannelPool(DefaultScopes);
 
-        /// <summary>
-        /// Path template for a shelf resource. Parameters:
-        /// <list type="bullet">
-        /// <item><description>shelfId</description></item>
-        /// </list>
-        /// </summary>
-        public static PathTemplate ShelfTemplate { get; } = new PathTemplate("shelves/{shelf_id}");
-
-        /// <summary>
-        /// Creates a shelf resource name from its component IDs.
-        /// </summary>
-        /// <param name="shelfIdId">The shelfId ID.</param>
-        /// <returns>
-        /// The full shelf resource name.
-        /// </returns>
-        public static string FormatShelfName(string shelfIdId) => ShelfTemplate.Expand(shelfIdId);
-
-        /// <summary>
-        /// Path template for a book resource. Parameters:
-        /// <list type="bullet">
-        /// <item><description>shelfId</description></item>
-        /// <item><description>bookId</description></item>
-        /// </list>
-        /// </summary>
-        public static PathTemplate BookTemplate { get; } = new PathTemplate("shelves/{shelf_id}/books/{book_id}");
-
-        /// <summary>
-        /// Creates a book resource name from its component IDs.
-        /// </summary>
-        /// <param name="shelfIdId">The shelfId ID.</param>
-        /// <param name="bookIdId">The bookId ID.</param>
-        /// <returns>
-        /// The full book resource name.
-        /// </returns>
-        public static string FormatBookName(string shelfIdId, string bookIdId) => BookTemplate.Expand(shelfIdId, bookIdId);
-
-        /// <summary>
-        /// Path template for a return resource. Parameters:
-        /// <list type="bullet">
-        /// <item><description>shelf</description></item>
-        /// <item><description>book</description></item>
-        /// <item><description>return</description></item>
-        /// </list>
-        /// </summary>
-        public static PathTemplate ReturnTemplate { get; } = new PathTemplate("shelves/{shelf}/books/{book}/returns/{return}");
-
-        /// <summary>
-        /// Creates a return resource name from its component IDs.
-        /// </summary>
-        /// <param name="shelfId">The shelf ID.</param>
-        /// <param name="bookId">The book ID.</param>
-        /// <param name="returnId">The return ID.</param>
-        /// <returns>
-        /// The full return resource name.
-        /// </returns>
-        public static string FormatReturnName(string shelfId, string bookId, string returnId) => ReturnTemplate.Expand(shelfId, bookId, returnId);
-
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
         // Pros:
@@ -1198,7 +1140,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="Shelf"/> resources.
         /// </returns>
-        public virtual IPagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
+        public virtual PagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -1223,7 +1165,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="Shelf"/> resources.
         /// </returns>
-        public virtual IPagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
+        public virtual PagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -1592,7 +1534,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="Book"/> resources.
         /// </returns>
-        public virtual IPagedAsyncEnumerable<ListBooksResponse, Book> ListBooksAsync(
+        public virtual PagedAsyncEnumerable<ListBooksResponse, Book> ListBooksAsync(
             ShelfName name,
             string filter,
             string pageToken = null,
@@ -1625,7 +1567,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="Book"/> resources.
         /// </returns>
-        public virtual IPagedEnumerable<ListBooksResponse, Book> ListBooks(
+        public virtual PagedEnumerable<ListBooksResponse, Book> ListBooks(
             ShelfName name,
             string filter,
             string pageToken = null,
@@ -1941,7 +1883,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -1966,7 +1908,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual IPagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual PagedEnumerable<ListStringsResponse, string> ListStrings(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -1994,7 +1936,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
             ResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -2023,7 +1965,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual IPagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual PagedEnumerable<ListStringsResponse, string> ListStrings(
             ResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -2334,7 +2276,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual IPagedAsyncEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooksAsync(
+        public virtual PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooksAsync(
             IEnumerable<BookName> names,
             IEnumerable<ShelfName> shelves,
             string pageToken = null,
@@ -2367,7 +2309,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual IPagedEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooks(
+        public virtual PagedEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooks(
             IEnumerable<BookName> names,
             IEnumerable<ShelfName> shelves,
             string pageToken = null,
@@ -2935,7 +2877,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="Shelf"/> resources.
         /// </returns>
-        public override IPagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
+        public override PagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesAsync(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -2947,7 +2889,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListShelvesRequest(ref request, ref callSettings);
-            return new PagedAsyncEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(_callListShelves, request, callSettings);
+            return new GrpcPagedAsyncEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(_callListShelves, request, callSettings);
         }
 
         /// <summary>
@@ -2967,7 +2909,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="Shelf"/> resources.
         /// </returns>
-        public override IPagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
+        public override PagedEnumerable<ListShelvesResponse, Shelf> ListShelves(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -2979,7 +2921,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListShelvesRequest(ref request, ref callSettings);
-            return new PagedEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(_callListShelves, request, callSettings);
+            return new GrpcPagedEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(_callListShelves, request, callSettings);
         }
 
         /// <summary>
@@ -3289,7 +3231,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="Book"/> resources.
         /// </returns>
-        public override IPagedAsyncEnumerable<ListBooksResponse, Book> ListBooksAsync(
+        public override PagedAsyncEnumerable<ListBooksResponse, Book> ListBooksAsync(
             ShelfName name,
             string filter,
             string pageToken = null,
@@ -3304,7 +3246,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListBooksRequest(ref request, ref callSettings);
-            return new PagedAsyncEnumerable<ListBooksRequest, ListBooksResponse, Book>(_callListBooks, request, callSettings);
+            return new GrpcPagedAsyncEnumerable<ListBooksRequest, ListBooksResponse, Book>(_callListBooks, request, callSettings);
         }
 
         /// <summary>
@@ -3330,7 +3272,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="Book"/> resources.
         /// </returns>
-        public override IPagedEnumerable<ListBooksResponse, Book> ListBooks(
+        public override PagedEnumerable<ListBooksResponse, Book> ListBooks(
             ShelfName name,
             string filter,
             string pageToken = null,
@@ -3345,7 +3287,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListBooksRequest(ref request, ref callSettings);
-            return new PagedEnumerable<ListBooksRequest, ListBooksResponse, Book>(_callListBooks, request, callSettings);
+            return new GrpcPagedEnumerable<ListBooksRequest, ListBooksResponse, Book>(_callListBooks, request, callSettings);
         }
 
         /// <summary>
@@ -3607,7 +3549,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public override IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public override PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -3619,7 +3561,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new PagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -3639,7 +3581,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public override IPagedEnumerable<ListStringsResponse, string> ListStrings(
+        public override PagedEnumerable<ListStringsResponse, string> ListStrings(
             string pageToken = null,
             int? pageSize = null,
             CallSettings callSettings = null)
@@ -3651,7 +3593,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new PagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -3674,7 +3616,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public override IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public override PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
             ResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -3687,7 +3629,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new PagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -3710,7 +3652,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public override IPagedEnumerable<ListStringsResponse, string> ListStrings(
+        public override PagedEnumerable<ListStringsResponse, string> ListStrings(
             ResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -3723,7 +3665,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new PagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -3983,7 +3925,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public override IPagedAsyncEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooksAsync(
+        public override PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooksAsync(
             IEnumerable<BookName> names,
             IEnumerable<ShelfName> shelves,
             string pageToken = null,
@@ -3998,7 +3940,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_FindRelatedBooksRequest(ref request, ref callSettings);
-            return new PagedAsyncEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName>(_callFindRelatedBooks, request, callSettings);
+            return new GrpcPagedAsyncEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName>(_callFindRelatedBooks, request, callSettings);
         }
 
         /// <summary>
@@ -4024,7 +3966,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public override IPagedEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooks(
+        public override PagedEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooks(
             IEnumerable<BookName> names,
             IEnumerable<ShelfName> shelves,
             string pageToken = null,
@@ -4039,7 +3981,7 @@ namespace Google.Example.Library.V1
                 PageSize = pageSize ?? 0,
             };
             Modify_FindRelatedBooksRequest(ref request, ref callSettings);
-            return new PagedEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName>(_callFindRelatedBooks, request, callSettings);
+            return new GrpcPagedEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, BookName>(_callFindRelatedBooks, request, callSettings);
         }
 
         /// <summary>

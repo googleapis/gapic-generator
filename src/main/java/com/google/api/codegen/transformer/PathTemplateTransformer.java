@@ -165,12 +165,11 @@ public class PathTemplateTransformer {
     Map<String, ResourceNameConfig> resourceNameConfigs =
         context.getApiConfig().getResourceNameConfigs();
     ListMultimap<String, Field> fieldsByMessage = ArrayListMultimap.create();
-    for (ProtoFile protoFile : context.getModel().getFiles()) {
-      for (MessageType msg : protoFile.getMessages()) {
-        for (Field field : msg.getFields()) {
-          if (resourceConfigs.fieldHasResourceName(field)) {
-            fieldsByMessage.put(msg.getFullName(), field);
-          }
+    ProtoFile protoFile = context.getInterface().getFile();
+    for (MessageType msg : protoFile.getMessages()) {
+      for (Field field : msg.getFields()) {
+        if (resourceConfigs.fieldHasResourceName(field)) {
+          fieldsByMessage.put(msg.getFullName(), field);
         }
       }
     }
@@ -206,6 +205,7 @@ public class PathTemplateTransformer {
         if (field.getType().isRepeated()) {
           fieldTypeName = fieldTypeName.replaceFirst("IEnumerable", "IList");
         }
+        String fieldDocTypeName = fieldTypeName.replace('<', '{').replace('>', '}');
         String fieldElementTypeName =
             context
                 .getTypeTable()
@@ -213,6 +213,7 @@ public class PathTemplateTransformer {
         ResourceProtoFieldView fieldView =
             ResourceProtoFieldView.newBuilder()
                 .typeName(fieldTypeName)
+                .docTypeName(fieldDocTypeName)
                 .elementTypeName(fieldElementTypeName)
                 .isAny(isAny)
                 .isRepeated(field.getType().isRepeated())

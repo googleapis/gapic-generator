@@ -30,7 +30,7 @@ import java.util.List;
 public class PhpRenderingUtil {
   /** Escaper for formatting PHP doc strings. */
   private static final Escaper PHP_ESCAPER =
-      Escapers.builder().addEscape('*', "{@*}").addEscape('@', "\\@").build();
+      Escapers.builder().addEscape('*', "&#42;").addEscape('@', "&#64;").build();
 
   /**
    * Splits given text into lines and returns an list of strings, each one representing a line.

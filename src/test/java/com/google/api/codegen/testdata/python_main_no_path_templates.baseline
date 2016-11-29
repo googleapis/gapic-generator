@@ -1,4 +1,4 @@
-============== file: example/no_templates_api_service_api.py ==============
+============== file: example/no_templates_api_service_client.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,10 +34,10 @@ from google.gax import config
 from google.gax import path_template
 import google.gax
 
-from google.cloud.example.v1 import no_path_templates_pb2
+from google.cloud.grpc.example.v1 import no_path_templates_pb2
 
 
-class NoTemplatesAPIServiceApi(object):
+class NoTemplatesAPIServiceClient(object):
     SERVICE_ADDRESS = 'no-path-templates.googleapis.com'
     """The default address of the service."""
 
@@ -87,7 +87,7 @@ class NoTemplatesAPIServiceApi(object):
           app_version (string): The version of the calling service.
 
         Returns:
-          A NoTemplatesAPIServiceApi object.
+          A NoTemplatesAPIServiceClient object.
         """
         if scopes is None:
             scopes = self._ALL_SCOPES
@@ -135,8 +135,8 @@ class NoTemplatesAPIServiceApi(object):
         whitespace.
 
         Example:
-          >>> from example import no_templates_api_service_api
-          >>> api = no_templates_api_service_api.NoTemplatesAPIServiceApi()
+          >>> from example import no_templates_api_service_client
+          >>> api = no_templates_api_service_client.NoTemplatesAPIServiceClient()
           >>> api.increment()
 
         Args:

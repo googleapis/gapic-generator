@@ -19,6 +19,7 @@ import com.google.api.codegen.metadatagen.PackageCopierResult;
 import com.google.api.codegen.metadatagen.PackageMetadataGenerator;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -81,7 +82,7 @@ public class PythonPackageCopier implements PackageCopier {
       } else {
         docBuilder.put(
             outFile, Doc.text("__import__('pkg_resources').declare_namespace(__name__)\n"));
-        pythonNamespacePackages.add(inputPath.relativize(dir).toString());
+        pythonNamespacePackages.add(Joiner.on(".").join(inputPath.relativize(dir).iterator()));
       }
       return FileVisitResult.CONTINUE;
     }

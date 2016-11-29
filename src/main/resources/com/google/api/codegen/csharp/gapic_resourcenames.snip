@@ -1,5 +1,6 @@
 @extends "csharp/common.snip"
 
+# resourceNames: StaticLangResourceNamesView
 @snippet generate(resourceNames)
     {@renderFileHeader(resourceNames.fileHeader)}
 
@@ -11,6 +12,7 @@
     }
 @end
 
+# resource: List[ResourceNameView]
 @private resourceClasses(resources)
     @join resource : resources
         @switch resource.type.toString
@@ -26,6 +28,7 @@
     @end
 @end
 
+# resource: ResourceNameSingleView
 @private resourceClassSingle(resource)
     /// <summary>
     /// Resource name for the '{@resource.docName}' resource.
@@ -116,6 +119,7 @@
     }
 @end
 
+# resource: ResourceNamOneofeView
 @private resourceClassOneof(resource)
     /// <summary>
     /// Resource name which will contain one of a choice of resource names.
@@ -304,6 +308,7 @@
     }
 @end
 
+# resource: ResourceNameFixedView
 @private resourceClassFixed(resource)
     /// <summary>
     /// Resource name to represent the fixed string "{@resource.value}".
@@ -396,13 +401,14 @@
     @end
 @end
 
+# protos: List[ResourceProtoView]
 @private partialProtoClasses(protos)
     @join proto : protos
         public partial class {@proto.protoClassName}
         {
             @join field : proto.fields
                 /// <summary>
-                /// A <see cref="{@field.typeName}"/>-typed view over the <see cref="{@field.underlyingPropertyName}"/> resource name property.
+                /// A <see cref="{@field.docTypeName}"/>-typed view over the <see cref="{@field.underlyingPropertyName}"/> resource name property.
                 /// </summary>
                 @if field.isRepeated
                     public {@field.typeName} {@field.propertyName} =>

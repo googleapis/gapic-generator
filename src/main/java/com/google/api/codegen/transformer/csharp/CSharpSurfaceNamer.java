@@ -278,7 +278,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
     String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
-        "Google.Api.Gax.IPagedEnumerable", outputTypeName, resourceTypeName);
+        "Google.Api.Gax.PagedEnumerable", outputTypeName, resourceTypeName);
   }
 
   @Override
@@ -288,7 +288,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
     String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
-        "Google.Api.Gax.IPagedAsyncEnumerable", outputTypeName, resourceTypeName);
+        "Google.Api.Gax.PagedAsyncEnumerable", outputTypeName, resourceTypeName);
   }
 
   @Override

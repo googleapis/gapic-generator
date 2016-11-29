@@ -69,7 +69,7 @@ public class GapicContext extends CodegenContext {
 
   /** Return the name of the class which is the GAPIC wrapper for this service interface. */
   public String getApiWrapperName(Interface service) {
-    return service.getSimpleName() + "Api";
+    return service.getSimpleName() + "Client";
   }
 
   /** Returns the description of the proto element, in markdown format. */
