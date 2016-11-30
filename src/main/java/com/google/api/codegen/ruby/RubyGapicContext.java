@@ -16,7 +16,6 @@ package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
@@ -384,13 +383,6 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         new RubyFeatureConfig());
   }
 
-  public LongRunningConfig getLongrunningConfig(Method method, Interface service) {
-    return getApiConfig()
-        .getInterfaceConfig(service)
-        .getMethodConfig(method)
-        .getLongRunningConfig();
-  }
-
   public boolean isLongrunning(Method method, Interface service) {
     return getApiConfig()
         .getInterfaceConfig(service)
@@ -400,7 +392,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
   public boolean hasLongrunningMethod(Interface service) {
     for (Method method : getSupportedMethodsV2(service)) {
-      if (getLongrunningConfig(method, service) != null) {
+      if (isLongrunning(method, service)) {
         return true;
       }
     }
