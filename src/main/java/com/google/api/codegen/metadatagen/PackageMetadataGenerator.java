@@ -75,6 +75,12 @@ public class PackageMetadataGenerator extends ToolDriverBase {
   public static final Option<String> SHORT_API_NAME =
       ToolOptions.createOption(
           String.class, "short_name", "The a single-word name for the API, e.g., 'Logging'.", "");
+  public static final Option<String> PACKAGE_NAME =
+      ToolOptions.createOption(
+          String.class,
+          "package_name",
+          "The base name of the package to create, e.g., 'google-cloud-logging-v1'",
+          "");
   public static final Option<String> API_PATH =
       ToolOptions.createOption(
           String.class,
@@ -113,6 +119,7 @@ public class PackageMetadataGenerator extends ToolDriverBase {
         ApiNameInfo.create(
             options.get(LONG_API_NAME),
             options.get(SHORT_API_NAME),
+            options.get(PACKAGE_NAME),
             options.get(API_VERSION),
             options.get(API_PATH));
 
