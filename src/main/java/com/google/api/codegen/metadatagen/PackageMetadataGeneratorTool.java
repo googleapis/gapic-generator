@@ -192,10 +192,10 @@ public class PackageMetadataGeneratorTool {
     options.set(PackageMetadataGenerator.API_PATH, googleapisPath);
     options.set(PackageMetadataGenerator.API_VERSION, version);
     if (Strings.isNullOrEmpty(packageName)) {
-      options.set(PackageMetadataGenerator.PACKAGE_NAME, packageName);
-    } else {
       options.set(
           PackageMetadataGenerator.PACKAGE_NAME, "google-cloud-" + shortName + "-" + version);
+    } else {
+      options.set(PackageMetadataGenerator.PACKAGE_NAME, packageName);
     }
     PackageMetadataGenerator generator =
         new PackageMetadataGenerator(options, getSnippets(language), getCopier(language));
