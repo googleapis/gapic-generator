@@ -15,18 +15,49 @@
 package com.google.api.codegen.py;
 
 import com.google.api.codegen.CommentPatterns;
+import com.google.common.base.Splitter;
 import java.util.regex.Matcher;
 
-/** Utility class for formatting python comments to follow Sphinx style. */
+/** Utility class for formatting Python comments to follow Sphinx style. */
 public class PythonSphinxCommentFixer {
 
   /** Returns a Sphinx-formatted comment string. */
   public static String sphinxify(String comment) {
-    comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("``");
-    comment = comment.replace("\"", "\\\"");
-    comment = sphinxifyProtoMarkdownLinks(comment);
-    comment = sphinxifyAbsoluteMarkdownLinks(comment);
-    return sphinxifyCloudMarkdownLinks(comment).trim();
+    boolean inCodeBlock = false;
+    boolean first = true;
+    Iterable<String> lines = Splitter.on("\n").split(comment);
+    StringBuffer sb = new StringBuffer();
+    for (String line : lines) {
+      if (inCodeBlock) {
+        // Code blocks are either empty or indented
+        if (!(line.trim().isEmpty()
+            || CommentPatterns.CODE_BLOCK_PATTERN.matcher(line).matches())) {
+          inCodeBlock = false;
+          line = applyTransformations(line);
+        }
+
+      } else if (CommentPatterns.CODE_BLOCK_PATTERN.matcher(line).matches()) {
+        inCodeBlock = true;
+        line = "::\n\n" + line;
+
+      } else {
+        line = applyTransformations(line);
+      }
+
+      if (!first) {
+        sb.append("\n");
+      }
+      first = false;
+      sb.append(line.replace("\"", "\\\""));
+    }
+    return sb.toString().trim();
+  }
+
+  private static String applyTransformations(String line) {
+    line = CommentPatterns.BACK_QUOTE_PATTERN.matcher(line).replaceAll("``");
+    line = sphinxifyProtoMarkdownLinks(line);
+    line = sphinxifyAbsoluteMarkdownLinks(line);
+    return sphinxifyCloudMarkdownLinks(line);
   }
 
   /** Returns a string with all proto markdown links formatted to Sphinx style. */
