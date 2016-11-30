@@ -87,10 +87,6 @@ public class PackageMetadataContext implements ViewModel {
     return apiNameInfo;
   }
 
-  public String getPackageName() {
-    return "grpc-google-" + apiNameInfo.shortName() + "-" + apiNameInfo.majorVersion();
-  }
-
   public PackageCopierResult.Metadata getCopierMetadata() {
     return copierResults;
   }
