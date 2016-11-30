@@ -413,7 +413,7 @@
 
     @if method.getRequestStreaming()
       def {@methodName} reqs, options: nil
-        {@makeApiCall(methodConfig, service)}
+        {@makeApiCall(methodConfig)}
       end
     @else
       @if or(requiredParams, optionalParams)
@@ -437,12 +437,12 @@
               {@namedParameters(optionalParams)}
             @end
           }.delete_if { |_, v| v.nil? })
-          {@makeApiCall(methodConfig, service)}
+          {@makeApiCall(methodConfig)}
         end
       @else
         def {@methodName} options: nil
           req = {@inputTypeName}.new
-          {@makeApiCall(methodConfig, service)}
+          {@makeApiCall(methodConfig)}
         end
       @end
     @end
@@ -453,11 +453,12 @@
   {@context.upperCamelToLowerUnderscore(method.getSimpleName())}
 @end
 
-@private makeApiCall(methodConfig, service)
-  @let request = requestParameterName(methodConfig)
+@private makeApiCall(methodConfig)
+  @let request = requestParameterName(methodConfig), \
+       method = methodConfig.getMethod
     @if methodConfig.isLongRunningOperation
       operation = Google::Gax::Operation.new(
-        @@{@getMethodName(methodConfig.getMethod)}.call({@request}, options),
+        @@{@getMethodName(method)}.call({@request}, options),
         @@operations_client,
         {@context.rubyTypeName(methodConfig.getLongRunningConfig.getReturnType)},
         {@context.rubyTypeName(methodConfig.getLongRunningConfig.getMetadataType)},
@@ -466,8 +467,8 @@
       operation.on_done { |operation| yield(operation) } if block_given?
       operation
     @else
-      @@{@getMethodName(methodConfig.getMethod)}.call({@request}, options)
-      @if methodConfig.isReturnEmptyMessageMethod(methodConfig.getMethod)
+      @@{@getMethodName(method)}.call({@request}, options)
+      @if methodConfig.isReturnEmptyMessageMethod(method)
         nil
       @end
     @end
