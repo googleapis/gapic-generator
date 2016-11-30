@@ -110,10 +110,10 @@ public class PythonImportHandler {
       for (Field field : message.getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         // Don't include imports to messages in the same file.
-        ProtoFile importFile = messageType.getFile();
-        if (!importFile.equals(file) && importableProtoFiles.contains(importFile)) {
+        ProtoFile messageParentFile = messageType.getFile();
+        if (!messageParentFile.equals(file) && importableProtoFiles.contains(messageParentFile)) {
           addImport(
-              importFile,
+              messageParentFile,
               PythonImport.create(
                   ImportType.APP,
                   protoPackageToPythonPackage(messageType.getFile().getProto().getPackage()),
