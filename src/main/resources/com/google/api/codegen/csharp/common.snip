@@ -24,7 +24,7 @@
     @join param : doc.paramDocs
         @switch param.type.toString
         @case "SimpleParamDocView"
-            /// <param name="{@param.paramName}">
+            /// <param name="{@skipAtSign(param.paramName)}">
             @join line : param.lines
                 /// {@line}
             @end
@@ -38,6 +38,14 @@
         /// {@line}
     @end
     /// </returns>
+@end
+
+@private skipAtSign(s)
+    @if s.startsWith("@")
+        {@s.substring(1)}
+    @else
+        {@s}
+    @end
 @end
 
 @snippet retryCodes(codes)

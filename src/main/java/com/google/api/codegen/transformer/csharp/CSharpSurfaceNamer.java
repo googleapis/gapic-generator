@@ -246,6 +246,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFormatFunctionName(SingleResourceNameConfig resourceNameConfig) {
+    return getResourceTypeName(resourceNameConfig);
+  }
+
+  @Override
   public String getResourceEnumName(ResourceNameConfig resourceNameConfig) {
     return getResourceTypeNameObject(resourceNameConfig).toUpperCamel();
   }
