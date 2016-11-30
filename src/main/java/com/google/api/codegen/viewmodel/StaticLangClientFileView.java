@@ -71,6 +71,8 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptorClasses();
 
+  public abstract List<LongRunningOperationDetailView> lroDetailViews();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangClientFileView.Builder();
   }
@@ -122,6 +124,8 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
     public abstract Builder pageStreamingDescriptorClasses(
         List<PageStreamingDescriptorClassView> val);
+
+    public abstract Builder lroDetailViews(List<LongRunningOperationDetailView> val);
 
     public abstract StaticLangClientFileView build();
   }

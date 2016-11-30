@@ -54,14 +54,7 @@ public abstract class FieldConfig {
     return getResourceNameConfig().getResourceNameType();
   }
 
-  public static FieldConfig createFieldConfig(
-      Field field,
-      ResourceNameTreatment resourceNameTreatment,
-      ResourceNameConfig resourceNameConfig) {
-    return createFieldConfig(field, resourceNameTreatment, resourceNameConfig, resourceNameConfig);
-  }
-
-  public static FieldConfig createFieldConfig(
+  private static FieldConfig createFieldConfig(
       Field field,
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
@@ -82,6 +75,21 @@ public abstract class FieldConfig {
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
   public static FieldConfig createDefaultFieldConfig(Field field) {
     return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
+  }
+
+  public static FieldConfig createMessageFieldConfig(
+      ResourceNameMessageConfigs messageConfigs,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      Field field,
+      ResourceNameTreatment defaultResourceNameTreatment) {
+    return createFieldConfig(
+        null,
+        messageConfigs,
+        null,
+        resourceNameConfigs,
+        field,
+        ResourceNameTreatment.UNSET_TREATMENT,
+        defaultResourceNameTreatment);
   }
 
   /** Package-private since this is not used outside the config package. */
@@ -131,15 +139,20 @@ public abstract class FieldConfig {
         ok = oneofConfig.getResourceNameConfigs().contains(flattenedFieldResourceNameConfig);
       }
       if (!ok) {
-        Diag.error(
-            SimpleLocation.TOPLEVEL,
-            "Multiple entity names specified for field: "
-                + field.getFullName()
-                + ": ["
-                + flattenedFieldEntityName
-                + ", "
-                + messageFieldEntityName
-                + "]");
+        Diag error =
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Multiple entity names specified for field: "
+                    + field.getFullName()
+                    + ": ["
+                    + flattenedFieldEntityName
+                    + ", "
+                    + messageFieldEntityName
+                    + "]");
+        if (diagCollector == null) {
+          throw new IllegalArgumentException(error.toString());
+        }
+        diagCollector.addDiag(error);
         return null;
       }
     }
@@ -160,11 +173,15 @@ public abstract class FieldConfig {
       } else {
         ResourceNameConfig flattenedFieldResourceNameConfig = resourceNameConfigs.get(entityName);
         if (flattenedFieldResourceNameConfig == null) {
-          diagCollector.addDiag(
+          Diag error =
               Diag.error(
                   SimpleLocation.TOPLEVEL,
                   "No resourceNameConfig with entity_name \"%s\"",
-                  entityName));
+                  entityName);
+          if (diagCollector == null) {
+            throw new IllegalArgumentException(error.toString());
+          }
+          diagCollector.addDiag(error);
           return null;
         }
         return flattenedFieldResourceNameConfig;

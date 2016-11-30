@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
@@ -73,10 +74,11 @@ public class PageStreamingTransformer {
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
     Field resourceField = pageStreaming.getResourcesField();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     TypeRef resourceType = resourceField.getType();
 
     desc.name(namer.getPageStreamingDescriptorConstName(method));
-    desc.typeName(namer.getAndSavePagedResponseTypeName(method, typeTable, resourceField));
+    desc.typeName(namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
@@ -118,6 +120,7 @@ public class PageStreamingTransformer {
     Method method = context.getMethod();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
     Field resourceField = pageStreaming.getResourcesField();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
     PagedListResponseFactoryClassView.Builder factory =
         PagedListResponseFactoryClassView.newBuilder();
@@ -127,7 +130,7 @@ public class PageStreamingTransformer {
     factory.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
     factory.pagedListResponseTypeName(
-        namer.getAndSavePagedResponseTypeName(method, typeTable, resourceField));
+        namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
     factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
 
     return factory.build();

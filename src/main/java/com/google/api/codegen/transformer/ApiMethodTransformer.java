@@ -51,11 +51,8 @@ import java.util.List;
 
 /** ApiMethodTransformer generates view objects from method definitions. */
 public class ApiMethodTransformer {
-  private InitCodeTransformer initCodeTransformer;
-
-  public ApiMethodTransformer() {
-    this.initCodeTransformer = new InitCodeTransformer();
-  }
+  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(MethodTransformerContext context) {
     return generatePagedFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
@@ -271,6 +268,7 @@ public class ApiMethodTransformer {
         namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
     setRequestObjectMethodFields(
         context, namer.getCallableMethodName(context.getMethod()), methodViewBuilder);
+    methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 
@@ -415,12 +413,12 @@ public class ApiMethodTransformer {
       case Sync:
         methodViewBuilder.responseTypeName(
             namer.getAndSavePagedResponseTypeName(
-                context.getMethod(), context.getTypeTable(), resourceField));
+                context.getMethod(), context.getTypeTable(), resourceFieldConfig));
         break;
       case Async:
         methodViewBuilder.responseTypeName(
             namer.getAndSaveAsyncPagedResponseTypeName(
-                context.getMethod(), context.getTypeTable(), resourceField));
+                context.getMethod(), context.getTypeTable(), resourceFieldConfig));
         break;
     }
   }
@@ -583,7 +581,13 @@ public class ApiMethodTransformer {
         SingleResourceNameConfig resourceNameConfig =
             context.getSimpleResourceNameConfig(entityName);
         if (resourceNameConfig == null) {
-          throw new IllegalStateException("No collection config with id '" + entityName + "'");
+          String methodName = context.getMethod().getSimpleName();
+          throw new IllegalStateException(
+              "No collection config with id '"
+                  + entityName
+                  + "' required by configuration for method '"
+                  + methodName
+                  + "'");
         }
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
         check.pathTemplateName(
@@ -776,7 +780,7 @@ public class ApiMethodTransformer {
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
-    param.nameAsMethodName(namer.getFieldAsMethodName(field));
+    param.nameAsMethodName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);

@@ -132,7 +132,8 @@ public class ApiCallableTransformer {
         namer.getApiCallableTypeName(ServiceMethodType.UnaryMethod));
 
     String pagedResponseTypeName =
-        namer.getAndSavePagedResponseTypeName(method, typeTable, pageStreaming.getResourcesField());
+        namer.getAndSavePagedResponseTypeName(
+            method, typeTable, pageStreaming.getResourcesFieldConfig());
 
     pagedApiCallableBuilder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     pagedApiCallableBuilder.responseTypeName(pagedResponseTypeName);
@@ -240,7 +241,9 @@ public class ApiCallableTransformer {
           typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
       settings.pagedListResponseTypeName(
           namer.getAndSavePagedResponseTypeName(
-              context.getMethod(), context.getTypeTable(), resourceField));
+              context.getMethod(),
+              context.getTypeTable(),
+              methodConfig.getPageStreaming().getResourcesFieldConfig()));
       settings.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
       settings.pagedListResponseFactoryName(namer.getPagedListResponseFactoryConstName(method));
     } else if (methodConfig.isBundling()) {

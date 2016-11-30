@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.client.util.Strings;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.Name;
@@ -134,8 +135,14 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     }
     String prefix = "";
     if (parentEl instanceof ProtoFile) {
-      for (String name : Splitter.on('.').split(parentEl.getFullName())) {
-        prefix += Name.from(name).toUpperCamelAndDigits() + ".";
+      ProtoFile protoFile = (ProtoFile) parentEl;
+      String namespace = protoFile.getProto().getOptions().getCsharpNamespace();
+      if (Strings.isNullOrEmpty(namespace)) {
+        for (String name : Splitter.on('.').split(parentEl.getFullName())) {
+          prefix += Name.from(name).toUpperCamelAndDigits() + ".";
+        }
+      } else {
+        prefix = namespace + ".";
       }
     }
     String shortName = shortNamePrefix + elem.getSimpleName();
@@ -209,14 +216,30 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by C#");
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    throw new UnsupportedOperationException(
-        "getTypeNameForResourceNameElementType not supported by C#");
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType().makeOptional(), typedResourceShortName);
+  }
+
+  private TypeName getTypeNameForTypedResourceName(
+      FieldConfig fieldConfig, TypeRef type, String typedResourceShortName) {
+    TypeName simpleTypeName = new TypeName(typedResourceShortName);
+    if (type.isMap()) {
+      throw new IllegalArgumentException("Map type not supported for typed resource name");
+    } else if (type.isRepeated()) {
+      TypeName listTypeName =
+          typeNameConverter.getTypeName("System.Collections.Generic.IEnumerable");
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
+    } else {
+      return simpleTypeName;
+    }
   }
 
   @Override

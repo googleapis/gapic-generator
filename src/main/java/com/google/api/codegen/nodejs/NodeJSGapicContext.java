@@ -71,11 +71,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return true;
   }
 
-  @Override
-  public String getApiWrapperName(Interface service) {
-    return service.getSimpleName() + "Client";
-  }
-
   // Snippet Helpers
   // ===============
 

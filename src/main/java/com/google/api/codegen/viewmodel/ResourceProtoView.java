@@ -12,18 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer.csharp;
+package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.auto.value.AutoValue;
+import java.util.List;
 
-public class CSharpFeatureConfig extends FeatureConfig {
-  @Override
-  public boolean enableMixins() {
-    return true;
+@AutoValue
+public abstract class ResourceProtoView {
+
+  public abstract String protoClassName();
+
+  public abstract List<ResourceProtoFieldView> fields();
+
+  public static Builder newBuilder() {
+    return new AutoValue_ResourceProtoView.Builder();
   }
 
-  @Override
-  public boolean resourceNameTypesEnabled() {
-    return true;
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder protoClassName(String val);
+
+    public abstract Builder fields(List<ResourceProtoFieldView> val);
+
+    public abstract ResourceProtoView build();
   }
 }

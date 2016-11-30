@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
@@ -34,7 +35,6 @@ import com.google.api.codegen.viewmodel.SnippetsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodSnippetView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -158,10 +158,10 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             methodContext, csharpCommonTransformer.pagedMethodAdditionalParams());
     SurfaceNamer namer = methodContext.getNamer();
     PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
-    Field resourceField = pageStreaming.getResourcesField();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     String callerResponseTypeName =
         namer.getAndSaveCallerAsyncPagedResponseTypeName(
-            methodContext.getMethod(), methodContext.getTypeTable(), resourceField);
+            methodContext.getMethod(), methodContext.getTypeTable(), resourceFieldConfig);
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -180,10 +180,10 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             methodContext, csharpCommonTransformer.pagedMethodAdditionalParams());
     SurfaceNamer namer = methodContext.getNamer();
     PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
-    Field resourceField = pageStreaming.getResourcesField();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     String callerResponseTypeName =
         namer.getAndSaveCallerPagedResponseTypeName(
-            methodContext.getMethod(), methodContext.getTypeTable(), resourceField);
+            methodContext.getMethod(), methodContext.getTypeTable(), resourceFieldConfig);
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)

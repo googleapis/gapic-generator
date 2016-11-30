@@ -142,14 +142,6 @@ public class GoGapicSurfaceTransformerTest {
   }
 
   @Test
-  public void testGetExampleImportsLro() {
-    Method method = getMethod(context.getInterface(), "LroMethod");
-    transformer.addXExampleImports(context, Collections.singletonList(method));
-    Truth.assertThat(context.getTypeTable().getImports())
-        .containsKey("github.com/golang/protobuf/ptypes");
-  }
-
-  @Test
   public void testExampleImports() {
     transformer.addXExampleImports(context, context.getSupportedMethods());
     Truth.assertThat(context.getTypeTable().getImports())

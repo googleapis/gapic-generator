@@ -174,6 +174,10 @@
     @join iter : view.pageStreamingDescriptorClasses
         {@iterator(view, iter)}
     @end
+
+    @join lro : view.lroDetailViews
+        {@lroWrapper(view, lro)}
+    @end
 @end
 
 @private simpleMethod(view, method)
@@ -193,7 +197,7 @@
 @end
 
 @private lroMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) (*longrunning.Operation, error) {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) (*{@method.operationMethod.clientReturnTypeName}, error) {
         {@mergeMetadata()}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
@@ -204,7 +208,9 @@
         if err != nil {
             return nil, err
         }
-        return longrunning.InternalNewOperation(c.Connection(), resp), nil
+        return &{@method.operationMethod.clientReturnTypeName}{
+            lro: longrunning.InternalNewOperation(c.Connection(), resp),
+        }, nil
     }
 @end
 
@@ -315,6 +321,97 @@
         return b
     }
 
+@end
+
+@private lroWrapper(view, lro)
+    // {@lro.clientReturnTypeName} manages a long-running operation yielding {@lro.operationPayloadTypeName}.
+    type {@lro.clientReturnTypeName} struct {
+        lro *longrunning.Operation
+    }
+
+    // {@lro.constructorName} returns a new {@lro.clientReturnTypeName} from a given name.
+    // The name must be that of a previously created {@lro.clientReturnTypeName}, possibly from a different process.
+    func (c *{@view.clientTypeName}) {@lro.constructorName}(name string) *{@lro.clientReturnTypeName} {
+        return &{@lro.clientReturnTypeName}{
+            lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+        }
+    }
+
+    // Wait blocks until the long-running operation is completed, returning the response and any errors encountered.
+    //
+    // See documentation of Poll for error-handling information.
+    func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
+        var resp {@lro.operationPayloadTypeName}
+        if err := op.lro.Wait(ctx, &resp); err != nil {
+            return nil, err
+        }
+        return &resp, nil
+    }
+
+    // Poll fetches the latest state of the long-running operation.
+    //
+    // Poll also fetches the latest metadata, which can be retrieved by Metadata.
+    //
+    // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+    // the operation has completed with failure, the error is returned and op.Done will return true.
+    // If Poll succeeds and the operation has completed successfully,
+    // op.Done will return true, and the response of the operation is returned.
+    // If Poll succeeds and the operation has not completed, the returned response and error are both nil.
+    func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
+        var resp {@lro.operationPayloadTypeName}
+        if err := op.lro.Poll(ctx, &resp); err != nil {
+            return nil, err
+        }
+        if !op.Done() {
+            return nil, nil
+        }
+        return &resp, nil
+    }
+
+    // Metadata returns metadata associated with the long-running operation.
+    // Metadata itself does not contact the server, but Poll does.
+    // To get the latest metadata, call this method after a successful call to Poll.
+    // If the metadata is not available, the returned metadata and error are both nil.
+    func (op *{@lro.clientReturnTypeName}) Metadata() (*{@lro.metadataTypeName}, error) {
+        var meta {@lro.metadataTypeName}
+        if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+            return nil, nil
+        } else if err != nil {
+            return nil, err
+        }
+        return &meta, nil
+    }
+
+    // Done reports whether the long-running operation has completed.
+    func (op *{@lro.clientReturnTypeName}) Done() bool {
+        return op.lro.Done()
+    }
+
+    // Name returns the name of the long-running operation.
+    // The name is assigned by the server and is unique within the service from which the operation is created.
+    func (op *{@lro.clientReturnTypeName}) Name() string {
+        return op.lro.Name()
+    }
+
+    @if lro.implementsCancel
+        // Cancel starts asynchronous cancellation on a long-running operation.
+        // The server makes a best effort to cancel the operation, but success is not guaranteed.
+        // Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
+        // completed despite cancellation. On successful cancellation, the operation is not deleted;
+        // instead, op.Poll returns an error with code Canceled.
+        func (op *{@lro.clientReturnTypeName}) Cancel(ctx context.Context) error {
+            return op.lro.Cancel(ctx)
+        }
+    @end
+
+    @if lro.implementsDelete
+        // Delete deletes a long-running operation.
+        // This method indicates that the client is no longer interested in the operation result.
+        // It does not cancel the operation.
+        func (op *{@lro.clientReturnTypeName}) Delete(ctx context.Context) error {
+            return op.lro.Delete(ctx)
+        }
+    @end
 @end
 
 @private pathTemplateParams(args)

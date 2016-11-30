@@ -69,7 +69,7 @@ public class TestCaseTransformer {
           namer.getAndSavePagedResponseTypeName(
               method,
               methodContext.getTypeTable(),
-              methodConfig.getPageStreaming().getResourcesField());
+              methodConfig.getPageStreaming().getResourcesFieldConfig());
     } else if (methodConfig.isLongRunningOperation()) {
       clientMethodName = namer.getAsyncApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
@@ -227,13 +227,10 @@ public class TestCaseTransformer {
     }
     ImmutableMap.Builder<String, FieldConfig> builder = ImmutableMap.builder();
     for (Field field : context.getMethod().getOutputMessage().getFields()) {
-      if (messageConfig.fieldHasResourceName(field)) {
-        ResourceNameConfig resourceNameConfig =
-            resourceNameConfigs.get(messageConfig.getFieldResourceName(field));
-        builder.put(
-            field.getFullName(),
-            FieldConfig.createFieldConfig(field, treatment, resourceNameConfig));
-      }
+      builder.put(
+          field.getFullName(),
+          FieldConfig.createMessageFieldConfig(
+              messageConfig, resourceNameConfigs, field, treatment));
     }
     return builder.build();
   }
