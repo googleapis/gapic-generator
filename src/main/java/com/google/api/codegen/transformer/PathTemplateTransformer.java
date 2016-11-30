@@ -233,12 +233,13 @@ public class PathTemplateTransformer {
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         interfaceConfig.getSingleResourceNameConfigs()) {
-      FormatResourceFunctionView.Builder function = FormatResourceFunctionView.newBuilder();
-      function.entityName(resourceNameConfig.getEntityName());
-      function.name(namer.getFormatFunctionName(service, resourceNameConfig));
-      function.pathTemplateName(namer.getPathTemplateName(service, resourceNameConfig));
-      function.pathTemplateGetterName(namer.getPathTemplateNameGetter(service, resourceNameConfig));
-      function.pattern(resourceNameConfig.getNamePattern());
+      FormatResourceFunctionView.Builder function =
+          FormatResourceFunctionView.newBuilder()
+              .entityName(resourceNameConfig.getEntityName())
+              .name(namer.getFormatFunctionName(service, resourceNameConfig))
+              .pathTemplateName(namer.getPathTemplateName(service, resourceNameConfig))
+              .pathTemplateGetterName(namer.getPathTemplateNameGetter(service, resourceNameConfig))
+              .pattern(resourceNameConfig.getNamePattern());
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : resourceNameConfig.getNameTemplate().vars()) {
         ResourceIdParamView param =

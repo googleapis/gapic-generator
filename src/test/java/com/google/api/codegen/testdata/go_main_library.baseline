@@ -688,13 +688,13 @@ func (it *BookIterator) PageInfo() *iterator.PageInfo {
 
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
-func (it *BookIterator) Next() (*librarypb.Book, error) {
-    if err := it.nextFunc(); err != nil {
-        return nil, err
+func (it *BookIterator) Next() (item *librarypb.Book, err error) {
+    err = it.nextFunc()
+    if err == nil {
+        item = it.items[0]
+        it.items = it.items[1:]
     }
-    item := it.items[0]
-    it.items = it.items[1:]
-    return item, nil
+    return
 }
 
 func (it *BookIterator) bufLen() int {
@@ -729,13 +729,13 @@ func (it *ShelfIterator) PageInfo() *iterator.PageInfo {
 
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
-func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
-    if err := it.nextFunc(); err != nil {
-        return nil, err
+func (it *ShelfIterator) Next() (item *librarypb.Shelf, err error) {
+    err = it.nextFunc()
+    if err == nil {
+        item = it.items[0]
+        it.items = it.items[1:]
     }
-    item := it.items[0]
-    it.items = it.items[1:]
-    return item, nil
+    return
 }
 
 func (it *ShelfIterator) bufLen() int {
@@ -770,13 +770,13 @@ func (it *StringIterator) PageInfo() *iterator.PageInfo {
 
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
-func (it *StringIterator) Next() (string, error) {
-    if err := it.nextFunc(); err != nil {
-        return "", err
+func (it *StringIterator) Next() (item string, err error) {
+    err = it.nextFunc()
+    if err == nil {
+        item = it.items[0]
+        it.items = it.items[1:]
     }
-    item := it.items[0]
-    it.items = it.items[1:]
-    return item, nil
+    return
 }
 
 func (it *StringIterator) bufLen() int {
