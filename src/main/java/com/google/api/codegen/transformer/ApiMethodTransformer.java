@@ -658,6 +658,8 @@ public class ApiMethodTransformer {
         generateRequestObjectParams(context, filteredFieldConfigs));
     apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
+    apiMethod.isLongrunningOperation(context.getMethodConfig().isLongRunningOperation());
+
     return apiMethod.build();
   }
 

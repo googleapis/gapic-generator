@@ -16,6 +16,7 @@ package com.google.api.codegen.metadatagen;
 
 import com.google.api.codegen.metadatagen.py.PythonPackageCopier;
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -121,6 +122,14 @@ public class PackageMetadataGeneratorTool {
             .required(true)
             .build());
     options.addOption(
+        Option.builder("p")
+            .longOpt("package_name")
+            .desc(
+                "The base name of the package. Defaults to \"google-cloud-{short_name}-{version}\"")
+            .hasArg()
+            .argName("PACKAGE-NAME")
+            .build());
+    options.addOption(
         Option.builder("g")
             .longOpt("googleapis_path")
             .desc("The path to the API protos under googleapis.")
@@ -152,6 +161,7 @@ public class PackageMetadataGeneratorTool {
         cl.getOptionValue("dependencies_config"),
         cl.getOptionValue("defaults_config"),
         cl.getOptionValue("short_name"),
+        cl.getOptionValue("package_name"),
         cl.getOptionValue("name"),
         cl.getOptionValue("googleapis_path"),
         cl.getOptionValue("version"));
@@ -166,6 +176,7 @@ public class PackageMetadataGeneratorTool {
       String dependenciesConfig,
       String defaultsConfig,
       String shortName,
+      String packageName,
       String name,
       String googleapisPath,
       String version) {
@@ -180,6 +191,12 @@ public class PackageMetadataGeneratorTool {
     options.set(PackageMetadataGenerator.LONG_API_NAME, name);
     options.set(PackageMetadataGenerator.API_PATH, googleapisPath);
     options.set(PackageMetadataGenerator.API_VERSION, version);
+    if (Strings.isNullOrEmpty(packageName)) {
+      options.set(
+          PackageMetadataGenerator.PACKAGE_NAME, "google-cloud-" + shortName + "-" + version);
+    } else {
+      options.set(PackageMetadataGenerator.PACKAGE_NAME, packageName);
+    }
     PackageMetadataGenerator generator =
         new PackageMetadataGenerator(options, getSnippets(language), getCopier(language));
     generator.run();
