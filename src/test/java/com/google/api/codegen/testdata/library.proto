@@ -6,7 +6,6 @@ package google.example.library.v1;
 
 import "field_mask.proto";
 import "google/api/annotations.proto";
-import "google/api/monitored_resource.proto";
 import "google/longrunning/operations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
@@ -15,6 +14,7 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
+import "shared_type.proto";
 import "tagger.proto";
 
 option java_multiple_files = true;
@@ -204,9 +204,9 @@ message Book {
   map<int32, string> map_string_value = 25;
   map<string, SomeMessage> map_message_value = 26;
 
-  // Tests Python doc generation: should generate a dummy file for monitored
-  // resource, but *not* its import, label.
-  google.api.MonitoredResource resource = 29;
+  // Tests Python doc generation: should generate a dummy file for shared_type
+  // resource, but *not* its import, other_shared_type
+  google.test.shared.data.Used resource = 29;
 }
 
 // A single book in the archives.
