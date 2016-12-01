@@ -133,12 +133,60 @@
 @end
 
 @private methodCallSampleCodeWithReturnValue(apiMethod)
-    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
-        var response = responses[0];
-        // doThingsWith(response)
-    }).catch(function(err) {
-        console.error(err);
-    })
+    @if apiMethod.isLongrunningOperation
+
+        // Handle the operation using the promise pattern.
+        {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+            var operation = responses[0];
+            var initialApiResponse = responses[1];
+
+            // Operation@#promise starts polling for the completion of the LRO.
+            return operation.promise();
+        }).then(function(responses) {
+            // The final result of the operation.
+            var result = responses[0];
+
+            // The metadata value of the completed operation.
+            var metadata = responses[1];
+
+            // The response of the api call returning the complete operation.
+            var finalApiResponse = responses[2];
+        }).catch(function(err) {
+            console.error(err);
+        });
+
+        // Handle the operation using the event emitter pattern.
+        {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+            var operation = responses[0];
+            var initialApiResponse = responses[1];
+
+            // Adding a listener for the "complete" event starts polling for the
+            // completion of the operation.
+            operation.on('complete', function(result, metadata, finalApiResponse) {
+              // doSomethingWith(result);
+            });
+
+            // Adding a listener for the "progress" event causes the callback to be
+            // called on any change in metadata when the operation is polled.
+            operation.on('progress', function(metadata, apiResponse) {
+              // doSomethingWith(metadata)
+            })
+
+            // Adding a listener for the "error" event handles any errors found during polling.
+            operation.on('error', function(err) {
+              // throw(err);
+            })
+        }).catch(function(err) {
+            console.error(err);
+        })
+    @else
+      {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+          var response = responses[0];
+          // doThingsWith(response)
+      }).catch(function(err) {
+          console.error(err);
+      })
+    @end
 @end
 
 @private methodCallSampleCodeWithoutReturnValue(apiMethod)

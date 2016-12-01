@@ -341,6 +341,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       } else {
         returnTypeDoc += jsTypeName(resourcesType);
       }
+    } else if (config.isLongRunningOperation()) {
+      returnTypeDoc =
+          "a [gax.Operation]{@link "
+              + "https://googleapis.github.io/gax-nodejs/global.html#Operation} object";
     } else {
       returnTypeDoc = typeDocument(method.getOutputType());
     }
@@ -443,6 +447,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     }
     if (filterStreamingMethods(service).iterator().hasNext()) {
       builder.add("STREAM_DESCRIPTORS");
+    }
+    if (messages().filterLongrunningMethods(ifaceConfig, methods).iterator().hasNext()) {
+      builder.add("longrunningDescriptors");
     }
     return builder.build();
   }
