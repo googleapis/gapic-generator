@@ -45,6 +45,11 @@
   require "pathname"
 
   require "google/gax"
+  @if context.hasLongrunningMethod(service)
+    require "google/gax/operation"
+    require "google/longrunning/operations_api"
+
+  @end
   @join import : {@context.getProtoImports(service)}
     require "{@import.fullName}"
   @end
@@ -233,6 +238,20 @@
         require "{@import.fullName}"
       @end
 
+      @if context.hasLongrunningMethod(service)
+        @@operations_client = Google::Longrunning::OperationsApi.new(
+          service_path: service_path,
+          port: port,
+          channel: channel,
+          chan_creds: chan_creds,
+          scopes: scopes,
+          client_config: client_config,
+          timeout: timeout,
+          app_name: app_name,
+          app_version: app_version
+        )
+      @end
+
       google_api_client = "#{app_name}/#{app_version} " @\
         "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " @\
         "ruby/#{RUBY_VERSION}".freeze
@@ -375,8 +394,7 @@
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
        methodView = context.getMethodView(service, method), \
-       sample = comments(util.getDocLines(sampleCode(methodView))), \
-       isReturnEmptyMessage = methodConfig.isReturnEmptyMessageMethod(method)
+       sample = comments(util.getDocLines(sampleCode(methodView)))
     @if documentation
       {@documentation}
       @if method.getRequestStreaming()
@@ -395,7 +413,7 @@
 
     @if method.getRequestStreaming()
       def {@methodName} reqs, options: nil
-        {@makeApiCall(method, "reqs", isReturnEmptyMessage)}
+        {@makeApiCall(methodConfig)}
       end
     @else
       @if or(requiredParams, optionalParams)
@@ -419,12 +437,12 @@
               {@namedParameters(optionalParams)}
             @end
           }.delete_if { |_, v| v.nil? })
-          {@makeApiCall(method, "req", isReturnEmptyMessage)}
+          {@makeApiCall(methodConfig)}
         end
       @else
         def {@methodName} options: nil
           req = {@inputTypeName}.new
-          {@makeApiCall(method, "req", isReturnEmptyMessage)}
+          {@makeApiCall(methodConfig)}
         end
       @end
     @end
@@ -435,10 +453,33 @@
   {@context.upperCamelToLowerUnderscore(method.getSimpleName())}
 @end
 
-@private makeApiCall(method, request, isReturnEmptyMessage)
-  @@{@getMethodName(method)}.call({@request}, options)
-  @if isReturnEmptyMessage
-    nil
+@private makeApiCall(methodConfig)
+  @let request = requestParameterName(methodConfig), \
+       method = methodConfig.getMethod
+    @if methodConfig.isLongRunningOperation
+      operation = Google::Gax::Operation.new(
+        @@{@getMethodName(method)}.call({@request}, options),
+        @@operations_client,
+        {@context.rubyTypeName(methodConfig.getLongRunningConfig.getReturnType)},
+        {@context.rubyTypeName(methodConfig.getLongRunningConfig.getMetadataType)},
+        call_options: options
+      )
+      operation.on_done { |operation| yield(operation) } if block_given?
+      operation
+    @else
+      @@{@getMethodName(method)}.call({@request}, options)
+      @if methodConfig.isReturnEmptyMessageMethod(method)
+        nil
+      @end
+    @end
+  @end
+@end
+
+@private requestParameterName(methodConfig)
+  @if methodConfig.getMethod.getRequestStreaming
+    reqs
+  @else
+    req
   @end
 @end
 

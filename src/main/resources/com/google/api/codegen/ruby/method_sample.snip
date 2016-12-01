@@ -20,14 +20,48 @@
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
   @end
-  @switch apiMethod.type.toString
-  @case "OptionalArrayMethod"
-    {@optionalArrayMethodSampleCode(apiMethod)}
-  @case "PagedOptionalArrayMethod"
-    {@pagedOptionalArrayMethodSampleCode(apiMethod)}
-  @default
-    $unhandledCase: {@apiMethod.type.toString}$
+  @if apiMethod.isLongrunningOperation
+    {@longRunningMethodSampleCode(apiMethod)}
+  @else
+    @switch apiMethod.type.toString
+    @case "OptionalArrayMethod"
+      {@optionalArrayMethodSampleCode(apiMethod)}
+    @case "PagedOptionalArrayMethod"
+      {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+    @default
+      $unhandledCase: {@apiMethod.type.toString}$
+    @end
   @end
+@end
+
+@private longRunningMethodSampleCode(apiMethod)
+
+  @# Register a callback during the method call.
+  operation = {@methodCallSampleCode(apiMethod)} do |op|
+    raise op.results.message if op.error?
+    results = op.results
+    @# Process the results.
+
+    metadata = op.metadata
+    @# Process the metadata.
+  end
+
+  @# Or use the return value to register a callback.
+  operation.on_done do |op|
+    raise op.results.message if op.error?
+    results = op.results
+    @# Process the results.
+
+    metadata = op.metadata
+    @# Process the metadata.
+  end
+
+  @# Manually reload the operation.
+  operation.reload!
+
+  @# Or block until the operation completes, triggering callbacks on
+  @# completion.
+  operation.wait_until_done!
 @end
 
 @private optionalArrayMethodSampleCode(apiMethod)

@@ -27,6 +27,9 @@ require "json"
 require "pathname"
 
 require "google/gax"
+require "google/gax/operation"
+require "google/longrunning/operations_api"
+
 require "library_pb"
 require "tagger_pb"
 
@@ -230,6 +233,18 @@ module Library
         require "google/gax/grpc"
         require "library_services_pb"
         require "tagger_services_pb"
+
+        @operations_client = Google::Longrunning::OperationsApi.new(
+          service_path: service_path,
+          port: port,
+          channel: channel,
+          chan_creds: chan_creds,
+          scopes: scopes,
+          client_config: client_config,
+          timeout: timeout,
+          app_name: app_name,
+          app_version: app_version
+        )
 
         google_api_client = "#{app_name}/#{app_version} " \
           "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " \
@@ -1201,7 +1216,7 @@ module Library
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
-      # @return [Google::Longrunning::Operation]
+      # @return [Google::Gax::Operation]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library/v1/library_service_client"
@@ -1210,7 +1225,33 @@ module Library
       #
       #   library_service_client = LibraryServiceClient.new
       #   formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   response = library_service_client.get_big_book(formatted_name)
+      #
+      #   # Register a callback during the method call.
+      #   operation = library_service_client.get_big_book(formatted_name) do |op|
+      #     raise op.results.message if op.error?
+      #     results = op.results
+      #     # Process the results.
+      #
+      #     metadata = op.metadata
+      #     # Process the metadata.
+      #   end
+      #
+      #   # Or use the return value to register a callback.
+      #   operation.on_done do |op|
+      #     raise op.results.message if op.error?
+      #     results = op.results
+      #     # Process the results.
+      #
+      #     metadata = op.metadata
+      #     # Process the metadata.
+      #   end
+      #
+      #   # Manually reload the operation.
+      #   operation.reload!
+      #
+      #   # Or block until the operation completes, triggering callbacks on
+      #   # completion.
+      #   operation.wait_until_done!
 
       def get_big_book \
           name,
@@ -1218,7 +1259,15 @@ module Library
         req = Google::Example::Library::V1::GetBookRequest.new({
           name: name
         }.delete_if { |_, v| v.nil? })
-        @get_big_book.call(req, options)
+        operation = Google::Gax::Operation.new(
+          @get_big_book.call(req, options),
+          @operations_client,
+          Google::Example::Library::V1::Book,
+          Google::Example::Library::V1::GetBigBookMetadata,
+          call_options: options
+        )
+        operation.on_done { |operation| yield(operation) } if block_given?
+        operation
       end
     end
   end

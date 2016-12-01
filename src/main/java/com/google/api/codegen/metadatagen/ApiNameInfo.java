@@ -20,8 +20,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class ApiNameInfo {
   static AutoValue_ApiNameInfo create(
-      String fullName, String shortName, String majorVersion, String path) {
-    return new AutoValue_ApiNameInfo(fullName, shortName, majorVersion, path);
+      String fullName, String shortName, String packageName, String majorVersion, String path) {
+    return new AutoValue_ApiNameInfo(fullName, shortName, packageName, majorVersion, path);
   }
 
   /** The full name of the API, including branding. E.g., "Stackdriver Logging". */
@@ -29,6 +29,9 @@ public abstract class ApiNameInfo {
 
   /** A single-word short name of the API. E.g., "logging". */
   public abstract String shortName();
+
+  /** The base name of the client library package. E.g., "google-cloud-logging-v1". */
+  public abstract String packageName();
 
   /** The major version of the API, as used in the package name. E.g., "v1". */
   public abstract String majorVersion();

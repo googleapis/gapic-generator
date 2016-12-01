@@ -260,7 +260,12 @@ public class PythonGapicContext extends GapicContext {
   private String getTrimmedDocs(ProtoElement elt) {
     String description = "";
     if (elt.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      description = getSphinxifiedScopedDescription(elt).replaceAll("\\s*\\n\\s*", "\n");
+      // TODO (geigerj): "trimming" the docs means we don't support code blocks. Investigate
+      // supporting code blocks here.
+      description =
+          getSphinxifiedScopedDescription(elt)
+              .replaceAll("\\s*\\n\\s*", "\n")
+              .replaceAll("::\n", "");
     }
     return description;
   }
