@@ -33,6 +33,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class PythonImportHandler {
 
@@ -104,14 +105,15 @@ public class PythonImportHandler {
   }
 
   /** This constructor is used for doc messages. */
-  public PythonImportHandler(ProtoFile file) {
+  public PythonImportHandler(ProtoFile file, Set<ProtoFile> importableProtoFiles) {
     for (MessageType message : file.getMessages()) {
       for (Field field : message.getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         // Don't include imports to messages in the same file.
-        if (!messageType.getFile().equals(file)) {
+        ProtoFile messageParentFile = messageType.getFile();
+        if (!messageParentFile.equals(file) && importableProtoFiles.contains(messageParentFile)) {
           addImport(
-              messageType.getFile(),
+              messageParentFile,
               PythonImport.create(
                   ImportType.APP,
                   protoPackageToPythonPackage(messageType.getFile().getProto().getPackage()),
@@ -283,17 +285,25 @@ public class PythonImportHandler {
   }
 
   private String protoPackageToPythonPackage(String protoPackage) {
+    return protoPackageToPythonPackage(protoPackage, ".");
+  }
+
+  public String protoPackageToPythonPackage(String protoPackage, String sep) {
     for (String commonProto : COMMON_PROTOS) {
-      if (protoPackage.startsWith(commonProto)) {
+      String canonical = Joiner.on(".").join(Splitter.on(sep).split(protoPackage));
+      if (canonical.startsWith(commonProto)) {
         return protoPackage;
       }
     }
-    List<String> packages = Lists.newArrayList(Splitter.on(".").split(protoPackage));
+    List<String> packages = Lists.newArrayList(Splitter.on(sep).split(protoPackage));
     if (packages.get(0).equals("google")) {
       if (packages.size() > 1 && packages.get(1).equals("cloud")) {
-        return "google.cloud.grpc." + Joiner.on(".").join(packages.subList(2, packages.size()));
+        packages = packages.subList(2, packages.size());
+      } else {
+        packages = packages.subList(1, packages.size());
       }
-      return "google.cloud.grpc." + Joiner.on(".").join(packages.subList(1, packages.size()));
+      packages.addAll(0, Lists.newArrayList("google", "cloud", "grpc"));
+      return Joiner.on(sep).join(packages);
     }
     return protoPackage;
   }
