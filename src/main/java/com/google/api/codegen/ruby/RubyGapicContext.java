@@ -143,7 +143,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
   /** Return YARD return type string for the given method, or null if the return type is nil. */
   @Nullable
-  private String returnTypeComment(Method method, MethodConfig config) {
+  private String returnTypeComment(Method method, MethodConfig config, Interface service) {
     if (config.isReturnEmptyMessageMethod(method)) {
       return null;
     }
@@ -168,6 +168,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
           + "  See Google::Gax::PagedEnumerable documentation for other\n"
           + "  operations such as per-page iteration or access to the response\n"
           + "  object.";
+    } else if (isLongrunning(method, service)) {
+      return "@return [Google::Gax::Operation]";
     } else {
       return "@return [" + classInfo + "]";
     }
@@ -206,14 +208,13 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         }
       }
     }
-
     paramTypesBuilder.append(
         "@param options [Google::Gax::CallOptions] \n"
             + "  Overrides the default settings for this call, e.g, timeout,\n"
             + "  retries, etc.");
     String paramTypes = paramTypesBuilder.toString();
 
-    String returnType = returnTypeComment(method, config);
+    String returnType = returnTypeComment(method, config, service);
 
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
@@ -374,6 +375,22 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         modelTypeTable,
         new RubySurfaceNamer(getApiConfig().getPackageName()),
         new RubyFeatureConfig());
+  }
+
+  public boolean isLongrunning(Method method, Interface service) {
+    return getApiConfig()
+        .getInterfaceConfig(service)
+        .getMethodConfig(method)
+        .isLongRunningOperation();
+  }
+
+  public boolean hasLongrunningMethod(Interface service) {
+    for (Method method : getSupportedMethodsV2(service)) {
+      if (isLongrunning(method, service)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // Constants
