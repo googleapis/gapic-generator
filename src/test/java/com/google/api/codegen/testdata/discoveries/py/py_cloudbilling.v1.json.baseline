@@ -7,8 +7,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudbilling
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -17,21 +19,14 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `get` method:
-
 # The resource name of the billing account to retrieve. For example,
 # `billingAccounts/012345-567890-ABCDEF`.
-name = 'billingAccounts/{MY-BILLINGACCOUNT}'
-
+name = ''  # TODO: Update placeholder value.
+# ex: 'billingAccounts/my-billingAccount'
 
 request = service.billingAccounts().get(name=name)
 response = request.execute()
@@ -46,8 +41,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudbilling
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -56,17 +53,11 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
-
-billingAccounts = service.billingAccounts()
-request = billingAccounts.list()
+request = service.billingAccounts().list()
 while request is not None:
     response = request.execute()
 
@@ -74,7 +65,7 @@ while request is not None:
         # TODO: Change code below to process each `billing_account` resource:
         pprint(billing_account)
 
-    request = billingAccounts.list_next(previous_request=request, previous_response=response)
+    request = service.billingAccounts().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -83,8 +74,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudbilling
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -93,24 +86,16 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `list` method:
-
 # The resource name of the billing account associated with the projects that you want to list. For
 # example, `billingAccounts/012345-567890-ABCDEF`.
-name = 'billingAccounts/{MY-BILLINGACCOUNT}'
+name = ''  # TODO: Update placeholder value.
+# ex: 'billingAccounts/my-billingAccount'
 
-
-projects = service.billingAccounts().projects()
-request = projects.list(name=name)
+request = service.billingAccounts().projects().list(name=name)
 while request is not None:
     response = request.execute()
 
@@ -118,7 +103,7 @@ while request is not None:
         # TODO: Change code below to process each `project_billing_info` resource:
         pprint(project_billing_info)
 
-    request = projects.list_next(previous_request=request, previous_response=response)
+    request = service.billingAccounts().projects().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -127,8 +112,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudbilling
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -137,21 +124,14 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `getBillingInfo` method:
-
 # The resource name of the project for which billing information is retrieved. For example,
 # `projects/tokyo-rain-123`.
-name = 'projects/{MY-PROJECT}'
-
+name = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project'
 
 request = service.projects().getBillingInfo(name=name)
 response = request.execute()
@@ -166,8 +146,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudbilling
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -176,26 +158,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `updateBillingInfo` method:
-
 # The resource name of the project associated with the billing information that you want to update.
 # For example, `projects/tokyo-rain-123`.
-name = 'projects/{MY-PROJECT}'
-
+name = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project'
 
 project_billing_info_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().updateBillingInfo(name=name, body=project_billing_info_body)
 response = request.execute()

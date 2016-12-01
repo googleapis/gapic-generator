@@ -7,8 +7,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -17,16 +19,11 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-request = service.v1().getGoogleServiceAccount()
+request = service.getGoogleServiceAccount()
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -39,8 +36,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -49,23 +48,15 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
-
-
-# TODO: Change placeholder below to desired parameter value for the `get` method:
 
 # The ID of the Google Developers Console project that the Google service account is associated with.
 # Required.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
-
-request = service.googleServiceAccounts().get(projectId=projectId)
+request = service.googleServiceAccounts().get(projectId=project_id)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -78,8 +69,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -88,19 +81,13 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
-
 
 transfer_job_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.transferJobs().create(body=transfer_job_body)
 response = request.execute()
@@ -115,8 +102,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -125,22 +114,14 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `get` method:
-
 # The job to get. Required.
-jobName = '{MY-JOB-NAME}'
+job_name = ''  # TODO: Update placeholder value.
 
-
-request = service.transferJobs().get(jobName=jobName)
+request = service.transferJobs().get(jobName=job_name)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -153,8 +134,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -163,17 +146,11 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-transferJobs = service.transferJobs()
-request = transferJobs.list()
+request = service.transferJobs().list()
 while request is not None:
     response = request.execute()
 
@@ -181,7 +158,7 @@ while request is not None:
         # TODO: Change code below to process each `transfer_job` resource:
         pprint(transfer_job)
 
-    request = transferJobs.list_next(previous_request=request, previous_response=response)
+    request = service.transferJobs().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -190,8 +167,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -200,27 +179,19 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `patch` method:
-
 # The name of job to update. Required.
-jobName = '{MY-JOB-NAME}'
-
+job_name = ''  # TODO: Update placeholder value.
 
 update_transfer_job_request_body = {
-    # TODO: Add desired entries of the request body to be changed.
+    # TODO: Add desired entries of the request body. Only assigned entries
+    # will be changed:
 }
 
-
-request = service.transferJobs().patch(jobName=jobName, body=update_transfer_job_request_body)
+request = service.transferJobs().patch(jobName=job_name, body=update_transfer_job_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -233,28 +204,23 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `cancel` method:
-
 # The name of the operation resource to be cancelled.
-name = '{MY-NAME}'
-
+name = ''  # TODO: Update placeholder value.
 
 request = service.transferOperations().cancel(name=name)
 request.execute()
@@ -266,28 +232,23 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `delete` method:
-
 # The name of the operation resource to be deleted.
-name = '{MY-NAME}'
-
+name = ''  # TODO: Update placeholder value.
 
 request = service.transferOperations().delete(name=name)
 request.execute()
@@ -299,8 +260,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -309,20 +272,12 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `get` method:
-
 # The name of the operation resource.
-name = '{MY-NAME}'
-
+name = ''  # TODO: Update placeholder value.
 
 request = service.transferOperations().get(name=name)
 response = request.execute()
@@ -337,8 +292,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -347,23 +304,14 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `list` method:
-
 # The value `transferOperations`.
-name = '{MY-NAME}'
+name = ''  # TODO: Update placeholder value.
 
-
-transferOperations = service.transferOperations()
-request = transferOperations.list(name=name)
+request = service.transferOperations().list(name=name)
 while request is not None:
     response = request.execute()
 
@@ -371,7 +319,7 @@ while request is not None:
         # TODO: Change code below to process each `operation` resource:
         pprint(operation)
 
-    request = transferOperations.list_next(previous_request=request, previous_response=response)
+    request = service.transferOperations().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -380,33 +328,27 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `pause` method:
-
 # The name of the transfer operation. Required.
-name = '{MY-NAME}'
-
+name = ''  # TODO: Update placeholder value.
 
 pause_transfer_operation_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.transferOperations().pause(name=name, body=pause_transfer_operation_request_body)
 request.execute()
@@ -418,33 +360,27 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/storagetransfer
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('storagetransfer', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `resume` method:
-
 # The name of the transfer operation. Required.
-name = '{MY-NAME}'
-
+name = ''  # TODO: Update placeholder value.
 
 resume_transfer_operation_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.transferOperations().resume(name=name, body=resume_transfer_operation_request_body)
 request.execute()
