@@ -40,6 +40,7 @@ public class PythonImportHandler {
   // TODO (geigerj): Read this from configuration?
   private final List<String> COMMON_PROTOS =
       Lists.newArrayList(
+          "google.iam",
           "google.protobuf",
           "google.api",
           "google.longrunning",
