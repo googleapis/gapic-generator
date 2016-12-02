@@ -20,7 +20,6 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -37,7 +36,6 @@ import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
@@ -271,15 +269,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
           namer.getAndSaveElementResourceTypeName(context.getTypeTable(), resourceFieldConfig);
       String resourceTypeIterateMethodName =
           namer.getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
-
-      String concreteResourceTypeName;
-      if (resourceFieldConfig.getResourceNameType() == ResourceNameType.ANY) {
-        concreteResourceTypeName = namer.publicClassName(Name.from("untyped_resource_name"));
-      } else {
-        concreteResourceTypeName = resourceTypeName;
-      }
       String parseMethodName =
-          concreteResourceTypeName + "." + namer.publicMethodName(Name.from("parse"));
+          namer.getResourceTypeParseMethodName(context.getTypeTable(), resourceFieldConfig);
 
       PagedResponseIterateMethodView.Builder iterateMethod =
           PagedResponseIterateMethodView.newBuilder()
