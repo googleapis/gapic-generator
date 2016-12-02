@@ -102,9 +102,8 @@
      */
     const DEFAULT_TIMEOUT_MILLIS = 30000;
 
-    const _GAX_VERSION = '0.1.0';
-    const _CODEGEN_NAME = 'GAPIC';
-    const _CODEGEN_VERSION = '0.0.0';
+    const _CODEGEN_NAME = 'gapic';
+    const _CODEGEN_VERSION = '0.1.0';
     {@""}
 @end
 
@@ -267,7 +266,7 @@
             'retryingOverride' => null,
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'appName' => 'gax',
-            'appVersion' => self::_GAX_VERSION,
+            'appVersion' => AgentHeaderDescriptor::getGaxVersion(),
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -276,7 +275,7 @@
             'clientVersion' => $options['appVersion'],
             'codeGenName' => self::_CODEGEN_NAME,
             'codeGenVersion' => self::_CODEGEN_VERSION,
-            'gaxVersion' => self::_GAX_VERSION,
+            'gaxVersion' => AgentHeaderDescriptor::getGaxVersion(),
             'phpVersion' => phpversion(),
         ]);
 
