@@ -688,13 +688,14 @@ func (it *BookIterator) PageInfo() *iterator.PageInfo {
 
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
-func (it *BookIterator) Next() (item *librarypb.Book, err error) {
-    err = it.nextFunc()
-    if err == nil {
-        item = it.items[0]
-        it.items = it.items[1:]
+func (it *BookIterator) Next() (*librarypb.Book, error) {
+    var item *librarypb.Book
+    if err := it.nextFunc(); err != nil {
+        return item, err
     }
-    return
+    item := it.items[0]
+    it.items = it.items[1:]
+    return item, nil
 }
 
 func (it *BookIterator) bufLen() int {
@@ -729,13 +730,14 @@ func (it *ShelfIterator) PageInfo() *iterator.PageInfo {
 
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
-func (it *ShelfIterator) Next() (item *librarypb.Shelf, err error) {
-    err = it.nextFunc()
-    if err == nil {
-        item = it.items[0]
-        it.items = it.items[1:]
+func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
+    var item *librarypb.Shelf
+    if err := it.nextFunc(); err != nil {
+        return item, err
     }
-    return
+    item := it.items[0]
+    it.items = it.items[1:]
+    return item, nil
 }
 
 func (it *ShelfIterator) bufLen() int {
@@ -770,13 +772,14 @@ func (it *StringIterator) PageInfo() *iterator.PageInfo {
 
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
-func (it *StringIterator) Next() (item string, err error) {
-    err = it.nextFunc()
-    if err == nil {
-        item = it.items[0]
-        it.items = it.items[1:]
+func (it *StringIterator) Next() (string, error) {
+    var item string
+    if err := it.nextFunc(); err != nil {
+        return item, err
     }
-    return
+    item := it.items[0]
+    it.items = it.items[1:]
+    return item, nil
 }
 
 func (it *StringIterator) bufLen() int {

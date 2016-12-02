@@ -302,13 +302,14 @@
 
     // Next returns the next result. Its second return value is iterator.Done if there are no more
     // results. Once Next returns Done, all subsequent calls will return Done.
-    func (it *{@iter.typeName}) Next() (item {@iter.resourceTypeName}, err error) {
-        err = it.nextFunc()
-        if err == nil {
-            item = it.items[0]
-            it.items = it.items[1:]
+    func (it *{@iter.typeName}) Next() ({@iter.resourceTypeName}, error) {
+        var item {@iter.resourceTypeName}
+        if err := it.nextFunc(); err != nil {
+            return item, err
         }
-        return
+        item := it.items[0]
+        it.items = it.items[1:]
+        return item, nil
     }
 
     func (it *{@iter.typeName}) bufLen() int {

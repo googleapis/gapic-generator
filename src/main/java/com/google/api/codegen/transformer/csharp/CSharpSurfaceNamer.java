@@ -246,7 +246,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFormatFunctionName(SingleResourceNameConfig resourceNameConfig) {
+  public String getFormatFunctionName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
     return getResourceTypeName(resourceNameConfig);
   }
 
