@@ -171,11 +171,11 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest() {
-    String formattedName2 = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+    String name2 = "";
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
+      .setName(name2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
@@ -213,28 +213,28 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest2() {
-    String formattedName2 = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+    String name2 = "";
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
+      .setName(name2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+    String name = "";
     SomeMessage message = SomeMessage.newBuilder().build();
 
     Shelf actualResponse =
-        client.getShelf(formattedName, message);
+        client.getShelf(name, message);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
   }
 
@@ -245,10 +245,10 @@ public class LibraryServiceTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+      String name = "";
       SomeMessage message = SomeMessage.newBuilder().build();
 
-      client.getShelf(formattedName, message);
+      client.getShelf(name, message);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
@@ -258,29 +258,29 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfTest3() {
-    String formattedName2 = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+    String name2 = "";
     String theme = "theme110327241";
     String internalTheme = "internalTheme792518087";
     Shelf expectedResponse = Shelf.newBuilder()
-      .setName(formattedName2)
+      .setName(name2)
       .setTheme(theme)
       .setInternalTheme(internalTheme)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+    String name = "";
     SomeMessage message = SomeMessage.newBuilder().build();
     com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
     Shelf actualResponse =
-        client.getShelf(formattedName, message, stringBuilder);
+        client.getShelf(name, message, stringBuilder);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     GetShelfRequest actualRequest = (GetShelfRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertEquals(message, actualRequest.getMessage());
     Assert.assertEquals(stringBuilder, actualRequest.getStringBuilder());
   }
@@ -292,11 +292,11 @@ public class LibraryServiceTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+      String name = "";
       SomeMessage message = SomeMessage.newBuilder().build();
       com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
 
-      client.getShelf(formattedName, message, stringBuilder);
+      client.getShelf(name, message, stringBuilder);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
@@ -426,30 +426,30 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    String formattedName2 = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+    String name2 = "";
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
+      .setName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+    String name = "";
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
-        client.createBook(formattedName, book);
+        client.createBook(name, book);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     CreateBookRequest actualRequest = (CreateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertEquals(book, actualRequest.getBook());
   }
 
@@ -460,10 +460,10 @@ public class LibraryServiceTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+      String name = "";
       Book book = Book.newBuilder().build();
 
-      client.createBook(formattedName, book);
+      client.createBook(name, book);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
@@ -876,7 +876,7 @@ public class LibraryServiceTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedName = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+    String name = "";
     ByteString comment = ByteString.copyFromUtf8("95");
     Comment.Stage stage = Comment.Stage.UNSET;
     SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -887,13 +887,13 @@ public class LibraryServiceTest {
       .build();
     List<Comment> comments = Arrays.asList(commentsElement);
 
-    client.addComments(formattedName, comments);
+    client.addComments(name, comments);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddCommentsRequest actualRequest = (AddCommentsRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedName, actualRequest.getName());
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertEquals(comments, actualRequest.getCommentsList());
   }
 
@@ -904,7 +904,7 @@ public class LibraryServiceTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedName = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+      String name = "";
       ByteString comment = ByteString.copyFromUtf8("95");
       Comment.Stage stage = Comment.Stage.UNSET;
       SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -915,7 +915,7 @@ public class LibraryServiceTest {
         .build();
       List<Comment> comments = Arrays.asList(commentsElement);
 
-      client.addComments(formattedName, comments);
+      client.addComments(name, comments);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
@@ -1269,18 +1269,18 @@ public class LibraryServiceTest {
     AddTagResponse expectedResponse = AddTagResponse.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+    String resource = "";
     String tag = "tag114586";
 
     AddTagResponse actualResponse =
-        client.addTag(formattedResource, tag);
+        client.addTag(resource, tag);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddTagRequest actualRequest = (AddTagRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedResource, actualRequest.getResource());
+    Assert.assertEquals(resource, actualRequest.getResource());
     Assert.assertEquals(tag, actualRequest.getTag());
   }
 
@@ -1291,10 +1291,10 @@ public class LibraryServiceTest {
     mockLibraryService.addException(exception);
 
     try {
-      String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+      String resource = "";
       String tag = "tag114586";
 
-      client.addTag(formattedResource, tag);
+      client.addTag(resource, tag);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
@@ -1307,18 +1307,18 @@ public class LibraryServiceTest {
     AddLabelResponse expectedResponse = AddLabelResponse.newBuilder().build();
     mockLabeler.addResponse(expectedResponse);
 
-    String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+    String resource = "";
     String label = "label102727412";
 
     AddLabelResponse actualResponse =
-        client.addLabel(formattedResource, label);
+        client.addLabel(resource, label);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLabeler.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     AddLabelRequest actualRequest = (AddLabelRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedResource, actualRequest.getResource());
+    Assert.assertEquals(resource, actualRequest.getResource());
     Assert.assertEquals(label, actualRequest.getLabel());
   }
 
@@ -1329,10 +1329,10 @@ public class LibraryServiceTest {
     mockLabeler.addException(exception);
 
     try {
-      String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+      String resource = "";
       String label = "label102727412";
 
-      client.addLabel(formattedResource, label);
+      client.addLabel(resource, label);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
@@ -1342,12 +1342,12 @@ public class LibraryServiceTest {
   @Test
   @SuppressWarnings("all")
   public void getBigBookTest() throws Exception {
-    String formattedName2 = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+    String name2 = "";
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
     Book expectedResponse = Book.newBuilder()
-      .setName(formattedName2)
+      .setName(name2)
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)

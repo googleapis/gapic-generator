@@ -66,7 +66,7 @@ public abstract class FlatteningConfig {
           methodConfigProto.getResourceNameTreatment();
       if (defaultResourceNameTreatment == null
           || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
+        defaultResourceNameTreatment = ResourceNameTreatment.NONE;
       }
 
       FieldConfig fieldConfig =

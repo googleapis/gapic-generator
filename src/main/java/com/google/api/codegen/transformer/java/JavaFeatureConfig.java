@@ -32,4 +32,9 @@ public class JavaFeatureConfig extends FeatureConfig {
   public boolean enableGrpcStreaming() {
     return true;
   }
+
+  @Override
+  public boolean enableStringFormatFunctions() {
+    return false;
+  }
 }

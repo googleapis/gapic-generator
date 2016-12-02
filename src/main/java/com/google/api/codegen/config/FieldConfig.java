@@ -157,7 +157,7 @@ public abstract class FieldConfig {
       }
     }
 
-    validate(messageConfigs, field, treatment, flattenedFieldResourceNameConfig);
+    validate(messageConfigs, field, treatment);
 
     return createFieldConfig(
         field, treatment, flattenedFieldResourceNameConfig, messageFieldResourceNameConfig);
@@ -198,10 +198,6 @@ public abstract class FieldConfig {
     return getResourceNameTreatment() == ResourceNameTreatment.STATIC_TYPES;
   }
 
-  public boolean useValidation() {
-    return getResourceNameTreatment() == ResourceNameTreatment.VALIDATE;
-  }
-
   public FieldConfig withResourceNameConfig(ResourceNameConfig resourceNameConfig) {
     return FieldConfig.createFieldConfig(
         getField(), getResourceNameTreatment(), resourceNameConfig, getMessageResourceNameConfig());
@@ -227,10 +223,7 @@ public abstract class FieldConfig {
    * Check that the provided resource name treatment and entityName are valid for the provided field.
    */
   public static void validate(
-      ResourceNameMessageConfigs messageConfigs,
-      Field field,
-      ResourceNameTreatment treatment,
-      ResourceNameConfig resourceNameConfig) {
+      ResourceNameMessageConfigs messageConfigs, Field field, ResourceNameTreatment treatment) {
     switch (treatment) {
       case NONE:
         break;
@@ -239,14 +232,6 @@ public abstract class FieldConfig {
           throw new IllegalArgumentException(
               "Field must have a resource type specified to support "
                   + "STATIC_TYPES resource name treatment. Field: "
-                  + field.getFullName());
-        }
-        break;
-      case VALIDATE:
-        if (resourceNameConfig == null) {
-          throw new IllegalArgumentException(
-              "Field must have a resource type or field name pattern specified to support "
-                  + "VALIDATE resource name treatment. Field: "
                   + field.getFullName());
         }
         break;

@@ -58,8 +58,6 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   @Nullable // Used in C#
   public abstract List<RequestObjectParamView> forwardingMethodParams();
 
-  public abstract List<PathTemplateCheckView> pathTemplateChecks();
-
   public abstract boolean hasReturnValue();
 
   public abstract List<RequestObjectParamView> requestObjectParams();
@@ -126,8 +124,6 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder methodParams(List<RequestObjectParamView> methodParams);
 
     public abstract Builder forwardingMethodParams(List<RequestObjectParamView> methodParams);
-
-    public abstract Builder pathTemplateChecks(List<PathTemplateCheckView> pathTemplateChecks);
 
     public abstract Builder hasReturnValue(boolean hasReturnValue);
 

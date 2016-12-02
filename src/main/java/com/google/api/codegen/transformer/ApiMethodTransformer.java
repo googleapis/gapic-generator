@@ -18,7 +18,6 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -30,7 +29,6 @@ import com.google.api.codegen.viewmodel.ListMethodDetailView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ParamDocView;
-import com.google.api.codegen.viewmodel.PathTemplateCheckView;
 import com.google.api.codegen.viewmodel.RequestObjectMethodDetailView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
@@ -41,7 +39,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayList;
@@ -456,8 +453,6 @@ public class ApiMethodTransformer {
     nonforwardingParams.addAll(ParamWithSimpleDoc.asRequestObjectParamViews(additionalParams));
     methodViewBuilder.methodParams(nonforwardingParams);
     methodViewBuilder.requestObjectParams(params);
-
-    methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fieldConfigs));
   }
 
   private void setRequestObjectMethodFields(
@@ -483,7 +478,6 @@ public class ApiMethodTransformer {
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
-    methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
 
     RequestObjectMethodDetailView.Builder detailBuilder =
         RequestObjectMethodDetailView.newBuilder();
@@ -515,7 +509,6 @@ public class ApiMethodTransformer {
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
-    methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
 
     String genericAwareResponseTypeFullName =
         context.getNamer().getGenericAwareResponseTypeName(context.getMethod().getOutputType());
@@ -553,64 +546,6 @@ public class ApiMethodTransformer {
     String returnTypeFullName = namer.getGrpcStreamingApiReturnTypeName(context.getMethod());
     String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
     methodViewBuilder.responseTypeName(returnTypeNickname);
-  }
-
-  private void setStaticLangAsyncOperationReturnTypeName(
-      MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
-    String returnTypeNickname =
-        context
-            .getNamer()
-            .getAndSaveOperationResponseTypeName(
-                context.getMethod(), context.getTypeTable(), context.getMethodConfig());
-    methodViewBuilder.responseTypeName(returnTypeNickname);
-  }
-
-  private List<PathTemplateCheckView> generatePathTemplateChecks(
-      MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
-    List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
-    for (FieldConfig fieldConfig : fieldConfigs) {
-      if (!fieldConfig.useValidation()) {
-        // Don't generate a path template check if fieldConfig is not configured to use validation.
-        continue;
-      }
-      Field field = fieldConfig.getField();
-      ImmutableMap<String, String> fieldNamePatterns =
-          context.getMethodConfig().getFieldNamePatterns();
-      String entityName = fieldNamePatterns.get(field.getSimpleName());
-      if (entityName != null) {
-        SingleResourceNameConfig resourceNameConfig =
-            context.getSimpleResourceNameConfig(entityName);
-        if (resourceNameConfig == null) {
-          String methodName = context.getMethod().getSimpleName();
-          throw new IllegalStateException(
-              "No collection config with id '"
-                  + entityName
-                  + "' required by configuration for method '"
-                  + methodName
-                  + "'");
-        }
-        PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
-        check.pathTemplateName(
-            context.getNamer().getPathTemplateName(context.getInterface(), resourceNameConfig));
-        check.paramName(context.getNamer().getVariableName(field));
-        check.allowEmptyString(shouldAllowEmpty(context, field));
-        check.validationMessageContext(
-            context
-                .getNamer()
-                .getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
-        pathTemplateChecks.add(check.build());
-      }
-    }
-    return pathTemplateChecks;
-  }
-
-  private boolean shouldAllowEmpty(MethodTransformerContext context, Field field) {
-    for (Field requiredField : context.getMethodConfig().getRequiredFields()) {
-      if (requiredField.equals(field)) {
-        return false;
-      }
-    }
-    return true;
   }
 
   public OptionalArrayMethodView generateDynamicLangApiMethod(MethodTransformerContext context) {
@@ -687,8 +622,7 @@ public class ApiMethodTransformer {
 
   private List<DynamicLangDefaultableParamView> generateOptionalArrayMethodParams(
       MethodTransformerContext context) {
-    List<DynamicLangDefaultableParamView> methodParams =
-        generateDefaultableParams(context, context.getMethodConfig().getRequiredFields());
+    List<DynamicLangDefaultableParamView> methodParams = generateDefaultableParams(context);
 
     // TODO create a map TypeRef here instead of an array
     // (not done yet because array is sufficient for PHP, and maps are more complex to construct)
@@ -704,7 +638,7 @@ public class ApiMethodTransformer {
   }
 
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(
-      MethodTransformerContext context, Iterable<Field> fields) {
+      MethodTransformerContext context) {
     List<DynamicLangDefaultableParamView> methodParams = new ArrayList<>();
     for (Field field : context.getMethodConfig().getRequiredFields()) {
       DynamicLangDefaultableParamView param =

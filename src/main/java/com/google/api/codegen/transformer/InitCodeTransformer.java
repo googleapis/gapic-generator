@@ -361,7 +361,8 @@ public class InitCodeTransformer {
         default:
           throw new UnsupportedOperationException("unexpected entity name type");
       }
-    } else if (initValueConfig.hasFormattingConfig()) {
+    } else if (context.getFeatureConfig().enableStringFormatFunctions()
+        && initValueConfig.hasFormattingConfig()) {
       FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
 
       initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
@@ -474,6 +475,7 @@ public class InitCodeTransformer {
 
   private static String getVariableName(MethodTransformerContext context, InitCodeNode item) {
     if (!context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())
+        && context.getFeatureConfig().enableStringFormatFunctions()
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }

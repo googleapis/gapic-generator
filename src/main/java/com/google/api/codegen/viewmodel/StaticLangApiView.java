@@ -42,10 +42,6 @@ public abstract class StaticLangApiView {
 
   public abstract List<PathTemplateView> pathTemplates();
 
-  public abstract List<FormatResourceFunctionView> formatResourceFunctions();
-
-  public abstract List<ParseResourceFunctionView> parseResourceFunctions();
-
   public abstract List<StaticLangApiMethodView> apiMethods();
 
   @Nullable // Used in C#
@@ -82,10 +78,6 @@ public abstract class StaticLangApiView {
     public abstract Builder apiCallableMembers(List<ApiCallableView> val);
 
     public abstract Builder pathTemplates(List<PathTemplateView> val);
-
-    public abstract Builder formatResourceFunctions(List<FormatResourceFunctionView> val);
-
-    public abstract Builder parseResourceFunctions(List<ParseResourceFunctionView> val);
 
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 

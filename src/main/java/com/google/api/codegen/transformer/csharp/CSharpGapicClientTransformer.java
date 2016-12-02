@@ -179,10 +179,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     }
     apiClass.apiCallableMembers(callables);
     apiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
-    apiClass.formatResourceFunctions(
-        pathTemplateTransformer.generateFormatResourceFunctions(context));
-    apiClass.parseResourceFunctions(
-        pathTemplateTransformer.generateParseResourceFunctions(context));
     apiClass.apiMethods(methods);
     List<StaticLangApiMethodView> methodsImpl = new ArrayList<>();
     for (StaticLangApiMethodView method : methods) {

@@ -9,8 +9,6 @@
   @@ExperimentalApi
   public class {@apiFile.api.name} implements AutoCloseable {
     {@members(apiFile.api)}
-    {@statics(apiFile.api)}
-    {@staticFunctions(apiFile.api)}
     {@constructors(apiFile.api)}
     {@memberMethods(apiFile.api)}
     {@apiMethods(apiFile.api)}
@@ -101,61 +99,6 @@
    * </code>
    * </pre>
    */
-@end
-
-@private statics(xapiClass)
-  @join pathTemplate : xapiClass.pathTemplates
-    private static final PathTemplate {@pathTemplate.name} =
-        PathTemplate.createWithoutUrlEncoding("{@pathTemplate.pattern}");
-    {@""}
-  @end
-@end
-
-@private staticFunctions(xapiClass)
-  @join function : xapiClass.formatResourceFunctions
-    {@formatResourceFunction(function)}
-  @end
-  {@""}
-  @join function : xapiClass.parseResourceFunctions
-    {@parseResourceFunction(function)}
-  @end
-@end
-
-@private formatResourceFunction(function)
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a {@function.entityName} resource.
-   */
-  public static final String {@function.name}(\
-      {@formatResourceFunctionParams(function.resourceIdParams)}) {
-    return {@function.pathTemplateName}.instantiate(
-        {@pathTemplateArgs(function.resourceIdParams)});
-  }
-  {@""}
-@end
-
-@private formatResourceFunctionParams(resourceIdParams)
-  @join param : resourceIdParams on ", "
-    String {@param.name}
-  @end
-@end
-
-@private pathTemplateArgs(resourceIdParams)
-  @join param : resourceIdParams on ",".add(BREAK)
-    "{@param.templateKey}", {@param.name}
-  @end
-@end
-
-@private parseResourceFunction(function)
-  /**
-   * Parses the {@function.outputResourceId} from the given fully-qualified path which
-   * represents a {@function.entityName} resource.
-   */
-  public static final String {@function.name}(String {@function.entityNameParamName}) {
-    return {@function.pathTemplateName}.parse({@function.entityNameParamName})\
-      .get("{@function.outputResourceId}");
-  }
-  {@""}
 @end
 
 @private members(xapiClass)
@@ -337,9 +280,6 @@
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
   public final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
-    @join pathTemplateCheck : apiMethod.pathTemplateChecks
-      {@pathTemplateCheckLine(pathTemplateCheck)}
-    @end
     {@apiMethod.serviceRequestTypeName} request =
         {@apiMethod.serviceRequestTypeName}.newBuilder()
         {@builderSetCalls(apiMethod.requestObjectParams)}
@@ -458,10 +398,6 @@
 @end
 
 @private flattenedRequestBuildingCode(apiMethod)
-  @join pathTemplateCheck : apiMethod.pathTemplateChecks
-    {@pathTemplateCheckLine(pathTemplateCheck)}
-  @end
-
   {@apiMethod.serviceRequestTypeName} request =
       {@apiMethod.serviceRequestTypeName}.newBuilder()
       {@builderSetCalls(apiMethod.requestObjectParams)}
