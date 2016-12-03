@@ -31,6 +31,7 @@
 var configData = require('./library_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
+var merge = require('lodash.merge');
 
 var SERVICE_ADDRESS = 'library-example.googleapis.com';
 
@@ -121,7 +122,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
         'shelf.name'
       ],
       'bookNames',
-      gax.createByteLengthFunction(grpcClients.libraryServiceClient.google.example.library.v1.Book))
+      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book))
   };
 
   var operationsClient = new gax.lro({
@@ -133,23 +134,11 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     appVersion: appVersion
   });
 
-  var protoDescriptorPool = {};
-
-  extend(protoDescriptorPool, gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'library.proto'
-  }]));
-
-  extend(protoDescriptorPool, gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'tagger.proto'
-  }]));
-
   var longrunningDescriptors = {
     getBigBook: new gax.LongrunningDescriptor(
       operationsClient,
-      protoDescriptorPool.google.example.library.v1.Book.decode,
-      protoDescriptorPool.google.example.library.v1.GetBigBookMetadata.decode
+      grpcClients.google.example.library.v1.Book.decode,
+      grpcClients.google.example.library.v1.GetBigBookMetadata.decode
     });
   };
 
@@ -162,7 +151,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   var libraryServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
-      grpcClients.libraryServiceClient.google.example.library.v1.LibraryService,
+      grpcClients.google.example.library.v1.LibraryService,
       {sslCreds: sslCreds});
   var libraryServiceStubMethods = [
     'createShelf',
@@ -201,7 +190,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   var labelerStub = gaxGrpc.createStub(
       servicePath,
       port,
-      grpcClients.labelerClient.google.tagger.v1.Labeler,
+      grpcClients.google.tagger.v1.Labeler,
       {sslCreds: sslCreds});
   var labelerStubMethods = [
     'addLabel'
@@ -1720,9 +1709,9 @@ LibraryServiceClient.prototype.addLabel = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/global.html#Operation} object.
+ *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
  * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/global.html#Operation} object.
+ *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1804,10 +1793,11 @@ function LibraryServiceClientBuilder(gaxGrpc) {
   }]);
   extend(this, labelerClient.google.tagger.v1);
 
-  var grpcClients = {
-    libraryServiceClient: libraryServiceClient,
-    labelerClient: labelerClient
-  };
+  var grpcClients = merge(
+    {},
+    libraryServiceClient,
+    labelerClient
+  );
 
   /**
    * Build a new instance of {@link LibraryServiceClient}.
