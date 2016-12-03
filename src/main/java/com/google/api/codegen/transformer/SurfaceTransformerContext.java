@@ -213,4 +213,14 @@ public abstract class SurfaceTransformerContext {
     }
     return methods;
   }
+
+  public Iterable<Method> getGrpcStreamingMethods() {
+    List<Method> methods = new ArrayList<>();
+    for (Method method : getSupportedMethods()) {
+      if (getMethodConfig(method).isGrpcStreaming()) {
+        methods.add(method);
+      }
+    }
+    return methods;
+  }
 }

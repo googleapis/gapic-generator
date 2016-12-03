@@ -801,7 +801,21 @@ public class ApiMethodTransformer {
         generateRequestObjectParams(context, filteredFieldConfigs));
     apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
-    apiMethod.isLongRunningOperation(context.getMethodConfig().isLongRunningOperation());
+    /*
+    switch (context.getMethodConfig().getGrpcStreamingType()) {
+      case BidiStreaming:
+        break;
+      case ClientStreaming:
+        break;
+      case NonStreaming:
+        break;
+      case ServerStreaming:
+        break;
+      default:
+        break;
+    }
+    */
+
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)

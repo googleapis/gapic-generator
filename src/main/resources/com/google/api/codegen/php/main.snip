@@ -133,6 +133,7 @@
     @end
     {@pageStreamingDescriptorFunction(xapiClass)}
     {@longRunningDescriptorFunction(xapiClass)}
+    {@grpcStreamingDescriptorFunction(xapiClass)}
 @end
 
 @private formatResourceFunction(function)
@@ -224,6 +225,22 @@
                     '{@descriptor.methodName}' => [
                         'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
                         'metadataReturnType' => '{@descriptor.metadataTypeName}',
+                    ],
+                @end
+            ];
+        }
+        {@""}
+    @end
+@end
+
+@private grpcStreamingDescriptorFunction(xapiClass)
+    @if xapiClass.hasGrpcStreamingMethods
+        private static function getGrpcStreamingDescriptors()
+        {
+            return [
+                @join descriptor : xapiClass.grpcStreamingDescriptors
+                    '{@descriptor.methodName}' => [
+                        'grpcStreamingType' => '{@descriptor.grpcStreamingType.toString}'
                     ],
                 @end
             ];
@@ -357,6 +374,12 @@
             $longRunningDescriptors = self::getLongRunningDescriptors();
             foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
                 $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
+            }
+        @end
+        @if xapiClass.hasGrpcStreamingMethods
+            $grpcStreamingDescriptors = self::getGrpcStreamingDescriptors();
+            foreach ($grpcStreamingDescriptors as $method => $grpcStreamingDescriptor) {
+                $this->descriptors[$method]['grpcStreamingDescriptor'] = $grpcStreamingDescriptor;
             }
         @end
 
