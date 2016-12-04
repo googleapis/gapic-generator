@@ -317,9 +317,9 @@ func TestLibraryServiceCreateShelf(t *testing.T) {
     var theme string = "theme110327241"
     var internalTheme string = "internalTheme792518087"
     var expectedResponse = &librarypb.Shelf{
-      Name: name,
-      Theme: theme,
-      InternalTheme: internalTheme,
+        Name: name,
+        Theme: theme,
+        InternalTheme: internalTheme,
     }
 
     mockLibrary.err = nil
@@ -329,7 +329,7 @@ func TestLibraryServiceCreateShelf(t *testing.T) {
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var request = &librarypb.CreateShelfRequest{
-      Shelf: shelf,
+        Shelf: shelf,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -358,7 +358,7 @@ func TestLibraryServiceCreateShelfError(t *testing.T) {
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var request = &librarypb.CreateShelfRequest{
-      Shelf: shelf,
+        Shelf: shelf,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -378,9 +378,9 @@ func TestLibraryServiceGetShelf(t *testing.T) {
     var theme string = "theme110327241"
     var internalTheme string = "internalTheme792518087"
     var expectedResponse = &librarypb.Shelf{
-      Name: formattedName2,
-      Theme: theme,
-      InternalTheme: internalTheme,
+        Name: formattedName2,
+        Theme: theme,
+        InternalTheme: internalTheme,
     }
 
     mockLibrary.err = nil
@@ -391,8 +391,8 @@ func TestLibraryServiceGetShelf(t *testing.T) {
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
-      Name: formattedName,
-      Options: options,
+        Name: formattedName,
+        Options: options,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -422,8 +422,8 @@ func TestLibraryServiceGetShelfError(t *testing.T) {
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
-      Name: formattedName,
-      Options: options,
+        Name: formattedName,
+        Options: options,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -443,8 +443,8 @@ func TestLibraryServiceListShelves(t *testing.T) {
     var shelvesElement *librarypb.Shelf = &librarypb.Shelf{}
     var shelves = []*librarypb.Shelf{shelvesElement}
     var expectedResponse = &librarypb.ListShelvesResponse{
-      NextPageToken: nextPageToken,
-      Shelves: shelves,
+        NextPageToken: nextPageToken,
+        Shelves: shelves,
     }
 
     mockLibrary.err = nil
@@ -512,7 +512,7 @@ func TestLibraryServiceDeleteShelf(t *testing.T) {
 
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var request = &librarypb.DeleteShelfRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -538,7 +538,7 @@ func TestLibraryServiceDeleteShelfError(t *testing.T) {
 
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var request = &librarypb.DeleteShelfRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -557,9 +557,9 @@ func TestLibraryServiceMergeShelves(t *testing.T) {
     var theme string = "theme110327241"
     var internalTheme string = "internalTheme792518087"
     var expectedResponse = &librarypb.Shelf{
-      Name: formattedName2,
-      Theme: theme,
-      InternalTheme: internalTheme,
+        Name: formattedName2,
+        Theme: theme,
+        InternalTheme: internalTheme,
     }
 
     mockLibrary.err = nil
@@ -570,8 +570,8 @@ func TestLibraryServiceMergeShelves(t *testing.T) {
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var formattedOtherShelfName string = LibraryShelfPath("[SHELF_ID]")
     var request = &librarypb.MergeShelvesRequest{
-      Name: formattedName,
-      OtherShelfName: formattedOtherShelfName,
+        Name: formattedName,
+        OtherShelfName: formattedOtherShelfName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -601,8 +601,8 @@ func TestLibraryServiceMergeShelvesError(t *testing.T) {
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var formattedOtherShelfName string = LibraryShelfPath("[SHELF_ID]")
     var request = &librarypb.MergeShelvesRequest{
-      Name: formattedName,
-      OtherShelfName: formattedOtherShelfName,
+        Name: formattedName,
+        OtherShelfName: formattedOtherShelfName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -623,10 +623,10 @@ func TestLibraryServiceCreateBook(t *testing.T) {
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-      Name: formattedName2,
-      Author: author,
-      Title: title,
-      Read: read,
+        Name: formattedName2,
+        Author: author,
+        Title: title,
+        Read: read,
     }
 
     mockLibrary.err = nil
@@ -637,8 +637,8 @@ func TestLibraryServiceCreateBook(t *testing.T) {
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.CreateBookRequest{
-      Name: formattedName,
-      Book: book,
+        Name: formattedName,
+        Book: book,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -668,8 +668,8 @@ func TestLibraryServiceCreateBookError(t *testing.T) {
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.CreateBookRequest{
-      Name: formattedName,
-      Book: book,
+        Name: formattedName,
+        Book: book,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -688,7 +688,7 @@ func TestLibraryServicePublishSeries(t *testing.T) {
     var bookNamesElement string = "bookNamesElement1491670575"
     var bookNames = []string{bookNamesElement}
     var expectedResponse = &librarypb.PublishSeriesResponse{
-      BookNames: bookNames,
+        BookNames: bookNames,
     }
 
     mockLibrary.err = nil
@@ -699,8 +699,8 @@ func TestLibraryServicePublishSeries(t *testing.T) {
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
     var request = &librarypb.PublishSeriesRequest{
-      Shelf: shelf,
-      Books: books,
+        Shelf: shelf,
+        Books: books,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -730,8 +730,8 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
     var request = &librarypb.PublishSeriesRequest{
-      Shelf: shelf,
-      Books: books,
+        Shelf: shelf,
+        Books: books,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -752,10 +752,10 @@ func TestLibraryServiceGetBook(t *testing.T) {
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-      Name: formattedName2,
-      Author: author,
-      Title: title,
-      Read: read,
+        Name: formattedName2,
+        Author: author,
+        Title: title,
+        Read: read,
     }
 
     mockLibrary.err = nil
@@ -765,7 +765,7 @@ func TestLibraryServiceGetBook(t *testing.T) {
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -794,7 +794,7 @@ func TestLibraryServiceGetBookError(t *testing.T) {
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -814,8 +814,8 @@ func TestLibraryServiceListBooks(t *testing.T) {
     var booksElement *librarypb.Book = &librarypb.Book{}
     var books = []*librarypb.Book{booksElement}
     var expectedResponse = &librarypb.ListBooksResponse{
-      NextPageToken: nextPageToken,
-      Books: books,
+        NextPageToken: nextPageToken,
+        Books: books,
     }
 
     mockLibrary.err = nil
@@ -825,7 +825,7 @@ func TestLibraryServiceListBooks(t *testing.T) {
 
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var request = &librarypb.ListBooksRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -864,7 +864,7 @@ func TestLibraryServiceListBooksError(t *testing.T) {
 
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
     var request = &librarypb.ListBooksRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -889,7 +889,7 @@ func TestLibraryServiceDeleteBook(t *testing.T) {
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DeleteBookRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -915,7 +915,7 @@ func TestLibraryServiceDeleteBookError(t *testing.T) {
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DeleteBookRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -935,10 +935,10 @@ func TestLibraryServiceUpdateBook(t *testing.T) {
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-      Name: formattedName2,
-      Author: author,
-      Title: title,
-      Read: read,
+        Name: formattedName2,
+        Author: author,
+        Title: title,
+        Read: read,
     }
 
     mockLibrary.err = nil
@@ -949,8 +949,8 @@ func TestLibraryServiceUpdateBook(t *testing.T) {
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.UpdateBookRequest{
-      Name: formattedName,
-      Book: book,
+        Name: formattedName,
+        Book: book,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -980,8 +980,8 @@ func TestLibraryServiceUpdateBookError(t *testing.T) {
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.UpdateBookRequest{
-      Name: formattedName,
-      Book: book,
+        Name: formattedName,
+        Book: book,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1002,10 +1002,10 @@ func TestLibraryServiceMoveBook(t *testing.T) {
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-      Name: formattedName2,
-      Author: author,
-      Title: title,
-      Read: read,
+        Name: formattedName2,
+        Author: author,
+        Title: title,
+        Read: read,
     }
 
     mockLibrary.err = nil
@@ -1016,8 +1016,8 @@ func TestLibraryServiceMoveBook(t *testing.T) {
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var formattedOtherShelfName string = LibraryShelfPath("[SHELF_ID]")
     var request = &librarypb.MoveBookRequest{
-      Name: formattedName,
-      OtherShelfName: formattedOtherShelfName,
+        Name: formattedName,
+        OtherShelfName: formattedOtherShelfName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1047,8 +1047,8 @@ func TestLibraryServiceMoveBookError(t *testing.T) {
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var formattedOtherShelfName string = LibraryShelfPath("[SHELF_ID]")
     var request = &librarypb.MoveBookRequest{
-      Name: formattedName,
-      OtherShelfName: formattedOtherShelfName,
+        Name: formattedName,
+        OtherShelfName: formattedOtherShelfName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1068,8 +1068,8 @@ func TestLibraryServiceListStrings(t *testing.T) {
     var stringsElement string = "stringsElement474465855"
     var strings = []string{stringsElement}
     var expectedResponse = &librarypb.ListStringsResponse{
-      NextPageToken: nextPageToken,
-      Strings: strings,
+        NextPageToken: nextPageToken,
+        Strings: strings,
     }
 
     mockLibrary.err = nil
@@ -1140,14 +1140,14 @@ func TestLibraryServiceAddComments(t *testing.T) {
     var stage librarypb.Comment_Stage = 0
     var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = 0
     var commentsElement = &librarypb.Comment{
-      Comment: comment,
-      Stage: stage,
-      Alignment: alignment,
+        Comment: comment,
+        Stage: stage,
+        Alignment: alignment,
     }
     var comments = []*librarypb.Comment{commentsElement}
     var request = &librarypb.AddCommentsRequest{
-      Name: formattedName,
-      Comments: comments,
+        Name: formattedName,
+        Comments: comments,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1176,14 +1176,14 @@ func TestLibraryServiceAddCommentsError(t *testing.T) {
     var stage librarypb.Comment_Stage = 0
     var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = 0
     var commentsElement = &librarypb.Comment{
-      Comment: comment,
-      Stage: stage,
-      Alignment: alignment,
+        Comment: comment,
+        Stage: stage,
+        Alignment: alignment,
     }
     var comments = []*librarypb.Comment{commentsElement}
     var request = &librarypb.AddCommentsRequest{
-      Name: formattedName,
-      Comments: comments,
+        Name: formattedName,
+        Comments: comments,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1203,10 +1203,10 @@ func TestLibraryServiceGetBookFromArchive(t *testing.T) {
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.BookFromArchive{
-      Name: formattedName2,
-      Author: author,
-      Title: title,
-      Read: read,
+        Name: formattedName2,
+        Author: author,
+        Title: title,
+        Read: read,
     }
 
     mockLibrary.err = nil
@@ -1216,7 +1216,7 @@ func TestLibraryServiceGetBookFromArchive(t *testing.T) {
 
     var formattedName string = LibraryArchivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromArchiveRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1245,7 +1245,7 @@ func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
 
     var formattedName string = LibraryArchivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromArchiveRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1266,10 +1266,10 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.BookFromAnywhere{
-      Name: name2,
-      Author: author,
-      Title: title,
-      Read: read,
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
     }
 
     mockLibrary.err = nil
@@ -1280,8 +1280,8 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
     var name string = "name3373707"
     var formattedAltBookName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromAnywhereRequest{
-      Name: name,
-      AltBookName: formattedAltBookName,
+        Name: name,
+        AltBookName: formattedAltBookName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1311,8 +1311,8 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
     var name string = "name3373707"
     var formattedAltBookName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromAnywhereRequest{
-      Name: name,
-      AltBookName: formattedAltBookName,
+        Name: name,
+        AltBookName: formattedAltBookName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1339,12 +1339,12 @@ func TestLibraryServiceUpdateBookIndex(t *testing.T) {
     var indexName string = "default index"
     var indexMapItem string = "indexMapItem1918721251"
     var indexMap = map[string]string{
-      "default_key": indexMapItem,
+        "default_key": indexMapItem,
     }
     var request = &librarypb.UpdateBookIndexRequest{
-      Name: formattedName,
-      IndexName: indexName,
-      IndexMap: indexMap,
+        Name: formattedName,
+        IndexName: indexName,
+        IndexMap: indexMap,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1372,12 +1372,12 @@ func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
     var indexName string = "default index"
     var indexMapItem string = "indexMapItem1918721251"
     var indexMap = map[string]string{
-      "default_key": indexMapItem,
+        "default_key": indexMapItem,
     }
     var request = &librarypb.UpdateBookIndexRequest{
-      Name: formattedName,
-      IndexName: indexName,
-      IndexMap: indexMap,
+        Name: formattedName,
+        IndexName: indexName,
+        IndexMap: indexMap,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1453,10 +1453,10 @@ func TestLibraryServiceStreamBooks(t *testing.T) {
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-      Name: name2,
-      Author: author,
-      Title: title,
-      Read: read,
+        Name: name2,
+        Author: author,
+        Title: title,
+        Read: read,
     }
 
     mockLibrary.err = nil
@@ -1466,7 +1466,7 @@ func TestLibraryServiceStreamBooks(t *testing.T) {
 
     var name string = "name3373707"
     var request = &librarypb.StreamBooksRequest{
-      Name: name,
+        Name: name,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1499,7 +1499,7 @@ func TestLibraryServiceStreamBooksError(t *testing.T) {
 
     var name string = "name3373707"
     var request = &librarypb.StreamBooksRequest{
-      Name: name,
+        Name: name,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1522,8 +1522,8 @@ func TestLibraryServiceDiscussBook(t *testing.T) {
     var userName string = "userName339340927"
     var comment []byte = []byte("95")
     var expectedResponse = &librarypb.Comment{
-      UserName: userName,
-      Comment: comment,
+        UserName: userName,
+        Comment: comment,
     }
 
     mockLibrary.err = nil
@@ -1533,7 +1533,7 @@ func TestLibraryServiceDiscussBook(t *testing.T) {
 
     var name string = "name3373707"
     var request = &librarypb.DiscussBookRequest{
-      Name: name,
+        Name: name,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1572,7 +1572,7 @@ func TestLibraryServiceDiscussBookError(t *testing.T) {
 
     var name string = "name3373707"
     var request = &librarypb.DiscussBookRequest{
-      Name: name,
+        Name: name,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1602,8 +1602,8 @@ func TestLibraryServiceFindRelatedBooks(t *testing.T) {
     var namesElement2 string = "namesElement21120252792"
     var names2 = []string{namesElement2}
     var expectedResponse = &librarypb.FindRelatedBooksResponse{
-      NextPageToken: nextPageToken,
-      Names: names2,
+        NextPageToken: nextPageToken,
+        Names: names2,
     }
 
     mockLibrary.err = nil
@@ -1615,8 +1615,8 @@ func TestLibraryServiceFindRelatedBooks(t *testing.T) {
     var names = []string{namesElement}
     var shelves []string = nil
     var request = &librarypb.FindRelatedBooksRequest{
-      Names: names,
-      Shelves: shelves,
+        Names: names,
+        Shelves: shelves,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1657,8 +1657,8 @@ func TestLibraryServiceFindRelatedBooksError(t *testing.T) {
     var names = []string{namesElement}
     var shelves []string = nil
     var request = &librarypb.FindRelatedBooksRequest{
-      Names: names,
-      Shelves: shelves,
+        Names: names,
+        Shelves: shelves,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1684,8 +1684,8 @@ func TestLabelerAddLabel(t *testing.T) {
     var formattedResource string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
-      Resource: formattedResource,
-      Label: label,
+        Resource: formattedResource,
+        Label: label,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1715,8 +1715,8 @@ func TestLabelerAddLabelError(t *testing.T) {
     var formattedResource string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
-      Resource: formattedResource,
-      Label: label,
+        Resource: formattedResource,
+        Label: label,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1737,10 +1737,10 @@ func TestLibraryServiceGetBigBook(t *testing.T) {
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-      Name: formattedName2,
-      Author: author,
-      Title: title,
-      Read: read,
+        Name: formattedName2,
+        Author: author,
+        Title: title,
+        Read: read,
     }
 
     mockLibrary.err = nil
@@ -1758,7 +1758,7 @@ func TestLibraryServiceGetBigBook(t *testing.T) {
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1801,7 +1801,7 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
-      Name: formattedName,
+        Name: formattedName,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
