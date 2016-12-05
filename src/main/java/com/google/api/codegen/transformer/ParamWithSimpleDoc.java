@@ -80,8 +80,9 @@ public abstract class ParamWithSimpleDoc {
         .paramName(name())
         .typeName(typeName())
         .lines(docLines())
-        .firstLine(docLines().get(0))
-        .remainingLines(docLines().subList(0, docLines().size()))
+        //.firstLine(docLines().get(0))
+        //.remainingLines(docLines().subList(0, docLines().size()))
+        .lines(docLines())
         .build();
   }
 

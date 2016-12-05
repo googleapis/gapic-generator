@@ -742,6 +742,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
+  /** The name of the plain callable variant of the given method. */
+  public String getCallableAsyncMethodName(Method method) {
+    return publicMethodName(Name.upperCamel(method.getSimpleName(), "CallableAsync"));
+  }
+
   /** The name of the example for the plain callable variant. */
   public String getCallableMethodExampleName(Interface interfaze, Method method) {
     return getCallableMethodName(method);

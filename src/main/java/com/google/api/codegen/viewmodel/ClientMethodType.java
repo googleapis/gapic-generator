@@ -35,4 +35,6 @@ public enum ClientMethodType {
   FlattenedAsyncCallSettingsMethod,
   FlattenedAsyncCancellationTokenMethod,
   PagedFlattenedAsyncMethod,
+  AsyncRequestObjectMethod,
+  AsyncPagedRequestObjectMethod
 }

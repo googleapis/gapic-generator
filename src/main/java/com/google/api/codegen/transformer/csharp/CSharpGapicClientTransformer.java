@@ -200,7 +200,15 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   }
 
   private boolean methodTypeHasImpl(ClientMethodType type) {
-    return type != ClientMethodType.FlattenedAsyncCancellationTokenMethod;
+    switch (type) {
+      case RequestObjectMethod:
+      case AsyncRequestObjectMethod:
+      case PagedRequestObjectMethod:
+      case AsyncPagedRequestObjectMethod:
+        return true;
+      default:
+        return false;
+    }
   }
 
   private StaticLangSettingsView generateSettingsClass(SurfaceTransformerContext context) {
@@ -289,6 +297,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
+      MethodTransformerContext requestMethodContext = context.asRequestMethodContext(method);
       if (mixinsDisabled && methodConfig.getRerouteToGrpcInterface() != null) {
         continue;
       }
@@ -305,6 +314,12 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
                     methodContext, pagedMethodAdditionalParams));
           }
         }
+        apiMethods.add(
+            apiMethodTransformer.generatePagedRequestObjectAsyncMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+        apiMethods.add(
+            apiMethodTransformer.generatePagedRequestObjectMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
       } else {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
@@ -324,6 +339,12 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
                 apiMethodTransformer.generateFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
           }
+          apiMethods.add(
+              apiMethodTransformer.generateRequestObjectAsyncMethod(
+                  requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+          apiMethods.add(
+              apiMethodTransformer.generateRequestObjectMethod(
+                  requestMethodContext, csharpCommonTransformer.callSettingsParam()));
         }
       }
     }
