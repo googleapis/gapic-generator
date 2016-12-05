@@ -51,7 +51,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -97,13 +96,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   public List<GrpcStubView> getStubs(Interface service) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return grpcStubTransformer.generateGrpcStubs(context);
-  }
-
-  public GrpcStubView getStubForMethod(Interface service, Method method) {
-    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    Interface targetInterface = context.asDynamicMethodContext(method).getTargetInterface();
-    return grpcStubTransformer.generateGrpcStub(
-        context, targetInterface, Collections.singletonList(method));
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
@@ -341,6 +333,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       } else {
         returnTypeDoc += jsTypeName(resourcesType);
       }
+    } else if (config.isLongRunningOperation()) {
+      returnTypeDoc =
+          "a [gax.Operation]{@link " + "https://googleapis.github.io/gax-nodejs/Operation} object";
     } else {
       returnTypeDoc = typeDocument(method.getOutputType());
     }
@@ -443,6 +438,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     }
     if (filterStreamingMethods(service).iterator().hasNext()) {
       builder.add("STREAM_DESCRIPTORS");
+    }
+    if (messages().filterLongrunningMethods(ifaceConfig, methods).iterator().hasNext()) {
+      builder.add("longrunningDescriptors");
     }
     return builder.build();
   }
@@ -556,8 +554,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
         return "gax.createByteLengthFunction(grpcClients."
-            + getStubForMethod(service, method).grpcClientVariableName()
-            + "."
             + typeRef.getMessageType().getFullName()
             + ")";
       case TYPE_STRING:

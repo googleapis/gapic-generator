@@ -82,7 +82,7 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
   var noTemplatesApiServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
-      grpcClients.noTemplatesApiServiceClient.google.cloud.example.v1.NoTemplatesAPIService,
+      grpcClients.google.cloud.example.v1.NoTemplatesAPIService,
       {sslCreds: sslCreds});
   var noTemplatesApiServiceStubMethods = [
     'increment'
@@ -147,9 +147,6 @@ function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
   var noTemplatesApiServiceClient = require('grpc-google-cloud-example-v1').client;
   extend(this, noTemplatesApiServiceClient.google.cloud.example.v1);
 
-  var grpcClients = {
-    noTemplatesApiServiceClient: noTemplatesApiServiceClient
-  };
 
   /**
    * Build a new instance of {@link NoTemplatesAPIServiceClient}.
@@ -170,7 +167,7 @@ function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
    *   The version of the calling service.
    */
   this.noTemplatesApiServiceClient = function(opts) {
-    return new NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts);
+    return new NoTemplatesAPIServiceClient(gaxGrpc, noTemplatesApiServiceClient, opts);
   };
   extend(this.noTemplatesApiServiceClient, NoTemplatesAPIServiceClient);
 }
