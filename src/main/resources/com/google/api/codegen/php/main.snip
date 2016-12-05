@@ -25,6 +25,7 @@
         {@statics(xapiClass)}
         {@members(xapiClass)}
         {@staticFunctions(xapiClass)}
+        {@functions(xapiClass)}
         {@constructor(xapiClass)}
         {@apiMethods(xapiClass)}
         {@cleanupSection(xapiClass)}
@@ -131,7 +132,7 @@
     private $defaultCallSettings;
     private $descriptors;
     @if xapiClass.hasLongRunningOperations
-      private $operationsApi;
+      private $operationsClient;
     @end
     {@""}
 @end
@@ -244,6 +245,16 @@
     {@""}
 @end
 
+@private functions(xapiClass)
+    @if xapiClass.hasLongRunningOperations
+      public function getOperationsClient()
+      {
+          return $this->operationsClient;
+      }
+    @end
+    {@""}
+@end
+
 @private constructor(xapiClass)
     // TODO(garrettjones): add channel (when supported in gRPC)
     /**
@@ -297,7 +308,7 @@
         $options = array_merge($defaultOptions, $options);
 
         @if xapiClass.hasLongRunningOperations
-            $this->operationsApi = new OperationsApi(['serviceAddress' => $options['serviceAddress']]);
+            $this->operationsClient = new OperationsClient(['serviceAddress' => $options['serviceAddress']]);
         @end
 
         $headerDescriptor = new AgentHeaderDescriptor([
@@ -321,7 +332,7 @@
         }
         $longRunningDescriptors = self::getLongRunningDescriptors();
         foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
-            $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsApi' => $this->operationsApi];
+            $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
         }
 
         $clientConfigJsonString = file_get_contents(__DIR__ . '/{@xapiClass.clientConfigPath}');
