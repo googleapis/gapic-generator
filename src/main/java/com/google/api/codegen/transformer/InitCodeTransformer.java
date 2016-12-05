@@ -251,7 +251,10 @@ public class InitCodeTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType(InitCodeLineType.StructureInitLine);
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
-    surfaceLine.typeName(typeTable.getAndSaveNicknameFor(item.getType()));
+
+    String typeName = typeTable.getAndSaveNicknameFor(item.getType());
+    surfaceLine.typeName(typeName);
+    surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
 
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
 
@@ -366,7 +369,10 @@ public class InitCodeTransformer {
 
       initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
       initValue.formatFunctionName(
-          context.getNamer().getFormatFunctionName(initValueConfig.getSingleResourceNameConfig()));
+          context
+              .getNamer()
+              .getFormatFunctionName(
+                  context.getInterface(), initValueConfig.getSingleResourceNameConfig()));
 
       List<String> varList =
           Lists.newArrayList(
@@ -465,7 +471,7 @@ public class InitCodeTransformer {
       fieldSetting.identifier(getVariableName(context, item));
       fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));
 
-      fieldSetting.requestFieldName(context.getNamer().localVarName(item.getIdentifier()));
+      fieldSetting.requestFieldName(context.getNamer().publicFieldName(Name.from(item.getKey())));
 
       allSettings.add(fieldSetting.build());
     }

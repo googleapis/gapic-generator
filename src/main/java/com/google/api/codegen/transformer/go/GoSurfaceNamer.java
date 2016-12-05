@@ -29,6 +29,7 @@ import com.google.api.tools.framework.aspects.documentation.model.DocumentationU
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Status;
 import java.util.List;
@@ -62,6 +63,12 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateNameGetter(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return getFormatFunctionName(service, resourceNameConfig);
+  }
+
+  @Override
+  public String getFormatFunctionName(
       Interface service, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
         getReducedServiceName(service).join(resourceNameConfig.getEntityName()).join("path"));
@@ -324,5 +331,10 @@ public class GoSurfaceNamer extends SurfaceNamer {
             Name.upperCamel(
                 "Test", method.getParent().getSimpleName(), method.getSimpleName(), "Error"));
     return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return publicMethodName(identifier);
   }
 }
