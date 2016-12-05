@@ -236,7 +236,7 @@ public class PathTemplateTransformer {
       FormatResourceFunctionView.Builder function =
           FormatResourceFunctionView.newBuilder()
               .entityName(resourceNameConfig.getEntityName())
-              .name(namer.getFormatFunctionName(resourceNameConfig))
+              .name(namer.getFormatFunctionName(service, resourceNameConfig))
               .pathTemplateName(namer.getPathTemplateName(service, resourceNameConfig))
               .pathTemplateGetterName(namer.getPathTemplateNameGetter(service, resourceNameConfig))
               .pattern(resourceNameConfig.getNamePattern());

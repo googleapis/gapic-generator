@@ -1297,7 +1297,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *
-   *   for (String element : libraryServiceClient.listStrings().iterateAllElements()) {
+   *   for (ResourceName element : libraryServiceClient.listStrings().iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1320,7 +1320,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ResourceName name = ShelfName.create("[SHELF_ID]");
-   *   for (String element : libraryServiceClient.listStrings(name).iterateAllElements()) {
+   *   for (ResourceName element : libraryServiceClient.listStrings(name).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1345,7 +1345,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   for (String element : libraryServiceClient.listStrings(request).iterateAllElements()) {
+   *   for (ResourceName element : libraryServiceClient.listStrings(request).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1369,7 +1369,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   ListenableFuture&lt;ListStringsPagedResponse&gt; future = libraryServiceClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
-   *   for (String element : future.get().iterateAllElements()) {
+   *   for (ResourceName element : future.get().iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1389,7 +1389,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   while (true) {
    *     ListStringsResponse response = libraryServiceClient.listStringsCallable().call(request);
-   *     for (String element : response.getStringsList()) {
+   *     for (ResourceName element : response.getStringsListAsResourceNameList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();

@@ -154,6 +154,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getResourceTypeNameObject(resourceNameConfig).toUpperUnderscore().toUpperCase();
   }
 
+  public String getResourceTypeParseMethodName(
+      ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    return getNotImplementedString("SurfaceNamer.getResourceTypeParseMethodName");
+  }
+
   /**
    * The name of the iterate method of the PagedListResponse type for a field, returning the
    * resource type iterate method if available
@@ -397,7 +402,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to format the entity for the given collection. */
-  public String getFormatFunctionName(SingleResourceNameConfig resourceNameConfig) {
+  public String getFormatFunctionName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from("format", resourceNameConfig.getEntityName(), "name"));
   }
 

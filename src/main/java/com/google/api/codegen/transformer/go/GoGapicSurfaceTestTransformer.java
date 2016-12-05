@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -91,12 +90,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       // We don't need any import here.
       SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service,
-              apiConfig,
-              GoGapicSurfaceTransformer.createTypeTable(),
-              namer,
-              featureConfig);
+          SurfaceTransformerContext.create(service, apiConfig, typeTable, namer, featureConfig);
       testClasses.add(
           ClientTestClassView.newBuilder()
               .apiSettingsClassName(
@@ -130,12 +124,14 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedRequestObjectMethod;
+      } else if (methodContext.getMethodConfig().isLongRunningOperation()) {
+        clientMethodType = ClientMethodType.OperationRequestObjectMethod;
       }
       InitCodeContext initCodeContext =
           initCodeTransformer.createRequestInitCodeContext(
               methodContext,
               new SymbolTable(),
-              Collections.<FieldConfig>emptyList(),
+              methodContext.getMethodConfig().getRequiredFieldConfigs(),
               InitCodeOutputType.SingleObject,
               valueGenerator);
       testCaseViews.add(

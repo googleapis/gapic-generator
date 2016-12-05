@@ -691,10 +691,11 @@ func (it *BookIterator) PageInfo() *iterator.PageInfo {
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
 func (it *BookIterator) Next() (*librarypb.Book, error) {
+    var item *librarypb.Book
     if err := it.nextFunc(); err != nil {
-        return nil, err
+        return item, err
     }
-    item := it.items[0]
+    item = it.items[0]
     it.items = it.items[1:]
     return item, nil
 }
@@ -732,10 +733,11 @@ func (it *ShelfIterator) PageInfo() *iterator.PageInfo {
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
 func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
+    var item *librarypb.Shelf
     if err := it.nextFunc(); err != nil {
-        return nil, err
+        return item, err
     }
-    item := it.items[0]
+    item = it.items[0]
     it.items = it.items[1:]
     return item, nil
 }
@@ -773,10 +775,11 @@ func (it *StringIterator) PageInfo() *iterator.PageInfo {
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
 func (it *StringIterator) Next() (string, error) {
+    var item string
     if err := it.nextFunc(); err != nil {
-        return "", err
+        return item, err
     }
-    item := it.items[0]
+    item = it.items[0]
     it.items = it.items[1:]
     return item, nil
 }

@@ -200,26 +200,37 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     String fieldName = fieldConfig.getField().getSimpleName();
     Name identifier = Name.from(fieldName);
     Name resourceName;
+
+    if (type.isMap()) {
+      return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
+    }
+
+    // Omit the identifier when the field is called name (or names for the repeated case)
+    boolean requireIdentifier =
+        !((type.isRepeated() && fieldName.toLowerCase().equals("names"))
+            || (!type.isRepeated() && fieldName.toLowerCase().equals("name")));
+    boolean requireAs =
+        requireIdentifier || (fieldConfig.getResourceNameType() == ResourceNameType.ANY);
+    boolean requirePlural = type.isRepeated();
+
     if (fieldConfig.getResourceNameType() == ResourceNameType.ANY) {
-      resourceName = Name.from("as_resource_name");
+      resourceName = Name.from("resource_name");
     } else {
       resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     }
-    if (type.isMap()) {
-      return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
-    } else if (type.isRepeated()) {
-      if (fieldName.toLowerCase().equals("names")) {
-        return publicMethodName(resourceName) + "s";
-      } else {
-        return publicMethodName(identifier.join("as").join(resourceName)) + "s";
-      }
-    } else {
-      if (fieldName.toLowerCase().equals("name")) {
-        return publicMethodName(resourceName);
-      } else {
-        return publicMethodName(identifier.join("as").join(resourceName));
-      }
+
+    Name name = Name.from();
+    if (requireIdentifier) {
+      name = name.join(identifier);
     }
+    if (requireAs) {
+      name = name.join("as");
+    }
+    String functionName = publicMethodName(name.join(resourceName));
+    if (requirePlural) {
+      functionName += "s";
+    }
+    return functionName;
   }
 
   @Override
@@ -246,7 +257,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFormatFunctionName(SingleResourceNameConfig resourceNameConfig) {
+  public String getFormatFunctionName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
     return getResourceTypeName(resourceNameConfig);
   }
 
