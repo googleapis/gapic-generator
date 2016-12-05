@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -116,6 +117,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     } else {
       return getModelTypeFormatter().getFullNameFor(outputType);
     }
+  }
+
+  @Override
+  public String getResourceTypeParseMethodName(
+      ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    String resourceTypeName = getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
+    String concreteResourceTypeName;
+    if (resourceFieldConfig.getResourceNameType() == ResourceNameType.ANY) {
+      concreteResourceTypeName = publicClassName(Name.from("untyped_resource_name"));
+    } else {
+      concreteResourceTypeName = resourceTypeName;
+    }
+    return concreteResourceTypeName + "." + publicMethodName(Name.from("parse"));
   }
 
   @Override
