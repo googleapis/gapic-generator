@@ -271,14 +271,16 @@
 
         @if longrunningMethods
 
-          var operationsClient = new gax.lro({
+          var operationsOpts = {
             servicePath: servicePath,
             port: port,
             sslCreds: sslCreds,
             clientConfig: clientConfig,
             appName: appName,
-            appVersion: appVersion
-          });
+            appVersion: appVersion,
+            scopes: ALL_SCOPES
+          }
+          var operationsClient = new gax.lro(operationsOpts).operationsClient(operationsOpts);
           
           var longrunningDescriptors = {
             @join method : longrunningMethods on {@", "}.add(BREAK)

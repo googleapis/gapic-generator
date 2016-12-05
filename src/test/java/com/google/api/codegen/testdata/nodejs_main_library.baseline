@@ -125,14 +125,16 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
       gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book))
   };
 
-  var operationsClient = new gax.lro({
+  var operationsOpts = {
     servicePath: servicePath,
     port: port,
     sslCreds: sslCreds,
     clientConfig: clientConfig,
     appName: appName,
-    appVersion: appVersion
-  });
+    appVersion: appVersion,
+    scopes: ALL_SCOPES
+  }
+  var operationsClient = new gax.lro(operationsOpts).operationsClient(operationsOpts);
 
   var longrunningDescriptors = {
     getBigBook: new gax.LongrunningDescriptor(
