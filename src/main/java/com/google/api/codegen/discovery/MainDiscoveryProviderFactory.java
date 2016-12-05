@@ -94,7 +94,6 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       }
     }
 
-    // Below is the MVVM pathway.
     SampleMethodToViewTransformer sampleMethodToViewTransformer = null;
     TypeNameGenerator typeNameGenerator = null;
     try {
