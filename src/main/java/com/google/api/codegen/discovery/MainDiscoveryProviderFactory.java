@@ -17,13 +17,13 @@ package com.google.api.codegen.discovery;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.discovery.config.csharp.CSharpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.go.GoTypeNameGenerator;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
 import com.google.api.codegen.discovery.config.nodejs.NodeJSTypeNameGenerator;
 import com.google.api.codegen.discovery.config.php.PhpTypeNameGenerator;
+import com.google.api.codegen.discovery.config.py.PythonTypeNameGenerator;
 import com.google.api.codegen.discovery.config.ruby.RubyTypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.csharp.CSharpSampleMethodToViewTransformer;
@@ -31,15 +31,12 @@ import com.google.api.codegen.discovery.transformer.go.GoSampleMethodToViewTrans
 import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.php.PhpSampleMethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.py.PythonSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.ruby.RubySampleMethodToViewTransformer;
-import com.google.api.codegen.py.PythonDiscoveryContext;
-import com.google.api.codegen.py.PythonDiscoveryInitializer;
-import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -60,8 +57,6 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
   public static final String PYTHON = "python";
   public static final String RUBY = "ruby";
 
-  private static final String DEFAULT_SNIPPET_FILE = "discovery_fragment.snip";
-
   private static final Map<String, Class<? extends SampleMethodToViewTransformer>>
       SAMPLE_METHOD_TO_VIEW_TRANSFORMER_MAP =
           ImmutableMap.<String, Class<? extends SampleMethodToViewTransformer>>builder()
@@ -70,6 +65,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
               .put(JAVA, JavaSampleMethodToViewTransformer.class)
               .put(NODEJS, NodeJSSampleMethodToViewTransformer.class)
               .put(PHP, PhpSampleMethodToViewTransformer.class)
+              .put(PYTHON, PythonSampleMethodToViewTransformer.class)
               .put(RUBY, RubySampleMethodToViewTransformer.class)
               .build();
   private static final Map<String, Class<? extends TypeNameGenerator>> TYPE_NAME_GENERATOR_MAP =
@@ -79,6 +75,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .put(JAVA, JavaTypeNameGenerator.class)
           .put(NODEJS, NodeJSTypeNameGenerator.class)
           .put(PHP, PhpTypeNameGenerator.class)
+          .put(PYTHON, PythonTypeNameGenerator.class)
           .put(RUBY, RubyTypeNameGenerator.class)
           .build();
 
@@ -97,17 +94,6 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       }
     }
 
-    if (id.equals(PYTHON)) {
-      return CommonDiscoveryProvider.newBuilder()
-          .setContext(new PythonDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(
-              new PythonSnippetSetRunner<Method>(
-                  new PythonDiscoveryInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-          .setSnippetFileName("py/" + DEFAULT_SNIPPET_FILE)
-          .build();
-    }
-
-    // Below is the MVVM pathway.
     SampleMethodToViewTransformer sampleMethodToViewTransformer = null;
     TypeNameGenerator typeNameGenerator = null;
     try {

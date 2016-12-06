@@ -7,8 +7,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -17,28 +19,20 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `cancel` method:
-
 # The Google Developers Console project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # The name of the zone in which the update's target resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the update.
-rollingUpdate = '{MY-ROLLING-UPDATE}'
+rolling_update = ''  # TODO: Update placeholder value.
 
-
-request = service.rollingUpdates().cancel(project=project, zone=zone, rollingUpdate=rollingUpdate)
+request = service.rollingUpdates().cancel(project=project, zone=zone, rollingUpdate=rolling_update)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -51,8 +45,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -61,28 +57,20 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `get` method:
-
 # The Google Developers Console project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # The name of the zone in which the update's target resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the update.
-rollingUpdate = '{MY-ROLLING-UPDATE}'
+rolling_update = ''  # TODO: Update placeholder value.
 
-
-request = service.rollingUpdates().get(project=project, zone=zone, rollingUpdate=rollingUpdate)
+request = service.rollingUpdates().get(project=project, zone=zone, rollingUpdate=rolling_update)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -95,8 +83,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -105,28 +95,19 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `insert` method:
-
 # The Google Developers Console project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # The name of the zone in which the update's target resides.
-zone = '{MY-ZONE}'
-
+zone = ''  # TODO: Update placeholder value.
 
 rolling_update_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.rollingUpdates().insert(project=project, zone=zone, body=rolling_update_body)
 response = request.execute()
@@ -141,8 +122,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -151,26 +134,17 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `list` method:
-
 # The Google Developers Console project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # The name of the zone in which the update's target resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
-
-rollingUpdates = service.rollingUpdates()
-request = rollingUpdates.list(project=project, zone=zone)
+request = service.rollingUpdates().list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
@@ -178,7 +152,7 @@ while request is not None:
         # TODO: Change code below to process each `rolling_update` resource:
         pprint(rolling_update)
 
-    request = rollingUpdates.list_next(previous_request=request, previous_response=response)
+    request = service.rollingUpdates().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -187,8 +161,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -197,29 +173,20 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `listInstanceUpdates` method:
-
 # The Google Developers Console project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # The name of the zone in which the update's target resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the update.
-rollingUpdate = '{MY-ROLLING-UPDATE}'
+rolling_update = ''  # TODO: Update placeholder value.
 
-
-rollingUpdates = service.rollingUpdates()
-request = rollingUpdates.listInstanceUpdates(project=project, zone=zone, rollingUpdate=rollingUpdate)
+request = service.rollingUpdates().listInstanceUpdates(project=project, zone=zone, rollingUpdate=rolling_update)
 while request is not None:
     response = request.execute()
 
@@ -227,7 +194,7 @@ while request is not None:
         # TODO: Change code below to process each `instance_update` resource:
         pprint(instance_update)
 
-    request = rollingUpdates.listInstanceUpdates_next(previous_request=request, previous_response=response)
+    request = service.rollingUpdates().listInstanceUpdates_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -236,8 +203,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -246,28 +215,20 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `pause` method:
-
 # The Google Developers Console project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # The name of the zone in which the update's target resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the update.
-rollingUpdate = '{MY-ROLLING-UPDATE}'
+rolling_update = ''  # TODO: Update placeholder value.
 
-
-request = service.rollingUpdates().pause(project=project, zone=zone, rollingUpdate=rollingUpdate)
+request = service.rollingUpdates().pause(project=project, zone=zone, rollingUpdate=rolling_update)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -280,8 +241,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -290,28 +253,20 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `resume` method:
-
 # The Google Developers Console project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # The name of the zone in which the update's target resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the update.
-rollingUpdate = '{MY-ROLLING-UPDATE}'
+rolling_update = ''  # TODO: Update placeholder value.
 
-
-request = service.rollingUpdates().resume(project=project, zone=zone, rollingUpdate=rollingUpdate)
+request = service.rollingUpdates().resume(project=project, zone=zone, rollingUpdate=rolling_update)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -324,8 +279,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -334,28 +291,20 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `rollback` method:
-
 # The Google Developers Console project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # The name of the zone in which the update's target resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the update.
-rollingUpdate = '{MY-ROLLING-UPDATE}'
+rolling_update = ''  # TODO: Update placeholder value.
 
-
-request = service.rollingUpdates().rollback(project=project, zone=zone, rollingUpdate=rollingUpdate)
+request = service.rollingUpdates().rollback(project=project, zone=zone, rollingUpdate=rolling_update)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -368,8 +317,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -378,26 +329,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
-
-
-# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # Name of the project scoping this request.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # Name of the zone scoping this request.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # Name of the operation resource to return.
-operation = '{MY-OPERATION}'
-
+operation = ''  # TODO: Update placeholder value.
 
 request = service.zoneOperations().get(project=project, zone=zone, operation=operation)
 response = request.execute()
@@ -412,8 +355,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/replicapoolupdater
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -422,26 +367,17 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('replicapoolupdater', 'v1beta1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `list` method:
-
 # Name of the project scoping this request.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # Name of the zone scoping this request.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
-
-zoneOperations = service.zoneOperations()
-request = zoneOperations.list(project=project, zone=zone)
+request = service.zoneOperations().list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
@@ -449,4 +385,4 @@ while request is not None:
         # TODO: Change code below to process each `operation` resource:
         pprint(operation)
 
-    request = zoneOperations.list_next(previous_request=request, previous_response=response)
+    request = service.zoneOperations().list_next(previous_request=request, previous_response=response)

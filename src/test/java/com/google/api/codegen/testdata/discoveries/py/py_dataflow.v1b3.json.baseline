@@ -7,8 +7,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -17,27 +19,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `create` method:
-
 # The project which owns the job.
-projectId = '{MY-PROJECT-ID}'
-
+project_id = ''  # TODO: Update placeholder value.
 
 job_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().jobs().create(projectId=projectId, body=job_body)
+request = service.projects().jobs().create(projectId=project_id, body=job_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -50,8 +43,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -60,30 +55,21 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `getConfig` method:
-
 # The project id.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The job id.
-jobId = '{MY-JOB-ID}'
-
+job_id = ''  # TODO: Update placeholder value.
 
 get_debug_config_request_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().jobs().debug().getConfig(projectId=projectId, jobId=jobId, body=get_debug_config_request_body)
+request = service.projects().jobs().debug().getConfig(projectId=project_id, jobId=job_id, body=get_debug_config_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -96,8 +82,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -106,30 +94,21 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `sendCapture` method:
-
 # The project id.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The job id.
-jobId = '{MY-JOB-ID}'
-
+job_id = ''  # TODO: Update placeholder value.
 
 send_debug_capture_request_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().jobs().debug().sendCapture(projectId=projectId, jobId=jobId, body=send_debug_capture_request_body)
+request = service.projects().jobs().debug().sendCapture(projectId=project_id, jobId=job_id, body=send_debug_capture_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -142,8 +121,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -152,25 +133,17 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
-
-
-# TODO: Change placeholders below to desired parameter values for the `get` method:
 
 # The project which owns the job.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # Identifies a single job.
-jobId = '{MY-JOB-ID}'
+job_id = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().jobs().get(projectId=projectId, jobId=jobId)
+request = service.projects().jobs().get(projectId=project_id, jobId=job_id)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -183,8 +156,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -193,25 +168,17 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
-
-
-# TODO: Change placeholders below to desired parameter values for the `getMetrics` method:
 
 # A project id.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The job to get messages for.
-jobId = '{MY-JOB-ID}'
+job_id = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().jobs().getMetrics(projectId=projectId, jobId=jobId)
+request = service.projects().jobs().getMetrics(projectId=project_id, jobId=job_id)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -224,8 +191,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -234,23 +203,14 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `list` method:
-
 # The project which owns the jobs.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
-
-jobs = service.projects().jobs()
-request = jobs.list(projectId=projectId)
+request = service.projects().jobs().list(projectId=project_id)
 while request is not None:
     response = request.execute()
 
@@ -258,7 +218,7 @@ while request is not None:
         # TODO: Change code below to process each `job` resource:
         pprint(job)
 
-    request = jobs.list_next(previous_request=request, previous_response=response)
+    request = service.projects().jobs().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -267,8 +227,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -277,26 +239,17 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `list` method:
-
 # A project id.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The job to get messages about.
-jobId = '{MY-JOB-ID}'
+job_id = ''  # TODO: Update placeholder value.
 
-
-messages = service.projects().jobs().messages()
-request = messages.list(projectId=projectId, jobId=jobId)
+request = service.projects().jobs().messages().list(projectId=project_id, jobId=job_id)
 while request is not None:
     response = request.execute()
 
@@ -304,7 +257,7 @@ while request is not None:
         # TODO: Change code below to process each `job_message` resource:
         pprint(job_message)
 
-    request = messages.list_next(previous_request=request, previous_response=response)
+    request = service.projects().jobs().messages().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -313,8 +266,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -323,30 +278,21 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `update` method:
-
 # The project which owns the job.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # Identifies a single job.
-jobId = '{MY-JOB-ID}'
-
+job_id = ''  # TODO: Update placeholder value.
 
 job_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().jobs().update(projectId=projectId, jobId=jobId, body=job_body)
+request = service.projects().jobs().update(projectId=project_id, jobId=job_id, body=job_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -359,8 +305,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -369,30 +317,21 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `lease` method:
-
 # Identifies the project this worker belongs to.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # Identifies the workflow job this worker belongs to.
-jobId = '{MY-JOB-ID}'
-
+job_id = ''  # TODO: Update placeholder value.
 
 lease_work_item_request_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().jobs().workItems().lease(projectId=projectId, jobId=jobId, body=lease_work_item_request_body)
+request = service.projects().jobs().workItems().lease(projectId=project_id, jobId=job_id, body=lease_work_item_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -405,8 +344,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -415,30 +356,21 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `reportStatus` method:
-
 # The project which owns the WorkItem's job.
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The job which the WorkItem is part of.
-jobId = '{MY-JOB-ID}'
-
+job_id = ''  # TODO: Update placeholder value.
 
 report_work_item_status_request_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().jobs().workItems().reportStatus(projectId=projectId, jobId=jobId, body=report_work_item_status_request_body)
+request = service.projects().jobs().workItems().reportStatus(projectId=project_id, jobId=job_id, body=report_work_item_status_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -451,8 +383,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -461,27 +395,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `create` method:
-
 # The project which owns the job.
-projectId = '{MY-PROJECT-ID}'
-
+project_id = ''  # TODO: Update placeholder value.
 
 create_job_from_template_request_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().templates().create(projectId=projectId, body=create_job_from_template_request_body)
+request = service.projects().templates().create(projectId=project_id, body=create_job_from_template_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -494,8 +419,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/dataflow
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -504,27 +431,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('dataflow', 'v1b3', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `workerMessages` method:
-
 # The project to send the WorkerMessages to.
-projectId = '{MY-PROJECT-ID}'
-
+project_id = ''  # TODO: Update placeholder value.
 
 send_worker_messages_request_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().workerMessages(projectId=projectId, body=send_worker_messages_request_body)
+request = service.projects().workerMessages(projectId=project_id, body=send_worker_messages_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:

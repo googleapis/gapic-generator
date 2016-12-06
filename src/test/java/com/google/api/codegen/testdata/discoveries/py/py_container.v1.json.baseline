@@ -7,8 +7,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -17,32 +19,23 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `create` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://support.google.com/cloud/answer/6158840).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides.
-zone = '{MY-ZONE}'
-
+zone = ''  # TODO: Update placeholder value.
 
 create_cluster_request_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().zones().clusters().create(projectId=projectId, zone=zone, body=create_cluster_request_body)
+request = service.projects().zones().clusters().create(projectId=project_id, zone=zone, body=create_cluster_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -55,8 +48,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -65,30 +60,22 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `delete` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://support.google.com/cloud/answer/6158840).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the cluster to delete.
-clusterId = '{MY-CLUSTER-ID}'
+cluster_id = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().zones().clusters().delete(projectId=projectId, zone=zone, clusterId=clusterId)
+request = service.projects().zones().clusters().delete(projectId=project_id, zone=zone, clusterId=cluster_id)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -101,8 +88,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -111,30 +100,22 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `get` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://support.google.com/cloud/answer/6158840).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the cluster to retrieve.
-clusterId = '{MY-CLUSTER-ID}'
+cluster_id = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().zones().clusters().get(projectId=projectId, zone=zone, clusterId=clusterId)
+request = service.projects().zones().clusters().get(projectId=project_id, zone=zone, clusterId=cluster_id)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -147,8 +128,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -157,27 +140,19 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `list` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://support.google.com/cloud/answer/6158840).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides, or "-" for all zones.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().zones().clusters().list(projectId=projectId, zone=zone)
+request = service.projects().zones().clusters().list(projectId=project_id, zone=zone)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -190,8 +165,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -200,35 +177,26 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `create` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://developers.google.com/console/help/new/#projectnumber).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the cluster.
-clusterId = '{MY-CLUSTER-ID}'
-
+cluster_id = ''  # TODO: Update placeholder value.
 
 create_node_pool_request_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().zones().clusters().nodePools().create(projectId=projectId, zone=zone, clusterId=clusterId, body=create_node_pool_request_body)
+request = service.projects().zones().clusters().nodePools().create(projectId=project_id, zone=zone, clusterId=cluster_id, body=create_node_pool_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -241,8 +209,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -251,33 +221,25 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `delete` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://developers.google.com/console/help/new/#projectnumber).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the cluster.
-clusterId = '{MY-CLUSTER-ID}'
+cluster_id = ''  # TODO: Update placeholder value.
 
 # The name of the node pool to delete.
-nodePoolId = '{MY-NODE-POOL-ID}'
+node_pool_id = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().zones().clusters().nodePools().delete(projectId=projectId, zone=zone, clusterId=clusterId, nodePoolId=nodePoolId)
+request = service.projects().zones().clusters().nodePools().delete(projectId=project_id, zone=zone, clusterId=cluster_id, nodePoolId=node_pool_id)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -290,8 +252,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -300,33 +264,25 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `get` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://developers.google.com/console/help/new/#projectnumber).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the cluster.
-clusterId = '{MY-CLUSTER-ID}'
+cluster_id = ''  # TODO: Update placeholder value.
 
 # The name of the node pool.
-nodePoolId = '{MY-NODE-POOL-ID}'
+node_pool_id = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().zones().clusters().nodePools().get(projectId=projectId, zone=zone, clusterId=clusterId, nodePoolId=nodePoolId)
+request = service.projects().zones().clusters().nodePools().get(projectId=project_id, zone=zone, clusterId=cluster_id, nodePoolId=node_pool_id)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -339,8 +295,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -349,30 +307,22 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
-
-
-# TODO: Change placeholders below to desired parameter values for the `list` method:
 
 # The Google Developers Console [project ID or project number]
 # (https://developers.google.com/console/help/new/#projectnumber).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the cluster.
-clusterId = '{MY-CLUSTER-ID}'
+cluster_id = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().zones().clusters().nodePools().list(projectId=projectId, zone=zone, clusterId=clusterId)
+request = service.projects().zones().clusters().nodePools().list(projectId=project_id, zone=zone, clusterId=cluster_id)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -385,8 +335,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -395,35 +347,26 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
-
-
-# TODO: Change placeholders below to desired parameter values for the `update` method:
 
 # The Google Developers Console [project ID or project number]
 # (https://support.google.com/cloud/answer/6158840).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The name of the cluster to upgrade.
-clusterId = '{MY-CLUSTER-ID}'
-
+cluster_id = ''  # TODO: Update placeholder value.
 
 update_cluster_request_body = {
     # TODO: Add desired entries of the request body.
 }
 
-
-request = service.projects().zones().clusters().update(projectId=projectId, zone=zone, clusterId=clusterId, body=update_cluster_request_body)
+request = service.projects().zones().clusters().update(projectId=project_id, zone=zone, clusterId=cluster_id, body=update_cluster_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -436,8 +379,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -446,27 +391,19 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `getServerconfig` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://support.google.com/cloud/answer/6158840).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
 # for.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().zones().getServerconfig(projectId=projectId, zone=zone)
+request = service.projects().zones().getServerconfig(projectId=project_id, zone=zone)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -479,8 +416,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -489,30 +428,22 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `get` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://support.google.com/cloud/answer/6158840).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 # resides.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
 # The server-assigned `name` of the operation.
-operationId = '{MY-OPERATION-ID}'
+operation_id = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().zones().operations().get(projectId=projectId, zone=zone, operationId=operationId)
+request = service.projects().zones().operations().get(projectId=project_id, zone=zone, operationId=operation_id)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -525,8 +456,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/container
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -535,27 +468,19 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `list` method:
-
 # The Google Developers Console [project ID or project number]
 # (https://support.google.com/cloud/answer/6158840).
-projectId = '{MY-PROJECT-ID}'
+project_id = ''  # TODO: Update placeholder value.
 
 # The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
 # for, or `-` for all zones.
-zone = '{MY-ZONE}'
+zone = ''  # TODO: Update placeholder value.
 
-
-request = service.projects().zones().operations().list(projectId=projectId, zone=zone)
+request = service.projects().zones().operations().list(projectId=project_id, zone=zone)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:

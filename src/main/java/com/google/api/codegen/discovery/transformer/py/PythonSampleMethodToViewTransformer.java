@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.nodejs;
+package com.google.api.codegen.discovery.transformer.py;
 
+import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -27,27 +28,26 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.nodejs.NodeJSNameFormatter;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.collect.Iterables;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
+public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
-  private static final String TEMPLATE_FILENAME = "nodejs/sample.snip";
+  private static final String TEMPLATE_FILENAME = "py/sample.snip";
 
-  public NodeJSSampleMethodToViewTransformer() {}
+  public PythonSampleMethodToViewTransformer() {}
 
   @Override
-  public ViewModel transform(Method method, SampleConfig sampleConfig) {
-    SampleTypeTable sampleTypeTable =
-        new SampleTypeTable(new NodeJSTypeTable(""), new NodeJSSampleTypeNameConverter());
-    NodeJSSampleNamer nodeJsSampleNamer = new NodeJSSampleNamer();
+  public ViewModel transform(Method method, SampleConfig config) {
+    SampleTypeTable typeTable =
+        new SampleTypeTable(new PythonTypeTable(""), new PythonSampleTypeNameConverter());
+    SampleNamer namer = new PythonSampleNamer();
     SampleTransformerContext context =
-        SampleTransformerContext.create(
-            sampleConfig, sampleTypeTable, nodeJsSampleNamer, method.getName());
+        SampleTransformerContext.create(config, typeTable, namer, method.getName());
     return createSampleView(context);
   }
 
@@ -56,30 +56,42 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(NodeJSNameFormatter.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(PythonTypeTable.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
-    String serviceTypeName = typeTable.getAndSaveNicknameForServiceType(config.apiTypeName());
-    String requestVarName = symbolTable.getNewSymbol(namer.getRequestVarName());
 
     if (methodInfo.isPageStreaming()) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
     // Created before the fields in case there are naming conflicts in the symbol table.
-    SampleAuthView sampleAuthView = createSampleAuthView(context, symbolTable);
+    SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> fields = new ArrayList<>();
+    List<String> methodParamAssignments = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      fields.add(
+      String name = namer.localVarName(Name.lowerCamel(field.name()));
+      SampleFieldView sampleFieldView =
           SampleFieldView.newBuilder()
-              .name(field.name())
+              .name(name)
               .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
               .example(field.example())
               .description(field.description())
-              .build());
+              .build();
+      fields.add(sampleFieldView);
+      // Ex: "fooBar=foo_bar"
+      methodParamAssignments.add(field.name() + "=" + name);
+    }
+
+    boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    if (hasRequestBody) {
+      String requestBodyVarName =
+          symbolTable.getNewSymbol(
+              namer.getRequestBodyVarName(methodInfo.requestBodyType().message().typeName()));
+      builder.requestBodyVarName(requestBodyVarName);
+      methodParamAssignments.add("body=" + requestBodyVarName);
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -87,52 +99,41 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
       builder.responseVarName(symbolTable.getNewSymbol(namer.getResponseVarName()));
     }
 
+    String credentialsVarName =
+        config.authType() == AuthType.API_KEY ? "developerKey" : "credentials";
+
     return builder
         .templateFileName(TEMPLATE_FILENAME)
-        .outputPath(context.getMethodName() + ".frag.njs")
+        .outputPath(context.getMethodName() + ".frag.py")
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
         .auth(sampleAuthView)
         .serviceVarName(serviceVarName)
-        .serviceTypeName(serviceTypeName)
         .methodVerb(methodInfo.verb())
         .methodNameComponents(methodInfo.nameComponents())
-        .requestVarName(requestVarName)
-        .hasRequestBody(methodInfo.requestBodyType() != null)
+        .requestVarName(namer.getRequestVarName())
+        .hasRequestBody(hasRequestBody)
         .hasResponse(hasResponse)
         .fields(fields)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
-        .googleImportVarName(
-            symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("google"))))
+        .credentialsVarName(credentialsVarName)
+        .lastMethodNameComponent(Iterables.getLast(methodInfo.nameComponents()))
+        .methodParamAssigments(methodParamAssignments)
         .build();
   }
 
-  private SampleAuthView createSampleAuthView(
-      SampleTransformerContext context, SymbolTable symbolTable) {
+  private SampleAuthView createSampleAuthView(SampleTransformerContext context) {
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
-    SampleNamer namer = context.getSampleNamer();
-
-    String authVarName = "";
-    switch (config.authType()) {
-      case API_KEY:
-        authVarName = "apiKey";
-        break;
-      default:
-        authVarName = "authClient";
-    }
 
     return SampleAuthView.newBuilder()
         .type(config.authType())
         .instructionsUrl(config.authInstructionsUrl())
         .scopes(methodInfo.authScopes())
         .isScopesSingular(methodInfo.authScopes().size() == 1)
-        .authFuncName(
-            symbolTable.getNewSymbol(namer.staticFunctionName(Name.lowerCamel("authorize"))))
-        .authVarName(symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(authVarName))))
         .build();
   }
 
@@ -147,16 +148,25 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
+    builder.resourceFieldName(fieldInfo.name());
     if (fieldInfo.type().isMap()) {
-      builder.resourceKeyVarName(
-          symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("name"))));
+      // Assume that the value in the map is a message.
+      if (!fieldInfo.type().mapValue().isMessage()) {
+        throw new IllegalArgumentException("expected map value to be a message");
+      }
+      builder.resourceKeyVarName(symbolTable.getNewSymbol("name"));
+      String resourceValueVarName =
+          namer.localVarName(Name.upperCamel(fieldInfo.type().mapValue().message().typeName()));
+      builder.resourceValueVarName(symbolTable.getNewSymbol(resourceValueVarName));
+    } else {
+      String resourceVarName =
+          namer.getResourceVarName(
+              fieldInfo.type().isMessage() ? fieldInfo.type().message().typeName() : "");
+      builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
     }
-    builder.resourceFieldName(namer.getFieldVarName(fieldInfo.name()));
     builder.isResourceMap(fieldInfo.type().isMap());
-    builder.handlePageVarName(
-        symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("handlePage"))));
-    builder.pageVarName(
-        symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name(), "page"))));
+    builder.pageVarName(symbolTable.getNewSymbol(fieldInfo.name()));
+    builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
     return builder.build();
   }
 }

@@ -7,8 +7,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -17,21 +19,14 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}'
-
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/snapshots/my-snapshot'
 
 request = service.projects().snapshots().getIamPolicy(resource=resource)
 response = request.execute()
@@ -46,8 +41,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -56,26 +53,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}'
-
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/snapshots/my-snapshot'
 
 set_iam_policy_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().snapshots().setIamPolicy(resource=resource, body=set_iam_policy_request_body)
 response = request.execute()
@@ -90,8 +79,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -100,26 +91,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
 # REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
 # specified as a path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/snapshots/{MY-SNAPSHOT}'
-
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/snapshots/my-snapshot'
 
 test_iam_permissions_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().snapshots().testIamPermissions(resource=resource, body=test_iam_permissions_request_body)
 response = request.execute()
@@ -134,33 +117,28 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `acknowledge` method:
-
 # The subscription whose message is being acknowledged.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 acknowledge_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().subscriptions().acknowledge(subscription=subscription, body=acknowledge_request_body)
 request.execute()
@@ -172,8 +150,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -182,29 +162,21 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
-
-
-# TODO: Change placeholder below to desired parameter value for the `create` method:
 
 # The name of the subscription. It must have the format
 # `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter, and
 # contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
 # (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
 # length, and it must not start with `"goog"`.
-name = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+name = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 subscription_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().subscriptions().create(name=name, body=subscription_body)
 response = request.execute()
@@ -219,28 +191,24 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `delete` method:
-
 # The subscription to delete.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 request = service.projects().subscriptions().delete(subscription=subscription)
 request.execute()
@@ -252,8 +220,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -262,20 +232,13 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `get` method:
-
 # The name of the subscription to get.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 request = service.projects().subscriptions().get(subscription=subscription)
 response = request.execute()
@@ -290,8 +253,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -300,21 +265,14 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 request = service.projects().subscriptions().getIamPolicy(resource=resource)
 response = request.execute()
@@ -329,8 +287,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -339,23 +299,15 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `list` method:
-
 # The name of the cloud project that subscriptions belong to.
-project = 'projects/{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project'
 
-
-subscriptions = service.projects().subscriptions()
-request = subscriptions.list(project=project)
+request = service.projects().subscriptions().list(project=project)
 while request is not None:
     response = request.execute()
 
@@ -363,7 +315,7 @@ while request is not None:
         # TODO: Change code below to process each `subscription` resource:
         pprint(subscription)
 
-    request = subscriptions.list_next(previous_request=request, previous_response=response)
+    request = service.projects().subscriptions().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -372,33 +324,28 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `modifyAckDeadline` method:
-
 # The name of the subscription.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 modify_ack_deadline_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().subscriptions().modifyAckDeadline(subscription=subscription, body=modify_ack_deadline_request_body)
 request.execute()
@@ -410,33 +357,28 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `modifyPushConfig` method:
-
 # The name of the subscription.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 modify_push_config_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().subscriptions().modifyPushConfig(subscription=subscription, body=modify_push_config_request_body)
 request.execute()
@@ -448,8 +390,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -458,25 +402,17 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `pull` method:
-
 # The subscription from which messages should be pulled.
-subscription = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+subscription = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 pull_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().subscriptions().pull(subscription=subscription, body=pull_request_body)
 response = request.execute()
@@ -491,8 +427,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -501,26 +439,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 set_iam_policy_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().subscriptions().setIamPolicy(resource=resource, body=set_iam_policy_request_body)
 response = request.execute()
@@ -535,8 +465,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -545,26 +477,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
 # REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
 # specified as a path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}'
-
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/subscriptions/my-subscription'
 
 test_iam_permissions_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().subscriptions().testIamPermissions(resource=resource, body=test_iam_permissions_request_body)
 response = request.execute()
@@ -579,8 +503,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -589,28 +515,20 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `create` method:
-
-# The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
-# start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
+# The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}`
+# must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
 # underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
 # between 3 and 255 characters in length, and it must not start with `"goog"`.
-name = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
-
+name = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
 topic_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().topics().create(name=name, body=topic_body)
 response = request.execute()
@@ -625,28 +543,24 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `delete` method:
-
 # Name of the topic to delete.
-topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
-
+topic = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
 request = service.projects().topics().delete(topic=topic)
 request.execute()
@@ -658,8 +572,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -668,20 +584,13 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `get` method:
-
 # The name of the topic to get.
-topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
-
+topic = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
 request = service.projects().topics().get(topic=topic)
 response = request.execute()
@@ -696,8 +605,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -706,21 +617,14 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `getIamPolicy` method:
-
-# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
-
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
 request = service.projects().topics().getIamPolicy(resource=resource)
 response = request.execute()
@@ -735,8 +639,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -745,23 +651,15 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `list` method:
-
 # The name of the cloud project that topics belong to.
-project = 'projects/{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project'
 
-
-topics = service.projects().topics()
-request = topics.list(project=project)
+request = service.projects().topics().list(project=project)
 while request is not None:
     response = request.execute()
 
@@ -769,7 +667,7 @@ while request is not None:
         # TODO: Change code below to process each `topic` resource:
         pprint(topic)
 
-    request = topics.list_next(previous_request=request, previous_response=response)
+    request = service.projects().topics().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -778,8 +676,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -788,25 +688,17 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `publish` method:
-
 # The messages in the request will be published on this topic.
-topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
-
+topic = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
 publish_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().topics().publish(topic=topic, body=publish_request_body)
 response = request.execute()
@@ -821,8 +713,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -831,26 +725,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `setIamPolicy` method:
-
-# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-# path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
-
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+# a path. For example, a Project resource is specified as `projects/{project}`.
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
 set_iam_policy_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().topics().setIamPolicy(resource=resource, body=set_iam_policy_request_body)
 response = request.execute()
@@ -865,8 +751,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -875,23 +763,15 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `list` method:
-
 # The name of the topic that subscriptions are attached to.
-topic = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
+topic = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
-
-subscriptions = service.projects().topics().subscriptions()
-request = subscriptions.list(topic=topic)
+request = service.projects().topics().subscriptions().list(topic=topic)
 while request is not None:
     response = request.execute()
 
@@ -899,7 +779,7 @@ while request is not None:
         # TODO: Change code below to process each `item` resource:
         pprint(item)
 
-    request = subscriptions.list_next(previous_request=request, previous_response=response)
+    request = service.projects().topics().subscriptions().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -908,8 +788,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/pubsub
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -918,26 +800,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('pubsub', 'v1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `testIamPermissions` method:
-
 # REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
 # specified as a path. For example, a Project resource is specified as `projects/{project}`.
-resource = 'projects/{MY-PROJECT}/topics/{MY-TOPIC}'
-
+resource = ''  # TODO: Update placeholder value.
+# ex: 'projects/my-project/topics/my-topic'
 
 test_iam_permissions_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.projects().topics().testIamPermissions(resource=resource, body=test_iam_permissions_request_body)
 response = request.execute()

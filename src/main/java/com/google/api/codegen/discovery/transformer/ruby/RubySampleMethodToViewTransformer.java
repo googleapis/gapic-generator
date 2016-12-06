@@ -27,6 +27,7 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.collect.ImmutableMap;
@@ -61,7 +62,7 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(RubyTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(RubyNameFormatter.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
@@ -74,7 +75,7 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
-    // Created before the fields in-case there are naming conflicts in the symbol table.
+    // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> fields = new ArrayList<>();

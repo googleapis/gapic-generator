@@ -66,7 +66,7 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
-    // Created before the fields in-case there are naming conflicts in the symbol table.
+    // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> fields = new ArrayList<>();

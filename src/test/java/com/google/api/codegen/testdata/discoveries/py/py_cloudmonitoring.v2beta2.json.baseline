@@ -7,8 +7,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudmonitoring
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -17,25 +19,16 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `create` method:
-
 # The project id. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'
-
+project = ''  # TODO: Update placeholder value.
 
 metric_descriptor_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.metricDescriptors().create(project=project, body=metric_descriptor_body)
 response = request.execute()
@@ -50,8 +43,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudmonitoring
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -60,23 +55,15 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `delete` method:
-
 # The project ID to which the metric belongs.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # Name of the metric.
-metric = '{MY-METRIC}'
-
+metric = ''  # TODO: Update placeholder value.
 
 request = service.metricDescriptors().delete(project=project, metric=metric)
 response = request.execute()
@@ -91,8 +78,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudmonitoring
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -101,23 +90,18 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `list` method:
-
 # The project id. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
+list_metric_descriptors_request_body = {
+    # TODO: Add desired entries of the request body.
+}
 
-metricDescriptors = service.metricDescriptors()
-request = metricDescriptors.list(project=project)
+request = service.metricDescriptors().list(project=project, body=list_metric_descriptors_request_body)
 while request is not None:
     response = request.execute()
 
@@ -125,7 +109,7 @@ while request is not None:
         # TODO: Change code below to process each `metric_descriptor` resource:
         pprint(metric_descriptor)
 
-    request = metricDescriptors.list_next(previous_request=request, previous_response=response)
+    request = service.metricDescriptors().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -134,8 +118,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudmonitoring
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -144,31 +130,26 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `list` method:
-
 # The project ID to which this time series belongs. The value can be the numeric project ID or
 # string-based project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 # compute.googleapis.com/instance/disk/read_ops_count.
-metric = '{MY-METRIC}'
+metric = ''  # TODO: Update placeholder value.
 
 # End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-youngest = '{MY-YOUNGEST}'
+youngest = ''  # TODO: Update placeholder value.
 
+list_timeseries_request_body = {
+    # TODO: Add desired entries of the request body.
+}
 
-timeseries = service.timeseries()
-request = timeseries.list(project=project, metric=metric, youngest=youngest)
+request = service.timeseries().list(project=project, metric=metric, youngest=youngest, body=list_timeseries_request_body)
 while request is not None:
     response = request.execute()
 
@@ -176,7 +157,7 @@ while request is not None:
         # TODO: Change code below to process each `timeseries` resource:
         pprint(timeseries)
 
-    request = timeseries.list_next(previous_request=request, previous_response=response)
+    request = service.timeseries().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -185,8 +166,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudmonitoring
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -195,25 +178,16 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `write` method:
-
 # The project ID. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'
-
+project = ''  # TODO: Update placeholder value.
 
 write_timeseries_request_body = {
     # TODO: Add desired entries of the request body.
 }
-
 
 request = service.timeseries().write(project=project, body=write_timeseries_request_body)
 response = request.execute()
@@ -228,8 +202,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/cloudmonitoring
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
+   https://cloud.google.com/sdk and run
    `gcloud beta auth application-default login`
+   For more information, see:
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -238,31 +214,26 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
-
-# TODO: Change placeholders below to desired parameter values for the `list` method:
-
 # The project ID to which this time series belongs. The value can be the numeric project ID or
 # string-based project name.
-project = '{MY-PROJECT}'
+project = ''  # TODO: Update placeholder value.
 
 # Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 # compute.googleapis.com/instance/disk/read_ops_count.
-metric = '{MY-METRIC}'
+metric = ''  # TODO: Update placeholder value.
 
 # End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-youngest = '{MY-YOUNGEST}'
+youngest = ''  # TODO: Update placeholder value.
 
+list_timeseries_descriptors_request_body = {
+    # TODO: Add desired entries of the request body.
+}
 
-timeseriesDescriptors = service.timeseriesDescriptors()
-request = timeseriesDescriptors.list(project=project, metric=metric, youngest=youngest)
+request = service.timeseriesDescriptors().list(project=project, metric=metric, youngest=youngest, body=list_timeseries_descriptors_request_body)
 while request is not None:
     response = request.execute()
 
@@ -270,4 +241,4 @@ while request is not None:
         # TODO: Change code below to process each `timeseries_descriptor` resource:
         pprint(timeseries_descriptor)
 
-    request = timeseriesDescriptors.list_next(previous_request=request, previous_response=response)
+    request = service.timeseriesDescriptors().list_next(previous_request=request, previous_response=response)
