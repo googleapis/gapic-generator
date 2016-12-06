@@ -260,6 +260,11 @@ public class ApiMethodTransformer {
   }
 
   public StaticLangApiMethodView generateRequestObjectAsyncMethod(
+      MethodTransformerContext context) {
+    return generateRequestObjectAsyncMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
+  public StaticLangApiMethodView generateRequestObjectAsyncMethod(
       MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();

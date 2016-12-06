@@ -406,6 +406,7 @@ public class InitCodeTransformer {
       } else {
         initValue.initialValue(
             context.getTypeTable().getZeroValueAndSaveNicknameFor(item.getType()));
+        initValue.isRepeated(item.getType().isRepeated());
       }
 
       return initValue.build();
