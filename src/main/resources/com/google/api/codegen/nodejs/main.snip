@@ -272,6 +272,9 @@
         @if longrunningMethods
 
           var operationsClient = new gax.lro({
+            auth: gaxGrpc.auth,
+            grpc: gaxGrpc.grpc
+          }).operationsClient({
             servicePath: servicePath,
             port: port,
             sslCreds: sslCreds,
@@ -286,8 +289,7 @@
                 {@methodName(method)}: new gax.LongrunningDescriptor(
                   operationsClient,
                   grpcClients.{@longrunningConfig.getReturnType}.decode,
-                  grpcClients.{@longrunningConfig.getMetadataType}.decode
-                });
+                  grpcClients.{@longrunningConfig.getMetadataType}.decode)
               @end
             @end
           };

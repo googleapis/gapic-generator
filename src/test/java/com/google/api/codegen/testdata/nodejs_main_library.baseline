@@ -126,6 +126,9 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   };
 
   var operationsClient = new gax.lro({
+    auth: gaxGrpc.auth,
+    grpc: gaxGrpc.grpc
+  }).operationsClient({
     servicePath: servicePath,
     port: port,
     sslCreds: sslCreds,
@@ -138,8 +141,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     getBigBook: new gax.LongrunningDescriptor(
       operationsClient,
       grpcClients.google.example.library.v1.Book.decode,
-      grpcClients.google.example.library.v1.GetBigBookMetadata.decode
-    });
+      grpcClients.google.example.library.v1.GetBigBookMetadata.decode)
   };
 
   var defaults = gaxGrpc.constructSettings(
