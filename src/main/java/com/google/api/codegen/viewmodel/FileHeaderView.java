@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class FileHeaderView {
@@ -29,7 +30,13 @@ public abstract class FileHeaderView {
 
   public abstract String examplePackageName();
 
+  @Nullable
   public abstract String localPackageName();
+
+  // Used by NodeJS since localPackageName() is the API version number.
+  public boolean hasLocalPackageName() {
+    return localPackageName() != null && localPackageName().length() > 0;
+  }
 
   public abstract String localExamplePackageName();
 

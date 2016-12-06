@@ -1,0 +1,112 @@
+@extends "nodejs/method_sample.snip"
+@extends "nodejs/common.snip"
+
+@snippet generate(apiTest)
+  {@copyright()}
+
+  {@imports(apiTest.fileHeader)}
+
+  @join testClass : apiTest.testClasses
+    describe('{@testClass.apiClassName}', function() {
+      @join test : testClass.testCases
+        {@testCase(test)}
+
+      @end
+    };
+  @end
+@end
+
+@private imports(header)
+  var assert = require('assert');
+  @if @header.hasLocalPackageName
+    var service = require('../src/').{@header.localPackageName}();
+  @else
+    var service = require('../src/')();
+  @end
+@end
+
+@private testCase(test)
+  @switch test.grpcStreamingType
+  @case "NonStreaming"
+    @switch test.clientMethodType
+    @case "RequestObjectMethod"
+      {@requestObjectTestCase(test)}
+    @case "PagedRequestObjectMethod"
+      {@pagedRequestObjectTestCase(test)}
+    @default
+      $unhandled case: {@test.clientMethodType.toString}$
+    @end
+  @default
+    $unhandled case: {@test.grpcStreamingType.toString}$
+  @end
+@end
+
+@private requestObjectTestCase(test)
+  describe('{@test.clientMethodName}', function() {
+    it('{@test.name}', function(done) {
+      var client = service.{@test.serviceConstructorName}();
+      // Mock request
+      {@initCodeLines(test.initCode)}
+
+      // Mock response
+      {@initCodeLines(test.mockResponse.initCode)}
+
+      // Mock Grpc layer
+      client._{@test.clientMethodName} = function(actualRequest, options, callback) {
+        @join assert : test.asserts
+          assert.equal(actualRequest.{@assert.actualValueGetter}, {@assert.expectedValueIdentifier});
+        @end
+        @if test.hasReturnValue
+          callback(null, expectedResponse);
+        @else
+          callback(null);
+        @end
+      };
+
+      @if test.hasReturnValue
+        client.{@test.clientMethodName}(request, function(err, response) {
+          assert.ifError(err);
+          assert.equals(response, expectedResponse);
+          done();
+        });
+      @else
+        client.{@test.clientMethodName}(request, function(err) {
+          assert.ifError(err);
+          done();
+        });
+      @end
+    });
+  };
+@end
+
+@private pagedRequestObjectTestCase(test)
+  describe('{@test.clientMethodName}', function() {
+    it('{@test.name}', function(done) {
+      var client = service.{@test.serviceConstructorName}();
+      // Mock request
+      {@initCodeLines(test.initCode)}
+
+      // Mock response
+      {@initCodeLines(test.mockResponse.initCode)}
+
+      // Mock Grpc layer
+      client._{@test.clientMethodName} = function(actualRequest, options, callback) {
+        @join assert : test.asserts
+          assert.equal(actualRequest.{@assert.actualValueGetter}, request.{@assert.expectedValueIdentifier});
+        @end
+        callback(null, expectedResponse, expectedResponse.nextPageToken);
+      };
+
+      client.{@test.clientMethodName}(request, function(err, response, nextPageToken) {
+        assert.ifError(err);
+        @join pagedResponse : test.pageStreamingResponseViews
+          assert.equals(response.{@pagedResponse.resourcesFieldGetterName}.length, 1);
+          assert.equals(response.{@pagedResponse.resourcesFieldGetterName}[0], expectedResponse.{@pagedResponse.resourcesFieldGetterName}[0]);
+        @end
+        assert.equals(nextPageToken, expectedResponse.nextPageToken);
+        assert.equals(response, expectedResponse);
+        done();
+      });
+    });
+  });;
+@end
