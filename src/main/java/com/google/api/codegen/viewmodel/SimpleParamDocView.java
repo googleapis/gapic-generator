@@ -16,7 +16,6 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SimpleParamDocView implements ParamDocView {
@@ -24,12 +23,15 @@ public abstract class SimpleParamDocView implements ParamDocView {
 
   public abstract String typeName();
 
-  @Nullable
   public abstract List<String> lines();
 
-  public abstract String firstLine();
+  public String firstLine() {
+    return lines().get(0);
+  }
 
-  public abstract List<String> remainingLines();
+  public List<String> remainingLines() {
+    return lines().subList(1, lines().size());
+  }
 
   public String type() {
     return SimpleParamDocView.class.getSimpleName();
@@ -46,10 +48,6 @@ public abstract class SimpleParamDocView implements ParamDocView {
     public abstract Builder typeName(String val);
 
     public abstract Builder lines(List<String> val);
-
-    public abstract Builder firstLine(String val);
-
-    public abstract Builder remainingLines(List<String> val);
 
     public abstract SimpleParamDocView build();
   }

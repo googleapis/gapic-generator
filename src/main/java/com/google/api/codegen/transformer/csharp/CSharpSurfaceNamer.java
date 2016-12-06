@@ -216,7 +216,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     if (fieldConfig.getResourceNameType() == ResourceNameType.ANY) {
       resourceName = Name.from("resource_name");
     } else {
-      resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
+      resourceName = getResourceTypeNameObject(fieldConfig.getMessageResourceNameConfig());
     }
 
     Name name = Name.from();
@@ -231,6 +231,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       functionName += "s";
     }
     return functionName;
+  }
+
+  @Override
+  public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
+    return getResourceNameFieldGetFunctionName(fieldConfig);
   }
 
   @Override

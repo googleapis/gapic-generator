@@ -15,11 +15,19 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SimpleInitValueView implements InitValueView {
 
   public abstract String initialValue();
+
+  @Nullable
+  public abstract Boolean isRepeated();
+
+  public boolean isRepeatedDefaultFalse() {
+    return isRepeated() == null ? false : isRepeated();
+  }
 
   public String type() {
     return SimpleInitValueView.class.getSimpleName();
@@ -32,6 +40,8 @@ public abstract class SimpleInitValueView implements InitValueView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder initialValue(String val);
+
+    public abstract Builder isRepeated(Boolean val);
 
     public abstract SimpleInitValueView build();
   }
