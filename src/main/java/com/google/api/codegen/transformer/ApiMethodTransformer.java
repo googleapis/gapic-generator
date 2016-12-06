@@ -660,6 +660,9 @@ public class ApiMethodTransformer {
   private List<PathTemplateCheckView> generatePathTemplateChecks(
       MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
+    if (!context.getFeatureConfig().enableStringFormatFunctions()) {
+      return pathTemplateChecks;
+    }
     for (FieldConfig fieldConfig : fieldConfigs) {
       if (!fieldConfig.useValidation()) {
         // Don't generate a path template check if fieldConfig is not configured to use validation.

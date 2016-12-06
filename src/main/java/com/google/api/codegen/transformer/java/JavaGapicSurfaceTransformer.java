@@ -103,13 +103,16 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
+      boolean enableStringFormatFunctions = apiConfig.getResourceNameMessageConfigs().isEmpty();
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
               service,
               apiConfig,
               createTypeTable(apiConfig.getPackageName()),
               namer,
-              new JavaFeatureConfig());
+              JavaFeatureConfig.newBuilder()
+                  .enableStringFormatFunctions(enableStringFormatFunctions)
+                  .build());
       StaticLangApiFileView apiFile = generateApiFile(context);
       surfaceDocs.add(apiFile);
 
@@ -121,7 +124,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
               apiConfig,
               createTypeTable(apiConfig.getPackageName()),
               namer,
-              new JavaFeatureConfig());
+              JavaFeatureConfig.newBuilder()
+                  .enableStringFormatFunctions(enableStringFormatFunctions)
+                  .build());
       StaticLangApiMethodView exampleApiMethod = getExampleApiMethod(apiFile.api().apiMethods());
       StaticLangSettingsFileView settingsFile = generateSettingsFile(context, exampleApiMethod);
       surfaceDocs.add(settingsFile);
@@ -208,7 +213,13 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service, apiConfig, typeTable, namer, new JavaFeatureConfig());
+              service,
+              apiConfig,
+              typeTable,
+              namer,
+              JavaFeatureConfig.newBuilder()
+                  .enableStringFormatFunctions(apiConfig.getResourceNameMessageConfigs().isEmpty())
+                  .build());
       for (Method method : context.getSupportedMethods()) {
         if (context.getMethodConfig(method).isPageStreaming()) {
           pagedResponseWrappersList.add(

@@ -15,8 +15,13 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.auto.value.AutoValue;
 
-public class JavaFeatureConfig extends FeatureConfig {
+@AutoValue
+public abstract class JavaFeatureConfig extends FeatureConfig {
+
+  @Override
+  public abstract boolean enableStringFormatFunctions();
 
   @Override
   public boolean resourceNameTypesEnabled() {
@@ -31,5 +36,17 @@ public class JavaFeatureConfig extends FeatureConfig {
   @Override
   public boolean enableGrpcStreaming() {
     return true;
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_JavaFeatureConfig.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+
+    public abstract Builder enableStringFormatFunctions(boolean value);
+
+    public abstract JavaFeatureConfig build();
   }
 }

@@ -44,6 +44,10 @@ public abstract class ResourceNameMessageConfigs {
     return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap.build());
   }
 
+  public boolean isEmpty() {
+    return getResourceTypeConfigMap().isEmpty();
+  }
+
   public boolean fieldHasResourceName(Field field) {
     return fieldHasResourceName(field.getParent().getSimpleName(), field.getSimpleName());
   }

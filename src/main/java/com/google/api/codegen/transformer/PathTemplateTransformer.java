@@ -56,7 +56,9 @@ public class PathTemplateTransformer {
 
   public List<PathTemplateView> generatePathTemplates(SurfaceTransformerContext context) {
     List<PathTemplateView> pathTemplates = new ArrayList<>();
-
+    if (!context.getFeatureConfig().enableStringFormatFunctions()) {
+      return pathTemplates;
+    }
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         interfaceConfig.getSingleResourceNameConfigs()) {
@@ -227,6 +229,9 @@ public class PathTemplateTransformer {
   public List<FormatResourceFunctionView> generateFormatResourceFunctions(
       SurfaceTransformerContext context) {
     List<FormatResourceFunctionView> functions = new ArrayList<>();
+    if (!context.getFeatureConfig().enableStringFormatFunctions()) {
+      return functions;
+    }
 
     SurfaceNamer namer = context.getNamer();
     Interface service = context.getInterface();
@@ -261,6 +266,9 @@ public class PathTemplateTransformer {
   public List<ParseResourceFunctionView> generateParseResourceFunctions(
       SurfaceTransformerContext context) {
     List<ParseResourceFunctionView> functions = new ArrayList<>();
+    if (!context.getFeatureConfig().enableStringFormatFunctions()) {
+      return functions;
+    }
 
     SurfaceNamer namer = context.getNamer();
     Interface service = context.getInterface();
