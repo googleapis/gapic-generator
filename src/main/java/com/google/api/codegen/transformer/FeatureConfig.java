@@ -41,7 +41,7 @@ public class FeatureConfig {
     return false;
   }
 
-  /** Returns true is string format functions are supported. */
+  /** Returns true if string format functions are supported. */
   public boolean enableStringFormatFunctions() {
     return true;
   }
