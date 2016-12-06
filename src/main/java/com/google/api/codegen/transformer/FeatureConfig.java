@@ -40,4 +40,9 @@ public class FeatureConfig {
   public boolean enableGrpcStreaming() {
     return false;
   }
+
+  /** Returns true is string format functions are supported. */
+  public boolean enableStringFormatFunctions() {
+    return true;
+  }
 }

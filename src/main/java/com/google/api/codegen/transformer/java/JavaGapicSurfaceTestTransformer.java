@@ -381,7 +381,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         apiConfig,
         typeTable,
         new JavaSurfaceNamer(apiConfig.getPackageName()),
-        new JavaFeatureConfig());
+        JavaFeatureConfig.newBuilder()
+            .enableStringFormatFunctions(apiConfig.getResourceNameMessageConfigs().isEmpty())
+            .build());
   }
 
   /////////////////////////////////// Imports //////////////////////////////////////

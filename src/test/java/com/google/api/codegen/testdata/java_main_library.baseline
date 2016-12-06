@@ -191,92 +191,7 @@ public class LibraryServiceClient implements AutoCloseable {
   private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
   private final OperationCallable<GetBookRequest, Book> getBigBookOperationCallable;
 
-  private static final PathTemplate SHELF_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
 
-  private static final PathTemplate BOOK_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}/books/{book_id}");
-
-  private static final PathTemplate RETURN_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}/returns/{return}");
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a shelf resource.
-   */
-  public static final String formatShelfName(String shelfId) {
-    return SHELF_PATH_TEMPLATE.instantiate(
-        "shelf_id", shelfId);
-  }
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a book resource.
-   */
-  public static final String formatBookName(String shelfId, String bookId) {
-    return BOOK_PATH_TEMPLATE.instantiate(
-        "shelf_id", shelfId,
-        "book_id", bookId);
-  }
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a return resource.
-   */
-  public static final String formatReturnName(String shelf, String book, String return_) {
-    return RETURN_PATH_TEMPLATE.instantiate(
-        "shelf", shelf,
-        "book", book,
-        "return", return_);
-  }
-
-  /**
-   * Parses the shelf_id from the given fully-qualified path which
-   * represents a shelf resource.
-   */
-  public static final String parseShelfIdFromShelfName(String shelfName) {
-    return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
-  }
-
-  /**
-   * Parses the shelf_id from the given fully-qualified path which
-   * represents a book resource.
-   */
-  public static final String parseShelfIdFromBookName(String bookName) {
-    return BOOK_PATH_TEMPLATE.parse(bookName).get("shelf_id");
-  }
-
-  /**
-   * Parses the book_id from the given fully-qualified path which
-   * represents a book resource.
-   */
-  public static final String parseBookIdFromBookName(String bookName) {
-    return BOOK_PATH_TEMPLATE.parse(bookName).get("book_id");
-  }
-
-  /**
-   * Parses the shelf from the given fully-qualified path which
-   * represents a return resource.
-   */
-  public static final String parseShelfFromReturnName(String returnName) {
-    return RETURN_PATH_TEMPLATE.parse(returnName).get("shelf");
-  }
-
-  /**
-   * Parses the book from the given fully-qualified path which
-   * represents a return resource.
-   */
-  public static final String parseBookFromReturnName(String returnName) {
-    return RETURN_PATH_TEMPLATE.parse(returnName).get("book");
-  }
-
-  /**
-   * Parses the return from the given fully-qualified path which
-   * represents a return resource.
-   */
-  public static final String parseReturnFromReturnName(String returnName) {
-    return RETURN_PATH_TEMPLATE.parse(returnName).get("return");
-  }
 
   /**
    * Constructs an instance of LibraryServiceClient with default settings.
@@ -481,9 +396,9 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+   *   String name = "";
    *   SomeMessage message = SomeMessage.newBuilder().build();
-   *   Shelf response = libraryServiceClient.getShelf(formattedName, message);
+   *   Shelf response = libraryServiceClient.getShelf(name, message);
    * }
    * </code></pre>
    *
@@ -492,7 +407,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message) {
-    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
+
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -508,10 +423,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+   *   String name = "";
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
-   *   Shelf response = libraryServiceClient.getShelf(formattedName, message, stringBuilder);
+   *   Shelf response = libraryServiceClient.getShelf(name, message, stringBuilder);
    * }
    * </code></pre>
    *
@@ -538,10 +453,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+   *   String name = "";
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name)
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryServiceClient.getShelf(request);
@@ -562,10 +477,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+   *   String name = "";
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name)
    *     .setOptions(options)
    *     .build();
    *   ListenableFuture&lt;Shelf&gt; future = libraryServiceClient.getShelfCallable().futureCall(request);
@@ -824,9 +739,9 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+   *   String name = "";
    *   Book book = Book.newBuilder().build();
-   *   Book response = libraryServiceClient.createBook(formattedName, book);
+   *   Book response = libraryServiceClient.createBook(name, book);
    * }
    * </code></pre>
    *
@@ -851,10 +766,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+   *   String name = "";
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name)
    *     .setBook(book)
    *     .build();
    *   Book response = libraryServiceClient.createBook(request);
@@ -875,10 +790,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatShelfName("[SHELF_ID]");
+   *   String name = "";
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name)
    *     .setBook(book)
    *     .build();
    *   ListenableFuture&lt;Book&gt; future = libraryServiceClient.createBookCallable().futureCall(request);
@@ -1513,7 +1428,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   String name = "";
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1523,7 +1438,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *     .setAlignment(alignment)
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
-   *   libraryServiceClient.addComments(formattedName, comments);
+   *   libraryServiceClient.addComments(name, comments);
    * }
    * </code></pre>
    *
@@ -1532,7 +1447,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void addComments(String name, List<Comment> comments) {
-    BOOK_PATH_TEMPLATE.validate(name, "addComments");
+
     AddCommentsRequest request =
         AddCommentsRequest.newBuilder()
         .setName(name)
@@ -1548,7 +1463,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   String name = "";
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1559,7 +1474,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name)
    *     .addAllComments(comments)
    *     .build();
    *   libraryServiceClient.addComments(request);
@@ -1580,7 +1495,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedName = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   String name = "";
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1591,7 +1506,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(formattedName)
+   *     .setName(name)
    *     .addAllComments(comments)
    *     .build();
    *   ListenableFuture&lt;Void&gt; future = libraryServiceClient.addCommentsCallable().futureCall(request);
@@ -2071,9 +1986,9 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   String resource = "";
    *   String tag = "";
-   *   AddTagResponse response = libraryServiceClient.addTag(formattedResource, tag);
+   *   AddTagResponse response = libraryServiceClient.addTag(resource, tag);
    * }
    * </code></pre>
    *
@@ -2084,7 +1999,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final AddTagResponse addTag(String resource, String tag) {
-    BOOK_PATH_TEMPLATE.validate(resource, "addTag");
+
     AddTagRequest request =
         AddTagRequest.newBuilder()
         .setResource(resource)
@@ -2100,10 +2015,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   String resource = "";
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
+   *     .setResource(resource)
    *     .setTag(tag)
    *     .build();
    *   AddTagResponse response = libraryServiceClient.addTag(request);
@@ -2124,10 +2039,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   String resource = "";
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(formattedResource)
+   *     .setResource(resource)
    *     .setTag(tag)
    *     .build();
    *   ListenableFuture&lt;AddTagResponse&gt; future = libraryServiceClient.addTagCallable().futureCall(request);
@@ -2147,9 +2062,9 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   String resource = "";
    *   String label = "";
-   *   AddLabelResponse response = libraryServiceClient.addLabel(formattedResource, label);
+   *   AddLabelResponse response = libraryServiceClient.addLabel(resource, label);
    * }
    * </code></pre>
    *
@@ -2160,7 +2075,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final AddLabelResponse addLabel(String resource, String label) {
-    BOOK_PATH_TEMPLATE.validate(resource, "addLabel");
+
     AddLabelRequest request =
         AddLabelRequest.newBuilder()
         .setResource(resource)
@@ -2176,10 +2091,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   String resource = "";
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
-   *     .setResource(formattedResource)
+   *     .setResource(resource)
    *     .setLabel(label)
    *     .build();
    *   AddLabelResponse response = libraryServiceClient.addLabel(request);
@@ -2200,10 +2115,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String formattedResource = LibraryServiceClient.formatBookName("[SHELF_ID]", "[BOOK_ID]");
+   *   String resource = "";
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
-   *     .setResource(formattedResource)
+   *     .setResource(resource)
    *     .setLabel(label)
    *     .build();
    *   ListenableFuture&lt;AddLabelResponse&gt; future = libraryServiceClient.addLabelCallable().futureCall(request);
