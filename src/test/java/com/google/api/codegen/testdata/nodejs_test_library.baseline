@@ -520,20 +520,20 @@ describe('LibraryServiceClient', function() {
     it('getBookFromAnywhereTest', function(done) {
       var client = service.LibraryServiceClient();
       // Mock request
-      var name = 'name3373707';
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : name,
+          name : formattedName,
           altBookName : formattedAltBookName
       };
 
       // Mock response
-      var name2 = 'name2-1052831874';
+      var formattedName2 = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var author = 'author-1406328437';
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
+          name : formattedName2,
           author : author,
           title : title,
           read : read
@@ -541,7 +541,7 @@ describe('LibraryServiceClient', function() {
 
       // Mock Grpc layer
       client._getBookFromAnywhere = function(actualRequest, options, callback) {
-        assert.equal(actualRequest.name, name);
+        assert.equal(actualRequest.name, formattedName);
         assert.equal(actualRequest.altBookName, formattedAltBookName);
         callback(null, expectedResponse);
       };
