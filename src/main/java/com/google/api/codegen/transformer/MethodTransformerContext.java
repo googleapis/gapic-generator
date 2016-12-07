@@ -81,7 +81,7 @@ public abstract class MethodTransformerContext {
     return getApiConfig().getInterfaceConfig(getInterface());
   }
 
-  public SingleResourceNameConfig getSimpleResourceNameConfig(String entityName) {
+  public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
     return getApiConfig().getSingleResourceNameConfig(entityName);
   }
 

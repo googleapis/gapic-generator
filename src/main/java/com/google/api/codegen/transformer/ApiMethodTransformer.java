@@ -674,7 +674,7 @@ public class ApiMethodTransformer {
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
         SingleResourceNameConfig resourceNameConfig =
-            context.getSimpleResourceNameConfig(entityName);
+            context.getSingleResourceNameConfig(entityName);
         if (resourceNameConfig == null) {
           String methodName = context.getMethod().getSimpleName();
           throw new IllegalStateException(

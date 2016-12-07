@@ -1261,12 +1261,12 @@ func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
-    var name2 string = "name2-1052831874"
+    var formattedName2 string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.BookFromAnywhere{
-        Name: name2,
+        Name: formattedName2,
         Author: author,
         Title: title,
         Read: read,
@@ -1277,10 +1277,10 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var name string = "name3373707"
+    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var formattedAltBookName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromAnywhereRequest{
-        Name: name,
+        Name: formattedName,
         AltBookName: formattedAltBookName,
     }
 
@@ -1308,10 +1308,10 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
     errCode := codes.Internal
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var name string = "name3373707"
+    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var formattedAltBookName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromAnywhereRequest{
-        Name: name,
+        Name: formattedName,
         AltBookName: formattedAltBookName,
     }
 
