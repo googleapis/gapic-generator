@@ -330,6 +330,13 @@ public abstract class ApiConfig {
     return Iterables.filter(getResourceNameConfigs().values(), SingleResourceNameConfig.class);
   }
 
+  /**
+   * Returns a SingleResourceNameConfig object for the given entity name. If the entityName
+   * corresponds to a ResourceNameOneofConfig which contains at least one SingleResourceNameConfig,
+   * then the first of those SingleResourceNameConfigs is returned. If the entityName is neither a
+   * SingleResourceNameConfig or ResourceNameOneofConfig containing a SingleResourceNameConfig, then
+   * returns null.
+   */
   public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
     ResourceNameConfig resourceNameConfig = getResourceNameConfigs().get(entityName);
     if (resourceNameConfig != null && resourceNameConfig instanceof SingleResourceNameConfig) {
