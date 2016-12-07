@@ -335,6 +335,12 @@ public abstract class ApiConfig {
     if (resourceNameConfig != null && resourceNameConfig instanceof SingleResourceNameConfig) {
       return (SingleResourceNameConfig) resourceNameConfig;
     }
+    if (resourceNameConfig != null && resourceNameConfig instanceof ResourceNameOneofConfig) {
+      ResourceNameOneofConfig oneofConfig = (ResourceNameOneofConfig) resourceNameConfig;
+      if (Iterables.size(oneofConfig.getSingleResourceNameConfigs()) > 0) {
+        return Iterables.get(oneofConfig.getSingleResourceNameConfigs(), 0);
+      }
+    }
     return null;
   }
 }
