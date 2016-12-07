@@ -30,12 +30,13 @@ public abstract class FileHeaderView {
 
   public abstract String examplePackageName();
 
-  @Nullable
   public abstract String localPackageName();
 
-  // Used by NodeJS since localPackageName() is the API version number.
-  public boolean hasLocalPackageName() {
-    return localPackageName() != null && localPackageName().length() > 0;
+  @Nullable
+  public abstract String version();
+
+  public boolean hasVersion() {
+    return version() != null && version().length() > 0;
   }
 
   public abstract String localExamplePackageName();
@@ -57,6 +58,8 @@ public abstract class FileHeaderView {
     public abstract Builder examplePackageName(String val);
 
     public abstract Builder localPackageName(String val);
+
+    public abstract Builder version(String val);
 
     public abstract Builder localExamplePackageName(String val);
 

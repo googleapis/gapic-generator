@@ -18,8 +18,8 @@
 
 @private imports(header)
   var assert = require('assert');
-  @if @header.hasLocalPackageName
-    var service = require('../src/').{@header.localPackageName}();
+  @if @header.hasVersion
+    var service = require('../src/').{@header.version}();
   @else
     var service = require('../src/')();
   @end
@@ -48,8 +48,10 @@
       // Mock request
       {@initCodeLines(test.initCode)}
 
-      // Mock response
-      {@initCodeLines(test.mockResponse.initCode)}
+      @if test.hasReturnValue
+        // Mock response
+        {@initCodeLines(test.mockResponse.initCode)}
+      @end
 
       // Mock Grpc layer
       client._{@test.clientMethodName} = function(actualRequest, options, callback) {

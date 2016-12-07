@@ -61,7 +61,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLocalPackageName() {
+  public String getApiWrapperModuleVersion() {
     List<String> names = Splitter.on(".").splitToList(getPackageName());
     if (names.size() < 2) {
       return null;

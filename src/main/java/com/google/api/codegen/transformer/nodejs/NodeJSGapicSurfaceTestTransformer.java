@@ -96,7 +96,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .build());
     }
     for (Interface service : new InterfaceView().getElementIterable(model)) {
-      // We don't need any import here.
+      // We don't need any imports here.
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
               service, apiConfig, createTypeTable(apiConfig), namer, featureConfig);
