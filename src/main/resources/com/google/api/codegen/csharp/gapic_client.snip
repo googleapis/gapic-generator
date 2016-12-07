@@ -518,7 +518,7 @@
 @private partialPageStreaming(api, settings)
     // Partial classes to enable page-streaming
 
-    @join method : api.apiMethods if method.type.toString == "PagedFlattenedMethod"
+    @join method : api.apiMethods if method.type.toString == "PagedRequestObjectMethod"
         public partial class {@method.listMethod.requestTypeName} : IPageRequest { }
         public partial class {@method.listMethod.responseTypeName} : IPageResponse<{@method.listMethod.resourceTypeName}>
         {

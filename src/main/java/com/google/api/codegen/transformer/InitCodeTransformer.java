@@ -131,7 +131,7 @@ public class InitCodeTransformer {
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
       SingleResourceNameConfig resourceNameConfig =
-          context.getSimpleResourceNameConfig(fieldNamePattern.getValue());
+          context.getSingleResourceNameConfig(fieldNamePattern.getValue());
       String apiWrapperClassName =
           context.getNamer().getApiWrapperClassName(context.getInterface());
       InitValueConfig initValueConfig =
