@@ -2,7 +2,9 @@
 @extends "nodejs/common.snip"
 
 @snippet generate(apiTest)
-  {@copyright()}
+  /*
+   {@copyright()}
+   */
 
   {@imports(apiTest.fileHeader)}
 
@@ -12,7 +14,7 @@
         {@testCase(test)}
 
       @end
-    };
+    });
   @end
 @end
 
@@ -43,7 +45,7 @@
 
 @private requestObjectTestCase(test)
   describe('{@test.clientMethodName}', function() {
-    it('{@test.name}', function(done) {
+    it('Invokes {@test.clientMethodName} without error', function(done) {
       var client = service.{@test.serviceConstructorName}();
       // Mock request
       {@initCodeLines(test.initCode)}
@@ -55,9 +57,7 @@
 
       // Mock Grpc layer
       client._{@test.clientMethodName} = function(actualRequest, options, callback) {
-        @join assert : test.asserts
-          assert.equal(actualRequest.{@assert.actualValueGetter}, {@assert.expectedValueIdentifier});
-        @end
+        assert.deepStrictEqual(actualRequest, request);
         @if test.hasReturnValue
           callback(null, expectedResponse);
         @else
@@ -68,7 +68,7 @@
       @if test.hasReturnValue
         client.{@test.clientMethodName}(request, function(err, response) {
           assert.ifError(err);
-          assert.equals(response, expectedResponse);
+          assert.deepStrictEqual(response, expectedResponse);
           done();
         });
       @else
@@ -78,12 +78,12 @@
         });
       @end
     });
-  };
+  });
 @end
 
 @private pagedRequestObjectTestCase(test)
   describe('{@test.clientMethodName}', function() {
-    it('{@test.name}', function(done) {
+    it('Invokes {@test.clientMethodName} without error', function(done) {
       var client = service.{@test.serviceConstructorName}();
       // Mock request
       {@initCodeLines(test.initCode)}
@@ -93,22 +93,19 @@
 
       // Mock Grpc layer
       client._{@test.clientMethodName} = function(actualRequest, options, callback) {
-        @join assert : test.asserts
-          assert.equal(actualRequest.{@assert.actualValueGetter}, request.{@assert.expectedValueIdentifier});
+        assert.deepStrictEqual(actualRequest, request);
+        @join pagedResponse : test.pageStreamingResponseViews
+          callback([expectedResponse.{@pagedResponse.resourcesFieldGetterName}, null, expectedResponse]);
         @end
-        callback(null, expectedResponse, expectedResponse.nextPageToken);
       };
 
-      client.{@test.clientMethodName}(request, function(err, response, nextPageToken) {
-        assert.ifError(err);
+      client.{@test.clientMethodName}(request, function(response) {
         @join pagedResponse : test.pageStreamingResponseViews
-          assert.equals(response.{@pagedResponse.resourcesFieldGetterName}.length, 1);
-          assert.equals(response.{@pagedResponse.resourcesFieldGetterName}[0], expectedResponse.{@pagedResponse.resourcesFieldGetterName}[0]);
+          assert.deepStrictEqual(response[0], expectedResponse.{@pagedResponse.resourcesFieldGetterName});
         @end
-        assert.equals(nextPageToken, expectedResponse.nextPageToken);
-        assert.equals(response, expectedResponse);
+        assert.deepStrictEqual(response[2], expectedResponse);
         done();
       });
     });
-  });;
+  });
 @end

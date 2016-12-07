@@ -76,7 +76,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassConstructorName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+    return publicFieldName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override
