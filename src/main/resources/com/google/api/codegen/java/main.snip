@@ -520,6 +520,7 @@
   @join requestObjectParam : requestObjectParams
     @if requestObjectParam.hasTransformParamFunction
       .{@requestObjectParam.setCallName}(\
+        {@requestObjectParam.name} == null ? null : \
         {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name}))
     @else
       .{@requestObjectParam.setCallName}({@requestObjectParam.name})

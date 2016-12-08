@@ -1608,7 +1608,7 @@ public class LibraryServiceClient implements AutoCloseable {
     GetBookFromAnywhereRequest request =
         GetBookFromAnywhereRequest.newBuilder()
         .setNameWithBookNameOneof(name)
-        .setAltBookNameWithBookNameOneof(BookNameOneof.from(altBookName))
+        .setAltBookNameWithBookNameOneof(altBookName == null ? null : BookNameOneof.from(altBookName))
         .build();
     return getBookFromAnywhere(request);
   }
