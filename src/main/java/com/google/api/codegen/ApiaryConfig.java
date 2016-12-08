@@ -98,6 +98,15 @@ public class ApiaryConfig {
    */
   private String apiVersion;
 
+  /*
+   * Whether or not this service should be qualified with its version.
+   *
+   * Not all client library generators honor this field, but the ones that do
+   * require that the version of the API be specified in the package if
+   * "version_module" is true.
+   */
+  private boolean versionModule;
+
   /**
    * Maps method name to set of auth scope URLs, e.g.,
    * https://www.googleapis.com/auth/cloud-platform.
@@ -215,6 +224,14 @@ public class ApiaryConfig {
 
   public void setApiVersion(String apiVersion) {
     this.apiVersion = apiVersion;
+  }
+
+  public boolean getVersionModule() {
+    return versionModule;
+  }
+
+  public void setVersionModule(boolean versionModule) {
+    this.versionModule = versionModule;
   }
 
   public String getServiceCanonicalName() {
