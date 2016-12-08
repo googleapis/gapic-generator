@@ -45,7 +45,7 @@
 
 @private requestObjectTestCase(test)
   describe('{@test.clientMethodName}', function() {
-    it('Invokes {@test.clientMethodName} without error', function(done) {
+    it('invokes {@test.clientMethodName} without error', function(done) {
       var client = service.{@test.serviceConstructorName}();
       // Mock request
       {@initCodeLines(test.initCode)}
@@ -53,8 +53,8 @@
       @if test.hasReturnValue
         // Mock response
         {@initCodeLines(test.mockResponse.initCode)}
-      @end
 
+      @end
       // Mock Grpc layer
       client._{@test.clientMethodName} = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
@@ -83,7 +83,7 @@
 
 @private pagedRequestObjectTestCase(test)
   describe('{@test.clientMethodName}', function() {
-    it('Invokes {@test.clientMethodName} without error', function(done) {
+    it('invokes {@test.clientMethodName} without error', function(done) {
       var client = service.{@test.serviceConstructorName}();
       // Mock request
       {@initCodeLines(test.initCode)}
@@ -95,15 +95,15 @@
       client._{@test.clientMethodName} = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
         @join pagedResponse : test.pageStreamingResponseViews
-          callback([expectedResponse.{@pagedResponse.resourcesFieldGetterName}, null, expectedResponse]);
+          callback([null, expectedResponse.{@pagedResponse.resourcesFieldGetterName}]);
         @end
       };
 
-      client.{@test.clientMethodName}(request, function(response) {
+      client.{@test.clientMethodName}(request, function(err, response) {
+        assert.ifError(err);
         @join pagedResponse : test.pageStreamingResponseViews
           assert.deepStrictEqual(response[0], expectedResponse.{@pagedResponse.resourcesFieldGetterName});
         @end
-        assert.deepStrictEqual(response[2], expectedResponse);
         done();
       });
     });
