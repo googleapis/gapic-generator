@@ -35,6 +35,7 @@ public class PackageMetadataGeneratorTool {
           .put(
               "python",
               Lists.newArrayList(
+                  "LICENSE.snip",
                   "py/setup.py.snip",
                   "py/README.rst.snip",
                   "py/PUBLISHING.rst.snip",
