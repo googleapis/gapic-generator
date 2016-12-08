@@ -6,7 +6,9 @@
 
   {@serviceDoc(apiFile.api)}
   @@Generated("by GAPIC")
-  @@ExperimentalApi
+  @if apiFile.api.releaseAnnotation
+    {@apiFile.api.releaseAnnotation}
+  @end
   public class {@apiFile.api.name} implements AutoCloseable {
     {@members(apiFile.api)}
     {@statics(apiFile.api)}

@@ -103,6 +103,20 @@ message LanguageSettingsProto {
   // Location of the domain layer, if any, that the user should use
   // instead of the generated client.
   string domain_layer_location = 2;
+
+  ReleaseLevel release_level = 3;
+}
+
+// ReleaseLevel indicates the stage of development of a piece of code and
+// relatedly what the promises are on quality.
+// ALPHA: Not feature complete, expect breaking changes
+// BETA: Feature complete, minimal breaking changes
+// GA: General availability, no breaking changes without major version bump
+enum ReleaseLevel {
+  UNSET_RELEASE_LEVEL = 0;
+  ALPHA = 1;
+  BETA = 2;
+  GA = 3;
 }
 
 message LicenseHeaderProto {

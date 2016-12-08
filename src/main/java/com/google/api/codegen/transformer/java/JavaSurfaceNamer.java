@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -188,5 +189,18 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       default:
         return getNotImplementedString("getApiCallableTypeName() for " + serviceMethodType);
     }
+  }
+
+  @Override
+  public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
+    String annotation = "";
+    switch (releaseLevel) {
+      case UNSET_RELEASE_LEVEL:
+      case ALPHA:
+        annotation = "@ExperimentalApi";
+        break;
+      default:
+    }
+    return annotation;
   }
 }

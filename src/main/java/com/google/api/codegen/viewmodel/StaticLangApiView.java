@@ -22,6 +22,9 @@ import javax.annotation.Nullable;
 public abstract class StaticLangApiView {
   public abstract ServiceDocView doc();
 
+  @Nullable
+  public abstract String releaseAnnotation();
+
   public abstract String name();
 
   @Nullable // Used in C#
@@ -66,6 +69,8 @@ public abstract class StaticLangApiView {
   public abstract static class Builder {
 
     public abstract Builder doc(ServiceDocView val);
+
+    public abstract Builder releaseAnnotation(String val);
 
     public abstract Builder name(String val);
 

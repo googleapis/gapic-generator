@@ -178,6 +178,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod));
 
     String name = context.getNamer().getApiWrapperClassName(context.getInterface());
+    xapiClass.releaseAnnotation(
+        context.getNamer().getReleaseAnnotation(context.getApiConfig().getReleaseLevel()));
     xapiClass.name(name);
     xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
     xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
