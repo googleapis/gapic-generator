@@ -1,0 +1,111 @@
+@extends "nodejs/method_sample.snip"
+@extends "nodejs/common.snip"
+
+@snippet generate(apiTest)
+  /*
+   {@copyright()}
+   */
+
+  {@imports(apiTest.fileHeader)}
+
+  @join testClass : apiTest.testClasses
+    describe('{@testClass.apiClassName}', function() {
+      @join test : testClass.testCases
+        {@testCase(test)}
+
+      @end
+    });
+  @end
+@end
+
+@private imports(header)
+  var assert = require('assert');
+  @if @header.hasVersion
+    var service = require('../src/').{@header.version}();
+  @else
+    var service = require('../src/')();
+  @end
+@end
+
+@private testCase(test)
+  @switch test.grpcStreamingType
+  @case "NonStreaming"
+    @switch test.clientMethodType
+    @case "RequestObjectMethod"
+      {@requestObjectTestCase(test)}
+    @case "PagedRequestObjectMethod"
+      {@pagedRequestObjectTestCase(test)}
+    @default
+      $unhandled case: {@test.clientMethodType.toString}$
+    @end
+  @default
+    $unhandled case: {@test.grpcStreamingType.toString}$
+  @end
+@end
+
+@private requestObjectTestCase(test)
+  describe('{@test.clientMethodName}', function() {
+    it('invokes {@test.clientMethodName} without error', function(done) {
+      var client = service.{@test.serviceConstructorName}();
+      // Mock request
+      {@initCodeLines(test.initCode)}
+
+      @if test.hasReturnValue
+        // Mock response
+        {@initCodeLines(test.mockResponse.initCode)}
+
+      @end
+      // Mock Grpc layer
+      client._{@test.clientMethodName} = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        @if test.hasReturnValue
+          callback(null, expectedResponse);
+        @else
+          callback(null);
+        @end
+      };
+
+      @if test.hasReturnValue
+        client.{@test.clientMethodName}(request, function(err, response) {
+          assert.ifError(err);
+          assert.deepStrictEqual(response, expectedResponse);
+          done();
+        });
+      @else
+        client.{@test.clientMethodName}(request, function(err) {
+          assert.ifError(err);
+          done();
+        });
+      @end
+    });
+  });
+@end
+
+@private pagedRequestObjectTestCase(test)
+  describe('{@test.clientMethodName}', function() {
+    it('invokes {@test.clientMethodName} without error', function(done) {
+      var client = service.{@test.serviceConstructorName}();
+      // Mock request
+      {@initCodeLines(test.initCode)}
+
+      // Mock response
+      {@initCodeLines(test.mockResponse.initCode)}
+
+      // Mock Grpc layer
+      client._{@test.clientMethodName} = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        @join pagedResponse : test.pageStreamingResponseViews
+          callback([null, expectedResponse.{@pagedResponse.resourcesFieldGetterName}]);
+        @end
+      };
+
+      client.{@test.clientMethodName}(request, function(err, response) {
+        assert.ifError(err);
+        @join pagedResponse : test.pageStreamingResponseViews
+          assert.deepStrictEqual(response[0], expectedResponse.{@pagedResponse.resourcesFieldGetterName});
+        @end
+        done();
+      });
+    });
+  });
+@end

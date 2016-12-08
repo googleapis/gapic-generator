@@ -135,11 +135,11 @@
 
     @end
     @if sample.hasRequestField
-        {@sample.requestFieldTypeName} {@sample.requestFieldName} = new {@sample.requestFieldTypeName}();
+        {@sample.requestFieldTypeName} {@sample.fieldName} = new {@sample.requestFieldTypeName}();
         @if context.isPatch(method)
-            // {@TODO()} Assign values to desired properties of the `{@sample.requestFieldName}` object to be changed.
+            // {@TODO()} Assign values to desired properties of the `{@sample.fieldName}` object to be changed.
         @else
-            // {@TODO()} Assign values to desired properties of the `{@sample.requestFieldName}` object.
+            // {@TODO()} Assign values to desired properties of the `{@sample.fieldName}` object.
         @end
 
 
@@ -196,7 +196,7 @@
                     # used to handle inconsistency in Logging API and CloudResourceManager API
                     # remove exceptional case if inconsistency is resolved
                     @if context.isPageTokenInRequestBody(method)
-                      {@sample.requestFieldName}.PageToken = {@responseName()}.NextPageToken;
+                      {@sample.fieldName}.PageToken = {@responseName()}.NextPageToken;
                     @else
                       {@requestName()}.PageToken = {@responseName()}.NextPageToken;
                     @end

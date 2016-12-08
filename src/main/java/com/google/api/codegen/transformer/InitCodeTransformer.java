@@ -472,8 +472,7 @@ public class InitCodeTransformer {
 
       fieldSetting.identifier(getVariableName(context, item));
       fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));
-
-      fieldSetting.requestFieldName(context.getNamer().publicFieldName(Name.from(item.getKey())));
+      fieldSetting.fieldName(context.getNamer().publicFieldName(Name.from(item.getKey())));
 
       allSettings.add(fieldSetting.build());
     }

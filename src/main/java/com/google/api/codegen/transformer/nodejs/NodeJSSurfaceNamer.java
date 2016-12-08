@@ -15,8 +15,10 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -59,13 +61,22 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperModuleVersion() {
+    List<String> names = Splitter.on(".").splitToList(getPackageName());
+    if (names.size() < 2) {
+      return null;
+    }
+    return names.get(1);
+  }
+
+  @Override
   public String getApiWrapperClassName(Interface interfaze) {
     return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override
   public String getApiWrapperClassConstructorName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+    return publicFieldName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override
@@ -128,5 +139,16 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcClientImportName(Interface service) {
     return "grpc-" + NamePath.dotted(service.getFile().getFullName()).toDashed();
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    Field field = fieldConfig.getField();
+    return Name.from(field.getSimpleName()).toLowerCamel();
+  }
+
+  @Override
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return identifier.toLowerCamel();
   }
 }

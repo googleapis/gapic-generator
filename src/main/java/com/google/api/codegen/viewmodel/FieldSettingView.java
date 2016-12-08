@@ -25,7 +25,7 @@ public abstract class FieldSettingView {
 
   public abstract InitCodeLineView initCodeLine();
 
-  public abstract String requestFieldName();
+  public abstract String fieldName();
 
   public static Builder newBuilder() {
     return new AutoValue_FieldSettingView.Builder();
@@ -39,7 +39,7 @@ public abstract class FieldSettingView {
 
     public abstract Builder initCodeLine(InitCodeLineView val);
 
-    public abstract Builder requestFieldName(String val);
+    public abstract Builder fieldName(String val);
 
     public abstract FieldSettingView build();
   }

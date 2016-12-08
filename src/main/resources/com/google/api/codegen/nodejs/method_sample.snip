@@ -202,7 +202,7 @@
     @end
 @end
 
-@private initCodeLines(initCode)
+@snippet initCodeLines(initCode)
     @join line : initCode.lines
         @switch line.lineType.toString
         @case "StructureInitLine"
@@ -222,7 +222,7 @@
 @private initLineStructure(line)
     var {@line.identifier} = {
         @join fieldSetting : line.fieldSettings on ",".add(BREAK)
-            {@fieldSetting.identifier} : {@fieldSetting.identifier}
+            {@fieldSetting.fieldName} : {@fieldSetting.identifier}
         @end
     };
 @end
@@ -268,7 +268,7 @@
         {}
     @case "1"
         @let field = apiMethod.initCode.fieldSettings.get(0)
-            {{@field.requestFieldName}: {@field.identifier}}
+            {{@field.fieldName}: {@field.identifier}}
         @end
     @default
         request
@@ -282,7 +282,7 @@
     @default
         var request = {
         @join fieldSetting : apiMethod.initCode.fieldSettings on ", ".add(BREAK)
-            {@""}    {@fieldSetting.requestFieldName}: {@fieldSetting.identifier}
+            {@""}    {@fieldSetting.fieldName}: {@fieldSetting.identifier}
         @end
         };
     @end
