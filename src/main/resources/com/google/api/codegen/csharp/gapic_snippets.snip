@@ -47,7 +47,7 @@
     public void {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, FALSE)}
         @if snippetMethod.method.hasReturnValue
             {@snippetMethod.callerResponseTypeName} response = {@sampleMethodCall(snippetMethod)};
         @else
@@ -62,7 +62,7 @@
     {
         // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
         // Additional: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CancellationToken)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, TRUE)}
         @if snippetMethod.method.hasReturnValue
             {@snippetMethod.callerResponseTypeName} response = await {@sampleMethodCall(snippetMethod)};
         @else
@@ -76,7 +76,7 @@
     public void {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, FALSE)}
         {@snippetMethod.callerResponseTypeName} response =
             {@sampleMethodCall(snippetMethod)};
 
@@ -88,7 +88,7 @@
     public void {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, FALSE)}
         {@snippetMethod.callerResponseTypeName} response =
             {@sampleMethodCall(snippetMethod)};
 
@@ -134,7 +134,7 @@
     public async Task {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, TRUE)}
         {@snippetMethod.callerResponseTypeName} response =
             {@sampleMethodCall(snippetMethod)};
 
@@ -147,7 +147,7 @@
     public async Task {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, TRUE)}
         {@snippetMethod.callerResponseTypeName} response =
             {@sampleMethodCall(snippetMethod)};
 
@@ -193,7 +193,7 @@
     public void {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, FALSE)}
         @if snippetMethod.method.hasReturnValue
             {@snippetMethod.callerResponseTypeName} response = {@sampleMethodCall(snippetMethod)};
         @else
@@ -208,7 +208,7 @@
     public async Task {@snippetMethod.snippetMethodName}()
     {
         // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
-        {@preparations(snippetMethod)}
+        {@preparations(snippetMethod, TRUE)}
         @if snippetMethod.method.hasReturnValue
             {@snippetMethod.callerResponseTypeName} response = await {@sampleMethodCall(snippetMethod)};
         @else
@@ -218,10 +218,14 @@
     }
 @end
 
-# snippetMethod: StaticLangApiMethodSnippetView
-@private preparations(snippetMethod)
+# snippetMethod: StaticLangApiMethodSnippetView, isAsync: Boolean
+@private preparations(snippetMethod, isAsync)
     // Create client
-    {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
+    @if isAsync
+        {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = await {@snippetMethod.apiClassName}.CreateAsync();
+    @else
+        {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
+    @end
     // Initialize request argument(s)
     {@topLevelInitCode(snippetMethod.method.initCode)}
     // Make the request
