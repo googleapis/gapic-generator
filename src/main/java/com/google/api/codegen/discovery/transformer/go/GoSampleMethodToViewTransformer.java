@@ -60,7 +60,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(GoNameFormatter.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = new SymbolTable().seed(GoNameFormatter.RESERVED_IDENTIFIER_SET);
     addStaticImports(context, symbolTable);
 
     SampleView.Builder builder = SampleView.newBuilder();

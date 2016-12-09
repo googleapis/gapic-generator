@@ -66,7 +66,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = new SymbolTable().seed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 

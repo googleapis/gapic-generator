@@ -28,6 +28,7 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.SymbolTable.DisambiguationStrategy;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.collect.Iterables;
@@ -56,7 +57,9 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(PythonTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable =
+        new SymbolTable(DisambiguationStrategy.UNDERSCORE)
+            .seed(PythonTypeTable.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
