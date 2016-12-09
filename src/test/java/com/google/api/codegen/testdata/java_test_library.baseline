@@ -1094,7 +1094,7 @@ public class LibraryServiceTest {
     callable.serverStreamingCall(request, responseObserver);
 
     try {
-      List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+      List<StreamShelvesResponse> actualResponses = responseObserver.future().get();
       Assert.fail("No exception thrown");
     } catch (ExecutionException e) {
       Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
@@ -1150,7 +1150,7 @@ public class LibraryServiceTest {
     callable.serverStreamingCall(request, responseObserver);
 
     try {
-      List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+      List<Book> actualResponses = responseObserver.future().get();
       Assert.fail("No exception thrown");
     } catch (ExecutionException e) {
       Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
@@ -1174,7 +1174,7 @@ public class LibraryServiceTest {
       .setName(name)
       .build();
 
-    MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+    MockStreamObserver<Comment> responseObserver = new MockStreamObserver<>();
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
@@ -1199,7 +1199,7 @@ public class LibraryServiceTest {
       .setName(name)
       .build();
 
-    MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+    MockStreamObserver<Comment> responseObserver = new MockStreamObserver<>();
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
@@ -1209,7 +1209,7 @@ public class LibraryServiceTest {
     requestObserver.onNext(request);
 
     try {
-      List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+      List<Comment> actualResponses = responseObserver.future().get();
       Assert.fail("No exception thrown");
     } catch (ExecutionException e) {
       Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
