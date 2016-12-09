@@ -28,6 +28,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.auto.value.AutoValue;
@@ -88,7 +89,7 @@ public abstract class ApiConfig {
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(model, configProto);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(model.getDiagCollector(), configProto);
+        createResourceNameConfigs(model, configProto);
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
@@ -236,17 +237,25 @@ public abstract class ApiConfig {
   }
 
   private static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
-      DiagCollector diagCollector, ConfigProto configProto) {
+      Model model, ConfigProto configProto) {
+    DiagCollector diagCollector = model.getDiagCollector();
+
+    // Get the proto file containing the first interface listed in the config proto, and use it as
+    // the assigned file for generated resource names.
+    ProtoFile file =
+        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
-        createSingleResourceNameConfigs(diagCollector, configProto);
+        createSingleResourceNameConfigs(diagCollector, configProto, file);
     ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
-        createFixedResourceNameConfigs(diagCollector, configProto.getFixedResourceNameValuesList());
+        createFixedResourceNameConfigs(
+            diagCollector, configProto.getFixedResourceNameValuesList(), file);
     ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigs =
         createResourceNameOneofConfigs(
             diagCollector,
             configProto.getCollectionOneofsList(),
             singleResourceNameConfigs,
-            fixedResourceNameConfigs);
+            fixedResourceNameConfigs,
+            file);
 
     ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap = ImmutableMap.builder();
     resourceCollectionMap.putAll(singleResourceNameConfigs);
@@ -256,18 +265,18 @@ public abstract class ApiConfig {
   }
 
   private static ImmutableMap<String, SingleResourceNameConfig> createSingleResourceNameConfigs(
-      DiagCollector diagCollector, ConfigProto configProto) {
+      DiagCollector diagCollector, ConfigProto configProto, ProtoFile file) {
     LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap =
         new LinkedHashMap<>();
     for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
       createSingleResourceNameConfig(
-          diagCollector, collectionConfigProto, singleResourceNameConfigsMap);
+          diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file);
     }
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       for (CollectionConfigProto collectionConfigProto :
           interfaceConfigProto.getCollectionsList()) {
         createSingleResourceNameConfig(
-            diagCollector, collectionConfigProto, singleResourceNameConfigsMap);
+            diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file);
       }
     }
 
@@ -281,9 +290,11 @@ public abstract class ApiConfig {
   private static void createSingleResourceNameConfig(
       DiagCollector diagCollector,
       CollectionConfigProto collectionConfigProto,
-      LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap) {
+      LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
+      ProtoFile file) {
     SingleResourceNameConfig singleResourceNameConfig =
-        SingleResourceNameConfig.createSingleResourceName(diagCollector, collectionConfigProto);
+        SingleResourceNameConfig.createSingleResourceName(
+            diagCollector, collectionConfigProto, file);
     if (singleResourceNameConfig == null) {
       return;
     }
@@ -304,12 +315,15 @@ public abstract class ApiConfig {
   }
 
   private static ImmutableMap<String, FixedResourceNameConfig> createFixedResourceNameConfigs(
-      DiagCollector diagCollector, Iterable<FixedResourceNameValueProto> fixedConfigProtos) {
+      DiagCollector diagCollector,
+      Iterable<FixedResourceNameValueProto> fixedConfigProtos,
+      ProtoFile file) {
     ImmutableMap.Builder<String, FixedResourceNameConfig> fixedConfigBuilder =
         ImmutableMap.builder();
     for (FixedResourceNameValueProto fixedConfigProto : fixedConfigProtos) {
       FixedResourceNameConfig fixedConfig =
-          FixedResourceNameConfig.createFixedResourceNameConfig(diagCollector, fixedConfigProto);
+          FixedResourceNameConfig.createFixedResourceNameConfig(
+              diagCollector, fixedConfigProto, file);
       if (fixedConfig == null) {
         continue;
       }
@@ -322,13 +336,14 @@ public abstract class ApiConfig {
       DiagCollector diagCollector,
       Iterable<CollectionOneofProto> oneofConfigProtos,
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
-      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs) {
+      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
+      ProtoFile file) {
     ImmutableMap.Builder<String, ResourceNameOneofConfig> oneofConfigBuilder =
         ImmutableMap.builder();
     for (CollectionOneofProto oneofProto : oneofConfigProtos) {
       ResourceNameOneofConfig oneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
-              diagCollector, oneofProto, singleResourceNameConfigs, fixedResourceNameConfigs);
+              diagCollector, oneofProto, singleResourceNameConfigs, fixedResourceNameConfigs, file);
       if (oneofConfig == null) {
         continue;
       }
