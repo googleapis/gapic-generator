@@ -22,8 +22,10 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -70,6 +72,12 @@ public abstract class ApiConfig {
   public abstract ImmutableMap<String, ResourceNameConfig> getResourceNameConfigs();
 
   /**
+   * Returns a map from field names to FieldConfigs for all fields that have a resource name type
+   * specified.
+   */
+  public abstract ImmutableMap<String, FieldConfig> getDefaultResourceNameFieldConfigMap();
+
+  /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
    * with specified interfaces in interfaceConfigMap. On errors, null will be returned, and
    * diagnostics are reported to the model.
@@ -77,8 +85,7 @@ public abstract class ApiConfig {
   @Nullable
   public static ApiConfig createApiConfig(Model model, ConfigProto configProto) {
     ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            model.getDiagCollector(), configProto);
+        ResourceNameMessageConfigs.createMessageResourceTypesConfig(model, configProto);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(model.getDiagCollector(), configProto);
@@ -121,7 +128,8 @@ public abstract class ApiConfig {
           messageConfigs,
           copyrightLines,
           licenseLines,
-          resourceNameConfigs);
+          resourceNameConfigs,
+          createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
     }
   }
 
@@ -146,7 +154,9 @@ public abstract class ApiConfig {
         messageConfigs,
         ImmutableList.<String>of(),
         ImmutableList.<String>of(),
-        ImmutableMap.<String, ResourceNameConfig>of());
+        ImmutableMap.<String, ResourceNameConfig>of(),
+        createResponseFieldConfigMap(
+            messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()));
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
@@ -325,6 +335,23 @@ public abstract class ApiConfig {
       oneofConfigBuilder.put(oneofConfig.getEntityName(), oneofConfig);
     }
     return oneofConfigBuilder.build();
+  }
+
+  private static ImmutableMap<String, FieldConfig> createResponseFieldConfigMap(
+      ResourceNameMessageConfigs messageConfig,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+
+    ImmutableMap.Builder<String, FieldConfig> builder = ImmutableMap.builder();
+    if (messageConfig == null) {
+      return builder.build();
+    }
+    for (Field field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
+      builder.put(
+          field.getFullName(),
+          FieldConfig.createMessageFieldConfig(
+              messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES));
+    }
+    return builder.build();
   }
 
   /** Returns the InterfaceConfig for the given API interface. */

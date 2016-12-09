@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FixedResourceNameConfig;
@@ -40,19 +39,14 @@ import com.google.api.codegen.viewmodel.ResourceProtoFieldView;
 import com.google.api.codegen.viewmodel.ResourceProtoView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.ProtoFile;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /** PathTemplateTransformer generates view objects for path templates from a service model. */
 public class PathTemplateTransformer {
@@ -168,21 +162,8 @@ public class PathTemplateTransformer {
         context.getApiConfig().getResourceNameMessageConfigs();
     Map<String, ResourceNameConfig> resourceNameConfigs =
         context.getApiConfig().getResourceNameConfigs();
-    ListMultimap<String, Field> fieldsByMessage = ArrayListMultimap.create();
-    Set<String> seenProtoFiles = new HashSet<>();
-    for (Interface service : new InterfaceView().getElementIterable(context.getModel())) {
-      ProtoFile protoFile = service.getFile();
-      if (!seenProtoFiles.contains(protoFile.getSimpleName())) {
-        seenProtoFiles.add(protoFile.getSimpleName());
-        for (MessageType msg : protoFile.getMessages()) {
-          for (Field field : msg.getFields()) {
-            if (resourceConfigs.fieldHasResourceName(field)) {
-              fieldsByMessage.put(msg.getFullName(), field);
-            }
-          }
-        }
-      }
-    }
+    ListMultimap<String, Field> fieldsByMessage =
+        resourceConfigs.getFieldsWithResourceNamesByMessage();
     List<ResourceProtoView> protos = new ArrayList<>();
     for (Entry<String, Collection<Field>> entry : fieldsByMessage.asMap().entrySet()) {
       String msgName = entry.getKey();
