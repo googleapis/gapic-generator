@@ -80,7 +80,7 @@ public abstract class SampleConfig {
   @JsonProperty("apiVersion")
   public abstract String apiVersion();
 
-  /** Returns true if clients should be qualified with the API version. */
+  /** Returns whether or not the client package should be qualified with the API version. */
   @JsonProperty("versionModule")
   public abstract boolean versionModule();
 
