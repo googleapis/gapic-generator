@@ -35,6 +35,7 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -176,7 +177,7 @@ public class TestCaseTransformer {
         .symbolTable(symbolTable)
         .suggestedName(Name.from("expected_response"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
+        .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
         .initFields(primitiveFields)
         .fieldConfigMap(context.getApiConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
