@@ -18,10 +18,10 @@ import com.google.api.codegen.util.Name;
 import com.google.common.base.Splitter;
 import java.util.List;
 
-public class NodeJSPackageNamer {
+public class NodeJSPackageMetadataNamer {
   private Name serviceName;
 
-  public NodeJSPackageNamer(String packageName) {
+  public NodeJSPackageMetadataNamer(String packageName) {
     // Get the service name from the package name by removing the version suffix (if any).
     List<String> names = Splitter.on(".").splitToList(packageName);
     if (names.size() < 2) {

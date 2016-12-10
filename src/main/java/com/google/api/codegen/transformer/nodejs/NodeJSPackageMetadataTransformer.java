@@ -41,12 +41,12 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    NodeJSPackageNamer namer = new NodeJSPackageNamer(apiConfig.getPackageName());
+    NodeJSPackageMetadataNamer namer = new NodeJSPackageMetadataNamer(apiConfig.getPackageName());
     models.add(generateMetadataView(namer));
     return models;
   }
 
-  private ViewModel generateMetadataView(NodeJSPackageNamer namer) {
+  private ViewModel generateMetadataView(NodeJSPackageMetadataNamer namer) {
     return PackageMetadataView.newBuilder()
         .templateFileName(PACKAGE_FILE)
         .outputPath("package.json")
