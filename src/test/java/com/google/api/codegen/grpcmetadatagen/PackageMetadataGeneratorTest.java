@@ -75,22 +75,22 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     String defaultsConfigPath = getTestDataLocator().findTestData("api_defaults.yaml").getPath();
 
     ToolOptions options = ToolOptions.create();
-    options.set(GrpcPackageMetadataGenerator.OUTPUT_DIR, outFile);
+    options.set(GrpcMetadataGenerator.OUTPUT_DIR, outFile);
     options.set(
-        GrpcPackageMetadataGenerator.INPUT_DIR,
+        GrpcMetadataGenerator.INPUT_DIR,
         getTestDataLocator().findTestData("fakeprotodir").getPath());
-    options.set(GrpcPackageMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfigPath);
-    options.set(GrpcPackageMetadataGenerator.API_DEFAULTS_FILE, defaultsConfigPath);
-    options.set(GrpcPackageMetadataGenerator.SHORT_API_NAME, "library");
-    options.set(GrpcPackageMetadataGenerator.LONG_API_NAME, "Google Library Example");
-    options.set(GrpcPackageMetadataGenerator.PACKAGE_NAME, "google-cloud-library-v1");
-    options.set(GrpcPackageMetadataGenerator.API_VERSION, "v1");
-    options.set(GrpcPackageMetadataGenerator.API_PATH, "google/example/library");
+    options.set(GrpcMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfigPath);
+    options.set(GrpcMetadataGenerator.API_DEFAULTS_FILE, defaultsConfigPath);
+    options.set(GrpcMetadataGenerator.SHORT_API_NAME, "library");
+    options.set(GrpcMetadataGenerator.LONG_API_NAME, "Google Library Example");
+    options.set(GrpcMetadataGenerator.PACKAGE_NAME, "google-cloud-library-v1");
+    options.set(GrpcMetadataGenerator.API_VERSION, "v1");
+    options.set(GrpcMetadataGenerator.API_PATH, "google/example/library");
     Map<String, Doc> generatedDocs =
-        new GrpcPackageMetadataGenerator(
+        new GrpcMetadataGenerator(
                 options,
-                GrpcPackageMetadataGeneratorTool.getSnippets(language),
-                GrpcPackageMetadataGeneratorTool.getCopier(language))
+                GrpcMetadataGeneratorTool.getSnippets(language),
+                GrpcMetadataGeneratorTool.getCopier(language))
             .generateDocs(model);
     OutputCollector collector = new OutputCollector(Paths.get(outFile));
     Files.walkFileTree(Paths.get(outFile), collector);

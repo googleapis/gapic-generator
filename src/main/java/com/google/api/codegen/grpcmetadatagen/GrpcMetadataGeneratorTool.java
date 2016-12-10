@@ -28,7 +28,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 /** Tool to generate package metadata. */
-public class GrpcPackageMetadataGeneratorTool {
+public class GrpcMetadataGeneratorTool {
 
   private static final Map<String, List<String>> SNIPPETS =
       new ImmutableMap.Builder<String, List<String>>()
@@ -182,24 +182,23 @@ public class GrpcPackageMetadataGeneratorTool {
       String googleapisPath,
       String version) {
     ToolOptions options = ToolOptions.create();
-    options.set(GrpcPackageMetadataGenerator.INPUT_DIR, inputDir);
-    options.set(GrpcPackageMetadataGenerator.OUTPUT_DIR, outputDir);
+    options.set(GrpcMetadataGenerator.INPUT_DIR, inputDir);
+    options.set(GrpcMetadataGenerator.OUTPUT_DIR, outputDir);
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
-    options.set(GrpcPackageMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfig);
-    options.set(GrpcPackageMetadataGenerator.API_DEFAULTS_FILE, defaultsConfig);
-    options.set(GrpcPackageMetadataGenerator.SHORT_API_NAME, shortName);
-    options.set(GrpcPackageMetadataGenerator.LONG_API_NAME, name);
-    options.set(GrpcPackageMetadataGenerator.API_PATH, googleapisPath);
-    options.set(GrpcPackageMetadataGenerator.API_VERSION, version);
+    options.set(GrpcMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfig);
+    options.set(GrpcMetadataGenerator.API_DEFAULTS_FILE, defaultsConfig);
+    options.set(GrpcMetadataGenerator.SHORT_API_NAME, shortName);
+    options.set(GrpcMetadataGenerator.LONG_API_NAME, name);
+    options.set(GrpcMetadataGenerator.API_PATH, googleapisPath);
+    options.set(GrpcMetadataGenerator.API_VERSION, version);
     if (Strings.isNullOrEmpty(packageName)) {
-      options.set(
-          GrpcPackageMetadataGenerator.PACKAGE_NAME, "google-cloud-" + shortName + "-" + version);
+      options.set(GrpcMetadataGenerator.PACKAGE_NAME, "google-cloud-" + shortName + "-" + version);
     } else {
-      options.set(GrpcPackageMetadataGenerator.PACKAGE_NAME, packageName);
+      options.set(GrpcMetadataGenerator.PACKAGE_NAME, packageName);
     }
-    GrpcPackageMetadataGenerator generator =
-        new GrpcPackageMetadataGenerator(options, getSnippets(language), getCopier(language));
+    GrpcMetadataGenerator generator =
+        new GrpcMetadataGenerator(options, getSnippets(language), getCopier(language));
     generator.run();
   }
 

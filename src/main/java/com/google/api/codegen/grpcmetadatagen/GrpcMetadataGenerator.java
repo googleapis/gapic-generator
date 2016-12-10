@@ -35,7 +35,7 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * ToolDriver for PackageMetadataGenerator; creates and sets the ToolOptions and builds the Model
  */
-public class GrpcPackageMetadataGenerator extends ToolDriverBase {
+public class GrpcMetadataGenerator extends ToolDriverBase {
 
   private List<String> snippetFilenames;
 
@@ -91,7 +91,7 @@ public class GrpcPackageMetadataGenerator extends ToolDriverBase {
       ToolOptions.createOption(
           String.class, "api_version", "The major version of the API, e.g., 'v1'", "");
 
-  protected GrpcPackageMetadataGenerator(
+  protected GrpcMetadataGenerator(
       ToolOptions options, List<String> snippetFilenames, GrpcPackageCopier packageCopier) {
     super(options);
     this.snippetFilenames = snippetFilenames;
@@ -126,8 +126,8 @@ public class GrpcPackageMetadataGenerator extends ToolDriverBase {
     ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
     docs.putAll(copierResults.docs());
     for (String snippetFilename : snippetFilenames) {
-      GrpcPackageMetadataContext context =
-          new GrpcPackageMetadataContext(
+      GrpcMetadataContext context =
+          new GrpcMetadataContext(
               snippetFilename, apiNameInfo, copierResults.metadata(), dependenciesMap, defaultsMap);
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(context);
       Doc result = runner.generate(context);

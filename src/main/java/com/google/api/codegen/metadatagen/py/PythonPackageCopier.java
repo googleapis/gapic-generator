@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.metadatagen.py;
 
+import com.google.api.codegen.grpcmetadatagen.GrpcMetadataGenerator;
 import com.google.api.codegen.grpcmetadatagen.GrpcPackageCopier;
 import com.google.api.codegen.grpcmetadatagen.GrpcPackageCopierResult;
-import com.google.api.codegen.grpcmetadatagen.GrpcPackageMetadataGenerator;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.base.Joiner;
@@ -103,11 +103,11 @@ public class PythonPackageCopier implements GrpcPackageCopier {
     // Run __init__ snippet in each dir that deserves it
     PythonPackageFileVisitor visitor =
         new PythonPackageFileVisitor(
-            Paths.get(options.get(GrpcPackageMetadataGenerator.INPUT_DIR)),
-            Paths.get(options.get(GrpcPackageMetadataGenerator.OUTPUT_DIR)),
-            options.get(GrpcPackageMetadataGenerator.API_VERSION));
+            Paths.get(options.get(GrpcMetadataGenerator.INPUT_DIR)),
+            Paths.get(options.get(GrpcMetadataGenerator.OUTPUT_DIR)),
+            options.get(GrpcMetadataGenerator.API_VERSION));
 
-    Files.walkFileTree(Paths.get(options.get(GrpcPackageMetadataGenerator.INPUT_DIR)), visitor);
+    Files.walkFileTree(Paths.get(options.get(GrpcMetadataGenerator.INPUT_DIR)), visitor);
 
     List<String> pythonNamespacePackages = visitor.getNamespacePackages();
     ImmutableMap.Builder<String, Doc> docBuilder = visitor.getDocBuilder();

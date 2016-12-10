@@ -23,7 +23,7 @@ import java.util.Map;
  * A Context object to be passed into the snippet template rendering phase of package metadata
  * generation.
  */
-public class GrpcPackageMetadataContext implements ViewModel {
+public class GrpcMetadataContext implements ViewModel {
   private final Map<String, Object> dependenciesMap;
 
   private final Map<String, Object> defaultsMap;
@@ -47,7 +47,7 @@ public class GrpcPackageMetadataContext implements ViewModel {
    * @param dependenciesMap The parsed YAML dependencies configuration file.
    * @param defaultsMap The parsed YAML defaults configuration file.
    */
-  public GrpcPackageMetadataContext(
+  public GrpcMetadataContext(
       String templateFileName,
       ApiNameInfo apiNameInfo,
       GrpcPackageCopierResult.Metadata copierResults,
