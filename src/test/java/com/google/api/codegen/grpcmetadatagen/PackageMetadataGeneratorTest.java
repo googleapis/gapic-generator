@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.metadatagen;
+package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
@@ -75,22 +75,22 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     String defaultsConfigPath = getTestDataLocator().findTestData("api_defaults.yaml").getPath();
 
     ToolOptions options = ToolOptions.create();
-    options.set(PackageMetadataGenerator.OUTPUT_DIR, outFile);
+    options.set(GrpcPackageMetadataGenerator.OUTPUT_DIR, outFile);
     options.set(
-        PackageMetadataGenerator.INPUT_DIR,
+        GrpcPackageMetadataGenerator.INPUT_DIR,
         getTestDataLocator().findTestData("fakeprotodir").getPath());
-    options.set(PackageMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfigPath);
-    options.set(PackageMetadataGenerator.API_DEFAULTS_FILE, defaultsConfigPath);
-    options.set(PackageMetadataGenerator.SHORT_API_NAME, "library");
-    options.set(PackageMetadataGenerator.LONG_API_NAME, "Google Library Example");
-    options.set(PackageMetadataGenerator.PACKAGE_NAME, "google-cloud-library-v1");
-    options.set(PackageMetadataGenerator.API_VERSION, "v1");
-    options.set(PackageMetadataGenerator.API_PATH, "google/example/library");
+    options.set(GrpcPackageMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfigPath);
+    options.set(GrpcPackageMetadataGenerator.API_DEFAULTS_FILE, defaultsConfigPath);
+    options.set(GrpcPackageMetadataGenerator.SHORT_API_NAME, "library");
+    options.set(GrpcPackageMetadataGenerator.LONG_API_NAME, "Google Library Example");
+    options.set(GrpcPackageMetadataGenerator.PACKAGE_NAME, "google-cloud-library-v1");
+    options.set(GrpcPackageMetadataGenerator.API_VERSION, "v1");
+    options.set(GrpcPackageMetadataGenerator.API_PATH, "google/example/library");
     Map<String, Doc> generatedDocs =
-        new PackageMetadataGenerator(
+        new GrpcPackageMetadataGenerator(
                 options,
-                PackageMetadataGeneratorTool.getSnippets(language),
-                PackageMetadataGeneratorTool.getCopier(language))
+                GrpcPackageMetadataGeneratorTool.getSnippets(language),
+                GrpcPackageMetadataGeneratorTool.getCopier(language))
             .generateDocs(model);
     OutputCollector collector = new OutputCollector(Paths.get(outFile));
     Files.walkFileTree(Paths.get(outFile), collector);

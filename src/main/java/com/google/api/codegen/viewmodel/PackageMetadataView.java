@@ -18,7 +18,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class MetadataView implements ViewModel {
+public abstract class PackageMetadataView implements ViewModel {
 
   @Override
   public String resourceRoot() {
@@ -44,7 +44,7 @@ public abstract class MetadataView implements ViewModel {
   public abstract String url();
 
   public static Builder newBuilder() {
-    return new AutoValue_MetadataView.Builder();
+    return new AutoValue_PackageMetadataView.Builder();
   }
 
   @AutoValue.Builder
@@ -65,6 +65,6 @@ public abstract class MetadataView implements ViewModel {
 
     public abstract Builder url(String val);
 
-    public abstract MetadataView build();
+    public abstract PackageMetadataView build();
   }
 }

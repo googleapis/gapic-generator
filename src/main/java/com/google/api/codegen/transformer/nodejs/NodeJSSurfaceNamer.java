@@ -151,22 +151,4 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return identifier.toLowerCamel();
   }
-
-  @Override
-  public String getMetadataName() {
-    return getServiceName().toUpperCamel();
-  }
-
-  @Override
-  public String getMetadataIdentifier() {
-    return "@google-cloud/" + getServiceName().toLowerCamel();
-  }
-
-  private Name getServiceName() {
-    List<String> names = Splitter.on(".").splitToList(getPackageName());
-    if (names.size() < 2) {
-      return Name.from(getPackageName());
-    }
-    return Name.from(names.get(0));
-  }
 }

@@ -16,15 +16,15 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.viewmodel.MetadataView;
+import com.google.api.codegen.viewmodel.PackageMetadataView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/** Responsible for producing metadata related views for NodeJS */
-public class NodeJSMetadataTransformer implements ModelToViewTransformer {
+/** Responsible for producing package metadata related views for NodeJS */
+public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_FILE = "nodejs/package.snip";
 
   // TODO(shinfan): Retrieve the following values from static file
@@ -41,15 +41,15 @@ public class NodeJSMetadataTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    NodeJSSurfaceNamer namer = new NodeJSSurfaceNamer(apiConfig.getPackageName());
+    NodeJSPackageNamer namer = new NodeJSPackageNamer(apiConfig.getPackageName());
     models.add(generateMetadataView(namer));
     return models;
   }
 
-  private ViewModel generateMetadataView(NodeJSSurfaceNamer namer) {
-    return MetadataView.newBuilder()
+  private ViewModel generateMetadataView(NodeJSPackageNamer namer) {
+    return PackageMetadataView.newBuilder()
         .templateFileName(PACKAGE_FILE)
-        .outputPath("package.js")
+        .outputPath("package.json")
         .identifier(namer.getMetadataIdentifier())
         .version(PACKAGE_VERSION)
         .gaxVersion(GAX_VERSION)

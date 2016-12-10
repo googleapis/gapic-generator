@@ -38,7 +38,7 @@ import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
-import com.google.api.codegen.transformer.nodejs.NodeJSMetadataTransformer;
+import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
@@ -191,7 +191,7 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setApiConfig(apiConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new NodeJSMetadataTransformer())
+                .setModelToViewTransformer(new NodeJSPackageMetadataTransformer())
                 .build();
         GapicProvider<? extends Object> clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()

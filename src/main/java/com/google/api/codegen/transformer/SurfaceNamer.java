@@ -1027,12 +1027,4 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
     return getNotImplementedString("SurfaceNamer.getReleaseAnnotation");
   }
-
-  public String getMetadataIdentifier() {
-    return getNotImplementedString("SurfaceNamer.getMetadataIdentifier");
-  }
-
-  public String getMetadataName() {
-    return getNotImplementedString("SurfaceNamer.getMetadataName");
-  }
 }
