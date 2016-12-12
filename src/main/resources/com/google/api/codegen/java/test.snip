@@ -126,7 +126,7 @@
     {@streamingMethodCallWithException(test)}
 
     try {
-      List<StreamingRecognizeResponse> actualResponses = responseObserver.future().get();
+      List<{@test.responseTypeName}> actualResponses = responseObserver.future().get();
       Assert.fail("No exception thrown");
     } catch (ExecutionException e) {
       Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
@@ -200,7 +200,7 @@
 @end
 
 @private bidiStreamingCall(test)
-  MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+  MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
   StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
       client.{@test.clientMethodName}();

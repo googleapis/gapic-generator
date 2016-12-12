@@ -82,7 +82,6 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     options.set(GrpcMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfigPath);
     options.set(GrpcMetadataGenerator.API_DEFAULTS_FILE, defaultsConfigPath);
     options.set(GrpcMetadataGenerator.SHORT_API_NAME, "library");
-    options.set(GrpcMetadataGenerator.LONG_API_NAME, "Google Library Example");
     options.set(GrpcMetadataGenerator.PACKAGE_NAME, "google-cloud-library-v1");
     options.set(GrpcMetadataGenerator.API_VERSION, "v1");
     options.set(GrpcMetadataGenerator.API_PATH, "google/example/library");
