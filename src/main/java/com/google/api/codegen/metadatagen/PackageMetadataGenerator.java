@@ -64,14 +64,6 @@ public class PackageMetadataGenerator extends ToolDriverBase {
           "api_defaults_file",
           "The name of the yaml file that configures Python-specific package information.",
           "");
-  // TODO (jgeiger): This eventually will come from the service config/Model and will not be
-  // configurable. See https://github.com/googleapis/toolkit/issues/270
-  public static final Option<String> LONG_API_NAME =
-      ToolOptions.createOption(
-          String.class,
-          "long_name",
-          "The API full name, including any prefixed branding, e.g., 'Stackdriver Logging'.",
-          "");
   public static final Option<String> SHORT_API_NAME =
       ToolOptions.createOption(
           String.class, "short_name", "The a single-word name for the API, e.g., 'Logging'.", "");
@@ -117,7 +109,7 @@ public class PackageMetadataGenerator extends ToolDriverBase {
 
     ApiNameInfo apiNameInfo =
         ApiNameInfo.create(
-            options.get(LONG_API_NAME),
+            model.getServiceConfig().getTitle(),
             options.get(SHORT_API_NAME),
             options.get(PACKAGE_NAME),
             options.get(API_VERSION),
