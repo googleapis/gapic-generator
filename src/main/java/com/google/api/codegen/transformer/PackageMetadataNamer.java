@@ -22,7 +22,7 @@ public class PackageMetadataNamer {
     return getNotImplementedString("PackageMetadataNamer.getMetadataName");
   }
 
-  /** Returns the artifact Identifier */
+  /** Returns the artifact identifier */
   public String getMetadataIdentifier() {
     return getNotImplementedString("PackageMetadataNamer.getMetadataIdentifier");
   }
