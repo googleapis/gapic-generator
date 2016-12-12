@@ -57,8 +57,8 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
   }
 
   @Override
-  public void setApiNameAndVersion(String apiName, String apiVersion) {
-    this.apiName = apiName;
+  public void setApiCanonicalNameAndVersion(String apiCanonicalName, String apiVersion) {
+    this.apiName = apiCanonicalName.replaceAll(" ", "").toLowerCase();
     this.apiVersion = apiVersion;
   }
 

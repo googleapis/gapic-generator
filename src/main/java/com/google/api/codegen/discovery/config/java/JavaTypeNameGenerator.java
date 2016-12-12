@@ -16,6 +16,7 @@ package com.google.api.codegen.discovery.config.java;
 
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.common.base.Joiner;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +26,29 @@ public class JavaTypeNameGenerator extends TypeNameGenerator {
   private static final String PACKAGE_PREFIX = "com.google.api.services";
   private static final String NON_REQUEST_SUBPACKAGE = "model";
 
+  private String apiCanonicalName;
+
+  @Override
+  public List<String> getMethodNameComponents(List<String> nameComponents) {
+    LinkedList<String> copy = new LinkedList<>(nameComponents);
+    // Don't edit the original object.
+    copy.removeFirst();
+    // Handle cases where the method signature contains keywords.
+    // ex: "variants.import" to "variants.genomicsImport"
+    for (int i = 0; i < copy.size(); i++) {
+      if (JavaNameFormatter.RESERVED_IDENTIFIER_SET.contains(copy.get(i))) {
+        String prefix = Name.upperCamel(apiCanonicalName).toLowerCamel();
+        copy.set(i, Name.lowerCamel(prefix, copy.get(i)).toLowerCamel());
+      }
+    }
+    return copy;
+  }
+
+  @Override
+  public void setApiCanonicalNameAndVersion(String apiCanonicalName, String apiVersion) {
+    this.apiCanonicalName = apiCanonicalName.replaceAll(" ", "");
+  }
+
   @Override
   public String getPackagePrefix(String apiName, String apiCanonicalName, String apiVersion) {
     // Most Java libraries don't include the apiVersion in their package.
@@ -33,8 +57,9 @@ public class JavaTypeNameGenerator extends TypeNameGenerator {
 
   @Override
   public String getRequestTypeName(List<String> methodNameComponents) {
-    LinkedList<String> copy = new LinkedList<>(methodNameComponents);
-    copy.removeFirst();
+    // Use getMethodNameComponents to ensure we keep any transformations on the
+    // method signature.
+    List<String> copy = getMethodNameComponents(methodNameComponents);
     for (int i = 0; i < copy.size(); i++) {
       copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
     }

@@ -45,7 +45,8 @@ public class ApiaryConfigToSampleConfigConverter {
     this.methods = methods;
     this.apiaryConfig = apiaryConfig;
     this.typeNameGenerator = typeNameGenerator;
-    typeNameGenerator.setApiNameAndVersion(apiaryConfig.getApiName(), apiaryConfig.getApiVersion());
+    typeNameGenerator.setApiCanonicalNameAndVersion(
+        apiaryConfig.getServiceCanonicalName(), apiaryConfig.getApiVersion());
 
     methodNameComponents = new HashMap<String, List<String>>();
     // Since methodNameComponents are used to generate the request type name, we

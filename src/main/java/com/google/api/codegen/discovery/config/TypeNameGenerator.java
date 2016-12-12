@@ -35,12 +35,8 @@ public class TypeNameGenerator {
     return copy;
   }
 
-  /**
-   * Sets the apiName and apiVersion used for name lookups.
-   *
-   * <p>Only used in Ruby to filter method and type names from apiary_names.yaml
-   */
-  public void setApiNameAndVersion(String apiName, String apiVersion) {}
+  /** Sets the apiCanonicalName and apiVersion used for name lookups and disambiguation. */
+  public void setApiCanonicalNameAndVersion(String apiCanonicalName, String apiVersion) {}
 
   /** Returns language-specific delimiter used for string literals in samples. */
   public String stringDelimiter() {
