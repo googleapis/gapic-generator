@@ -19,6 +19,7 @@ import com.google.api.codegen.DiscoveryImporter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
+import com.google.protobuf.Field.Kind;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 import java.util.Arrays;
@@ -108,12 +109,7 @@ public class ApiaryConfigToSampleConfigConverter {
     if (isPageStreaming) {
       Type containerType = apiaryConfig.getType(responseTypeUrl);
       Field field = getPageStreamingResourceField(containerType);
-      // If field is null, then the page streaming resource field is not
-      // repeated. We allow null to be stored, and leave it to the overrides
-      // file to define appropriately.
-      if (field != null) {
-        pageStreamingResourceField = createFieldInfo(field, containerType, method);
-      }
+      pageStreamingResourceField = createFieldInfo(field, containerType, method);
     }
     boolean hasMediaUpload = apiaryConfig.getMediaUpload().contains(method.getName());
     MethodInfo methodInfo =
@@ -160,6 +156,7 @@ public class ApiaryConfigToSampleConfigConverter {
     return FieldInfo.newBuilder()
         .name(field.getName())
         .type(typeInfo)
+        .cardinality(field.getCardinality())
         .example(example)
         .description(
             Strings.nullToEmpty(
@@ -278,12 +275,19 @@ public class ApiaryConfigToSampleConfigConverter {
    * Returns the resource field of a page streaming response type.
    *
    * <p>The heuristic implemented returns the first field within type that has a repeated
-   * cardinality.
+   * cardinality if one exists. Otherwise it returns the first field that is of type string.
    */
   private Field getPageStreamingResourceField(Type type) {
     // We assume the first field with repeated cardinality is the right one.
     for (Field field : type.getFieldsList()) {
       if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
+        return field;
+      }
+    }
+    // If there is no field of repeated cardinality then we assume the first
+    // message of type string is the page streaming resource.
+    for (Field field : type.getFieldsList()) {
+      if (field.getKind() == Kind.TYPE_STRING) {
         return field;
       }
     }

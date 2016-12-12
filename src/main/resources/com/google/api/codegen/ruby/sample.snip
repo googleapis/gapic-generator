@@ -100,6 +100,8 @@
         puts String({@class.pageStreaming.resourceKeyVarName} << " => " << JSON.pretty_generate({@class.pageStreaming.resourceValueVarName})
       end
     @else
+      # We don't handle non-repeated page streaming resources separately in Ruby
+      # because the fetch_all treats them correctly.
       {@class.pageStreaming.pageVarName}.each do |{@class.pageStreaming.resourceVarName}|
         @# TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
         puts JSON.pretty_generate({@class.pageStreaming.resourceVarName})

@@ -98,16 +98,21 @@
       if (!{@class.pageStreaming.pageVarName}) {
         return;
       }
-      @if class.pageStreaming.isResourceMap
-        Object.keys({@class.pageStreaming.pageVarName}).forEach(function({@class.pageStreaming.resourceKeyVarName}) {
-          // TODO: Change code below to process each `{@class.pageStreaming.resourceKeyVarName}` property:
-          console.log({@class.pageStreaming.resourceKeyVarName} + ': ' + JSON.stringify({@class.pageStreaming.pageVarName}[{@class.pageStreaming.resourceKeyVarName}], null, 2));
-        });
+      @if class.pageStreaming.isResourceRepeated
+        @if class.pageStreaming.isResourceMap
+          Object.keys({@class.pageStreaming.pageVarName}).forEach(function({@class.pageStreaming.resourceKeyVarName}) {
+            // TODO: Change code below to process each `{@class.pageStreaming.resourceKeyVarName}` property:
+            console.log({@class.pageStreaming.resourceKeyVarName} + ': ' + JSON.stringify({@class.pageStreaming.pageVarName}[{@class.pageStreaming.resourceKeyVarName}], null, 2));
+          });
+        @else
+          for (var i = 0; i < {@class.pageStreaming.pageVarName}.length; i++) {
+            // TODO: Change code below to process each resource in `{@class.pageStreaming.pageVarName}`:
+            console.log(JSON.stringify({@class.pageStreaming.pageVarName}[i], null, 2));
+          }
+        @end
       @else
-        for (var i = 0; i < {@class.pageStreaming.pageVarName}.length; i++) {
-          // TODO: Change code below to process each resource in `{@class.pageStreaming.pageVarName}`:
-          console.log(JSON.stringify({@class.pageStreaming.pageVarName}[i], null, 2));
-        }
+        // TODO: Change code below to process each `{@class.pageStreaming.pageVarName}` resource:
+        console.log({@class.pageStreaming.pageVarName});
       @end
 
       if ({@class.responseVarName}.nextPageToken) {

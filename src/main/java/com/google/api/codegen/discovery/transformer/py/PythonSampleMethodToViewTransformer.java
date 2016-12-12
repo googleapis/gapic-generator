@@ -31,6 +31,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.collect.Iterables;
+import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -142,9 +143,6 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     MethodInfo methodInfo = context.getSampleConfig().methods().get(context.getMethodName());
     FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
     SampleNamer namer = context.getSampleNamer();
-    if (fieldInfo == null) {
-      throw new IllegalArgumentException("pageStreamingResourceField cannot be null");
-    }
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
@@ -164,6 +162,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
               fieldInfo.type().isMessage() ? fieldInfo.type().message().typeName() : "");
       builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
     }
+    builder.isResourceRepeated(fieldInfo.cardinality() == Cardinality.CARDINALITY_REPEATED);
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(symbolTable.getNewSymbol(fieldInfo.name()));
     builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());

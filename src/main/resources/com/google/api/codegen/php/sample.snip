@@ -85,16 +85,21 @@
     do {
       ${@class.responseVarName} = ${@class.serviceVarName}->{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)});
 
-      @if class.pageStreaming.isResourceMap
-        foreach (${@class.responseVarName}['{@class.pageStreaming.resourceFieldName}'] as ${@class.pageStreaming.resourceKeyVarName} => ${@class.pageStreaming.resourceValueVarName}) {
-          // TODO: Change code below to process each ({@class.pageStreaming.resourceKeyVarName} => {@class.pageStreaming.resourceValueVarName}) element:
-          echo '<pre>', ${@class.pageStreaming.resourceKeyVarName}, ' => ', var_export(${@class.pageStreaming.resourceValueVarName}, true), '</pre>', "\n";
-        }
+      @if class.pageStreaming.isResourceRepeated
+        @if class.pageStreaming.isResourceMap
+          foreach (${@class.responseVarName}['{@class.pageStreaming.resourceFieldName}'] as ${@class.pageStreaming.resourceKeyVarName} => ${@class.pageStreaming.resourceValueVarName}) {
+            // TODO: Change code below to process each ({@class.pageStreaming.resourceKeyVarName} => {@class.pageStreaming.resourceValueVarName}) element:
+            echo '<pre>', ${@class.pageStreaming.resourceKeyVarName}, ' => ', var_export(${@class.pageStreaming.resourceValueVarName}, true), '</pre>', "\n";
+          }
+        @else
+          foreach (${@class.responseVarName}['{@class.pageStreaming.resourceFieldName}'] as ${@class.pageStreaming.resourceVarName}) {
+            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
+            echo '<pre>', var_export(${@class.pageStreaming.resourceVarName}, true), '</pre>', "\n";
+          }
+        @end
       @else
-        foreach (${@class.responseVarName}['{@class.pageStreaming.resourceFieldName}'] as ${@class.pageStreaming.resourceVarName}) {
-          // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
-          echo '<pre>', var_export(${@class.pageStreaming.resourceVarName}, true), '</pre>', "\n";
-        }
+        // TODO: Change code below to process each `{@class.responseVarName}['{@class.pageStreaming.resourceFieldName}']` resource:
+        echo '<pre>', var_export(${@class.responseVarName}['{@class.pageStreaming.resourceFieldName}'], true), '</pre>', "\n";
       @end
 
       ${@class.optParamsVarName()}['pageToken'] = ${@class.responseVarName}->getNextPageToken();

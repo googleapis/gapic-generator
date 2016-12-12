@@ -105,18 +105,23 @@
                 {
                     continue;
                 }
-                @if class.pageStreaming.isResourceMap
-                    foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
-                    {
-                        // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` element:
-                        Console.WriteLine("[" + {@class.pageStreaming.resourceVarName}.Key + "] = " + {@class.pageStreaming.resourceVarName}.Value);
-                    }
+                @if class.pageStreaming.isResourceRepeated
+                    @if class.pageStreaming.isResourceMap
+                        foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
+                        {
+                            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` element:
+                            Console.WriteLine("[" + {@class.pageStreaming.resourceVarName}.Key + "] = " + {@class.pageStreaming.resourceVarName}.Value);
+                        }
+                    @else
+                        foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
+                        {
+                            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
+                            Console.WriteLine({@class.pageStreaming.resourceVarName});
+                        }
+                    @end
                 @else
-                    foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
-                    {
-                        // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
-                        Console.WriteLine({@class.pageStreaming.resourceVarName});
-                    }
+                    // TODO: Change code below to process each `response.{@class.pageStreaming.resourceFieldName}` resource:
+                    Console.WriteLine(response.{@class.pageStreaming.resourceFieldName});
                 @end
                 @if class.pageStreaming.isResourceSetterInRequestBody
                     {@class.requestBodyVarName}.PageToken = {@class.responseVarName}.NextPageToken;
