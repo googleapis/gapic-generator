@@ -115,11 +115,8 @@ public class ApiaryConfigToSampleConfigConverter {
     }
     boolean isPageStreamingResourceSetterInRequestBody = false;
     if (requestBodyType != null) {
-      for (String s : requestBodyType.message().fields().keySet()) {
-        if (s.equals(PAGE_TOKEN_FIELD_NAME)) {
-          isPageStreamingResourceSetterInRequestBody = true;
-        }
-      }
+      isPageStreamingResourceSetterInRequestBody =
+          requestBodyType.message().fields().containsKey(PAGE_TOKEN_FIELD_NAME);
     }
     boolean hasMediaUpload = apiaryConfig.getMediaUpload().contains(method.getName());
     MethodInfo methodInfo =
