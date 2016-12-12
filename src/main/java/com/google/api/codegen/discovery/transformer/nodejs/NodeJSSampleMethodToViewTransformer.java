@@ -73,9 +73,16 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
 
     List<SampleFieldView> fields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
+      String name = field.name();
+      // Since the requestBody is named `resource`, all fields named `resource`
+      // are renamed by the Node.js client library generator to `resource_`.
+      if (name.equals("resource")) {
+        name = "resource_";
+      }
+
       fields.add(
           SampleFieldView.newBuilder()
-              .name(field.name())
+              .name(name)
               .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
               .example(field.example())
               .description(field.description())
