@@ -32,6 +32,7 @@ public class ApiaryConfigToSampleConfigConverter {
 
   private static final String KEY_FIELD_NAME = "key";
   private static final String VALUE_FIELD_NAME = "value";
+  private static final String PAGE_TOKEN_FIELD_NAME = "pageToken";
   private static final String NEXT_PAGE_TOKEN_FIELD_NAME = "nextPageToken";
 
   private final List<Method> methods;
@@ -112,6 +113,14 @@ public class ApiaryConfigToSampleConfigConverter {
       Field field = getPageStreamingResourceField(containerType);
       pageStreamingResourceField = createFieldInfo(field, containerType, method);
     }
+    boolean isPageStreamingResourceSetterInRequestBody = false;
+    if (requestBodyType != null) {
+      for (String s : requestBodyType.message().fields().keySet()) {
+        if (s.equals(PAGE_TOKEN_FIELD_NAME)) {
+          isPageStreamingResourceSetterInRequestBody = true;
+        }
+      }
+    }
     boolean hasMediaUpload = apiaryConfig.getMediaUpload().contains(method.getName());
     MethodInfo methodInfo =
         MethodInfo.newBuilder()
@@ -125,7 +134,7 @@ public class ApiaryConfigToSampleConfigConverter {
             .responseType(responseType)
             .isPageStreaming(isPageStreaming)
             .pageStreamingResourceField(pageStreamingResourceField)
-            .isPageStreamingResourceSetterInRequestBody(false)
+            .isPageStreamingResourceSetterInRequestBody(isPageStreamingResourceSetterInRequestBody)
             .hasMediaUpload(hasMediaUpload)
             // Ignore media download for methods supporting media upload, as
             // Apiary cannot combine both in a single request, and no sensible
@@ -182,7 +191,7 @@ public class ApiaryConfigToSampleConfigConverter {
       mapValue = createTypeInfo(apiaryConfig.getField(type, VALUE_FIELD_NAME), method);
     } else if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
       isMessage = true;
-      messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig, false);
+      messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig, true);
     }
     return TypeInfo.newBuilder()
         .kind(field.getKind())
@@ -241,7 +250,10 @@ public class ApiaryConfigToSampleConfigConverter {
     Map<String, FieldInfo> fields = new HashMap<>();
     if (deep) {
       for (Field field2 : type.getFieldsList()) {
-        fields.put(field2.getName(), createFieldInfo(field2, type, method));
+        // TODO(saicheems): We ignore messages as an easy way around cycles for the moment.
+        if (field2.getKind() != Kind.TYPE_MESSAGE) {
+          fields.put(field2.getName(), createFieldInfo(field2, type, method));
+        }
       }
     }
     return MessageTypeInfo.newBuilder()
