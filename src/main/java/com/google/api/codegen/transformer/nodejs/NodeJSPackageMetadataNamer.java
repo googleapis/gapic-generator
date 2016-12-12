@@ -14,27 +14,37 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Splitter;
 import java.util.List;
 
-public class NodeJSPackageMetadataNamer {
+/** A NodeJSPackageMetadataNamer provides nodejs specific names for metadata views. */
+public class NodeJSPackageMetadataNamer extends PackageMetadataNamer {
   private Name serviceName;
+  private String domainLayerLocation;
 
-  public NodeJSPackageMetadataNamer(String packageName) {
+  public NodeJSPackageMetadataNamer(String packageName, String domainLayerLocation) {
     // Get the service name from the package name by removing the version suffix (if any).
     List<String> names = Splitter.on(".").splitToList(packageName);
     if (names.size() < 2) {
-      serviceName = Name.from(packageName);
+      this.serviceName = Name.from(packageName);
     }
-    serviceName = Name.from(names.get(0));
+    this.serviceName = Name.from(names.get(0));
+    this.domainLayerLocation = domainLayerLocation;
   }
 
+  @Override
   public String getMetadataName() {
     return serviceName.toUpperCamel();
   }
 
+  @Override
   public String getMetadataIdentifier() {
-    return "@google-cloud/" + serviceName.toLowerCamel();
+    if (domainLayerLocation != null && !domainLayerLocation.isEmpty()) {
+      return "@" + domainLayerLocation + "/" + serviceName.toLowerCamel();
+    } else {
+      return serviceName.toLowerCamel();
+    }
   }
 }

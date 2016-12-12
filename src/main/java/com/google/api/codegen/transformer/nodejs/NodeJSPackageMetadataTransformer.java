@@ -27,7 +27,8 @@ import java.util.List;
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_FILE = "nodejs/package.snip";
 
-  // TODO(shinfan): Retrieve the following values from static file
+  // TODO: Retrieve the following values from static file
+  // Github issue: https://github.com/googleapis/toolkit/issues/848
   private static final String PACKAGE_VERSION = "0.7.1";
   private static final String GAX_VERSION = "^0.7.0";
   private static final String PROTO_VERSION = "^0.8.3";
@@ -41,7 +42,9 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    NodeJSPackageMetadataNamer namer = new NodeJSPackageMetadataNamer(apiConfig.getPackageName());
+    NodeJSPackageMetadataNamer namer =
+        new NodeJSPackageMetadataNamer(
+            apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
     models.add(generateMetadataView(namer));
     return models;
   }
