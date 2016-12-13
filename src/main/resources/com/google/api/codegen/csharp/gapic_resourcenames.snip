@@ -426,15 +426,15 @@
                     public {@field.typeName} {@field.propertyName}
                     {
                         @if field.isAny
-                            get { return UnknownResourceName.Parse({@field.underlyingPropertyName}); }
+                            get { return string.IsNullOrEmpty({@field.underlyingPropertyName}) ? null : UnknownResourceName.Parse({@field.underlyingPropertyName}); }
                         @else
                             @if field.isOneof
-                                get { return {@field.typeName}.Parse({@field.underlyingPropertyName}, true); }
+                                get { return string.IsNullOrEmpty({@field.underlyingPropertyName}) ? null : {@field.parseMethodTypeName}.Parse({@field.underlyingPropertyName}, true); }
                             @else
-                                get { return {@field.typeName}.Parse({@field.underlyingPropertyName}); }
+                                get { return string.IsNullOrEmpty({@field.underlyingPropertyName}) ? null : {@field.parseMethodTypeName}.Parse({@field.underlyingPropertyName}); }
                             @end
                         @end
-                        set { {@field.underlyingPropertyName} = GaxPreconditions.CheckNotNull(value, nameof(value)).ToString(); }
+                        set { {@field.underlyingPropertyName} = value != null ? value.ToString() : ""; }
                     }
                 @end
 
