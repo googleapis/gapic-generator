@@ -180,14 +180,18 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     'addTag',
     'getBigBook'
   ];
+  var self = this;
   libraryServiceStubMethods.forEach(function(methodName) {
-    this['_' + methodName] = gax.createApiCall(
+    self['_' + methodName] = gax.createApiCall(
       libraryServiceStub.then(function(libraryServiceStub) {
-        return libraryServiceStub[methodName].bind(libraryServiceStub);
+        return function() {
+          var args = Array.prototype.split.call(arguments, 0);
+          return libraryServiceStub[methodName].apply(libraryServiceStub, args);
+        }
       }),
       defaults[methodName],
       PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || longrunningDescriptors[methodName]);
-  }.bind(this));
+  });
 
   var labelerStub = gaxGrpc.createStub(
       servicePath,
@@ -197,14 +201,18 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   var labelerStubMethods = [
     'addLabel'
   ];
+  var self = this;
   labelerStubMethods.forEach(function(methodName) {
-    this['_' + methodName] = gax.createApiCall(
+    self['_' + methodName] = gax.createApiCall(
       labelerStub.then(function(labelerStub) {
-        return labelerStub[methodName].bind(labelerStub);
+        return function() {
+          var args = Array.prototype.split.call(arguments, 0);
+          return labelerStub[methodName].apply(labelerStub, args);
+        }
       }),
       defaults[methodName],
       PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || longrunningDescriptors[methodName]);
-  }.bind(this));
+  });
 }
 
 // Path templates

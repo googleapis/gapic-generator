@@ -87,14 +87,18 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
   var noTemplatesApiServiceStubMethods = [
     'increment'
   ];
+  var self = this;
   noTemplatesApiServiceStubMethods.forEach(function(methodName) {
-    this['_' + methodName] = gax.createApiCall(
+    self['_' + methodName] = gax.createApiCall(
       noTemplatesApiServiceStub.then(function(noTemplatesApiServiceStub) {
-        return noTemplatesApiServiceStub[methodName].bind(noTemplatesApiServiceStub);
+        return function() {
+          var args = Array.prototype.split.call(arguments, 0);
+          return noTemplatesApiServiceStub[methodName].apply(noTemplatesApiServiceStub, args);
+        }
       }),
       defaults[methodName],
       null);
-  }.bind(this));
+  });
 }
 
 // Service calls
