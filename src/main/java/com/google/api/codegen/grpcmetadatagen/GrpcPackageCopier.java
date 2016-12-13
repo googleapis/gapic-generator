@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.metadatagen;
+package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.tools.framework.tools.ToolOptions;
 import java.io.IOException;
 
 /** Interface for the package copying phase of package metadata generation. */
-public interface PackageCopier {
+public interface GrpcPackageCopier {
 
   /** Returns a map of Docs to be output, as well any package metadata generated in this phase. */
-  public PackageCopierResult run(ToolOptions options) throws IOException;
+  public GrpcPackageCopierResult run(ToolOptions options) throws IOException;
 }

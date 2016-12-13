@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.metadatagen;
+package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -23,12 +23,12 @@ import java.util.Map;
  * A Context object to be passed into the snippet template rendering phase of package metadata
  * generation.
  */
-public class PackageMetadataContext implements ViewModel {
+public class GrpcMetadataContext implements ViewModel {
   private final Map<String, Object> dependenciesMap;
 
   private final Map<String, Object> defaultsMap;
 
-  private final PackageCopierResult.Metadata copierResults;
+  private final GrpcPackageCopierResult.Metadata copierResults;
 
   private final ApiNameInfo apiNameInfo;
 
@@ -47,10 +47,10 @@ public class PackageMetadataContext implements ViewModel {
    * @param dependenciesMap The parsed YAML dependencies configuration file.
    * @param defaultsMap The parsed YAML defaults configuration file.
    */
-  public PackageMetadataContext(
+  public GrpcMetadataContext(
       String templateFileName,
       ApiNameInfo apiNameInfo,
-      PackageCopierResult.Metadata copierResults,
+      GrpcPackageCopierResult.Metadata copierResults,
       Map<String, Object> dependenciesMap,
       Map<String, Object> defaultsMap) {
     this.templateFileName = templateFileName;
@@ -87,7 +87,7 @@ public class PackageMetadataContext implements ViewModel {
     return apiNameInfo;
   }
 
-  public PackageCopierResult.Metadata getCopierMetadata() {
+  public GrpcPackageCopierResult.Metadata getCopierMetadata() {
     return copierResults;
   }
 
