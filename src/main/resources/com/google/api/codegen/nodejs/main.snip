@@ -298,6 +298,8 @@
 
       {@constructDefaults(service)}
 
+      var self = this;
+      
       @join stub : stubs on BREAK.add(BREAK)
         var {@stub.name} = gaxGrpc.createStub(
             servicePath,
@@ -310,13 +312,16 @@
           @end
         ];
         {@stub.stubMethodsArrayName}.forEach(function(methodName) {
-          this['_' + methodName] = gax.createApiCall(
+          self['_' + methodName] = gax.createApiCall(
             {@stub.name}.then(function({@stub.name}) {
-              return {@stub.name}[methodName].bind({@stub.name});
+              return function() {
+                var args = Array.prototype.split.call(arguments, 0);
+                return {@stub.name}[methodName].apply({@stub.name}, args);
+              }
             }),
             defaults[methodName],
             {@getDescriptors(service)});
-        }.bind(this));
+        });
       @end
     }
   @end
