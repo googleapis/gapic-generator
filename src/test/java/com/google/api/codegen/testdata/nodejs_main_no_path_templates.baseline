@@ -79,6 +79,8 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
       clientConfig,
       {'x-goog-api-client': googleApiClient});
 
+  var self = this;
+
   var noTemplatesApiServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
@@ -87,7 +89,6 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
   var noTemplatesApiServiceStubMethods = [
     'increment'
   ];
-  var self = this;
   noTemplatesApiServiceStubMethods.forEach(function(methodName) {
     self['_' + methodName] = gax.createApiCall(
       noTemplatesApiServiceStub.then(function(noTemplatesApiServiceStub) {

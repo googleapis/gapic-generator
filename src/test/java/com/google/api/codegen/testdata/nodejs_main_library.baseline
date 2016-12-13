@@ -150,6 +150,8 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
       clientConfig,
       {'x-goog-api-client': googleApiClient});
 
+  var self = this;
+
   var libraryServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
@@ -180,7 +182,6 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     'addTag',
     'getBigBook'
   ];
-  var self = this;
   libraryServiceStubMethods.forEach(function(methodName) {
     self['_' + methodName] = gax.createApiCall(
       libraryServiceStub.then(function(libraryServiceStub) {
@@ -201,7 +202,6 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   var labelerStubMethods = [
     'addLabel'
   ];
-  var self = this;
   labelerStubMethods.forEach(function(methodName) {
     self['_' + methodName] = gax.createApiCall(
       labelerStub.then(function(labelerStub) {
