@@ -691,4 +691,26 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('getBigNothingAsync', function() {
+    it('invokes getBigNothingAsync without error', function(done) {
+      var client = service.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._getBigNothingAsync = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        callback(null);
+      };
+
+      client.getBigNothingAsync(request, function(err) {
+        assert.ifError(err);
+        done();
+      });
+    });
+  });
+
 });

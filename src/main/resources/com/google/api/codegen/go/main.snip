@@ -326,7 +326,12 @@
 @end
 
 @private lroWrapper(view, lro)
-    // {@lro.clientReturnTypeName} manages a long-running operation yielding {@lro.operationPayloadTypeName}.
+    @if lro.isEmptyOperation
+        // {@lro.clientReturnTypeName} manages a long-running operation with no result.
+    @else
+        // {@lro.clientReturnTypeName} manages a long-running operation yielding {@lro.operationPayloadTypeName}.
+    @end
+
     type {@lro.clientReturnTypeName} struct {
         lro *longrunning.Operation
     }
@@ -339,36 +344,56 @@
         }
     }
 
-    // Wait blocks until the long-running operation is completed, returning the response and any errors encountered.
-    //
-    // See documentation of Poll for error-handling information.
-    func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
-        var resp {@lro.operationPayloadTypeName}
-        if err := op.lro.Wait(ctx, &resp); err != nil {
-            return nil, err
+    @if lro.isEmptyOperation
+        // Wait blocks until the long-running operation is completed, returning any error encountered.
+        //
+        // See documentation of Poll for error-handling information.
+        func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context) error {
+            return op.lro.Wait(ctx, nil)
         }
-        return &resp, nil
-    }
 
-    // Poll fetches the latest state of the long-running operation.
-    //
-    // Poll also fetches the latest metadata, which can be retrieved by Metadata.
-    //
-    // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
-    // the operation has completed with failure, the error is returned and op.Done will return true.
-    // If Poll succeeds and the operation has completed successfully,
-    // op.Done will return true, and the response of the operation is returned.
-    // If Poll succeeds and the operation has not completed, the returned response and error are both nil.
-    func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
-        var resp {@lro.operationPayloadTypeName}
-        if err := op.lro.Poll(ctx, &resp); err != nil {
-            return nil, err
+        // Poll fetches the latest state of the long-running operation.
+        //
+        // Poll also fetches the latest metadata, which can be retrieved by Metadata.
+        //
+        // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+        // the operation has completed with failure, the error is returned and op.Done will return true.
+        // If Poll succeeds and the operation has completed successfully, op.Done will return true.
+        func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context) error {
+            return op.lro.Poll(ctx, nil)
         }
-        if !op.Done() {
-            return nil, nil
+    @else
+        // Wait blocks until the long-running operation is completed, returning the response and any errors encountered.
+        //
+        // See documentation of Poll for error-handling information.
+        func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
+            var resp {@lro.operationPayloadTypeName}
+            if err := op.lro.Wait(ctx, &resp); err != nil {
+                return nil, err
+            }
+            return &resp, nil
         }
-        return &resp, nil
-    }
+
+        // Poll fetches the latest state of the long-running operation.
+        //
+        // Poll also fetches the latest metadata, which can be retrieved by Metadata.
+        //
+        // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+        // the operation has completed with failure, the error is returned and op.Done will return true.
+        // If Poll succeeds and the operation has completed successfully,
+        // op.Done will return true, and the response of the operation is returned.
+        // If Poll succeeds and the operation has not completed, the returned response and error are both nil.
+        func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
+            var resp {@lro.operationPayloadTypeName}
+            if err := op.lro.Poll(ctx, &resp); err != nil {
+                return nil, err
+            }
+            if !op.Done() {
+                return nil, nil
+            }
+            return &resp, nil
+        }
+    @end
 
     // Metadata returns metadata associated with the long-running operation.
     // Metadata itself does not contact the server, but Poll does.

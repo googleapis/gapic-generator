@@ -449,7 +449,12 @@ public class ApiMethodTransformer {
     methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     ServiceMessages messages = new ServiceMessages();
-    methodViewBuilder.hasReturnValue(!messages.isEmptyType(context.getMethod().getOutputType()));
+    if (context.getMethodConfig().isLongRunningOperation()) {
+      methodViewBuilder.hasReturnValue(
+          !messages.isEmptyType(context.getMethodConfig().getLongRunningConfig().getReturnType()));
+    } else {
+      methodViewBuilder.hasReturnValue(!messages.isEmptyType(context.getMethod().getOutputType()));
+    }
   }
 
   private void setListMethodFields(

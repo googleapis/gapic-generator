@@ -1398,4 +1398,48 @@ public class LibraryServiceTest {
   }
 
 
+  @Test
+  @SuppressWarnings("all")
+  public void getBigNothingTest() throws Exception {
+    Empty expectedResponse = Empty.newBuilder().build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("getBigNothingTest")
+            .setDone(true)
+            .setResponse(Any.pack(expectedResponse))
+            .build();
+    mockLibraryService.addResponse(resultOperation);
+
+    BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+
+    Empty actualResponse =
+        client.getBigNothingAsync(name).get();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, actualRequest.getNameAsBookName());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBigNothingExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+
+      client.getBigNothingAsync(name).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(ApiException.class, e.getCause().getClass());
+      ApiException apiException = (ApiException) e.getCause();
+      Assert.assertEquals(Status.INTERNAL.getCode(), apiException.getStatusCode());
+    }
+  }
+
+
 }
