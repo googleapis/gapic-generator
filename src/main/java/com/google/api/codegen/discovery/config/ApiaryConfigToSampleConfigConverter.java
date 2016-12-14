@@ -285,7 +285,7 @@ public class ApiaryConfigToSampleConfigConverter {
    * Returns the resource field of a page streaming response type.
    *
    * <p>The heuristic implemented returns the first field within type that has a repeated
-   * cardinality if one exists. Otherwise it returns the first field that is of type string.
+   * cardinality, if one exists. Otherwise it returns the first field that is of type string.
    */
   private Field getPageStreamingResourceField(Type type) {
     // We assume the first field with repeated cardinality is the right one.
