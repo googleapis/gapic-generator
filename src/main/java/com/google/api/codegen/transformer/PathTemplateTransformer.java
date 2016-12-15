@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FixedResourceNameConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -160,10 +159,10 @@ public class PathTemplateTransformer {
     SurfaceNamer namer = context.getNamer();
     ResourceNameMessageConfigs resourceConfigs =
         context.getApiConfig().getResourceNameMessageConfigs();
-    Map<String, ResourceNameConfig> resourceNameConfigs =
-        context.getApiConfig().getResourceNameConfigs();
     ListMultimap<String, Field> fieldsByMessage =
         resourceConfigs.getFieldsWithResourceNamesByMessage();
+    Map<String, FieldConfig> fieldConfigMap =
+        context.getApiConfig().getDefaultResourceNameFieldConfigMap();
     List<ResourceProtoView> protos = new ArrayList<>();
     for (Entry<String, Collection<Field>> entry : fieldsByMessage.asMap().entrySet()) {
       String msgName = entry.getKey();
@@ -172,10 +171,7 @@ public class PathTemplateTransformer {
       protoBuilder.protoClassName(namer.getTypeNameConverter().getTypeName(msgName).getNickname());
       List<ResourceProtoFieldView> fieldViews = new ArrayList<>();
       for (Field field : fields) {
-        String fieldName = field.getSimpleName();
-        FieldConfig fieldConfig =
-            FieldConfig.createMessageFieldConfig(
-                resourceConfigs, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES);
+        FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
         String fieldTypeSimpleName = namer.getResourceTypeName(fieldConfig.getResourceNameConfig());
         String fieldTypeName =
             context
@@ -198,7 +194,7 @@ public class PathTemplateTransformer {
                 .isRepeated(field.getType().isRepeated())
                 .isOneof(fieldConfig.getResourceNameType() == ResourceNameType.ONEOF)
                 .propertyName(namer.getResourceNameFieldGetFunctionName(fieldConfig))
-                .underlyingPropertyName(namer.publicMethodName(Name.from(fieldName)))
+                .underlyingPropertyName(namer.publicMethodName(Name.from(field.getSimpleName())))
                 .build();
         fieldViews.add(fieldView);
       }

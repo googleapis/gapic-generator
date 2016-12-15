@@ -85,11 +85,19 @@ public abstract class ApiConfig {
    */
   @Nullable
   public static ApiConfig createApiConfig(Model model, ConfigProto configProto) {
+
+    // Get the proto file containing the first interface listed in the config proto, and use it as
+    // the assigned file for generated resource names, and to get the default message namespace
+    ProtoFile file =
+        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+    String defaultPackage = file.getProto().getPackage();
+
     ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createMessageResourceTypesConfig(model, configProto);
+        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
+            model, configProto, defaultPackage);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(model, configProto);
+        createResourceNameConfigs(model.getDiagCollector(), configProto, file);
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
@@ -237,13 +245,7 @@ public abstract class ApiConfig {
   }
 
   private static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
-      Model model, ConfigProto configProto) {
-    DiagCollector diagCollector = model.getDiagCollector();
-
-    // Get the proto file containing the first interface listed in the config proto, and use it as
-    // the assigned file for generated resource names.
-    ProtoFile file =
-        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+      DiagCollector diagCollector, ConfigProto configProto, ProtoFile file) {
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
         createSingleResourceNameConfigs(diagCollector, configProto, file);
     ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
