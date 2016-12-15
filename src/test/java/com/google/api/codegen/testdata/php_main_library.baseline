@@ -27,6 +27,7 @@
 
 namespace Google\Example\Library\V1;
 
+use Google\Longrunning\OperationsClient;
 use Google\GAX\AgentHeaderDescriptor;
 use Google\GAX\ApiCallable;
 use Google\GAX\CallSettings;
@@ -132,7 +133,7 @@ class LibraryServiceClient
     private $scopes;
     private $defaultCallSettings;
     private $descriptors;
-    private $operationsApi;
+    private $operationsClient;
 
     /**
      * Formats a string containing the fully-qualified path to represent
@@ -296,11 +297,15 @@ class LibraryServiceClient
     {
         return [
             'getBigBook' => [
-                'operationReturnType' => Book
+                'operationReturnType' => '\google\example\library\v1\Book'
             ],
         ];
     }
 
+    public function getOperationsClient()
+    {
+        return $this->operationsClient;
+    }
     // TODO(garrettjones): add channel (when supported in gRPC)
     /**
      * Constructor.
@@ -351,7 +356,7 @@ class LibraryServiceClient
         ];
         $options = array_merge($defaultOptions, $options);
 
-        $this->operationsApi = new OperationsApi(['serviceAddress' => $options['serviceAddress']]);
+        $this->operationsClient = new OperationsClient(['serviceAddress' => $options['serviceAddress']]);
 
         $headerDescriptor = new AgentHeaderDescriptor([
             'clientName' => $options['appName'],
@@ -391,8 +396,8 @@ class LibraryServiceClient
             $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
         }
         $longRunningDescriptors = self::getLongRunningDescriptors();
-        foreach ($longRunningDescriptor as $method => $longRunningDescriptors) {
-            $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsApi' => $this->operationsApi];
+        foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
+            $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
         }
 
         $clientConfigJsonString = file_get_contents(__DIR__ . '/resources/library_service_client_config.json');

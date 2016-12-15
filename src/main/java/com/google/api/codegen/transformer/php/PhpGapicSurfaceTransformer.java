@@ -156,7 +156,12 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       result.add(
           LongRunningOperationDetailView.newBuilder()
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
-              .operationReturnType(context.getTypeTable().getFullNameFor(returnType))
+              .constructorName("")
+              .clientReturnTypeName("")
+              .operationPayloadTypeName(context.getTypeTable().getFullNameFor(returnType))
+              .metadataTypeName("")
+              .implementsCancel(true)
+              .implementsDelete(true)
               .build());
     }
 
@@ -175,9 +180,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
       typeTable.saveNicknameFor("\\Google\\GAX\\PageStreamingDescriptor");
     }
-    
+
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
-      typeTable.saveNicknameFor("Google\\Longrunning\\OperationsApi");
+      typeTable.saveNicknameFor("Google\\Longrunning\\OperationsClient");
     }
   }
 
