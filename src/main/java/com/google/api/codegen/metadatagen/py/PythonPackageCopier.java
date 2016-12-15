@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.metadatagen.py;
 
-import com.google.api.codegen.metadatagen.PackageCopier;
-import com.google.api.codegen.metadatagen.PackageCopierResult;
-import com.google.api.codegen.metadatagen.PackageMetadataGenerator;
+import com.google.api.codegen.grpcmetadatagen.GrpcMetadataGenerator;
+import com.google.api.codegen.grpcmetadatagen.GrpcPackageCopier;
+import com.google.api.codegen.grpcmetadatagen.GrpcPackageCopierResult;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.base.Joiner;
@@ -36,7 +36,7 @@ import java.util.List;
  * A PackageCopier specialized to calculate Python namespace packages and generate __init__.py
  * files.
  */
-public class PythonPackageCopier implements PackageCopier {
+public class PythonPackageCopier implements GrpcPackageCopier {
 
   /** Copies gRPC source while computing namespace packages and generating __init__.py. */
   private class PythonPackageFileVisitor extends SimpleFileVisitor<Path> {
@@ -98,20 +98,20 @@ public class PythonPackageCopier implements PackageCopier {
 
   @SuppressWarnings("unchecked")
   @Override
-  public PackageCopierResult run(ToolOptions options) throws IOException {
+  public GrpcPackageCopierResult run(ToolOptions options) throws IOException {
     // Copy files from dir into map, and fill in namespace result
     // Run __init__ snippet in each dir that deserves it
     PythonPackageFileVisitor visitor =
         new PythonPackageFileVisitor(
-            Paths.get(options.get(PackageMetadataGenerator.INPUT_DIR)),
-            Paths.get(options.get(PackageMetadataGenerator.OUTPUT_DIR)),
-            options.get(PackageMetadataGenerator.API_VERSION));
+            Paths.get(options.get(GrpcMetadataGenerator.INPUT_DIR)),
+            Paths.get(options.get(GrpcMetadataGenerator.OUTPUT_DIR)),
+            options.get(GrpcMetadataGenerator.API_VERSION));
 
-    Files.walkFileTree(Paths.get(options.get(PackageMetadataGenerator.INPUT_DIR)), visitor);
+    Files.walkFileTree(Paths.get(options.get(GrpcMetadataGenerator.INPUT_DIR)), visitor);
 
     List<String> pythonNamespacePackages = visitor.getNamespacePackages();
     ImmutableMap.Builder<String, Doc> docBuilder = visitor.getDocBuilder();
 
-    return PackageCopierResult.createPython(pythonNamespacePackages, docBuilder.build());
+    return GrpcPackageCopierResult.createPython(pythonNamespacePackages, docBuilder.build());
   }
 }

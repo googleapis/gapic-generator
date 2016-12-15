@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.metadatagen;
+package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.tools.framework.model.Diag;
@@ -35,11 +35,11 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * ToolDriver for PackageMetadataGenerator; creates and sets the ToolOptions and builds the Model
  */
-public class PackageMetadataGenerator extends ToolDriverBase {
+public class GrpcMetadataGenerator extends ToolDriverBase {
 
   private List<String> snippetFilenames;
 
-  private PackageCopier packageCopier;
+  private GrpcPackageCopier packageCopier;
 
   public static final Option<String> OUTPUT_DIR =
       ToolOptions.createOption(
@@ -83,8 +83,8 @@ public class PackageMetadataGenerator extends ToolDriverBase {
       ToolOptions.createOption(
           String.class, "api_version", "The major version of the API, e.g., 'v1'", "");
 
-  protected PackageMetadataGenerator(
-      ToolOptions options, List<String> snippetFilenames, PackageCopier packageCopier) {
+  protected GrpcMetadataGenerator(
+      ToolOptions options, List<String> snippetFilenames, GrpcPackageCopier packageCopier) {
     super(options);
     this.snippetFilenames = snippetFilenames;
     this.packageCopier = packageCopier;
@@ -93,7 +93,7 @@ public class PackageMetadataGenerator extends ToolDriverBase {
   @SuppressWarnings("unchecked")
   protected Map<String, Doc> generateDocs(Model model) throws IOException {
     // Copy gRPC package and create non-top-level files
-    PackageCopierResult copierResults = packageCopier.run(options);
+    GrpcPackageCopierResult copierResults = packageCopier.run(options);
 
     Yaml yaml = new Yaml();
 
@@ -118,8 +118,8 @@ public class PackageMetadataGenerator extends ToolDriverBase {
     ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
     docs.putAll(copierResults.docs());
     for (String snippetFilename : snippetFilenames) {
-      PackageMetadataContext context =
-          new PackageMetadataContext(
+      GrpcMetadataContext context =
+          new GrpcMetadataContext(
               snippetFilename, apiNameInfo, copierResults.metadata(), dependenciesMap, defaultsMap);
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(context);
       Doc result = runner.generate(context);

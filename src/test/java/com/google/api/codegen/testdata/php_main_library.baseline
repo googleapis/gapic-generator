@@ -373,6 +373,7 @@ class LibraryServiceClient
             'addTag' => $defaultDescriptors,
             'addLabel' => $defaultDescriptors,
             'getBigBook' => $defaultDescriptors,
+            'getBigNothing' => $defaultDescriptors,
         ];
         $pageStreamingDescriptors = self::getPageStreamingDescriptors();
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
@@ -1552,6 +1553,53 @@ class LibraryServiceClient
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBigBook', $mergedSettings, $this->descriptors['getBigBook']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Test long-running operations with empty return type.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $response = $libraryServiceClient->getBigNothing($formattedName);
+     * } finally {
+     *     if (isset($libraryServiceClient)) {
+     *         $libraryServiceClient->close();
+     *     }
+     * }
+     * ```
+     *
+     * @param string $name The name of the book to retrieve.
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeoutMillis is ignored.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return \google\longrunning\Operation
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     */
+    public function getBigNothing($name, $optionalArgs = [])
+    {
+        $request = new GetBookRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['getBigNothing']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'GetBigNothing', $mergedSettings, $this->descriptors['getBigNothing']);
 
         return $callable(
             $request,

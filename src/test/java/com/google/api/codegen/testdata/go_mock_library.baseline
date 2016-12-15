@@ -262,6 +262,14 @@ func (s *mockLibraryServer) GetBigBook(_ context.Context, req *librarypb.GetBook
     return s.resps[0].(*longrunningpb.Operation), nil
 }
 
+func (s *mockLibraryServer) GetBigNothing(_ context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*longrunningpb.Operation), nil
+}
+
 type mockLabelerServer struct {
     reqs []proto.Message
 
@@ -1406,7 +1414,7 @@ func TestLibraryServiceStreamShelves(t *testing.T) {
         t.Fatal(err)
     }
 
-    stream, err := c.StreamShelves(context.Background())
+    stream, err := c.StreamShelves(context.Background(), request)
     if err != nil {
         t.Fatal(err)
     }
@@ -1436,7 +1444,7 @@ func TestLibraryServiceStreamShelvesError(t *testing.T) {
         t.Fatal(err)
     }
 
-    stream, err := c.StreamShelves(context.Background())
+    stream, err := c.StreamShelves(context.Background(), request)
     if err != nil {
         t.Fatal(err)
     }
@@ -1474,7 +1482,7 @@ func TestLibraryServiceStreamBooks(t *testing.T) {
         t.Fatal(err)
     }
 
-    stream, err := c.StreamBooks(context.Background())
+    stream, err := c.StreamBooks(context.Background(), request)
     if err != nil {
         t.Fatal(err)
     }
@@ -1507,7 +1515,7 @@ func TestLibraryServiceStreamBooksError(t *testing.T) {
         t.Fatal(err)
     }
 
-    stream, err := c.StreamBooks(context.Background())
+    stream, err := c.StreamBooks(context.Background(), request)
     if err != nil {
         t.Fatal(err)
     }
@@ -1819,4 +1827,80 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
+}
+func TestLibraryServiceGetBigNothing(t *testing.T) {
+    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    any, err := ptypes.MarshalAny(expectedResponse)
+    if err != nil {
+        t.Fatal(err)
+    }
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Response{ Response: any },
+    })
+
+    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.GetBigNothing(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    err = respLRO.Wait(context.Background())
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceGetBigNothingError(t *testing.T) {
+    errCode := codes.Internal
+    mockLibrary.err = nil
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Error{
+            Error: &status.Status{
+                Code: int32(errCode),
+                Message: "test error",
+            },
+        },
+    })
+
+    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.GetBigNothing(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    err = respLRO.Wait(context.Background())
+
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
 }

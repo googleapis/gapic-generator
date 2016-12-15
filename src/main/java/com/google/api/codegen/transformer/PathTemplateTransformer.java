@@ -211,6 +211,7 @@ public class PathTemplateTransformer {
         ResourceProtoFieldView fieldView =
             ResourceProtoFieldView.newBuilder()
                 .typeName(fieldTypeName)
+                .parseMethodTypeName(namer.getPackageName() + "." + fieldTypeName)
                 .docTypeName(fieldDocTypeName)
                 .elementTypeName(fieldElementTypeName)
                 .isAny(fieldConfig.getResourceNameType() == ResourceNameType.ANY)

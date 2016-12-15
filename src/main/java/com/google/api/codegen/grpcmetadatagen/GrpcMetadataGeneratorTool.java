@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.metadatagen;
+package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.codegen.metadatagen.py.PythonPackageCopier;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -28,7 +28,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 /** Tool to generate package metadata. */
-public class PackageMetadataGeneratorTool {
+public class GrpcMetadataGeneratorTool {
 
   private static final Map<String, List<String>> SNIPPETS =
       new ImmutableMap.Builder<String, List<String>>()
@@ -42,8 +42,8 @@ public class PackageMetadataGeneratorTool {
                   "py/MANIFEST.in.snip"))
           .build();
 
-  private static final Map<String, PackageCopier> COPIERS =
-      new ImmutableMap.Builder<String, PackageCopier>()
+  private static final Map<String, GrpcPackageCopier> COPIERS =
+      new ImmutableMap.Builder<String, GrpcPackageCopier>()
           .put("python", new PythonPackageCopier())
           .build();
 
@@ -172,23 +172,22 @@ public class PackageMetadataGeneratorTool {
       String googleapisPath,
       String version) {
     ToolOptions options = ToolOptions.create();
-    options.set(PackageMetadataGenerator.INPUT_DIR, inputDir);
-    options.set(PackageMetadataGenerator.OUTPUT_DIR, outputDir);
+    options.set(GrpcMetadataGenerator.INPUT_DIR, inputDir);
+    options.set(GrpcMetadataGenerator.OUTPUT_DIR, outputDir);
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
-    options.set(PackageMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfig);
-    options.set(PackageMetadataGenerator.API_DEFAULTS_FILE, defaultsConfig);
-    options.set(PackageMetadataGenerator.SHORT_API_NAME, shortName);
-    options.set(PackageMetadataGenerator.API_PATH, googleapisPath);
-    options.set(PackageMetadataGenerator.API_VERSION, version);
+    options.set(GrpcMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfig);
+    options.set(GrpcMetadataGenerator.API_DEFAULTS_FILE, defaultsConfig);
+    options.set(GrpcMetadataGenerator.SHORT_API_NAME, shortName);
+    options.set(GrpcMetadataGenerator.API_PATH, googleapisPath);
+    options.set(GrpcMetadataGenerator.API_VERSION, version);
     if (Strings.isNullOrEmpty(packageName)) {
-      options.set(
-          PackageMetadataGenerator.PACKAGE_NAME, "google-cloud-" + shortName + "-" + version);
+      options.set(GrpcMetadataGenerator.PACKAGE_NAME, "google-cloud-" + shortName + "-" + version);
     } else {
-      options.set(PackageMetadataGenerator.PACKAGE_NAME, packageName);
+      options.set(GrpcMetadataGenerator.PACKAGE_NAME, packageName);
     }
-    PackageMetadataGenerator generator =
-        new PackageMetadataGenerator(options, getSnippets(language), getCopier(language));
+    GrpcMetadataGenerator generator =
+        new GrpcMetadataGenerator(options, getSnippets(language), getCopier(language));
     generator.run();
   }
 
@@ -198,7 +197,7 @@ public class PackageMetadataGeneratorTool {
   }
 
   // Public for visibility to tests.
-  public static PackageCopier getCopier(String language) {
+  public static GrpcPackageCopier getCopier(String language) {
     return getForLanguage(COPIERS, language);
   }
 

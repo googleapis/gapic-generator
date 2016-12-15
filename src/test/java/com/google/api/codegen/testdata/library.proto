@@ -20,7 +20,7 @@ import "tagger.proto";
 option java_multiple_files = true;
 option java_outer_classname = "LibraryProto";
 option java_package = "com.google.example.library.v1";
-option go_package = "google.golang.org/genproto/googleapis/example/library/v1";
+option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
 
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
@@ -155,6 +155,11 @@ service LibraryService {
   // Test long-running operations
   rpc GetBigBook(GetBookRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:big" };
+  }
+
+  // Test long-running operations with empty return type.
+  rpc GetBigNothing(GetBookRequest) returns (google.longrunning.Operation) {
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:bignothing" };
   }
 }
 

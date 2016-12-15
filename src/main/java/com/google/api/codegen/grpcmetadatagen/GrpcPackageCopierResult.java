@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.metadatagen;
+package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.auto.value.AutoValue;
@@ -21,14 +21,14 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class PackageCopierResult {
+public abstract class GrpcPackageCopierResult {
 
   @AutoValue
   public abstract static class Metadata {
     // Add new constructor when adding a metadata type
-    public static AutoValue_PackageCopierResult_Metadata createPython(
+    public static AutoValue_GrpcPackageCopierResult_Metadata createPython(
         List<String> namespacePackages) {
-      return new AutoValue_PackageCopierResult_Metadata(namespacePackages);
+      return new AutoValue_GrpcPackageCopierResult_Metadata(namespacePackages);
     }
 
     /**
@@ -38,9 +38,9 @@ public abstract class PackageCopierResult {
     public abstract List<String> pythonNamespacePackages();
   }
 
-  public static AutoValue_PackageCopierResult createPython(
+  public static AutoValue_GrpcPackageCopierResult createPython(
       List<String> namespacePackages, Map<String, Doc> docs) {
-    return new AutoValue_PackageCopierResult(Metadata.createPython(namespacePackages), docs);
+    return new AutoValue_GrpcPackageCopierResult(Metadata.createPython(namespacePackages), docs);
   }
 
   /**

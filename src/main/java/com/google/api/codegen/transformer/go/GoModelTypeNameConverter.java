@@ -160,7 +160,7 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
     String localName = null;
     if (importPath.lastIndexOf(';') >= 0) {
       int semicolonPos = importPath.lastIndexOf(';');
-      localName = importPath.substring(semicolonPos + 1);
+      localName = importPath.substring(semicolonPos + 1) + "pb";
       importPath = importPath.substring(0, semicolonPos);
     } else {
       // The import path might be versioned:

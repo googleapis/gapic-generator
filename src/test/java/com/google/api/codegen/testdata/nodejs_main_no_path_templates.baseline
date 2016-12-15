@@ -79,6 +79,8 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
       clientConfig,
       {'x-goog-api-client': googleApiClient});
 
+  var self = this;
+
   var noTemplatesApiServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
@@ -88,13 +90,16 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
     'increment'
   ];
   noTemplatesApiServiceStubMethods.forEach(function(methodName) {
-    this['_' + methodName] = gax.createApiCall(
+    self['_' + methodName] = gax.createApiCall(
       noTemplatesApiServiceStub.then(function(noTemplatesApiServiceStub) {
-        return noTemplatesApiServiceStub[methodName].bind(noTemplatesApiServiceStub);
+        return function() {
+          var args = Array.prototype.slice.call(arguments, 0);
+          return noTemplatesApiServiceStub[methodName].apply(noTemplatesApiServiceStub, args);
+        }
       }),
       defaults[methodName],
       null);
-  }.bind(this));
+  });
 }
 
 // Service calls
