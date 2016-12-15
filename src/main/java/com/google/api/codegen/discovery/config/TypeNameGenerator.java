@@ -43,7 +43,7 @@ public class TypeNameGenerator {
 
   /** Sets the apiCanonicalName and apiVersion used for name lookups and disambiguation. */
   public void setApiCanonicalNameAndVersion(String apiCanonicalName, String apiVersion) {
-    this.apiCanonicalName = apiCanonicalName.replaceAll(" ", "").toLowerCase();
+    this.apiCanonicalName = apiCanonicalName.replaceAll(" ", "");
     this.apiVersion = apiVersion;
   }
 
