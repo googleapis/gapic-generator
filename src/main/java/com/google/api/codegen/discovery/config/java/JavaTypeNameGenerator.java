@@ -22,15 +22,6 @@ import java.util.List;
 
 public class JavaTypeNameGenerator extends TypeNameGenerator {
 
-  private static final String PACKAGE_PREFIX = "com.google.api.services";
-  private static final String NON_REQUEST_SUBPACKAGE = "model";
-
-  @Override
-  public String getPackagePrefix(String apiName, String apiCanonicalName, String apiVersion) {
-    // Most Java libraries don't include the apiVersion in their package.
-    return Joiner.on('.').join(PACKAGE_PREFIX, apiName);
-  }
-
   @Override
   public String getRequestTypeName(List<String> methodNameComponents) {
     LinkedList<String> copy = new LinkedList<>(methodNameComponents);
@@ -39,14 +30,6 @@ public class JavaTypeNameGenerator extends TypeNameGenerator {
       copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
     }
     return Joiner.on('.').join(copy);
-  }
-
-  @Override
-  public String getSubpackage(boolean isRequest) {
-    if (!isRequest) {
-      return NON_REQUEST_SUBPACKAGE;
-    }
-    return "";
   }
 
   @Override

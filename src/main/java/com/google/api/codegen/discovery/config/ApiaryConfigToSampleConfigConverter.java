@@ -69,6 +69,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .apiCanonicalName(apiaryConfig.getServiceCanonicalName())
         .apiName(apiName)
         .apiVersion(apiVersion)
+        .versionModule(apiaryConfig.getVersionModule())
         .apiTypeName(apiTypeName)
         .packagePrefix(
             typeNameGenerator.getPackagePrefix(

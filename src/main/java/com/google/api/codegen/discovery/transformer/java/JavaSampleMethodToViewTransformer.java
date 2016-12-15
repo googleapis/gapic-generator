@@ -52,7 +52,9 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
-            new JavaTypeTable(""), new JavaSampleTypeNameConverter(sampleConfig.packagePrefix()));
+            new JavaTypeTable(""),
+            new JavaSampleTypeNameConverter(
+                sampleConfig.apiName(), sampleConfig.apiVersion(), sampleConfig.versionModule()));
     JavaSampleNamer javaSampleNamer = new JavaSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(

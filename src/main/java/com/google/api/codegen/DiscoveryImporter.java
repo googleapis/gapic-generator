@@ -141,6 +141,17 @@ public class DiscoveryImporter {
     importer.config.setApiName(serv.getApis(0).getName());
     importer.config.setApiVersion(serv.getApis(0).getVersion());
 
+    boolean versionModule = false;
+    JsonNode versionModuleNode = disco.get("version_module");
+    if (versionModuleNode != null) {
+      // Annoyingly, "version_module" seems to be arbitrarily defined either as
+      // the string "True" or an actual boolean.
+      versionModule =
+          disco.get("version_module").asText().equals("True")
+              || disco.get("version_module").asBoolean();
+    }
+    importer.config.setVersionModule(versionModule);
+
     importer.config.getTypes().putAll(importer.types);
     for (Type type : importer.types.values()) {
       for (Field field : type.getFieldsList()) {
