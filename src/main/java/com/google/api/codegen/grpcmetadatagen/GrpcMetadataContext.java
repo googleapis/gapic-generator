@@ -34,7 +34,7 @@ public class GrpcMetadataContext implements ViewModel {
 
   private final String templateFileName;
 
-  private final String resourceRoot = SnippetSetRunner.SNIPPET_RESOURCE_ROOT + "/metadatagen";
+  private final String resourceRoot = SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
 
   /**
    * Constructor.

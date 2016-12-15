@@ -15,7 +15,10 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.config.PackageMetadataConfig.VersionBound;
 import com.google.auto.value.AutoValue;
+import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class PackageMetadataView implements ViewModel {
@@ -33,15 +36,36 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String identifier();
 
-  public abstract String version();
+  public abstract VersionBound packageVersion();
 
-  public abstract String gaxVersion();
+  public abstract VersionBound gaxVersion();
 
-  public abstract String protoVersion();
+  public abstract VersionBound protoVersion();
+
+  public abstract VersionBound commonProtosVersion();
 
   public abstract String serviceName();
 
-  public abstract String url();
+  public abstract String fullName();
+
+  public abstract String shortName();
+
+  public abstract String packageName();
+
+  public abstract String majorVersion();
+
+  public abstract String protoPath();
+
+  public abstract String author();
+
+  public abstract String email();
+
+  public abstract String homepage();
+
+  public abstract String license();
+
+  @Nullable
+  public abstract List<String> namespacePackages();
 
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder();
@@ -55,15 +79,40 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder identifier(String val);
 
-    public abstract Builder version(String val);
+    public abstract Builder packageVersion(VersionBound val);
 
-    public abstract Builder gaxVersion(String val);
+    public abstract Builder gaxVersion(VersionBound val);
 
-    public abstract Builder protoVersion(String val);
+    public abstract Builder protoVersion(VersionBound val);
+
+    public abstract Builder commonProtosVersion(VersionBound val);
 
     public abstract Builder serviceName(String val);
 
-    public abstract Builder url(String val);
+    /** The full name of the API, including branding. E.g., "Stackdriver Logging". */
+    public abstract Builder fullName(String val);
+
+    /** A single-word short name of the API. E.g., "logging". */
+    public abstract Builder shortName(String val);
+
+    /** The base name of the client library package. E.g., "google-cloud-logging-v1". */
+    public abstract Builder packageName(String val);
+
+    /** The major version of the API, as used in the package name. E.g., "v1". */
+    public abstract Builder majorVersion(String val);
+
+    /** The path to the API protos in the googleapis repo. */
+    public abstract Builder protoPath(String val);
+
+    public abstract Builder author(String val);
+
+    public abstract Builder email(String val);
+
+    public abstract Builder homepage(String val);
+
+    public abstract Builder license(String val);
+
+    public abstract Builder namespacePackages(List<String> val);
 
     public abstract PackageMetadataView build();
   }

@@ -26,8 +26,12 @@ import org.junit.runners.Parameterized.Parameters;
 public class GoCodeGeneratorTest extends GapicTestBase {
 
   public GoCodeGeneratorTest(
-      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-    super(name, idForFactory, gapicConfigFileNames, snippetName);
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String packageConfigFileName,
+      String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
     getTestDataLocator().addTestDataSource(getClass(), "go");
   }
 

@@ -15,6 +15,7 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.tools.framework.model.Model;
 import java.util.List;
 
@@ -22,5 +23,8 @@ import java.util.List;
 public interface GapicProviderFactory<ProviderT> {
   /** Create the provider from the given model, apiConfig, and generatorConfig. */
   public List<ProviderT> create(
-      Model model, ApiConfig apiConfig, GapicGeneratorConfig generatorConfig);
+      Model model,
+      ApiConfig apiConfig,
+      GapicGeneratorConfig generatorConfig,
+      PackageMetadataConfig packageConfig);
 }

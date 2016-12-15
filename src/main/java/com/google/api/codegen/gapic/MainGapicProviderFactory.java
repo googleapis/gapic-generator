@@ -20,6 +20,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
@@ -40,6 +41,7 @@ import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
+import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
@@ -71,7 +73,10 @@ public class MainGapicProviderFactory
 
   /** Create the GapicProviders based on the given id */
   public static List<GapicProvider<? extends Object>> defaultCreate(
-      Model model, ApiConfig apiConfig, GapicGeneratorConfig generatorConfig) {
+      Model model,
+      ApiConfig apiConfig,
+      GapicGeneratorConfig generatorConfig,
+      PackageMetadataConfig packageConfig) {
 
     ArrayList<GapicProvider<? extends Object>> providers = new ArrayList<>();
     String id = generatorConfig.id();
@@ -191,7 +196,7 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setApiConfig(apiConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new NodeJSPackageMetadataTransformer())
+                .setModelToViewTransformer(new NodeJSPackageMetadataTransformer(packageConfig))
                 .build();
         GapicProvider<? extends Object> clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
@@ -303,10 +308,18 @@ public class MainGapicProviderFactory
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(pythonPathMapper)
                 .build();
+        GapicProvider<? extends Object> metadataProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new PythonPackageMetadataTransformer(packageConfig))
+                .build();
 
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
         providers.add(enumProvider);
+        providers.add(metadataProvider);
 
         if (id.equals(PYTHON_DOC)) {
           GapicProvider<? extends Object> messageProvider =
@@ -386,7 +399,10 @@ public class MainGapicProviderFactory
   /** Create the GapicProviders based on the given id */
   @Override
   public List<GapicProvider<? extends Object>> create(
-      Model model, ApiConfig apiConfig, GapicGeneratorConfig generatorConfig) {
-    return defaultCreate(model, apiConfig, generatorConfig);
+      Model model,
+      ApiConfig apiConfig,
+      GapicGeneratorConfig generatorConfig,
+      PackageMetadataConfig packageConfig) {
+    return defaultCreate(model, apiConfig, generatorConfig, packageConfig);
   }
 }

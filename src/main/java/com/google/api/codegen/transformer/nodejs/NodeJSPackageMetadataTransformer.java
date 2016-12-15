@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.PackageMetadataView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -27,12 +28,11 @@ import java.util.List;
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_FILE = "nodejs/package.snip";
 
-  // TODO: Retrieve the following values from static file
-  // Github issue: https://github.com/googleapis/toolkit/issues/848
-  private static final String PACKAGE_VERSION = "0.7.1";
-  private static final String GAX_VERSION = "^0.7.0";
-  private static final String PROTO_VERSION = "^0.8.3";
-  private static final String PACKAGE_URL = "https://github.com/googleapis/googleapis";
+  PackageMetadataConfig packageConfig;
+
+  public NodeJSPackageMetadataTransformer(PackageMetadataConfig packageConfig) {
+    this.packageConfig = packageConfig;
+  }
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -45,19 +45,29 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
             apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(namer));
+    models.add(generateMetadataView(model, apiConfig, namer));
     return models;
   }
 
-  private ViewModel generateMetadataView(NodeJSPackageMetadataNamer namer) {
+  private ViewModel generateMetadataView(
+      Model model, ApiConfig apiConfig, NodeJSPackageMetadataNamer namer) {
     return PackageMetadataView.newBuilder()
         .templateFileName(PACKAGE_FILE)
         .outputPath("package.json")
         .identifier(namer.getMetadataIdentifier())
-        .version(PACKAGE_VERSION)
-        .gaxVersion(GAX_VERSION)
-        .protoVersion(PROTO_VERSION)
-        .url(PACKAGE_URL)
+        .packageVersion(packageConfig.packageVersion("nodejs"))
+        .protoPath(packageConfig.protoPath())
+        .shortName(packageConfig.shortName())
+        .gaxVersion(packageConfig.gaxVersion("nodejs"))
+        .protoVersion(packageConfig.protoVersion("nodejs"))
+        .commonProtosVersion(packageConfig.commonProtosVersion("nodejs"))
+        .packageName(packageConfig.packageName("nodejs"))
+        .majorVersion(packageConfig.apiVersion())
+        .author(packageConfig.author())
+        .email(packageConfig.email())
+        .homepage(packageConfig.homepage())
+        .license(packageConfig.license())
+        .fullName(model.getServiceConfig().getTitle())
         .serviceName(namer.getMetadataName())
         .build();
   }
