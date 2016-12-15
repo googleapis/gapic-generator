@@ -34,6 +34,10 @@ public abstract class ResourceNameMessageConfigs {
 
   abstract ImmutableMap<String, ResourceNameMessageConfig> getResourceTypeConfigMap();
 
+  /**
+   * Get a map from fully qualified message names to Fields, where each field has a resource name
+   * defined.
+   */
   public abstract ListMultimap<String, Field> getFieldsWithResourceNamesByMessage();
 
   @Nullable

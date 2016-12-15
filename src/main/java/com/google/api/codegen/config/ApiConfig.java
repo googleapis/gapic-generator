@@ -73,8 +73,9 @@ public abstract class ApiConfig {
   public abstract ImmutableMap<String, ResourceNameConfig> getResourceNameConfigs();
 
   /**
-   * Returns a map from field names to FieldConfigs for all fields that have a resource name type
-   * specified.
+   * Returns a map from fully qualified field names to FieldConfigs for all fields that have a
+   * resource name type specified. This is the default field config for each field, and should be
+   * used when not in the context of a particular method or flattening configuration.
    */
   public abstract ImmutableMap<String, FieldConfig> getDefaultResourceNameFieldConfigMap();
 
