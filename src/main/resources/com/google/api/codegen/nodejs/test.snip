@@ -95,14 +95,14 @@
       client._{@test.clientMethodName} = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
         @join pagedResponse : test.pageStreamingResponseViews
-          callback([null, expectedResponse.{@pagedResponse.resourcesFieldGetterName}]);
+          callback(null, expectedResponse.{@pagedResponse.resourcesFieldGetterName});
         @end
       };
 
       client.{@test.clientMethodName}(request, function(err, response) {
         assert.ifError(err);
         @join pagedResponse : test.pageStreamingResponseViews
-          assert.deepStrictEqual(response[0], expectedResponse.{@pagedResponse.resourcesFieldGetterName});
+          assert.deepStrictEqual(response, expectedResponse.{@pagedResponse.resourcesFieldGetterName});
         @end
         done();
       });

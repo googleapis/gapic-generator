@@ -14,18 +14,23 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.viewmodel.PackageMetadataView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.IndexRequireView;
+import com.google.api.codegen.viewmodel.metadata.IndexView;
+import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /** Responsible for producing package metadata related views for NodeJS */
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_FILE = "nodejs/package.snip";
+  private static final String INDEX_FILE = "nodejs/index.snip";
 
   // TODO: Retrieve the following values from static file
   // Github issue: https://github.com/googleapis/toolkit/issues/848
@@ -36,20 +41,30 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Collections.singletonList(PACKAGE_FILE);
+    List<String> fileNames = new ArrayList<>();
+    fileNames.add(PACKAGE_FILE);
+    fileNames.add(INDEX_FILE);
+    return fileNames;
   }
 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+    Iterable<Interface> services = new InterfaceView().getElementIterable(model);
+    boolean hasMultipleServices = Iterables.size(services) > 1;
     List<ViewModel> models = new ArrayList<ViewModel>();
-    NodeJSPackageMetadataNamer namer =
+    NodeJSPackageMetadataNamer metadataNamer =
         new NodeJSPackageMetadataNamer(
             apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(namer));
+    models.add(generateMetadataView(metadataNamer, hasMultipleServices));
+
+    NodeJSSurfaceNamer surfaceNamer = new NodeJSSurfaceNamer(apiConfig.getPackageName());
+    models.add(generateIndexView(services, surfaceNamer));
+
     return models;
   }
 
-  private ViewModel generateMetadataView(NodeJSPackageMetadataNamer namer) {
+  private ViewModel generateMetadataView(
+      NodeJSPackageMetadataNamer namer, boolean hasMultipleServices) {
     return PackageMetadataView.newBuilder()
         .templateFileName(PACKAGE_FILE)
         .outputPath("package.json")
@@ -59,6 +74,31 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
         .protoVersion(PROTO_VERSION)
         .url(PACKAGE_URL)
         .serviceName(namer.getMetadataName())
+        .hasMultipleServices(hasMultipleServices)
         .build();
+  }
+
+  private ViewModel generateIndexView(Iterable<Interface> services, NodeJSSurfaceNamer namer) {
+    ArrayList<IndexRequireView> requireViews = new ArrayList<>();
+    for (Interface service : services) {
+      requireViews.add(
+          IndexRequireView.newBuilder()
+              .clientName(namer.getApiWrapperClassName(service))
+              .fileName(namer.getClientFileName(service))
+              .build());
+    }
+    String version = namer.getApiWrapperModuleVersion();
+    boolean hasVersion = version != null && !version.isEmpty();
+    String outputPath = hasVersion ? "src/" + version + "/index.js" : "src/index.js";
+    IndexView.Builder builder =
+        IndexView.newBuilder()
+            .templateFileName(INDEX_FILE)
+            .outputPath(outputPath)
+            .requireViews(requireViews)
+            .primaryService(requireViews.get(0));
+    if (hasVersion) {
+      builder.apiVersion(version);
+    }
+    return builder.build();
   }
 }

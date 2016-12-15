@@ -105,12 +105,12 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._listShelves = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
-        callback([null, expectedResponse.shelves]);
+        callback(null, expectedResponse.shelves);
       };
 
       client.listShelves(request, function(err, response) {
         assert.ifError(err);
-        assert.deepStrictEqual(response[0], expectedResponse.shelves);
+        assert.deepStrictEqual(response, expectedResponse.shelves);
         done();
       });
     });
@@ -298,12 +298,12 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._listBooks = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
-        callback([null, expectedResponse.books]);
+        callback(null, expectedResponse.books);
       };
 
       client.listBooks(request, function(err, response) {
         assert.ifError(err);
-        assert.deepStrictEqual(response[0], expectedResponse.books);
+        assert.deepStrictEqual(response, expectedResponse.books);
         done();
       });
     });
@@ -423,12 +423,12 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._listStrings = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
-        callback([null, expectedResponse.strings]);
+        callback(null, expectedResponse.strings);
       };
 
       client.listStrings(request, function(err, response) {
         assert.ifError(err);
-        assert.deepStrictEqual(response[0], expectedResponse.strings);
+        assert.deepStrictEqual(response, expectedResponse.strings);
         done();
       });
     });
@@ -589,12 +589,12 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._findRelatedBooks = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
-        callback([null, expectedResponse.names]);
+        callback(null, expectedResponse.names);
       };
 
       client.findRelatedBooks(request, function(err, response) {
         assert.ifError(err);
-        assert.deepStrictEqual(response[0], expectedResponse.names);
+        assert.deepStrictEqual(response, expectedResponse.names);
         done();
       });
     });
