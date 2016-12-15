@@ -399,9 +399,9 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   SomeMessage message = SomeMessage.newBuilder().build();
-   *   Shelf response = libraryServiceClient.getShelf(name, message);
+   *   Shelf response = libraryServiceClient.getShelf(formattedName, message);
    * }
    * </code></pre>
    *
@@ -426,10 +426,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
-   *   Shelf response = libraryServiceClient.getShelf(name, message, stringBuilder);
+   *   Shelf response = libraryServiceClient.getShelf(formattedName, message, stringBuilder);
    * }
    * </code></pre>
    *
@@ -456,10 +456,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(formattedName)
    *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryServiceClient.getShelf(request);
@@ -480,10 +480,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(formattedName)
    *     .setOptions(options)
    *     .build();
    *   ListenableFuture&lt;Shelf&gt; future = libraryServiceClient.getShelfCallable().futureCall(request);
@@ -742,9 +742,9 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   Book book = Book.newBuilder().build();
-   *   Book response = libraryServiceClient.createBook(name, book);
+   *   Book response = libraryServiceClient.createBook(formattedName, book);
    * }
    * </code></pre>
    *
@@ -769,10 +769,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(formattedName)
    *     .setBook(book)
    *     .build();
    *   Book response = libraryServiceClient.createBook(request);
@@ -793,10 +793,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(formattedName)
    *     .setBook(book)
    *     .build();
    *   ListenableFuture&lt;Book&gt; future = libraryServiceClient.createBookCallable().futureCall(request);
@@ -1431,7 +1431,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1441,7 +1441,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *     .setAlignment(alignment)
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
-   *   libraryServiceClient.addComments(name, comments);
+   *   libraryServiceClient.addComments(formattedName, comments);
    * }
    * </code></pre>
    *
@@ -1466,7 +1466,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1477,7 +1477,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(formattedName)
    *     .addAllComments(comments)
    *     .build();
    *   libraryServiceClient.addComments(request);
@@ -1498,7 +1498,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String name = "";
+   *   String formattedName = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1509,7 +1509,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
-   *     .setName(name)
+   *     .setName(formattedName)
    *     .addAllComments(comments)
    *     .build();
    *   ListenableFuture&lt;Void&gt; future = libraryServiceClient.addCommentsCallable().futureCall(request);
@@ -1989,9 +1989,9 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String tag = "";
-   *   AddTagResponse response = libraryServiceClient.addTag(resource, tag);
+   *   AddTagResponse response = libraryServiceClient.addTag(formattedResource, tag);
    * }
    * </code></pre>
    *
@@ -2018,10 +2018,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(resource)
+   *     .setResource(formattedResource)
    *     .setTag(tag)
    *     .build();
    *   AddTagResponse response = libraryServiceClient.addTag(request);
@@ -2042,10 +2042,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(resource)
+   *     .setResource(formattedResource)
    *     .setTag(tag)
    *     .build();
    *   ListenableFuture&lt;AddTagResponse&gt; future = libraryServiceClient.addTagCallable().futureCall(request);
@@ -2065,9 +2065,9 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String label = "";
-   *   AddLabelResponse response = libraryServiceClient.addLabel(resource, label);
+   *   AddLabelResponse response = libraryServiceClient.addLabel(formattedResource, label);
    * }
    * </code></pre>
    *
@@ -2094,10 +2094,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
-   *     .setResource(resource)
+   *     .setResource(formattedResource)
    *     .setLabel(label)
    *     .build();
    *   AddLabelResponse response = libraryServiceClient.addLabel(request);
@@ -2118,10 +2118,10 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
-   *     .setResource(resource)
+   *     .setResource(formattedResource)
    *     .setLabel(label)
    *     .build();
    *   ListenableFuture&lt;AddLabelResponse&gt; future = libraryServiceClient.addLabelCallable().futureCall(request);

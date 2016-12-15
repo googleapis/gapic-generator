@@ -30,12 +30,20 @@ public abstract class ResourceNameMessageConfig {
 
   @Nullable
   public static ResourceNameMessageConfig createResourceNameMessageConfig(
-      DiagCollector diagCollector, ResourceNameMessageConfigProto messageResourceTypesProto) {
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigProto messageResourceTypesProto,
+      String defaultPackage) {
     String messageName = messageResourceTypesProto.getMessageName();
+    String fullyQualifiedMessageName;
+    if (messageName.contains(".")) {
+      fullyQualifiedMessageName = messageName;
+    } else {
+      fullyQualifiedMessageName = defaultPackage + "." + messageName;
+    }
     ImmutableMap<String, String> fieldEntityMap =
         ImmutableMap.copyOf(messageResourceTypesProto.getFieldEntityMap());
 
-    return new AutoValue_ResourceNameMessageConfig(messageName, fieldEntityMap);
+    return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
   }
 
   public String getEntityNameForField(String fieldSimpleName) {

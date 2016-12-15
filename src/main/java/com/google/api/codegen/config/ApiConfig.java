@@ -22,10 +22,13 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
 import com.google.auto.value.AutoValue;
@@ -70,18 +73,32 @@ public abstract class ApiConfig {
   public abstract ImmutableMap<String, ResourceNameConfig> getResourceNameConfigs();
 
   /**
+   * Returns a map from fully qualified field names to FieldConfigs for all fields that have a
+   * resource name type specified. This is the default field config for each field, and should be
+   * used when not in the context of a particular method or flattening configuration.
+   */
+  public abstract ImmutableMap<String, FieldConfig> getDefaultResourceNameFieldConfigMap();
+
+  /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
    * with specified interfaces in interfaceConfigMap. On errors, null will be returned, and
    * diagnostics are reported to the model.
    */
   @Nullable
   public static ApiConfig createApiConfig(Model model, ConfigProto configProto) {
+
+    // Get the proto file containing the first interface listed in the config proto, and use it as
+    // the assigned file for generated resource names, and to get the default message namespace
+    ProtoFile file =
+        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+    String defaultPackage = file.getProto().getPackage();
+
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            model.getDiagCollector(), configProto);
+            model, configProto, defaultPackage);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(model.getDiagCollector(), configProto);
+        createResourceNameConfigs(model.getDiagCollector(), configProto, file);
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
@@ -121,7 +138,8 @@ public abstract class ApiConfig {
           messageConfigs,
           copyrightLines,
           licenseLines,
-          resourceNameConfigs);
+          resourceNameConfigs,
+          createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
     }
   }
 
@@ -146,7 +164,9 @@ public abstract class ApiConfig {
         messageConfigs,
         ImmutableList.<String>of(),
         ImmutableList.<String>of(),
-        ImmutableMap.<String, ResourceNameConfig>of());
+        ImmutableMap.<String, ResourceNameConfig>of(),
+        createResponseFieldConfigMap(
+            messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()));
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
@@ -226,17 +246,19 @@ public abstract class ApiConfig {
   }
 
   private static ImmutableMap<String, ResourceNameConfig> createResourceNameConfigs(
-      DiagCollector diagCollector, ConfigProto configProto) {
+      DiagCollector diagCollector, ConfigProto configProto, ProtoFile file) {
     ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs =
-        createSingleResourceNameConfigs(diagCollector, configProto);
+        createSingleResourceNameConfigs(diagCollector, configProto, file);
     ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs =
-        createFixedResourceNameConfigs(diagCollector, configProto.getFixedResourceNameValuesList());
+        createFixedResourceNameConfigs(
+            diagCollector, configProto.getFixedResourceNameValuesList(), file);
     ImmutableMap<String, ResourceNameOneofConfig> resourceNameOneofConfigs =
         createResourceNameOneofConfigs(
             diagCollector,
             configProto.getCollectionOneofsList(),
             singleResourceNameConfigs,
-            fixedResourceNameConfigs);
+            fixedResourceNameConfigs,
+            file);
 
     ImmutableMap.Builder<String, ResourceNameConfig> resourceCollectionMap = ImmutableMap.builder();
     resourceCollectionMap.putAll(singleResourceNameConfigs);
@@ -246,18 +268,18 @@ public abstract class ApiConfig {
   }
 
   private static ImmutableMap<String, SingleResourceNameConfig> createSingleResourceNameConfigs(
-      DiagCollector diagCollector, ConfigProto configProto) {
+      DiagCollector diagCollector, ConfigProto configProto, ProtoFile file) {
     LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap =
         new LinkedHashMap<>();
     for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
       createSingleResourceNameConfig(
-          diagCollector, collectionConfigProto, singleResourceNameConfigsMap);
+          diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file);
     }
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       for (CollectionConfigProto collectionConfigProto :
           interfaceConfigProto.getCollectionsList()) {
         createSingleResourceNameConfig(
-            diagCollector, collectionConfigProto, singleResourceNameConfigsMap);
+            diagCollector, collectionConfigProto, singleResourceNameConfigsMap, file);
       }
     }
 
@@ -271,9 +293,11 @@ public abstract class ApiConfig {
   private static void createSingleResourceNameConfig(
       DiagCollector diagCollector,
       CollectionConfigProto collectionConfigProto,
-      LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap) {
+      LinkedHashMap<String, SingleResourceNameConfig> singleResourceNameConfigsMap,
+      ProtoFile file) {
     SingleResourceNameConfig singleResourceNameConfig =
-        SingleResourceNameConfig.createSingleResourceName(diagCollector, collectionConfigProto);
+        SingleResourceNameConfig.createSingleResourceName(
+            diagCollector, collectionConfigProto, file);
     if (singleResourceNameConfig == null) {
       return;
     }
@@ -294,12 +318,15 @@ public abstract class ApiConfig {
   }
 
   private static ImmutableMap<String, FixedResourceNameConfig> createFixedResourceNameConfigs(
-      DiagCollector diagCollector, Iterable<FixedResourceNameValueProto> fixedConfigProtos) {
+      DiagCollector diagCollector,
+      Iterable<FixedResourceNameValueProto> fixedConfigProtos,
+      ProtoFile file) {
     ImmutableMap.Builder<String, FixedResourceNameConfig> fixedConfigBuilder =
         ImmutableMap.builder();
     for (FixedResourceNameValueProto fixedConfigProto : fixedConfigProtos) {
       FixedResourceNameConfig fixedConfig =
-          FixedResourceNameConfig.createFixedResourceNameConfig(diagCollector, fixedConfigProto);
+          FixedResourceNameConfig.createFixedResourceNameConfig(
+              diagCollector, fixedConfigProto, file);
       if (fixedConfig == null) {
         continue;
       }
@@ -312,19 +339,37 @@ public abstract class ApiConfig {
       DiagCollector diagCollector,
       Iterable<CollectionOneofProto> oneofConfigProtos,
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
-      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs) {
+      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
+      ProtoFile file) {
     ImmutableMap.Builder<String, ResourceNameOneofConfig> oneofConfigBuilder =
         ImmutableMap.builder();
     for (CollectionOneofProto oneofProto : oneofConfigProtos) {
       ResourceNameOneofConfig oneofConfig =
           ResourceNameOneofConfig.createResourceNameOneof(
-              diagCollector, oneofProto, singleResourceNameConfigs, fixedResourceNameConfigs);
+              diagCollector, oneofProto, singleResourceNameConfigs, fixedResourceNameConfigs, file);
       if (oneofConfig == null) {
         continue;
       }
       oneofConfigBuilder.put(oneofConfig.getEntityName(), oneofConfig);
     }
     return oneofConfigBuilder.build();
+  }
+
+  private static ImmutableMap<String, FieldConfig> createResponseFieldConfigMap(
+      ResourceNameMessageConfigs messageConfig,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+
+    ImmutableMap.Builder<String, FieldConfig> builder = ImmutableMap.builder();
+    if (messageConfig == null) {
+      return builder.build();
+    }
+    for (Field field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
+      builder.put(
+          field.getFullName(),
+          FieldConfig.createMessageFieldConfig(
+              messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES));
+    }
+    return builder.build();
   }
 
   /** Returns the InterfaceConfig for the given API interface. */

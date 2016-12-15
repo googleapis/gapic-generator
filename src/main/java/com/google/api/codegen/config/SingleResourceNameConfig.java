@@ -19,6 +19,7 @@ import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.gax.protobuf.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
@@ -33,7 +34,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
    */
   @Nullable
   public static SingleResourceNameConfig createSingleResourceName(
-      DiagCollector diagCollector, CollectionConfigProto collectionConfigProto) {
+      DiagCollector diagCollector, CollectionConfigProto collectionConfigProto, ProtoFile file) {
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
     try {
@@ -43,7 +44,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
       return null;
     }
     String entityName = collectionConfigProto.getEntityName();
-    return new AutoValue_SingleResourceNameConfig(namePattern, nameTemplate, entityName);
+    return new AutoValue_SingleResourceNameConfig(namePattern, nameTemplate, entityName, file);
   }
 
   /** Returns the name pattern for the resource name config. */
@@ -55,6 +56,9 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   /** Returns the name used as a basis for generating methods. */
   @Override
   public abstract String getEntityName();
+
+  @Override
+  public abstract ProtoFile getAssignedProtoFile();
 
   @Override
   public ResourceNameType getResourceNameType() {
