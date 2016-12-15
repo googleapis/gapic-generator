@@ -30,7 +30,6 @@ import org.yaml.snakeyaml.Yaml;
 public class RubyTypeNameGenerator extends TypeNameGenerator {
 
   private String apiName;
-  private String apiVersion;
   private final ImmutableMap<String, String> NAME_MAP;
 
   public RubyTypeNameGenerator() {
@@ -58,8 +57,8 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
 
   @Override
   public void setApiCanonicalNameAndVersion(String apiCanonicalName, String apiVersion) {
-    this.apiName = apiCanonicalName.replaceAll(" ", "").toLowerCase();
-    this.apiVersion = apiVersion;
+    super.setApiCanonicalNameAndVersion(apiCanonicalName, apiVersion);
+    apiName = this.apiCanonicalName.toLowerCase();
   }
 
   @Override

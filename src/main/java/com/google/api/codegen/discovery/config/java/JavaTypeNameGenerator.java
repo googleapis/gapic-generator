@@ -26,12 +26,10 @@ public class JavaTypeNameGenerator extends TypeNameGenerator {
   private static final String PACKAGE_PREFIX = "com.google.api.services";
   private static final String NON_REQUEST_SUBPACKAGE = "model";
 
-  private String apiCanonicalName;
-
   @Override
   public List<String> getMethodNameComponents(List<String> nameComponents) {
-    LinkedList<String> copy = new LinkedList<>(nameComponents);
     // Don't edit the original object.
+    LinkedList<String> copy = new LinkedList<>(nameComponents);
     copy.removeFirst();
     // Handle cases where the method signature contains keywords.
     // ex: "variants.import" to "variants.genomicsImport"
@@ -42,11 +40,6 @@ public class JavaTypeNameGenerator extends TypeNameGenerator {
       }
     }
     return copy;
-  }
-
-  @Override
-  public void setApiCanonicalNameAndVersion(String apiCanonicalName, String apiVersion) {
-    this.apiCanonicalName = apiCanonicalName.replaceAll(" ", "");
   }
 
   @Override

@@ -23,6 +23,12 @@ import java.util.List;
 /** Generates language-specific names for types and package paths. */
 public class TypeNameGenerator {
 
+  /** The API's canonical name with all spaces removed. */
+  protected String apiCanonicalName;
+
+  /** The API's version. */
+  protected String apiVersion;
+
   /**
    * Returns the language-formatted method name components.
    *
@@ -36,7 +42,10 @@ public class TypeNameGenerator {
   }
 
   /** Sets the apiCanonicalName and apiVersion used for name lookups and disambiguation. */
-  public void setApiCanonicalNameAndVersion(String apiCanonicalName, String apiVersion) {}
+  public void setApiCanonicalNameAndVersion(String apiCanonicalName, String apiVersion) {
+    this.apiCanonicalName = apiCanonicalName.replaceAll(" ", "").toLowerCase();
+    this.apiVersion = apiVersion;
+  }
 
   /** Returns language-specific delimiter used for string literals in samples. */
   public String stringDelimiter() {
