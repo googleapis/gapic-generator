@@ -189,6 +189,8 @@ public class LibraryServiceClient implements AutoCloseable {
   private final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
   private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
   private final OperationCallable<GetBookRequest, Book> getBigBookOperationCallable;
+  private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
+  private final OperationCallable<GetBookRequest, Empty> getBigNothingOperationCallable;
 
 
 
@@ -264,6 +266,8 @@ public class LibraryServiceClient implements AutoCloseable {
     this.addLabelCallable = UnaryCallable.create(settings.addLabelSettings(), this.channel, this.executor);
     this.getBigBookCallable = UnaryCallable.create(settings.getBigBookSettings().getInitialCallSettings(), this.channel, this.executor);
     this.getBigBookOperationCallable = OperationCallable.create(settings.getBigBookSettings(),this.channel, this.executor, this.operationsClient);
+    this.getBigNothingCallable = UnaryCallable.create(settings.getBigNothingSettings().getInitialCallSettings(), this.channel, this.executor);
+    this.getBigNothingOperationCallable = OperationCallable.create(settings.getBigNothingSettings(),this.channel, this.executor, this.operationsClient);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -2216,6 +2220,94 @@ public class LibraryServiceClient implements AutoCloseable {
    */
   public final UnaryCallable<GetBookRequest, Operation> getBigBookCallable() {
     return getBigBookCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations with empty return type.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   Empty response = libraryServiceClient.getBigNothingAsync(name).get();
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final OperationFuture<Empty> getBigNothingAsync(BookName name) {
+
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setNameWithBookName(name)
+        .build();
+    return getBigNothingAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations with empty return type.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setNameWithBookName(name)
+   *     .build();
+   *   Empty response = libraryServiceClient.getBigNothingAsync(request).get();
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final OperationFuture<Empty> getBigNothingAsync(GetBookRequest request) {
+    return getBigNothingOperationCallable().futureCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations with empty return type.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setNameWithBookName(name)
+   *     .build();
+   *   OperationFuture&lt;Operation&gt; future = libraryServiceClient.getBigNothingOperationCallable().futureCall(request);
+   *   // Do something
+   *   Empty response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final OperationCallable<GetBookRequest, Empty> getBigNothingOperationCallable() {
+    return getBigNothingOperationCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test long-running operations with empty return type.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setNameWithBookName(name)
+   *     .build();
+   *   ListenableFuture&lt;Operation&gt; future = libraryServiceClient.getBigNothingCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable() {
+    return getBigNothingCallable;
   }
 
   /**

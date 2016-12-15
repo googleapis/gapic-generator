@@ -273,7 +273,7 @@
         }
         resp, err := stream.Recv()
     @case "ServerStreaming"
-        stream, err := c.{@test.clientMethodName}(context.Background())
+        stream, err := c.{@test.clientMethodName}(context.Background(), request)
         if err != nil {
             t.Fatal(err)
         }
@@ -293,7 +293,11 @@
             if err != nil {
                 t.Fatal(err)
             }
-            resp, err := respLRO.Wait(context.Background())
+            @if test.hasReturnValue
+                resp, err := respLRO.Wait(context.Background())
+            @else
+                err = respLRO.Wait(context.Background())
+            @end
         @case "RequestObjectMethod"
             @if test.hasReturnValue
                 resp, err := c.{@test.clientMethodName}(context.Background(), request)

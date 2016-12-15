@@ -84,11 +84,17 @@ public class TestCaseTransformer {
       responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
     }
 
+    boolean hasReturnValue = !ServiceMessages.s_isEmptyType(method.getOutputType());
+    if (methodConfig.isLongRunningOperation()) {
+      hasReturnValue =
+          !ServiceMessages.s_isEmptyType(methodConfig.getLongRunningConfig().getReturnType());
+    }
+
     return TestCaseView.newBuilder()
         .asserts(initCodeTransformer.generateRequestAssertViews(methodContext, initCodeContext))
         .clientMethodType(clientMethodType)
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
-        .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
+        .hasReturnValue(hasReturnValue)
         .initCode(initCodeTransformer.generateInitCode(methodContext, initCodeContext))
         .mockResponse(createMockResponseView(methodContext, initCodeContext.symbolTable()))
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))

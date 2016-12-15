@@ -70,6 +70,7 @@ type CallOptions struct {
     FindRelatedBooks []gax.CallOption
     AddLabel []gax.CallOption
     GetBigBook []gax.CallOption
+    GetBigNothing []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -121,6 +122,7 @@ func defaultCallOptions() *CallOptions {
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
+        GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -667,6 +669,24 @@ func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) 
     }, nil
 }
 
+// GetBigNothing test long-running operations with empty return type.
+func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookRequest) (*EmptyOperation, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp *longrunningpb.Operation
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetBigNothing(ctx, req)
+        return err
+    }, c.CallOptions.GetBigNothing...)
+    if err != nil {
+        return nil, err
+    }
+    return &EmptyOperation{
+        lro: longrunning.InternalNewOperation(c.Connection(), resp),
+    }, nil
+}
+
 
 // BookIterator manages a stream of *librarypb.Book.
 type BookIterator struct {
@@ -873,3 +893,66 @@ func (op *BookOperation) Cancel(ctx context.Context) error {
     return op.lro.Cancel(ctx)
 }
 
+// EmptyOperation manages a long-running operation with no result.
+type EmptyOperation struct {
+    lro *longrunning.Operation
+}
+
+// EmptyOperation returns a new EmptyOperation from a given name.
+// The name must be that of a previously created EmptyOperation, possibly from a different process.
+func (c *Client) EmptyOperation(name string) *EmptyOperation {
+    return &EmptyOperation{
+        lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+    }
+}
+
+// Wait blocks until the long-running operation is completed, returning any error encountered.
+//
+// See documentation of Poll for error-handling information.
+func (op *EmptyOperation) Wait(ctx context.Context) error {
+    return op.lro.Wait(ctx, nil)
+}
+
+// Poll fetches the latest state of the long-running operation.
+//
+// Poll also fetches the latest metadata, which can be retrieved by Metadata.
+//
+// If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+// the operation has completed with failure, the error is returned and op.Done will return true.
+// If Poll succeeds and the operation has completed successfully, op.Done will return true.
+func (op *EmptyOperation) Poll(ctx context.Context) error {
+    return op.lro.Poll(ctx, nil)
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// Metadata itself does not contact the server, but Poll does.
+// To get the latest metadata, call this method after a successful call to Poll.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (op *EmptyOperation) Metadata() (*librarypb.GetBigBookMetadata, error) {
+    var meta librarypb.GetBigBookMetadata
+    if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+        return nil, nil
+    } else if err != nil {
+        return nil, err
+    }
+    return &meta, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (op *EmptyOperation) Done() bool {
+    return op.lro.Done()
+}
+
+// Name returns the name of the long-running operation.
+// The name is assigned by the server and is unique within the service from which the operation is created.
+func (op *EmptyOperation) Name() string {
+    return op.lro.Name()
+}
+
+
+// Delete deletes a long-running operation.
+// This method indicates that the client is no longer interested in the operation result.
+// It does not cancel the operation.
+func (op *EmptyOperation) Delete(ctx context.Context) error {
+    return op.lro.Delete(ctx)
+}
