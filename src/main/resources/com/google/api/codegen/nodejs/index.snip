@@ -20,11 +20,15 @@
       scopes: {@index.apiVersion}.ALL_SCOPES
     }, options);
     var gaxGrpc = gax.grpc(options);
-    var result = {};
-    @join require : index.requireViews
-      extend(result, {@require.clientName}(gaxGrpc));
+    @if index.hasMultipleServices
+      var result = {};
+      @join require : index.requireViews
+        extend(result, {@require.clientName}(gaxGrpc));
+      @end
+      return result;
+    @else
+      return {@index.primaryService.clientName}(gaxGrpc);
     @end
-    return result;
   }
 
   {@index.apiVersion}.SERVICE_ADDRESS = {@index.primaryService.clientName}.SERVICE_ADDRESS;

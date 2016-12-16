@@ -23,6 +23,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** Responsible for producing package metadata related views for NodeJS */
@@ -38,9 +39,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
 
   @Override
   public List<String> getTemplateFileNames() {
-    List<String> fileNames = new ArrayList<>();
-    fileNames.add(PACKAGE_FILE);
-    return fileNames;
+    return Arrays.asList(PACKAGE_FILE);
   }
 
   @Override
