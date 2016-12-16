@@ -18,8 +18,6 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.metadata.IndexRequireView;
-import com.google.api.codegen.viewmodel.metadata.IndexView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
@@ -56,10 +54,6 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
         new NodeJSPackageMetadataNamer(
             apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
     models.add(generateMetadataView(metadataNamer, hasMultipleServices));
-
-    NodeJSSurfaceNamer surfaceNamer = new NodeJSSurfaceNamer(apiConfig.getPackageName());
-    models.add(generateIndexView(services, surfaceNamer));
-
     return models;
   }
 
@@ -76,29 +70,5 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
         .serviceName(namer.getMetadataName())
         .hasMultipleServices(hasMultipleServices)
         .build();
-  }
-
-  private ViewModel generateIndexView(Iterable<Interface> services, NodeJSSurfaceNamer namer) {
-    ArrayList<IndexRequireView> requireViews = new ArrayList<>();
-    for (Interface service : services) {
-      requireViews.add(
-          IndexRequireView.newBuilder()
-              .clientName(namer.getApiWrapperClassName(service))
-              .fileName(namer.getClientFileName(service))
-              .build());
-    }
-    String version = namer.getApiWrapperModuleVersion();
-    boolean hasVersion = version != null && !version.isEmpty();
-    String outputPath = hasVersion ? "src/" + version + "/index.js" : "src/index.js";
-    IndexView.Builder builder =
-        IndexView.newBuilder()
-            .templateFileName(INDEX_FILE)
-            .outputPath(outputPath)
-            .requireViews(requireViews)
-            .primaryService(requireViews.get(0));
-    if (hasVersion) {
-      builder.apiVersion(version);
-    }
-    return builder.build();
   }
 }
