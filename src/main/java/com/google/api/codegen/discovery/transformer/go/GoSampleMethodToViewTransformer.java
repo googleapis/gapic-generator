@@ -33,6 +33,7 @@ import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -168,9 +169,6 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = context.getSampleConfig().methods().get(context.getMethodName());
     FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
     SampleNamer namer = context.getSampleNamer();
-    if (fieldInfo == null) {
-      throw new IllegalArgumentException("pageStreamingResourceField cannot be null");
-    }
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
@@ -191,6 +189,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
               fieldInfo.type().isMessage() ? fieldInfo.type().message().typeName() : "");
       builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
     }
+    builder.isResourceRepeated(fieldInfo.cardinality() == Cardinality.CARDINALITY_REPEATED);
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("page"))));
     return builder.build();

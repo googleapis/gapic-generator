@@ -36,6 +36,7 @@ import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.base.Joiner;
 import com.google.protobuf.Field;
+import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,9 +167,6 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    if (fieldInfo == null) {
-      throw new IllegalArgumentException("pageStreamingResourceField cannot be null");
-    }
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
@@ -178,6 +176,7 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     String resourceVarName =
         namer.getResourceVarName(fieldInfo.type().isMessage() ? resourceTypeName : "");
     builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
+    builder.isResourceRepeated(fieldInfo.cardinality() == Cardinality.CARDINALITY_REPEATED);
     builder.isResourceMap(fieldInfo.type().isMap());
 
     builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());

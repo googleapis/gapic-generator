@@ -80,16 +80,22 @@
         if ({@class.responseVarName}.{@class.pageStreaming.resourceGetterName}() == null) {
           continue;
         }
-        @if class.pageStreaming.isResourceMap
-          for ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} : response.{@class.pageStreaming.resourceGetterName}().entrySet()) {
-            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` entry:
-            System.out.println({@class.pageStreaming.resourceVarName}.getKey() + ": " + {@class.pageStreaming.resourceVarName}.getValue());
-          }
+        @if class.pageStreaming.isResourceRepeated
+          @if class.pageStreaming.isResourceMap
+            for ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} : response.{@class.pageStreaming.resourceGetterName}().entrySet()) {
+              // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` entry:
+              System.out.println({@class.pageStreaming.resourceVarName}.getKey() + ": " + {@class.pageStreaming.resourceVarName}.getValue());
+            }
+          @else
+            for ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} : response.{@class.pageStreaming.resourceGetterName}()) {
+              // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
+              System.out.println({@class.pageStreaming.resourceVarName});
+            }
+          @end
         @else
-          for ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} : response.{@class.pageStreaming.resourceGetterName}()) {
-            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
-            System.out.println({@class.pageStreaming.resourceVarName});
-          }
+          // TODO: Change code below to process each `response.{@class.pageStreaming.resourceGetterName}()` resource:
+          System.out.println(response.{@class.pageStreaming.resourceGetterName}());
+
         @end
         @if class.pageStreaming.isResourceSetterInRequestBody
           {@class.requestBodyVarName}.setPageToken({@class.responseVarName()}.getNextPageToken());
