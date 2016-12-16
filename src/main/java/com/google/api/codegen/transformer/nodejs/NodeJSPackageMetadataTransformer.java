@@ -28,7 +28,6 @@ import java.util.List;
 /** Responsible for producing package metadata related views for NodeJS */
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_FILE = "nodejs/package.snip";
-  private static final String INDEX_FILE = "nodejs/index.snip";
 
   // TODO: Retrieve the following values from static file
   // Github issue: https://github.com/googleapis/toolkit/issues/848
@@ -41,7 +40,6 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   public List<String> getTemplateFileNames() {
     List<String> fileNames = new ArrayList<>();
     fileNames.add(PACKAGE_FILE);
-    fileNames.add(INDEX_FILE);
     return fileNames;
   }
 
@@ -50,10 +48,10 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     Iterable<Interface> services = new InterfaceView().getElementIterable(model);
     boolean hasMultipleServices = Iterables.size(services) > 1;
     List<ViewModel> models = new ArrayList<ViewModel>();
-    NodeJSPackageMetadataNamer metadataNamer =
+    NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
             apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(metadataNamer, hasMultipleServices));
+    models.add(generateMetadataView(namer, hasMultipleServices));
     return models;
   }
 
