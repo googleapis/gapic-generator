@@ -12,41 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel.testing;
+package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
-public abstract class ClientTestClassView {
+public abstract class IndexRequireView {
 
-  public abstract String name();
+  public abstract String clientName();
 
-  public abstract String apiClassName();
-
-  public abstract String apiSettingsClassName();
-
-  public abstract List<MockServiceUsageView> mockServices();
-
-  public abstract List<TestCaseView> testCases();
+  public abstract String fileName();
 
   public static Builder newBuilder() {
-    return new AutoValue_ClientTestClassView.Builder();
+    return new AutoValue_IndexRequireView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
+    public abstract Builder clientName(String val);
 
-    public abstract Builder name(String val);
+    public abstract Builder fileName(String val);
 
-    public abstract Builder apiClassName(String val);
-
-    public abstract Builder apiSettingsClassName(String val);
-
-    public abstract Builder mockServices(List<MockServiceUsageView> val);
-
-    public abstract Builder testCases(List<TestCaseView> val);
-
-    public abstract ClientTestClassView build();
+    public abstract IndexRequireView build();
   }
 }

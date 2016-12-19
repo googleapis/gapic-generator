@@ -12,13 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel;
+package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
-public abstract class PackageMetadataView implements ViewModel {
+public abstract class IndexView implements ViewModel {
 
   @Override
   public String resourceRoot() {
@@ -31,20 +33,19 @@ public abstract class PackageMetadataView implements ViewModel {
   @Override
   public abstract String outputPath();
 
-  public abstract String identifier();
+  public abstract IndexRequireView primaryService();
 
-  public abstract String version();
+  public abstract String apiVersion();
 
-  public abstract String gaxVersion();
+  public abstract List<IndexRequireView> requireViews();
 
-  public abstract String protoVersion();
-
-  public abstract String serviceName();
-
-  public abstract String url();
+  public boolean hasMultipleServices() {
+    return requireViews().size() > 1;
+  }
 
   public static Builder newBuilder() {
-    return new AutoValue_PackageMetadataView.Builder();
+    // Use v1 as the default version.
+    return new AutoValue_IndexView.Builder().apiVersion("v1");
   }
 
   @AutoValue.Builder
@@ -53,18 +54,12 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder templateFileName(String val);
 
-    public abstract Builder identifier(String val);
+    public abstract Builder primaryService(IndexRequireView val);
 
-    public abstract Builder version(String val);
+    public abstract Builder apiVersion(String val);
 
-    public abstract Builder gaxVersion(String val);
+    public abstract Builder requireViews(List<IndexRequireView> val);
 
-    public abstract Builder protoVersion(String val);
-
-    public abstract Builder serviceName(String val);
-
-    public abstract Builder url(String val);
-
-    public abstract PackageMetadataView build();
+    public abstract IndexView build();
   }
 }

@@ -112,6 +112,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         + ".json";
   }
 
+  public String getClientFileName(Interface service) {
+    return Name.upperCamel(service.getSimpleName()).join("client").toLowerUnderscore();
+  }
+
   @Override
   public boolean shouldImportRequestObjectParamType(Field field) {
     return field.getType().isMap();
