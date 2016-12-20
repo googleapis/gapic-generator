@@ -22,7 +22,6 @@ import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 
@@ -62,9 +61,14 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
   private final TypeNameConverter typeNameConverter;
   private final String packagePrefix;
 
-  public JavaSampleTypeNameConverter(String packagePrefix) {
+  public JavaSampleTypeNameConverter(String apiName, String apiVersion, boolean versionModule) {
     this.typeNameConverter = new JavaTypeTable("");
-    this.packagePrefix = packagePrefix;
+    StringBuilder stringBuilder = new StringBuilder("com.google.api.services.").append(apiName);
+    if (versionModule) {
+      stringBuilder.append('.');
+      stringBuilder.append(apiVersion);
+    }
+    this.packagePrefix = stringBuilder.toString();
   }
 
   @Override
@@ -72,19 +76,11 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     return typeNameConverter.getTypeName(Joiner.on('.').join(packagePrefix, apiTypeName));
   }
 
-  /** Returns packagePrefix with subpackage appended if not empty. */
-  private String packagePrefix(String subpackage) {
-    if (!Strings.isNullOrEmpty(subpackage)) {
-      return new StringBuilder(packagePrefix).append('.').append(subpackage).toString();
-    }
-    return packagePrefix;
-  }
-
   @Override
   public TypeName getRequestTypeName(String apiTypeName, TypeInfo typeInfo) {
     MessageTypeInfo type = typeInfo.message();
     return new TypeName(
-        Joiner.on('.').join(packagePrefix(type.subpackage()), apiTypeName, type.typeName()),
+        Joiner.on('.').join(packagePrefix, "model", apiTypeName, type.typeName()),
         Joiner.on('.').join(apiTypeName, type.typeName()));
   }
 
@@ -93,7 +89,7 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     if (typeInfo.isMessage()) {
       MessageTypeInfo messageInfo = typeInfo.message();
       return typeNameConverter.getTypeName(
-          Joiner.on('.').join(packagePrefix(messageInfo.subpackage()), messageInfo.typeName()));
+          Joiner.on('.').join(packagePrefix, "model", messageInfo.typeName()));
     }
     return getNonMessageTypeName(typeInfo);
   }

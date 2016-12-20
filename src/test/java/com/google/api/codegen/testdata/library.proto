@@ -4,6 +4,7 @@ syntax = "proto3";
 
 package google.example.library.v1;
 
+import "book_from_anywhere.proto";
 import "field_mask.proto";
 import "google/api/annotations.proto";
 import "google/longrunning/operations.proto";
@@ -20,7 +21,7 @@ import "tagger.proto";
 option java_multiple_files = true;
 option java_outer_classname = "LibraryProto";
 option java_package = "com.google.example.library.v1";
-option go_package = "google.golang.org/genproto/googleapis/example/library/v1";
+option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
 
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
@@ -156,6 +157,11 @@ service LibraryService {
   rpc GetBigBook(GetBookRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:big" };
   }
+
+  // Test long-running operations with empty return type.
+  rpc GetBigNothing(GetBookRequest) returns (google.longrunning.Operation) {
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:bignothing" };
+  }
 }
 
 // A single book in the library.
@@ -213,23 +219,6 @@ message Book {
 message BookFromArchive {
   // The resource name of the book.
   // Book names have the form `archives/{archive_id}/books/{book_id}`.
-  string name = 1;
-
-  // The name of the book author.
-  string author = 2;
-
-  // The title of the book.
-  string title = 3;
-
-  // Value indicating whether the book has been read.
-  bool read = 4;
-}
-
-// A single book in the archives or library.
-message BookFromAnywhere {
-  // The resource name of the book.
-  // Book names have the form `bookShelves/{shelf_id}/books/{book_id}` or
-  // `archives/{archive_id}/books/{book_id}`.
   string name = 1;
 
   // The name of the book author.

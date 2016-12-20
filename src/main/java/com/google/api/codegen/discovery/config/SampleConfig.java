@@ -80,6 +80,10 @@ public abstract class SampleConfig {
   @JsonProperty("apiVersion")
   public abstract String apiVersion();
 
+  /** Returns whether or not the client package should be qualified with the API version. */
+  @JsonProperty("versionModule")
+  public abstract boolean versionModule();
+
   /**
    * Returns the API's type name.
    *
@@ -125,6 +129,9 @@ public abstract class SampleConfig {
 
     @JsonProperty("apiVersion")
     public abstract Builder apiVersion(String val);
+
+    @JsonProperty("versionModule")
+    public abstract Builder versionModule(boolean val);
 
     @JsonProperty("apiTypeName")
     public abstract Builder apiTypeName(String val);

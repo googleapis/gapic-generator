@@ -14,21 +14,22 @@
  */
 package com.google.api.codegen.transformer.py;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.viewmodel.PackageMetadataView;
 import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Responsible for producing package metadata related views for Python */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
@@ -97,6 +98,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .serviceName(apiConfig.getPackageName())
         .namespacePackages(
             computeNamespacePackages(apiConfig.getPackageName(), packageConfig.apiVersion()))
+        .hasMultipleServices(false)
         .build();
   }
 

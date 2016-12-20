@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
@@ -34,6 +35,9 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
 
   public abstract List<ResourceNameConfig> getResourceNameConfigs();
 
+  @Override
+  public abstract ProtoFile getAssignedProtoFile();
+
   public Iterable<SingleResourceNameConfig> getSingleResourceNameConfigs() {
     return Iterables.filter(getResourceNameConfigs(), SingleResourceNameConfig.class);
   }
@@ -43,7 +47,8 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       DiagCollector diagCollector,
       CollectionOneofProto collectionOneofProto,
       ImmutableMap<String, SingleResourceNameConfig> singleResourceNameConfigs,
-      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs) {
+      ImmutableMap<String, FixedResourceNameConfig> fixedResourceNameConfigs,
+      ProtoFile file) {
     String oneofName = collectionOneofProto.getOneofName();
     if (singleResourceNameConfigs.containsKey(oneofName)) {
       diagCollector.addDiag(
@@ -83,7 +88,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
       return null;
     }
 
-    return new AutoValue_ResourceNameOneofConfig(oneofName, configList);
+    return new AutoValue_ResourceNameOneofConfig(oneofName, configList, file);
   }
 
   @Override

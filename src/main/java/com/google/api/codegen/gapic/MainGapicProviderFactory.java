@@ -39,6 +39,7 @@ import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
+import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
@@ -181,6 +182,7 @@ public class MainGapicProviderFactory
     } else if (id.equals(NODEJS) || id.equals(NODEJS_DOC)) {
       if (generatorConfig.enableSurfaceGenerator()) {
         GapicCodePathMapper nodeJSPathMapper = new NodeJSCodePathMapper();
+        // TODO: Replace mainProvider with surfaceProvider once NodeJS is MVVM ready
         GapicProvider<? extends Object> mainProvider =
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
@@ -198,6 +200,13 @@ public class MainGapicProviderFactory
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                 .setModelToViewTransformer(new NodeJSPackageMetadataTransformer(packageConfig))
                 .build();
+        GapicProvider<? extends Object> surfaceProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new NodeJSGapicSurfaceTransformer())
+                .build();
         GapicProvider<? extends Object> clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
@@ -211,6 +220,7 @@ public class MainGapicProviderFactory
                 .build();
 
         providers.add(mainProvider);
+        providers.add(surfaceProvider);
         providers.add(metadataProvider);
         providers.add(clientConfigProvider);
 

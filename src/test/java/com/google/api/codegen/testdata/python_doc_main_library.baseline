@@ -370,6 +370,9 @@ class LibraryServiceClient(object):
         self._get_big_book = api_callable.create_api_call(
             self.library_service_stub.GetBigBook,
             settings=defaults['get_big_book'])
+        self._get_big_nothing = api_callable.create_api_call(
+            self.library_service_stub.GetBigNothing,
+            settings=defaults['get_big_nothing'])
 
     # Service calls
     def create_shelf(
@@ -943,7 +946,7 @@ class LibraryServiceClient(object):
             settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.grpc.example.library.v1.library_pb2.BookFromAnywhere` instance.
+          A :class:`google.cloud.grpc.example.library.v1.book_from_anywhere_pb2.BookFromAnywhere` instance.
 
         Raises:
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
@@ -1235,4 +1238,33 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookRequest(
             name=name)
         return self._get_big_book(request, options)
+
+    def get_big_nothing(
+            self,
+            name,
+            options=None):
+        """
+        Test long-running operations with empty return type.
+
+        Example:
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> api = library_service_client.LibraryServiceClient()
+          >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>> response = api.get_big_nothing(name)
+
+        Args:
+          name (string): The name of the book to retrieve.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Returns:
+          A :class:`google.longrunning.operations_pb2.Operation` instance.
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+          :exc:`ValueError` if the parameters are invalid.
+        """
+        request = library_pb2.GetBookRequest(
+            name=name)
+        return self._get_big_nothing(request, options)
 

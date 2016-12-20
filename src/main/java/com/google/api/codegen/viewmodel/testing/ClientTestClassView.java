@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
-import com.google.api.codegen.viewmodel.testing.MockServiceImplView.Builder;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 

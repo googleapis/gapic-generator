@@ -119,6 +119,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         .serviceImpls(impls)
         .mockServices(new ArrayList<MockServiceUsageView>())
         .testClasses(testClasses)
+        .apiWrapperModuleName(namer.getApiWrapperModuleName())
         .templateFileName(TEST_TEMPLATE_FILE)
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(apiConfig, typeTable.getImports(), namer))

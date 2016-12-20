@@ -25,6 +25,8 @@ public abstract class LongRunningOperationDetailView {
 
   public abstract String operationPayloadTypeName();
 
+  public abstract boolean isEmptyOperation();
+
   public abstract String metadataTypeName();
 
   public abstract boolean implementsDelete();
@@ -42,6 +44,8 @@ public abstract class LongRunningOperationDetailView {
     public abstract Builder clientReturnTypeName(String val);
 
     public abstract Builder operationPayloadTypeName(String val);
+
+    public abstract Builder isEmptyOperation(boolean val);
 
     public abstract Builder metadataTypeName(String val);
 

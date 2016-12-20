@@ -14,15 +14,11 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.ResourceNameConfig;
-import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.metacode.InitValue;
@@ -84,11 +80,17 @@ public class TestCaseTransformer {
       responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
     }
 
+    boolean hasReturnValue = !ServiceMessages.s_isEmptyType(method.getOutputType());
+    if (methodConfig.isLongRunningOperation()) {
+      hasReturnValue =
+          !ServiceMessages.s_isEmptyType(methodConfig.getLongRunningConfig().getReturnType());
+    }
+
     return TestCaseView.newBuilder()
         .asserts(initCodeTransformer.generateRequestAssertViews(methodContext, initCodeContext))
         .clientMethodType(clientMethodType)
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
-        .hasReturnValue(!ServiceMessages.s_isEmptyType(method.getOutputType()))
+        .hasReturnValue(hasReturnValue)
         .initCode(initCodeTransformer.generateInitCode(methodContext, initCodeContext))
         .mockResponse(createMockResponseView(methodContext, initCodeContext.symbolTable()))
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
@@ -181,9 +183,9 @@ public class TestCaseTransformer {
         .symbolTable(symbolTable)
         .suggestedName(Name.from("expected_response"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
-        .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
+        .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
         .initFields(primitiveFields)
-        .fieldConfigMap(createResponseFieldConfigMap(context))
+        .fieldConfigMap(context.getApiConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();
@@ -212,26 +214,5 @@ public class TestCaseTransformer {
       additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
     }
     return additionalSubTrees;
-  }
-
-  private ImmutableMap<String, FieldConfig> createResponseFieldConfigMap(
-      MethodTransformerContext context) {
-    ApiConfig apiConfig = context.getApiConfig();
-    ResourceNameMessageConfigs messageConfig = apiConfig.getResourceNameMessageConfigs();
-    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        apiConfig.getResourceNameConfigs();
-    ResourceNameTreatment treatment = context.getMethodConfig().getDefaultResourceNameTreatment();
-
-    if (messageConfig == null || treatment == ResourceNameTreatment.NONE) {
-      return ImmutableMap.of();
-    }
-    ImmutableMap.Builder<String, FieldConfig> builder = ImmutableMap.builder();
-    for (Field field : context.getMethod().getOutputMessage().getFields()) {
-      builder.put(
-          field.getFullName(),
-          FieldConfig.createMessageFieldConfig(
-              messageConfig, resourceNameConfigs, field, treatment));
-    }
-    return builder.build();
   }
 }

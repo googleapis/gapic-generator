@@ -33,6 +33,7 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,9 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
-            new JavaTypeTable(""), new JavaSampleTypeNameConverter(sampleConfig.packagePrefix()));
+            new JavaTypeTable(""),
+            new JavaSampleTypeNameConverter(
+                sampleConfig.apiName(), sampleConfig.apiVersion(), sampleConfig.versionModule()));
     JavaSampleNamer javaSampleNamer = new JavaSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(
@@ -156,9 +159,6 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    if (fieldInfo == null) {
-      throw new IllegalArgumentException("pageStreamingResourceField cannot be null");
-    }
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
@@ -168,6 +168,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     String resourceVarName =
         namer.getResourceVarName(fieldInfo.type().isMessage() ? resourceTypeName : "");
     builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
+    builder.isResourceRepeated(fieldInfo.cardinality() == Cardinality.CARDINALITY_REPEATED);
     builder.isResourceMap(fieldInfo.type().isMap());
 
     builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());

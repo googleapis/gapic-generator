@@ -16,12 +16,12 @@
  */
 
 var assert = require('assert');
-var service = require('../src/').v1();
+var libraryV1 = require('../src/').v1();
 
 describe('LibraryServiceClient', function() {
   describe('createShelf', function() {
     it('invokes createShelf without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var shelf = {};
       var request = {
@@ -54,7 +54,7 @@ describe('LibraryServiceClient', function() {
 
   describe('getShelf', function() {
     it('invokes getShelf without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.shelfPath("[SHELF_ID]");
       var options = 'options-1249474914';
@@ -64,11 +64,11 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock response
-      var formattedName2 = client.shelfPath("[SHELF_ID]");
+      var name2 = 'name2-1052831874';
       var theme = 'theme110327241';
       var internalTheme = 'internalTheme792518087';
       var expectedResponse = {
-          name : formattedName2,
+          name : name2,
           theme : theme,
           internalTheme : internalTheme
       };
@@ -89,7 +89,7 @@ describe('LibraryServiceClient', function() {
 
   describe('listShelves', function() {
     it('invokes listShelves without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var request = {};
 
@@ -105,12 +105,12 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._listShelves = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
-        callback([null, expectedResponse.shelves]);
+        callback(null, expectedResponse.shelves);
       };
 
       client.listShelves(request, function(err, response) {
         assert.ifError(err);
-        assert.deepStrictEqual(response[0], expectedResponse.shelves);
+        assert.deepStrictEqual(response, expectedResponse.shelves);
         done();
       });
     });
@@ -118,7 +118,7 @@ describe('LibraryServiceClient', function() {
 
   describe('deleteShelf', function() {
     it('invokes deleteShelf without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.shelfPath("[SHELF_ID]");
       var request = {
@@ -140,7 +140,7 @@ describe('LibraryServiceClient', function() {
 
   describe('mergeShelves', function() {
     it('invokes mergeShelves without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.shelfPath("[SHELF_ID]");
       var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
@@ -150,11 +150,11 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock response
-      var formattedName2 = client.shelfPath("[SHELF_ID]");
+      var name2 = 'name2-1052831874';
       var theme = 'theme110327241';
       var internalTheme = 'internalTheme792518087';
       var expectedResponse = {
-          name : formattedName2,
+          name : name2,
           theme : theme,
           internalTheme : internalTheme
       };
@@ -175,7 +175,7 @@ describe('LibraryServiceClient', function() {
 
   describe('createBook', function() {
     it('invokes createBook without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.shelfPath("[SHELF_ID]");
       var book = {};
@@ -185,12 +185,12 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock response
-      var formattedName2 = client.shelfPath("[SHELF_ID]");
+      var name2 = 'name2-1052831874';
       var author = 'author-1406328437';
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : formattedName2,
+          name : name2,
           author : author,
           title : title,
           read : read
@@ -212,7 +212,7 @@ describe('LibraryServiceClient', function() {
 
   describe('publishSeries', function() {
     it('invokes publishSeries without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var shelf = {};
       var books = [];
@@ -244,7 +244,7 @@ describe('LibraryServiceClient', function() {
 
   describe('getBook', function() {
     it('invokes getBook without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
@@ -252,12 +252,12 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock response
-      var formattedName2 = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var name2 = 'name2-1052831874';
       var author = 'author-1406328437';
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : formattedName2,
+          name : name2,
           author : author,
           title : title,
           read : read
@@ -279,7 +279,7 @@ describe('LibraryServiceClient', function() {
 
   describe('listBooks', function() {
     it('invokes listBooks without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.shelfPath("[SHELF_ID]");
       var request = {
@@ -298,12 +298,12 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._listBooks = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
-        callback([null, expectedResponse.books]);
+        callback(null, expectedResponse.books);
       };
 
       client.listBooks(request, function(err, response) {
         assert.ifError(err);
-        assert.deepStrictEqual(response[0], expectedResponse.books);
+        assert.deepStrictEqual(response, expectedResponse.books);
         done();
       });
     });
@@ -311,7 +311,7 @@ describe('LibraryServiceClient', function() {
 
   describe('deleteBook', function() {
     it('invokes deleteBook without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
@@ -333,7 +333,7 @@ describe('LibraryServiceClient', function() {
 
   describe('updateBook', function() {
     it('invokes updateBook without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var book = {};
@@ -343,12 +343,12 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock response
-      var formattedName2 = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var name2 = 'name2-1052831874';
       var author = 'author-1406328437';
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : formattedName2,
+          name : name2,
           author : author,
           title : title,
           read : read
@@ -370,7 +370,7 @@ describe('LibraryServiceClient', function() {
 
   describe('moveBook', function() {
     it('invokes moveBook without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
@@ -380,12 +380,12 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock response
-      var formattedName2 = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var name2 = 'name2-1052831874';
       var author = 'author-1406328437';
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : formattedName2,
+          name : name2,
           author : author,
           title : title,
           read : read
@@ -407,7 +407,7 @@ describe('LibraryServiceClient', function() {
 
   describe('listStrings', function() {
     it('invokes listStrings without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var request = {};
 
@@ -423,12 +423,12 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._listStrings = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
-        callback([null, expectedResponse.strings]);
+        callback(null, expectedResponse.strings);
       };
 
       client.listStrings(request, function(err, response) {
         assert.ifError(err);
-        assert.deepStrictEqual(response[0], expectedResponse.strings);
+        assert.deepStrictEqual(response, expectedResponse.strings);
         done();
       });
     });
@@ -436,7 +436,7 @@ describe('LibraryServiceClient', function() {
 
   describe('addComments', function() {
     it('invokes addComments without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var comment = '95';
@@ -468,7 +468,7 @@ describe('LibraryServiceClient', function() {
 
   describe('getBookFromArchive', function() {
     it('invokes getBookFromArchive without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
       var request = {
@@ -476,12 +476,12 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock response
-      var formattedName2 = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+      var name2 = 'name2-1052831874';
       var author = 'author-1406328437';
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : formattedName2,
+          name : name2,
           author : author,
           title : title,
           read : read
@@ -503,7 +503,7 @@ describe('LibraryServiceClient', function() {
 
   describe('getBookFromAnywhere', function() {
     it('invokes getBookFromAnywhere without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
@@ -513,12 +513,12 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock response
-      var formattedName2 = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var name2 = 'name2-1052831874';
       var author = 'author-1406328437';
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : formattedName2,
+          name : name2,
           author : author,
           title : title,
           read : read
@@ -540,7 +540,7 @@ describe('LibraryServiceClient', function() {
 
   describe('updateBookIndex', function() {
     it('invokes updateBookIndex without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var indexName = 'default index';
@@ -567,7 +567,7 @@ describe('LibraryServiceClient', function() {
 
   describe('findRelatedBooks', function() {
     it('invokes findRelatedBooks without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var namesElement = 'namesElement-249113339';
       var names = [namesElement];
@@ -589,12 +589,12 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._findRelatedBooks = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
-        callback([null, expectedResponse.names]);
+        callback(null, expectedResponse.names);
       };
 
       client.findRelatedBooks(request, function(err, response) {
         assert.ifError(err);
-        assert.deepStrictEqual(response[0], expectedResponse.names);
+        assert.deepStrictEqual(response, expectedResponse.names);
         done();
       });
     });
@@ -602,7 +602,7 @@ describe('LibraryServiceClient', function() {
 
   describe('addTag', function() {
     it('invokes addTag without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var tag = 'tag114586';
@@ -630,7 +630,7 @@ describe('LibraryServiceClient', function() {
 
   describe('addLabel', function() {
     it('invokes addLabel without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var label = 'label102727412';
@@ -658,7 +658,7 @@ describe('LibraryServiceClient', function() {
 
   describe('getBigBookAsync', function() {
     it('invokes getBigBookAsync without error', function(done) {
-      var client = service.libraryServiceClient();
+      var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
@@ -666,12 +666,12 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock response
-      var formattedName2 = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var name2 = 'name2-1052831874';
       var author = 'author-1406328437';
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : formattedName2,
+          name : name2,
           author : author,
           title : title,
           read : read
@@ -686,6 +686,28 @@ describe('LibraryServiceClient', function() {
       client.getBigBookAsync(request, function(err, response) {
         assert.ifError(err);
         assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+  });
+
+  describe('getBigNothingAsync', function() {
+    it('invokes getBigNothingAsync without error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._getBigNothingAsync = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        callback(null);
+      };
+
+      client.getBigNothingAsync(request, function(err) {
+        assert.ifError(err);
         done();
       });
     });

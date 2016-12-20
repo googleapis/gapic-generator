@@ -24,12 +24,14 @@ public abstract class ResourceNameInitValueView implements InitValueView {
 
   public abstract List<String> formatArgs();
 
+  public abstract boolean convertToString();
+
   public String type() {
     return ResourceNameInitValueView.class.getSimpleName();
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_ResourceNameInitValueView.Builder();
+    return new AutoValue_ResourceNameInitValueView.Builder().convertToString(false);
   }
 
   @AutoValue.Builder
@@ -38,6 +40,8 @@ public abstract class ResourceNameInitValueView implements InitValueView {
     public abstract Builder resourceTypeName(String val);
 
     public abstract Builder formatArgs(List<String> val);
+
+    public abstract Builder convertToString(boolean val);
 
     public abstract ResourceNameInitValueView build();
   }

@@ -84,17 +84,24 @@
     @if class.isPageStreaming
       {@class.requestVarName} := {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)})
       if err := {@class.requestVarName}.Pages({@class.contextVarName}, func({@class.pageStreaming.pageVarName} *{@class.servicePackageName}.{@class.responseTypeName}) error {
-        @if class.pageStreaming.isResourceMap
-          for {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName} := range {@class.pageStreaming.pageVarName}.{@class.pageStreaming.resourceFieldName} {
-            // TODO: Change code below to process each ({@class.pageStreaming.resourceKeyVarName}: {@class.pageStreaming.resourceValueVarName}) element:
-            fmt.Printf("%v: %#v\n", {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName})
-          }
-          return nil
+        @if class.pageStreaming.isResourceRepeated
+          @if class.pageStreaming.isResourceMap
+            for {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName} := range {@class.pageStreaming.pageVarName}.{@class.pageStreaming.resourceFieldName} {
+              // TODO: Change code below to process each ({@class.pageStreaming.resourceKeyVarName}: {@class.pageStreaming.resourceValueVarName}) element:
+              fmt.Printf("%v: %#v\n", {@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName})
+            }
+            return nil
+          @else
+            for _, {@class.pageStreaming.resourceVarName} := range page.{@class.pageStreaming.resourceFieldName} {
+              // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
+              fmt.Printf("%#v\n", {@class.pageStreaming.resourceVarName})
+            }
+            return nil
+          @end
         @else
-          for _, {@class.pageStreaming.resourceVarName} := range page.{@class.pageStreaming.resourceFieldName} {
-            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
-            fmt.Printf("%#v\n", {@class.pageStreaming.resourceVarName})
-          }
+          // TODO: Change code below to process each `page.{@class.pageStreaming.resourceFieldName}` resource:
+          fmt.Printf("%#v\n", page.{@class.pageStreaming.resourceFieldName})
+
           return nil
         @end
       }); err != nil {
@@ -135,7 +142,7 @@
         // Authorize using the following scopes:
       @end
       @join scopeConst : class.auth.scopeConsts
-        //    {@class.servicePackageName}.{@scopeConst}
+        //     {@class.servicePackageName}.{@scopeConst}
       @end
     @end
     return nil, errors.New("not implemented")

@@ -57,5 +57,9 @@
 @end
 
 @private renderResourceName(initValue)
-  {@initValue.resourceTypeName}.create({@argList(initValue.formatArgs)})
+  @if {@initValue.convertToString}
+    {@initValue.resourceTypeName}.create({@argList(initValue.formatArgs)}).toString()
+  @else
+    {@initValue.resourceTypeName}.create({@argList(initValue.formatArgs)})
+  @end
 @end

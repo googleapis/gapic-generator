@@ -65,6 +65,6 @@ public class GoModelTypeNameConverterTest {
                 .getTypeName(
                     "google.golang.org/genproto/zip/zap;smack", "foo.bar", "Baz", isPointerFalse)
                 .getNickname())
-        .isEqualTo("smack.Baz");
+        .isEqualTo("smackpb.Baz");
   }
 }

@@ -12,13 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel;
+package com.google.api.codegen.viewmodel.metadata;
+
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.config.VersionBound;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
-import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class PackageMetadataView implements ViewModel {
@@ -63,6 +66,8 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String homepage();
 
   public abstract String licenseName();
+
+  public abstract boolean hasMultipleServices();
 
   @Nullable
   public abstract List<String> namespacePackages();
@@ -113,6 +118,8 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder licenseName(String val);
 
     public abstract Builder namespacePackages(List<String> val);
+
+    public abstract Builder hasMultipleServices(boolean val);
 
     public abstract PackageMetadataView build();
   }
