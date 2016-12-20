@@ -39,7 +39,7 @@
   @# Register a callback during the method call.
   operation = {@methodCallSampleCode(apiMethod)} do |op|
     raise op.results.message if op.error?
-    results = op.results
+    op_results = op.results
     @# Process the results.
 
     metadata = op.metadata
@@ -49,7 +49,7 @@
   @# Or use the return value to register a callback.
   operation.on_done do |op|
     raise op.results.message if op.error?
-    results = op.results
+    op_results = op.results
     @# Process the results.
 
     metadata = op.metadata
