@@ -17,11 +17,11 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportTypeTransformer;
-import com.google.api.codegen.transformer.LongRunningTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -38,6 +38,7 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +51,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private PageStreamingTransformer pageStreamingTransformer;
   private ApiMethodTransformer apiMethodTransformer;
   private GrpcStubTransformer grpcStubTransformer;
-  private LongRunningTransformer longRunningTransformer;
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
@@ -61,7 +61,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     this.pageStreamingTransformer = new PageStreamingTransformer();
     this.apiMethodTransformer = new ApiMethodTransformer();
     this.grpcStubTransformer = new GrpcStubTransformer();
-    this.longRunningTransformer = new LongRunningTransformer();
   }
 
   @Override
@@ -155,7 +154,19 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     for (Method method : context.getLongRunningMethods()) {
       MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
-      result.add(longRunningTransformer.generateDetailView(methodContext));
+      TypeRef returnType = methodContext.getMethodConfig().getLongRunningConfig().getReturnType();
+      TypeRef metadataType =
+          methodContext.getMethodConfig().getLongRunningConfig().getMetadataType();
+      result.add(
+          LongRunningOperationDetailView.newBuilder()
+              .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
+              .constructorName("")
+              .clientReturnTypeName("")
+              .operationPayloadTypeName(context.getTypeTable().getFullNameFor(returnType))
+              .metadataTypeName(context.getTypeTable().getFullNameFor(metadataType))
+              .implementsCancel(true)
+              .implementsDelete(true)
+              .build());
     }
 
     return result;
