@@ -119,6 +119,9 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
+    if (elem.getFullName().equals("google.protobuf.Empty")) {
+      return typeNameConverter.getTypeName("\\google\\protobuf\\EmptyC");
+    }
     return typeNameConverter.getTypeName("\\" + elem.getFullName().replaceAll("\\.", "\\\\"));
   }
 

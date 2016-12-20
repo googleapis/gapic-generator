@@ -52,11 +52,12 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
-    if (type.isMap() || type.isRepeated()) {
-      return publicMethodName(Name.from("add").join(identifier));
-    } else {
-      return publicMethodName(Name.from("set").join(identifier));
-    }
+    return publicMethodName(Name.from("set").join(identifier));
+  }
+
+  @Override
+  public String getFieldAddFunctionName(TypeRef type, Name identifier) {
+    return publicMethodName(Name.from("add").join(identifier));
   }
 
   @Override
@@ -119,5 +120,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     String publicClassName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), suffix));
     return namePath.withHead(publicClassName);
+  }
+
+  @Override
+  public String getFullyQualifiedStubType(Interface service) {
+    return getGrpcClientTypeName(service);
   }
 }

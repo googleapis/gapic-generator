@@ -42,13 +42,13 @@
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
 @end
 
-@private sampleMethodCallArgList(fieldSettings)
+@snippet sampleMethodCallArgList(fieldSettings)
     @join fieldSetting : fieldSettings on ", "
         ${@fieldSetting.identifier}
     @end
 @end
 
-@private initCode(initCodeSpec)
+@snippet initCode(initCodeSpec)
     @join line : initCodeSpec.lines
         @switch line.lineType.toString
         @case "StructureInitLine"
@@ -68,7 +68,19 @@
 @private initLineStructure(line)
     ${@line.identifier} = new {@line.typeName}();
     @join fieldSetting : line.fieldSettings
-        ${@line.identifier}->{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier});
+        @if fieldSetting.isMap
+            foreach (${@fieldSetting.identifier} as $key => $value) {
+                ${@line.identifier}->{@fieldSetting.fieldAddFunction}((new {@fieldSetting.elementTypeName}())->setKey($key)->setValue($value));
+            }
+        @else
+            @if fieldSetting.isArray
+                foreach (${@fieldSetting.identifier} as $elem) {
+                    ${@line.identifier}->{@fieldSetting.fieldAddFunction}($elem);
+                }
+            @else
+                ${@line.identifier}->{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier});
+            @end
+        @end
     @end
 @end
 

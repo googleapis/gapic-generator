@@ -21,11 +21,19 @@ public abstract class FieldSettingView {
 
   public abstract String fieldSetFunction();
 
+  public abstract String fieldAddFunction();
+
   public abstract String identifier();
 
   public abstract InitCodeLineView initCodeLine();
 
   public abstract String fieldName();
+
+  public abstract boolean isMap();
+
+  public abstract boolean isArray();
+
+  public abstract String elementTypeName();
 
   public static Builder newBuilder() {
     return new AutoValue_FieldSettingView.Builder();
@@ -35,11 +43,19 @@ public abstract class FieldSettingView {
   public abstract static class Builder {
     public abstract Builder fieldSetFunction(String val);
 
+    public abstract Builder fieldAddFunction(String val);
+
     public abstract Builder identifier(String val);
 
     public abstract Builder initCodeLine(InitCodeLineView val);
 
     public abstract Builder fieldName(String val);
+
+    public abstract Builder isMap(boolean val);
+
+    public abstract Builder isArray(boolean val);
+
+    public abstract Builder elementTypeName(String val);
 
     public abstract FieldSettingView build();
   }

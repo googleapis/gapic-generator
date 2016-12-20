@@ -140,6 +140,12 @@
 @end
 
 @private staticFunctions(xapiClass)
+    @join stub : xapiClass.stubs
+        public function get{@stub.grpcClientTypeName}() {
+          return $this->{@stub.name};
+        }
+        
+    @end
     @join function : xapiClass.formatResourceFunctions
         {@formatResourceFunction(function)}
     @end
@@ -448,12 +454,12 @@
 @private setRequiredFieldCall(param)
     @if param.isMap
         foreach (${@param.name} as $key => $value) {
-            $request->{@param.setCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
+            $request->{@param.addCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
         }
     @else
         @if param.isArray
             foreach (${@param.name} as $elem) {
-                $request->{@param.setCallName}($elem);
+                $request->{@param.addCallName}($elem);
             }
         @else
             $request->{@param.setCallName}(${@param.name});
@@ -465,12 +471,12 @@
     if (isset($optionalArgs['{@param.name}'])) {
         @if param.isMap
             foreach ($optionalArgs['{@param.name}'] as $key => $value) {
-                $request->{@param.setCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
+                $request->{@param.addCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
             }
         @else
             @if param.isArray
                 foreach ($optionalArgs['{@param.name}'] as $elem) {
-                    $request->{@param.setCallName}($elem);
+                    $request->{@param.addCallName}($elem);
                 }
             @else
                 $request->{@param.setCallName}($optionalArgs['{@param.name}']);
