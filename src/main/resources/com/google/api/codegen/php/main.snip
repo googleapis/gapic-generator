@@ -232,18 +232,20 @@
 @end
 
 @private longRunningDescriptorFunction(xapiClass)
-    private static function getLongRunningDescriptors()
-    {
-        return [
-            @join descriptor : xapiClass.longRunningDescriptors
-                '{@descriptor.methodName}' => [
-                    'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
-                    'metadataReturnType'' => '{@descriptor.metadataTypeName}',
-                ],
-            @end
-        ];
-    }
-    {@""}
+    @if xapiClass.hasLongRunningOperations
+      private static function getLongRunningDescriptors()
+      {
+          return [
+              @join descriptor : xapiClass.longRunningDescriptors
+                  '{@descriptor.methodName}' => [
+                      'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
+                      'metadataReturnType'' => '{@descriptor.metadataTypeName}',
+                  ],
+              @end
+          ];
+      }
+      {@""}
+    @end
 @end
 
 @private functions(xapiClass)
@@ -331,10 +333,12 @@
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
             $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
         }
-        $longRunningDescriptors = self::getLongRunningDescriptors();
-        foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
-            $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
-        }
+        @if xapiClass.hasLongRunningOperations
+          $longRunningDescriptors = self::getLongRunningDescriptors();
+          foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
+              $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
+          }
+        @end
 
         $clientConfigJsonString = file_get_contents(__DIR__ . '/{@xapiClass.clientConfigPath}');
         $clientConfig = json_decode($clientConfigJsonString, true);
