@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -93,18 +94,18 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .templateFileName(template)
         .outputPath(outputPath)
         .identifier(apiConfig.getDomainLayerLocation())
-        .packageVersion(packageConfig.packageVersion("python"))
+        .packageVersionBound(packageConfig.packageVersionBound(TargetLanguage.PYTHON))
         .protoPath(packageConfig.protoPath())
         .shortName(packageConfig.shortName())
-        .gaxVersion(packageConfig.gaxVersion("python"))
-        .protoVersion(packageConfig.protoVersion("python"))
-        .commonProtosVersion(packageConfig.commonProtosVersion("python"))
-        .packageName(packageConfig.packageName("python"))
+        .gaxVersionBound(packageConfig.gaxVersionBound(TargetLanguage.PYTHON))
+        .protoVersionBound(packageConfig.protoVersionBound(TargetLanguage.PYTHON))
+        .commonProtosVersionBound(packageConfig.commonProtosVersionBound(TargetLanguage.PYTHON))
+        .packageName(packageConfig.packageName(TargetLanguage.PYTHON))
         .majorVersion(packageConfig.apiVersion())
         .author(packageConfig.author())
         .email(packageConfig.email())
         .homepage(packageConfig.homepage())
-        .license(packageConfig.license())
+        .licenseName(packageConfig.licenseName())
         .fullName(model.getServiceConfig().getTitle())
         .serviceName(apiConfig.getPackageName())
         .namespacePackages(

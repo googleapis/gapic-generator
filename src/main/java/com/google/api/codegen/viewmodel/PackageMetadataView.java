@@ -15,7 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.config.PackageMetadataConfig.VersionBound;
+import com.google.api.codegen.config.VersionBound;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -36,13 +36,13 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String identifier();
 
-  public abstract VersionBound packageVersion();
+  public abstract VersionBound packageVersionBound();
 
-  public abstract VersionBound gaxVersion();
+  public abstract VersionBound gaxVersionBound();
 
-  public abstract VersionBound protoVersion();
+  public abstract VersionBound protoVersionBound();
 
-  public abstract VersionBound commonProtosVersion();
+  public abstract VersionBound commonProtosVersionBound();
 
   public abstract String serviceName();
 
@@ -62,7 +62,7 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String homepage();
 
-  public abstract String license();
+  public abstract String licenseName();
 
   @Nullable
   public abstract List<String> namespacePackages();
@@ -79,13 +79,13 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder identifier(String val);
 
-    public abstract Builder packageVersion(VersionBound val);
+    public abstract Builder packageVersionBound(VersionBound val);
 
-    public abstract Builder gaxVersion(VersionBound val);
+    public abstract Builder gaxVersionBound(VersionBound val);
 
-    public abstract Builder protoVersion(VersionBound val);
+    public abstract Builder protoVersionBound(VersionBound val);
 
-    public abstract Builder commonProtosVersion(VersionBound val);
+    public abstract Builder commonProtosVersionBound(VersionBound val);
 
     public abstract Builder serviceName(String val);
 
@@ -110,7 +110,7 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder homepage(String val);
 
-    public abstract Builder license(String val);
+    public abstract Builder licenseName(String val);
 
     public abstract Builder namespacePackages(List<String> val);
 

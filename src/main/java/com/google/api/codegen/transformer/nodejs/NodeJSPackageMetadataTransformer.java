@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -45,28 +46,27 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
             apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(model, apiConfig, namer));
+    models.add(generateMetadataView(model, namer));
     return models;
   }
 
-  private ViewModel generateMetadataView(
-      Model model, ApiConfig apiConfig, NodeJSPackageMetadataNamer namer) {
+  private ViewModel generateMetadataView(Model model, NodeJSPackageMetadataNamer namer) {
     return PackageMetadataView.newBuilder()
         .templateFileName(PACKAGE_FILE)
         .outputPath("package.json")
         .identifier(namer.getMetadataIdentifier())
-        .packageVersion(packageConfig.packageVersion("nodejs"))
+        .packageVersionBound(packageConfig.packageVersionBound(TargetLanguage.NODEJS))
         .protoPath(packageConfig.protoPath())
         .shortName(packageConfig.shortName())
-        .gaxVersion(packageConfig.gaxVersion("nodejs"))
-        .protoVersion(packageConfig.protoVersion("nodejs"))
-        .commonProtosVersion(packageConfig.commonProtosVersion("nodejs"))
-        .packageName(packageConfig.packageName("nodejs"))
+        .gaxVersionBound(packageConfig.gaxVersionBound(TargetLanguage.NODEJS))
+        .protoVersionBound(packageConfig.protoVersionBound(TargetLanguage.NODEJS))
+        .commonProtosVersionBound(packageConfig.commonProtosVersionBound(TargetLanguage.NODEJS))
+        .packageName(packageConfig.packageName(TargetLanguage.NODEJS))
         .majorVersion(packageConfig.apiVersion())
         .author(packageConfig.author())
         .email(packageConfig.email())
         .homepage(packageConfig.homepage())
-        .license(packageConfig.license())
+        .licenseName(packageConfig.licenseName())
         .fullName(model.getServiceConfig().getTitle())
         .serviceName(namer.getMetadataName())
         .build();

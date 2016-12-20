@@ -42,7 +42,7 @@ import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 import javax.annotation.Nullable;
 
-/** ApiConfig represents the code-gen config for an API library. */
+/** ApiConfig represents the package metadata config for an API library. */
 @AutoValue
 public abstract class ApiConfig {
   abstract ImmutableMap<String, InterfaceConfig> getInterfaceConfigMap();
