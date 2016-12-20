@@ -6,35 +6,35 @@
    {@copyright()}
    */
 
-  {@imports(apiTest.fileHeader)}
+  {@imports(apiTest)}
 
   @join testClass : apiTest.testClasses
     describe('{@testClass.apiClassName}', function() {
       @join test : testClass.testCases
-        {@testCase(test)}
+        {@testCase(test, apiTest.apiWrapperModuleName)}
 
       @end
     });
   @end
 @end
 
-@private imports(header)
+@private imports(apiTest)
   var assert = require('assert');
-  @if @header.hasVersion
-    var service = require('../src/').{@header.version}();
+  @if apiTest.fileHeader.hasVersion
+    var {@apiTest.apiWrapperModuleName} = require('../src/').{@apiTest.fileHeader.version}();
   @else
-    var service = require('../src/')();
+    var {@apiTest.apiWrapperModuleName} = require('../src/')();
   @end
 @end
 
-@private testCase(test)
+@private testCase(test, moduleName)
   @switch test.grpcStreamingType
   @case "NonStreaming"
     @switch test.clientMethodType
     @case "RequestObjectMethod"
-      {@requestObjectTestCase(test)}
+      {@requestObjectTestCase(test, moduleName)}
     @case "PagedRequestObjectMethod"
-      {@pagedRequestObjectTestCase(test)}
+      {@pagedRequestObjectTestCase(test, moduleName)}
     @default
       $unhandled case: {@test.clientMethodType.toString}$
     @end
@@ -43,10 +43,10 @@
   @end
 @end
 
-@private requestObjectTestCase(test)
+@private requestObjectTestCase(test, moduleName)
   describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} without error', function(done) {
-      var client = service.{@test.serviceConstructorName}();
+      var client = {@moduleName}.{@test.serviceConstructorName}();
       // Mock request
       {@initCodeLines(test.initCode)}
 
@@ -81,10 +81,10 @@
   });
 @end
 
-@private pagedRequestObjectTestCase(test)
+@private pagedRequestObjectTestCase(test, moduleName)
   describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} without error', function(done) {
-      var client = service.{@test.serviceConstructorName}();
+      var client = {@moduleName}.{@test.serviceConstructorName}();
       // Mock request
       {@initCodeLines(test.initCode)}
 
@@ -95,14 +95,14 @@
       client._{@test.clientMethodName} = function(actualRequest, options, callback) {
         assert.deepStrictEqual(actualRequest, request);
         @join pagedResponse : test.pageStreamingResponseViews
-          callback([null, expectedResponse.{@pagedResponse.resourcesFieldGetterName}]);
+          callback(null, expectedResponse.{@pagedResponse.resourcesFieldGetterName});
         @end
       };
 
       client.{@test.clientMethodName}(request, function(err, response) {
         assert.ifError(err);
         @join pagedResponse : test.pageStreamingResponseViews
-          assert.deepStrictEqual(response[0], expectedResponse.{@pagedResponse.resourcesFieldGetterName});
+          assert.deepStrictEqual(response, expectedResponse.{@pagedResponse.resourcesFieldGetterName});
         @end
         done();
       });

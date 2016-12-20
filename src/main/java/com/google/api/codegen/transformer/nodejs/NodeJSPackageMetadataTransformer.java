@@ -14,13 +14,16 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.viewmodel.PackageMetadataView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 /** Responsible for producing package metadata related views for NodeJS */
@@ -36,20 +39,23 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Collections.singletonList(PACKAGE_FILE);
+    return Arrays.asList(PACKAGE_FILE);
   }
 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+    Iterable<Interface> services = new InterfaceView().getElementIterable(model);
+    boolean hasMultipleServices = Iterables.size(services) > 1;
     List<ViewModel> models = new ArrayList<ViewModel>();
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
             apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(namer));
+    models.add(generateMetadataView(namer, hasMultipleServices));
     return models;
   }
 
-  private ViewModel generateMetadataView(NodeJSPackageMetadataNamer namer) {
+  private ViewModel generateMetadataView(
+      NodeJSPackageMetadataNamer namer, boolean hasMultipleServices) {
     return PackageMetadataView.newBuilder()
         .templateFileName(PACKAGE_FILE)
         .outputPath("package.json")
@@ -59,6 +65,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
         .protoVersion(PROTO_VERSION)
         .url(PACKAGE_URL)
         .serviceName(namer.getMetadataName())
+        .hasMultipleServices(hasMultipleServices)
         .build();
   }
 }

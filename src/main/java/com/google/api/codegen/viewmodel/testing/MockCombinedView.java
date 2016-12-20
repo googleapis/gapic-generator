@@ -19,6 +19,7 @@ import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * MockCombinedView gathers unit-test-related classes. Used in languages that idiomatically put
@@ -33,6 +34,9 @@ public abstract class MockCombinedView implements ViewModel {
   public abstract List<ClientTestClassView> testClasses();
 
   public abstract List<MockServiceUsageView> mockServices();
+
+  @Nullable
+  public abstract String apiWrapperModuleName();
 
   @Override
   public String resourceRoot() {
@@ -58,6 +62,8 @@ public abstract class MockCombinedView implements ViewModel {
     public abstract Builder testClasses(List<ClientTestClassView> val);
 
     public abstract Builder mockServices(List<MockServiceUsageView> val);
+
+    public abstract Builder apiWrapperModuleName(String val);
 
     public abstract Builder outputPath(String val);
 
