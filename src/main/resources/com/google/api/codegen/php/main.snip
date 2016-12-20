@@ -358,6 +358,9 @@
             ${@stub.createStubFunctionName} = function ($hostname, $opts) {
                 return new {@stub.grpcClientTypeName}($hostname, $opts);
             };
+            if (array_key_exists('{@stub.createStubFunctionName}', $options)) {
+                ${@stub.createStubFunctionName} = $options['{@stub.createStubFunctionName}'];
+            }
             $this->{@stub.name} = $this->grpcCredentialsHelper->createStub(
                 ${@stub.createStubFunctionName},
                 $options['serviceAddress'],
