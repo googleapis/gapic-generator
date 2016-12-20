@@ -20,19 +20,17 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.PackageMetadataView;
+import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 
+/** Responsible for producing package metadata related views for Python */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
 
   PackageMetadataConfig packageConfig;
@@ -44,22 +42,11 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   @Override
   public List<ViewModel> transform(final Model model, final ApiConfig apiConfig) {
     String version = packageConfig.apiVersion();
-    List<ViewModel> initFiles =
+    List<ViewModel> metadata =
         computeInitFiles(computePackages(apiConfig.getPackageName()), version);
-    List<ViewModel> topLevelMetadata =
-        Lists.transform(
-            getTopLevelTemplateFileNames(),
-            new Function<String, ViewModel>() {
-              @Override
-              @Nullable
-              public ViewModel apply(@Nullable String templateFileName) {
-                return generateMetadataView(model, apiConfig, templateFileName);
-              }
-            });
-
-    List<ViewModel> metadata = new ArrayList<>();
-    metadata.addAll(initFiles);
-    metadata.addAll(topLevelMetadata);
+    for (String templateFileName : getTopLevelTemplateFileNames()) {
+      metadata.add(generateMetadataView(model, apiConfig, templateFileName));
+    }
     return metadata;
   }
 
@@ -113,6 +100,10 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .build();
   }
 
+  /**
+   * Computes all Python packages present under the given package name. For example, for input
+   * "foo.bar.baz", returns ["foo", "foo.bar", "foo.bar.baz"].
+   */
   private List<String> computePackages(String packageName) {
     ArrayList<String> packages = new ArrayList<>();
     StringBuilder current = new StringBuilder();
@@ -130,54 +121,40 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private List<String> computeNamespacePackages(String packageName, final String apiVersion) {
-    return Lists.newArrayList(
-        Iterables.filter(
-            computePackages(packageName),
-            new Predicate<String>() {
-              @Override
-              public boolean apply(@Nullable String input) {
-                return isNamespacePackage(input, apiVersion);
-              }
-            }));
+    List<String> namespacePackages = new ArrayList<>();
+    for (String subPackage : computePackages(packageName)) {
+      if (isNamespacePackage(subPackage, apiVersion)) {
+        namespacePackages.add(subPackage);
+      }
+    }
+    return namespacePackages;
   }
 
+  /** Set all packages to be namespace packages except for the version package (if present) */
   private boolean isNamespacePackage(String packageName, String apiVersion) {
     int lastDot = packageName.lastIndexOf(".");
     return lastDot < 0 || !packageName.substring(lastDot + 1).equals(apiVersion);
   }
 
+  /**
+   * Determines which __init__.py files to generate given a list of Python packages. Each Python
+   * package corresponds to exactly one __init__.py file, although the contents of that file depend
+   * on whether the package is a namespace package.
+   */
   private List<ViewModel> computeInitFiles(List<String> packages, final String apiVersion) {
-    return Lists.transform(
-        packages,
-        new Function<String, ViewModel>() {
-          @Override
-          @Nullable
-          public ViewModel apply(@Nullable final String packageName) {
-            final String template;
-            if (isNamespacePackage(packageName, apiVersion)) {
-              template = "py/namespace__init__.py.snip";
-            } else {
-              template = "py/__init__.py.snip";
-            }
-            return new ViewModel() {
-              @Override
-              public String resourceRoot() {
-                return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
-              }
-
-              @Override
-              public String templateFileName() {
-                return template;
-              }
-
-              @Override
-              public String outputPath() {
-                return Paths.get(packageName.replace(".", File.separator))
-                    .resolve("__init__.py")
-                    .toString();
-              }
-            };
-          }
-        });
+    List<ViewModel> initFiles = new ArrayList<>();
+    for (String packageName : packages) {
+      final String template;
+      if (isNamespacePackage(packageName, apiVersion)) {
+        template = "py/namespace__init__.py.snip";
+      } else {
+        template = "py/__init__.py.snip";
+      }
+      String outputPath =
+          Paths.get(packageName.replace(".", File.separator)).resolve("__init__.py").toString();
+      initFiles.add(
+          SimpleViewModel.create(SnippetSetRunner.SNIPPET_RESOURCE_ROOT, template, outputPath));
+    }
+    return initFiles;
   }
 }
