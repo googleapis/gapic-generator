@@ -25,6 +25,10 @@ import java.nio.file.Path;
 import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 
+/**
+ * PackageMetadataConfig represents the package metadata for an API library contained in the
+ * {api}_pkg.yaml configuration file.
+ */
 @AutoValue
 public abstract class PackageMetadataConfig {
 
