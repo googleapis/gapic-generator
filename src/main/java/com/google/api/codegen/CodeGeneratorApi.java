@@ -39,6 +39,8 @@ import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,8 +109,11 @@ public class CodeGeneratorApi extends ToolDriverBase {
 
     PackageMetadataConfig packageConfig = null;
     if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG_FILE))) {
-      packageConfig =
-          PackageMetadataConfig.createFromFile(Paths.get(options.get(PACKAGE_CONFIG_FILE)));
+      String contents =
+          new String(
+              Files.readAllBytes(Paths.get(options.get(PACKAGE_CONFIG_FILE))),
+              StandardCharsets.UTF_8);
+      packageConfig = PackageMetadataConfig.createFromString(contents);
     }
     GeneratorProto generator = configProto.getGenerator();
     ApiConfig apiConfig = ApiConfig.createApiConfig(model, configProto);

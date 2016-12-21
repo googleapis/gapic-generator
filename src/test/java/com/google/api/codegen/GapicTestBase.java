@@ -29,6 +29,8 @@ import com.google.api.tools.framework.snippet.Doc;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +89,9 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     if (!Strings.isNullOrEmpty(packageConfigFileName)) {
       try {
         URI packageConfigUrl = getTestDataLocator().findTestData(packageConfigFileName).toURI();
-        packageConfig = PackageMetadataConfig.createFromFile(Paths.get(packageConfigUrl));
+        String contents =
+            new String(Files.readAllBytes(Paths.get(packageConfigUrl)), StandardCharsets.UTF_8);
+        packageConfig = PackageMetadataConfig.createFromString(contents);
       } catch (IOException | URISyntaxException e) {
         throw new IllegalArgumentException("Problem creating packageConfig");
       }

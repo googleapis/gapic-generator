@@ -18,10 +18,6 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 
@@ -150,10 +146,9 @@ public abstract class PackageMetadataConfig {
   }
 
   @SuppressWarnings("unchecked")
-  public static PackageMetadataConfig createFromFile(Path packageConfigPath) throws IOException {
+  public static PackageMetadataConfig createFromString(String yamlContents) {
     Yaml yaml = new Yaml();
-    String contents = new String(Files.readAllBytes(packageConfigPath), StandardCharsets.UTF_8);
-    Map<String, Object> configMap = (Map<String, Object>) yaml.load(contents);
+    Map<String, Object> configMap = (Map<String, Object>) yaml.load(yamlContents);
 
     return newBuilder()
         .gaxVersionBound(
