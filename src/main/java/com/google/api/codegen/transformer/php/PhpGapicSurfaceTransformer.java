@@ -15,7 +15,9 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -157,15 +159,16 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     for (Method method : context.getLongRunningMethods()) {
       MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
-      TypeRef returnType = methodContext.getMethodConfig().getLongRunningConfig().getReturnType();
-      TypeRef metadataType =
-          methodContext.getMethodConfig().getLongRunningConfig().getMetadataType();
+      LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
+      TypeRef returnType = lroConfig.getReturnType();
+      TypeRef metadataType = lroConfig.getMetadataType();
       result.add(
           LongRunningOperationDetailView.newBuilder()
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
               .constructorName("")
               .clientReturnTypeName("")
               .operationPayloadTypeName(context.getTypeTable().getFullNameFor(returnType))
+              .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
               .metadataTypeName(context.getTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
