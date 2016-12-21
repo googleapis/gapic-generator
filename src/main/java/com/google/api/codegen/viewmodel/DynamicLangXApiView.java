@@ -48,6 +48,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
+  public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
+
   public abstract List<String> methodKeys();
 
   public abstract String clientConfigPath();
@@ -63,6 +65,24 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract String outputPath();
 
   public abstract List<ApiMethodView> apiMethods();
+
+  public abstract boolean hasLongRunningOperations();
+
+  public abstract boolean hasDefaultServiceAddress();
+
+  public abstract boolean hasDefaultServiceScopes();
+
+  public boolean missingDefaultServiceAddress() {
+    return !hasDefaultServiceAddress();
+  }
+
+  public boolean missingDefaultServiceScopes() {
+    return !hasDefaultServiceScopes();
+  }
+
+  public boolean hasMissingDefaultOptions() {
+    return missingDefaultServiceAddress() || missingDefaultServiceScopes();
+  }
 
   @Override
   public String resourceRoot() {
@@ -103,6 +123,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder pageStreamingDescriptors(List<PageStreamingDescriptorView> val);
 
+    public abstract Builder longRunningDescriptors(List<LongRunningOperationDetailView> val);
+
     public abstract Builder methodKeys(List<String> val);
 
     public abstract Builder clientConfigPath(String val);
@@ -118,6 +140,12 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder outputPath(String val);
 
     public abstract Builder apiMethods(List<ApiMethodView> val);
+
+    public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder hasDefaultServiceAddress(boolean val);
+
+    public abstract Builder hasDefaultServiceScopes(boolean val);
 
     public abstract DynamicLangXApiView build();
   }
