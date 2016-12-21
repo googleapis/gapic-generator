@@ -81,8 +81,16 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     Map<String, Object> output = new LinkedHashMap<String, Object>();
     output.put(CONFIG_KEY_TYPE, CONFIG_PROTO_TYPE);
     output.put(CONFIG_KEY_LANGUAGE_SETTINGS, generateLanguageSettings());
+    output.put(CONFIG_KEY_LICENSE_HEADER, generateLicenseConfigs());
     output.put(CONFIG_KEY_INTERFACES, generateInterfacesConfig());
     dump(output);
+  }
+
+  private static Map<String, Object> generateLicenseConfigs() {
+    Map<String, Object> output = new LinkedHashMap<String, Object>();
+    output.put(CONFIG_KEY_COPYRIGHT, CONFIG_DEFAULT_COPYRIGHT_FILE);
+    output.put(CONFIG_KEY_LICENSE, CONFIG_DEFAULT_LICENSE_FILE);
+    return output;
   }
 
   /** Generates a collection configurations section. */
@@ -133,20 +141,12 @@ public class ConfigGeneratorApi extends ToolDriverBase {
       Map<String, Object> serviceConfig = new LinkedHashMap<String, Object>();
       Map<String, String> collectionNameMap = getResourceToEntityNameMap(service.getMethods());
       serviceConfig.put(CONFIG_KEY_SERVICE_NAME, service.getFullName());
-      serviceConfig.put(CONFIG_KEY_LICENSE_HEADER, generateLicenseConfigs());
       serviceConfig.put(CONFIG_KEY_COLLECTIONS, generateCollectionConfigs(collectionNameMap));
       serviceConfig.putAll(RetryGenerator.generateRetryDefinitions());
       serviceConfig.put(CONFIG_KEY_METHODS, generateMethodConfigs(service, collectionNameMap));
       services.add(serviceConfig);
     }
     return services;
-  }
-
-  private static Map<String, Object> generateLicenseConfigs() {
-    Map<String, Object> output = new LinkedHashMap<String, Object>();
-    output.put(CONFIG_KEY_COPYRIGHT, CONFIG_DEFAULT_COPYRIGHT_FILE);
-    output.put(CONFIG_KEY_LICENSE, CONFIG_DEFAULT_LICENSE_FILE);
-    return output;
   }
 
   private Map<String, Object> generateLanguageSettings() {
