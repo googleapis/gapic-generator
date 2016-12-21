@@ -339,7 +339,10 @@
         $options = array_merge($defaultOptions, $options);
 
         @if xapiClass.hasLongRunningOperations
-            $this->operationsClient = new OperationsClient(['serviceAddress' => $options['serviceAddress']]);
+            $this->operationsClient = new OperationsClient([
+                'serviceAddress' => $options['serviceAddress'],
+                'scopes' => $options['scopes'],
+            ]);
         @end
 
         $headerDescriptor = new AgentHeaderDescriptor([

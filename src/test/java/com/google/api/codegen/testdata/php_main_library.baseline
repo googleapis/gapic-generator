@@ -35,6 +35,7 @@ use Google\GAX\GrpcConstants;
 use Google\GAX\GrpcCredentialsHelper;
 use Google\GAX\PageStreamingDescriptor;
 use Google\GAX\PathTemplate;
+use Google\GAX\ValidationException;
 use google\example\library\v1\AddCommentsRequest;
 use google\example\library\v1\Book;
 use google\example\library\v1\Comment;
@@ -355,7 +356,10 @@ class LibraryServiceClient
         ];
         $options = array_merge($defaultOptions, $options);
 
-        $this->operationsClient = new OperationsClient(['serviceAddress' => $options['serviceAddress']]);
+        $this->operationsClient = new OperationsClient([
+            'serviceAddress' => $options['serviceAddress'],
+            'scopes' => $options['scopes'],
+        ]);
 
         $headerDescriptor = new AgentHeaderDescriptor([
             'clientName' => $options['appName'],
