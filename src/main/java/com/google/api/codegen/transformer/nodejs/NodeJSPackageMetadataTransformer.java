@@ -14,6 +14,10 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
@@ -24,9 +28,6 @@ import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.Iterables;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /** Responsible for producing package metadata related views for NodeJS */
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
@@ -74,7 +75,6 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
         .homepage(packageConfig.homepage())
         .licenseName(packageConfig.licenseName())
         .fullName(model.getServiceConfig().getTitle())
-        .serviceName(namer.getMetadataName())
         .hasMultipleServices(hasMultipleServices)
         .build();
   }

@@ -14,6 +14,12 @@
  */
 package com.google.api.codegen.transformer.py;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
@@ -25,10 +31,6 @@ import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Responsible for producing package metadata related views for Python */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
@@ -80,7 +82,6 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return PackageMetadataView.newBuilder()
         .templateFileName(template)
         .outputPath(outputPath)
-        .identifier(apiConfig.getDomainLayerLocation())
         .packageVersionBound(packageConfig.packageVersionBound(TargetLanguage.PYTHON))
         .protoPath(packageConfig.protoPath())
         .shortName(packageConfig.shortName())
@@ -94,7 +95,6 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .homepage(packageConfig.homepage())
         .licenseName(packageConfig.licenseName())
         .fullName(model.getServiceConfig().getTitle())
-        .serviceName(apiConfig.getPackageName())
         .namespacePackages(
             computeNamespacePackages(apiConfig.getPackageName(), packageConfig.apiVersion()))
         .hasMultipleServices(false)
@@ -106,17 +106,10 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
    * "foo.bar.baz", returns ["foo", "foo.bar", "foo.bar.baz"].
    */
   private List<String> computePackages(String packageName) {
-    ArrayList<String> packages = new ArrayList<>();
-    StringBuilder current = new StringBuilder();
-    boolean first = true;
-    for (String pkg : Splitter.on(".").split(packageName)) {
-      if (!first) {
-        current.append("." + pkg);
-      } else {
-        current.append(pkg);
-        first = false;
-      }
-      packages.add(current.toString());
+    List<String> packages = new ArrayList<>();
+    List<String> parts = Lists.newArrayList(Splitter.on(".").split(packageName));
+    for (int i = 0; i < parts.size(); i++) {
+      packages.add(Joiner.on(".").join(parts.subList(0, i + 1)));
     }
     return packages;
   }
