@@ -96,10 +96,12 @@
 @end
 
 @private constants(xapiClass)
-    /**
-     * The default address of the service.
-     */
-    const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
+    @if xapiClass.hasDefaultServiceAddress
+      /**
+       * The default address of the service.
+       */
+      const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
+    @end
 
     /**
      * The default port of the service.
@@ -264,17 +266,30 @@
      * Constructor.
      *
      * @@param array $options {
+     @if xapiClass.hasMissingDefaultOptions
+     *     Required. Options for configuring the service API wrapper. Those options
+     *     that must be provided are marked as Required.
+     @else
      *     Optional. Options for configuring the service API wrapper.
+     @end
      *
+     @if xapiClass.hasDefaultServiceAddress
      *     @@type string $serviceAddress The domain name of the API remote host.
      *                                  Default '{@xapiClass.serviceAddress}'.
+     @else
+     *     @@type string $serviceAddress Required. The domain name of the API remote host.
+     @end
      *     @@type mixed $port The port on which to connect to the remote host. Default {@xapiClass.servicePort}.
      *     @@type \Grpc\ChannelCredentials $sslCreds
      *           A `ChannelCredentials` for use with an SSL-enabled channel.
      *           Default: a credentials object returned from
      *           \Grpc\ChannelCredentials::createSsl()
+     @if xapiClass.hasDefaultServiceScopes
      *     @@type array $scopes A string array of scopes to use when acquiring credentials.
      *                         Default the scopes for the {@xapiClass.serviceTitle}.
+     @else
+     *     @@type array $scopes Required. A string array of scopes to use when acquiring credentials.
+     @end
      *     @@type array $retryingOverride
      *           An associative array of string => RetryOptions, where the keys
      *           are method names (e.g. 'createFoo'), that overrides default retrying
@@ -294,15 +309,28 @@
      */
     public function __construct($options = [])
     {
-        $defaultScopes = [
-            @join scope : {@xapiClass.authScopes}
-                '{@scope}',
-            @end
-        ];
+        @if xapiClass.missingDefaultServiceAddress
+          if (!array_key_exists('serviceAddress', $options)) {
+            throw new ValidationException("The 'serviceAddress' option must be provided.");
+          }
+        @end
+        @if xapiClass.missingDefaultServiceScopes
+          if (!array_key_exists('scopes', $options)) {
+            throw new ValidationException("The 'scopes' option must be provided.");
+          }
+        @end
         $defaultOptions = [
-            'serviceAddress' => self::SERVICE_ADDRESS,
+            @if xapiClass.hasDefaultServiceAddress
+              'serviceAddress' => self::SERVICE_ADDRESS,
+            @end
             'port' => self::DEFAULT_SERVICE_PORT,
-            'scopes' => $defaultScopes,
+            @if xapiClass.hasDefaultServiceScopes
+              'scopes' => [
+                  @join scope : {@xapiClass.authScopes}
+                      '{@scope}',
+                  @end
+              ],
+            @end
             'retryingOverride' => null,
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'appName' => 'gax',

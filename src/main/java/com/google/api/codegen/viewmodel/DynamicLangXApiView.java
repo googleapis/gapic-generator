@@ -68,6 +68,22 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract boolean hasLongRunningOperations();
 
+  public abstract boolean hasDefaultServiceAddress();
+
+  public abstract boolean hasDefaultServiceScopes();
+
+  public boolean missingDefaultServiceAddress() {
+    return !hasDefaultServiceAddress();
+  }
+
+  public boolean missingDefaultServiceScopes() {
+    return !hasDefaultServiceScopes();
+  }
+
+  public boolean hasMissingDefaultOptions() {
+    return missingDefaultServiceAddress() || missingDefaultServiceScopes();
+  }
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -126,6 +142,10 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder apiMethods(List<ApiMethodView> val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder hasDefaultServiceAddress(boolean val);
+
+    public abstract Builder hasDefaultServiceScopes(boolean val);
 
     public abstract DynamicLangXApiView build();
   }
