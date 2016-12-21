@@ -63,10 +63,14 @@
 
   @end
   @if class.hasRequestBody
-    @if class.methodVerb == "PATCH"
+    @switch class.methodVerb
+    @case "PATCH"
       @# TODO: Assign values to desired members of `{@class.requestBodyVarName}`. Only assigned
-      @# fields will be changed:
-    @else
+      @# members will be changed:
+    @case "PUT"
+      @# TODO: Assign values to desired members of `{@class.requestBodyVarName}`. All existing
+      @# members will be replaced:
+    @default
       @# TODO: Assign values to desired members of `{@class.requestBodyVarName}`:
     @end
 

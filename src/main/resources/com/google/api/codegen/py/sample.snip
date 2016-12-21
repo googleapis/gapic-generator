@@ -71,10 +71,14 @@
     @end
     @if class.hasRequestBody
         {@class.requestBodyVarName} = {
-            @if class.methodVerb == "PATCH"
+            @switch class.methodVerb
+            @case "PATCH"
                 @# TODO: Add desired entries of the request body. Only assigned entries
-                @# will be changed:
-            @else
+                @# will be changed.
+            @case "PUT"
+                @# TODO: Add desired entries of the request body. All existing entries
+                @# will be replaced.
+            @default
                 @# TODO: Add desired entries of the request body.
             @end
         }

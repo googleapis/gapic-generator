@@ -71,11 +71,15 @@
 
         @end
         @if class.hasRequestBody
-            @if class.methodVerb == "PATCH"
-                // TODO: Assign values to desired fields of `{@class.requestBodyVarName}`. Only assigned
-                // fields will be changed:
-            @else
-                // TODO: Assign values to desired fields of `{@class.requestBodyVarName}`:
+            @switch class.methodVerb
+            @case "PATCH"
+                // TODO: Assign values to desired properties of `{@class.requestBodyVarName}`. Only assigned
+                // properties will be changed:
+            @case "PUT"
+                // TODO: Assign values to desired properties of `{@class.requestBodyVarName}`. All existing
+                // properties will be replaced:
+            @default
+                // TODO: Assign values to desired properties of `{@class.requestBodyVarName}`:
             @end
 
             {@class.requestBodyTypeName} {@class.requestBodyVarName} = new {@class.requestBodyTypeName}();

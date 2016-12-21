@@ -69,10 +69,14 @@
     @end
     @if class.hasRequestBody
       {@class.requestBodyVarName} := &{@class.servicePackageName}.{@class.requestBodyTypeName}{
-        @if class.methodVerb == "PATCH"
+        @switch class.methodVerb
+        @case "PATCH"
           // TODO: Add desired fields of the request body to be changed. Only assigned
           // fields will be changed.
-        @else
+        @case "PUT"
+          // TODO: Add desired fields of the request body to be changed. All existing
+          // fields will be replaced.
+        @default
           // TODO: Add desired fields of the request body.
         @end
       }
