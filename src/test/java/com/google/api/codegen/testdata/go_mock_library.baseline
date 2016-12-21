@@ -46,6 +46,11 @@ var _ = ptypes.MarshalAny
 var _ status.Status
 
 type mockLibraryServer struct {
+    // Embed for forward compatibility.
+    // Tests will keep working if more methods are added
+    // in the future.
+    librarypb.LibraryServiceServer
+
     reqs []proto.Message
 
     // If set, all calls return this error.
@@ -262,7 +267,20 @@ func (s *mockLibraryServer) GetBigBook(_ context.Context, req *librarypb.GetBook
     return s.resps[0].(*longrunningpb.Operation), nil
 }
 
+func (s *mockLibraryServer) GetBigNothing(_ context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*longrunningpb.Operation), nil
+}
+
 type mockLabelerServer struct {
+    // Embed for forward compatibility.
+    // Tests will keep working if more methods are added
+    // in the future.
+    taggerpb.LabelerServer
+
     reqs []proto.Message
 
     // If set, all calls return this error.
@@ -374,11 +392,11 @@ func TestLibraryServiceCreateShelfError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetShelf(t *testing.T) {
-    var formattedName2 string = LibraryShelfPath("[SHELF_ID]")
+    var name2 string = "name2-1052831874"
     var theme string = "theme110327241"
     var internalTheme string = "internalTheme792518087"
     var expectedResponse = &librarypb.Shelf{
-        Name: formattedName2,
+        Name: name2,
         Theme: theme,
         InternalTheme: internalTheme,
     }
@@ -553,11 +571,11 @@ func TestLibraryServiceDeleteShelfError(t *testing.T) {
     }
 }
 func TestLibraryServiceMergeShelves(t *testing.T) {
-    var formattedName2 string = LibraryShelfPath("[SHELF_ID]")
+    var name2 string = "name2-1052831874"
     var theme string = "theme110327241"
     var internalTheme string = "internalTheme792518087"
     var expectedResponse = &librarypb.Shelf{
-        Name: formattedName2,
+        Name: name2,
         Theme: theme,
         InternalTheme: internalTheme,
     }
@@ -618,12 +636,12 @@ func TestLibraryServiceMergeShelvesError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceCreateBook(t *testing.T) {
-    var formattedName2 string = LibraryShelfPath("[SHELF_ID]")
+    var name2 string = "name2-1052831874"
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-        Name: formattedName2,
+        Name: name2,
         Author: author,
         Title: title,
         Read: read,
@@ -747,12 +765,12 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetBook(t *testing.T) {
-    var formattedName2 string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var name2 string = "name2-1052831874"
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-        Name: formattedName2,
+        Name: name2,
         Author: author,
         Title: title,
         Read: read,
@@ -930,12 +948,12 @@ func TestLibraryServiceDeleteBookError(t *testing.T) {
     }
 }
 func TestLibraryServiceUpdateBook(t *testing.T) {
-    var formattedName2 string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var name2 string = "name2-1052831874"
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-        Name: formattedName2,
+        Name: name2,
         Author: author,
         Title: title,
         Read: read,
@@ -997,12 +1015,12 @@ func TestLibraryServiceUpdateBookError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceMoveBook(t *testing.T) {
-    var formattedName2 string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var name2 string = "name2-1052831874"
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-        Name: formattedName2,
+        Name: name2,
         Author: author,
         Title: title,
         Read: read,
@@ -1198,12 +1216,12 @@ func TestLibraryServiceAddCommentsError(t *testing.T) {
     }
 }
 func TestLibraryServiceGetBookFromArchive(t *testing.T) {
-    var formattedName2 string = LibraryArchivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]")
+    var name2 string = "name2-1052831874"
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.BookFromArchive{
-        Name: formattedName2,
+        Name: name2,
         Author: author,
         Title: title,
         Read: read,
@@ -1261,12 +1279,12 @@ func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
-    var formattedName2 string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var name2 string = "name2-1052831874"
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.BookFromAnywhere{
-        Name: formattedName2,
+        Name: name2,
         Author: author,
         Title: title,
         Read: read,
@@ -1406,7 +1424,7 @@ func TestLibraryServiceStreamShelves(t *testing.T) {
         t.Fatal(err)
     }
 
-    stream, err := c.StreamShelves(context.Background())
+    stream, err := c.StreamShelves(context.Background(), request)
     if err != nil {
         t.Fatal(err)
     }
@@ -1436,7 +1454,7 @@ func TestLibraryServiceStreamShelvesError(t *testing.T) {
         t.Fatal(err)
     }
 
-    stream, err := c.StreamShelves(context.Background())
+    stream, err := c.StreamShelves(context.Background(), request)
     if err != nil {
         t.Fatal(err)
     }
@@ -1474,7 +1492,7 @@ func TestLibraryServiceStreamBooks(t *testing.T) {
         t.Fatal(err)
     }
 
-    stream, err := c.StreamBooks(context.Background())
+    stream, err := c.StreamBooks(context.Background(), request)
     if err != nil {
         t.Fatal(err)
     }
@@ -1507,7 +1525,7 @@ func TestLibraryServiceStreamBooksError(t *testing.T) {
         t.Fatal(err)
     }
 
-    stream, err := c.StreamBooks(context.Background())
+    stream, err := c.StreamBooks(context.Background(), request)
     if err != nil {
         t.Fatal(err)
     }
@@ -1732,12 +1750,12 @@ func TestLabelerAddLabelError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetBigBook(t *testing.T) {
-    var formattedName2 string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var name2 string = "name2-1052831874"
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
     var expectedResponse = &librarypb.Book{
-        Name: formattedName2,
+        Name: name2,
         Author: author,
         Title: title,
         Read: read,
@@ -1819,4 +1837,80 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
+}
+func TestLibraryServiceGetBigNothing(t *testing.T) {
+    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    any, err := ptypes.MarshalAny(expectedResponse)
+    if err != nil {
+        t.Fatal(err)
+    }
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Response{ Response: any },
+    })
+
+    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.GetBigNothing(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    err = respLRO.Wait(context.Background())
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceGetBigNothingError(t *testing.T) {
+    errCode := codes.Internal
+    mockLibrary.err = nil
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Error{
+            Error: &status.Status{
+                Code: int32(errCode),
+                Message: "test error",
+            },
+        },
+    })
+
+    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var request = &librarypb.GetBookRequest{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.GetBigNothing(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    err = respLRO.Wait(context.Background())
+
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
 }

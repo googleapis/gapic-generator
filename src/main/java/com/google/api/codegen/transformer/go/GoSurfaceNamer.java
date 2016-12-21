@@ -195,6 +195,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getGrpcStreamingApiMethodExampleName(Interface service, Method method) {
+    return exampleFunction(service, getApiMethodName(method, VisibilityConfig.PUBLIC));
+  }
+
+  @Override
   public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
     return visibility.methodName(this, Name.upperCamel(method.getSimpleName()));
   }

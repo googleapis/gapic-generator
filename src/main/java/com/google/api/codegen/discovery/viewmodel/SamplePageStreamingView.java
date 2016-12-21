@@ -26,6 +26,8 @@ public abstract class SamplePageStreamingView {
   @Nullable
   public abstract String resourceGetterName();
 
+  public abstract boolean isResourceRepeated();
+
   public abstract boolean isResourceMap();
 
   @Nullable
@@ -61,6 +63,8 @@ public abstract class SamplePageStreamingView {
     public abstract Builder resourceFieldName(String val);
 
     public abstract Builder resourceGetterName(String val);
+
+    public abstract Builder isResourceRepeated(boolean val);
 
     public abstract Builder isResourceMap(boolean val);
 

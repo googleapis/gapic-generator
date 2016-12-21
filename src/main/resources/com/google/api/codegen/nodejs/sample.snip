@@ -9,7 +9,9 @@
     // 2. This sample uses Application Default Credentials for authentication.
     //    If not already done, install the gcloud CLI from
     //    https://cloud.google.com/sdk and run
-    //    `gcloud beta auth application-default login`
+    //    `gcloud beta auth application-default login`.
+    //    For more information, see
+    //    https://developers.google.com/identity/protocols/application-default-credentials
     // 3. Install the Node.js client library by running
     //    `npm install googleapis --save`
   @default
@@ -71,7 +73,7 @@
     @end
     @if class.hasMediaUpload
       media: {
-        // TODO: Add desired media content for upload. See:
+        // TODO: Add desired media content for upload. See
         // https://github.com/google/google-api-nodejs-client#media-uploads
         mimeType: '',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
         body: {}
@@ -98,16 +100,21 @@
       if (!{@class.pageStreaming.pageVarName}) {
         return;
       }
-      @if class.pageStreaming.isResourceMap
-        Object.keys({@class.pageStreaming.pageVarName}).forEach(function({@class.pageStreaming.resourceKeyVarName}) {
-          // TODO: Change code below to process each `{@class.pageStreaming.resourceKeyVarName}` property:
-          console.log({@class.pageStreaming.resourceKeyVarName} + ': ' + JSON.stringify({@class.pageStreaming.pageVarName}[{@class.pageStreaming.resourceKeyVarName}], null, 2));
-        });
+      @if class.pageStreaming.isResourceRepeated
+        @if class.pageStreaming.isResourceMap
+          Object.keys({@class.pageStreaming.pageVarName}).forEach(function({@class.pageStreaming.resourceKeyVarName}) {
+            // TODO: Change code below to process each `{@class.pageStreaming.resourceKeyVarName}` property:
+            console.log({@class.pageStreaming.resourceKeyVarName} + ': ' + JSON.stringify({@class.pageStreaming.pageVarName}[{@class.pageStreaming.resourceKeyVarName}], null, 2));
+          });
+        @else
+          for (var i = 0; i < {@class.pageStreaming.pageVarName}.length; i++) {
+            // TODO: Change code below to process each resource in `{@class.pageStreaming.pageVarName}`:
+            console.log(JSON.stringify({@class.pageStreaming.pageVarName}[i], null, 2));
+          }
+        @end
       @else
-        for (var i = 0; i < {@class.pageStreaming.pageVarName}.length; i++) {
-          // TODO: Change code below to process each resource in `{@class.pageStreaming.pageVarName}`:
-          console.log(JSON.stringify({@class.pageStreaming.pageVarName}[i], null, 2));
-        }
+        // TODO: Change code below to process each `{@class.pageStreaming.pageVarName}` resource:
+        console.log({@class.pageStreaming.pageVarName});
       @end
 
       if ({@class.responseVarName}.nextPageToken) {
@@ -157,7 +164,7 @@
 
 @private oAuth3LAuthFunc(class)
   function {@class.auth.authFuncName}(callback) {
-    // TODO: Change placeholder below to generate authentication credentials. See:
+    // TODO: Change placeholder below to generate authentication credentials. See
     // {@class.auth.instructionsUrl}
     //
     @if class.auth.isScopesSingular
@@ -166,7 +173,7 @@
       // Authorize using one of the following scopes:
     @end
     @join scope : class.auth.scopes
-      //    {@scope}
+      //   '{@scope}'
     @end
     var authClient = null;
 

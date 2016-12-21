@@ -9,8 +9,8 @@
     @# 2. This sample uses Application Default Credentials for authentication.
     @#    If not already done, install the gcloud CLI from
     @#    https://cloud.google.com/sdk and run
-    @#    `gcloud beta auth application-default login`
-    @#    For more information, see:
+    @#    `gcloud beta auth application-default login`.
+    @#    For more information, see
     @#    https://developers.google.com/identity/protocols/application-default-credentials
     @# 3. Install the Ruby client library and Application Default Credentials
     @#    library by running `gem install google-api-client` and
@@ -32,7 +32,7 @@
     {@class.serviceVarName}.authorization = {@"\"}
         Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
   @case "OAUTH_3L"
-    @# TODO: Change placeholder below to generate authentication credentials. See:
+    @# TODO: Change placeholder below to generate authentication credentials. See
     @# {@class.auth.instructionsUrl}
     @#
     @if class.auth.isScopesSingular
@@ -41,7 +41,7 @@
       @# Authorize using one of the following scopes:
     @end
     @join scope : class.auth.scopes
-      @#   {@scope}
+      @#   '{@scope}'
     @end
     {@class.serviceVarName}.authorization = nil
   @case "API_KEY"
@@ -74,13 +74,13 @@
 
   @end
   @if class.hasMediaUpload
-    @# TODO: Add desired media content for upload. For more information, see:
+    @# TODO: Add desired media content for upload. For more information, see
     @# https://github.com/google/google-api-ruby-client#basic-usage
     @# https://github.com/google/google-api-ruby-client#media
 
   @end
   @if class.hasMediaDownload
-    @# TODO: Specify destination to download media content, if desired. For more information, see:
+    @# TODO: Specify destination to download media content, if desired. For more information, see
     @# https://github.com/google/google-api-ruby-client#basic-usage
     @# https://github.com/google/google-api-ruby-client#media
 
@@ -100,6 +100,8 @@
         puts String({@class.pageStreaming.resourceKeyVarName} << " => " << JSON.pretty_generate({@class.pageStreaming.resourceValueVarName})
       end
     @else
+      # We don't handle non-repeated page streaming resources separately in Ruby
+      # because the fetch_all treats them correctly.
       {@class.pageStreaming.pageVarName}.each do |{@class.pageStreaming.resourceVarName}|
         @# TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
         puts JSON.pretty_generate({@class.pageStreaming.resourceVarName})

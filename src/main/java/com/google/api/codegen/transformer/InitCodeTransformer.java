@@ -342,7 +342,7 @@ public class InitCodeTransformer {
               Iterables.get(context.getApiConfig().getSingleResourceNameConfigs(), 0);
           FieldConfig anyResourceNameFieldConfig =
               fieldConfig.withResourceNameConfig(singleResourceNameConfig);
-          return createResourceNameInitValueView(context, anyResourceNameFieldConfig, item);
+          return createResourceNameInitValueView(context, anyResourceNameFieldConfig, item).build();
         case FIXED:
           throw new UnsupportedOperationException("entity name invalid");
         case ONEOF:
@@ -352,35 +352,40 @@ public class InitCodeTransformer {
           FieldConfig singleResourceNameFieldConfig =
               fieldConfig.withResourceNameConfig(singleResourceNameConfig);
           ResourceNameInitValueView initView =
-              createResourceNameInitValueView(context, singleResourceNameFieldConfig, item);
+              createResourceNameInitValueView(context, singleResourceNameFieldConfig, item).build();
           return ResourceNameOneofInitValueView.newBuilder()
               .resourceOneofTypeName(
                   namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
               .specificResourceNameView(initView)
               .build();
         case SINGLE:
-          return createResourceNameInitValueView(context, fieldConfig, item);
+          return createResourceNameInitValueView(context, fieldConfig, item).build();
         case NONE:
         default:
           throw new UnsupportedOperationException("unexpected entity name type");
       }
-    } else if (context.getFeatureConfig().enableStringFormatFunctions()
-        && initValueConfig.hasFormattingConfig()) {
-      FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
+    } else if (initValueConfig.hasFormattingConfig()) {
+      if (context.getFeatureConfig().enableStringFormatFunctions()) {
+        FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
 
-      initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
-      initValue.formatFunctionName(
-          context
-              .getNamer()
-              .getFormatFunctionName(
-                  context.getInterface(), initValueConfig.getSingleResourceNameConfig()));
+        initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
+        initValue.formatFunctionName(
+            context
+                .getNamer()
+                .getFormatFunctionName(
+                    context.getInterface(), initValueConfig.getSingleResourceNameConfig()));
 
-      List<String> varList =
-          Lists.newArrayList(
-              initValueConfig.getSingleResourceNameConfig().getNameTemplate().vars());
-      initValue.formatArgs(getFormatFunctionArgs(context, varList, initValueConfig));
+        List<String> varList =
+            Lists.newArrayList(
+                initValueConfig.getSingleResourceNameConfig().getNameTemplate().vars());
+        initValue.formatArgs(getFormatFunctionArgs(context, varList, initValueConfig));
 
-      return initValue.build();
+        return initValue.build();
+      } else {
+        return createResourceNameInitValueView(context, fieldConfig, item)
+            .convertToString(true)
+            .build();
+      }
     } else {
       SimpleInitValueView.Builder initValue = SimpleInitValueView.newBuilder();
 
@@ -414,7 +419,7 @@ public class InitCodeTransformer {
     }
   }
 
-  private ResourceNameInitValueView createResourceNameInitValueView(
+  private ResourceNameInitValueView.Builder createResourceNameInitValueView(
       MethodTransformerContext context, FieldConfig fieldConfig, InitCodeNode item) {
     String resourceName =
         context.getNamer().getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig);
@@ -424,8 +429,7 @@ public class InitCodeTransformer {
 
     return ResourceNameInitValueView.newBuilder()
         .resourceTypeName(resourceName)
-        .formatArgs(getFormatFunctionArgs(context, varList, item.getInitValueConfig()))
-        .build();
+        .formatArgs(getFormatFunctionArgs(context, varList, item.getInitValueConfig()));
   }
 
   private static List<String> getFormatFunctionArgs(
@@ -481,7 +485,6 @@ public class InitCodeTransformer {
 
   private static String getVariableName(MethodTransformerContext context, InitCodeNode item) {
     if (!context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())
-        && context.getFeatureConfig().enableStringFormatFunctions()
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());
     }

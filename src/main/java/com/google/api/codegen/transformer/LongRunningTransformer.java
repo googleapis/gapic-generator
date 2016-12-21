@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -38,6 +39,7 @@ public class LongRunningTransformer {
         .constructorName(namer.getTypeConstructor(clientReturnTypeName))
         .clientReturnTypeName(clientReturnTypeName)
         .operationPayloadTypeName(namer.valueType(operationPayloadTypeName))
+        .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
         .metadataTypeName(namer.valueType(metadataTypeName))
         .implementsDelete(lroConfig.implementsDelete())
         .implementsCancel(lroConfig.implementsCancel())

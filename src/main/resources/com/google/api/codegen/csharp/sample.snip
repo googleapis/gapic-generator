@@ -9,8 +9,8 @@
         // 2. This sample uses Application Default Credentials for authentication.
         //    If not already done, install the gcloud CLI from
         //    https://cloud.google.com/sdk and run
-        //    `gcloud beta auth application-default login`
-        //    For more information, see:
+        //    `gcloud beta auth application-default login`.
+        //    For more information, see
         //    https://developers.google.com/identity/protocols/application-default-credentials
         // 3. Install the C# client library by adding a dependency on the relevant NuGet
         //    package. Libraries published by Google are owned by google-apis-packages:
@@ -82,14 +82,14 @@
 
         @end
         @if class.hasMediaUpload
-            // TODO: Add desired media content for upload. See:
+            // TODO: Add desired media content for upload. See
             // https://developers.google.com/api-client-library/dotnet/guide/media_upload
 
         @end
         {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@argList(class.fieldVarNames)});
 
         @if class.hasMediaDownload
-            // TODO: Download media content if desired. See:
+            // TODO: Download media content if desired. See
             // https://developers.google.com/api-client-library/dotnet/guide/media_download
 
         @end
@@ -105,18 +105,24 @@
                 {
                     continue;
                 }
-                @if class.pageStreaming.isResourceMap
-                    foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
-                    {
-                        // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` element:
-                        Console.WriteLine("[" + {@class.pageStreaming.resourceVarName}.Key + "] = " + {@class.pageStreaming.resourceVarName}.Value);
-                    }
+                @if class.pageStreaming.isResourceRepeated
+                    @if class.pageStreaming.isResourceMap
+                        foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
+                        {
+                            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` element:
+                            Console.WriteLine("[" + {@class.pageStreaming.resourceVarName}.Key + "] = " + {@class.pageStreaming.resourceVarName}.Value);
+                        }
+                    @else
+                        foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
+                        {
+                            // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
+                            Console.WriteLine({@class.pageStreaming.resourceVarName});
+                        }
+                    @end
                 @else
-                    foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
-                    {
-                        // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
-                        Console.WriteLine({@class.pageStreaming.resourceVarName});
-                    }
+                    // TODO: Change code below to process each `response.{@class.pageStreaming.resourceFieldName}` resource:
+                    Console.WriteLine(response.{@class.pageStreaming.resourceFieldName});
+
                 @end
                 @if class.pageStreaming.isResourceSetterInRequestBody
                     {@class.requestBodyVarName}.PageToken = {@class.responseVarName}.NextPageToken;
@@ -155,7 +161,7 @@
                 // Authorize using one of the following scopes:
             @end
             @join scope : class.auth.scopes
-                //     {@scope}
+                //     "{@scope}"
             @end
             return null;
         }

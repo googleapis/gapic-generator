@@ -363,7 +363,7 @@ func ExampleClient_UpdateBookIndex() {
     }
 }
 
-func StreamShelves() {
+func ExampleClient_StreamShelves() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
     if err != nil {
@@ -390,7 +390,7 @@ func StreamShelves() {
     }
 }
 
-func StreamBooks() {
+func ExampleClient_StreamBooks() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
     if err != nil {
@@ -417,7 +417,7 @@ func StreamBooks() {
     }
 }
 
-func DiscussBook() {
+func ExampleClient_DiscussBook() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
     if err != nil {
@@ -494,6 +494,25 @@ func ExampleClient_GetBigBook() {
     }
     // TODO: Use resp.
     _ = resp
+}
+
+func ExampleClient_GetBigNothing() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetBookRequest{
+        // TODO: Fill request struct fields.
+    }
+    op, err := c.GetBigNothing(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    err = op.Wait(ctx)
+    // TODO: Handle error.
 }
 
 

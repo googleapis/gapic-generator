@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.tools.framework.model.ProtoFile;
+
 public interface ResourceNameConfig {
 
   /** Returns the name used as a basis for generating methods. */
@@ -21,4 +23,10 @@ public interface ResourceNameConfig {
 
   /** Returns the resource name type. */
   ResourceNameType getResourceNameType();
+
+  /**
+   * Returns the proto file to which the resource name config has been assigned. This is required to
+   * ensure that a consistent namespace can be calculated for the resource name.
+   */
+  ProtoFile getAssignedProtoFile();
 }

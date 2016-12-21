@@ -33,6 +33,11 @@
 
     @join impl : view.serviceImpls
         type {@impl.name} struct {
+            // Embed for forward compatibility.
+            // Tests will keep working if more methods are added
+            // in the future.
+            {@impl.grpcClassName}
+
             reqs []proto.Message
 
             // If set, all calls return this error.
@@ -273,7 +278,7 @@
         }
         resp, err := stream.Recv()
     @case "ServerStreaming"
-        stream, err := c.{@test.clientMethodName}(context.Background())
+        stream, err := c.{@test.clientMethodName}(context.Background(), request)
         if err != nil {
             t.Fatal(err)
         }
@@ -293,7 +298,11 @@
             if err != nil {
                 t.Fatal(err)
             }
-            resp, err := respLRO.Wait(context.Background())
+            @if test.hasReturnValue
+                resp, err := respLRO.Wait(context.Background())
+            @else
+                err = respLRO.Wait(context.Background())
+            @end
         @case "RequestObjectMethod"
             @if test.hasReturnValue
                 resp, err := c.{@test.clientMethodName}(context.Background(), request)

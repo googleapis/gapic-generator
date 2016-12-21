@@ -171,6 +171,7 @@ public class LibraryServiceSettings extends ClientSettings {
   private final SimpleCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final SimpleCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
   private final OperationCallSettings<GetBookRequest, Book> getBigBookSettings;
+  private final OperationCallSettings<GetBookRequest, Empty> getBigNothingSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -340,6 +341,13 @@ public class LibraryServiceSettings extends ClientSettings {
     return getBigBookSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to getBigNothing.
+   */
+  public OperationCallSettings<GetBookRequest, Empty> getBigNothingSettings() {
+    return getBigNothingSettings;
+  }
+
 
   /**
    * Returns a builder for the default ExecutorProvider for this service.
@@ -438,6 +446,7 @@ public class LibraryServiceSettings extends ClientSettings {
     addTagSettings = settingsBuilder.addTagSettings().build();
     addLabelSettings = settingsBuilder.addLabelSettings().build();
     getBigBookSettings = settingsBuilder.getBigBookSettings().build();
+    getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
   }
 
   private static final PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
@@ -710,6 +719,7 @@ public class LibraryServiceSettings extends ClientSettings {
     private final SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Book> getBigBookSettings;
+    private final OperationCallSettings.Builder<GetBookRequest, Empty> getBigNothingSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -804,6 +814,11 @@ public class LibraryServiceSettings extends ClientSettings {
       getBigBookSettings = OperationCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_GET_BIG_BOOK,
           Book.class);
+
+
+      getBigNothingSettings = OperationCallSettings.newBuilder(
+          LibraryServiceGrpc.METHOD_GET_BIG_NOTHING,
+          Empty.class);
 
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
@@ -922,6 +937,9 @@ public class LibraryServiceSettings extends ClientSettings {
       builder.getBigBookSettings().getInitialCallSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+      builder.getBigNothingSettings().getInitialCallSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       return builder;
     }
@@ -953,6 +971,7 @@ public class LibraryServiceSettings extends ClientSettings {
       addTagSettings = settings.addTagSettings.toBuilder();
       addLabelSettings = settings.addLabelSettings.toBuilder();
       getBigBookSettings = settings.getBigBookSettings.toBuilder();
+      getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           createShelfSettings,
@@ -1168,6 +1187,13 @@ public class LibraryServiceSettings extends ClientSettings {
      */
     public OperationCallSettings.Builder<GetBookRequest, Book> getBigBookSettings() {
       return getBigBookSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getBigNothing.
+     */
+    public OperationCallSettings.Builder<GetBookRequest, Empty> getBigNothingSettings() {
+      return getBigNothingSettings;
     }
 
     @Override

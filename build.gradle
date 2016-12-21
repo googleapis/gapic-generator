@@ -45,7 +45,7 @@ apply plugin: "signing"
 sourceCompatibility = 1.7
 
 group = "com.google.api"
-version = "0.0.5-SNAPSHOT"
+version = "0.0.5"
 
 def protoVersion = "3.0.0-beta-3"
 
@@ -427,7 +427,7 @@ task runConfigGen(type: JavaExec) {
 //   ./gradlew runGrpcMetadataGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runGrpcMetadataGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.metadatagen.GrpcMetadataGeneratorTool'
+  main = 'com.google.api.codegen.grpcmetadatagen.GrpcMetadataGeneratorTool'
   if (project.hasProperty('clargs')) {
     args = clargs.split(',').toList()
   }

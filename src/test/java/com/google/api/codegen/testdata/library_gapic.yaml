@@ -506,11 +506,30 @@ interfaces:
       return_type: google.example.library.v1.Book
       metadata_type: google.example.library.v1.GetBigBookMetadata
       implements_cancel: true
+  - name: GetBigNothing
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+    - name
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
+    timeout_millis: 60000
+    long_running:
+      return_type: google.protobuf.Empty
+      metadata_type: google.example.library.v1.GetBigBookMetadata
+      implements_delete: true
 resource_name_generation:
 - message_name: Book
   field_entity_map:
     name: book
-- message_name: BookFromArchive
+# Test using fully qualified name
+- message_name: google.example.library.v1.BookFromArchive
   field_entity_map:
     name: archived_book
 - message_name: BookFromAnywhere
