@@ -111,9 +111,4 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), suffix));
     return namePath.withHead(publicClassName);
   }
-
-  @Override
-  public String getFullyQualifiedStubType(Interface service) {
-    return getGrpcClientTypeName(service);
-  }
 }

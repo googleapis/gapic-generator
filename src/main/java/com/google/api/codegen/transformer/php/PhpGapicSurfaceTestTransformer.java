@@ -152,7 +152,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
       }
 
       if (methodContext.getMethodConfig().isLongRunningOperation()) {
-        // TODO(michaelbausor): remove once paged methods are supported
+        // TODO(michaelbausor): remove once LRO methods are supported
         continue;
       }
 

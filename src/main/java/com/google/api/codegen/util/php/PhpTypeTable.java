@@ -39,9 +39,6 @@ public class PhpTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    if (fullName.contains("empty")) {
-      throw new IllegalArgumentException("empty");
-    }
     return dynamicTypeTable.getTypeName(fullName);
   }
 
