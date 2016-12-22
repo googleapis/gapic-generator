@@ -110,6 +110,9 @@ public class ApiaryConfigToSampleConfigConverter {
       responseTypeInfo = createTypeInfo(method, false);
     }
 
+    // Heuristic implementation interprets method to be page streaming iff one of the names
+    // "pageToken" or "nextPageToken" occurs among the fields of both the method's response type and
+    // either the method's request (query parameters) or request body.
     boolean isPageStreamingResourceSetterInRequestBody = false;
     String requestPageTokenName = "";
     if (requestBodyType != null) {
@@ -303,47 +306,6 @@ public class ApiaryConfigToSampleConfigConverter {
         .subpackage(typeNameGenerator.getSubpackage(false))
         .fields(fields)
         .build();
-  }
-
-  /**
-   * Returns true if method is page streaming.
-   *
-   * <p>The heuristic implemented checks if one of the names "pageToken" or "nextPageToken" occurs
-   * both among the fields of the method's response type and among either the method's parameters or
-   * the fields of the method's request body.
-   */
-  private boolean isPageStreaming(
-      Method method, Type requestType, boolean isPageStreamingResourceSetterInRequestBody) {
-    if (!hasResponsePageToken(method)) {
-      return false;
-    }
-    if (isPageStreamingResourceSetterInRequestBody) {
-      return true;
-    }
-    Table<Type, String, Field> fields = apiaryConfig.getFields();
-    for (String tokenName : PAGE_TOKEN_NAMES) {
-      if (fields.contains(requestType, tokenName)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private boolean hasResponsePageToken(Method method) {
-    Type responseType = apiaryConfig.getType(method.getResponseTypeUrl());
-    if (responseType == null) {
-      return false;
-    }
-    String fieldName;
-    for (Field field : responseType.getFieldsList()) {
-      fieldName = field.getName();
-      for (String tokenName : PAGE_TOKEN_NAMES) {
-        if (fieldName.equals(tokenName)) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   /**
