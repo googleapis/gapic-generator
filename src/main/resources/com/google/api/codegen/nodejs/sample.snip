@@ -62,11 +62,15 @@
     @end
     @if class.hasRequestBody
       resource: {
-        @if class.methodVerb == "PATCH"
-          // TODO: Add desired properties of the request body. Only added properties
+        @switch class.methodVerb
+        @case "PATCH"
+          // TODO: Add desired properties to the request body. Only these properties
           // will be changed.
-        @else
-          // TODO: Add desired properties of the request body.
+        @case "PUT"
+          // TODO: Add desired properties to the request body. All existing properties
+          // will be replaced.
+        @default
+          // TODO: Add desired properties to the request body.
         @end
       },
 
