@@ -20,9 +20,9 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -35,6 +35,7 @@ import java.util.List;
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
 
   PackageMetadataConfig packageConfig;
+  PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
 
   public PythonPackageMetadataTransformer(PackageMetadataConfig packageConfig) {
     this.packageConfig = packageConfig;
@@ -78,25 +79,10 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     int extensionIndex = template.lastIndexOf(".");
     String outputPath = template.substring(0, extensionIndex);
 
-    return PackageMetadataView.newBuilder()
-        .templateFileName(template)
-        .outputPath(outputPath)
-        .packageVersionBound(packageConfig.packageVersionBound(TargetLanguage.PYTHON))
-        .protoPath(packageConfig.protoPath())
-        .shortName(packageConfig.shortName())
-        .gaxVersionBound(packageConfig.gaxVersionBound(TargetLanguage.PYTHON))
-        .protoVersionBound(packageConfig.protoVersionBound(TargetLanguage.PYTHON))
-        .commonProtosVersionBound(packageConfig.commonProtosVersionBound(TargetLanguage.PYTHON))
-        .packageName(packageConfig.packageName(TargetLanguage.PYTHON))
-        .majorVersion(packageConfig.apiVersion())
-        .author(packageConfig.author())
-        .email(packageConfig.email())
-        .homepage(packageConfig.homepage())
-        .licenseName(packageConfig.licenseName())
-        .fullName(model.getServiceConfig().getTitle())
+    return metadataTransformer
+        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(
             computeNamespacePackages(apiConfig.getPackageName(), packageConfig.apiVersion()))
-        .hasMultipleServices(false)
         .build();
   }
 

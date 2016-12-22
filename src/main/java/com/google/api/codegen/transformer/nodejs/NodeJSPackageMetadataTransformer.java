@@ -19,8 +19,8 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.Iterables;
@@ -33,6 +33,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   private static final String PACKAGE_FILE = "nodejs/package.snip";
 
   PackageMetadataConfig packageConfig;
+  PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
 
   public NodeJSPackageMetadataTransformer(PackageMetadataConfig packageConfig) {
     this.packageConfig = packageConfig;
@@ -57,23 +58,10 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
 
   private ViewModel generateMetadataView(
       Model model, NodeJSPackageMetadataNamer namer, boolean hasMultipleServices) {
-    return PackageMetadataView.newBuilder()
-        .templateFileName(PACKAGE_FILE)
-        .outputPath("package.json")
+    return metadataTransformer
+        .generateMetadataView(
+            packageConfig, model, PACKAGE_FILE, "package.json", TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
-        .packageVersionBound(packageConfig.packageVersionBound(TargetLanguage.NODEJS))
-        .protoPath(packageConfig.protoPath())
-        .shortName(packageConfig.shortName())
-        .gaxVersionBound(packageConfig.gaxVersionBound(TargetLanguage.NODEJS))
-        .protoVersionBound(packageConfig.protoVersionBound(TargetLanguage.NODEJS))
-        .commonProtosVersionBound(packageConfig.commonProtosVersionBound(TargetLanguage.NODEJS))
-        .packageName(packageConfig.packageName(TargetLanguage.NODEJS))
-        .majorVersion(packageConfig.apiVersion())
-        .author(packageConfig.author())
-        .email(packageConfig.email())
-        .homepage(packageConfig.homepage())
-        .licenseName(packageConfig.licenseName())
-        .fullName(model.getServiceConfig().getTitle())
         .hasMultipleServices(hasMultipleServices)
         .build();
   }
