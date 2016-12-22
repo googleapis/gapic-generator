@@ -180,6 +180,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     builder.isResourceMap(fieldInfo.type().isMap());
 
     builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
+    builder.pageTokenName(Name.lowerCamel(methodInfo.requestPageTokenName()).toUpperCamel());
+    builder.nextPageTokenName(Name.lowerCamel(methodInfo.responsePageTokenName()).toUpperCamel());
     return builder.build();
   }
 
