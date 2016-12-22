@@ -47,7 +47,6 @@ use \google\example\library\v1\Shelf;
 use \google\example\library\v1\SomeMessage2\SomeMessage3\Alignment;
 use \google\example\library\v1\UpdateBookIndexRequest;
 use \google\example\library\v1\UpdateBookRequest;
-use \google\longrunning\Operation;
 use \google\protobuf\EmptyC;
 use \google\tagger\v1\AddLabelRequest;
 use \google\tagger\v1\AddLabelResponse;
@@ -817,93 +816,6 @@ class LibraryServiceClientTest extends TestCase
         $this->assertEquals($label, $actualRequestObject->getLabel());
 
         $this->assertEquals($expectedResponse, $response);
-
-        $this->assertTrue($grpcStub->isExhausted());
-    }
-
-    /**
-     * @test
-     */
-    public function getBigBookTest()
-    {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
-
-        $this->assertTrue($grpcStub->isExhausted());
-
-        // Mock response
-        $name2 = "name2-1052831874";
-        $author = "author-1406328437";
-        $title = "title110371416";
-        $read = true;
-        $expectedResponse = new Book();
-        $expectedResponse->setName($name2);
-        $expectedResponse->setAuthor($author);
-        $expectedResponse->setTitle($title);
-        $expectedResponse->setRead($read);
-        $grpcStub->addResponse($expectedResponse);
-
-        // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-
-        $response = $client->getBigBookAsync($formattedName);
-        $actualRequests = $grpcStub->getReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('GetBigBook', explode('/', $actualFuncCall)[2]);
-
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-
-        $this->assertEquals($expectedResponse, $response);
-
-        $this->assertTrue($grpcStub->isExhausted());
-    }
-
-    /**
-     * @test
-     */
-    public function getBigNothingTest()
-    {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
-
-        $this->assertTrue($grpcStub->isExhausted());
-
-        // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-
-        $client->getBigNothingAsync($formattedName);
-        $actualRequests = $grpcStub->getReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('GetBigNothing', explode('/', $actualFuncCall)[2]);
-
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-
 
         $this->assertTrue($grpcStub->isExhausted());
     }

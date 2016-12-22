@@ -151,6 +151,11 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
         continue;
       }
 
+      if (methodContext.getMethodConfig().isLongRunningOperation()) {
+        // TODO(michaelbausor): remove once paged methods are supported
+        continue;
+      }
+
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
