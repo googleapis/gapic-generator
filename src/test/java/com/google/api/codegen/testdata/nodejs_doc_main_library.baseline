@@ -125,7 +125,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
       gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book))
   };
 
-  var operationsClient = new gax.lro({
+  this.operationsClient = new gax.lro({
     auth: gaxGrpc.auth,
     grpc: gaxGrpc.grpc
   }).operationsClient({
@@ -137,13 +137,13 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     appVersion: appVersion
   });
 
-  var longrunningDescriptors = {
+  this.longrunningDescriptors = {
     getBigBook: new gax.LongrunningDescriptor(
-      operationsClient,
+      this.operationsClient,
       grpcClients.google.example.library.v1.Book.decode,
       grpcClients.google.example.library.v1.GetBigBookMetadata.decode),
     getBigNothing: new gax.LongrunningDescriptor(
-      operationsClient,
+      this.operationsClient,
       grpcClients.google.protobuf.Empty.decode,
       grpcClients.google.example.library.v1.GetBigBookMetadata.decode)
   };
@@ -196,7 +196,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
         }
       }),
       defaults[methodName],
-      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || longrunningDescriptors[methodName]);
+      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || self.longrunningDescriptors[methodName]);
   });
 
   var labelerStub = gaxGrpc.createStub(
@@ -216,7 +216,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
         }
       }),
       defaults[methodName],
-      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || longrunningDescriptors[methodName]);
+      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || self.longrunningDescriptors[methodName]);
   });
 }
 

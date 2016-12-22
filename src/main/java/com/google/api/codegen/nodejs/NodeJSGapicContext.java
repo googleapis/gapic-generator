@@ -440,7 +440,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       builder.add("STREAM_DESCRIPTORS");
     }
     if (messages().filterLongrunningMethods(ifaceConfig, methods).iterator().hasNext()) {
-      builder.add("longrunningDescriptors");
+      builder.add("self.longrunningDescriptors");
     }
     return builder.build();
   }
