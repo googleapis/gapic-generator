@@ -13,13 +13,17 @@
 @end
 
 @snippet sampleCode(apiMethod)
-    @switch apiMethod.type.toString
-    @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod)}
-    @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArrayMethodSampleCode(apiMethod)}
-    @default
-        $unhandledCase: {@apiMethod.type.toString}$
+    @if apiMethod.isLongrunningOperation
+        {@longRunningOptionalArrayMethodSampleCode(apiMethod)}
+    @else
+      @switch apiMethod.type.toString
+      @case "OptionalArrayMethod"
+          {@optionalArrayMethodSampleCode(apiMethod)}
+      @case "PagedOptionalArrayMethod"
+          {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+      @default
+          $unhandledCase: {@apiMethod.type.toString}$
+      @end
     @end
 @end
 
@@ -34,6 +38,22 @@
 @private pagedOptionalArrayMethodSampleCode(apiMethod)
     foreach ({@methodCallSampleCode(apiMethod)} as $element) {
         // doThingsWith(element);
+    }
+@end
+
+@private longRunningOptionalArrayMethodSampleCode(apiMethod)
+    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationResponse->pollUntilComplete();
+    if ($operationResponse->operationSucceeded()) {
+      @if apiMethod.hasLongrunningReturnValue
+          $result = $operationResponse->getResult();
+          // doSomethingWith($result)
+      @else
+          // operation succeeded and returns no value
+      @end
+    } else {
+      $error = $operationResponse->getError();
+      // handleError($error)
     }
 @end
 

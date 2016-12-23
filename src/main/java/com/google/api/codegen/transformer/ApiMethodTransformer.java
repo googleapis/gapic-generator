@@ -759,6 +759,10 @@ public class ApiMethodTransformer {
     apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
     apiMethod.isLongrunningOperation(context.getMethodConfig().isLongRunningOperation());
+    apiMethod.hasLongrunningReturnValue(
+        context.getMethodConfig().isLongRunningOperation()
+            && !ServiceMessages.s_isEmptyType(
+                context.getMethodConfig().getLongRunningConfig().getReturnType()));
 
     return apiMethod.build();
   }

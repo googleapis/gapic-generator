@@ -1555,7 +1555,15 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $response = $libraryServiceClient->getBigBook($formattedName);
+     *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+     *     $operationResponse->pollUntilComplete();
+     *     if ($operationResponse->operationSucceeded()) {
+     *       $result = $operationResponse->getResult();
+     *       // doSomethingWith($result)
+     *     } else {
+     *       $error = $operationResponse->getError();
+     *       // handleError($error)
+     *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
      *         $libraryServiceClient->close();
@@ -1602,7 +1610,14 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $response = $libraryServiceClient->getBigNothing($formattedName);
+     *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+     *     $operationResponse->pollUntilComplete();
+     *     if ($operationResponse->operationSucceeded()) {
+     *       // operation succeeded and returns no value
+     *     } else {
+     *       $error = $operationResponse->getError();
+     *       // handleError($error)
+     *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
      *         $libraryServiceClient->close();
