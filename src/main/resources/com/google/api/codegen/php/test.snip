@@ -66,21 +66,13 @@
 @private testCase(test)
     @switch test.grpcStreamingType
     @case "NonStreaming"
-        @switch test.clientMethodType
-        @case "OptionalArrayMethod"
-            {@optionalArrayTestCase(test)}
-        @case "PagedOptionalArrayMethod"
-            $unhandled case: {@test.clientMethodType.toString}$
-            # { @ pagedOptionalArrayTestCase(test)}
-        @default
-            $unhandled case: {@test.clientMethodType.toString}$
-        @end
+        {@nonStreamingOptionalArrayTestCase(test)}
     @default
         $unhandled case: {@test.grpcStreamingType.toString}$
     @end
 @end
 
-@private optionalArrayTestCase(test)
+@private nonStreamingOptionalArrayTestCase(test)
     /**
      * @@test
      */
@@ -105,7 +97,7 @@
             $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         @end
         {@unarySuccessAsserts(test)}
-        
+
         $this->assertTrue($grpcStub->isExhausted());
     }
 @end
@@ -115,7 +107,6 @@
     $this->assertSame(1, count($actualRequests));
     list($actualFuncCall, $actualRequestObject) = $actualRequests[0]; 
     $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
-
     @join assert : test.asserts
         @if assert.hasExpectedValueTransformFunction
             $this->assertEquals({@assert.expectedValueTransformFunction}(\
@@ -127,7 +118,27 @@
         @end
     @end
     
+    @switch test.clientMethodType
+    @case "OptionalArrayMethod"
+        {@optionalArraySuccessAsserts(test)}
+    @case "PagedOptionalArrayMethod"
+        {@pagedOptionalArrayuccessAsserts(test)}
+    @default
+        $unhandled case: {@test.clientMethodType.toString}$
+    @end
+@end
+
+@private optionalArraySuccessAsserts(test)
     @if test.hasReturnValue
         $this->assertEquals($expectedResponse, $response);
+    @end
+@end
+
+@private pagedOptionalArrayuccessAsserts(test)
+    $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+    @join pageStreamingResponseView : test.pageStreamingResponseViews
+        ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
+        $this->assertEquals(1, count(${@pageStreamingResponseView.resourcesVarName}));
+        $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
     @end
 @end
