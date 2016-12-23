@@ -58,6 +58,7 @@ use \google\example\library\v1\Shelf;
 use \google\example\library\v1\SomeMessage2\SomeMessage3\Alignment;
 use \google\example\library\v1\UpdateBookIndexRequest;
 use \google\example\library\v1\UpdateBookRequest;
+use \google\longrunning\Operation;
 use \google\protobuf\EmptyC;
 use \google\tagger\v1\AddLabelRequest;
 use \google\tagger\v1\AddLabelResponse;
@@ -790,6 +791,74 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($label, $actualRequestObject->getLabel());
 
         $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBigBookTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new Book();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $anyResponse = new Any();
+        $anyResponse->setValue($expectedResponse->serialize());
+        $operation = new Operation();
+        $operation->setName('operations/getBigBookTest')->setDone(true)->setResponse($anyResponse);
+        $grpcStub->addResponse($operation);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        $response = $client->getBigBook($formattedName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('GetBigBook', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertTrue($response->isDone());
+        $this->assertEquals($expectedResponse, $response->getResult());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBigNothingTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        $client->getBigNothing($formattedName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('GetBigNothing', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertTrue($response->isDone());
+        $this->assertEquals($expectedResponse, $response->getResult());
 
         $this->assertTrue($grpcStub->isExhausted());
     }

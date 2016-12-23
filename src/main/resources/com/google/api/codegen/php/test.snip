@@ -62,13 +62,7 @@
         list($grpcStub, $client) = $this->createStubAndClient([$this, 'create{@test.mockGrpcStubTypeName}'], '{@test.createStubFunctionName}');
 
         $this->assertTrue($grpcStub->isExhausted());
-
-        @if test.hasReturnValue
-            // Mock response
-            {@initCode(test.mockResponse.initCode)}
-            $grpcStub->addResponse($expectedResponse);
-
-        @end
+        {@mockResponse(test)}
         @if test.hasRequestParameters
           // Mock request
           {@initCode(test.initCode)}
@@ -104,25 +98,55 @@
     
     @switch test.clientMethodType
     @case "OptionalArrayMethod"
-        {@optionalArraySuccessAsserts(test)}
+        {@successAsserts(test)}
     @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArraySuccessAsserts(test)}
+        {@pagedSuccessAsserts(test)}
+    @case "OperationOptionalArrayMethod"
+        {@operationSuccessAsserts(test)}
     @default
         $unhandled case: {@test.clientMethodType.toString}$
     @end
 @end
 
-@private optionalArraySuccessAsserts(test)
+@private mockResponse(test)
+    @if test.hasReturnValue
+
+        // Mock response
+        {@initCode(test.mockResponse.initCode)}
+        @switch test.clientMethodType
+        @case "OptionalArrayMethod"
+            $grpcStub->addResponse($expectedResponse);
+        @case "PagedOptionalArrayMethod"
+            $grpcStub->addResponse($expectedResponse);
+        @case "OperationOptionalArrayMethod"
+            $anyResponse = new Any();
+            $anyResponse->setValue($expectedResponse->serialize());
+            $operation = new Operation();
+            $operation->setName('operations/{@test.name}')->setDone(true)->setResponse($anyResponse);
+            $grpcStub->addResponse($operation);
+        @default
+            $unhandled case: {@test.clientMethodType.toString}$
+        @end
+
+    @end
+@end
+
+@private successAsserts(test)
     @if test.hasReturnValue
         $this->assertEquals($expectedResponse, $response);
     @end
 @end
 
-@private pagedOptionalArraySuccessAsserts(test)
+@private pagedSuccessAsserts(test)
     $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
     @join pageStreamingResponseView : test.pageStreamingResponseViews
         ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
         $this->assertSame(1, count(${@pageStreamingResponseView.resourcesVarName}));
         $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
     @end
+@end
+
+@private operationSuccessAsserts(test)
+    $this->assertTrue($response->isDone());
+    $this->assertEquals($expectedResponse, $response->getResult());
 @end
