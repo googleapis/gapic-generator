@@ -57,6 +57,8 @@ import java.util.List;
 
 
 /** A subclass of ModelToViewTransformer which translates model into API tests in Ruby. */
+// TODO(jcanizales): Much of this implementation is necessarily duplicated from the Java one, even
+// for things not used in Ruby tests. Find a way to remove the redundancy.
 public class RubyTestsTransformer implements ModelToViewTransformer {
   // Template files
   private static String UNIT_TEST_TEMPLATE_FILE = "ruby/test.snip";
