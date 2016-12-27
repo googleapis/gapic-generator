@@ -16,8 +16,8 @@
         {
             {@setupMethods(testClass)}
             @join test : testClass.testCases
-              {@testCase(test)}
-      
+                {@testCase(test)}
+
             @end
         }
     @end
@@ -26,14 +26,14 @@
 @private renderFileHeader(fileHeader)
     <?php
     {@license(fileHeader)}
-  
+
     /*
      * GENERATED CODE WARNING
      * This file was automatically generated - do not edit!
      */
-  
+
     namespace {@fileHeader.packageName};
-  
+
     {@importList(fileHeader.imports)}
 @end
 
@@ -115,15 +115,15 @@
     $this->assertSame(1, count($actualRequests));
     list($actualFuncCall, $actualRequestObject) = $actualRequests[0]; 
     $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
-  
+
     @join assert : test.asserts
         @if assert.hasExpectedValueTransformFunction
             $this->assertEquals({@assert.expectedValueTransformFunction}(\
-              ${@assert.expectedValueIdentifier}), \
-              $actualRequestObject->{@assert.actualValueGetter}());
+                ${@assert.expectedValueIdentifier}), \
+                $actualRequestObject->{@assert.actualValueGetter}());
         @else
             $this->assertEquals(${@assert.expectedValueIdentifier}, \
-              $actualRequestObject->{@assert.actualValueGetter}());
+                $actualRequestObject->{@assert.actualValueGetter}());
         @end
     @end
     

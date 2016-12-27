@@ -19,23 +19,23 @@
 @end
 
 @private renderFileHeader(xapiClass)
-  <?php
-  {@license(xapiClass.fileHeader)}
+    <?php
+    {@license(xapiClass.fileHeader)}
 
-  /*
-   * GENERATED CODE WARNING
-   * This file was generated from the file
-   * https://github.com/google/googleapis/blob/master/{@xapiClass.protoFilename}
-   * and updates to that file get reflected here through a refresh process.
-   *
-   * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
-   * more frequently than those which have been declared beta or 1.0, including changes which break
-   * backwards compatibility.
-   */
+    /*
+     * GENERATED CODE WARNING
+     * This file was generated from the file
+     * https://github.com/google/googleapis/blob/master/{@xapiClass.protoFilename}
+     * and updates to that file get reflected here through a refresh process.
+     *
+     * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
+     * more frequently than those which have been declared beta or 1.0, including changes which break
+     * backwards compatibility.
+     */
 
-  namespace {@xapiClass.fileHeader.packageName};
+    namespace {@xapiClass.fileHeader.packageName};
 
-  {@importList(xapiClass.fileHeader.imports)}
+    {@importList(xapiClass.fileHeader.imports)}
 @end
 
 @private serviceDoc(xapiClass)
@@ -140,7 +140,7 @@
      * a {@function.entityName} resource.
      */
     public static function {@function.name}(\
-          {@formatResourceFunctionParams(function.resourceIdParams)})
+            {@formatResourceFunctionParams(function.resourceIdParams)})
     {
         return self::{@function.pathTemplateGetterName}()->render([
             {@pathTemplateArgs(function.resourceIdParams)},
@@ -290,12 +290,12 @@
     {
         @if xapiClass.missingDefaultServiceAddress
             if (!array_key_exists('serviceAddress', $options)) {
-              throw new ValidationException("The 'serviceAddress' option must be provided.");
+                throw new ValidationException("The 'serviceAddress' option must be provided.");
             }
         @end
         @if xapiClass.missingDefaultServiceScopes
             if (!array_key_exists('scopes', $options)) {
-              throw new ValidationException("The 'scopes' option must be provided.");
+                throw new ValidationException("The 'scopes' option must be provided.");
             }
         @end
         $defaultOptions = [
@@ -344,10 +344,10 @@
             $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
         }
         @if xapiClass.hasLongRunningOperations
-          $longRunningDescriptors = self::getLongRunningDescriptors();
-          foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
-              $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
-          }
+            $longRunningDescriptors = self::getLongRunningDescriptors();
+            foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
+                $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
+            }
         @end
 
         $clientConfigJsonString = file_get_contents(__DIR__ . '/{@xapiClass.clientConfigPath}');
