@@ -5,36 +5,36 @@
     {@renderFileHeader(apiTest.fileHeader)}
 
     @join serviceImpl : apiTest.serviceImpls
-      class {@serviceImpl.name} extends {@serviceImpl.grpcClassName}
-      {
-          use MockStubTrait;
-      }
+        class {@serviceImpl.name} extends {@serviceImpl.grpcClassName}
+        {
+            use MockStubTrait;
+        }
     @end
 
     @join testClass : apiTest.testClasses
-      class {@testClass.name} extends TestCase
-      {
-          {@setupMethods(testClass)}
-          @join test : testClass.testCases
-            {@testCase(test)}
-    
-          @end
-      }
+        class {@testClass.name} extends TestCase
+        {
+            {@setupMethods(testClass)}
+            @join test : testClass.testCases
+              {@testCase(test)}
+      
+            @end
+        }
     @end
 @end
 
 @private renderFileHeader(fileHeader)
-  <?php
-  {@license(fileHeader)}
-
-  /*
-   * GENERATED CODE WARNING
-   * This file was automatically generated - do not edit!
-   */
-
-  namespace {@fileHeader.packageName};
-
-  {@importList(fileHeader.imports)}
+    <?php
+    {@license(fileHeader)}
+  
+    /*
+     * GENERATED CODE WARNING
+     * This file was automatically generated - do not edit!
+     */
+  
+    namespace {@fileHeader.packageName};
+  
+    {@importList(fileHeader.imports)}
 @end
 
 @private setupMethods(testClass)
@@ -64,20 +64,20 @@
 @end
 
 @private testCase(test)
-  @switch test.grpcStreamingType
-  @case "NonStreaming"
-    @switch test.clientMethodType
-    @case "OptionalArrayMethod"
-      {@optionalArrayTestCase(test)}
-    @case "PagedOptionalArrayMethod"
-      $unhandled case: {@test.clientMethodType.toString}$
-      # { @ pagedOptionalArrayTestCase(test)}
+    @switch test.grpcStreamingType
+    @case "NonStreaming"
+        @switch test.clientMethodType
+        @case "OptionalArrayMethod"
+            {@optionalArrayTestCase(test)}
+        @case "PagedOptionalArrayMethod"
+            $unhandled case: {@test.clientMethodType.toString}$
+            # { @ pagedOptionalArrayTestCase(test)}
+        @default
+            $unhandled case: {@test.clientMethodType.toString}$
+        @end
     @default
-      $unhandled case: {@test.clientMethodType.toString}$
+        $unhandled case: {@test.grpcStreamingType.toString}$
     @end
-  @default
-    $unhandled case: {@test.grpcStreamingType.toString}$
-  @end
 @end
 
 @private optionalArrayTestCase(test)
@@ -91,18 +91,18 @@
         $this->assertTrue($grpcStub->isExhausted());
 
         @if test.hasReturnValue
-          // Mock response
-          {@initCode(test.mockResponse.initCode)}
-          $grpcStub->addResponse($expectedResponse);
+            // Mock response
+            {@initCode(test.mockResponse.initCode)}
+            $grpcStub->addResponse($expectedResponse);
 
         @end
         // Mock request
         {@initCode(test.initCode)}
 
         @if test.hasReturnValue
-          $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         @else
-          $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         @end
         {@unarySuccessAsserts(test)}
         
@@ -111,23 +111,23 @@
 @end
 
 @private unarySuccessAsserts(test)
-  $actualRequests = $grpcStub->getReceivedCalls();
-  $this->assertSame(1, count($actualRequests));
-  list($actualFuncCall, $actualRequestObject) = $actualRequests[0]; 
-  $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
-
-  @join assert : test.asserts
-    @if assert.hasExpectedValueTransformFunction
-      $this->assertEquals({@assert.expectedValueTransformFunction}(\
-        ${@assert.expectedValueIdentifier}), \
-        $actualRequestObject->{@assert.actualValueGetter}());
-    @else
-      $this->assertEquals(${@assert.expectedValueIdentifier}, \
-        $actualRequestObject->{@assert.actualValueGetter}());
-    @end
-  @end
+    $actualRequests = $grpcStub->getReceivedCalls();
+    $this->assertSame(1, count($actualRequests));
+    list($actualFuncCall, $actualRequestObject) = $actualRequests[0]; 
+    $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
   
-  @if test.hasReturnValue
-    $this->assertEquals($expectedResponse, $response);
-  @end
+    @join assert : test.asserts
+        @if assert.hasExpectedValueTransformFunction
+            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+              ${@assert.expectedValueIdentifier}), \
+              $actualRequestObject->{@assert.actualValueGetter}());
+        @else
+            $this->assertEquals(${@assert.expectedValueIdentifier}, \
+              $actualRequestObject->{@assert.actualValueGetter}());
+        @end
+    @end
+    
+    @if test.hasReturnValue
+        $this->assertEquals($expectedResponse, $response);
+    @end
 @end

@@ -76,10 +76,10 @@
 
 @private constants(xapiClass)
     @if xapiClass.hasDefaultServiceAddress
-      /**
-       * The default address of the service.
-       */
-      const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
+        /**
+         * The default address of the service.
+         */
+        const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
     @end
 
     /**
@@ -113,7 +113,7 @@
     private $defaultCallSettings;
     private $descriptors;
     @if xapiClass.hasLongRunningOperations
-      private $operationsClient;
+        private $operationsClient;
     @end
     {@""}
 @end
@@ -214,27 +214,27 @@
 
 @private longRunningDescriptorFunction(xapiClass)
     @if xapiClass.hasLongRunningOperations
-      private static function getLongRunningDescriptors()
-      {
-          return [
-              @join descriptor : xapiClass.longRunningDescriptors
-                  '{@descriptor.methodName}' => [
-                      'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
-                      'metadataReturnType' => '{@descriptor.metadataTypeName}',
-                  ],
-              @end
-          ];
-      }
-      {@""}
+        private static function getLongRunningDescriptors()
+        {
+            return [
+                @join descriptor : xapiClass.longRunningDescriptors
+                    '{@descriptor.methodName}' => [
+                        'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
+                        'metadataReturnType' => '{@descriptor.metadataTypeName}',
+                    ],
+                @end
+            ];
+        }
+        {@""}
     @end
 @end
 
 @private functions(xapiClass)
     @if xapiClass.hasLongRunningOperations
-      public function getOperationsClient()
-      {
-          return $this->operationsClient;
-      }
+        public function getOperationsClient()
+        {
+            return $this->operationsClient;
+        }
     @end
     {@""}
 @end
@@ -289,26 +289,26 @@
     public function __construct($options = [])
     {
         @if xapiClass.missingDefaultServiceAddress
-          if (!array_key_exists('serviceAddress', $options)) {
-            throw new ValidationException("The 'serviceAddress' option must be provided.");
-          }
+            if (!array_key_exists('serviceAddress', $options)) {
+              throw new ValidationException("The 'serviceAddress' option must be provided.");
+            }
         @end
         @if xapiClass.missingDefaultServiceScopes
-          if (!array_key_exists('scopes', $options)) {
-            throw new ValidationException("The 'scopes' option must be provided.");
-          }
+            if (!array_key_exists('scopes', $options)) {
+              throw new ValidationException("The 'scopes' option must be provided.");
+            }
         @end
         $defaultOptions = [
             @if xapiClass.hasDefaultServiceAddress
-              'serviceAddress' => self::SERVICE_ADDRESS,
+                'serviceAddress' => self::SERVICE_ADDRESS,
             @end
             'port' => self::DEFAULT_SERVICE_PORT,
             @if xapiClass.hasDefaultServiceScopes
-              'scopes' => [
-                  @join scope : {@xapiClass.authScopes}
-                      '{@scope}',
-                  @end
-              ],
+                'scopes' => [
+                    @join scope : {@xapiClass.authScopes}
+                        '{@scope}',
+                    @end
+                ],
             @end
             'retryingOverride' => null,
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
