@@ -2,12 +2,7 @@
 @extends "php/method_sample.snip"
 
 @snippet generate(apiTest)
-    <?php
-    {@licenseSection()}
-
-    namespace {@apiTest.fileHeader.packageName};
-
-    {@importList(apiTest.fileHeader.imports)}
+    {@renderFileHeader(apiTest.fileHeader)}
 
     @join serviceImpl : apiTest.serviceImpls
       class {@serviceImpl.name} extends {@serviceImpl.grpcClassName}
@@ -26,6 +21,20 @@
           @end
       }
     @end
+@end
+
+@private renderFileHeader(fileHeader)
+  <?php
+  {@license(fileHeader)}
+
+  /*
+   * GENERATED CODE WARNING
+   * This file was automatically generated - do not edit!
+   */
+
+  namespace {@fileHeader.packageName};
+
+  {@importList(fileHeader.imports)}
 @end
 
 @private setupMethods(testClass)
