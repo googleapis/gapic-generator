@@ -1,4 +1,3 @@
-
 @snippet argList(args)
     @join arg : args on ", "
         {@arg}
@@ -24,4 +23,17 @@
    * GENERATED CODE WARNING
    * This file was automatically generated - do not edit!
    */
+@end
+
+@snippet importList(imports)
+  @join import : imports
+    @switch import.type
+    @case "SimpleImport"
+      use {@import.fullName};
+    @case "AliasedImport"
+      use {@import.fullName} as {@import.nickname};
+    @default
+      $unhandledCase: {@import.type.toString}$
+    @end
+  @end
 @end

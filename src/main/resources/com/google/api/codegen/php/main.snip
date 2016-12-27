@@ -7,16 +7,7 @@
 
     namespace {@xapiClass.packageName};
 
-    @join import : xapiClass.imports
-        @switch import.type
-        @case "SimpleImport"
-          use {@import.fullName};
-        @case "AliasedImport"
-          use {@import.fullName} as {@import.nickname};
-        @default
-          $unhandledCase: {@import.type.toString}$
-        @end
-    @end
+    {@importList(xapiClass.imports)}
 
     {@serviceDoc(xapiClass)}
     class {@xapiClass.name}

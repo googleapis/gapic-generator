@@ -56,34 +56,46 @@ use \google\tagger\v1\LabelerGrpcClient;
 
 class MockLibraryServiceImpl extends LibraryServiceGrpcClient
 {
-  use MockStubTrait;
+    use MockStubTrait;
 }
 class MockLabelerImpl extends LabelerGrpcClient
 {
-  use MockStubTrait;
+    use MockStubTrait;
 }
 
 class LibraryServiceClientTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function createShelfTest()
+    public function createMockLibraryServiceImpl($hostname, $opts)
+    {
+        return new MockLibraryServiceImpl($hostname, $opts);
+    }
+
+    public function createMockLabelerImpl($hostname, $opts)
+    {
+        return new MockLabelerImpl($hostname, $opts);
+    }
+
+    private function createStubAndClient($createGrpcStub, $createStubArg)
     {
         $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
         $grpcStub = $grpcCredentialsHelper->createStub(
             $createGrpcStub,
             LibraryServiceClient::SERVICE_ADDRESS,
             LibraryServiceClient::DEFAULT_SERVICE_PORT
         );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
+        $client = new LibraryServiceClient([$createStubArg =>
             function ($hostname, $opts) use ($grpcStub) {
                 return $grpcStub;
             },
         ]);
+        return [$grpcStub, $client];
+    }
+    /**
+     * @test
+     */
+    public function createShelfTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -118,20 +130,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function getShelfTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -168,20 +167,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function deleteShelfTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -205,20 +191,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function mergeShelvesTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -255,20 +228,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function createBookTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -307,20 +267,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function publishSeriesTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -356,20 +303,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function getBookTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -406,20 +340,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function deleteBookTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -443,20 +364,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function updateBookTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -495,20 +403,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function moveBookTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -547,20 +442,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function addCommentsTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -593,20 +475,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function getBookFromArchiveTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -643,20 +512,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function getBookFromAnywhereTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -695,20 +551,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function updateBookIndexTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -737,20 +580,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function addTagTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLibraryServiceImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLibraryServiceStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -781,20 +611,7 @@ class LibraryServiceClientTest extends TestCase
      */
     public function addLabelTest()
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $createGrpcStub = function ($hostname, $opts) {
-            return new MockLabelerImpl($hostname, $opts);
-        };
-        $grpcStub = $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
-        $client = new LibraryServiceClient(['createLabelerStubFunction' =>
-            function ($hostname, $opts) use ($grpcStub) {
-                return $grpcStub;
-            },
-        ]);
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLabelerImpl'], 'createLabelerStubFunction');
 
         $this->assertTrue($grpcStub->isExhausted());
 
