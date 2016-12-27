@@ -166,11 +166,6 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  @Override
   public String getApiSnippetsClassName(Interface interfaze) {
     return publicClassName(
         Name.upperCamel("Generated", interfaze.getSimpleName(), "ClientSnippets"));
@@ -341,11 +336,6 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return publicClassName(Name.upperCamel(service.getSimpleName()))
         + "."
         + publicClassName(Name.upperCamel(service.getSimpleName(), "Client"));
-  }
-
-  @Override
-  public String getApiWrapperVariableName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override

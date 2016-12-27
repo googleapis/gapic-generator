@@ -79,6 +79,7 @@ public class CSharpCommonTransformer {
         .elementTypeName("")
         .typeName(typeName)
         .setCallName("")
+        .addCallName("")
         .isMap(false)
         .isArray(false)
         .defaultValue(defaultValue)

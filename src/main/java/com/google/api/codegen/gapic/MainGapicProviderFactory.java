@@ -40,6 +40,7 @@ import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
+import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
@@ -271,6 +272,17 @@ public class MainGapicProviderFactory
                 .build();
         providers.add(provider);
         providers.add(clientConfigProvider);
+      }
+
+      if (generatorConfig.enableTestGenerator()) {
+        GapicProvider<? extends Object> testProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new PhpGapicSurfaceTestTransformer())
+                .build();
+        providers.add(testProvider);
       }
 
     } else if (id.equals(PYTHON) || id.equals(PYTHON_DOC)) {
