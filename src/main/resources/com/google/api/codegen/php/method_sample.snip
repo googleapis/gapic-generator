@@ -14,20 +14,20 @@
 
 @snippet sampleCode(apiMethod)
     @if apiMethod.isLongrunningOperation
-        {@longRunningOptionalArrayMethodSampleCode(apiMethod)}
+        {@longRunningMethodSampleCode(apiMethod)}
     @else
       @switch apiMethod.type.toString
       @case "OptionalArrayMethod"
-          {@optionalArrayMethodSampleCode(apiMethod)}
+          {@methodSampleCode(apiMethod)}
       @case "PagedOptionalArrayMethod"
-          {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+          {@pagedMethodSampleCode(apiMethod)}
       @default
           $unhandledCase: {@apiMethod.type.toString}$
       @end
     @end
 @end
 
-@private optionalArrayMethodSampleCode(apiMethod)
+@private methodSampleCode(apiMethod)
     @if apiMethod.hasReturnValue
         $response = {@methodCallSampleCode(apiMethod)};
     @else
@@ -35,13 +35,13 @@
     @end
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod)
+@private pagedMethodSampleCode(apiMethod)
     foreach ({@methodCallSampleCode(apiMethod)} as $element) {
         // doThingsWith(element);
     }
 @end
 
-@private longRunningOptionalArrayMethodSampleCode(apiMethod)
+@private longRunningMethodSampleCode(apiMethod)
     $operationResponse = {@methodCallSampleCode(apiMethod)};
     $operationResponse->pollUntilComplete();
     if ($operationResponse->operationSucceeded()) {
