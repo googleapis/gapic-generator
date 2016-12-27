@@ -109,7 +109,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
                   namer.getNotImplementedString(
                       "PhpGapicSurfaceTestTransformer.generateTestView - apiSettingsClassName"))
               .apiClassName(namer.getApiWrapperClassName(service))
-              .name(namer.getApiWrapperClassName(service) + "Test")
+              .name(namer.getUnitTestClassName(service))
               .testCases(createTestCaseViews(context))
               .mockServices(mockServiceList)
               .build());
