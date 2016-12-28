@@ -566,8 +566,18 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *
-     *     foreach ($libraryServiceClient->listShelves() as $element) {
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listShelves();
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doThingsWith(element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->listShelves(['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doThingsWith(element);
+     *         }
      *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
@@ -882,8 +892,18 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
-     *     foreach ($libraryServiceClient->listBooks($formattedName) as $element) {
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doThingsWith(element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doThingsWith(element);
+     *         }
      *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
@@ -1106,8 +1126,18 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *
-     *     foreach ($libraryServiceClient->listStrings() as $element) {
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listStrings();
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doThingsWith(element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->listStrings(['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doThingsWith(element);
+     *         }
      *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
@@ -1383,8 +1413,18 @@ class LibraryServiceClient
      *     $namesElement = "";
      *     $names = [$namesElement];
      *     $shelves = [];
-     *     foreach ($libraryServiceClient->findRelatedBooks($names, $shelves) as $element) {
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doThingsWith(element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves, ['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doThingsWith(element);
+     *         }
      *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
