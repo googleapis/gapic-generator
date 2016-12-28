@@ -88,9 +88,11 @@
             $grpcStub->addResponse($expectedResponse);
 
         @end
-        // Mock request
-        {@initCode(test.initCode)}
+        @if test.hasRequestParameters
+          // Mock request
+          {@initCode(test.initCode)}
 
+        @end
         @if test.hasReturnValue
             $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         @else
@@ -105,8 +107,9 @@
 @private unarySuccessAsserts(test)
     $actualRequests = $grpcStub->getReceivedCalls();
     $this->assertSame(1, count($actualRequests));
-    list($actualFuncCall, $actualRequestObject) = $actualRequests[0]; 
+    list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
     $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
+
     @join assert : test.asserts
         @if assert.hasExpectedValueTransformFunction
             $this->assertEquals({@assert.expectedValueTransformFunction}(\
@@ -122,7 +125,7 @@
     @case "OptionalArrayMethod"
         {@optionalArraySuccessAsserts(test)}
     @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArrayuccessAsserts(test)}
+        {@pagedOptionalArraySuccessAsserts(test)}
     @default
         $unhandled case: {@test.clientMethodType.toString}$
     @end
@@ -134,7 +137,7 @@
     @end
 @end
 
-@private pagedOptionalArrayuccessAsserts(test)
+@private pagedOptionalArraySuccessAsserts(test)
     $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
     @join pageStreamingResponseView : test.pageStreamingResponseViews
         ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
