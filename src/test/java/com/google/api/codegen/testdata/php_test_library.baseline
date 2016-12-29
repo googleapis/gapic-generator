@@ -201,7 +201,7 @@ class LibraryServiceTest extends TestCase
 
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertEquals(1, count($resources));
+        $this->assertSame(1, count($resources));
         $this->assertEquals($expectedResponse->getShelvesList()[0], $resources[0]);
 
         $this->assertTrue($grpcStub->isExhausted());
@@ -413,7 +413,7 @@ class LibraryServiceTest extends TestCase
 
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertEquals(1, count($resources));
+        $this->assertSame(1, count($resources));
         $this->assertEquals($expectedResponse->getBooksList()[0], $resources[0]);
 
         $this->assertTrue($grpcStub->isExhausted());
@@ -550,7 +550,7 @@ class LibraryServiceTest extends TestCase
 
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertEquals(1, count($resources));
+        $this->assertSame(1, count($resources));
         $this->assertEquals($expectedResponse->getStringsList()[0], $resources[0]);
 
         $this->assertTrue($grpcStub->isExhausted());
@@ -730,7 +730,7 @@ class LibraryServiceTest extends TestCase
 
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertEquals(1, count($resources));
+        $this->assertSame(1, count($resources));
         $this->assertEquals($expectedResponse->getNamesList()[0], $resources[0]);
 
         $this->assertTrue($grpcStub->isExhausted());

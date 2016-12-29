@@ -141,7 +141,7 @@
     $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
     @join pageStreamingResponseView : test.pageStreamingResponseViews
         ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
-        $this->assertEquals(1, count(${@pageStreamingResponseView.resourcesVarName}));
+        $this->assertSame(1, count(${@pageStreamingResponseView.resourcesVarName}));
         $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
     @end
 @end
