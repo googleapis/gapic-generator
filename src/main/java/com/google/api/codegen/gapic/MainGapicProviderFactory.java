@@ -25,7 +25,6 @@ import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.py.PythonGapicContext;
-import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -41,6 +40,7 @@ import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransform
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
+import com.google.api.codegen.transformer.py.PythonGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
@@ -275,33 +275,15 @@ public class MainGapicProviderFactory
 
     } else if (id.equals(PYTHON) || id.equals(PYTHON_DOC)) {
       if (generatorConfig.enableSurfaceGenerator()) {
+        GapicProvider<?> mainProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new PythonGapicSurfaceTransformer())
+                .build();
         GapicCodePathMapper pythonPathMapper =
             CommonGapicCodePathMapper.newBuilder().setShouldAppendPackage(true).build();
-        GapicProvider<? extends Object> mainProvider =
-            CommonGapicProvider.<Interface>newBuilder()
-                .setModel(model)
-                .setView(new InterfaceView())
-                .setContext(new PythonGapicContext(model, apiConfig))
-                .setSnippetSetRunner(
-                    new PythonSnippetSetRunner<>(
-                        new PythonInterfaceInitializer(apiConfig),
-                        SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                .setSnippetFileNames(Arrays.asList("py/main.snip"))
-                .setCodePathMapper(pythonPathMapper)
-                .build();
-        // Note: enumProvider implementation doesn't care about the InputElementT view.
-        GapicProvider<? extends Object> enumProvider =
-            CommonGapicProvider.<Interface>newBuilder()
-                .setModel(model)
-                .setView(new InterfaceView())
-                .setContext(new PythonGapicContext(model, apiConfig))
-                .setSnippetSetRunner(
-                    new PythonSnippetSetRunner<Interface>(
-                        new PythonInterfaceInitializer(apiConfig),
-                        SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                .setSnippetFileNames(Arrays.asList("py/enum.snip"))
-                .setCodePathMapper(pythonPathMapper)
-                .build();
         GapicProvider<? extends Object> clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
@@ -316,7 +298,6 @@ public class MainGapicProviderFactory
 
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
-        providers.add(enumProvider);
 
         if (id.equals(PYTHON_DOC)) {
           GapicProvider<? extends Object> messageProvider =

@@ -18,12 +18,19 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 /**
  * CommonSnippetSetRunner takes the view model as input and then uses the Snippet Set templating
  * engine to generate an output document.
  */
 public class CommonSnippetSetRunner {
+
+  /** This is only for ViewModels in the process of migrating to MVVM. */
+  @Deprecated
+  public static interface TransitionViewModel {
+    Map<String, ?> snippetGlobals();
+  }
 
   private Object utilObject;
 
@@ -32,12 +39,18 @@ public class CommonSnippetSetRunner {
   }
 
   public Doc generate(ViewModel input) {
+    ImmutableMap.Builder<String, Object> globalsBuilder = ImmutableMap.builder();
+    if (input instanceof TransitionViewModel) {
+      globalsBuilder.putAll(((TransitionViewModel) input).snippetGlobals());
+    }
+    globalsBuilder.put("util", utilObject);
+
     SurfaceSnippetSet snippets =
         SnippetSet.createSnippetInterface(
             SurfaceSnippetSet.class,
             input.resourceRoot(),
             input.templateFileName(),
-            ImmutableMap.<String, Object>of("util", utilObject));
+            globalsBuilder.build());
 
     return snippets.generate(input);
   }
