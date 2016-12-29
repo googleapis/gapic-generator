@@ -80,6 +80,9 @@ public class TestCaseTransformer {
       responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
     }
 
+    InitCodeView initCode = initCodeTransformer.generateInitCode(methodContext, initCodeContext);
+
+    boolean hasRequestParameters = initCode.lines().size() > 0;
     boolean hasReturnValue = !ServiceMessages.s_isEmptyType(method.getOutputType());
     if (methodConfig.isLongRunningOperation()) {
       hasReturnValue =
@@ -90,8 +93,9 @@ public class TestCaseTransformer {
         .asserts(initCodeTransformer.generateRequestAssertViews(methodContext, initCodeContext))
         .clientMethodType(clientMethodType)
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
+        .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
-        .initCode(initCodeTransformer.generateInitCode(methodContext, initCodeContext))
+        .initCode(initCode)
         .mockResponse(createMockResponseView(methodContext, initCodeContext.symbolTable()))
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .name(namer.getTestCaseName(testNameTable, method))

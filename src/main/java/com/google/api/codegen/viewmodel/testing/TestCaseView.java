@@ -47,6 +47,8 @@ public abstract class TestCaseView {
 
   public abstract String mockServiceVarName();
 
+  public abstract boolean hasRequestParameters();
+
   public abstract boolean hasReturnValue();
 
   public abstract GrpcStreamingType grpcStreamingType();
@@ -87,6 +89,8 @@ public abstract class TestCaseView {
     public abstract Builder responseTypeName(String val);
 
     public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
+
+    public abstract Builder hasRequestParameters(boolean val);
 
     public abstract Builder hasReturnValue(boolean val);
 
