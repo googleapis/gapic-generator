@@ -2,21 +2,7 @@
 @extends "php/method_sample.snip"
 
 @snippet generate(xapiClass)
-    <?php
-    {@licenseSection(xapiClass)}
-
-    namespace {@xapiClass.packageName};
-
-    @join import : xapiClass.imports
-        @switch import.type
-        @case "SimpleImport"
-          use {@import.fullName};
-        @case "AliasedImport"
-          use {@import.fullName} as {@import.nickname};
-        @default
-          $unhandledCase: {@import.type.toString}$
-        @end
-    @end
+    {@renderFileHeader(xapiClass)}
 
     {@serviceDoc(xapiClass)}
     class {@xapiClass.name}
@@ -32,31 +18,24 @@
     }
 @end
 
-@private licenseSection(xapiClass)
-  /*
-   * Copyright 2016 Google Inc. All Rights Reserved.
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
-   * in compliance with the License. You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software distributed under the License
-   * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-   * or implied. See the License for the specific language governing permissions and limitations under
-   * the License.
-   */
+@private renderFileHeader(xapiClass)
+    <?php
+    {@license(xapiClass.fileHeader)}
 
-  /*
-   * GENERATED CODE WARNING
-   * This file was generated from the file
-   * https://github.com/google/googleapis/blob/master/{@xapiClass.protoFilename}
-   * and updates to that file get reflected here through a refresh process.
-   *
-   * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
-   * more frequently than those which have been declared beta or 1.0, including changes which break
-   * backwards compatibility.
-   */
+    /*
+     * GENERATED CODE WARNING
+     * This file was generated from the file
+     * https://github.com/google/googleapis/blob/master/{@xapiClass.protoFilename}
+     * and updates to that file get reflected here through a refresh process.
+     *
+     * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
+     * more frequently than those which have been declared beta or 1.0, including changes which break
+     * backwards compatibility.
+     */
+
+    namespace {@xapiClass.fileHeader.packageName};
+
+    {@importList(xapiClass.fileHeader.imports)}
 @end
 
 @private serviceDoc(xapiClass)
@@ -97,10 +76,10 @@
 
 @private constants(xapiClass)
     @if xapiClass.hasDefaultServiceAddress
-      /**
-       * The default address of the service.
-       */
-      const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
+        /**
+         * The default address of the service.
+         */
+        const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
     @end
 
     /**
@@ -134,7 +113,7 @@
     private $defaultCallSettings;
     private $descriptors;
     @if xapiClass.hasLongRunningOperations
-      private $operationsClient;
+        private $operationsClient;
     @end
     {@""}
 @end
@@ -161,7 +140,7 @@
      * a {@function.entityName} resource.
      */
     public static function {@function.name}(\
-          {@formatResourceFunctionParams(function.resourceIdParams)})
+            {@formatResourceFunctionParams(function.resourceIdParams)})
     {
         return self::{@function.pathTemplateGetterName}()->render([
             {@pathTemplateArgs(function.resourceIdParams)},
@@ -235,27 +214,27 @@
 
 @private longRunningDescriptorFunction(xapiClass)
     @if xapiClass.hasLongRunningOperations
-      private static function getLongRunningDescriptors()
-      {
-          return [
-              @join descriptor : xapiClass.longRunningDescriptors
-                  '{@descriptor.methodName}' => [
-                      'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
-                      'metadataReturnType' => '{@descriptor.metadataTypeName}',
-                  ],
-              @end
-          ];
-      }
-      {@""}
+        private static function getLongRunningDescriptors()
+        {
+            return [
+                @join descriptor : xapiClass.longRunningDescriptors
+                    '{@descriptor.methodName}' => [
+                        'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
+                        'metadataReturnType' => '{@descriptor.metadataTypeName}',
+                    ],
+                @end
+            ];
+        }
+        {@""}
     @end
 @end
 
 @private functions(xapiClass)
     @if xapiClass.hasLongRunningOperations
-      public function getOperationsClient()
-      {
-          return $this->operationsClient;
-      }
+        public function getOperationsClient()
+        {
+            return $this->operationsClient;
+        }
     @end
     {@""}
 @end
@@ -310,26 +289,26 @@
     public function __construct($options = [])
     {
         @if xapiClass.missingDefaultServiceAddress
-          if (!array_key_exists('serviceAddress', $options)) {
-            throw new ValidationException("The 'serviceAddress' option must be provided.");
-          }
+            if (!array_key_exists('serviceAddress', $options)) {
+                throw new ValidationException("The 'serviceAddress' option must be provided.");
+            }
         @end
         @if xapiClass.missingDefaultServiceScopes
-          if (!array_key_exists('scopes', $options)) {
-            throw new ValidationException("The 'scopes' option must be provided.");
-          }
+            if (!array_key_exists('scopes', $options)) {
+                throw new ValidationException("The 'scopes' option must be provided.");
+            }
         @end
         $defaultOptions = [
             @if xapiClass.hasDefaultServiceAddress
-              'serviceAddress' => self::SERVICE_ADDRESS,
+                'serviceAddress' => self::SERVICE_ADDRESS,
             @end
             'port' => self::DEFAULT_SERVICE_PORT,
             @if xapiClass.hasDefaultServiceScopes
-              'scopes' => [
-                  @join scope : {@xapiClass.authScopes}
-                      '{@scope}',
-                  @end
-              ],
+                'scopes' => [
+                    @join scope : {@xapiClass.authScopes}
+                        '{@scope}',
+                    @end
+                ],
             @end
             'retryingOverride' => null,
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
@@ -365,10 +344,10 @@
             $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
         }
         @if xapiClass.hasLongRunningOperations
-          $longRunningDescriptors = self::getLongRunningDescriptors();
-          foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
-              $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
-          }
+            $longRunningDescriptors = self::getLongRunningDescriptors();
+            foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
+                $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
+            }
         @end
 
         $clientConfigJsonString = file_get_contents(__DIR__ . '/{@xapiClass.clientConfigPath}');
@@ -448,12 +427,12 @@
 @private setRequiredFieldCall(param)
     @if param.isMap
         foreach (${@param.name} as $key => $value) {
-            $request->{@param.setCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
+            $request->{@param.addCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
         }
     @else
         @if param.isArray
             foreach (${@param.name} as $elem) {
-                $request->{@param.setCallName}($elem);
+                $request->{@param.addCallName}($elem);
             }
         @else
             $request->{@param.setCallName}(${@param.name});
@@ -465,12 +444,12 @@
     if (isset($optionalArgs['{@param.name}'])) {
         @if param.isMap
             foreach ($optionalArgs['{@param.name}'] as $key => $value) {
-                $request->{@param.setCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
+                $request->{@param.addCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
             }
         @else
             @if param.isArray
                 foreach ($optionalArgs['{@param.name}'] as $elem) {
-                    $request->{@param.setCallName}($elem);
+                    $request->{@param.addCallName}($elem);
                 }
             @else
                 $request->{@param.setCallName}($optionalArgs['{@param.name}']);

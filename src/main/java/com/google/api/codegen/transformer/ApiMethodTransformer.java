@@ -878,6 +878,7 @@ public class ApiMethodTransformer {
     }
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, fieldConfig);
+    String addCallName = namer.getFieldAddFunctionName(field);
     String transformParamFunctionName = null;
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
         && fieldConfig.hasDifferentMessageResourceNameConfig()) {
@@ -890,6 +891,7 @@ public class ApiMethodTransformer {
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);
+    param.addCallName(addCallName);
     param.transformParamFunctionName(transformParamFunctionName);
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());

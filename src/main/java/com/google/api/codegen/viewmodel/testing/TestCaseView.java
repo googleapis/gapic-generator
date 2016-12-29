@@ -47,9 +47,17 @@ public abstract class TestCaseView {
 
   public abstract String mockServiceVarName();
 
+  public abstract boolean hasRequestParameters();
+
   public abstract boolean hasReturnValue();
 
   public abstract GrpcStreamingType grpcStreamingType();
+
+  public abstract String mockGrpcStubTypeName();
+
+  public abstract String createStubFunctionName();
+
+  public abstract String grpcMethodName();
 
   public static Builder newBuilder() {
     return new AutoValue_TestCaseView.Builder();
@@ -82,9 +90,17 @@ public abstract class TestCaseView {
 
     public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
 
+    public abstract Builder hasRequestParameters(boolean val);
+
     public abstract Builder hasReturnValue(boolean val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
+
+    public abstract Builder mockGrpcStubTypeName(String val);
+
+    public abstract Builder createStubFunctionName(String val);
+
+    public abstract Builder grpcMethodName(String val);
 
     public abstract TestCaseView build();
   }
