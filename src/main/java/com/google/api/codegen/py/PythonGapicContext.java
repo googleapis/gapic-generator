@@ -226,12 +226,11 @@ public class PythonGapicContext extends GapicContext {
   @Nullable
   private String returnTypeComment(
       Method method, MethodConfig config, PythonImportHandler importHandler) {
-    MessageType returnMessageType = method.getOutputMessage();
     if (MethodConfig.isReturnEmptyMessageMethod(method)) {
       return null;
     }
 
-    String path = importHandler.elementPath(returnMessageType, true);
+    String path = returnTypeCommentPath(method, config, importHandler);
     String classInfo = ":class:`" + path + "`";
 
     if (method.getResponseStreaming()) {
@@ -247,6 +246,16 @@ public class PythonGapicContext extends GapicContext {
     } else {
       return "Returns:\n  A " + classInfo + " instance.";
     }
+  }
+
+  private String returnTypeCommentPath(
+      Method method, MethodConfig config, PythonImportHandler importHandler) {
+    if (config.isLongRunningOperation()) {
+      return "google.gax._OperationFuture";
+    }
+
+    MessageType returnMessageType = method.getOutputMessage();
+    return importHandler.elementPath(returnMessageType, true);
   }
 
   public PythonDocConfig.Builder newDocConfigBuilder() {
@@ -397,6 +406,24 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
+  /** Returns the name of Python class for the given type. */
+  public String pythonTypeName(TypeRef type, PythonImportHandler importHandler) {
+    switch (type.getKind()) {
+      case TYPE_MESSAGE:
+        return importHandler.elementPath(type.getMessageType(), false);
+      case TYPE_ENUM:
+        return enumClassName(type.getEnumType());
+      default:
+        {
+          String name = PRIMITIVE_TYPE_NAMES.get(type.getKind());
+          if (!Strings.isNullOrEmpty(name)) {
+            return name;
+          }
+          throw new IllegalArgumentException("unknown type kind: " + type.getKind());
+        }
+    }
+  }
+
   /** Return whether the given field's default value is mutable in python. */
   public boolean isDefaultValueMutable(Field field) {
     TypeRef type = field.getType();
@@ -463,5 +490,21 @@ public class PythonGapicContext extends GapicContext {
     String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
     Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
     return stubName(target);
+  }
+
+  public boolean isLongrunning(Method method, Interface service) {
+    return getApiConfig()
+        .getInterfaceConfig(service)
+        .getMethodConfig(method)
+        .isLongRunningOperation();
+  }
+
+  public boolean hasLongrunningMethod(Interface service) {
+    for (Method method : getSupportedMethodsV2(service)) {
+      if (isLongrunning(method, service)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
