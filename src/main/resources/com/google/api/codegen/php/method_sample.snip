@@ -13,7 +13,7 @@
 @end
 
 @snippet sampleCode(apiMethod)
-    @if apiMethod.isLongrunningOperation
+    @if apiMethod.isLongRunningOperation
         {@longRunningMethodSampleCode(apiMethod)}
     @else
       @switch apiMethod.type.toString
@@ -55,11 +55,11 @@
     $operationResponse = {@methodCallSampleCode(apiMethod)};
     $operationResponse->pollUntilComplete();
     if ($operationResponse->operationSucceeded()) {
-      @if apiMethod.hasLongrunningReturnValue
+      @if apiMethod.longRunningView.isEmptyOperation
+          // operation succeeded and returns no value
+      @else
           $result = $operationResponse->getResult();
           // doSomethingWith($result)
-      @else
-          // operation succeeded and returns no value
       @end
     } else {
       $error = $operationResponse->getError();

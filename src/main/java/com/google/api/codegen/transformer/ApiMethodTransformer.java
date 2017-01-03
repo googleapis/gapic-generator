@@ -761,11 +761,11 @@ public class ApiMethodTransformer {
         generateRequestObjectParams(context, filteredFieldConfigs));
     apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
-    apiMethod.isLongrunningOperation(context.getMethodConfig().isLongRunningOperation());
-    apiMethod.hasLongrunningReturnValue(
+    apiMethod.isLongRunningOperation(context.getMethodConfig().isLongRunningOperation());
+    apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
-            && !ServiceMessages.s_isEmptyType(
-                context.getMethodConfig().getLongRunningConfig().getReturnType()));
+            ? lroTransformer.generateDetailView(context)
+            : null);
 
     return apiMethod.build();
   }
