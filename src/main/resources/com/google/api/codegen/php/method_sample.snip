@@ -36,8 +36,18 @@
 @end
 
 @private pagedMethodSampleCode(apiMethod)
-    foreach ({@methodCallSampleCode(apiMethod)} as $element) {
+    // Iterate through all elements
+    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    foreach ($pagedResponse->iterateAllElements() as $element) {
         // doThingsWith(element);
+    }
+
+    // OR iterate over pages of elements, with the maximum page size set to 5
+    $pagedResponse = {@pageSizeMethodCallSampleCode(apiMethod)};
+    foreach ($pagedResponse->iteratePages() as $page) {
+        foreach ($page as $element) {
+            // doThingsWith(element);
+        }
     }
 @end
 
@@ -60,6 +70,15 @@
 @private methodCallSampleCode(apiMethod)
     ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private pageSizeMethodCallSampleCode(apiMethod)
+    @if apiMethod.hasRequestParameters
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, ['pageSize' => 5])
+    @else
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}(['pageSize' => 5])
+    @end
 @end
 
 @snippet sampleMethodCallArgList(fieldSettings)

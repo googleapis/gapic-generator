@@ -26,6 +26,7 @@ import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
+import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ListMethodDetailView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
@@ -729,11 +730,12 @@ public class ApiMethodTransformer {
         context.getMethod().getRequestStreaming()
             ? InitCodeOutputType.SingleObject
             : InitCodeOutputType.FieldList;
-    apiMethod.initCode(
+    InitCodeView initCode =
         initCodeTransformer.generateInitCode(
             context.cloneWithEmptyTypeTable(),
             createInitCodeContext(
-                context, context.getMethodConfig().getRequiredFieldConfigs(), initCodeOutputType)));
+                context, context.getMethodConfig().getRequiredFieldConfigs(), initCodeOutputType));
+    apiMethod.initCode(initCode);
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
@@ -741,6 +743,7 @@ public class ApiMethodTransformer {
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     apiMethod.requestTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType()));
+    apiMethod.hasRequestParameters(initCode.lines().size() > 0);
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     apiMethod.key(namer.getMethodKey(context.getMethod()));
     apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethod()));
