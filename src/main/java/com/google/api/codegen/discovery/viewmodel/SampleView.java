@@ -15,6 +15,7 @@
 package com.google.api.codegen.discovery.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView.Builder;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
@@ -49,6 +50,7 @@ public abstract class SampleView implements ViewModel {
 
   public abstract SampleAuthView auth();
 
+  @Nullable
   public abstract String serviceVarName();
 
   @Nullable
@@ -146,6 +148,17 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract List<String> methodParamAssigments();
 
+  // JS specific section...
+  @Nullable
+  public abstract String paramsVarName();
+
+  /**
+   * Returns true if the page streaming call requires a `params` object to set the `pageToken`
+   * field, even if there are no required params.
+   */
+  @Nullable
+  public abstract Boolean needParams();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
   }
@@ -240,6 +253,10 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder lastMethodNameComponent(String val);
 
     public abstract Builder methodParamAssigments(List<String> val);
+
+    public abstract Builder paramsVarName(String val);
+
+    public abstract Builder needParams(Boolean val);
 
     public abstract SampleView build();
   }

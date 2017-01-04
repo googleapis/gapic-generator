@@ -1,0 +1,181 @@
+@snippet generate(class)
+  <!--
+  BEFORE RUNNING:
+  ---------------
+  1. If not already done, enable the {@class.apiTitle}
+     and check the quota for your project at
+     https://console.developers.google.com/apis/api/{@class.apiName}
+  2. Get access keys for your application. See
+     https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+  -->
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script>
+  function makeApiCall() {
+    @if class.needParams
+      var {@class.paramsVarName} = {
+        @join field : class.fields if class.fields on BREAK.add(BREAK)
+          @if field.description
+            @join line : util.getDocLines(field.description, 100)
+              // {@line}
+            @end
+
+
+          @end
+          {@field.name}: {@field.defaultValue},  // TODO: Update placeholder value.
+          @if field.example
+            // {@field.example}
+          @end
+        @end 
+      };
+
+    @end
+    @if class.hasRequestBody
+      var {@class.requestBodyVarName} = {
+        @switch class.methodVerb
+        @case "PATCH"
+          // TODO: Add desired properties to the request body. Only these properties
+          // will be changed.
+        @case "PUT"
+          // TODO: Add desired properties to the request body. All existing properties
+          // will be replaced.
+        @default
+          // TODO: Add desired properties to the request body.
+        @end
+      };
+
+    @end
+    @if class.hasMediaUpload
+      // TODO: To do media uploads, it's more appropriate to use CORS. See
+      // https://developers.google.com/api-client-library/javascript/features/cors
+
+    @end
+    @if class.hasMediaDownload
+      // TODO: To do media downloads, it's more appropriate to use CORS. See
+      // https://developers.google.com/api-client-library/javascript/features/cors
+
+    @end
+    @if class.isPageStreaming
+      {@pageStreamingFuncSignature(class)};
+    @else
+      var {@class.requestVarName} = {@requestFuncSignature(class)};
+      @if class.hasResponse
+        {@class.requestVarName}.then(function({@class.responseVarName}) {
+          // TODO: Change code below to process the `{@class.responseVarName}` object:
+          console.log({@class.responseVarName}.result);
+        }, function(reason) {
+          console.log('error: ' + reason.result.error.message);
+        });
+      @else
+        {@class.requestVarName}.then(function() {}, function(reason) {
+          console.log('error: ' + reason.result.error.message');
+        });
+      @end
+    @end
+  }
+
+  @if class.isPageStreaming
+    function {@pageStreamingFuncSignature(class)} {
+      var {@class.requestVarName} = {@requestFuncSignature(class)};
+      request.then(function({@class.responseVarName}) {
+        var {@class.pageStreaming.pageVarName} = {@class.responseVarName}.result.{@class.pageStreaming.resourceFieldName};
+        @if class.pageStreaming.isResourceRepeated
+          @if class.pageStreaming.isResourceMap
+            Object.keys({@class.pageStreaming.pageVarName}).forEach(function({@class.pageStreaming.resourceKeyVarName}) {
+              // TODO: Change code below to process each `{@class.pageStreaming.resourceKeyVarName}` property:
+              console.log({@class.pageStreaming.resourceKeyVarName} + ': ' + JSON.stringify({@class.pageStreaming.pageVarName}[{@class.pageStreaming.resourceKeyVarName}], null, 2));
+            });
+          @else
+            for (var i = 0; i < {@class.pageStreaming.pageVarName}.length; i++) {
+              // TODO: Change code below to process each resource in `{@class.pageStreaming.pageVarName}`:
+              console.log(JSON.stringify({@class.pageStreaming.pageVarName}[i], null, 2));
+            }
+          @end
+        @else
+          // TODO: Change code below to process each `{@class.pageStreaming.pageVarName}` resource:
+          console.log({@class.pageStreaming.pageVarName});
+        @end
+
+        if ({@class.responseVarName}.nextPageToken) {
+          @if class.pageStreaming.isResourceSetterInRequestBody
+            {@class.requestBodyVarName}.pageToken = {@class.responseVarName()}.nextPageToken;
+          @else
+            {@class.paramsVarName}.pageToken = {@class.responseVarName()}.nextPageToken;
+          @end
+          {@pageStreamingFuncSignature(class)};
+        }
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+  @end
+  function start() {
+    gapi.client.init({
+      @switch class.auth.type
+      @case "API_KEY"
+        'apiKey': '',  // TODO: Update placeholder with desired API key.'
+      @default
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': '{@scopeString(class.auth.scopes)}',
+      @end
+      'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/{@class.apiName}/{@class.apiVersion}/rest'],
+    }).then(function() {
+      @if class.auth.type != "API_KEY"
+        gapi.auth2.getAuthInstance().signIn();
+        gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+          if (isSignedIn) {
+            makeApiCall();
+          }
+        });
+      @else
+        makeApiCall();
+      @end
+    });
+  }
+  gapi.load('client', start);
+  </script>
+@end
+
+@private requestFuncSignature(class)
+  @if class.needParams
+    @if class.hasRequestBody
+      gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@class.paramsVarName}, {@class.requestBodyVarName})
+    @else
+      gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@class.paramsVarName})
+    @end
+  @else
+    @if class.hasRequestBody
+      gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({}, {@class.requestBodyVarName})
+    @else
+      gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}()
+    @end
+  @end
+@end
+
+@private pageStreamingFuncSignature(class)
+  @if class.needParams
+    @if class.hasRequestBody
+      executeRequest({@class.paramsVarName}, {@class.requestBodyVarName})
+    @else
+      executeRequest({@class.paramsVarName})
+    @end
+  @else
+    @if class.hasRequestBody
+      executeRequest({@class.requestBodyVarName})
+    @else
+      executeRequest()
+    @end
+  @end
+@end
+
+@private callChain(methodNameComponents)
+  @join resource : methodNameComponents on "."
+    {@resource}
+  @end
+@end
+
+@private scopeString(scopes)
+  @join scope : scopes on " "
+    {@scope}
+  @end
+@end

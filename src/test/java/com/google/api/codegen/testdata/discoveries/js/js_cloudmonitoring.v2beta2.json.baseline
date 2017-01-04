@@ -1,0 +1,328 @@
+
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Cloud Monitoring API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudmonitoring
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The project id. The value can be the numeric project ID or string-based project name.
+    project: '',  // TODO: Update placeholder value.
+  };
+
+  var requestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudmonitoring.metricDescriptors.create(params, requestBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/monitoring',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudmonitoring/v2beta2/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Cloud Monitoring API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudmonitoring
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The project ID to which the metric belongs.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the metric.
+    metric: '',  // TODO: Update placeholder value.
+  };
+
+  var request = gapi.client.cloudmonitoring.metricDescriptors.delete(params);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/monitoring',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudmonitoring/v2beta2/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Cloud Monitoring API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudmonitoring
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The project id. The value can be the numeric project ID or string-based project name.
+    project: '',  // TODO: Update placeholder value.
+  };
+
+  var requestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  executeRequest(params, requestBody);
+}
+
+function executeRequest(params, requestBody) {
+  var request = gapi.client.cloudmonitoring.metricDescriptors.list(params, requestBody);
+  request.then(function(response) {
+    var metricsPage = response.result.metrics;
+    for (var i = 0; i < metricsPage.length; i++) {
+      // TODO: Change code below to process each resource in `metricsPage`:
+      console.log(JSON.stringify(metricsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      params.pageToken = response.nextPageToken;
+      executeRequest(params, requestBody);
+    }
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/monitoring',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudmonitoring/v2beta2/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Cloud Monitoring API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudmonitoring
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The project ID to which this time series belongs. The value can be the numeric project ID or
+    // string-based project name.
+    project: '',  // TODO: Update placeholder value.
+
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
+    metric: '',  // TODO: Update placeholder value.
+
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    youngest: '',  // TODO: Update placeholder value.
+  };
+
+  var requestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  executeRequest(params, requestBody);
+}
+
+function executeRequest(params, requestBody) {
+  var request = gapi.client.cloudmonitoring.timeseries.list(params, requestBody);
+  request.then(function(response) {
+    var timeseriesPage = response.result.timeseries;
+    for (var i = 0; i < timeseriesPage.length; i++) {
+      // TODO: Change code below to process each resource in `timeseriesPage`:
+      console.log(JSON.stringify(timeseriesPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      params.pageToken = response.nextPageToken;
+      executeRequest(params, requestBody);
+    }
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/monitoring',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudmonitoring/v2beta2/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Cloud Monitoring API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudmonitoring
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The project ID. The value can be the numeric project ID or string-based project name.
+    project: '',  // TODO: Update placeholder value.
+  };
+
+  var requestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudmonitoring.timeseries.write(params, requestBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/monitoring',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudmonitoring/v2beta2/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Cloud Monitoring API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudmonitoring
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The project ID to which this time series belongs. The value can be the numeric project ID or
+    // string-based project name.
+    project: '',  // TODO: Update placeholder value.
+
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
+    metric: '',  // TODO: Update placeholder value.
+
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    youngest: '',  // TODO: Update placeholder value.
+  };
+
+  var requestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  executeRequest(params, requestBody);
+}
+
+function executeRequest(params, requestBody) {
+  var request = gapi.client.cloudmonitoring.timeseriesDescriptors.list(params, requestBody);
+  request.then(function(response) {
+    var timeseriesPage = response.result.timeseries;
+    for (var i = 0; i < timeseriesPage.length; i++) {
+      // TODO: Change code below to process each resource in `timeseriesPage`:
+      console.log(JSON.stringify(timeseriesPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      params.pageToken = response.nextPageToken;
+      executeRequest(params, requestBody);
+    }
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/monitoring',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudmonitoring/v2beta2/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
