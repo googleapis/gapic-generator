@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class OptionalArrayMethodView implements ApiMethodView {
@@ -57,7 +58,10 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String stubName();
 
-  public abstract boolean isLongrunningOperation();
+  public abstract boolean isLongRunningOperation();
+
+  @Nullable
+  public abstract LongRunningOperationDetailView longRunningView();
 
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
@@ -102,7 +106,9 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder stubName(String val);
 
-    public abstract Builder isLongrunningOperation(boolean val);
+    public abstract Builder isLongRunningOperation(boolean val);
+
+    public abstract Builder longRunningView(LongRunningOperationDetailView val);
 
     public abstract OptionalArrayMethodView build();
   }
