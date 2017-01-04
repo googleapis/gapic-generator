@@ -18,6 +18,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class IndexView implements ViewModel {
@@ -33,6 +34,7 @@ public abstract class IndexView implements ViewModel {
   @Override
   public abstract String outputPath();
 
+  @Nullable
   public abstract IndexRequireView primaryService();
 
   public abstract String apiVersion();
