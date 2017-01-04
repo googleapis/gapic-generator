@@ -19,7 +19,7 @@ import com.google.api.codegen.util.Name;
 import com.google.common.base.Splitter;
 import java.util.List;
 
-/** A NodeJSPackageMetadataNamer provides PHP specific names for metadata views. */
+/** PHPPackageMetadataNamer provides PHP specific names for metadata views. */
 public class PhpPackageMetadataNamer extends PackageMetadataNamer {
   private Name serviceName;
   private String domainLayerLocation;
