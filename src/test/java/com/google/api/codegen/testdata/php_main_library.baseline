@@ -1,17 +1,19 @@
 ============== file: src/Example/Library/V1/LibraryServiceClient.php ==============
 <?php
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016, Google Inc. All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /*
@@ -27,12 +29,12 @@
 
 namespace Google\Example\Library\V1;
 
-use Google\Longrunning\OperationsClient;
 use Google\GAX\AgentHeaderDescriptor;
 use Google\GAX\ApiCallable;
 use Google\GAX\CallSettings;
 use Google\GAX\GrpcConstants;
 use Google\GAX\GrpcCredentialsHelper;
+use Google\GAX\LongRunning\OperationsClient;
 use Google\GAX\PageStreamingDescriptor;
 use Google\GAX\PathTemplate;
 use Google\GAX\ValidationException;
@@ -44,6 +46,7 @@ use google\example\library\v1\CreateShelfRequest;
 use google\example\library\v1\DeleteBookRequest;
 use google\example\library\v1\DeleteShelfRequest;
 use google\example\library\v1\FindRelatedBooksRequest;
+use google\example\library\v1\GetBigBookMetadata;
 use google\example\library\v1\GetBookFromAnywhereRequest;
 use google\example\library\v1\GetBookFromArchiveRequest;
 use google\example\library\v1\GetBookRequest;
@@ -61,6 +64,7 @@ use google\example\library\v1\StringBuilder;
 use google\example\library\v1\UpdateBookIndexRequest;
 use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
 use google\example\library\v1\UpdateBookRequest;
+use google\protobuf\EmptyC;
 use google\protobuf\FieldMask;
 use google\tagger\v1\AddLabelRequest;
 use google\tagger\v1\AddTagRequest;
@@ -301,7 +305,7 @@ class LibraryServiceClient
                 'metadataReturnType' => '\google\example\library\v1\GetBigBookMetadata',
             ],
             'getBigNothing' => [
-                'operationReturnType' => '\google\protobuf\Empty',
+                'operationReturnType' => '\google\protobuf\EmptyC',
                 'metadataReturnType' => '\google\example\library\v1\GetBigBookMetadata',
             ],
         ];
@@ -564,8 +568,18 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *
-     *     foreach ($libraryServiceClient->listShelves() as $element) {
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listShelves();
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doThingsWith(element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->listShelves(['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doThingsWith(element);
+     *         }
      *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
@@ -880,8 +894,18 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
-     *     foreach ($libraryServiceClient->listBooks($formattedName) as $element) {
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doThingsWith(element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doThingsWith(element);
+     *         }
      *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
@@ -1104,8 +1128,18 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *
-     *     foreach ($libraryServiceClient->listStrings() as $element) {
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listStrings();
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doThingsWith(element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->listStrings(['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doThingsWith(element);
+     *         }
      *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
@@ -1381,8 +1415,18 @@ class LibraryServiceClient
      *     $namesElement = "";
      *     $names = [$namesElement];
      *     $shelves = [];
-     *     foreach ($libraryServiceClient->findRelatedBooks($names, $shelves) as $element) {
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
      *         // doThingsWith(element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves, ['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doThingsWith(element);
+     *         }
      *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
@@ -1555,7 +1599,15 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $response = $libraryServiceClient->getBigBook($formattedName);
+     *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+     *     $operationResponse->pollUntilComplete();
+     *     if ($operationResponse->operationSucceeded()) {
+     *       $result = $operationResponse->getResult();
+     *       // doSomethingWith($result)
+     *     } else {
+     *       $error = $operationResponse->getError();
+     *       // handleError($error)
+     *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
      *         $libraryServiceClient->close();
@@ -1602,7 +1654,14 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $response = $libraryServiceClient->getBigNothing($formattedName);
+     *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+     *     $operationResponse->pollUntilComplete();
+     *     if ($operationResponse->operationSucceeded()) {
+     *       // operation succeeded and returns no value
+     *     } else {
+     *       $error = $operationResponse->getError();
+     *       // handleError($error)
+     *     }
      * } finally {
      *     if (isset($libraryServiceClient)) {
      *         $libraryServiceClient->close();

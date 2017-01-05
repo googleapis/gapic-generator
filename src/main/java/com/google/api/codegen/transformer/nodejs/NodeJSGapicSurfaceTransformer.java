@@ -23,7 +23,7 @@ import com.google.api.codegen.viewmodel.metadata.IndexView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,10 +33,11 @@ import java.util.List;
  */
 public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String INDEX_TEMPLATE_FILE = "nodejs/index.snip";
+  private static final String VERSION_INDEX_TEMPLATE_FILE = "nodejs/version_index.snip";
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Collections.singletonList(INDEX_TEMPLATE_FILE);
+    return Arrays.asList(INDEX_TEMPLATE_FILE, VERSION_INDEX_TEMPLATE_FILE);
   }
 
   @Override
@@ -44,12 +45,15 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     Iterable<Interface> services = new InterfaceView().getElementIterable(model);
     List<ViewModel> models = new ArrayList<ViewModel>();
     NodeJSSurfaceNamer surfaceNamer = new NodeJSSurfaceNamer(apiConfig.getPackageName());
-    models.add(generateIndexView(services, surfaceNamer));
+    models.addAll(generateIndexViews(services, surfaceNamer));
 
     return models;
   }
 
-  private ViewModel generateIndexView(Iterable<Interface> services, NodeJSSurfaceNamer namer) {
+  private List<ViewModel> generateIndexViews(
+      Iterable<Interface> services, NodeJSSurfaceNamer namer) {
+    ArrayList<ViewModel> indexViews = new ArrayList<>();
+
     ArrayList<IndexRequireView> requireViews = new ArrayList<>();
     for (Interface service : services) {
       requireViews.add(
@@ -60,16 +64,28 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     String version = namer.getApiWrapperModuleVersion();
     boolean hasVersion = version != null && !version.isEmpty();
-    String outputPath = hasVersion ? "src/" + version + "/index.js" : "src/index.js";
-    IndexView.Builder builder =
+    String indexOutputPath = hasVersion ? "src/" + version + "/index.js" : "src/index.js";
+    IndexView.Builder indexViewbuilder =
         IndexView.newBuilder()
             .templateFileName(INDEX_TEMPLATE_FILE)
-            .outputPath(outputPath)
+            .outputPath(indexOutputPath)
             .requireViews(requireViews)
             .primaryService(requireViews.get(0));
     if (hasVersion) {
-      builder.apiVersion(version);
+      indexViewbuilder.apiVersion(version);
     }
-    return builder.build();
+    indexViews.add(indexViewbuilder.build());
+
+    if (hasVersion) {
+      String versionIndexOutputPath = "src/index.js";
+      IndexView.Builder versionIndexViewBuilder =
+          IndexView.newBuilder()
+              .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
+              .outputPath(versionIndexOutputPath)
+              .requireViews(new ArrayList<IndexRequireView>())
+              .apiVersion(version);
+      indexViews.add(versionIndexViewBuilder.build());
+    }
+    return indexViews;
   }
 }

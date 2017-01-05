@@ -1,6 +1,30 @@
-
 @snippet argList(args)
     @join arg : args on ", "
         {@arg}
+    @end
+@end
+
+@snippet license(fileHeader)
+    /*
+    @join line : fileHeader.copyrightLines
+        {@""} * {@line}
+    @end
+     *
+    @join line : fileHeader.licenseLines
+        {@""} * {@line}
+    @end
+     */
+@end
+
+@snippet importList(imports)
+    @join import : imports
+        @switch import.type
+        @case "SimpleImport"
+            use {@import.fullName};
+        @case "AliasedImport"
+            use {@import.fullName} as {@import.nickname};
+        @default
+            $unhandledCase: {@import.type.toString}$
+        @end
     @end
 @end

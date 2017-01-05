@@ -53,6 +53,8 @@ public abstract class ParamWithSimpleDoc {
 
   public abstract String setCallName();
 
+  public abstract String addCallName();
+
   public abstract boolean isMap();
 
   public abstract boolean isArray();
@@ -69,6 +71,7 @@ public abstract class ParamWithSimpleDoc {
         .elementTypeName(elementTypeName())
         .typeName(typeName())
         .setCallName(setCallName())
+        .addCallName(addCallName())
         .isMap(isMap())
         .isArray(isArray())
         .defaultValue(defaultValue())
@@ -99,6 +102,8 @@ public abstract class ParamWithSimpleDoc {
     public abstract Builder typeName(String val);
 
     public abstract Builder setCallName(String val);
+
+    public abstract Builder addCallName(String val);
 
     public abstract Builder isMap(boolean val);
 
