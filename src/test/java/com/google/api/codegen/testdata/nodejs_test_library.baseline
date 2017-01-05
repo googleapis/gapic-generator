@@ -580,12 +580,10 @@ describe('LibraryServiceClient', function() {
         return new MockStream(request, expectedResponse);
       };
 
-      var stream = client.streamShelves().on('data', function(response) {
+      client.streamShelves(request).on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
       });
-
-      stream.write(request);
     });
   });
 
@@ -615,12 +613,10 @@ describe('LibraryServiceClient', function() {
         return new MockStream(request, expectedResponse);
       };
 
-      var stream = client.streamBooks().on('data', function(response) {
+      client.streamBooks(request).on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
       });
-
-      stream.write(request);
     });
   });
 

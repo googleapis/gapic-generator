@@ -132,12 +132,22 @@
         return new MockStream(request, expectedResponse);
       };
 
-      var stream = client.{@test.clientMethodName}().on('data', function(response) {
-        assert.deepStrictEqual(response, expectedResponse);
-        done()
-      });
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        client.{@test.clientMethodName}(request).on('data', function(response) {
+          assert.deepStrictEqual(response, expectedResponse);
+          done()
+        });
+      @case "BidiStreaming"
+        var stream = client.{@test.clientMethodName}().on('data', function(response) {
+          assert.deepStrictEqual(response, expectedResponse);
+          done()
+        });
 
-      stream.write(request);
+        stream.write(request);
+      @default
+        $unhandled case: {@test.grpcStreamingType.toString}$
+      @end
     });
   });
 @end
