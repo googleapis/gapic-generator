@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel.testing;
 
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ClientTestClassView {
@@ -25,6 +26,9 @@ public abstract class ClientTestClassView {
   public abstract String apiClassName();
 
   public abstract String apiSettingsClassName();
+
+  @Nullable
+  public abstract String apiName();
 
   public abstract List<MockServiceUsageView> mockServices();
 
@@ -42,6 +46,8 @@ public abstract class ClientTestClassView {
     public abstract Builder apiClassName(String val);
 
     public abstract Builder apiSettingsClassName(String val);
+
+    public abstract Builder apiName(String val);
 
     public abstract Builder mockServices(List<MockServiceUsageView> val);
 

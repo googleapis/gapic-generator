@@ -26,16 +26,7 @@ public class PhpPackageMetadataNamer extends PackageMetadataNamer {
 
   public PhpPackageMetadataNamer(String packageName, String domainLayerLocation) {
     // Get the service name from the package name by removing the version suffix (if any).
-    List<String> names = Splitter.on("\\").splitToList(packageName);
-    if (names.size() < 2) {
-      this.serviceName = Name.from(packageName);
-    } else {
-      String serviceName = names.get(names.size() - 1);
-      if (serviceName.matches("V\\d+")) {
-        serviceName = names.get(names.size() - 2);
-      }
-      this.serviceName = Name.upperCamel(serviceName);
-    }
+    this.serviceName = getApiNameFromPackageName(packageName);
     this.domainLayerLocation = domainLayerLocation;
   }
 
@@ -50,6 +41,19 @@ public class PhpPackageMetadataNamer extends PackageMetadataNamer {
       return domainLayerLocation + "/" + serviceName.toLowerCamel();
     } else {
       return serviceName.toLowerCamel() + "/" + serviceName.toLowerCamel();
+    }
+  }
+
+  public static Name getApiNameFromPackageName(String packageName) {
+    List<String> names = Splitter.on("\\").splitToList(packageName);
+    if (names.size() < 2) {
+      return Name.from(packageName);
+    } else {
+      String serviceName = names.get(names.size() - 1);
+      if (serviceName.matches("V\\d+")) {
+        serviceName = names.get(names.size() - 2);
+      }
+      return Name.upperCamel(serviceName);
     }
   }
 }
