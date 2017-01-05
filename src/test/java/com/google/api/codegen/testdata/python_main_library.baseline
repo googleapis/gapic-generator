@@ -1235,6 +1235,15 @@ class LibraryServiceClient(object):
           >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> response = api.get_big_book(name)
+          >>>
+          >>> def callback(operation_future):
+          >>>     # Handle result.
+          >>>     result = operation_future.result()
+          >>>
+          >>> response.add_done_callback(callback)
+          >>>
+          >>> # Handle metadata.
+          >>> metadata = response.metadata()
 
         Args:
           name (string): The name of the book to retrieve.
@@ -1269,6 +1278,15 @@ class LibraryServiceClient(object):
           >>> api = library_service_client.LibraryServiceClient()
           >>> name = api.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> response = api.get_big_nothing(name)
+          >>>
+          >>> def callback(operation_future):
+          >>>     # Handle result.
+          >>>     result = operation_future.result()
+          >>>
+          >>> response.add_done_callback(callback)
+          >>>
+          >>> # Handle metadata.
+          >>> metadata = response.metadata()
 
         Args:
           name (string): The name of the book to retrieve.
