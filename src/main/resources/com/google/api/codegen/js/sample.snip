@@ -10,7 +10,7 @@
   -->
   <script src="https://apis.google.com/js/api.js"></script>
   <script>
-  function makeApiCall() {
+  function {@class.makeApiCallFuncName}() {
     @if class.needParams
       var {@class.paramsVarName} = {
         @join field : class.fields if class.fields on BREAK.add(BREAK)
@@ -55,9 +55,9 @@
 
     @end
     @if class.isPageStreaming
-      {@pageStreamingFuncSignature(class)};
+      {@class.pageStreaming.executeRequestFuncName}({@argList(class)});
     @else
-      var {@class.requestVarName} = {@requestFuncSignature(class)};
+      var {@class.requestVarName} = gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@argList(class)});
       @if class.hasResponse
         {@class.requestVarName}.then(function({@class.responseVarName}) {
           // TODO: Change code below to process the `{@class.responseVarName}` object:
@@ -74,8 +74,8 @@
   }
 
   @if class.isPageStreaming
-    function {@pageStreamingFuncSignature(class)} {
-      var {@class.requestVarName} = {@requestFuncSignature(class)};
+    function {@class.pageStreaming.executeRequestFuncName}({@argList(class)}) {
+      var {@class.requestVarName} = gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@argList(class)});
       request.then(function({@class.responseVarName}) {
         var {@class.pageStreaming.pageVarName} = {@class.responseVarName}.result.{@class.pageStreaming.resourceFieldName};
         @if class.pageStreaming.isResourceRepeated
@@ -95,11 +95,11 @@
           console.log({@class.pageStreaming.pageVarName});
         @end
 
-        if ({@class.responseVarName}.nextPageToken) {
+        if ({@class.responseVarName}.result.nextPageToken) {
           @if class.pageStreaming.isResourceSetterInRequestBody
-            {@class.requestBodyVarName}.pageToken = {@class.responseVarName()}.nextPageToken;
+            {@class.requestBodyVarName}.pageToken = {@class.responseVarName()}.result.nextPageToken;
           @else
-            {@class.paramsVarName}.pageToken = {@class.responseVarName()}.nextPageToken;
+            {@class.paramsVarName}.pageToken = {@class.responseVarName()}.result.nextPageToken;
           @end
           {@pageStreamingFuncSignature(class)};
         }
@@ -109,11 +109,11 @@
     }
 
   @end
-  function start() {
+  function {@class.startFuncName}() {
     gapi.client.init({
       @switch class.auth.type
       @case "API_KEY"
-        'apiKey': '',  // TODO: Update placeholder with desired API key.'
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
       @default
         'clientId': '',  // TODO: Update placeholder with desired client ID.
         'scope': '{@scopeString(class.auth.scopes)}',
@@ -124,46 +124,28 @@
         gapi.auth2.getAuthInstance().signIn();
         gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
           if (isSignedIn) {
-            makeApiCall();
+            {@class.makeApiCallFuncName}();
           }
         });
       @else
-        makeApiCall();
+        {@class.makeApiCallFuncName}();
       @end
     });
   }
-  gapi.load('client', start);
+  gapi.load('client', {@class.startFuncName});
   </script>
 @end
 
-@private requestFuncSignature(class)
+@private argList(class)
   @if class.needParams
     @if class.hasRequestBody
-      gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@class.paramsVarName}, {@class.requestBodyVarName})
+      {@class.paramsVarName}, {@class.requestBodyVarName}
     @else
-      gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@class.paramsVarName})
+      {@class.paramsVarName}
     @end
   @else
     @if class.hasRequestBody
-      gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({}, {@class.requestBodyVarName})
-    @else
-      gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}()
-    @end
-  @end
-@end
-
-@private pageStreamingFuncSignature(class)
-  @if class.needParams
-    @if class.hasRequestBody
-      executeRequest({@class.paramsVarName}, {@class.requestBodyVarName})
-    @else
-      executeRequest({@class.paramsVarName})
-    @end
-  @else
-    @if class.hasRequestBody
-      executeRequest({@class.requestBodyVarName})
-    @else
-      executeRequest()
+      {}, {@class.requestBodyVarName}
     @end
   @end
 @end

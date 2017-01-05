@@ -19,7 +19,7 @@ import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -71,7 +71,7 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
   private TypeNameConverter typeNameConverter;
 
   public NodeJSModelTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter = new NodeJSTypeTable(implicitPackageName);
+    this.typeNameConverter = new JSTypeTable(implicitPackageName);
   }
 
   @Override

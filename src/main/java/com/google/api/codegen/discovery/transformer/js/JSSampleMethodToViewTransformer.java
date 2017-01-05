@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,14 @@ import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransforme
 import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
 import com.google.api.codegen.discovery.transformer.SampleTypeTable;
-import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleNamer;
-import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleTypeNameConverter;
 import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.nodejs.NodeJSNameFormatter;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.js.JSNameFormatter;
+import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -45,14 +43,12 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
-    // Since the conventions between Node.js and Javascript are essentially
-    // identical, we reuse existing Node.js components.
     SampleTypeTable sampleTypeTable =
-        new SampleTypeTable(new NodeJSTypeTable(""), new NodeJSSampleTypeNameConverter());
-    NodeJSSampleNamer nodeJSSampleNamer = new NodeJSSampleNamer();
+        new SampleTypeTable(new JSTypeTable(""), new JSSampleTypeNameConverter());
+    JSSampleNamer jsSampleNamer = new JSSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(
-            sampleConfig, sampleTypeTable, nodeJSSampleNamer, method.getName());
+            sampleConfig, sampleTypeTable, jsSampleNamer, method.getName());
     return createSampleView(context);
   }
 
@@ -61,11 +57,16 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(NodeJSNameFormatter.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(JSNameFormatter.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
     String requestVarName = symbolTable.getNewSymbol(namer.getRequestVarName());
+
+    // Call first so function names take precedence in the symbol table.
+    builder.makeApiCallFuncName(symbolTable.getNewSymbol("makeApiCall"));
+    builder.startFuncName(symbolTable.getNewSymbol("start"));
+    builder.paramsVarName(symbolTable.getNewSymbol("params"));
 
     if (methodInfo.isPageStreaming()) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
@@ -88,7 +89,6 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
           symbolTable.getNewSymbol(
               namer.getRequestBodyVarName(methodInfo.requestBodyType().message().typeName()));
       builder.requestBodyVarName(requestBodyVarName);
-      //fieldVarNames.add(requestBodyVarName);
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -120,7 +120,6 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
-        .paramsVarName(symbolTable.getNewSymbol("params"))
         .build();
   }
 
@@ -143,17 +142,20 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
+    // Since the JS sample's page streaming logic is in it's own function, the
+    // only identifier that needs to be added to the symbol table is the name of
+    // the function. `resourceKeyVarName` and `pageVarName` cannot collide with
+    // one another, so we don't add them to the table.
     if (fieldInfo.type().isMap()) {
-      builder.resourceKeyVarName(
-          symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("name"))));
+      builder.resourceKeyVarName(namer.localVarName(Name.lowerCamel("name")));
     }
     builder.resourceFieldName(namer.getFieldVarName(fieldInfo.name()));
     builder.isResourceRepeated(fieldInfo.cardinality() == Cardinality.CARDINALITY_REPEATED);
     builder.isResourceMap(fieldInfo.type().isMap());
-    builder.pageVarName(
-        symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name(), "page"))));
+    builder.pageVarName(namer.localVarName(Name.lowerCamel(fieldInfo.name(), "page")));
 
     builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
+    builder.executeRequestFuncName(symbolTable.getNewSymbol("executeRequest"));
     return builder.build();
   }
 }

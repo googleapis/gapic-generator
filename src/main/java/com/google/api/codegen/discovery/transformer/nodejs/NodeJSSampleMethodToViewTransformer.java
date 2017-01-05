@@ -21,14 +21,16 @@ import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransforme
 import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
 import com.google.api.codegen.discovery.transformer.SampleTypeTable;
+import com.google.api.codegen.discovery.transformer.js.JSSampleNamer;
+import com.google.api.codegen.discovery.transformer.js.JSSampleTypeNameConverter;
 import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.nodejs.NodeJSNameFormatter;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.js.JSNameFormatter;
+import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -44,11 +46,11 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
     SampleTypeTable sampleTypeTable =
-        new SampleTypeTable(new NodeJSTypeTable(""), new NodeJSSampleTypeNameConverter());
-    NodeJSSampleNamer nodeJSSampleNamer = new NodeJSSampleNamer();
+        new SampleTypeTable(new JSTypeTable(""), new JSSampleTypeNameConverter());
+    JSSampleNamer jsSampleNamer = new JSSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(
-            sampleConfig, sampleTypeTable, nodeJSSampleNamer, method.getName());
+            sampleConfig, sampleTypeTable, jsSampleNamer, method.getName());
     return createSampleView(context);
   }
 
@@ -57,7 +59,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(NodeJSNameFormatter.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(JSNameFormatter.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
