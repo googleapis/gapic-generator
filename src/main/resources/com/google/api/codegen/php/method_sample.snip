@@ -13,17 +13,21 @@
 @end
 
 @snippet sampleCode(apiMethod)
-    @switch apiMethod.type.toString
-    @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod)}
-    @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArrayMethodSampleCode(apiMethod)}
-    @default
-        $unhandledCase: {@apiMethod.type.toString}$
+    @if apiMethod.isLongRunningOperation
+        {@longRunningMethodSampleCode(apiMethod)}
+    @else
+      @switch apiMethod.type.toString
+      @case "OptionalArrayMethod"
+          {@methodSampleCode(apiMethod)}
+      @case "PagedOptionalArrayMethod"
+          {@pagedMethodSampleCode(apiMethod)}
+      @default
+          $unhandledCase: {@apiMethod.type.toString}$
+      @end
     @end
 @end
 
-@private optionalArrayMethodSampleCode(apiMethod)
+@private methodSampleCode(apiMethod)
     @if apiMethod.hasReturnValue
         $response = {@methodCallSampleCode(apiMethod)};
     @else
@@ -31,7 +35,7 @@
     @end
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod)
+@private pagedMethodSampleCode(apiMethod)
     // Iterate through all elements
     $pagedResponse = {@methodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iterateAllElements() as $element) {
@@ -44,6 +48,22 @@
         foreach ($page as $element) {
             // doThingsWith(element);
         }
+    }
+@end
+
+@private longRunningMethodSampleCode(apiMethod)
+    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationResponse->pollUntilComplete();
+    if ($operationResponse->operationSucceeded()) {
+      @if apiMethod.longRunningView.isEmptyOperation
+          // operation succeeded and returns no value
+      @else
+          $result = $operationResponse->getResult();
+          // doSomethingWith($result)
+      @end
+    } else {
+      $error = $operationResponse->getError();
+      // handleError($error)
     }
 @end
 
