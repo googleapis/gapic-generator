@@ -132,14 +132,11 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     for (Method method : context.getSupportedMethods()) {
       MethodTransformerContext methodContext = context.asRequestMethodContext(method);
 
-      if (methodContext.getMethodConfig().isGrpcStreaming()) {
-        // TODO(shinfan): Remove this check once grpc streaming is supported by test
-        continue;
-      }
-
       ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedRequestObjectMethod;
+      } else if (methodContext.getMethodConfig().isGrpcStreaming()) {
+        clientMethodType = ClientMethodType.AsyncRequestObjectMethod;
       }
 
       Iterable<FieldConfig> fieldConfigs =
