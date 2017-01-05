@@ -124,6 +124,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.pathTemplateGetterFunctions(
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
+    xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
     xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
 

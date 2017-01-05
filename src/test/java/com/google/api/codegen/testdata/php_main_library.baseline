@@ -114,6 +114,7 @@ class LibraryServiceClient
      * The default address of the service.
      */
     const SERVICE_ADDRESS = 'library-example.googleapis.com';
+
     /**
      * The default port of the service.
      */
@@ -124,8 +125,15 @@ class LibraryServiceClient
      */
     const DEFAULT_TIMEOUT_MILLIS = 30000;
 
-    const _CODEGEN_NAME = 'gapic';
-    const _CODEGEN_VERSION = '0.1.0';
+    /**
+     * The name of the code generator, to be included in the agent header.
+     */
+    const CODEGEN_NAME = 'gapic';
+
+    /**
+     * The code generator version, to be included in the agent header.
+     */
+    const CODEGEN_VERSION = '0.1.0';
 
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
@@ -315,6 +323,7 @@ class LibraryServiceClient
     {
         return $this->operationsClient;
     }
+
     // TODO(garrettjones): add channel (when supported in gRPC)
     /**
      * Constructor.
@@ -372,8 +381,8 @@ class LibraryServiceClient
         $headerDescriptor = new AgentHeaderDescriptor([
             'clientName' => $options['appName'],
             'clientVersion' => $options['appVersion'],
-            'codeGenName' => self::_CODEGEN_NAME,
-            'codeGenVersion' => self::_CODEGEN_VERSION,
+            'codeGenName' => self::CODEGEN_NAME,
+            'codeGenVersion' => self::CODEGEN_VERSION,
             'gaxVersion' => AgentHeaderDescriptor::getGaxVersion(),
             'phpVersion' => phpversion(),
         ]);
@@ -571,14 +580,14 @@ class LibraryServiceClient
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listShelves();
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doThingsWith(element);
+     *         // doSomethingWith($element);
      *     }
      *
      *     // OR iterate over pages of elements, with the maximum page size set to 5
      *     $pagedResponse = $libraryServiceClient->listShelves(['pageSize' => 5]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
-     *             // doThingsWith(element);
+     *             // doSomethingWith($element);
      *         }
      *     }
      * } finally {
@@ -897,14 +906,14 @@ class LibraryServiceClient
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doThingsWith(element);
+     *         // doSomethingWith($element);
      *     }
      *
      *     // OR iterate over pages of elements, with the maximum page size set to 5
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['pageSize' => 5]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
-     *             // doThingsWith(element);
+     *             // doSomethingWith($element);
      *         }
      *     }
      * } finally {
@@ -1131,14 +1140,14 @@ class LibraryServiceClient
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listStrings();
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doThingsWith(element);
+     *         // doSomethingWith($element);
      *     }
      *
      *     // OR iterate over pages of elements, with the maximum page size set to 5
      *     $pagedResponse = $libraryServiceClient->listStrings(['pageSize' => 5]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
-     *             // doThingsWith(element);
+     *             // doSomethingWith($element);
      *         }
      *     }
      * } finally {
@@ -1418,14 +1427,14 @@ class LibraryServiceClient
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doThingsWith(element);
+     *         // doSomethingWith($element);
      *     }
      *
      *     // OR iterate over pages of elements, with the maximum page size set to 5
      *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves, ['pageSize' => 5]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
-     *             // doThingsWith(element);
+     *             // doSomethingWith($element);
      *         }
      *     }
      * } finally {

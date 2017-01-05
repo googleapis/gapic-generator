@@ -64,6 +64,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<ApiMethodView> apiMethods();
 
+  public abstract boolean hasPageStreamingMethods();
+
   public abstract boolean hasLongRunningOperations();
 
   public abstract boolean hasDefaultServiceAddress();
@@ -136,6 +138,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder outputPath(String val);
 
     public abstract Builder apiMethods(List<ApiMethodView> val);
+
+    public abstract Builder hasPageStreamingMethods(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
 
