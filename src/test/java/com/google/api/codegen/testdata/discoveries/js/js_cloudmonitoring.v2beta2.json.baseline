@@ -16,11 +16,11 @@ function makeApiCall() {
     project: '',  // TODO: Update placeholder value.
   };
 
-  var requestBody = {
+  var metricDescriptorBody = {
     // TODO: Add desired properties to the request body.
   };
 
-  var request = gapi.client.cloudmonitoring.metricDescriptors.create(params, requestBody);
+  var request = gapi.client.cloudmonitoring.metricDescriptors.create(params, metricDescriptorBody);
   request.then(function(response) {
     // TODO: Change code below to process the `response` object:
     console.log(response.result);
@@ -107,15 +107,15 @@ function makeApiCall() {
     project: '',  // TODO: Update placeholder value.
   };
 
-  var requestBody = {
+  var listMetricDescriptorsRequestBody = {
     // TODO: Add desired properties to the request body.
   };
 
-  executeRequest(params, requestBody);
+  executeRequest(params, listMetricDescriptorsRequestBody);
 }
 
-function executeRequest(params, requestBody) {
-  var request = gapi.client.cloudmonitoring.metricDescriptors.list(params, requestBody);
+function executeRequest(params, listMetricDescriptorsRequestBody) {
+  var request = gapi.client.cloudmonitoring.metricDescriptors.list(params, listMetricDescriptorsRequestBody);
   request.then(function(response) {
     var metricsPage = response.result.metrics;
     for (var i = 0; i < metricsPage.length; i++) {
@@ -123,9 +123,9 @@ function executeRequest(params, requestBody) {
       console.log(JSON.stringify(metricsPage[i], null, 2));
     }
 
-    if (response.nextPageToken) {
-      params.pageToken = response.nextPageToken;
-      executeRequest(params, requestBody);
+    if (response.result.nextPageToken) {
+      params.pageToken = response.result.nextPageToken;
+      executeRequest(params, listMetricDescriptorsRequestBody);
     }
   }, function(reason) {
     console.log('error: ' + reason.result.error.message);
@@ -173,15 +173,15 @@ function makeApiCall() {
     youngest: '',  // TODO: Update placeholder value.
   };
 
-  var requestBody = {
+  var listTimeseriesRequestBody = {
     // TODO: Add desired properties to the request body.
   };
 
-  executeRequest(params, requestBody);
+  executeRequest(params, listTimeseriesRequestBody);
 }
 
-function executeRequest(params, requestBody) {
-  var request = gapi.client.cloudmonitoring.timeseries.list(params, requestBody);
+function executeRequest(params, listTimeseriesRequestBody) {
+  var request = gapi.client.cloudmonitoring.timeseries.list(params, listTimeseriesRequestBody);
   request.then(function(response) {
     var timeseriesPage = response.result.timeseries;
     for (var i = 0; i < timeseriesPage.length; i++) {
@@ -189,9 +189,9 @@ function executeRequest(params, requestBody) {
       console.log(JSON.stringify(timeseriesPage[i], null, 2));
     }
 
-    if (response.nextPageToken) {
-      params.pageToken = response.nextPageToken;
-      executeRequest(params, requestBody);
+    if (response.result.nextPageToken) {
+      params.pageToken = response.result.nextPageToken;
+      executeRequest(params, listTimeseriesRequestBody);
     }
   }, function(reason) {
     console.log('error: ' + reason.result.error.message);
@@ -231,11 +231,11 @@ function makeApiCall() {
     project: '',  // TODO: Update placeholder value.
   };
 
-  var requestBody = {
+  var writeTimeseriesRequestBody = {
     // TODO: Add desired properties to the request body.
   };
 
-  var request = gapi.client.cloudmonitoring.timeseries.write(params, requestBody);
+  var request = gapi.client.cloudmonitoring.timeseries.write(params, writeTimeseriesRequestBody);
   request.then(function(response) {
     // TODO: Change code below to process the `response` object:
     console.log(response.result);
@@ -285,15 +285,15 @@ function makeApiCall() {
     youngest: '',  // TODO: Update placeholder value.
   };
 
-  var requestBody = {
+  var listTimeseriesDescriptorsRequestBody = {
     // TODO: Add desired properties to the request body.
   };
 
-  executeRequest(params, requestBody);
+  executeRequest(params, listTimeseriesDescriptorsRequestBody);
 }
 
-function executeRequest(params, requestBody) {
-  var request = gapi.client.cloudmonitoring.timeseriesDescriptors.list(params, requestBody);
+function executeRequest(params, listTimeseriesDescriptorsRequestBody) {
+  var request = gapi.client.cloudmonitoring.timeseriesDescriptors.list(params, listTimeseriesDescriptorsRequestBody);
   request.then(function(response) {
     var timeseriesPage = response.result.timeseries;
     for (var i = 0; i < timeseriesPage.length; i++) {
@@ -301,9 +301,9 @@ function executeRequest(params, requestBody) {
       console.log(JSON.stringify(timeseriesPage[i], null, 2));
     }
 
-    if (response.nextPageToken) {
-      params.pageToken = response.nextPageToken;
-      executeRequest(params, requestBody);
+    if (response.result.nextPageToken) {
+      params.pageToken = response.result.nextPageToken;
+      executeRequest(params, listTimeseriesDescriptorsRequestBody);
     }
   }, function(reason) {
     console.log('error: ' + reason.result.error.message);

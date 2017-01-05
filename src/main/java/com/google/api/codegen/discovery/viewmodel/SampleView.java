@@ -158,8 +158,10 @@ public abstract class SampleView implements ViewModel {
   public abstract String paramsVarName();
 
   /**
-   * Returns true if the page streaming call requires a `params` object to set the `pageToken`
-   * field, even if there are no required params.
+   * Returns true if there are any required params, or if there are no required params and the
+   * `nextPageToken` variable is in the `params` object.
+   *
+   * <p>Only intended to be used in the JS sample.
    */
   @Nullable
   public abstract Boolean needParams();

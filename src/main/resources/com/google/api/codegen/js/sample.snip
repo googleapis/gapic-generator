@@ -101,7 +101,7 @@
           @else
             {@class.paramsVarName}.pageToken = {@class.responseVarName()}.result.nextPageToken;
           @end
-          {@pageStreamingFuncSignature(class)};
+          {@class.pageStreaming.executeRequestFuncName}({@argList(class)});
         }
       }, function(reason) {
         console.log('error: ' + reason.result.error.message);
