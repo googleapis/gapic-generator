@@ -137,11 +137,15 @@
         client.{@test.clientMethodName}(request).on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
           done()
+        }).on('error', function(err) {
+          done(err);
         });
       @case "BidiStreaming"
         var stream = client.{@test.clientMethodName}().on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
           done()
+        }).on('error', function(err) {
+          done(err);
         });
 
         stream.write(request);

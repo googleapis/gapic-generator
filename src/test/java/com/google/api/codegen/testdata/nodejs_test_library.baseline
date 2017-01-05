@@ -583,6 +583,8 @@ describe('LibraryServiceClient', function() {
       client.streamShelves(request).on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
+      }).on('error', function(err) {
+        done(err);
       });
     });
   });
@@ -616,6 +618,8 @@ describe('LibraryServiceClient', function() {
       client.streamBooks(request).on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
+      }).on('error', function(err) {
+        done(err);
       });
     });
   });
@@ -645,6 +649,8 @@ describe('LibraryServiceClient', function() {
       var stream = client.discussBook().on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
+      }).on('error', function(err) {
+        done(err);
       });
 
       stream.write(request);
