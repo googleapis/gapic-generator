@@ -25,10 +25,8 @@
   @else
     var {@apiTest.apiWrapperModuleName} = require('../src/')();
   @end
-  @join testClass : apiTest.testClasses
-    @if testClass.hasGrpcStreaming
-      MockStream = require('google-gax').MockStream;
-    @end
+  @if apiTest.hasGrpcStreaming
+    var MockStream = require('google-gax').MockStream;
   @end
 @end
 
@@ -44,8 +42,6 @@
       $unhandled case: {@test.clientMethodType.toString}$
     @end
   @case "ServerStreaming"
-    {@streamingTestCase(test, moduleName)}
-  @case "ClientStreaming"
     {@streamingTestCase(test, moduleName)}
   @case "BidiStreaming"
     {@streamingTestCase(test, moduleName)}

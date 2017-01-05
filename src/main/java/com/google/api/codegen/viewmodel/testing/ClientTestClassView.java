@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
-import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
@@ -30,15 +29,6 @@ public abstract class ClientTestClassView {
   public abstract List<MockServiceUsageView> mockServices();
 
   public abstract List<TestCaseView> testCases();
-
-  public boolean hasGrpcStreaming() {
-    for (TestCaseView testCase : testCases()) {
-      if (testCase.grpcStreamingType() != GrpcStreamingType.NonStreaming) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   public static Builder newBuilder() {
     return new AutoValue_ClientTestClassView.Builder();
