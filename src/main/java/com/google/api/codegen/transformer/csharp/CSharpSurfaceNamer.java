@@ -369,6 +369,15 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getAndSaveOperationResponseTypeName(
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+    String responseTypeName =
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.LongRunning.Operation", responseTypeName);
+  }
+
+  @Override
   public List<String> getReturnDocLines(
       SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     if (methodConfig.isPageStreaming()) {
