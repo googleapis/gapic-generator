@@ -205,6 +205,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       case AsyncRequestObjectMethod:
       case PagedRequestObjectMethod:
       case AsyncPagedRequestObjectMethod:
+      case OperationRequestObjectMethod:
+      case AsyncOperationRequestObjectMethod:
         return true;
       default:
         return false;
@@ -301,7 +303,35 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       if (mixinsDisabled && methodConfig.getRerouteToGrpcInterface() != null) {
         continue;
       }
-      if (methodConfig.isPageStreaming()) {
+      if (methodConfig.isLongRunningOperation()) {
+        if (methodConfig.isFlattening()) {
+          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+            MethodTransformerContext methodContext =
+                context.asFlattenedMethodContext(method, flatteningGroup);
+            apiMethods.add(
+                apiMethodTransformer.generateAsyncOperationFlattenedMethod(
+                    methodContext,
+                    csharpCommonTransformer.callSettingsParam(),
+                    ClientMethodType.AsyncOperationFlattenedCallSettingsMethod,
+                    true));
+            apiMethods.add(
+                apiMethodTransformer.generateAsyncOperationFlattenedMethod(
+                    methodContext,
+                    csharpCommonTransformer.cancellationTokenParam(),
+                    ClientMethodType.AsyncOperationFlattenedCancellationMethod,
+                    true));
+            apiMethods.add(
+                apiMethodTransformer.generateOperationFlattenedMethod(
+                    methodContext, csharpCommonTransformer.callSettingsParam()));
+          }
+        }
+        apiMethods.add(
+            apiMethodTransformer.generateAsyncOperationRequestObjectMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam(), true));
+        apiMethods.add(
+            apiMethodTransformer.generateOperationRequestObjectMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+      } else if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodTransformerContext methodContext =

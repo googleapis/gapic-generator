@@ -329,6 +329,12 @@ public class ApiMethodTransformer {
 
   public StaticLangApiMethodView generateOperationRequestObjectMethod(
       MethodTransformerContext context) {
+    return generateOperationRequestObjectMethod(
+        context, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
+  public StaticLangApiMethodView generateOperationRequestObjectMethod(
+      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -341,6 +347,7 @@ public class ApiMethodTransformer {
         context,
         namer.getCallableMethodName(context.getMethod()),
         Synchronicity.Sync,
+        additionalParams,
         methodViewBuilder);
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
@@ -349,14 +356,39 @@ public class ApiMethodTransformer {
     return methodViewBuilder.type(ClientMethodType.OperationRequestObjectMethod).build();
   }
 
-  public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(
-      MethodTransformerContext context) {
-    return generateAsyncOperationFlattenedMethod(
-        context, Collections.<ParamWithSimpleDoc>emptyList());
+  public StaticLangApiMethodView generateOperationFlattenedMethod(
+      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
+    methodViewBuilder.exampleName(
+        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+    methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
+    setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
+    methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
+    TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
+
+    return methodViewBuilder.type(ClientMethodType.OperationFlattenedMethod).build();
   }
 
   public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(
-      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodTransformerContext context) {
+    return generateAsyncOperationFlattenedMethod(
+        context,
+        Collections.<ParamWithSimpleDoc>emptyList(),
+        ClientMethodType.AsyncOperationFlattenedMethod,
+        false);
+  }
+
+  public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(
+      MethodTransformerContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      ClientMethodType type,
+      boolean requiresOperationMethod) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -368,20 +400,25 @@ public class ApiMethodTransformer {
         namer.getAsyncApiMethodExampleName(context.getInterface(), context.getMethod()));
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Async, methodViewBuilder);
+    if (requiresOperationMethod) {
+      methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
+    }
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 
-    return methodViewBuilder.type(ClientMethodType.AsyncOperationFlattenedMethod).build();
+    return methodViewBuilder.type(type).build();
   }
 
   public StaticLangApiMethodView generateAsyncOperationRequestObjectMethod(
       MethodTransformerContext context) {
     return generateAsyncOperationRequestObjectMethod(
-        context, Collections.<ParamWithSimpleDoc>emptyList());
+        context, Collections.<ParamWithSimpleDoc>emptyList(), false);
   }
 
   public StaticLangApiMethodView generateAsyncOperationRequestObjectMethod(
-      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodTransformerContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      boolean requiresOperationMethod) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -397,6 +434,9 @@ public class ApiMethodTransformer {
         Synchronicity.Async,
         additionalParams,
         methodViewBuilder);
+    if (requiresOperationMethod) {
+      methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
+    }
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 
