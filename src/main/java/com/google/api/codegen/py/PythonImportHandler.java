@@ -87,8 +87,8 @@ public class PythonImportHandler {
     for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(service).getMethodConfigs()) {
       if (methodConfig.isLongRunningOperation()) {
         addImportExternal("google.gapic.longrunning", "operations_client");
-        addImportForType(methodConfig.getLongRunningConfig().getReturnType());
-        addImportForType(methodConfig.getLongRunningConfig().getMetadataType());
+        addImportForMessage(methodConfig.getLongRunningConfig().getReturnType().getMessageType());
+        addImportForMessage(methodConfig.getLongRunningConfig().getMetadataType().getMessageType());
       }
 
       Method method = methodConfig.getMethod();
@@ -100,7 +100,7 @@ public class PythonImportHandler {
                   method.getInputMessage().getFile().getProto().getPackage()),
               PythonProtoElements.getPbFileName(method.getInputMessage())));
       for (Field field : method.getInputMessage().getMessageFields()) {
-        addImportForType(field.getType());
+        addImportForMessage(field.getType().getMessageType());
       }
     }
   }
@@ -233,9 +233,8 @@ public class PythonImportHandler {
     return addImport(ImportType.APP, moduleName, attributeName).shortName();
   }
 
-  /** Add an import for the proto associated with the given type. */
-  private PythonImport addImportForType(TypeRef type) {
-    MessageType messageType = type.getMessageType();
+  /** Add an import for the proto associated with the given message. */
+  private PythonImport addImportForMessage(MessageType messageType) {
     return addImport(
         messageType.getFile(),
         PythonImport.create(
