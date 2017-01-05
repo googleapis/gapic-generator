@@ -576,8 +576,10 @@ describe('LibraryServiceClient', function() {
       var expectedResponse = {};
 
       // Mock Grpc layer
-      client._streamShelves = function() {
-        return new MockStream(request, expectedResponse);
+      client._streamShelves = function(request) {
+        assert.deepStrictEqual(request, this.expectedRequest);
+        var mockStream = new MockStream(request, expectedResponse);
+        return mockStream.emitImmediately();
       };
 
       client.streamShelves(request).on('data', function(response) {
@@ -611,8 +613,10 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._streamBooks = function() {
-        return new MockStream(request, expectedResponse);
+      client._streamBooks = function(request) {
+        assert.deepStrictEqual(request, this.expectedRequest);
+        var mockStream = new MockStream(request, expectedResponse);
+        return mockStream.emitImmediately();
       };
 
       client.streamBooks(request).on('data', function(response) {
