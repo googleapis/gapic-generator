@@ -296,11 +296,11 @@
         public {@api.implName}({@api.grpcTypeName} grpcClient, {@settings.name} settings)
         {
             this.GrpcClient = grpcClient;
+            {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
             @if api.hasLongRunningOperations
                 LongRunningOperationsClient = new OperationsClientImpl(
-                    grpcClient.CreateOperationsClient(), settings.LongRunningOperationsSettings);
+                    grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
             @end
-            {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
             _clientHelper = new ClientHelper(effectiveSettings);
             @join rerouted : api.reroutedGrpcClients
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();

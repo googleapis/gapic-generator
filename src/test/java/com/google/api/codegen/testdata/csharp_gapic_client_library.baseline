@@ -3725,9 +3725,9 @@ namespace Google.Example.Library.V1
         public LibraryServiceClientImpl(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings settings)
         {
             this.GrpcClient = grpcClient;
-            LongRunningOperationsClient = new OperationsClientImpl(
-                grpcClient.CreateOperationsClient(), settings.LongRunningOperationsSettings);
             LibraryServiceSettings effectiveSettings = settings ?? LibraryServiceSettings.GetDefault();
+            LongRunningOperationsClient = new OperationsClientImpl(
+                grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
             _clientHelper = new ClientHelper(effectiveSettings);
             var grpcLabelerClient = grpcClient.CreateLabelerClient();
             _callCreateShelf = _clientHelper.BuildApiCall<CreateShelfRequest, Shelf>(
