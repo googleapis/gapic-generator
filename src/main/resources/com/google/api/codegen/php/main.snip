@@ -40,7 +40,7 @@
 
 @private serviceDoc(xapiClass)
     @let coreSampleCode = sampleCode(xapiClass.doc.exampleApiMethod), \
-         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
+         decoratedSampleCode = decorateSampleCode(xapiClass, xapiClass.doc.exampleApiMethod, coreSampleCode)
         {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
     @end
 @end
@@ -405,7 +405,7 @@
 @private apiMethods(xapiClass)
     @join apiMethod : xapiClass.apiMethods
         @let coreSampleCode = sampleCode(apiMethod)
-            {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+            {@methodDoc(apiMethod.doc, decorateSampleCode(xapiClass, apiMethod, coreSampleCode))}
         @end
         public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
         {
