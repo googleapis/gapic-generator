@@ -18,17 +18,17 @@ import com.google.common.truth.Truth;
 import org.junit.Test;
 
 public class PhpPackageMetadataNamerTest {
-  
+
   @Test
   public void testWithoutDomainLayerLocation() {
     PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer("Package", null);
     Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
     Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("package/package");
-    
+
     namer = new PhpPackageMetadataNamer("Some\\Package", null);
     Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
     Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("package/package");
-    
+
     namer = new PhpPackageMetadataNamer("Some\\Package\\V1", null);
     Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
     Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("package/package");
@@ -36,12 +36,12 @@ public class PhpPackageMetadataNamerTest {
     namer = new PhpPackageMetadataNamer("Some\\Package\\V1beta1", null);
     Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
     Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("package/package");
-    
+
     namer = new PhpPackageMetadataNamer("Some\\CamelCasePackage\\V1", null);
     Truth.assertThat(namer.getMetadataName()).isEqualTo("CamelCasePackage");
     Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("camelcasepackage/camelcasepackage");
   }
-  
+
   @Test
   public void testWithDomainLayerLocation() {
     PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer("Package", "domain");
@@ -51,7 +51,7 @@ public class PhpPackageMetadataNamerTest {
     namer = new PhpPackageMetadataNamer("Some\\Package", "domain");
     Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
     Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("domain/package");
-    
+
     namer = new PhpPackageMetadataNamer("Some\\Package\\V1", "domain");
     Truth.assertThat(namer.getMetadataName()).isEqualTo("Package");
     Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("domain/package");
@@ -64,12 +64,12 @@ public class PhpPackageMetadataNamerTest {
     Truth.assertThat(namer.getMetadataName()).isEqualTo("CamelCasePackage");
     Truth.assertThat(namer.getMetadataIdentifier()).isEqualTo("domain/camelcasepackage");
   }
-  
+
   @Test(expected = IllegalArgumentException.class)
   public void packageLowerCamel() {
     PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer("somePackage", null);
   }
-  
+
   @Test(expected = IllegalArgumentException.class)
   public void packageLowerCase() {
     PhpPackageMetadataNamer namer = new PhpPackageMetadataNamer("Some\\package", null);
