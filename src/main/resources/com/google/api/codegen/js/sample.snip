@@ -55,9 +55,9 @@
 
     @end
     @if class.isPageStreaming
-      {@class.pageStreaming.executeRequestFuncName}({@argList(class)});
+      {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)});
     @else
-      var {@class.requestVarName} = gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@argList(class)});
+      var {@class.requestVarName} = gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@argList(class, @FALSE)});
       @if class.hasResponse
         {@class.requestVarName}.then(function({@class.responseVarName}) {
           // TODO: Change code below to process the `{@class.responseVarName}` object:
@@ -74,8 +74,8 @@
   }
 
   @if class.isPageStreaming
-    function {@class.pageStreaming.executeRequestFuncName}({@argList(class)}) {
-      var {@class.requestVarName} = gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@argList(class)});
+    function {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)}) {
+      var {@class.requestVarName} = gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@argList(class, @FALSE)});
       request.then(function({@class.responseVarName}) {
         var {@class.pageStreaming.pageVarName} = {@class.responseVarName}.result.{@class.pageStreaming.resourceFieldName};
         @if class.pageStreaming.isResourceRepeated
@@ -101,7 +101,7 @@
           @else
             {@class.paramsVarName}.pageToken = {@class.responseVarName()}.result.nextPageToken;
           @end
-          {@class.pageStreaming.executeRequestFuncName}({@argList(class)});
+          {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)});
         }
       }, function(reason) {
         console.log('error: ' + reason.result.error.message);
@@ -136,7 +136,12 @@
   </script>
 @end
 
-@private argList(class)
+# If `isApiCall` is true, then if `needParams` is false and `hasRequestBody` is
+# true, the function will return "{}, {@class.requestBodyVarName}". Otherwise,
+# it will return "{@class.requestBodyVarName}".
+# We make this distinction because the request body is the second argument to
+# the dynamically generated function produced by the client library.
+@private argList(class, isCall)
   @if class.needParams
     @if class.hasRequestBody
       {@class.paramsVarName}, {@class.requestBodyVarName}
@@ -145,7 +150,11 @@
     @end
   @else
     @if class.hasRequestBody
-      {}, {@class.requestBodyVarName}
+      @if isCall
+        {}, {@class.requestBodyVarName}
+      @else
+        {@class.requestBodyVarName}
+      @end
     @end
   @end
 @end
