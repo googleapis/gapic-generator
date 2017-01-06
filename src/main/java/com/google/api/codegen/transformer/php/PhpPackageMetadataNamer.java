@@ -28,7 +28,7 @@ public class PhpPackageMetadataNamer extends PackageMetadataNamer {
     // Get the service name from the package name by removing the version suffix (if any).
     List<String> names = Splitter.on("\\").splitToList(packageName);
     if (names.size() < 2) {
-      this.serviceName = Name.from(packageName);
+      this.serviceName = Name.upperCamel(packageName);
     } else {
       String serviceName = names.get(names.size() - 1);
       if (serviceName.matches("V\\d+.*")) {
