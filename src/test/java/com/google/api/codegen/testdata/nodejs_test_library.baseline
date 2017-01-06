@@ -582,14 +582,14 @@ describe('LibraryServiceClient', function() {
         return mockStream;
       };
 
-      var stream = client.streamShelves(request).on('data', function(response) {
+      client.streamShelves(request).on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
       }).on('error', function(err) {
         done(err);
       });
 
-      stream.emitImmediately();
+      mockStream.emitImmediately();
     });
   });
 
@@ -621,14 +621,14 @@ describe('LibraryServiceClient', function() {
         return mockStream;
       };
 
-      var stream = client.streamBooks(request).on('data', function(response) {
+      client.streamBooks(request).on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
       }).on('error', function(err) {
         done(err);
       });
 
-      stream.emitImmediately();
+      mockStream.emitImmediately();
     });
   });
 
@@ -650,9 +650,8 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      var mockStream = new MockStream(request, expectedResponse);
       client._discussBook = function() {
-        return mockStream;
+        return new MockStream(request, expectedResponse);
       };
 
       var stream = client.discussBook().on('data', function(response) {
