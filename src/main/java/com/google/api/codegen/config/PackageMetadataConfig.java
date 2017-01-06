@@ -30,9 +30,13 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
+  protected abstract Map<TargetLanguage, VersionBound> grpcVersionBound();
+
   protected abstract Map<TargetLanguage, VersionBound> protoVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> commonProtosVersionBound();
+
+  protected abstract Map<TargetLanguage, VersionBound> authVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> packageVersionBound();
 
@@ -41,6 +45,11 @@ public abstract class PackageMetadataConfig {
   /** The version of GAX that this package depends on. Configured per language. */
   public VersionBound gaxVersionBound(TargetLanguage language) {
     return gaxVersionBound().get(language);
+  }
+
+  /** The version of gRPC that this package depends on. Configured per language. */
+  public VersionBound grpcVersionBound(TargetLanguage language) {
+    return grpcVersionBound().get(language);
   }
 
   /**
@@ -62,6 +71,11 @@ public abstract class PackageMetadataConfig {
   /** The version the client library package. E.g., "0.14.0". Configured per language. */
   public VersionBound packageVersionBound(TargetLanguage language) {
     return packageVersionBound().get(language);
+  }
+
+  /** The version the auth library package that this package depends on. Configured per language. */
+  public VersionBound authVersionBound(TargetLanguage language) {
+    return authVersionBound().get(language);
   }
 
   /**
@@ -101,9 +115,13 @@ public abstract class PackageMetadataConfig {
   protected abstract static class Builder {
     abstract Builder gaxVersionBound(Map<TargetLanguage, VersionBound> val);
 
+    abstract Builder grpcVersionBound(Map<TargetLanguage, VersionBound> val);
+
     abstract Builder protoVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder commonProtosVersionBound(Map<TargetLanguage, VersionBound> val);
+
+    abstract Builder authVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder packageName(Map<TargetLanguage, String> val);
 
@@ -131,9 +149,11 @@ public abstract class PackageMetadataConfig {
   public static PackageMetadataConfig createDummyPackageMetadataConfig() {
     return newBuilder()
         .gaxVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .grpcVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .packageName(ImmutableMap.<TargetLanguage, String>of())
         .commonProtosVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .authVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .packageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .shortName("")
         .apiVersion("")
@@ -153,11 +173,15 @@ public abstract class PackageMetadataConfig {
     return newBuilder()
         .gaxVersionBound(
             createVersionMap((Map<String, Map<String, String>>) configMap.get("gax_version")))
+        .grpcVersionBound(
+            createVersionMap((Map<String, Map<String, String>>) configMap.get("grpc_version")))
         .protoVersionBound(
             createVersionMap((Map<String, Map<String, String>>) configMap.get("proto_version")))
         .commonProtosVersionBound(
             createVersionMap(
                 (Map<String, Map<String, String>>) configMap.get("common_protos_version")))
+        .authVersionBound(
+            createVersionMap((Map<String, Map<String, String>>) configMap.get("auth_version")))
         .packageVersionBound(
             createVersionMap((Map<String, Map<String, String>>) configMap.get("package_version")))
         .packageName(createPackageNameMap((Map<String, String>) configMap.get("package_name")))

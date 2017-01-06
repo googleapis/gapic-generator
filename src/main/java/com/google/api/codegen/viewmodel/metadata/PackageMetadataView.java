@@ -42,9 +42,13 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract VersionBound gaxVersionBound();
 
+  public abstract VersionBound grpcVersionBound();
+
   public abstract VersionBound protoVersionBound();
 
   public abstract VersionBound commonProtosVersionBound();
+
+  public abstract VersionBound authVersionBound();
 
   @Nullable
   public abstract String serviceName();
@@ -88,9 +92,13 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder gaxVersionBound(VersionBound val);
 
+    public abstract Builder grpcVersionBound(VersionBound val);
+
     public abstract Builder protoVersionBound(VersionBound val);
 
     public abstract Builder commonProtosVersionBound(VersionBound val);
+
+    public abstract Builder authVersionBound(VersionBound val);
 
     public abstract Builder serviceName(String val);
 
