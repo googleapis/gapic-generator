@@ -128,27 +128,29 @@
       {@initCodeLines(test.mockResponse.initCode)}
 
       // Mock Grpc layer
+      var mockStream = new MockStream(request, expectedResponse);
       @switch test.grpcStreamingType
       @case "ServerStreaming"
-        client._{@test.clientMethodName} = function(request) {
-          assert.deepStrictEqual(request, this.expectedRequest);
-          var mockStream = new MockStream(request, expectedResponse);
-          return mockStream.emitImmediately();
+        client._{@test.clientMethodName} = function(actualRequest) {
+          assert.deepStrictEqual(actualRequest, request);
+          return mockStream;
         };
       @case "BidiStreaming"
         client._{@test.clientMethodName} = function() {
-          return new MockStream(request, expectedResponse);
+          return mockStream;
         };
       @end
 
       @switch test.grpcStreamingType
       @case "ServerStreaming"
-        client.{@test.clientMethodName}(request).on('data', function(response) {
+        var stream = client.{@test.clientMethodName}(request).on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
           done()
         }).on('error', function(err) {
           done(err);
         });
+
+        stream.emitImmediately();
       @case "BidiStreaming"
         var stream = client.{@test.clientMethodName}().on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
