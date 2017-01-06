@@ -296,11 +296,11 @@
         public {@api.implName}({@api.grpcTypeName} grpcClient, {@settings.name} settings)
         {
             this.GrpcClient = grpcClient;
+            {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
             @if api.hasLongRunningOperations
                 LongRunningOperationsClient = new OperationsClientImpl(
-                    grpcClient.CreateOperationsClient(), settings.LongRunningOperationsSettings);
+                    grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
             @end
-            {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
             _clientHelper = new ClientHelper(effectiveSettings);
             @join rerouted : api.reroutedGrpcClients
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
@@ -321,8 +321,8 @@
             /// The client for long-running operations.
             /// </summary>
             public override OperationsClient LongRunningOperationsClient { get; }
-        @end
 
+        @end
         // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
         @join method : api.modifyMethods
             partial void {@method.name}(ref {@method.requestTypeName} request, ref CallSettings settings);
@@ -567,7 +567,7 @@
 # method: StaticLangApiMethodView
 @private operationRequestObjectPollOnceMethodSync(method)
     /// <summary>
-    /// Poll an operation once, using an <c>operationName</c> from a previous invocation of <see cref="{@method.name}"/>.
+    /// Poll an operation once, using an <c>operationName</c> from a previous invocation of <c>{@method.name}</c>.
     /// </summary>
     /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
     /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
@@ -604,7 +604,7 @@
 # method: StaticLangApiMethodView
 @private operationRequestObjectPollOnceMethodAsync(method)
     /// <summary>
-    /// Asynchronously poll an operation once, using an <c>operationName</c> from a previous invocation of <see cref="{@method.name}"/>.
+    /// Asynchronously poll an operation once, using an <c>operationName</c> from a previous invocation of <c>{@method.name}</c>.
     /// </summary>
     /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
     /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>

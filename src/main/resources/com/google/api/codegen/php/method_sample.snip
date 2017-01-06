@@ -1,14 +1,30 @@
 @extends "php/common.snip"
 
-@snippet decorateSampleCode(apiMethod, coreSampleCode)
+@snippet decorateSampleCode(xapiClass, apiMethod, coreSampleCode)
     try {
-        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+        @if xapiClass.hasMissingDefaultOptions
+            $options = [
+                @if xapiClass.missingDefaultServiceAddress
+                    'serviceAddress' => 'my-service-address',
+                @end
+                @if xapiClass.missingDefaultServiceScopes
+                    'scopes' => ['my-service-scope'],
+                @end
+            ];
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
+        @else
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+        @end
         {@initCode(apiMethod.initCode)}
         {@coreSampleCode}
     } finally {
-        if (isset(${@apiMethod.apiVariableName})) {
+        @if xapiClass.hasMissingDefaultOptions
+            if (isset(${@apiMethod.apiVariableName})) {
+                ${@apiMethod.apiVariableName}->close();
+            }
+        @else
             ${@apiMethod.apiVariableName}->close();
-        }
+        @end
     }
 @end
 
@@ -39,14 +55,14 @@
     // Iterate through all elements
     $pagedResponse = {@methodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iterateAllElements() as $element) {
-        // doThingsWith(element);
+        // doSomethingWith($element);
     }
 
     // OR iterate over pages of elements, with the maximum page size set to 5
     $pagedResponse = {@pageSizeMethodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iteratePages() as $page) {
         foreach ($page as $element) {
-            // doThingsWith(element);
+            // doSomethingWith($element);
         }
     }
 @end

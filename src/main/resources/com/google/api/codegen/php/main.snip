@@ -40,7 +40,7 @@
 
 @private serviceDoc(xapiClass)
     @let coreSampleCode = sampleCode(xapiClass.doc.exampleApiMethod), \
-         decoratedSampleCode = decorateSampleCode(xapiClass.doc.exampleApiMethod, coreSampleCode)
+         decoratedSampleCode = decorateSampleCode(xapiClass, xapiClass.doc.exampleApiMethod, coreSampleCode)
         {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
     @end
 @end
@@ -80,6 +80,7 @@
          * The default address of the service.
          */
         const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
+
     @end
 
     /**
@@ -92,8 +93,15 @@
      */
     const DEFAULT_TIMEOUT_MILLIS = 30000;
 
-    const _CODEGEN_NAME = 'gapic';
-    const _CODEGEN_VERSION = '0.1.0';
+    /**
+     * The name of the code generator, to be included in the agent header.
+     */
+    const CODEGEN_NAME = 'gapic';
+
+    /**
+     * The code generator version, to be included in the agent header.
+     */
+    const CODEGEN_VERSION = '0.1.0';
     {@""}
 @end
 
@@ -187,29 +195,31 @@
 @end
 
 @private pageStreamingDescriptorFunction(xapiClass)
-    private static function getPageStreamingDescriptors()
-    {
-        @join descriptor : xapiClass.pageStreamingDescriptors
-            ${@descriptor.varName} =
-                    new PageStreamingDescriptor([
-                        'requestPageTokenField' => '{@descriptor.requestTokenFieldName}',
-                        @if descriptor.requestHasPageSizeField
-                            'requestPageSizeField' => '{@descriptor.requestPageSizeFieldName}',
-                        @end
-                        'responsePageTokenField' => '{@descriptor.responseTokenFieldName}',
-                        'resourceField' => '{@descriptor.resourcesFieldName}',
-                    ]);
-        @end
-
-        $pageStreamingDescriptors = [
+    @if xapiClass.hasPageStreamingMethods
+        private static function getPageStreamingDescriptors()
+        {
             @join descriptor : xapiClass.pageStreamingDescriptors
-                '{@descriptor.methodName}' => ${@descriptor.varName},
+                ${@descriptor.varName} =
+                        new PageStreamingDescriptor([
+                            'requestPageTokenField' => '{@descriptor.requestTokenFieldName}',
+                            @if descriptor.requestHasPageSizeField
+                                'requestPageSizeField' => '{@descriptor.requestPageSizeFieldName}',
+                            @end
+                            'responsePageTokenField' => '{@descriptor.responseTokenFieldName}',
+                            'resourceField' => '{@descriptor.resourcesFieldName}',
+                        ]);
             @end
-        ];
 
-        return $pageStreamingDescriptors;
-    }
-    {@""}
+            $pageStreamingDescriptors = [
+                @join descriptor : xapiClass.pageStreamingDescriptors
+                    '{@descriptor.methodName}' => ${@descriptor.varName},
+                @end
+            ];
+
+            return $pageStreamingDescriptors;
+        }
+        {@""}
+    @end
 @end
 
 @private longRunningDescriptorFunction(xapiClass)
@@ -240,6 +250,7 @@
 @end
 
 @private constructor(xapiClass)
+
     // TODO(garrettjones): add channel (when supported in gRPC)
     /**
      * Constructor.
@@ -286,7 +297,7 @@
      *                              Google\Auth library.
      * }
      @if xapiClass.hasMissingDefaultOptions
-         * @throws ValidationException Throws a ValidationException if required arguments are missing
+         * @@throws ValidationException Throws a ValidationException if required arguments are missing
          *                             from the $options array.
      @end
      */
@@ -331,8 +342,8 @@
         $headerDescriptor = new AgentHeaderDescriptor([
             'clientName' => $options['appName'],
             'clientVersion' => $options['appVersion'],
-            'codeGenName' => self::_CODEGEN_NAME,
-            'codeGenVersion' => self::_CODEGEN_VERSION,
+            'codeGenName' => self::CODEGEN_NAME,
+            'codeGenVersion' => self::CODEGEN_VERSION,
             'gaxVersion' => AgentHeaderDescriptor::getGaxVersion(),
             'phpVersion' => phpversion(),
         ]);
@@ -343,10 +354,12 @@
                 '{@methodKey}' => $defaultDescriptors,
             @end
         ];
-        $pageStreamingDescriptors = self::getPageStreamingDescriptors();
-        foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
-            $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
-        }
+        @if xapiClass.hasPageStreamingMethods
+            $pageStreamingDescriptors = self::getPageStreamingDescriptors();
+            foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
+                $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
+            }
+        @end
         @if xapiClass.hasLongRunningOperations
             $longRunningDescriptors = self::getLongRunningDescriptors();
             foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
@@ -392,7 +405,7 @@
 @private apiMethods(xapiClass)
     @join apiMethod : xapiClass.apiMethods
         @let coreSampleCode = sampleCode(apiMethod)
-            {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+            {@methodDoc(apiMethod.doc, decorateSampleCode(xapiClass, apiMethod, coreSampleCode))}
         @end
         public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
         {
