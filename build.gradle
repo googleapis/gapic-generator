@@ -456,12 +456,13 @@ task verifyLicense << {
   def srcFiles = []
   sourceSets
       .collectMany{it.allJava.getSrcDirs()}
-      .each{it.eachFileRecurse(FileType.FILES, {srcFiles << it})}
+      .each{it.eachFileRecurse(FileType.FILES, {srcFiles << new Tuple(it, it.text)})}
   srcFiles = srcFiles
-      .findAll{!it.path.contains("/generated/") && it.path.endsWith(".java")}
-      .findAll{!it.text.startsWith(licenseText)}
+      .findAll{!it.get(0).path.contains("/generated/") && it.get(0).path.endsWith(".java")}
+      .collect{new Tuple(it.get(0), it.get(1).replaceAll("Copyright 20[0-9]{2}", "Copyright 20xx"))}
+      .findAll{!it.get(1).startsWith(licenseText)}
   if (srcFiles.asList().size() > 0) {
-    srcFiles.each({println 'missing license: ' + it})
+    srcFiles.each({println 'missing license: ' + it.get(0)})
     throw new IllegalStateException("Above files do not have licenses")
   }
 }
