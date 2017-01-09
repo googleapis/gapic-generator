@@ -26,6 +26,7 @@ import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
+import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ListMethodDetailView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
@@ -328,6 +329,12 @@ public class ApiMethodTransformer {
 
   public StaticLangApiMethodView generateOperationRequestObjectMethod(
       MethodTransformerContext context) {
+    return generateOperationRequestObjectMethod(
+        context, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
+  public StaticLangApiMethodView generateOperationRequestObjectMethod(
+      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -340,6 +347,7 @@ public class ApiMethodTransformer {
         context,
         namer.getCallableMethodName(context.getMethod()),
         Synchronicity.Sync,
+        additionalParams,
         methodViewBuilder);
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
@@ -348,14 +356,39 @@ public class ApiMethodTransformer {
     return methodViewBuilder.type(ClientMethodType.OperationRequestObjectMethod).build();
   }
 
-  public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(
-      MethodTransformerContext context) {
-    return generateAsyncOperationFlattenedMethod(
-        context, Collections.<ParamWithSimpleDoc>emptyList());
+  public StaticLangApiMethodView generateOperationFlattenedMethod(
+      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
+    methodViewBuilder.exampleName(
+        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+    methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
+    setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
+    methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
+    TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
+
+    return methodViewBuilder.type(ClientMethodType.OperationFlattenedMethod).build();
   }
 
   public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(
-      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodTransformerContext context) {
+    return generateAsyncOperationFlattenedMethod(
+        context,
+        Collections.<ParamWithSimpleDoc>emptyList(),
+        ClientMethodType.AsyncOperationFlattenedMethod,
+        false);
+  }
+
+  public StaticLangApiMethodView generateAsyncOperationFlattenedMethod(
+      MethodTransformerContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      ClientMethodType type,
+      boolean requiresOperationMethod) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -367,20 +400,25 @@ public class ApiMethodTransformer {
         namer.getAsyncApiMethodExampleName(context.getInterface(), context.getMethod()));
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Async, methodViewBuilder);
+    if (requiresOperationMethod) {
+      methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
+    }
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 
-    return methodViewBuilder.type(ClientMethodType.AsyncOperationFlattenedMethod).build();
+    return methodViewBuilder.type(type).build();
   }
 
   public StaticLangApiMethodView generateAsyncOperationRequestObjectMethod(
       MethodTransformerContext context) {
     return generateAsyncOperationRequestObjectMethod(
-        context, Collections.<ParamWithSimpleDoc>emptyList());
+        context, Collections.<ParamWithSimpleDoc>emptyList(), false);
   }
 
   public StaticLangApiMethodView generateAsyncOperationRequestObjectMethod(
-      MethodTransformerContext context, List<ParamWithSimpleDoc> additionalParams) {
+      MethodTransformerContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      boolean requiresOperationMethod) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -396,6 +434,9 @@ public class ApiMethodTransformer {
         Synchronicity.Async,
         additionalParams,
         methodViewBuilder);
+    if (requiresOperationMethod) {
+      methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
+    }
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 
@@ -729,11 +770,12 @@ public class ApiMethodTransformer {
         context.getMethod().getRequestStreaming()
             ? InitCodeOutputType.SingleObject
             : InitCodeOutputType.FieldList;
-    apiMethod.initCode(
+    InitCodeView initCode =
         initCodeTransformer.generateInitCode(
             context.cloneWithEmptyTypeTable(),
             createInitCodeContext(
-                context, context.getMethodConfig().getRequiredFieldConfigs(), initCodeOutputType)));
+                context, context.getMethodConfig().getRequiredFieldConfigs(), initCodeOutputType));
+    apiMethod.initCode(initCode);
 
     apiMethod.doc(generateOptionalArrayMethodDoc(context));
 
@@ -741,6 +783,7 @@ public class ApiMethodTransformer {
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     apiMethod.requestTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType()));
+    apiMethod.hasRequestParameters(initCode.lines().size() > 0);
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     apiMethod.key(namer.getMethodKey(context.getMethod()));
     apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethod()));
@@ -758,7 +801,11 @@ public class ApiMethodTransformer {
         generateRequestObjectParams(context, filteredFieldConfigs));
     apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
-    apiMethod.isLongrunningOperation(context.getMethodConfig().isLongRunningOperation());
+    apiMethod.isLongRunningOperation(context.getMethodConfig().isLongRunningOperation());
+    apiMethod.longRunningView(
+        context.getMethodConfig().isLongRunningOperation()
+            ? lroTransformer.generateDetailView(context)
+            : null);
 
     return apiMethod.build();
   }
@@ -874,6 +921,7 @@ public class ApiMethodTransformer {
     }
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, fieldConfig);
+    String addCallName = namer.getFieldAddFunctionName(field);
     String transformParamFunctionName = null;
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
         && fieldConfig.hasDifferentMessageResourceNameConfig()) {
@@ -886,6 +934,7 @@ public class ApiMethodTransformer {
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);
+    param.addCallName(addCallName);
     param.transformParamFunctionName(transformParamFunctionName);
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());

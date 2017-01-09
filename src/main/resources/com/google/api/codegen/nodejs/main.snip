@@ -271,7 +271,7 @@
 
         @if longrunningMethods
 
-          var operationsClient = new gax.lro({
+          this.operationsClient = new gax.lro({
             auth: gaxGrpc.auth,
             grpc: gaxGrpc.grpc
           }).operationsClient({
@@ -283,11 +283,11 @@
             appVersion: appVersion
           });
           
-          var longrunningDescriptors = {
+          this.longrunningDescriptors = {
             @join method : longrunningMethods on {@", "}.add(BREAK)
               @let longrunningConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method).getLongRunningConfig;
                 {@methodName(method)}: new gax.LongrunningDescriptor(
-                  operationsClient,
+                  this.operationsClient,
                   grpcClients.{@longrunningConfig.getReturnType}.decode,
                   grpcClients.{@longrunningConfig.getMetadataType}.decode)
               @end

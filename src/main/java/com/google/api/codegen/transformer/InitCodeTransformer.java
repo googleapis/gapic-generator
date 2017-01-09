@@ -473,10 +473,16 @@ public class InitCodeTransformer {
         fieldSetting.fieldSetFunction(
             namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));
       }
+      fieldSetting.fieldAddFunction(
+          namer.getFieldAddFunctionName(item.getType(), Name.from(item.getKey())));
 
       fieldSetting.identifier(getVariableName(context, item));
       fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));
       fieldSetting.fieldName(context.getNamer().publicFieldName(Name.from(item.getKey())));
+
+      fieldSetting.isMap(item.getType().isMap());
+      fieldSetting.isArray(!item.getType().isMap() && item.getType().isRepeated());
+      fieldSetting.elementTypeName(context.getTypeTable().getFullNameFor(item.getType()));
 
       allSettings.add(fieldSetting.build());
     }

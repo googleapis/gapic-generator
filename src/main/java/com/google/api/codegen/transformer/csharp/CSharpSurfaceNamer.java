@@ -166,11 +166,6 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  @Override
   public String getApiSnippetsClassName(Interface interfaze) {
     return publicClassName(
         Name.upperCamel("Generated", interfaze.getSimpleName(), "ClientSnippets"));
@@ -344,11 +339,6 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperVariableName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  @Override
   public String getApiWrapperClassImplName(Interface interfaze) {
     return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientImpl"));
   }
@@ -376,6 +366,15 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     return publicMethodName(identifier);
+  }
+
+  @Override
+  public String getAndSaveOperationResponseTypeName(
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+    String responseTypeName =
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+    return typeTable.getAndSaveNicknameForContainer(
+        "Google.LongRunning.Operation", responseTypeName);
   }
 
   @Override

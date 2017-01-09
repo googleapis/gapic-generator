@@ -39,18 +39,25 @@ public class MockServiceTransformer {
       if (!service.isReachable()) {
         continue;
       }
-      interfaces.put(service.getFullName(), service);
-      InterfaceConfig interfaceConfig = apiConfig.getInterfaceConfig(service);
-      for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
-        String reroute = methodConfig.getRerouteToGrpcInterface();
-        if (!Strings.isNullOrEmpty(reroute)) {
-          Interface targetInterface = model.getSymbolTable().lookupInterface(reroute);
-          interfaces.put(reroute, targetInterface);
-        }
-      }
+      interfaces.putAll(getGrpcInterfacesForService(model, apiConfig, service));
     }
 
     return new ArrayList<Interface>(interfaces.values());
+  }
+
+  public Map<String, Interface> getGrpcInterfacesForService(
+      Model model, ApiConfig apiConfig, Interface service) {
+    Map<String, Interface> interfaces = new LinkedHashMap<>();
+    interfaces.put(service.getFullName(), service);
+    InterfaceConfig interfaceConfig = apiConfig.getInterfaceConfig(service);
+    for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+      String reroute = methodConfig.getRerouteToGrpcInterface();
+      if (!Strings.isNullOrEmpty(reroute)) {
+        Interface targetInterface = model.getSymbolTable().lookupInterface(reroute);
+        interfaces.put(reroute, targetInterface);
+      }
+    }
+    return interfaces;
   }
 
   public List<MockGrpcMethodView> createMockGrpcMethodViews(SurfaceTransformerContext context) {

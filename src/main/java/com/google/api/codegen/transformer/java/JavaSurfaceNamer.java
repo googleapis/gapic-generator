@@ -51,21 +51,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  @Override
-  public String getApiWrapperClassConstructorName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  @Override
-  public String getApiWrapperVariableName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  @Override
   public String getApiSnippetsClassName(Interface interfaze) {
     return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
   }

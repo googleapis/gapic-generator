@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 
 public class LongRunningTransformer {
@@ -34,6 +35,7 @@ public class LongRunningTransformer {
         context.getTypeTable().getAndSaveNicknameFor(lroConfig.getMetadataType());
 
     return LongRunningOperationDetailView.newBuilder()
+        .methodName(namer.getApiMethodName(context.getMethod(), VisibilityConfig.PUBLIC))
         .constructorName(namer.getTypeConstructor(clientReturnTypeName))
         .clientReturnTypeName(clientReturnTypeName)
         .operationPayloadTypeName(namer.valueType(operationPayloadTypeName))

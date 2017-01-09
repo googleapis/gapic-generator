@@ -145,6 +145,13 @@
                 )));
 
         @end
+        @if api.hasLongRunningOperations
+            /// <summary>
+            /// Settings used for long running operations.
+            /// </summary>
+            public OperationsSettings LongRunningOperationsSettings { get; set; }
+
+        @end
         /// <summary>
         /// Creates a deep clone of this object, with all the same property values.
         /// </summary>
@@ -251,6 +258,16 @@
             get { throw new NotImplementedException(); }
         }
 
+        @if api.hasLongRunningOperations
+            /// <summary>
+            /// The client for long-running operations.
+            /// </summary>
+            public virtual OperationsClient LongRunningOperationsClient
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+        @end
         @join method : api.apiMethods
             {@xmlDoc(method.doc)}
             {@method(method, FALSE)}
@@ -280,6 +297,10 @@
         {
             this.GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
+            @if api.hasLongRunningOperations
+                LongRunningOperationsClient = new OperationsClientImpl(
+                    grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
+            @end
             _clientHelper = new ClientHelper(effectiveSettings);
             @join rerouted : api.reroutedGrpcClients
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
@@ -294,7 +315,14 @@
         /// The underlying gRPC {@api.grpcServiceName} client.
         /// </summary>
         public override {@api.grpcTypeName} GrpcClient { get; }
-        
+
+        @if api.hasLongRunningOperations
+            /// <summary>
+            /// The client for long-running operations.
+            /// </summary>
+            public override OperationsClient LongRunningOperationsClient { get; }
+
+        @end
         // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
         @join method : api.modifyMethods
             partial void {@method.name}(ref {@method.requestTypeName} request, ref CallSettings settings);
@@ -329,6 +357,26 @@
         {@pagedRequestObjectMethodSync(method, isImpl)}
     @case "AsyncPagedRequestObjectMethod"
         {@pagedRequestObjectMethodAsync(method, isImpl)}
+    @case "OperationRequestObjectMethod"
+        {@operationRequestObjectMethodSync(method, isImpl)}
+        @if isImpl
+        @else
+
+            {@operationRequestObjectPollOnceMethodSync(method)}
+        @end
+    @case "AsyncOperationRequestObjectMethod"
+        {@operationRequestObjectMethodAsync(method, isImpl)}
+        @if isImpl
+        @else
+
+            {@operationRequestObjectPollOnceMethodAsync(method)}
+        @end
+    @case "AsyncOperationFlattenedCallSettingsMethod"
+        {@operationFlattenedMethodAsyncCallSettings(method, isImpl)}
+    @case "AsyncOperationFlattenedCancellationMethod"
+        {@operationFlattenedMethodAsyncCancellation(method, isImpl)}
+    @case "OperationFlattenedMethod"
+        {@operationFlattenedMethodSync(method, isImpl)}
     @default
         *** ERROR: Cannot handle method type '{@method.type.toString}' ***
     @end
@@ -492,6 +540,125 @@
         {
             throw new NotImplementedException();
         }
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationRequestObjectMethodSync(method, isImpl)
+    @if isImpl
+        public override {@method.operationMethod.clientReturnTypeName} {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return new {@method.operationMethod.clientReturnTypeName}(
+                {@method.callableName}.Sync(request, callSettings), LongRunningOperationsClient);
+        }
+    @else
+        public virtual {@method.operationMethod.clientReturnTypeName} {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+    @end
+@end
+
+# method: StaticLangApiMethodView
+@private operationRequestObjectPollOnceMethodSync(method)
+    /// <summary>
+    /// Poll an operation once, using an <c>operationName</c> from a previous invocation of <c>{@method.name}</c>.
+    /// </summary>
+    /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
+    /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+    /// <returns>The result of polling the operation.</returns>
+    public virtual {@method.operationMethod.clientReturnTypeName} PollOnce{@method.name}(
+        string operationName,
+        CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromName(
+            GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+            LongRunningOperationsClient,
+            callSettings);
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationRequestObjectMethodAsync(method, isImpl)
+    @if isImpl
+        public override async Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return new {@method.operationMethod.clientReturnTypeName}(
+                await {@method.callableName}.Async(request, callSettings), LongRunningOperationsClient);
+        }
+    @else
+        public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+    @end
+@end
+
+# method: StaticLangApiMethodView
+@private operationRequestObjectPollOnceMethodAsync(method)
+    /// <summary>
+    /// Asynchronously poll an operation once, using an <c>operationName</c> from a previous invocation of <c>{@method.name}</c>.
+    /// </summary>
+    /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
+    /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+    /// <returns>A task representing the result of polling the operation.</returns>
+    public virtual Task<{@method.operationMethod.clientReturnTypeName}> PollOnce{@method.name}(
+        string operationName,
+        CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromNameAsync(
+            GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+            LongRunningOperationsClient,
+            callSettings);
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationFlattenedMethodAsyncCallSettings(method, isImpl)
+    @if isImpl
+        *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
+    @else
+        public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
+                {
+                    {@requestProperties(method.forwardingMethodParams)}
+                },
+                callSettings);
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationFlattenedMethodAsyncCancellation(method, isImpl)
+    @if isImpl
+        *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
+    @else
+        public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
+                {
+                    {@requestProperties(method.forwardingMethodParams)}
+                },
+                CallSettings.FromCancellationToken(cancellationToken));
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationFlattenedMethodSync(method, isImpl)
+    @if isImpl
+        *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
+    @else
+        public virtual {@method.operationMethod.clientReturnTypeName} {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
+                {
+                    {@requestProperties(method.forwardingMethodParams)}
+                },
+                callSettings);
     @end
 @end
 
