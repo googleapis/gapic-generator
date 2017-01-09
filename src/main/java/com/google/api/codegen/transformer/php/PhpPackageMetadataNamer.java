@@ -16,8 +16,7 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.util.Name;
-import com.google.common.base.Splitter;
-import java.util.List;
+import com.google.api.codegen.util.php.PhpPackageUtil;
 
 /** PHPPackageMetadataNamer provides PHP specific names for metadata views. */
 public class PhpPackageMetadataNamer extends PackageMetadataNamer {
@@ -26,16 +25,7 @@ public class PhpPackageMetadataNamer extends PackageMetadataNamer {
 
   public PhpPackageMetadataNamer(String packageName, String domainLayerLocation) {
     // Get the service name from the package name by removing the version suffix (if any).
-    List<String> names = Splitter.on("\\").splitToList(packageName);
-    if (names.size() < 2) {
-      this.serviceName = Name.upperCamel(packageName);
-    } else {
-      String serviceName = names.get(names.size() - 1);
-      if (serviceName.matches("V\\d+.*")) {
-        serviceName = names.get(names.size() - 2);
-      }
-      this.serviceName = Name.upperCamel(serviceName);
-    }
+    this.serviceName = getApiNameFromPackageName(packageName);
     this.domainLayerLocation = domainLayerLocation;
   }
 
@@ -51,6 +41,19 @@ public class PhpPackageMetadataNamer extends PackageMetadataNamer {
       return domainLayerLocation + "/" + serviceNameLower;
     } else {
       return serviceNameLower + "/" + serviceNameLower;
+    }
+  }
+
+  public static Name getApiNameFromPackageName(String packageName) {
+    String[] names = PhpPackageUtil.splitPackageName(packageName);
+    if (names.length < 2) {
+      return Name.upperCamel(packageName);
+    } else {
+      String serviceName = names[names.length - 1];
+      if (PhpPackageUtil.isPackageVersion(serviceName)) {
+        serviceName = names[names.length - 2];
+      }
+      return Name.upperCamel(serviceName);
     }
   }
 }

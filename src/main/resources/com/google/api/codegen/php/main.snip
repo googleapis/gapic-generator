@@ -2,7 +2,7 @@
 @extends "php/method_sample.snip"
 
 @snippet generate(xapiClass)
-    {@renderFileHeader(xapiClass)}
+    {@renderFileHeader(xapiClass.fileHeader, generatedCodeWarning(xapiClass))}
 
     {@serviceDoc(xapiClass)}
     class {@xapiClass.name}
@@ -18,10 +18,7 @@
     }
 @end
 
-@private renderFileHeader(xapiClass)
-    <?php
-    {@license(xapiClass.fileHeader)}
-
+@private generatedCodeWarning(xapiClass)
     /*
      * GENERATED CODE WARNING
      * This file was generated from the file
@@ -32,10 +29,6 @@
      * more frequently than those which have been declared beta or 1.0, including changes which break
      * backwards compatibility.
      */
-
-    namespace {@xapiClass.fileHeader.packageName};
-
-    {@importList(xapiClass.fileHeader.imports)}
 @end
 
 @private serviceDoc(xapiClass)

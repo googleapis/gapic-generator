@@ -78,6 +78,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return packageName;
   }
 
+  public String getTestPackageName() {
+    return getNotImplementedString("SurfaceNamer.getTestPackageName");
+  }
+
   public String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }

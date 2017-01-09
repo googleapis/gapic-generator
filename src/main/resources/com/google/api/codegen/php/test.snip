@@ -2,39 +2,20 @@
 @extends "php/method_sample.snip"
 
 @snippet generate(apiTest)
-    {@renderFileHeader(apiTest.fileHeader)}
+    {@renderFileHeader(apiTest.fileHeader, simpleGeneratedCodeWarning())}
 
-    @join serviceImpl : apiTest.serviceImpls
-        class {@serviceImpl.name} extends {@serviceImpl.grpcClassName}
-        {
-            use MockStubTrait;
-        }
-    @end
-
-    @join testClass : apiTest.testClasses
-        class {@testClass.name} extends PHPUnit_Framework_TestCase
-        {
-            {@setupMethods(testClass)}
-            @join test : testClass.testCases
-                {@testCase(test)}
-
-            @end
-        }
-    @end
-@end
-
-@private renderFileHeader(fileHeader)
-    <?php
-    {@license(fileHeader)}
-
-    /*
-     * GENERATED CODE WARNING
-     * This file was automatically generated - do not edit!
+    /**
+     * @@group {@apiTest.testClass.apiName}
+     * @@group grpc
      */
+    class {@apiTest.testClass.name} extends PHPUnit_Framework_TestCase
+    {
+        {@setupMethods(apiTest.testClass)}
+        @join test : apiTest.testClass.testCases
+            {@testCase(test)}
 
-    namespace {@fileHeader.packageName};
-
-    {@importList(fileHeader.imports)}
+        @end
+    }
 @end
 
 @private setupMethods(testClass)
