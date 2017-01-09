@@ -17,7 +17,7 @@
 
 var assert = require('assert');
 var libraryV1 = require('../src/').v1();
-var MockStream = require('google-gax').MockStream;
+var through2 = require('through2');
 
 describe('LibraryServiceClient', function() {
   describe('createShelf', function() {
@@ -575,8 +575,10 @@ describe('LibraryServiceClient', function() {
       // Mock response
       var expectedResponse = {};
 
-      // Mock Grpc layer
-      var mockStream = new MockStream(request, expectedResponse);
+      var mockStream = through2.obj(function (chunk, enc, callback) {
+        callback(null, expectedResponse);
+      });
+
       client._streamShelves = function(actualRequest) {
         assert.deepStrictEqual(actualRequest, request);
         return mockStream;
@@ -589,7 +591,8 @@ describe('LibraryServiceClient', function() {
         done(err);
       });
 
-      mockStream.emitImmediately();
+      // Manually invoke the data event.
+      mockStream.write();
     });
   });
 
@@ -614,8 +617,10 @@ describe('LibraryServiceClient', function() {
           read : read
       };
 
-      // Mock Grpc layer
-      var mockStream = new MockStream(request, expectedResponse);
+      var mockStream = through2.obj(function (chunk, enc, callback) {
+        callback(null, expectedResponse);
+      });
+
       client._streamBooks = function(actualRequest) {
         assert.deepStrictEqual(actualRequest, request);
         return mockStream;
@@ -628,7 +633,8 @@ describe('LibraryServiceClient', function() {
         done(err);
       });
 
-      mockStream.emitImmediately();
+      // Manually invoke the data event.
+      mockStream.write();
     });
   });
 
@@ -649,9 +655,13 @@ describe('LibraryServiceClient', function() {
           comment : comment
       };
 
-      // Mock Grpc layer
+      var mockStream = through2.obj(function (chunk, enc, callback) {
+        assert.deepStrictEqual(chunk, request);
+        callback(null, expectedResponse);
+      });
+
       client._discussBook = function() {
-        return new MockStream(request, expectedResponse);
+        return mockStream;
       };
 
       var stream = client.discussBook().on('data', function(response) {

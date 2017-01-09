@@ -26,7 +26,7 @@
     var {@apiTest.apiWrapperModuleName} = require('../src/')();
   @end
   @if apiTest.hasGrpcStreaming
-    var MockStream = require('google-gax').MockStream;
+    var through2 = require('through2');
   @end
 @end
 
@@ -127,17 +127,24 @@
       // Mock response
       {@initCodeLines(test.mockResponse.initCode)}
 
-      // Mock Grpc layer
       @switch test.grpcStreamingType
       @case "ServerStreaming"
-        var mockStream = new MockStream(request, expectedResponse);
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          callback(null, expectedResponse);
+        });
+
         client._{@test.clientMethodName} = function(actualRequest) {
           assert.deepStrictEqual(actualRequest, request);
           return mockStream;
         };
       @case "BidiStreaming"
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          assert.deepStrictEqual(chunk, request);
+          callback(null, expectedResponse);
+        });
+
         client._{@test.clientMethodName} = function() {
-          return new MockStream(request, expectedResponse);
+          return mockStream;
         };
       @end
 
@@ -150,7 +157,8 @@
           done(err);
         });
 
-        mockStream.emitImmediately();
+        // Manually invoke the data event.
+        mockStream.write();
       @case "BidiStreaming"
         var stream = client.{@test.clientMethodName}().on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
