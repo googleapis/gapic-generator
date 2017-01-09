@@ -282,7 +282,7 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setApiConfig(apiConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new PhpPackageMetadataTransformer())
+                .setModelToViewTransformer(new PhpPackageMetadataTransformer(packageConfig))
                 .build();
 
         providers.add(provider);

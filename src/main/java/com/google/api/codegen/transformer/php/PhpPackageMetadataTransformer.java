@@ -15,11 +15,13 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
+import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.Iterables;
@@ -31,12 +33,12 @@ import java.util.List;
 public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_FILE = "php/composer.snip";
 
-  // TODO: Retrieve the following values from static file
-  // Github issue: https://github.com/googleapis/toolkit/issues/848
-  private static final String PACKAGE_VERSION = "0.1.0";
-  private static final String GAX_VERSION = "0.6.*";
-  private static final String PROTO_VERSION = "0.7.*";
-  private static final String PACKAGE_URL = "https://github.com/googleapis/googleapis";
+  PackageMetadataConfig packageConfig;
+  PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
+
+  public PhpPackageMetadataTransformer(PackageMetadataConfig packageConfig) {
+    this.packageConfig = packageConfig;
+  }
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -50,21 +52,17 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
     List<ViewModel> models = new ArrayList<ViewModel>();
     PhpPackageMetadataNamer namer =
         new PhpPackageMetadataNamer(apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(namer, hasMultipleServices));
+    models.add(generateMetadataView(model, namer, hasMultipleServices));
     return models;
   }
 
-  private ViewModel generateMetadataView(PackageMetadataNamer namer, boolean hasMultipleServices) {
-    return PackageMetadataView.newBuilder()
-        .templateFileName(PACKAGE_FILE)
-        .outputPath("composer.json")
-        .identifier(namer.getMetadataIdentifier())
-        .version(PACKAGE_VERSION)
-        .gaxVersion(GAX_VERSION)
-        .protoVersion(PROTO_VERSION)
-        .url(PACKAGE_URL)
-        .serviceName(namer.getMetadataName())
+  private ViewModel generateMetadataView(
+      Model model, PackageMetadataNamer namer, boolean hasMultipleServices) {
+    return metadataTransformer
+        .generateMetadataView(
+            packageConfig, model, PACKAGE_FILE, "composer.json", TargetLanguage.PHP)
         .hasMultipleServices(hasMultipleServices)
+        .identifier(namer.getMetadataIdentifier())
         .build();
   }
 }
