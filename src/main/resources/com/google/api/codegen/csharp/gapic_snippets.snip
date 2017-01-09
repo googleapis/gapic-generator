@@ -38,6 +38,14 @@
         {@pagedRequestObjectMethodSync(snippetMethod)}
     @case "AsyncPagedRequestObjectMethod"
         {@pagedRequestObjectMethodAsync(snippetMethod)}
+    @case "OperationFlattenedMethod"
+        {@operationFlattenedMethodSync(snippetMethod)}
+    @case "AsyncOperationFlattenedMethod"
+        {@operationFlattenedMethodAsync(snippetMethod)}
+    @case "OperationRequestObjectMethod"
+        {@operationRequestObjectMethodSync(snippetMethod)}
+    @case "AsyncOperationRequestObjectMethod"
+        {@operationRequestObjectMethodAsync(snippetMethod)}
     @default
         $unhandledCase: {@snippetMethod.method.type.toString}$
     @end
@@ -215,6 +223,92 @@
             await {@sampleMethodCall(snippetMethod)};
         @end
         // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private operationFlattenedMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        {@preparations(snippetMethod, FALSE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            {@sampleMethodCall(snippetMethod)};
+
+        {@consumeOperationResponse(snippetMethod, FALSE)}
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private operationFlattenedMethodAsync(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CallSettings)
+        // Additional: {@snippetMethod.method.name}({@snippetArgTypes(snippetMethod.method.methodParams)},CancellationToken)
+        {@preparations(snippetMethod, TRUE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            await {@sampleMethodCall(snippetMethod)};
+
+        {@consumeOperationResponse(snippetMethod, TRUE)}
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private operationRequestObjectMethodSync(snippetMethod)
+    public void {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        {@preparations(snippetMethod, FALSE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            {@sampleMethodCall(snippetMethod)};
+
+        {@consumeOperationResponse(snippetMethod, FALSE)}
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private operationRequestObjectMethodAsync(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        {@preparations(snippetMethod, TRUE)}
+        {@snippetMethod.callerResponseTypeName} response =
+            await {@sampleMethodCall(snippetMethod)};
+
+        {@consumeOperationResponse(snippetMethod, TRUE)}
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView, isAsync: Boolean
+@private consumeOperationResponse(snippetMethod, isAsync)
+    // Poll until the returned long-running operation is complete
+    {@snippetMethod.callerResponseTypeName} completedResponse =
+        {@if(isAsync, "await ", "")}response.PollUntilCompleted{@if(isAsync, "Async", "")}();
+    @if snippetMethod.method.hasReturnValue
+        // Retrieve the operation result
+        {@snippetMethod.method.responseTypeName} result = completedResponse.Result;
+    @else
+        // The long-running operation is now complete.
+    @end
+
+    // Or get the name of the operation
+    string operationName = response.Name;
+    // This name can be stored, then the long-running operation retrieved later by name
+    {@snippetMethod.callerResponseTypeName} retrievedResponse =
+        {@if(isAsync, "await ", "")}{@snippetMethod.apiVariableName}.PollOnce{@snippetMethod.method.name}(operationName);
+    // Check if the retrieved long-running operation has completed
+    if (retrievedResponse.IsCompleted)
+    {
+        @if snippetMethod.method.hasReturnValue
+            // If it has completed, then access the result
+            {@snippetMethod.method.responseTypeName} retrievedResult = retrievedResponse.Result;
+        @else
+            // The long-running operation is now complete.
+        @end
     }
 @end
 
