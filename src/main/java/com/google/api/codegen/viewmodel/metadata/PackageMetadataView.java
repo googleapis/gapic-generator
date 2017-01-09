@@ -46,8 +46,10 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract VersionBound protoVersionBound();
 
+  @Nullable
   public abstract VersionBound commonProtosVersionBound();
 
+  @Nullable
   public abstract VersionBound authVersionBound();
 
   @Nullable

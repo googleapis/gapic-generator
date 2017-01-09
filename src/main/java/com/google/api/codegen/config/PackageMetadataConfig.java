@@ -17,8 +17,14 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.TargetLanguage;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import javax.annotation.Nullable;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -197,32 +203,49 @@ public abstract class PackageMetadataConfig {
 
   private static Map<TargetLanguage, VersionBound> createVersionMap(
       Map<String, Map<String, String>> inputMap) {
-    ImmutableMap.Builder<TargetLanguage, VersionBound> versionMap = new ImmutableMap.Builder<>();
-    for (Map.Entry<String, Map<String, String>> entry : inputMap.entrySet()) {
-      putWithDefault(
-          versionMap,
-          entry.getKey(),
-          VersionBound.create(entry.getValue().get("lower"), entry.getValue().get("upper")));
-    }
-    return versionMap.build();
+    Map<TargetLanguage, Map<String, String>> intermediate = buildMapWithDefault(inputMap);
+    // Convert parsed YAML map into VersionBound object
+    return Maps.transformValues(
+        intermediate,
+        new Function<Map<String, String>, VersionBound>() {
+          @Override
+          @Nullable
+          public VersionBound apply(@Nullable Map<String, String> versionMap) {
+            if (versionMap == null) {
+              return null;
+            }
+            return VersionBound.create(versionMap.get("lower"), versionMap.get("upper"));
+          }
+        });
   }
 
   private static Map<TargetLanguage, String> createPackageNameMap(Map<String, String> inputMap) {
-    ImmutableMap.Builder<TargetLanguage, String> packageNameMap = new ImmutableMap.Builder<>();
-    for (Map.Entry<String, String> entry : inputMap.entrySet()) {
-      putWithDefault(packageNameMap, entry.getKey(), entry.getValue());
-    }
-    return packageNameMap.build();
+    return buildMapWithDefault(inputMap);
   }
 
-  private static <V> void putWithDefault(
-      ImmutableMap.Builder<TargetLanguage, V> builder, String languageName, V value) {
-    if (languageName.equals("default")) {
-      for (TargetLanguage language : TargetLanguage.values()) {
-        builder.put(language, value);
+  /**
+   * Transforms entries of the input map into TargetLanguage, taking into account an optional
+   * default setting.
+   */
+  private static <V> Map<TargetLanguage, V> buildMapWithDefault(Map<String, V> inputMap) {
+    Map<TargetLanguage, V> outputMap = new HashMap<>();
+    Set<TargetLanguage> configuredLanguages = new HashSet<>();
+    V defaultValue = null;
+    for (Map.Entry<String, V> entry : inputMap.entrySet()) {
+      if (entry.getKey().equals("default")) {
+        defaultValue = entry.getValue();
+      } else {
+        TargetLanguage targetLanguage = TargetLanguage.fromString(entry.getKey());
+        configuredLanguages.add(targetLanguage);
+        outputMap.put(targetLanguage, entry.getValue());
       }
-    } else {
-      builder.put(TargetLanguage.fromString(languageName), value);
+
+      for (TargetLanguage language : TargetLanguage.values()) {
+        if (!configuredLanguages.contains(language)) {
+          outputMap.put(language, defaultValue);
+        }
+      }
     }
+    return outputMap;
   }
 }
