@@ -38,20 +38,15 @@
 @private mainFunc(class)
   public static void main(String args[]) throws IOException, GeneralSecurityException {
     @join field : class.fields if class.fields
-      @if field.description
-        @join line : util.getDocLines(field.description, 100)
-          // {@line}
-        @end
-
-
-      @end
-      {@field.typeName} {@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
-      @if field.example
-        // {@field.example}
-      @end
+      {@field(field)}
 
     @end
     @if class.hasRequestBody
+      @join field : class.requestBodyFields if class.requestBodyFields
+        {@field(field)}
+
+
+      @end
       @switch class.methodVerb
       @case "PATCH"
         // TODO: Assign values to desired fields of `{@class.requestBodyVarName}`. Only assigned
@@ -64,6 +59,9 @@
       @end
 
       {@class.requestBodyTypeName} {@class.requestBodyVarName} = new {@class.requestBodyTypeName}();
+      @join field : class.requestBodyFields if class.requestBodyFields
+        {@class.requestBodyVarName}.{@field.setterFuncName}({@field.name});
+      @end
 
     @end
     @if class.hasMediaUpload
@@ -157,6 +155,20 @@
         .setApplicationName("{@class.appName}")
         .build();
   }
+@end
+
+@private field(field)
+      @if field.description
+        @join line : util.getDocLines(field.description, 100)
+          // {@line}
+        @end
+
+
+      @end
+      {@field.typeName} {@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
+      @if field.example
+        // {@field.example}
+      @end
 @end
 
 @private callChain(methodNameComponents)

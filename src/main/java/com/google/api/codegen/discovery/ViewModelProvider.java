@@ -146,6 +146,11 @@ public class ViewModelProvider implements DiscoveryProvider {
       } else {
         tree.set(fieldName, overrideTree.get(fieldName));
       }
+      // If tree has no children, then the above for loop will never execute.
+      // This handles the case where an empty object is overriden.
+      if (tree.size() == 0) {
+        tree.set(fieldPatternString, overrideTree.get(fieldPatternString));
+      }
     }
   }
 

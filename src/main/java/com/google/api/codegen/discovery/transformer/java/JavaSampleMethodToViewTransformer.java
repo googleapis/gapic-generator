@@ -87,17 +87,22 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     List<SampleFieldView> fields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      SampleFieldView sampleFieldView = createSampleFieldView(field, typeTable, symbolTable);
+      SampleFieldView sampleFieldView = createSampleFieldView(field, context, symbolTable);
       fields.add(sampleFieldView);
       fieldVarNames.add(sampleFieldView.name());
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(typeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
       fieldVarNames.add(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable));
+      }
     }
 
     if (methodInfo.isPageStreaming()) {
@@ -131,6 +136,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .requestVarName(requestVarName)
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
         .fields(fields)
         .fieldVarNames(fieldVarNames)
@@ -176,15 +182,19 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   }
 
   private SampleFieldView createSampleFieldView(
-      FieldInfo field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
+      FieldInfo field, SampleTransformerContext context, SymbolTable symbolTable) {
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
+
     TypeInfo typeInfo = field.type();
-    String defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
-        .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
+        .typeName(typeTable.getAndSaveNicknameFor(typeInfo))
         .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
+        .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
         .build();
   }
 

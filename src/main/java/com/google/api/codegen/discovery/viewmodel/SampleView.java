@@ -72,6 +72,9 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract String requestBodyTypeName();
 
+  @Nullable
+  public abstract List<SampleFieldView> requestBodyFields();
+
   public abstract boolean hasResponse();
 
   @Nullable
@@ -192,6 +195,8 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder requestBodyVarName(String val);
 
     public abstract Builder requestBodyTypeName(String val);
+
+    public abstract Builder requestBodyFields(List<SampleFieldView> val);
 
     public abstract Builder hasResponse(boolean val);
 

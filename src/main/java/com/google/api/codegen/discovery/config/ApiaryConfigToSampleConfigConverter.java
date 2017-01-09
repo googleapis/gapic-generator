@@ -88,6 +88,7 @@ public class ApiaryConfigToSampleConfigConverter {
     // The order of fields must be preserved, so we use an ImmutableMap.
     ImmutableMap.Builder<String, FieldInfo> fields = new ImmutableMap.Builder<>();
     TypeInfo requestBodyType = null;
+    boolean isPageStreamingResourceSetterInRequestBody = false;
     for (String fieldName : apiaryConfig.getMethodParams(method.getName())) {
       Type containerType = apiaryConfig.getType(method.getRequestTypeUrl());
       Field field = apiaryConfig.getField(containerType, fieldName);
@@ -95,6 +96,13 @@ public class ApiaryConfigToSampleConfigConverter {
       // request body.
       if (fieldName.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
         requestBodyType = createTypeInfo(field, method);
+
+        Type type = apiaryConfig.getType(field.getTypeUrl());
+        for (Field field2 : type.getFieldsList()) {
+          if (field2.getName().equals(PAGE_TOKEN_FIELD_NAME)) {
+            isPageStreamingResourceSetterInRequestBody = true;
+          }
+        }
         continue;
       }
       fields.put(field.getName(), createFieldInfo(field, containerType, method));
@@ -114,11 +122,7 @@ public class ApiaryConfigToSampleConfigConverter {
       Field field = getPageStreamingResourceField(containerType);
       pageStreamingResourceField = createFieldInfo(field, containerType, method);
     }
-    boolean isPageStreamingResourceSetterInRequestBody = false;
-    if (requestBodyType != null) {
-      isPageStreamingResourceSetterInRequestBody =
-          requestBodyType.message().fields().containsKey(PAGE_TOKEN_FIELD_NAME);
-    }
+
     boolean hasMediaUpload = apiaryConfig.getMediaUpload().contains(method.getName());
     MethodInfo methodInfo =
         MethodInfo.newBuilder()
@@ -189,7 +193,7 @@ public class ApiaryConfigToSampleConfigConverter {
       mapValue = createTypeInfo(apiaryConfig.getField(type, VALUE_FIELD_NAME), method);
     } else if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
       isMessage = true;
-      messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig, true);
+      messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig);
     }
     return TypeInfo.newBuilder()
         .kind(field.getKind())
@@ -242,18 +246,12 @@ public class ApiaryConfigToSampleConfigConverter {
    * important.
    */
   private MessageTypeInfo createMessageTypeInfo(
-      Field field, Method method, ApiaryConfig apiaryConfig, boolean deep) {
-    Type type = apiaryConfig.getType(field.getTypeUrl());
+      Field field, Method method, ApiaryConfig apiaryConfig) {
     String typeName = typeNameGenerator.getMessageTypeName(field.getTypeUrl());
     Map<String, FieldInfo> fields = new HashMap<>();
-    if (deep) {
-      for (Field field2 : type.getFieldsList()) {
-        // TODO(saicheems): We ignore messages as an easy way around cycles for the moment.
-        if (field2.getKind() != Kind.TYPE_MESSAGE) {
-          fields.put(field2.getName(), createFieldInfo(field2, type, method));
-        }
-      }
-    }
+    // Since request body fields aren't used at any point in the process, we
+    // don't fill them in here. Note that a recursive approach to exploring
+    // message fields must be able to handle cycles.
     return MessageTypeInfo.newBuilder()
         .typeName(typeName)
         .subpackage(typeNameGenerator.getSubpackage(false))
