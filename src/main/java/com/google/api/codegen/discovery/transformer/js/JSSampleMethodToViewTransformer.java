@@ -97,7 +97,7 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
     }
 
     // If there are fields, or if the method is page streaming and the
-    // `nextPageToken` field is in the `params` object, then the `params` object
+    // `pageToken` field is in the `params` object, then the `params` object
     // must be present.
     builder.needParams(
         methodInfo.fields().size() > 0
