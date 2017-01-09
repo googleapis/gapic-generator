@@ -47,7 +47,6 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
@@ -76,30 +75,33 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    PhpSurfaceNamer namer = new PhpSurfaceNamer(apiConfig.getPackageName());
+    PhpSurfaceNamer surfacePackageNamer = new PhpSurfaceNamer(apiConfig.getPackageName());
     PhpSurfaceNamer testPackageNamer =
-        new PhpSurfaceNamer(getTestPackageName(apiConfig.getPackageName()));
-    models.addAll(generateTestViews(model, apiConfig, namer, testPackageNamer));
-    models.addAll(generateMockServiceViews(model, apiConfig, namer, testPackageNamer));
+        new PhpSurfaceNamer(surfacePackageNamer.getTestPackageName());
+    models.addAll(generateTestViews(model, apiConfig, surfacePackageNamer, testPackageNamer));
+    models.addAll(
+        generateMockServiceViews(model, apiConfig, surfacePackageNamer, testPackageNamer));
     return models;
   }
 
-  private static ModelTypeTable createTypeTable(ApiConfig apiConfig) {
-    String testPackageName = getTestPackageName(apiConfig.getPackageName());
+  private static ModelTypeTable createTypeTable(String packageName) {
     return new ModelTypeTable(
-        new PhpTypeTable(testPackageName), new PhpModelTypeNameConverter(testPackageName));
+        new PhpTypeTable(packageName), new PhpModelTypeNameConverter(packageName));
   }
 
   private List<MockServiceImplFileView> generateMockServiceViews(
-      Model model, ApiConfig apiConfig, SurfaceNamer namer, SurfaceNamer testPackageNamer) {
+      Model model,
+      ApiConfig apiConfig,
+      SurfaceNamer surfacePackageNamer,
+      SurfaceNamer testPackageNamer) {
     List<MockServiceImplFileView> mockFiles = new ArrayList<>();
 
     for (Interface grpcInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(model, apiConfig)) {
-      ModelTypeTable typeTable = createTypeTable(apiConfig);
-      String name = namer.getMockGrpcServiceImplName(grpcInterface);
+      ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
+      String name = surfacePackageNamer.getMockGrpcServiceImplName(grpcInterface);
       String grpcClassName =
-          typeTable.getAndSaveNicknameFor(namer.getGrpcClientTypeName(grpcInterface));
+          typeTable.getAndSaveNicknameFor(surfacePackageNamer.getGrpcClientTypeName(grpcInterface));
       MockServiceImplView mockImpl =
           MockServiceImplView.newBuilder()
               .name(name)
@@ -124,22 +126,27 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private List<ClientTestFileView> generateTestViews(
-      Model model, ApiConfig apiConfig, SurfaceNamer namer, SurfaceNamer testPackageNamer) {
+      Model model,
+      ApiConfig apiConfig,
+      SurfaceNamer surfacePackageNamer,
+      SurfaceNamer testPackageNamer) {
     List<ClientTestFileView> testViews = new ArrayList<>();
 
     for (Interface service : new InterfaceView().getElementIterable(model)) {
-      ModelTypeTable typeTable = createTypeTable(apiConfig);
+      ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       List<MockServiceImplView> impls = new ArrayList<>();
       SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(service, apiConfig, typeTable, namer, featureConfig);
+          SurfaceTransformerContext.create(
+              service, apiConfig, typeTable, surfacePackageNamer, featureConfig);
       List<MockServiceUsageView> mockServiceList = new ArrayList<>();
 
       for (Interface grpcInterface :
           mockServiceTransformer.getGrpcInterfacesForService(model, apiConfig, service).values()) {
-        String name = namer.getMockGrpcServiceImplName(grpcInterface);
-        String varName = namer.getMockServiceVarName(grpcInterface);
+        String name = surfacePackageNamer.getMockGrpcServiceImplName(grpcInterface);
+        String varName = surfacePackageNamer.getMockServiceVarName(grpcInterface);
         String grpcClassName =
-            typeTable.getAndSaveNicknameFor(namer.getGrpcClientTypeName(grpcInterface));
+            typeTable.getAndSaveNicknameFor(
+                surfacePackageNamer.getGrpcClientTypeName(grpcInterface));
         mockServiceList.add(
             MockServiceUsageView.newBuilder()
                 .className(name)
@@ -154,16 +161,17 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
                 .build());
       }
 
-      String testClassName = namer.getUnitTestClassName(service);
+      String testClassName = surfacePackageNamer.getUnitTestClassName(service);
       ClientTestClassView testClassView =
           ClientTestClassView.newBuilder()
               .apiSettingsClassName(
-                  namer.getNotImplementedString(
+                  surfacePackageNamer.getNotImplementedString(
                       "PhpGapicSurfaceTestTransformer.generateTestView - apiSettingsClassName"))
-              .apiClassName(namer.getApiWrapperClassName(service))
+              .apiClassName(surfacePackageNamer.getApiWrapperClassName(service))
               .name(testClassName)
               .apiName(
-                  PhpPackageMetadataNamer.getApiNameFromPackageName(namer.getPackageName())
+                  PhpPackageMetadataNamer.getApiNameFromPackageName(
+                          surfacePackageNamer.getPackageName())
                       .toLowerUnderscore())
               .testCases(createTestCaseViews(context))
               .mockServices(mockServiceList)
@@ -232,30 +240,5 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
     typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\MockStubTrait");
     typeTable.saveNicknameFor("\\PHPUnit_Framework_TestCase");
-  }
-
-  /** Insert "Tests" into the package name after "Google\Cloud" */
-  private static String getTestPackageName(String packageName) {
-    final String PACKAGE_SPLIT_REGEX = "[\\\\]";
-    final String[] PACKAGE_PREFIX_TO_SKIP = {"Google", "Cloud"};
-
-    ArrayList<String> packageComponents = new ArrayList<>();
-    String[] packageSplit = packageName.split(PACKAGE_SPLIT_REGEX);
-    int packageStartIndex = 0;
-    for (int i = 0; i < PACKAGE_PREFIX_TO_SKIP.length && i < packageSplit.length; i++) {
-      if (packageSplit[i].equals(PACKAGE_PREFIX_TO_SKIP[i])) {
-        packageStartIndex++;
-      } else {
-        break;
-      }
-    }
-    for (int i = 0; i < packageStartIndex; i++) {
-      packageComponents.add(packageSplit[i]);
-    }
-    packageComponents.add("Tests");
-    for (int i = packageStartIndex; i < packageSplit.length; i++) {
-      packageComponents.add(packageSplit[i]);
-    }
-    return Joiner.on("\\").join(packageComponents);
   }
 }
