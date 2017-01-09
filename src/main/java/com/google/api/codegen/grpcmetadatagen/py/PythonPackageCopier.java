@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.metadatagen.py;
+package com.google.api.codegen.grpcmetadatagen.py;
 
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataGenerator;
 import com.google.api.codegen.grpcmetadatagen.GrpcPackageCopier;

@@ -28,8 +28,12 @@ public class RubyCodeGeneratorTest {
   public static class RubyLibraryBaseline extends GapicTestBase {
 
     public RubyLibraryBaseline(
-        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, snippetName);
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator()
           .addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
     }
@@ -57,8 +61,12 @@ public class RubyCodeGeneratorTest {
   public static class RubyLibraryDocBaseline extends GapicTestBase {
 
     public RubyLibraryDocBaseline(
-        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, snippetName);
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator()
           .addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
     }

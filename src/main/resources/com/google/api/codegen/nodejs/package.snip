@@ -1,17 +1,17 @@
 @snippet generate(metadata)
   {
-    "url": "{@metadata.url}",
+    "url": "{@metadata.homepage}",
     "name": "{@metadata.identifier}",
-    "version": "{@metadata.version}",
-    "author": "Google Inc.",
-    "description": "{@metadata.serviceName} client for Node.js",
+    "version": "{@metadata.packageVersionBound.lower}",
+    "author": "{@metadata.author}",
+    "description": "{@metadata.fullName} client for Node.js",
     "main": "src/index.js",
     "files": [
       "src"
     ],
     "dependencies": {
-      "google-proto-files": "{@metadata.protoVersion}",
-      "google-gax": "{@metadata.gaxVersion}",
+      "google-proto-files": "{@metadata.protoVersionBound.lower}",
+      "google-gax": "{@metadata.gaxVersionBound.lower}",
       @if metadata.hasMultipleServices
         "lodash.union": "^4.6.0",
       @end
@@ -20,7 +20,7 @@
     "devDependencies": {
       "mocha": "3.2.0"
     },
-    "license": "Apache-2.0",
+    "license": "{@metadata.licenseName}",
     "engines": {
       "node": ">=0.12.0"
     },
