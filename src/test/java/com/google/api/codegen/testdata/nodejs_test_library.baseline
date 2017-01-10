@@ -575,12 +575,13 @@ describe('LibraryServiceClient', function() {
       // Mock response
       var expectedResponse = {};
 
-      var mockStream = through2.obj(function (chunk, enc, callback) {
-        callback(null, expectedResponse);
-      });
-
+      // Mock Grpc layer
       client._streamShelves = function(actualRequest) {
         assert.deepStrictEqual(actualRequest, request);
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          callback(null, expectedResponse);
+        });
+        mockStream.write();
         return mockStream;
       };
 
@@ -590,9 +591,6 @@ describe('LibraryServiceClient', function() {
       }).on('error', function(err) {
         done(err);
       });
-
-      // Manually invoke the data event.
-      mockStream.write();
     });
   });
 
@@ -617,12 +615,13 @@ describe('LibraryServiceClient', function() {
           read : read
       };
 
-      var mockStream = through2.obj(function (chunk, enc, callback) {
-        callback(null, expectedResponse);
-      });
-
+      // Mock Grpc layer
       client._streamBooks = function(actualRequest) {
         assert.deepStrictEqual(actualRequest, request);
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          callback(null, expectedResponse);
+        });
+        mockStream.write();
         return mockStream;
       };
 
@@ -632,9 +631,6 @@ describe('LibraryServiceClient', function() {
       }).on('error', function(err) {
         done(err);
       });
-
-      // Manually invoke the data event.
-      mockStream.write();
     });
   });
 
@@ -655,12 +651,12 @@ describe('LibraryServiceClient', function() {
           comment : comment
       };
 
-      var mockStream = through2.obj(function (chunk, enc, callback) {
-        assert.deepStrictEqual(chunk, request);
-        callback(null, expectedResponse);
-      });
-
+      // Mock Grpc layer
       client._discussBook = function() {
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          assert.deepStrictEqual(chunk, request);
+          callback(null, expectedResponse);
+        });
         return mockStream;
       };
 

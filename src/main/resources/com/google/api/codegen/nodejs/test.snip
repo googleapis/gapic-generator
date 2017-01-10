@@ -127,23 +127,23 @@
       // Mock response
       {@initCodeLines(test.mockResponse.initCode)}
 
+      // Mock Grpc layer
       @switch test.grpcStreamingType
       @case "ServerStreaming"
-        var mockStream = through2.obj(function (chunk, enc, callback) {
-          callback(null, expectedResponse);
-        });
-
         client._{@test.clientMethodName} = function(actualRequest) {
           assert.deepStrictEqual(actualRequest, request);
+          var mockStream = through2.obj(function (chunk, enc, callback) {
+            callback(null, expectedResponse);
+          });
+          mockStream.write();
           return mockStream;
         };
       @case "BidiStreaming"
-        var mockStream = through2.obj(function (chunk, enc, callback) {
-          assert.deepStrictEqual(chunk, request);
-          callback(null, expectedResponse);
-        });
-
         client._{@test.clientMethodName} = function() {
+          var mockStream = through2.obj(function (chunk, enc, callback) {
+            assert.deepStrictEqual(chunk, request);
+            callback(null, expectedResponse);
+          });
           return mockStream;
         };
       @end
@@ -156,9 +156,6 @@
         }).on('error', function(err) {
           done(err);
         });
-
-        // Manually invoke the data event.
-        mockStream.write();
       @case "BidiStreaming"
         var stream = client.{@test.clientMethodName}().on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
