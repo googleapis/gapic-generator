@@ -34,6 +34,8 @@ import org.yaml.snakeyaml.Yaml;
 @AutoValue
 public abstract class PackageMetadataConfig {
 
+  private static final String CONFIG_KEY_DEFAULT = "default";
+
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> grpcVersionBound();
@@ -232,7 +234,7 @@ public abstract class PackageMetadataConfig {
     Set<TargetLanguage> configuredLanguages = new HashSet<>();
     V defaultValue = null;
     for (Map.Entry<String, V> entry : inputMap.entrySet()) {
-      if (entry.getKey().equals("default")) {
+      if (entry.getKey().equals(CONFIG_KEY_DEFAULT)) {
         defaultValue = entry.getValue();
       } else {
         TargetLanguage targetLanguage = TargetLanguage.fromString(entry.getKey());

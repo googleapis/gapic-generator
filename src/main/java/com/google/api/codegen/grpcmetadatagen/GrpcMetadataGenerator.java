@@ -131,7 +131,7 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
     ToolUtil.writeFiles(docs, options.get(OUTPUT_DIR));
   }
 
-  private String outputPath(String templateFileName) {
+  private static String outputPath(String templateFileName) {
     String baseName = Paths.get(templateFileName).getFileName().toString();
     int extensionIndex = baseName.lastIndexOf(".");
     return baseName.substring(0, extensionIndex);
