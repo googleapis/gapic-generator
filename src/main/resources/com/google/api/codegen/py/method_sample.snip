@@ -39,6 +39,17 @@
         @else
           {@prompt} {@callResultSampleCode(docConfig.getReturnType)}\
           {@methodCallSampleCode(docConfig, {@FALSE})}
+          @if docConfig.isLongRunningOperation
+            {@prompt}
+            {@prompt} def callback(operation_future):
+            {@prompt}     # Handle result.
+            {@prompt}     result = operation_future.result()
+            {@prompt}
+            {@prompt} response.add_done_callback(callback)
+            {@prompt}
+            {@prompt} # Handle metadata.
+            {@prompt} metadata = response.metadata()
+          @end
         @end
       @end
   @end
