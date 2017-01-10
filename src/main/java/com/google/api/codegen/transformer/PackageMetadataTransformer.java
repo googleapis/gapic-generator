@@ -31,7 +31,7 @@ public class PackageMetadataTransformer {
     return PackageMetadataView.newBuilder()
         .templateFileName(template)
         .outputPath(outputPath)
-        .packageVersionBound(packageConfig.packageVersionBound(language))
+        .packageVersionBound(packageConfig.generatedPackageVersionBound(language))
         .protoPath(packageConfig.protoPath())
         .shortName(packageConfig.shortName())
         .gaxVersionBound(packageConfig.gaxVersionBound(language))

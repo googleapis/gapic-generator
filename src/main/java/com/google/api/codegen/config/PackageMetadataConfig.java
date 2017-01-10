@@ -46,7 +46,7 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> authVersionBound();
 
-  protected abstract Map<TargetLanguage, VersionBound> packageVersionBound();
+  protected abstract Map<TargetLanguage, VersionBound> generatedPackageVersionBound();
 
   protected abstract Map<TargetLanguage, String> packageName();
 
@@ -77,8 +77,8 @@ public abstract class PackageMetadataConfig {
   }
 
   /** The version the client library package. E.g., "0.14.0". Configured per language. */
-  public VersionBound packageVersionBound(TargetLanguage language) {
-    return packageVersionBound().get(language);
+  public VersionBound generatedPackageVersionBound(TargetLanguage language) {
+    return generatedPackageVersionBound().get(language);
   }
 
   /** The version the auth library package that this package depends on. Configured per language. */
@@ -133,7 +133,7 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder packageName(Map<TargetLanguage, String> val);
 
-    abstract Builder packageVersionBound(Map<TargetLanguage, VersionBound> val);
+    abstract Builder generatedPackageVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder shortName(String val);
 
@@ -162,7 +162,7 @@ public abstract class PackageMetadataConfig {
         .packageName(ImmutableMap.<TargetLanguage, String>of())
         .commonProtosVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .authVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
-        .packageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .generatedPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .shortName("")
         .apiVersion("")
         .protoPath("")
@@ -190,8 +190,9 @@ public abstract class PackageMetadataConfig {
                 (Map<String, Map<String, String>>) configMap.get("common_protos_version")))
         .authVersionBound(
             createVersionMap((Map<String, Map<String, String>>) configMap.get("auth_version")))
-        .packageVersionBound(
-            createVersionMap((Map<String, Map<String, String>>) configMap.get("package_version")))
+        .generatedPackageVersionBound(
+            createVersionMap(
+                (Map<String, Map<String, String>>) configMap.get("generated_package_version")))
         .packageName(createPackageNameMap((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))
         .apiVersion((String) configMap.get("major_version"))
