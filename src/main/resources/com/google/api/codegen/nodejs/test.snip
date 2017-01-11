@@ -25,6 +25,9 @@
   @else
     var {@apiTest.apiWrapperModuleName} = require('../src/')();
   @end
+  @if apiTest.hasGrpcStreaming
+    var through2 = require('through2');
+  @end
 @end
 
 @private testCase(test, moduleName)
@@ -38,6 +41,10 @@
     @default
       $unhandled case: {@test.clientMethodType.toString}$
     @end
+  @case "ServerStreaming"
+    {@streamingTestCase(test, moduleName)}
+  @case "BidiStreaming"
+    {@streamingTestCase(test, moduleName)}
   @default
     $unhandled case: {@test.grpcStreamingType.toString}$
   @end
@@ -106,6 +113,61 @@
         @end
         done();
       });
+    });
+  });
+@end
+
+@private streamingTestCase(test, moduleName)
+  describe('{@test.clientMethodName}', function() {
+    it('invokes {@test.clientMethodName} without error', function(done) {
+      var client = {@moduleName}.{@test.serviceConstructorName}();
+      // Mock request
+      {@initCodeLines(test.initCode)}
+
+      // Mock response
+      {@initCodeLines(test.mockResponse.initCode)}
+
+      // Mock Grpc layer
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        client._{@test.clientMethodName} = function(actualRequest) {
+          assert.deepStrictEqual(actualRequest, request);
+          var mockStream = through2.obj(function (chunk, enc, callback) {
+            callback(null, expectedResponse);
+          });
+          mockStream.write();
+          return mockStream;
+        };
+      @case "BidiStreaming"
+        client._{@test.clientMethodName} = function() {
+          var mockStream = through2.obj(function (chunk, enc, callback) {
+            assert.deepStrictEqual(chunk, request);
+            callback(null, expectedResponse);
+          });
+          return mockStream;
+        };
+      @end
+
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        client.{@test.clientMethodName}(request).on('data', function(response) {
+          assert.deepStrictEqual(response, expectedResponse);
+          done()
+        }).on('error', function(err) {
+          done(err);
+        });
+      @case "BidiStreaming"
+        var stream = client.{@test.clientMethodName}().on('data', function(response) {
+          assert.deepStrictEqual(response, expectedResponse);
+          done()
+        }).on('error', function(err) {
+          done(err);
+        });
+
+        stream.write(request);
+      @default
+        $unhandled case: {@test.grpcStreamingType.toString}$
+      @end
     });
   });
 @end
