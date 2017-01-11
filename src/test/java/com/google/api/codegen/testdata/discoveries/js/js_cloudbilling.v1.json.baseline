@@ -21,7 +21,7 @@ function makeApiCall() {
   var request = gapi.client.cloudbilling.billingAccounts.get(params);
   request.then(function(response) {
     // TODO: Change code below to process the `response` object:
-    console.log(response.result);
+    console.log(JSON.stringify(response.result, null, 2));
   }, function(reason) {
     console.log('error: ' + reason.result.error.message);
   });
@@ -55,8 +55,7 @@ BEFORE RUNNING:
 <script src="https://apis.google.com/js/api.js"></script>
 <script>
 function makeApiCall() {
-  var params = {
-  };
+  var params = {};
 
   executeRequest(params);
 }
@@ -173,7 +172,7 @@ function makeApiCall() {
   var request = gapi.client.cloudbilling.projects.getBillingInfo(params);
   request.then(function(response) {
     // TODO: Change code below to process the `response` object:
-    console.log(response.result);
+    console.log(JSON.stringify(response.result, null, 2));
   }, function(reason) {
     console.log('error: ' + reason.result.error.message);
   });
@@ -222,7 +221,7 @@ function makeApiCall() {
   var request = gapi.client.cloudbilling.projects.updateBillingInfo(params, projectBillingInfoBody);
   request.then(function(response) {
     // TODO: Change code below to process the `response` object:
-    console.log(response.result);
+    console.log(JSON.stringify(response.result, null, 2));
   }, function(reason) {
     console.log('error: ' + reason.result.error.message);
   });
