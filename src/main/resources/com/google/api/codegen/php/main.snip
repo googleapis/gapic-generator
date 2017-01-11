@@ -425,21 +425,25 @@
         @end
         public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
         {
-            $request = new {@apiMethod.requestTypeName}();
-            @join param : apiMethod.requiredRequestObjectParams
-                {@setRequiredFieldCall(param)}
+            @if apiMethod.isNotGrpcRequestStreamingMethod
+                $request = new {@apiMethod.requestTypeName}();
+                @join param : apiMethod.requiredRequestObjectParams
+                    {@setRequiredFieldCall(param)}
+                @end
+                @join param : apiMethod.optionalRequestObjectParams
+                    {@setOptionalFieldCall(param)}
+                @end
+                
             @end
-            @join param : apiMethod.optionalRequestObjectParams
-                {@setOptionalFieldCall(param)}
-            @end
-
             $mergedSettings = $this->defaultCallSettings['{@apiMethod.key}']->merge(
                 new CallSettings($optionalArgs));
             $callable = ApiCallable::createApiCall(
                 $this->{@apiMethod.stubName}, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
 
             return $callable(
-                $request,
+                @if apiMethod.isNotGrpcRequestStreamingMethod
+                    $request,
+                @end
                 [],
                 ['call_credentials_callback' => $this->createCredentialsCallback()]);
         }

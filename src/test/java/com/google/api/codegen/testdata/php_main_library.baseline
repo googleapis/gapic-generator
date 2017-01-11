@@ -1412,10 +1412,20 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *
-     *     // Iterate through all responses as they are streamed from the server
+     *     // Read all responses until the stream is complete
      *     $streamingResponse = $libraryServiceClient->streamShelves();
-     *     foreach ($streamingResponse as $element) {
+     *     foreach ($streamingResponse->readAll() as $element) {
      *         // doSomethingWith($element);
+     *     }
+     *
+     *     // OR read a single response at a time from the server until the stream is
+     *     // complete
+     *     $streamingResponse = $libraryServiceClient->streamShelves();
+     *     $element = $streamingResponse->read();
+     *     while (!is_null($element)) {
+     *         // doSomethingWith($element)
+     *         // ... perform other work if necessary ...
+     *         $element = $streamingResponse->read();
      *     }
      * } finally {
      *     $libraryServiceClient->close();
@@ -1460,10 +1470,20 @@ class LibraryServiceClient
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $name = "";
-     *     // Iterate through all responses as they are streamed from the server
+     *     // Read all responses until the stream is complete
      *     $streamingResponse = $libraryServiceClient->streamBooks($name);
-     *     foreach ($streamingResponse as $element) {
+     *     foreach ($streamingResponse->readAll() as $element) {
      *         // doSomethingWith($element);
+     *     }
+     *
+     *     // OR read a single response at a time from the server until the stream is
+     *     // complete
+     *     $streamingResponse = $libraryServiceClient->streamBooks($name);
+     *     $element = $streamingResponse->read();
+     *     while (!is_null($element)) {
+     *         // doSomethingWith($element)
+     *         // ... perform other work if necessary ...
+     *         $element = $streamingResponse->read();
      *     }
      * } finally {
      *     $libraryServiceClient->close();
@@ -1512,26 +1532,40 @@ class LibraryServiceClient
      *     $name = "";
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
-     *     $data = [];
-     *
-     *     // Write data to server and iterate through all responses
-     *     // as they are streamed
+     *     // Write all data to server, then read all responses until the stream is
+     *     // complete
      *     $streamingResponse = $libraryServiceClient->discussBook($request);
-     *     foreach ($streamingResponse->writeAllAndReadAll($data) as $element) {
+     *     $data = new DiscussBookRequest();
+     *     $dataArray = [$data];
+     *     streamingResponse->writeAll($dataArray);
+     *     foreach ($streamingResponse->readAll() as $element) {
      *         // doSomethingWith($element);
+     *     }
+     *
+     *     // OR write data as it becomes available, making read() calls if required.
+     *     // Call writesDone() once writes are complete, and read the remaining
+     *     // responses from the server.
+     *     $streamingResponse = $libraryServiceClient->discussBook($request);
+     *     foreach (read_data_from_stream() as $data) {
+     *         $streamingResponse->write($data);
+     *         // if required, read a single response from the stream
+     *         $element = $streamingResponse->read();
+     *         // doSomethingWith($element)
+     *     }
+     *     streamingResponse->writesDone();
+     *     $element = $streamingResponse->read();
+     *     while (!is_null($element)) {
+     *         // doSomethingWith($element)
+     *         // ... perform other work if necessary ...
+     *         $element = $streamingResponse->read();
      *     }
      * } finally {
      *     $libraryServiceClient->close();
      * }
      * ```
      *
-     * @param string $name The name of the book to be discussed. If this is in the middle
-     * of the stream and this is not specified, the name in the previous
-     * message will be reused.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Comment $comment
-     *          The new comment.
      *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
@@ -1544,7 +1578,7 @@ class LibraryServiceClient
      *
      * @throws \Google\GAX\ApiException if the remote call fails
      */
-    public function discussBook($name, $optionalArgs = [])
+    public function discussBook($optionalArgs = [])
     {
         $request = new DiscussBookRequest();
         $request->setName($name);
