@@ -14,7 +14,12 @@
  */
 package com.google.api.codegen.grpcmetadatagen;
 
+import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.grpcmetadatagen.py.PythonPackageCopier;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
+import com.google.api.codegen.transformer.PackageMetadataTransformer;
+import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -24,22 +29,34 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * ToolDriver for PackageMetadataGenerator; creates and sets the ToolOptions and builds the Model
  */
 public class GrpcMetadataGenerator extends ToolDriverBase {
+  private static final Map<TargetLanguage, List<String>> SNIPPETS =
+      new ImmutableMap.Builder<TargetLanguage, List<String>>()
+          .put(
+              TargetLanguage.PYTHON,
+              Lists.newArrayList(
+                  "metadatagen/LICENSE.snip",
+                  "metadatagen/py/setup.py.snip",
+                  "metadatagen/py/README.rst.snip",
+                  "metadatagen/py/PUBLISHING.rst.snip",
+                  "metadatagen/py/MANIFEST.in.snip"))
+          .build();
 
-  private List<String> snippetFilenames;
-
-  private GrpcPackageCopier packageCopier;
+  private static final Map<TargetLanguage, GrpcPackageCopier> COPIERS =
+      new ImmutableMap.Builder<TargetLanguage, GrpcPackageCopier>()
+          .put(TargetLanguage.PYTHON, new PythonPackageCopier())
+          .build();
 
   public static final Option<String> OUTPUT_DIR =
       ToolOptions.createOption(
@@ -50,81 +67,47 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
           "input_file",
           "The name of the folder containing the gRPC package to generate metadata for.",
           "");
-  public static final Option<String> DEPENDENCIES_FILE =
+  public static final Option<String> METADATA_CONFIG_FILE =
       ToolOptions.createOption(
           String.class,
-          "dependencies_file",
-          "The name of the yaml file that configures package dependencies.",
+          "metadata_config_file",
+          "The name of the yaml file that configures package metadata.",
           "");
-  // TODO (jgeiger): Support python_package_file input to configure Python common protos namespace
-  // packages.
-  public static final Option<String> API_DEFAULTS_FILE =
-      ToolOptions.createOption(
-          String.class,
-          "api_defaults_file",
-          "The name of the yaml file that configures Python-specific package information.",
-          "");
-  public static final Option<String> SHORT_API_NAME =
-      ToolOptions.createOption(
-          String.class, "short_name", "The a single-word name for the API, e.g., 'Logging'.", "");
-  public static final Option<String> PACKAGE_NAME =
-      ToolOptions.createOption(
-          String.class,
-          "package_name",
-          "The base name of the package to create, e.g., 'google-cloud-logging-v1'",
-          "");
-  public static final Option<String> API_PATH =
-      ToolOptions.createOption(
-          String.class,
-          "api_path",
-          "The path to the API directory under googleapis, e.g., 'google/cloud/logging'",
-          "");
-  public static final Option<String> API_VERSION =
-      ToolOptions.createOption(
-          String.class, "api_version", "The major version of the API, e.g., 'v1'", "");
+  public static final Option<String> LANGUAGE =
+      ToolOptions.createOption(String.class, "language", "The package's language.", "");
 
-  protected GrpcMetadataGenerator(
-      ToolOptions options, List<String> snippetFilenames, GrpcPackageCopier packageCopier) {
+  protected GrpcMetadataGenerator(ToolOptions options) {
     super(options);
-    this.snippetFilenames = snippetFilenames;
-    this.packageCopier = packageCopier;
   }
 
   @SuppressWarnings("unchecked")
   protected Map<String, Doc> generateDocs(Model model) throws IOException {
+    String configContent =
+        new String(
+            Files.readAllBytes(Paths.get(options.get(METADATA_CONFIG_FILE))),
+            StandardCharsets.UTF_8);
+    PackageMetadataConfig config = PackageMetadataConfig.createFromString(configContent);
+    TargetLanguage language = TargetLanguage.fromString(options.get(LANGUAGE));
+
     // Copy gRPC package and create non-top-level files
-    GrpcPackageCopierResult copierResults = packageCopier.run(options);
-
-    Yaml yaml = new Yaml();
-
-    String dependencies =
-        new String(
-            Files.readAllBytes(Paths.get(options.get(DEPENDENCIES_FILE))), StandardCharsets.UTF_8);
-    Map<String, Object> dependenciesMap = (Map<String, Object>) yaml.load(dependencies);
-
-    String defaults =
-        new String(
-            Files.readAllBytes(Paths.get(options.get(API_DEFAULTS_FILE))), StandardCharsets.UTF_8);
-    Map<String, Object> defaultsMap = (Map<String, Object>) yaml.load(defaults);
-
-    ApiNameInfo apiNameInfo =
-        ApiNameInfo.create(
-            model.getServiceConfig().getTitle(),
-            options.get(SHORT_API_NAME),
-            options.get(PACKAGE_NAME),
-            options.get(API_VERSION),
-            options.get(API_PATH));
+    GrpcPackageCopierResult copierResults = getCopier(language).run(options, config);
 
     ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
     docs.putAll(copierResults.docs());
-    for (String snippetFilename : snippetFilenames) {
-      GrpcMetadataContext context =
-          new GrpcMetadataContext(
-              snippetFilename, apiNameInfo, copierResults.metadata(), dependenciesMap, defaultsMap);
-      CommonSnippetSetRunner runner = new CommonSnippetSetRunner(context);
-      Doc result = runner.generate(context);
+    PackageMetadataTransformer transformer = new PackageMetadataTransformer();
+
+    for (String snippetFilename : getSnippets(language)) {
+      PackageMetadataView view =
+          transformer
+              .generateMetadataView(
+                  config, model, snippetFilename, outputPath(snippetFilename), language)
+              // Set language-specific GrpcCopierResults here.
+              .namespacePackages(copierResults.namespacePackages())
+              .build();
+      CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view);
+      Doc result = runner.generate(view);
       if (!result.isWhitespace()) {
-        docs.put(context.outputPath(), result);
+        docs.put(view.outputPath(), result);
       }
     }
     return docs.build();
@@ -146,5 +129,28 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
 
   private void writeToFile(Map<String, Doc> docs) throws Exception {
     ToolUtil.writeFiles(docs, options.get(OUTPUT_DIR));
+  }
+
+  private static String outputPath(String templateFileName) {
+    String baseName = Paths.get(templateFileName).getFileName().toString();
+    int extensionIndex = baseName.lastIndexOf(".");
+    return baseName.substring(0, extensionIndex);
+  }
+
+  private static List<String> getSnippets(TargetLanguage language) {
+    return getForLanguage(SNIPPETS, language);
+  }
+
+  private static GrpcPackageCopier getCopier(TargetLanguage language) {
+    return getForLanguage(COPIERS, language);
+  }
+
+  private static <T> T getForLanguage(Map<TargetLanguage, T> map, TargetLanguage language) {
+    T value = map.get(language);
+    if (value == null) {
+      throw new IllegalArgumentException(
+          "The target language \"" + language + "\" is not supported");
+    }
+    return value;
   }
 }

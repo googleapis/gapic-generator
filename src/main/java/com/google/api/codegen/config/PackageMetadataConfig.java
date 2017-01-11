@@ -17,8 +17,14 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.TargetLanguage;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import javax.annotation.Nullable;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -28,19 +34,30 @@ import org.yaml.snakeyaml.Yaml;
 @AutoValue
 public abstract class PackageMetadataConfig {
 
+  private static final String CONFIG_KEY_DEFAULT = "default";
+
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
+
+  protected abstract Map<TargetLanguage, VersionBound> grpcVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> protoVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> commonProtosVersionBound();
 
-  protected abstract Map<TargetLanguage, VersionBound> packageVersionBound();
+  protected abstract Map<TargetLanguage, VersionBound> authVersionBound();
+
+  protected abstract Map<TargetLanguage, VersionBound> generatedPackageVersionBound();
 
   protected abstract Map<TargetLanguage, String> packageName();
 
   /** The version of GAX that this package depends on. Configured per language. */
   public VersionBound gaxVersionBound(TargetLanguage language) {
     return gaxVersionBound().get(language);
+  }
+
+  /** The version of gRPC that this package depends on. Configured per language. */
+  public VersionBound grpcVersionBound(TargetLanguage language) {
+    return grpcVersionBound().get(language);
   }
 
   /**
@@ -60,8 +77,13 @@ public abstract class PackageMetadataConfig {
   }
 
   /** The version the client library package. E.g., "0.14.0". Configured per language. */
-  public VersionBound packageVersionBound(TargetLanguage language) {
-    return packageVersionBound().get(language);
+  public VersionBound generatedPackageVersionBound(TargetLanguage language) {
+    return generatedPackageVersionBound().get(language);
+  }
+
+  /** The version the auth library package that this package depends on. Configured per language. */
+  public VersionBound authVersionBound(TargetLanguage language) {
+    return authVersionBound().get(language);
   }
 
   /**
@@ -101,13 +123,17 @@ public abstract class PackageMetadataConfig {
   protected abstract static class Builder {
     abstract Builder gaxVersionBound(Map<TargetLanguage, VersionBound> val);
 
+    abstract Builder grpcVersionBound(Map<TargetLanguage, VersionBound> val);
+
     abstract Builder protoVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder commonProtosVersionBound(Map<TargetLanguage, VersionBound> val);
 
+    abstract Builder authVersionBound(Map<TargetLanguage, VersionBound> val);
+
     abstract Builder packageName(Map<TargetLanguage, String> val);
 
-    abstract Builder packageVersionBound(Map<TargetLanguage, VersionBound> val);
+    abstract Builder generatedPackageVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder shortName(String val);
 
@@ -131,10 +157,12 @@ public abstract class PackageMetadataConfig {
   public static PackageMetadataConfig createDummyPackageMetadataConfig() {
     return newBuilder()
         .gaxVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .grpcVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .packageName(ImmutableMap.<TargetLanguage, String>of())
         .commonProtosVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
-        .packageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .authVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .generatedPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .shortName("")
         .apiVersion("")
         .protoPath("")
@@ -153,13 +181,18 @@ public abstract class PackageMetadataConfig {
     return newBuilder()
         .gaxVersionBound(
             createVersionMap((Map<String, Map<String, String>>) configMap.get("gax_version")))
+        .grpcVersionBound(
+            createVersionMap((Map<String, Map<String, String>>) configMap.get("grpc_version")))
         .protoVersionBound(
             createVersionMap((Map<String, Map<String, String>>) configMap.get("proto_version")))
         .commonProtosVersionBound(
             createVersionMap(
                 (Map<String, Map<String, String>>) configMap.get("common_protos_version")))
-        .packageVersionBound(
-            createVersionMap((Map<String, Map<String, String>>) configMap.get("package_version")))
+        .authVersionBound(
+            createVersionMap((Map<String, Map<String, String>>) configMap.get("auth_version")))
+        .generatedPackageVersionBound(
+            createVersionMap(
+                (Map<String, Map<String, String>>) configMap.get("generated_package_version")))
         .packageName(createPackageNameMap((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))
         .apiVersion((String) configMap.get("major_version"))
@@ -173,32 +206,49 @@ public abstract class PackageMetadataConfig {
 
   private static Map<TargetLanguage, VersionBound> createVersionMap(
       Map<String, Map<String, String>> inputMap) {
-    ImmutableMap.Builder<TargetLanguage, VersionBound> versionMap = new ImmutableMap.Builder<>();
-    for (Map.Entry<String, Map<String, String>> entry : inputMap.entrySet()) {
-      putWithDefault(
-          versionMap,
-          entry.getKey(),
-          VersionBound.create(entry.getValue().get("lower"), entry.getValue().get("upper")));
-    }
-    return versionMap.build();
+    Map<TargetLanguage, Map<String, String>> intermediate = buildMapWithDefault(inputMap);
+    // Convert parsed YAML map into VersionBound object
+    return Maps.transformValues(
+        intermediate,
+        new Function<Map<String, String>, VersionBound>() {
+          @Override
+          @Nullable
+          public VersionBound apply(@Nullable Map<String, String> versionMap) {
+            if (versionMap == null) {
+              return null;
+            }
+            return VersionBound.create(versionMap.get("lower"), versionMap.get("upper"));
+          }
+        });
   }
 
   private static Map<TargetLanguage, String> createPackageNameMap(Map<String, String> inputMap) {
-    ImmutableMap.Builder<TargetLanguage, String> packageNameMap = new ImmutableMap.Builder<>();
-    for (Map.Entry<String, String> entry : inputMap.entrySet()) {
-      putWithDefault(packageNameMap, entry.getKey(), entry.getValue());
-    }
-    return packageNameMap.build();
+    return buildMapWithDefault(inputMap);
   }
 
-  private static <V> void putWithDefault(
-      ImmutableMap.Builder<TargetLanguage, V> builder, String languageName, V value) {
-    if (languageName.equals("default")) {
-      for (TargetLanguage language : TargetLanguage.values()) {
-        builder.put(language, value);
+  /**
+   * Transforms entries of the input map into TargetLanguage, taking into account an optional
+   * default setting.
+   */
+  private static <V> Map<TargetLanguage, V> buildMapWithDefault(Map<String, V> inputMap) {
+    Map<TargetLanguage, V> outputMap = new HashMap<>();
+    Set<TargetLanguage> configuredLanguages = new HashSet<>();
+    V defaultValue = null;
+    for (Map.Entry<String, V> entry : inputMap.entrySet()) {
+      if (entry.getKey().equals(CONFIG_KEY_DEFAULT)) {
+        defaultValue = entry.getValue();
+      } else {
+        TargetLanguage targetLanguage = TargetLanguage.fromString(entry.getKey());
+        configuredLanguages.add(targetLanguage);
+        outputMap.put(targetLanguage, entry.getValue());
       }
-    } else {
-      builder.put(TargetLanguage.fromString(languageName), value);
+
+      for (TargetLanguage language : TargetLanguage.values()) {
+        if (!configuredLanguages.contains(language)) {
+          outputMap.put(language, defaultValue);
+        }
+      }
     }
+    return outputMap;
   }
 }

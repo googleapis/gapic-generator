@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen.py;
 
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataGenerator;
 import com.google.api.codegen.grpcmetadatagen.GrpcPackageCopier;
 import com.google.api.codegen.grpcmetadatagen.GrpcPackageCopierResult;
@@ -98,14 +99,15 @@ public class PythonPackageCopier implements GrpcPackageCopier {
 
   @SuppressWarnings("unchecked")
   @Override
-  public GrpcPackageCopierResult run(ToolOptions options) throws IOException {
+  public GrpcPackageCopierResult run(ToolOptions options, PackageMetadataConfig config)
+      throws IOException {
     // Copy files from dir into map, and fill in namespace result
     // Run __init__ snippet in each dir that deserves it
     PythonPackageFileVisitor visitor =
         new PythonPackageFileVisitor(
             Paths.get(options.get(GrpcMetadataGenerator.INPUT_DIR)),
             Paths.get(options.get(GrpcMetadataGenerator.OUTPUT_DIR)),
-            options.get(GrpcMetadataGenerator.API_VERSION));
+            config.apiVersion());
 
     Files.walkFileTree(Paths.get(options.get(GrpcMetadataGenerator.INPUT_DIR)), visitor);
 

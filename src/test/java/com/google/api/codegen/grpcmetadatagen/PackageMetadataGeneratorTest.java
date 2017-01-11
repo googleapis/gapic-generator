@@ -70,27 +70,16 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
   @Nullable
   protected Object run() throws Exception {
     String outFile = tempDir.getRoot().getPath() + File.separator + baselineFileName();
-    String dependenciesConfigPath =
-        getTestDataLocator().findTestData("dependencies.yaml").getPath();
-    String defaultsConfigPath = getTestDataLocator().findTestData("api_defaults.yaml").getPath();
+    String metadataConfigPath = getTestDataLocator().findTestData("library_pkg.yaml").getPath();
 
     ToolOptions options = ToolOptions.create();
     options.set(GrpcMetadataGenerator.OUTPUT_DIR, outFile);
     options.set(
         GrpcMetadataGenerator.INPUT_DIR,
         getTestDataLocator().findTestData("fakeprotodir").getPath());
-    options.set(GrpcMetadataGenerator.DEPENDENCIES_FILE, dependenciesConfigPath);
-    options.set(GrpcMetadataGenerator.API_DEFAULTS_FILE, defaultsConfigPath);
-    options.set(GrpcMetadataGenerator.SHORT_API_NAME, "library");
-    options.set(GrpcMetadataGenerator.PACKAGE_NAME, "google-cloud-library-v1");
-    options.set(GrpcMetadataGenerator.API_VERSION, "v1");
-    options.set(GrpcMetadataGenerator.API_PATH, "google/example/library");
-    Map<String, Doc> generatedDocs =
-        new GrpcMetadataGenerator(
-                options,
-                GrpcMetadataGeneratorTool.getSnippets(language),
-                GrpcMetadataGeneratorTool.getCopier(language))
-            .generateDocs(model);
+    options.set(GrpcMetadataGenerator.METADATA_CONFIG_FILE, metadataConfigPath);
+    options.set(GrpcMetadataGenerator.LANGUAGE, language);
+    Map<String, Doc> generatedDocs = new GrpcMetadataGenerator(options).generateDocs(model);
     OutputCollector collector = new OutputCollector(Paths.get(outFile));
     Files.walkFileTree(Paths.get(outFile), collector);
     return new ImmutableMap.Builder<String, Doc>()
