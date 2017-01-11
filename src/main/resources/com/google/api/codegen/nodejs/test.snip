@@ -6,7 +6,7 @@
    {@copyright()}
    */
 
-  {@imports(apiTest)}
+  {@header(apiTest)}
 
   @join testClass : apiTest.testClasses
     describe('{@testClass.apiClassName}', function() {
@@ -16,9 +16,10 @@
       @end
     });
   @end
+
 @end
 
-@private imports(apiTest)
+@private header(apiTest)
   var assert = require('assert');
   @if apiTest.fileHeader.hasVersion
     var {@apiTest.apiWrapperModuleName} = require('../src/').{@apiTest.fileHeader.version}();
@@ -28,6 +29,9 @@
   @if apiTest.hasGrpcStreaming
     var through2 = require('through2');
   @end
+
+  // Used by mock errors
+  var FAKE_STATUS_CODE = 1;
 @end
 
 @private testCase(test, moduleName)
@@ -86,6 +90,27 @@
       @end
     });
   });
+
+  describe('{@test.clientMethodName}', function() {
+    it('invokes {@test.clientMethodName} with error', function(done) {
+      var client = {@moduleName}.{@test.serviceConstructorName}();
+      // Mock request
+      {@initCodeLines(test.initCode)}
+
+      // Mock Grpc layer
+      client._{@test.clientMethodName} = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.{@test.clientMethodName}(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
 @end
 
 @private pagedRequestObjectTestCase(test, moduleName)
@@ -115,6 +140,27 @@
       });
     });
   });
+
+  describe('{@test.clientMethodName}', function() {
+      it('invokes {@test.clientMethodName} with error', function(done) {
+        var client = {@moduleName}.{@test.serviceConstructorName}();
+        // Mock request
+        {@initCodeLines(test.initCode)}
+
+        // Mock Grpc layer
+        client._{@test.clientMethodName} = function(actualRequest, options, callback) {
+          assert.deepStrictEqual(actualRequest, request);
+          var error = new Error('Fake error');
+          error.code = FAKE_STATUS_CODE;
+          callback(error, null);
+        };
+
+        client.{@test.clientMethodName}(request, function(err, response) {
+          assert.equal(err.code, FAKE_STATUS_CODE);
+          done();
+        });
+      });
+    });
 @end
 
 @private streamingTestCase(test, moduleName)
@@ -162,6 +208,60 @@
           done()
         }).on('error', function(err) {
           done(err);
+        });
+
+        stream.write(request);
+      @default
+        $unhandled case: {@test.grpcStreamingType.toString}$
+      @end
+    });
+  });
+
+  describe('{@test.clientMethodName}', function() {
+    it('invokes {@test.clientMethodName} with error', function(done) {
+      var client = {@moduleName}.{@test.serviceConstructorName}();
+      // Mock request
+      {@initCodeLines(test.initCode)}
+
+      // Mock Grpc layer
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        client._{@test.clientMethodName} = function(actualRequest) {
+          assert.deepStrictEqual(actualRequest, request);
+          var mockStream = through2.obj(function (chunk, enc, callback) {
+            var error = new Error('Fake error');
+            error.code = FAKE_STATUS_CODE;
+            callback(error, null);
+          });
+          mockStream.write();
+          return mockStream;
+        };
+      @case "BidiStreaming"
+        client._{@test.clientMethodName} = function() {
+          var mockStream = through2.obj(function (chunk, enc, callback) {
+            assert.deepStrictEqual(chunk, request);
+            var error = new Error('Fake error');
+            error.code = FAKE_STATUS_CODE;
+            callback(error, null);
+          });
+          return mockStream;
+        };
+      @end
+
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        client.{@test.clientMethodName}(request).on('data', function(response) {
+          assert.fail();
+        }).on('error', function(err) {
+          assert.equal(err.code, FAKE_STATUS_CODE);
+          done();
+        });
+      @case "BidiStreaming"
+        var stream = client.{@test.clientMethodName}().on('data', function(response) {
+          assert.fail();
+        }).on('error', function(err) {
+          assert.equal(err.code, FAKE_STATUS_CODE);
+          done();
         });
 
         stream.write(request);

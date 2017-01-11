@@ -19,6 +19,9 @@ var assert = require('assert');
 var libraryV1 = require('../src/').v1();
 var through2 = require('through2');
 
+// Used by mock errors
+var FAKE_STATUS_CODE = 1;
+
 describe('LibraryServiceClient', function() {
   describe('createShelf', function() {
     it('invokes createShelf without error', function(done) {
@@ -48,6 +51,30 @@ describe('LibraryServiceClient', function() {
       client.createShelf(request, function(err, response) {
         assert.ifError(err);
         assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+  });
+
+  describe('createShelf', function() {
+    it('invokes createShelf with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var shelf = {};
+      var request = {
+          shelf : shelf
+      };
+
+      // Mock Grpc layer
+      client._createShelf = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.createShelf(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
     });
@@ -88,6 +115,32 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('getShelf', function() {
+    it('invokes getShelf with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.shelfPath("[SHELF_ID]");
+      var options = 'options-1249474914';
+      var request = {
+          name : formattedName,
+          options : options
+      };
+
+      // Mock Grpc layer
+      client._getShelf = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.getShelf(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('listShelves', function() {
     it('invokes listShelves without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -117,6 +170,27 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('listShelves', function() {
+      it('invokes listShelves with error', function(done) {
+        var client = libraryV1.libraryServiceClient();
+        // Mock request
+        var request = {};
+
+        // Mock Grpc layer
+        client._listShelves = function(actualRequest, options, callback) {
+          assert.deepStrictEqual(actualRequest, request);
+          var error = new Error('Fake error');
+          error.code = FAKE_STATUS_CODE;
+          callback(error, null);
+        };
+
+        client.listShelves(request, function(err, response) {
+          assert.equal(err.code, FAKE_STATUS_CODE);
+          done();
+        });
+      });
+    });
+
   describe('deleteShelf', function() {
     it('invokes deleteShelf without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -134,6 +208,30 @@ describe('LibraryServiceClient', function() {
 
       client.deleteShelf(request, function(err) {
         assert.ifError(err);
+        done();
+      });
+    });
+  });
+
+  describe('deleteShelf', function() {
+    it('invokes deleteShelf with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.shelfPath("[SHELF_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._deleteShelf = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.deleteShelf(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
     });
@@ -169,6 +267,32 @@ describe('LibraryServiceClient', function() {
       client.mergeShelves(request, function(err, response) {
         assert.ifError(err);
         assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+  });
+
+  describe('mergeShelves', function() {
+    it('invokes mergeShelves with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var request = {
+          name : formattedName,
+          otherShelfName : formattedOtherShelfName
+      };
+
+      // Mock Grpc layer
+      client._mergeShelves = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.mergeShelves(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
     });
@@ -211,6 +335,32 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('createBook', function() {
+    it('invokes createBook with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.shelfPath("[SHELF_ID]");
+      var book = {};
+      var request = {
+          name : formattedName,
+          book : book
+      };
+
+      // Mock Grpc layer
+      client._createBook = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.createBook(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('publishSeries', function() {
     it('invokes publishSeries without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -238,6 +388,32 @@ describe('LibraryServiceClient', function() {
       client.publishSeries(request, function(err, response) {
         assert.ifError(err);
         assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+  });
+
+  describe('publishSeries', function() {
+    it('invokes publishSeries with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var shelf = {};
+      var books = [];
+      var request = {
+          shelf : shelf,
+          books : books
+      };
+
+      // Mock Grpc layer
+      client._publishSeries = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.publishSeries(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
     });
@@ -278,6 +454,30 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('getBook', function() {
+    it('invokes getBook with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._getBook = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.getBook(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('listBooks', function() {
     it('invokes listBooks without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -310,6 +510,30 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('listBooks', function() {
+      it('invokes listBooks with error', function(done) {
+        var client = libraryV1.libraryServiceClient();
+        // Mock request
+        var formattedName = client.shelfPath("[SHELF_ID]");
+        var request = {
+            name : formattedName
+        };
+
+        // Mock Grpc layer
+        client._listBooks = function(actualRequest, options, callback) {
+          assert.deepStrictEqual(actualRequest, request);
+          var error = new Error('Fake error');
+          error.code = FAKE_STATUS_CODE;
+          callback(error, null);
+        };
+
+        client.listBooks(request, function(err, response) {
+          assert.equal(err.code, FAKE_STATUS_CODE);
+          done();
+        });
+      });
+    });
+
   describe('deleteBook', function() {
     it('invokes deleteBook without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -327,6 +551,30 @@ describe('LibraryServiceClient', function() {
 
       client.deleteBook(request, function(err) {
         assert.ifError(err);
+        done();
+      });
+    });
+  });
+
+  describe('deleteBook', function() {
+    it('invokes deleteBook with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._deleteBook = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.deleteBook(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
     });
@@ -369,6 +617,32 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('updateBook', function() {
+    it('invokes updateBook with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var book = {};
+      var request = {
+          name : formattedName,
+          book : book
+      };
+
+      // Mock Grpc layer
+      client._updateBook = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.updateBook(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('moveBook', function() {
     it('invokes moveBook without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -406,6 +680,32 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('moveBook', function() {
+    it('invokes moveBook with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var request = {
+          name : formattedName,
+          otherShelfName : formattedOtherShelfName
+      };
+
+      // Mock Grpc layer
+      client._moveBook = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.moveBook(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('listStrings', function() {
     it('invokes listStrings without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -435,6 +735,27 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('listStrings', function() {
+      it('invokes listStrings with error', function(done) {
+        var client = libraryV1.libraryServiceClient();
+        // Mock request
+        var request = {};
+
+        // Mock Grpc layer
+        client._listStrings = function(actualRequest, options, callback) {
+          assert.deepStrictEqual(actualRequest, request);
+          var error = new Error('Fake error');
+          error.code = FAKE_STATUS_CODE;
+          callback(error, null);
+        };
+
+        client.listStrings(request, function(err, response) {
+          assert.equal(err.code, FAKE_STATUS_CODE);
+          done();
+        });
+      });
+    });
+
   describe('addComments', function() {
     it('invokes addComments without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -462,6 +783,40 @@ describe('LibraryServiceClient', function() {
 
       client.addComments(request, function(err) {
         assert.ifError(err);
+        done();
+      });
+    });
+  });
+
+  describe('addComments', function() {
+    it('invokes addComments with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var comment = '95';
+      var stage = libraryV1.Comment.Stage.UNSET;
+      var alignment = libraryV1.SomeMessage2.SomeMessage3.Alignment.CHAR;
+      var commentsElement = {
+          comment : comment,
+          stage : stage,
+          alignment : alignment
+      };
+      var comments = [commentsElement];
+      var request = {
+          name : formattedName,
+          comments : comments
+      };
+
+      // Mock Grpc layer
+      client._addComments = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.addComments(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
     });
@@ -497,6 +852,30 @@ describe('LibraryServiceClient', function() {
       client.getBookFromArchive(request, function(err, response) {
         assert.ifError(err);
         assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+  });
+
+  describe('getBookFromArchive', function() {
+    it('invokes getBookFromArchive with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._getBookFromArchive = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.getBookFromArchive(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
     });
@@ -539,6 +918,32 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('getBookFromAnywhere', function() {
+    it('invokes getBookFromAnywhere with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName,
+          altBookName : formattedAltBookName
+      };
+
+      // Mock Grpc layer
+      client._getBookFromAnywhere = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.getBookFromAnywhere(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('updateBookIndex', function() {
     it('invokes updateBookIndex without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -561,6 +966,35 @@ describe('LibraryServiceClient', function() {
 
       client.updateBookIndex(request, function(err) {
         assert.ifError(err);
+        done();
+      });
+    });
+  });
+
+  describe('updateBookIndex', function() {
+    it('invokes updateBookIndex with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var indexName = 'default index';
+      var indexMapItem = 'indexMapItem1918721251';
+      var indexMap = {'default_key' : indexMapItem,};
+      var request = {
+          name : formattedName,
+          indexName : indexName,
+          indexMap : indexMap
+      };
+
+      // Mock Grpc layer
+      client._updateBookIndex = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.updateBookIndex(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
     });
@@ -590,6 +1024,33 @@ describe('LibraryServiceClient', function() {
         done()
       }).on('error', function(err) {
         done(err);
+      });
+    });
+  });
+
+  describe('streamShelves', function() {
+    it('invokes streamShelves with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var request = {};
+
+      // Mock Grpc layer
+      client._streamShelves = function(actualRequest) {
+        assert.deepStrictEqual(actualRequest, request);
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          var error = new Error('Fake error');
+          error.code = FAKE_STATUS_CODE;
+          callback(error, null);
+        });
+        mockStream.write();
+        return mockStream;
+      };
+
+      client.streamShelves(request).on('data', function(response) {
+        assert.fail();
+      }).on('error', function(err) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
       });
     });
   });
@@ -634,6 +1095,36 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('streamBooks', function() {
+    it('invokes streamBooks with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var name = 'name3373707';
+      var request = {
+          name : name
+      };
+
+      // Mock Grpc layer
+      client._streamBooks = function(actualRequest) {
+        assert.deepStrictEqual(actualRequest, request);
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          var error = new Error('Fake error');
+          error.code = FAKE_STATUS_CODE;
+          callback(error, null);
+        });
+        mockStream.write();
+        return mockStream;
+      };
+
+      client.streamBooks(request).on('data', function(response) {
+        assert.fail();
+      }).on('error', function(err) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('discussBook', function() {
     it('invokes discussBook without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -665,6 +1156,37 @@ describe('LibraryServiceClient', function() {
         done()
       }).on('error', function(err) {
         done(err);
+      });
+
+      stream.write(request);
+    });
+  });
+
+  describe('discussBook', function() {
+    it('invokes discussBook with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var name = 'name3373707';
+      var request = {
+          name : name
+      };
+
+      // Mock Grpc layer
+      client._discussBook = function() {
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          assert.deepStrictEqual(chunk, request);
+          var error = new Error('Fake error');
+          error.code = FAKE_STATUS_CODE;
+          callback(error, null);
+        });
+        return mockStream;
+      };
+
+      var stream = client.discussBook().on('data', function(response) {
+        assert.fail();
+      }).on('error', function(err) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
       });
 
       stream.write(request);
@@ -706,6 +1228,33 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('findRelatedBooks', function() {
+      it('invokes findRelatedBooks with error', function(done) {
+        var client = libraryV1.libraryServiceClient();
+        // Mock request
+        var namesElement = 'namesElement-249113339';
+        var names = [namesElement];
+        var shelves = [];
+        var request = {
+            names : names,
+            shelves : shelves
+        };
+
+        // Mock Grpc layer
+        client._findRelatedBooks = function(actualRequest, options, callback) {
+          assert.deepStrictEqual(actualRequest, request);
+          var error = new Error('Fake error');
+          error.code = FAKE_STATUS_CODE;
+          callback(error, null);
+        };
+
+        client.findRelatedBooks(request, function(err, response) {
+          assert.equal(err.code, FAKE_STATUS_CODE);
+          done();
+        });
+      });
+    });
+
   describe('addTag', function() {
     it('invokes addTag without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -734,6 +1283,32 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('addTag', function() {
+    it('invokes addTag with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var tag = 'tag114586';
+      var request = {
+          resource : formattedResource,
+          tag : tag
+      };
+
+      // Mock Grpc layer
+      client._addTag = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.addTag(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('addLabel', function() {
     it('invokes addLabel without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -757,6 +1332,32 @@ describe('LibraryServiceClient', function() {
       client.addLabel(request, function(err, response) {
         assert.ifError(err);
         assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+  });
+
+  describe('addLabel', function() {
+    it('invokes addLabel with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var label = 'label102727412';
+      var request = {
+          resource : formattedResource,
+          label : label
+      };
+
+      // Mock Grpc layer
+      client._addLabel = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.addLabel(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
     });
@@ -797,6 +1398,30 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('getBigBookAsync', function() {
+    it('invokes getBigBookAsync with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._getBigBookAsync = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.getBigBookAsync(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('getBigNothingAsync', function() {
     it('invokes getBigNothingAsync without error', function(done) {
       var client = libraryV1.libraryServiceClient();
@@ -819,4 +1444,29 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('getBigNothingAsync', function() {
+    it('invokes getBigNothingAsync with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._getBigNothingAsync = function(actualRequest, options, callback) {
+        assert.deepStrictEqual(actualRequest, request);
+        var error = new Error('Fake error');
+        error.code = FAKE_STATUS_CODE;
+        callback(error, null);
+      };
+
+      client.getBigNothingAsync(request, function(err, response) {
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
 });
+
