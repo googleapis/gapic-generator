@@ -89,27 +89,8 @@
         });
       @end
     });
-  });
 
-  describe('{@test.clientMethodName}', function() {
-    it('invokes {@test.clientMethodName} with error', function(done) {
-      var client = {@moduleName}.{@test.serviceConstructorName}();
-      // Mock request
-      {@initCodeLines(test.initCode)}
-
-      // Mock Grpc layer
-      client._{@test.clientMethodName} = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error, null);
-      };
-
-      client.{@test.clientMethodName}(request, function(err, response) {
-        assert.equal(err.code, FAKE_STATUS_CODE);
-        done();
-      });
-    });
+    {@nonStreamingTestWithError(test, moduleName)}
   });
 @end
 
@@ -139,28 +120,9 @@
         done();
       });
     });
+
+    {@nonStreamingTestWithError(test, moduleName)}
   });
-
-  describe('{@test.clientMethodName}', function() {
-      it('invokes {@test.clientMethodName} with error', function(done) {
-        var client = {@moduleName}.{@test.serviceConstructorName}();
-        // Mock request
-        {@initCodeLines(test.initCode)}
-
-        // Mock Grpc layer
-        client._{@test.clientMethodName} = function(actualRequest, options, callback) {
-          assert.deepStrictEqual(actualRequest, request);
-          var error = new Error('Fake error');
-          error.code = FAKE_STATUS_CODE;
-          callback(error, null);
-        };
-
-        client.{@test.clientMethodName}(request, function(err, response) {
-          assert.equal(err.code, FAKE_STATUS_CODE);
-          done();
-        });
-      });
-    });
 @end
 
 @private streamingTestCase(test, moduleName)
@@ -215,9 +177,7 @@
         $unhandled case: {@test.grpcStreamingType.toString}$
       @end
     });
-  });
 
-  describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} with error', function(done) {
       var client = {@moduleName}.{@test.serviceConstructorName}();
       // Mock request
@@ -229,9 +189,7 @@
         client._{@test.clientMethodName} = function(actualRequest) {
           assert.deepStrictEqual(actualRequest, request);
           var mockStream = through2.obj(function (chunk, enc, callback) {
-            var error = new Error('Fake error');
-            error.code = FAKE_STATUS_CODE;
-            callback(error, null);
+            {@returnError()}
           });
           mockStream.write();
           return mockStream;
@@ -240,9 +198,7 @@
         client._{@test.clientMethodName} = function() {
           var mockStream = through2.obj(function (chunk, enc, callback) {
             assert.deepStrictEqual(chunk, request);
-            var error = new Error('Fake error');
-            error.code = FAKE_STATUS_CODE;
-            callback(error, null);
+            {@returnError()}
           });
           return mockStream;
         };
@@ -253,14 +209,15 @@
         client.{@test.clientMethodName}(request).on('data', function(response) {
           assert.fail();
         }).on('error', function(err) {
-          assert.equal(err.code, FAKE_STATUS_CODE);
+          {@assertError()}
           done();
+          }
         });
       @case "BidiStreaming"
         var stream = client.{@test.clientMethodName}().on('data', function(response) {
           assert.fail();
         }).on('error', function(err) {
-          assert.equal(err.code, FAKE_STATUS_CODE);
+          {@assertError()}
           done();
         });
 
@@ -270,4 +227,34 @@
       @end
     });
   });
+@end
+
+@private nonStreamingTestWithError(test, moduleName)
+  it('invokes {@test.clientMethodName} with error', function(done) {
+    var client = {@moduleName}.{@test.serviceConstructorName}();
+    // Mock request
+    {@initCodeLines(test.initCode)}
+
+    // Mock Grpc layer
+    client._{@test.clientMethodName} = function(actualRequest, options, callback) {
+      assert.deepStrictEqual(actualRequest, request);
+      {@returnError()}
+    };
+
+    client.{@test.clientMethodName}(request, function(err, response) {
+      {@assertError()}
+      done();
+    });
+  });
+@end
+
+@private returnError()
+  var error = new Error('Fake error');
+  error.code = FAKE_STATUS_CODE;
+  callback(error);
+@end
+
+@private assertError()
+  assert(err instanceof Error);
+  assert.equal(err.code, FAKE_STATUS_CODE);
 @end
