@@ -28,8 +28,12 @@ public class ClientConfigGeneratorTest {
   public static class ClientConfigLibraryBaseline extends GapicTestBase {
 
     public ClientConfigLibraryBaseline(
-        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, snippetName);
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator()
           .addTestDataSource(
               com.google.api.codegen.clientconfig.ClientConfigGapicContext.class, "");

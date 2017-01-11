@@ -26,13 +26,11 @@ import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransforme
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.collect.Lists;
 import com.google.protobuf.Method;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
 
 /*
  * Calls the MethodToViewTransformer on a method with the provided ApiaryConfig.
@@ -125,29 +123,28 @@ public class ViewModelProvider implements DiscoveryProvider {
    * @param overrideTree the JsonNode with values to overwrite tree with.
    */
   private static void merge(ObjectNode tree, ObjectNode overrideTree) {
-    // Sort patterns to ensure deterministic ordering of overrides
-    List<String> fieldPatterns = Lists.newArrayList(overrideTree.fieldNames());
-    Collections.sort(fieldPatterns);
-    for (String fieldPatternString : fieldPatterns) {
-      Pattern fieldPattern = Pattern.compile(fieldPatternString);
-      // Copy field name list to avoid concurrent modification
-      for (String fieldName : Lists.newArrayList(tree.fieldNames())) {
-        if (fieldPattern.matcher(fieldName).matches()) {
-          JsonNode defaultValue = tree.get(fieldName);
-          JsonNode overrideValue = overrideTree.get(fieldPatternString);
-          // Skip null nodes.
-          if (defaultValue != null && overrideValue.isNull()) {
-            // If a node is overridden as null, we pretend it was never specified
-            // altogether. We provide this functionality so nodes from an object can
-            // be deleted from both trees.
-            // TODO(saicheems): Verify that this is the best approach for this issue.
-            tree.remove(fieldName);
-          } else if (defaultValue.isObject() && overrideValue.isObject()) {
-            merge((ObjectNode) defaultValue, (ObjectNode) overrideValue);
-          } else if (overrideValue != null) {
-            tree.set(fieldName, overrideValue);
-          }
+    Iterator<String> fieldNames = overrideTree.fieldNames();
+    while (fieldNames.hasNext()) {
+      String fieldName = fieldNames.next();
+      JsonNode defaultValue = tree.get(fieldName);
+      JsonNode overrideValue = overrideTree.get(fieldName);
+      if (defaultValue == null) {
+        // If backupValue isn't null, then we add it to tree. This can happen if
+        // extra fields/properties are specified.
+        if (overrideValue != null) {
+          tree.set(fieldName, overrideValue);
         }
+        // Otherwise, skip null nodes.
+      } else if (overrideValue.isNull()) {
+        // If a node is overridden as null, we pretend it was never specified
+        // altogether. We provide this functionality so nodes from an object can
+        // be deleted from both trees.
+        // TODO(saicheems): Verify that this is the best approach for this issue.
+        tree.remove(fieldName);
+      } else if (defaultValue.isObject() && overrideValue.isObject()) {
+        merge((ObjectNode) defaultValue, (ObjectNode) overrideValue.deepCopy());
+      } else {
+        tree.set(fieldName, overrideTree.get(fieldName));
       }
     }
   }

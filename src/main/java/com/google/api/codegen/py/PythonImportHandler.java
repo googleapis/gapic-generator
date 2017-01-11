@@ -85,6 +85,12 @@ public class PythonImportHandler {
 
     // Add method request-type imports.
     for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(service).getMethodConfigs()) {
+      if (methodConfig.isLongRunningOperation()) {
+        addImportExternal("google.gapic.longrunning", "operations_client");
+        addImportForMessage(methodConfig.getLongRunningConfig().getReturnType().getMessageType());
+        addImportForMessage(methodConfig.getLongRunningConfig().getMetadataType().getMessageType());
+      }
+
       Method method = methodConfig.getMethod();
       addImport(
           method.getInputMessage().getFile(),
@@ -94,13 +100,7 @@ public class PythonImportHandler {
                   method.getInputMessage().getFile().getProto().getPackage()),
               PythonProtoElements.getPbFileName(method.getInputMessage())));
       for (Field field : method.getInputMessage().getMessageFields()) {
-        MessageType messageType = field.getType().getMessageType();
-        addImport(
-            messageType.getFile(),
-            PythonImport.create(
-                ImportType.APP,
-                protoPackageToPythonPackage(messageType.getFile().getProto().getPackage()),
-                PythonProtoElements.getPbFileName(messageType)));
+        addImportForMessage(field.getType().getMessageType());
       }
     }
   }
@@ -231,6 +231,16 @@ public class PythonImportHandler {
 
   public String addImportLocal(String moduleName, String attributeName) {
     return addImport(ImportType.APP, moduleName, attributeName).shortName();
+  }
+
+  /** Add an import for the proto associated with the given message. */
+  private PythonImport addImportForMessage(MessageType messageType) {
+    return addImport(
+        messageType.getFile(),
+        PythonImport.create(
+            ImportType.APP,
+            protoPackageToPythonPackage(messageType.getFile().getProto().getPackage()),
+            PythonProtoElements.getPbFileName(messageType)));
   }
 
   /** Calculate the imports map and return a sorted set of python import output strings. */

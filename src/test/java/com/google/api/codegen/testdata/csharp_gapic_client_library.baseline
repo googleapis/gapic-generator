@@ -17,7 +17,7 @@
 
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
-using Google.Longrunning;
+using Google.LongRunning;
 using Google.Protobuf.WellKnownTypes;
 using Google.Tagger.V1;
 using Grpc.Core;
@@ -790,6 +790,11 @@ namespace Google.Example.Library.V1
             )));
 
         /// <summary>
+        /// Settings used for long running operations.
+        /// </summary>
+        public OperationsSettings LongRunningOperationsSettings { get; set; }
+
+        /// <summary>
         /// Creates a deep clone of this object, with all the same property values.
         /// </summary>
         /// <returns>A deep clone of this <see cref="LibraryServiceSettings"/> object.</returns>
@@ -886,6 +891,14 @@ namespace Google.Example.Library.V1
         /// The underlying gRPC LibraryService client.
         /// </summary>
         public virtual LibraryService.LibraryServiceClient GrpcClient
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        /// <summary>
+        /// The client for long-running operations.
+        /// </summary>
+        public virtual OperationsClient LongRunningOperationsClient
         {
             get { throw new NotImplementedException(); }
         }
@@ -3431,7 +3444,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation> GetBigBookAsync(
+        public virtual Task<Operation<Book>> GetBigBookAsync(
             BookName name,
             CallSettings callSettings = null) => GetBigBookAsync(
                 new GetBookRequest
@@ -3452,10 +3465,13 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation> GetBigBookAsync(
+        public virtual Task<Operation<Book>> GetBigBookAsync(
             BookName name,
             CancellationToken cancellationToken) => GetBigBookAsync(
-                name,
+                new GetBookRequest
+                {
+                    BookName = name,
+                },
                 CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -3470,7 +3486,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Operation GetBigBook(
+        public virtual Operation<Book> GetBigBook(
             BookName name,
             CallSettings callSettings = null) => GetBigBook(
                 new GetBookRequest
@@ -3491,12 +3507,25 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation> GetBigBookAsync(
+        public virtual Task<Operation<Book>> GetBigBookAsync(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Asynchronously poll an operation once, using an <c>operationName</c> from a previous invocation of <c>GetBigBookAsync</c>.
+        /// </summary>
+        /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A task representing the result of polling the operation.</returns>
+        public virtual Task<Operation<Book>> PollOnceGetBigBookAsync(
+            string operationName,
+            CallSettings callSettings = null) => Operation<Book>.PollOnceFromNameAsync(
+                GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+                LongRunningOperationsClient,
+                callSettings);
 
         /// <summary>
         /// Test long-running operations
@@ -3510,12 +3539,25 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Operation GetBigBook(
+        public virtual Operation<Book> GetBigBook(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Poll an operation once, using an <c>operationName</c> from a previous invocation of <c>GetBigBook</c>.
+        /// </summary>
+        /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The result of polling the operation.</returns>
+        public virtual Operation<Book> PollOnceGetBigBook(
+            string operationName,
+            CallSettings callSettings = null) => Operation<Book>.PollOnceFromName(
+                GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+                LongRunningOperationsClient,
+                callSettings);
 
         /// <summary>
         /// Test long-running operations with empty return type.
@@ -3529,7 +3571,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation> GetBigNothingAsync(
+        public virtual Task<Operation<Empty>> GetBigNothingAsync(
             BookName name,
             CallSettings callSettings = null) => GetBigNothingAsync(
                 new GetBookRequest
@@ -3550,10 +3592,13 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation> GetBigNothingAsync(
+        public virtual Task<Operation<Empty>> GetBigNothingAsync(
             BookName name,
             CancellationToken cancellationToken) => GetBigNothingAsync(
-                name,
+                new GetBookRequest
+                {
+                    BookName = name,
+                },
                 CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -3568,7 +3613,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Operation GetBigNothing(
+        public virtual Operation<Empty> GetBigNothing(
             BookName name,
             CallSettings callSettings = null) => GetBigNothing(
                 new GetBookRequest
@@ -3589,12 +3634,25 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation> GetBigNothingAsync(
+        public virtual Task<Operation<Empty>> GetBigNothingAsync(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Asynchronously poll an operation once, using an <c>operationName</c> from a previous invocation of <c>GetBigNothingAsync</c>.
+        /// </summary>
+        /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A task representing the result of polling the operation.</returns>
+        public virtual Task<Operation<Empty>> PollOnceGetBigNothingAsync(
+            string operationName,
+            CallSettings callSettings = null) => Operation<Empty>.PollOnceFromNameAsync(
+                GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+                LongRunningOperationsClient,
+                callSettings);
 
         /// <summary>
         /// Test long-running operations with empty return type.
@@ -3608,12 +3666,25 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Operation GetBigNothing(
+        public virtual Operation<Empty> GetBigNothing(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Poll an operation once, using an <c>operationName</c> from a previous invocation of <c>GetBigNothing</c>.
+        /// </summary>
+        /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The result of polling the operation.</returns>
+        public virtual Operation<Empty> PollOnceGetBigNothing(
+            string operationName,
+            CallSettings callSettings = null) => Operation<Empty>.PollOnceFromName(
+                GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+                LongRunningOperationsClient,
+                callSettings);
 
     }
 
@@ -3655,6 +3726,8 @@ namespace Google.Example.Library.V1
         {
             this.GrpcClient = grpcClient;
             LibraryServiceSettings effectiveSettings = settings ?? LibraryServiceSettings.GetDefault();
+            LongRunningOperationsClient = new OperationsClientImpl(
+                grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
             _clientHelper = new ClientHelper(effectiveSettings);
             var grpcLabelerClient = grpcClient.CreateLabelerClient();
             _callCreateShelf = _clientHelper.BuildApiCall<CreateShelfRequest, Shelf>(
@@ -3707,6 +3780,11 @@ namespace Google.Example.Library.V1
         /// The underlying gRPC LibraryService client.
         /// </summary>
         public override LibraryService.LibraryServiceClient GrpcClient { get; }
+
+        /// <summary>
+        /// The client for long-running operations.
+        /// </summary>
+        public override OperationsClient LongRunningOperationsClient { get; }
 
         // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
         partial void Modify_CreateShelfRequest(ref CreateShelfRequest request, ref CallSettings settings);
@@ -4548,12 +4626,13 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public override Task<Operation> GetBigBookAsync(
+        public override async Task<Operation<Book>> GetBigBookAsync(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             Modify_GetBookRequest(ref request, ref callSettings);
-            return _callGetBigBook.Async(request, callSettings);
+            return new Operation<Book>(
+                await _callGetBigBook.Async(request, callSettings), LongRunningOperationsClient);
         }
 
         /// <summary>
@@ -4568,12 +4647,13 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public override Operation GetBigBook(
+        public override Operation<Book> GetBigBook(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             Modify_GetBookRequest(ref request, ref callSettings);
-            return _callGetBigBook.Sync(request, callSettings);
+            return new Operation<Book>(
+                _callGetBigBook.Sync(request, callSettings), LongRunningOperationsClient);
         }
 
         /// <summary>
@@ -4588,12 +4668,13 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public override Task<Operation> GetBigNothingAsync(
+        public override async Task<Operation<Empty>> GetBigNothingAsync(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             Modify_GetBookRequest(ref request, ref callSettings);
-            return _callGetBigNothing.Async(request, callSettings);
+            return new Operation<Empty>(
+                await _callGetBigNothing.Async(request, callSettings), LongRunningOperationsClient);
         }
 
         /// <summary>
@@ -4608,12 +4689,13 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public override Operation GetBigNothing(
+        public override Operation<Empty> GetBigNothing(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             Modify_GetBookRequest(ref request, ref callSettings);
-            _callGetBigNothing.Sync(request, callSettings);
+            return new Operation<Empty>(
+                _callGetBigNothing.Sync(request, callSettings), LongRunningOperationsClient);
         }
 
     }

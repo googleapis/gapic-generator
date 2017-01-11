@@ -22,7 +22,7 @@ import java.util.List;
 public abstract class DynamicLangXApiView implements ViewModel {
   public abstract String templateFileName();
 
-  public abstract String packageName();
+  public abstract FileHeaderView fileHeader();
 
   public abstract String protoFilename();
 
@@ -60,11 +60,11 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<GrpcStubView> stubs();
 
-  public abstract List<ImportTypeView> imports();
-
   public abstract String outputPath();
 
   public abstract List<ApiMethodView> apiMethods();
+
+  public abstract boolean hasPageStreamingMethods();
 
   public abstract boolean hasLongRunningOperations();
 
@@ -97,7 +97,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
-    public abstract Builder packageName(String val);
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder protoFilename(String simpleName);
 
@@ -135,11 +135,11 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder stubs(List<GrpcStubView> val);
 
-    public abstract Builder imports(List<ImportTypeView> val);
-
     public abstract Builder outputPath(String val);
 
     public abstract Builder apiMethods(List<ApiMethodView> val);
+
+    public abstract Builder hasPageStreamingMethods(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
 

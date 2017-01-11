@@ -17,6 +17,7 @@
 
 var assert = require('assert');
 var libraryV1 = require('../src/').v1();
+var through2 = require('through2');
 
 describe('LibraryServiceClient', function() {
   describe('createShelf', function() {
@@ -562,6 +563,111 @@ describe('LibraryServiceClient', function() {
         assert.ifError(err);
         done();
       });
+    });
+  });
+
+  describe('streamShelves', function() {
+    it('invokes streamShelves without error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var request = {};
+
+      // Mock response
+      var expectedResponse = {};
+
+      // Mock Grpc layer
+      client._streamShelves = function(actualRequest) {
+        assert.deepStrictEqual(actualRequest, request);
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          callback(null, expectedResponse);
+        });
+        mockStream.write();
+        return mockStream;
+      };
+
+      client.streamShelves(request).on('data', function(response) {
+        assert.deepStrictEqual(response, expectedResponse);
+        done()
+      }).on('error', function(err) {
+        done(err);
+      });
+    });
+  });
+
+  describe('streamBooks', function() {
+    it('invokes streamBooks without error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var name = 'name3373707';
+      var request = {
+          name : name
+      };
+
+      // Mock response
+      var name2 = 'name2-1052831874';
+      var author = 'author-1406328437';
+      var title = 'title110371416';
+      var read = true;
+      var expectedResponse = {
+          name : name2,
+          author : author,
+          title : title,
+          read : read
+      };
+
+      // Mock Grpc layer
+      client._streamBooks = function(actualRequest) {
+        assert.deepStrictEqual(actualRequest, request);
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          callback(null, expectedResponse);
+        });
+        mockStream.write();
+        return mockStream;
+      };
+
+      client.streamBooks(request).on('data', function(response) {
+        assert.deepStrictEqual(response, expectedResponse);
+        done()
+      }).on('error', function(err) {
+        done(err);
+      });
+    });
+  });
+
+  describe('discussBook', function() {
+    it('invokes discussBook without error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var name = 'name3373707';
+      var request = {
+          name : name
+      };
+
+      // Mock response
+      var userName = 'userName339340927';
+      var comment = '95';
+      var expectedResponse = {
+          userName : userName,
+          comment : comment
+      };
+
+      // Mock Grpc layer
+      client._discussBook = function() {
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          assert.deepStrictEqual(chunk, request);
+          callback(null, expectedResponse);
+        });
+        return mockStream;
+      };
+
+      var stream = client.discussBook().on('data', function(response) {
+        assert.deepStrictEqual(response, expectedResponse);
+        done()
+      }).on('error', function(err) {
+        done(err);
+      });
+
+      stream.write(request);
     });
   });
 

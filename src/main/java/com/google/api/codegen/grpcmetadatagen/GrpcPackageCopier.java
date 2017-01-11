@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen;
 
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.tools.framework.tools.ToolOptions;
 import java.io.IOException;
 
@@ -21,5 +22,6 @@ import java.io.IOException;
 public interface GrpcPackageCopier {
 
   /** Returns a map of Docs to be output, as well any package metadata generated in this phase. */
-  public GrpcPackageCopierResult run(ToolOptions options) throws IOException;
+  public GrpcPackageCopierResult run(ToolOptions options, PackageMetadataConfig config)
+      throws IOException;
 }

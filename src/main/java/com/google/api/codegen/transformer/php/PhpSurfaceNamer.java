@@ -22,12 +22,14 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.php.PhpNameFormatter;
+import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpRenderingUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import java.util.ArrayList;
 import java.util.List;
 
 /** The SurfaceNamer for PHP. */
@@ -41,22 +43,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  @Override
-  public String getApiWrapperVariableName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
-    if (type.isMap() || type.isRepeated()) {
-      return publicMethodName(Name.from("add").join(identifier));
-    } else {
-      return publicMethodName(Name.from("set").join(identifier));
-    }
+    return publicMethodName(Name.from("set").join(identifier));
+  }
+
+  @Override
+  public String getFieldAddFunctionName(TypeRef type, Name identifier) {
+    return publicMethodName(Name.from("add").join(identifier));
   }
 
   @Override
@@ -119,5 +112,34 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     String publicClassName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), suffix));
     return namePath.withHead(publicClassName);
+  }
+
+  @Override
+  public String getTestPackageName() {
+    return getTestPackageName(getPackageName());
+  }
+
+  /** Insert "Tests" into the package name after "Google\Cloud" standard prefix */
+  private static String getTestPackageName(String packageName) {
+    final String[] PACKAGE_PREFIX = PhpPackageUtil.getStandardPackagePrefix();
+
+    ArrayList<String> packageComponents = new ArrayList<>();
+    String[] packageSplit = PhpPackageUtil.splitPackageName(packageName);
+    int packageStartIndex = 0;
+    for (int i = 0; i < PACKAGE_PREFIX.length && i < packageSplit.length; i++) {
+      if (packageSplit[i].equals(PACKAGE_PREFIX[i])) {
+        packageStartIndex++;
+      } else {
+        break;
+      }
+    }
+    for (int i = 0; i < packageStartIndex; i++) {
+      packageComponents.add(packageSplit[i]);
+    }
+    packageComponents.add("Tests");
+    for (int i = packageStartIndex; i < packageSplit.length; i++) {
+      packageComponents.add(packageSplit[i]);
+    }
+    return PhpPackageUtil.buildPackageName(packageComponents);
   }
 }

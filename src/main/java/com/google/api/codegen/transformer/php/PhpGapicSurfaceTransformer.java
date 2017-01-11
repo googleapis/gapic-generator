@@ -22,8 +22,8 @@ import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.ImportTypeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -53,6 +53,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private PageStreamingTransformer pageStreamingTransformer;
   private ApiMethodTransformer apiMethodTransformer;
   private GrpcStubTransformer grpcStubTransformer;
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new PhpImportTypeTransformer());
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
@@ -100,15 +102,12 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     List<ApiMethodView> methods = generateApiMethods(context);
 
-    ImportTypeTransformer importTypeTransformer = new PhpImportTypeTransformer();
-
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
 
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    xapiClass.packageName(context.getApiConfig().getPackageName());
     String name = namer.getApiWrapperClassName(context.getInterface());
     xapiClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
@@ -125,6 +124,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.pathTemplateGetterFunctions(
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
+    xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
     xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
 
@@ -144,7 +144,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
     // must be done as the last step to catch all imports
-    xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
+    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     xapiClass.outputPath(outputPath + "/" + name + ".php");
 
@@ -193,7 +193,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     }
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
-      typeTable.saveNicknameFor("Google\\Longrunning\\OperationsClient");
+      typeTable.saveNicknameFor("\\Google\\GAX\\LongRunning\\OperationsClient");
     }
   }
 

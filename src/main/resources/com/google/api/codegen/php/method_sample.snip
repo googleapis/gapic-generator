@@ -1,29 +1,49 @@
 @extends "php/common.snip"
 
-@snippet decorateSampleCode(apiMethod, coreSampleCode)
+@snippet decorateSampleCode(xapiClass, apiMethod, coreSampleCode)
     try {
-        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+        @if xapiClass.hasMissingDefaultOptions
+            $options = [
+                @if xapiClass.missingDefaultServiceAddress
+                    'serviceAddress' => 'my-service-address',
+                @end
+                @if xapiClass.missingDefaultServiceScopes
+                    'scopes' => ['my-service-scope'],
+                @end
+            ];
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
+        @else
+            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+        @end
         {@initCode(apiMethod.initCode)}
         {@coreSampleCode}
     } finally {
-        if (isset(${@apiMethod.apiVariableName})) {
+        @if xapiClass.hasMissingDefaultOptions
+            if (isset(${@apiMethod.apiVariableName})) {
+                ${@apiMethod.apiVariableName}->close();
+            }
+        @else
             ${@apiMethod.apiVariableName}->close();
-        }
+        @end
     }
 @end
 
 @snippet sampleCode(apiMethod)
-    @switch apiMethod.type.toString
-    @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod)}
-    @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArrayMethodSampleCode(apiMethod)}
-    @default
-        $unhandledCase: {@apiMethod.type.toString}$
+    @if apiMethod.isLongRunningOperation
+        {@longRunningMethodSampleCode(apiMethod)}
+    @else
+      @switch apiMethod.type.toString
+      @case "OptionalArrayMethod"
+          {@methodSampleCode(apiMethod)}
+      @case "PagedOptionalArrayMethod"
+          {@pagedMethodSampleCode(apiMethod)}
+      @default
+          $unhandledCase: {@apiMethod.type.toString}$
+      @end
     @end
 @end
 
-@private optionalArrayMethodSampleCode(apiMethod)
+@private methodSampleCode(apiMethod)
     @if apiMethod.hasReturnValue
         $response = {@methodCallSampleCode(apiMethod)};
     @else
@@ -31,9 +51,35 @@
     @end
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod)
-    foreach ({@methodCallSampleCode(apiMethod)} as $element) {
-        // doThingsWith(element);
+@private pagedMethodSampleCode(apiMethod)
+    // Iterate through all elements
+    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    foreach ($pagedResponse->iterateAllElements() as $element) {
+        // doSomethingWith($element);
+    }
+
+    // OR iterate over pages of elements, with the maximum page size set to 5
+    $pagedResponse = {@pageSizeMethodCallSampleCode(apiMethod)};
+    foreach ($pagedResponse->iteratePages() as $page) {
+        foreach ($page as $element) {
+            // doSomethingWith($element);
+        }
+    }
+@end
+
+@private longRunningMethodSampleCode(apiMethod)
+    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationResponse->pollUntilComplete();
+    if ($operationResponse->operationSucceeded()) {
+      @if apiMethod.longRunningView.isEmptyOperation
+          // operation succeeded and returns no value
+      @else
+          $result = $operationResponse->getResult();
+          // doSomethingWith($result)
+      @end
+    } else {
+      $error = $operationResponse->getError();
+      // handleError($error)
     }
 @end
 
@@ -42,13 +88,22 @@
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
 @end
 
-@private sampleMethodCallArgList(fieldSettings)
+@private pageSizeMethodCallSampleCode(apiMethod)
+    @if apiMethod.hasRequestParameters
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, ['pageSize' => 5])
+    @else
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}(['pageSize' => 5])
+    @end
+@end
+
+@snippet sampleMethodCallArgList(fieldSettings)
     @join fieldSetting : fieldSettings on ", "
         ${@fieldSetting.identifier}
     @end
 @end
 
-@private initCode(initCodeSpec)
+@snippet initCode(initCodeSpec)
     @join line : initCodeSpec.lines
         @switch line.lineType.toString
         @case "StructureInitLine"
@@ -68,7 +123,19 @@
 @private initLineStructure(line)
     ${@line.identifier} = new {@line.typeName}();
     @join fieldSetting : line.fieldSettings
-        ${@line.identifier}->{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier});
+        @if fieldSetting.isMap
+            foreach (${@fieldSetting.identifier} as $key => $value) {
+                ${@line.identifier}->{@fieldSetting.fieldAddFunction}((new {@fieldSetting.elementTypeName}())->setKey($key)->setValue($value));
+            }
+        @else
+            @if fieldSetting.isArray
+                foreach (${@fieldSetting.identifier} as $elem) {
+                    ${@line.identifier}->{@fieldSetting.fieldAddFunction}($elem);
+                }
+            @else
+                ${@line.identifier}->{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier});
+            @end
+        @end
     @end
 @end
 
@@ -77,9 +144,9 @@
 @end
 
 @snippet varList(args)
-  @join arg : args on ", "
-    ${@arg}
-  @end
+    @join arg : args on ", "
+        ${@arg}
+    @end
 @end
 
 @private initLineMap(line)
@@ -87,9 +154,9 @@
 @end
 
 @private keyVarList(mapEntries)
-  @join mapEntry : mapEntries
-    {@mapEntry.key} => ${@mapEntry.valueString},
-  @end
+    @join mapEntry : mapEntries
+        {@mapEntry.key} => ${@mapEntry.valueString},
+    @end
 @end
 
 @private initLineSimple(line)

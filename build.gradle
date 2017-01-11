@@ -458,8 +458,8 @@ task verifyLicense << {
       .collectMany{it.allJava.getSrcDirs()}
       .each{it.eachFileRecurse(FileType.FILES, {srcFiles << new Tuple(it, it.text)})}
   srcFiles = srcFiles
-      .collect{new Tuple(it.get(0), it.get(1).replaceAll("Copyright 20[0-9]{2}", "Copyright 20xx"))}
       .findAll{!it.get(0).path.contains("/generated/") && it.get(0).path.endsWith(".java")}
+      .collect{new Tuple(it.get(0), it.get(1).replaceAll("Copyright 20[0-9]{2}", "Copyright 20xx"))}
       .findAll{!it.get(1).startsWith(licenseText)}
   if (srcFiles.asList().size() > 0) {
     srcFiles.each({println 'missing license: ' + it.get(0)})

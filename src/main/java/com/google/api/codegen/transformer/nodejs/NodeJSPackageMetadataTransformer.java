@@ -15,10 +15,12 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.Iterables;
@@ -30,12 +32,12 @@ import java.util.List;
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_FILE = "nodejs/package.snip";
 
-  // TODO: Retrieve the following values from static file
-  // Github issue: https://github.com/googleapis/toolkit/issues/848
-  private static final String PACKAGE_VERSION = "0.7.1";
-  private static final String GAX_VERSION = "^0.7.0";
-  private static final String PROTO_VERSION = "^0.8.3";
-  private static final String PACKAGE_URL = "https://github.com/googleapis/googleapis";
+  PackageMetadataConfig packageConfig;
+  PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
+
+  public NodeJSPackageMetadataTransformer(PackageMetadataConfig packageConfig) {
+    this.packageConfig = packageConfig;
+  }
 
   @Override
   public List<String> getTemplateFileNames() {
@@ -50,21 +52,16 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
             apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(namer, hasMultipleServices));
+    models.add(generateMetadataView(model, namer, hasMultipleServices));
     return models;
   }
 
   private ViewModel generateMetadataView(
-      NodeJSPackageMetadataNamer namer, boolean hasMultipleServices) {
-    return PackageMetadataView.newBuilder()
-        .templateFileName(PACKAGE_FILE)
-        .outputPath("package.json")
+      Model model, NodeJSPackageMetadataNamer namer, boolean hasMultipleServices) {
+    return metadataTransformer
+        .generateMetadataView(
+            packageConfig, model, PACKAGE_FILE, "package.json", TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
-        .version(PACKAGE_VERSION)
-        .gaxVersion(GAX_VERSION)
-        .protoVersion(PROTO_VERSION)
-        .url(PACKAGE_URL)
-        .serviceName(namer.getMetadataName())
         .hasMultipleServices(hasMultipleServices)
         .build();
   }

@@ -1,0 +1,797 @@
+============== file: tests/unit/Example/Library/V1/LibraryServiceTest.php ==============
+<?php
+/*
+ * Copyright 2016, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * GENERATED CODE WARNING
+ * This file was automatically generated - do not edit!
+ */
+
+namespace Google\Tests\Example\Library\V1;
+
+use Google\Example\Library\V1\LibraryServiceClient;
+use \Google\GAX\GrpcCredentialsHelper;
+use \Google\GAX\Testing\MockStubTrait;
+use \PHPUnit_Framework_TestCase;
+use \google\example\library\v1\AddCommentsRequest;
+use \google\example\library\v1\Book;
+use \google\example\library\v1\BookFromAnywhere;
+use \google\example\library\v1\BookFromArchive;
+use \google\example\library\v1\Comment;
+use \google\example\library\v1\Comment\Stage;
+use \google\example\library\v1\CreateBookRequest;
+use \google\example\library\v1\CreateShelfRequest;
+use \google\example\library\v1\DeleteBookRequest;
+use \google\example\library\v1\DeleteShelfRequest;
+use \google\example\library\v1\FindRelatedBooksRequest;
+use \google\example\library\v1\FindRelatedBooksResponse;
+use \google\example\library\v1\GetBookFromAnywhereRequest;
+use \google\example\library\v1\GetBookFromArchiveRequest;
+use \google\example\library\v1\GetBookRequest;
+use \google\example\library\v1\GetShelfRequest;
+use \google\example\library\v1\LibraryServiceGrpcClient;
+use \google\example\library\v1\ListBooksRequest;
+use \google\example\library\v1\ListBooksResponse;
+use \google\example\library\v1\ListShelvesRequest;
+use \google\example\library\v1\ListShelvesResponse;
+use \google\example\library\v1\ListStringsRequest;
+use \google\example\library\v1\ListStringsResponse;
+use \google\example\library\v1\MergeShelvesRequest;
+use \google\example\library\v1\MoveBookRequest;
+use \google\example\library\v1\PublishSeriesRequest;
+use \google\example\library\v1\PublishSeriesResponse;
+use \google\example\library\v1\Shelf;
+use \google\example\library\v1\SomeMessage2\SomeMessage3\Alignment;
+use \google\example\library\v1\UpdateBookIndexRequest;
+use \google\example\library\v1\UpdateBookRequest;
+use \google\protobuf\EmptyC;
+use \google\tagger\v1\AddLabelRequest;
+use \google\tagger\v1\AddLabelResponse;
+use \google\tagger\v1\AddTagRequest;
+use \google\tagger\v1\AddTagResponse;
+use \google\tagger\v1\LabelerGrpcClient;
+
+/**
+ * @group library
+ * @group grpc
+ */
+class LibraryServiceTest extends PHPUnit_Framework_TestCase
+{
+    public function createMockLibraryServiceImpl($hostname, $opts)
+    {
+        return new MockLibraryServiceImpl($hostname, $opts);
+    }
+
+    public function createMockLabelerImpl($hostname, $opts)
+    {
+        return new MockLabelerImpl($hostname, $opts);
+    }
+
+    private function createStubAndClient($createGrpcStub, $createStubArg)
+    {
+        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
+        $grpcStub = $grpcCredentialsHelper->createStub(
+            $createGrpcStub,
+            LibraryServiceClient::SERVICE_ADDRESS,
+            LibraryServiceClient::DEFAULT_SERVICE_PORT
+        );
+        $client = new LibraryServiceClient([$createStubArg =>
+            function ($hostname, $opts) use ($grpcStub) {
+                return $grpcStub;
+            },
+        ]);
+        return [$grpcStub, $client];
+    }
+    /**
+     * @test
+     */
+    public function createShelfTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name = "name3373707";
+        $theme = "theme110327241";
+        $internalTheme = "internalTheme792518087";
+        $expectedResponse = new Shelf();
+        $expectedResponse->setName($name);
+        $expectedResponse->setTheme($theme);
+        $expectedResponse->setInternalTheme($internalTheme);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $shelf = new Shelf();
+
+        $response = $client->createShelf($shelf);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('CreateShelf', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($shelf, $actualRequestObject->getShelf());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getShelfTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $theme = "theme110327241";
+        $internalTheme = "internalTheme792518087";
+        $expectedResponse = new Shelf();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setTheme($theme);
+        $expectedResponse->setInternalTheme($internalTheme);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $options = "options-1249474914";
+
+        $response = $client->getShelf($formattedName, $options);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('GetShelf', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertEquals($options, $actualRequestObject->getOptions());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function listShelvesTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $nextPageToken = "";
+        $shelvesElement = new Shelf();
+        $shelves = [$shelvesElement];
+        $expectedResponse = new ListShelvesResponse();
+        $expectedResponse->setNextPageToken($nextPageToken);
+        foreach ($shelves as $elem) {
+            $expectedResponse->addShelves($elem);
+        }
+        $grpcStub->addResponse($expectedResponse);
+
+        $response = $client->listShelves();
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('ListShelves', explode('/', $actualFuncCall)[2]);
+
+
+        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+        $resources = iterator_to_array($response->iterateAllElements());
+        $this->assertSame(1, count($resources));
+        $this->assertEquals($expectedResponse->getShelvesList()[0], $resources[0]);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function deleteShelfTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+
+        $client->deleteShelf($formattedName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('DeleteShelf', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function mergeShelvesTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $theme = "theme110327241";
+        $internalTheme = "internalTheme792518087";
+        $expectedResponse = new Shelf();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setTheme($theme);
+        $expectedResponse->setInternalTheme($internalTheme);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+
+        $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('MergeShelves', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function createBookTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new Book();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $book = new Book();
+
+        $response = $client->createBook($formattedName, $book);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('CreateBook', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertEquals($book, $actualRequestObject->getBook());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function publishSeriesTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $bookNamesElement = "bookNamesElement1491670575";
+        $bookNames = [$bookNamesElement];
+        $expectedResponse = new PublishSeriesResponse();
+        foreach ($bookNames as $elem) {
+            $expectedResponse->addBookNames($elem);
+        }
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $shelf = new Shelf();
+        $books = [];
+
+        $response = $client->publishSeries($shelf, $books);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('PublishSeries', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($shelf, $actualRequestObject->getShelf());
+        $this->assertEquals($books, $actualRequestObject->getBooksList());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBookTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new Book();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        $response = $client->getBook($formattedName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('GetBook', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function listBooksTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $nextPageToken = "";
+        $booksElement = new Book();
+        $books = [$booksElement];
+        $expectedResponse = new ListBooksResponse();
+        $expectedResponse->setNextPageToken($nextPageToken);
+        foreach ($books as $elem) {
+            $expectedResponse->addBooks($elem);
+        }
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+
+        $response = $client->listBooks($formattedName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('ListBooks', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+        $resources = iterator_to_array($response->iterateAllElements());
+        $this->assertSame(1, count($resources));
+        $this->assertEquals($expectedResponse->getBooksList()[0], $resources[0]);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function deleteBookTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        $client->deleteBook($formattedName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('DeleteBook', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function updateBookTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new Book();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $book = new Book();
+
+        $response = $client->updateBook($formattedName, $book);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('UpdateBook', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertEquals($book, $actualRequestObject->getBook());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function moveBookTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new Book();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+
+        $response = $client->moveBook($formattedName, $formattedOtherShelfName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('MoveBook', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function listStringsTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $nextPageToken = "";
+        $stringsElement = "stringsElement474465855";
+        $strings = [$stringsElement];
+        $expectedResponse = new ListStringsResponse();
+        $expectedResponse->setNextPageToken($nextPageToken);
+        foreach ($strings as $elem) {
+            $expectedResponse->addStrings($elem);
+        }
+        $grpcStub->addResponse($expectedResponse);
+
+        $response = $client->listStrings();
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('ListStrings', explode('/', $actualFuncCall)[2]);
+
+
+        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+        $resources = iterator_to_array($response->iterateAllElements());
+        $this->assertSame(1, count($resources));
+        $this->assertEquals($expectedResponse->getStringsList()[0], $resources[0]);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function addCommentsTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $comment = "95";
+        $stage = Stage::UNSET;
+        $alignment = Alignment::CHAR;
+        $commentsElement = new Comment();
+        $commentsElement->setComment($comment);
+        $commentsElement->setStage($stage);
+        $commentsElement->setAlignment($alignment);
+        $comments = [$commentsElement];
+
+        $client->addComments($formattedName, $comments);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('AddComments', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertEquals($comments, $actualRequestObject->getCommentsList());
+
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBookFromArchiveTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new BookFromArchive();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+
+        $response = $client->getBookFromArchive($formattedName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('GetBookFromArchive', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBookFromAnywhereTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new BookFromAnywhere();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('GetBookFromAnywhere', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertEquals($formattedAltBookName, $actualRequestObject->getAltBookName());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function updateBookIndexTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $indexName = "default index";
+        $indexMapItem = "indexMapItem1918721251";
+        $indexMap = ["default_key" => $indexMapItem,];
+
+        $client->updateBookIndex($formattedName, $indexName, $indexMap);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('UpdateBookIndex', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertEquals($indexName, $actualRequestObject->getIndexName());
+        $this->assertEquals($indexMap, $actualRequestObject->getIndexMap());
+
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function findRelatedBooksTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $nextPageToken = "";
+        $namesElement2 = "namesElement21120252792";
+        $names2 = [$namesElement2];
+        $expectedResponse = new FindRelatedBooksResponse();
+        $expectedResponse->setNextPageToken($nextPageToken);
+        foreach ($names2 as $elem) {
+            $expectedResponse->addNames($elem);
+        }
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $namesElement = "namesElement-249113339";
+        $names = [$namesElement];
+        $shelves = [];
+
+        $response = $client->findRelatedBooks($names, $shelves);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('FindRelatedBooks', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($names, $actualRequestObject->getNamesList());
+        $this->assertEquals($shelves, $actualRequestObject->getShelvesList());
+
+        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+        $resources = iterator_to_array($response->iterateAllElements());
+        $this->assertSame(1, count($resources));
+        $this->assertEquals($expectedResponse->getNamesList()[0], $resources[0]);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function addTagTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $expectedResponse = new AddTagResponse();
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $tag = "tag114586";
+
+        $response = $client->addTag($formattedResource, $tag);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('AddTag', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedResource, $actualRequestObject->getResource());
+        $this->assertEquals($tag, $actualRequestObject->getTag());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function addLabelTest()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLabelerImpl'], 'createLabelerStubFunction');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $expectedResponse = new AddLabelResponse();
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $label = "label102727412";
+
+        $response = $client->addLabel($formattedResource, $label);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+        $this->assertSame('AddLabel', explode('/', $actualFuncCall)[2]);
+
+        $this->assertEquals($formattedResource, $actualRequestObject->getResource());
+        $this->assertEquals($label, $actualRequestObject->getLabel());
+
+        $this->assertEquals($expectedResponse, $response);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+}

@@ -1,0 +1,128 @@
+@extends "php/common.snip"
+@extends "php/method_sample.snip"
+
+@snippet generate(apiTest)
+    {@renderFileHeader(apiTest.fileHeader, simpleGeneratedCodeWarning())}
+
+    /**
+     * @@group {@apiTest.testClass.apiName}
+     * @@group grpc
+     */
+    class {@apiTest.testClass.name} extends PHPUnit_Framework_TestCase
+    {
+        {@setupMethods(apiTest.testClass)}
+        @join test : apiTest.testClass.testCases
+            {@testCase(test)}
+
+        @end
+    }
+@end
+
+@private setupMethods(testClass)
+    @join mockService : testClass.mockServices
+        public function create{@mockService.implName}($hostname, $opts)
+        {
+            return new {@mockService.implName}($hostname, $opts);
+        }
+
+    @end
+
+    private function createStubAndClient($createGrpcStub, $createStubArg)
+    {
+        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
+        $grpcStub = $grpcCredentialsHelper->createStub(
+            $createGrpcStub,
+            {@testClass.apiClassName}::SERVICE_ADDRESS,
+            {@testClass.apiClassName}::DEFAULT_SERVICE_PORT
+        );
+        $client = new {@testClass.apiClassName}([$createStubArg =>
+            function ($hostname, $opts) use ($grpcStub) {
+                return $grpcStub;
+            },
+        ]);
+        return [$grpcStub, $client];
+    }
+@end
+
+@private testCase(test)
+    @switch test.grpcStreamingType
+    @case "NonStreaming"
+        {@nonStreamingOptionalArrayTestCase(test)}
+    @default
+        $unhandled case: {@test.grpcStreamingType.toString}$
+    @end
+@end
+
+@private nonStreamingOptionalArrayTestCase(test)
+    /**
+     * @@test
+     */
+    public function {@test.name}()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'create{@test.mockGrpcStubTypeName}'], '{@test.createStubFunctionName}');
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        @if test.hasReturnValue
+            // Mock response
+            {@initCode(test.mockResponse.initCode)}
+            $grpcStub->addResponse($expectedResponse);
+
+        @end
+        @if test.hasRequestParameters
+          // Mock request
+          {@initCode(test.initCode)}
+
+        @end
+        @if test.hasReturnValue
+            $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        @else
+            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        @end
+        {@unarySuccessAsserts(test)}
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+@end
+
+@private unarySuccessAsserts(test)
+    $actualRequests = $grpcStub->getReceivedCalls();
+    $this->assertSame(1, count($actualRequests));
+    list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+    $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
+
+    @join assert : test.asserts
+        @if assert.hasExpectedValueTransformFunction
+            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+                ${@assert.expectedValueIdentifier}), \
+                $actualRequestObject->{@assert.actualValueGetter}());
+        @else
+            $this->assertEquals(${@assert.expectedValueIdentifier}, \
+                $actualRequestObject->{@assert.actualValueGetter}());
+        @end
+    @end
+    
+    @switch test.clientMethodType
+    @case "OptionalArrayMethod"
+        {@optionalArraySuccessAsserts(test)}
+    @case "PagedOptionalArrayMethod"
+        {@pagedOptionalArraySuccessAsserts(test)}
+    @default
+        $unhandled case: {@test.clientMethodType.toString}$
+    @end
+@end
+
+@private optionalArraySuccessAsserts(test)
+    @if test.hasReturnValue
+        $this->assertEquals($expectedResponse, $response);
+    @end
+@end
+
+@private pagedOptionalArraySuccessAsserts(test)
+    $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+    @join pageStreamingResponseView : test.pageStreamingResponseViews
+        ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
+        $this->assertSame(1, count(${@pageStreamingResponseView.resourcesVarName}));
+        $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
+    @end
+@end

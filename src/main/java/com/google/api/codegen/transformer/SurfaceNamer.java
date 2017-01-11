@@ -78,6 +78,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return packageName;
   }
 
+  public String getTestPackageName() {
+    return getNotImplementedString("SurfaceNamer.getTestPackageName");
+  }
+
   public String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
@@ -89,7 +93,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the class that implements a particular proto interface. */
   public String getApiWrapperClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
@@ -188,7 +192,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the constructor for the service client. The client is VKit generated, not GRPC. */
   public String getApiWrapperClassConstructorName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   /**
@@ -209,7 +213,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * interface.
    */
   public String getApiWrapperVariableName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   /**
@@ -290,6 +294,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     } else {
       return publicMethodName(Name.from("set").join(identifier));
     }
+  }
+
+  /** The function name to add an element to a map or repeated field. */
+  public String getFieldAddFunctionName(Field field) {
+    return getFieldAddFunctionName(field.getType(), Name.from(field.getSimpleName()));
+  }
+
+  /** The function name to add an element to a map or repeated field. */
+  public String getFieldAddFunctionName(TypeRef type, Name identifier) {
+    return getNotImplementedString("SurfaceNamer.getFieldAddFunctionName");
   }
 
   /** The function name to set a field that is a resource name class. */

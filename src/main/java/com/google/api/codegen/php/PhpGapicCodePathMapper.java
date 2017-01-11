@@ -16,6 +16,7 @@ package com.google.api.codegen.php;
 
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Joiner;
@@ -29,9 +30,6 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class PhpGapicCodePathMapper implements GapicCodePathMapper {
-
-  private static String PACKAGE_SPLIT_REGEX = "[\\\\]";
-  private static String[] PACKAGE_PREFIX_TO_SKIP = {"Google", "Cloud"};
 
   @Nullable
   public abstract String getPrefix();
@@ -47,20 +45,9 @@ public abstract class PhpGapicCodePathMapper implements GapicCodePathMapper {
       dirs.add(prefix);
     }
 
-    if (!Strings.isNullOrEmpty(config.getPackageName())) {
-      String[] packageSplit = config.getPackageName().split(PACKAGE_SPLIT_REGEX);
-      int packageStartIndex = 0;
-      // Skip common package prefix only when it is an exact match in sequence.
-      for (int i = 0; i < PACKAGE_PREFIX_TO_SKIP.length && i < packageSplit.length; i++) {
-        if (packageSplit[i].equals(PACKAGE_PREFIX_TO_SKIP[i])) {
-          packageStartIndex++;
-        } else {
-          break;
-        }
-      }
-      for (int i = packageStartIndex; i < packageSplit.length; i++) {
-        dirs.add(packageSplit[i]);
-      }
+    for (String packageElement :
+        PhpPackageUtil.splitPackageNameWithoutStandardPrefix(config.getPackageName())) {
+      dirs.add(packageElement);
     }
 
     String suffix = getSuffix();

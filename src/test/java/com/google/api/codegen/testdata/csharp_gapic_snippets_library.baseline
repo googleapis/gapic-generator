@@ -18,7 +18,7 @@
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
 using Google.Example.Library.V1;
-using Google.Longrunning;
+using Google.LongRunning;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Google.Tagger.V1;
@@ -1901,7 +1901,26 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            Operation response = await libraryServiceClient.GetBigBookAsync(name);
+            Operation<Book> response =
+                await libraryServiceClient.GetBigBookAsync(name);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Book> completedResponse =
+                await response.PollUntilCompletedAsync();
+            // Retrieve the operation result
+            Book result = completedResponse.Result;
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Book> retrievedResponse =
+                await libraryServiceClient.PollOnceGetBigBookAsync(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // If it has completed, then access the result
+                Book retrievedResult = retrievedResponse.Result;
+            }
             // End snippet
         }
 
@@ -1913,7 +1932,26 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            Operation response = libraryServiceClient.GetBigBook(name);
+            Operation<Book> response =
+                libraryServiceClient.GetBigBook(name);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Book> completedResponse =
+                response.PollUntilCompleted();
+            // Retrieve the operation result
+            Book result = completedResponse.Result;
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Book> retrievedResponse =
+                libraryServiceClient.PollOnceGetBigBook(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // If it has completed, then access the result
+                Book retrievedResult = retrievedResponse.Result;
+            }
             // End snippet
         }
 
@@ -1928,7 +1966,26 @@ namespace Google.Example.Library.V1.Snippets
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Make the request
-            Operation response = await libraryServiceClient.GetBigBookAsync(request);
+            Operation<Book> response =
+                await libraryServiceClient.GetBigBookAsync(request);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Book> completedResponse =
+                await response.PollUntilCompletedAsync();
+            // Retrieve the operation result
+            Book result = completedResponse.Result;
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Book> retrievedResponse =
+                await libraryServiceClient.PollOnceGetBigBookAsync(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // If it has completed, then access the result
+                Book retrievedResult = retrievedResponse.Result;
+            }
             // End snippet
         }
 
@@ -1943,7 +2000,26 @@ namespace Google.Example.Library.V1.Snippets
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Make the request
-            Operation response = libraryServiceClient.GetBigBook(request);
+            Operation<Book> response =
+                libraryServiceClient.GetBigBook(request);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Book> completedResponse =
+                response.PollUntilCompleted();
+            // Retrieve the operation result
+            Book result = completedResponse.Result;
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Book> retrievedResponse =
+                libraryServiceClient.PollOnceGetBigBook(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // If it has completed, then access the result
+                Book retrievedResult = retrievedResponse.Result;
+            }
             // End snippet
         }
 
@@ -1956,7 +2032,24 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            await libraryServiceClient.GetBigNothingAsync(name);
+            Operation<Empty> response =
+                await libraryServiceClient.GetBigNothingAsync(name);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Empty> completedResponse =
+                await response.PollUntilCompletedAsync();
+            // The long-running operation is now complete.
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Empty> retrievedResponse =
+                await libraryServiceClient.PollOnceGetBigNothingAsync(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // The long-running operation is now complete.
+            }
             // End snippet
         }
 
@@ -1968,7 +2061,24 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            libraryServiceClient.GetBigNothing(name);
+            Operation<Empty> response =
+                libraryServiceClient.GetBigNothing(name);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Empty> completedResponse =
+                response.PollUntilCompleted();
+            // The long-running operation is now complete.
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Empty> retrievedResponse =
+                libraryServiceClient.PollOnceGetBigNothing(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // The long-running operation is now complete.
+            }
             // End snippet
         }
 
@@ -1983,7 +2093,24 @@ namespace Google.Example.Library.V1.Snippets
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Make the request
-            await libraryServiceClient.GetBigNothingAsync(request);
+            Operation<Empty> response =
+                await libraryServiceClient.GetBigNothingAsync(request);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Empty> completedResponse =
+                await response.PollUntilCompletedAsync();
+            // The long-running operation is now complete.
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Empty> retrievedResponse =
+                await libraryServiceClient.PollOnceGetBigNothingAsync(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // The long-running operation is now complete.
+            }
             // End snippet
         }
 
@@ -1998,7 +2125,24 @@ namespace Google.Example.Library.V1.Snippets
                 BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
             // Make the request
-            libraryServiceClient.GetBigNothing(request);
+            Operation<Empty> response =
+                libraryServiceClient.GetBigNothing(request);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Empty> completedResponse =
+                response.PollUntilCompleted();
+            // The long-running operation is now complete.
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Empty> retrievedResponse =
+                libraryServiceClient.PollOnceGetBigNothing(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // The long-running operation is now complete.
+            }
             // End snippet
         }
 
