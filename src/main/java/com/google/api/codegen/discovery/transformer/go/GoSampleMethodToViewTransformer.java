@@ -96,7 +96,10 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       fieldVarNames.add(requestBodyVarName);
     }
 
-    if (methodInfo.isPageStreaming()) {
+    // The Go client only considers methods whose verb is "GET" to be page
+    // streaming calls. This excludes "search" methods, for example.
+    boolean isPageStreaming = methodInfo.isPageStreaming() && methodInfo.verb().equals("GET");
+    if (isPageStreaming) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
@@ -132,7 +135,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .hasResponse(hasResponse)
         .fields(fields)
         .fieldVarNames(fieldVarNames)
-        .isPageStreaming(methodInfo.isPageStreaming())
+        .isPageStreaming(isPageStreaming)
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
         .servicePackageName(servicePackageName)
