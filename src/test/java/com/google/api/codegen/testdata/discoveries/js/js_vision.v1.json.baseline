@@ -1,0 +1,42 @@
+
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Vision API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/vision
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var batchAnnotateImagesRequestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.vision.images.annotate(batchAnnotateImagesRequestBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/vision/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>

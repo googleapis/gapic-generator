@@ -1,0 +1,107 @@
+
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Translate API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/translate
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The text to detect
+    q: [],  // TODO: Update placeholder value.
+  };
+
+  var request = gapi.client.translate.detections.list(params);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'apiKey': '',  // TODO: Update placeholder with desired API key.
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/translate/v2/rest'],
+  }).then(function() {
+    makeApiCall();
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Translate API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/translate
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var request = gapi.client.translate.languages.list();
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'apiKey': '',  // TODO: Update placeholder with desired API key.
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/translate/v2/rest'],
+  }).then(function() {
+    makeApiCall();
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Translate API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/translate
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The text to translate
+    q: [],  // TODO: Update placeholder value.
+
+    // The target language into which the text should be translated
+    target: '',  // TODO: Update placeholder value.
+  };
+
+  var request = gapi.client.translate.translations.list(params);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'apiKey': '',  // TODO: Update placeholder with desired API key.
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/translate/v2/rest'],
+  }).then(function() {
+    makeApiCall();
+  });
+}
+gapi.load('client', start);
+</script>

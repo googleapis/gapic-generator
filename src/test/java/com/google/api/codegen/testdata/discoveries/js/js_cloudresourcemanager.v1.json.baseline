@@ -1,0 +1,688 @@
+
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The name of the operation resource.
+    name: '',  // TODO: Update placeholder value.
+  };
+
+  var request = gapi.client.cloudresourcemanager.operations.get(params);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The resource name of the Organization to fetch, e.g. "organizations/1234".
+    name: '',  // TODO: Update placeholder value.
+    // ex: 'organizations/my-organization'
+  };
+
+  var request = gapi.client.cloudresourcemanager.organizations.get(params);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource: '',  // TODO: Update placeholder value.
+    // ex: 'organizations/my-organization'
+  };
+
+  var getIamPolicyRequestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudresourcemanager.organizations.getIamPolicy(params, getIamPolicyRequestBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var searchOrganizationsRequestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  executeRequest(searchOrganizationsRequestBody);
+}
+
+function executeRequest(searchOrganizationsRequestBody) {
+  var request = gapi.client.cloudresourcemanager.organizations.search(searchOrganizationsRequestBody);
+  request.then(function(response) {
+    var organizationsPage = response.result.organizations;
+    for (var i = 0; i < organizationsPage.length; i++) {
+      // TODO: Change code below to process each resource in `organizationsPage`:
+      console.log(JSON.stringify(organizationsPage[i], null, 2));
+    }
+
+    if (response.result.nextPageToken) {
+      searchOrganizationsRequestBody.pageToken = response.result.nextPageToken;
+      executeRequest(searchOrganizationsRequestBody);
+    }
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource: '',  // TODO: Update placeholder value.
+    // ex: 'organizations/my-organization'
+  };
+
+  var setIamPolicyRequestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudresourcemanager.organizations.setIamPolicy(params, setIamPolicyRequestBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+    // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+    resource: '',  // TODO: Update placeholder value.
+    // ex: 'organizations/my-organization'
+  };
+
+  var testIamPermissionsRequestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudresourcemanager.organizations.testIamPermissions(params, testIamPermissionsRequestBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var projectBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudresourcemanager.projects.create(projectBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The Project ID (for example, `foo-bar-123`). Required.
+    projectId: '',  // TODO: Update placeholder value.
+  };
+
+  var request = gapi.client.cloudresourcemanager.projects.delete(params);
+  request.then(function() {}, function(reason) {
+    console.log('error: ' + reason.result.error.message');
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The Project ID (for example, `my-project-123`). Required.
+    projectId: '',  // TODO: Update placeholder value.
+  };
+
+  var request = gapi.client.cloudresourcemanager.projects.get(params);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource: '',  // TODO: Update placeholder value.
+  };
+
+  var getIamPolicyRequestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudresourcemanager.projects.getIamPolicy(params, getIamPolicyRequestBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+  };
+
+  executeRequest(params);
+}
+
+function executeRequest(params) {
+  var request = gapi.client.cloudresourcemanager.projects.list(params);
+  request.then(function(response) {
+    var projectsPage = response.result.projects;
+    for (var i = 0; i < projectsPage.length; i++) {
+      // TODO: Change code below to process each resource in `projectsPage`:
+      console.log(JSON.stringify(projectsPage[i], null, 2));
+    }
+
+    if (response.result.nextPageToken) {
+      params.pageToken = response.result.nextPageToken;
+      executeRequest(params);
+    }
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
+    // a path. For example, a Project resource is specified as `projects/{project}`.
+    resource: '',  // TODO: Update placeholder value.
+  };
+
+  var setIamPolicyRequestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudresourcemanager.projects.setIamPolicy(params, setIamPolicyRequestBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+    // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+    resource: '',  // TODO: Update placeholder value.
+  };
+
+  var testIamPermissionsRequestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudresourcemanager.projects.testIamPermissions(params, testIamPermissionsRequestBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The project ID (for example, `foo-bar-123`). Required.
+    projectId: '',  // TODO: Update placeholder value.
+  };
+
+  var undeleteProjectRequestBody = {
+    // TODO: Add desired properties to the request body.
+  };
+
+  var request = gapi.client.cloudresourcemanager.projects.undelete(params, undeleteProjectRequestBody);
+  request.then(function() {}, function(reason) {
+    console.log('error: ' + reason.result.error.message');
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
+<!--
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager
+2. Get access keys for your application. See
+   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+-->
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+function makeApiCall() {
+  var params = {
+    // The project ID (for example, `my-project-123`). Required.
+    projectId: '',  // TODO: Update placeholder value.
+  };
+
+  var projectBody = {
+    // TODO: Add desired properties to the request body. All existing properties
+    // will be replaced.
+  };
+
+  var request = gapi.client.cloudresourcemanager.projects.update(params, projectBody);
+  request.then(function(response) {
+    // TODO: Change code below to process the `response` object:
+    console.log(response.result);
+  }, function(reason) {
+    console.log('error: ' + reason.result.error.message);
+  });
+}
+
+function start() {
+  gapi.client.init({
+    'clientId': '',  // TODO: Update placeholder with desired client ID.
+    'scope': 'https://www.googleapis.com/auth/cloud-platform',
+    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    });
+  });
+}
+gapi.load('client', start);
+</script>
