@@ -324,13 +324,14 @@ class LibraryServiceClient
     {
         return [
             'streamShelves' => [
-                'grpcStreamingType' => 'ServerStreaming'
+                'grpcStreamingType' => 'ServerStreaming',
+                'resourcesField' => 'getShelvesList',
             ],
             'streamBooks' => [
-                'grpcStreamingType' => 'ServerStreaming'
+                'grpcStreamingType' => 'ServerStreaming',
             ],
             'discussBook' => [
-                'grpcStreamingType' => 'BidiStreaming'
+                'grpcStreamingType' => 'BidiStreaming',
             ],
         ];
     }
@@ -1417,16 +1418,6 @@ class LibraryServiceClient
      *     foreach ($streamingResponse->readAll() as $element) {
      *         // doSomethingWith($element);
      *     }
-     *
-     *     // OR read a single response at a time from the server until the stream is
-     *     // complete
-     *     $streamingResponse = $libraryServiceClient->streamShelves();
-     *     $element = $streamingResponse->read();
-     *     while (!is_null($element)) {
-     *         // doSomethingWith($element)
-     *         // ... perform other work if necessary ...
-     *         $element = $streamingResponse->read();
-     *     }
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -1442,7 +1433,7 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\StreamShelvesResponse
+     * @return \Google\GAX\ServerStreamingResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
      */
@@ -1475,16 +1466,6 @@ class LibraryServiceClient
      *     foreach ($streamingResponse->readAll() as $element) {
      *         // doSomethingWith($element);
      *     }
-     *
-     *     // OR read a single response at a time from the server until the stream is
-     *     // complete
-     *     $streamingResponse = $libraryServiceClient->streamBooks($name);
-     *     $element = $streamingResponse->read();
-     *     while (!is_null($element)) {
-     *         // doSomethingWith($element)
-     *         // ... perform other work if necessary ...
-     *         $element = $streamingResponse->read();
-     *     }
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -1501,7 +1482,7 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\Book
+     * @return \Google\GAX\ServerStreamingResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
      */
@@ -1532,31 +1513,30 @@ class LibraryServiceClient
      *     $name = "";
      *     $request = new DiscussBookRequest();
      *     $request->setName($name);
-     *     // Write all data to server, then read all responses until the stream is
-     *     // complete
+     *     $requests = [$request];
+     *
+     *     // Write all requests to the server, then read all responses until the
+     *     // stream is complete
      *     $streamingResponse = $libraryServiceClient->discussBook($request);
-     *     $data = new DiscussBookRequest();
-     *     $dataArray = [$data];
-     *     streamingResponse->writeAll($dataArray);
-     *     foreach ($streamingResponse->readAll() as $element) {
+     *     streamingResponse->writeAll($requests);
+     *     foreach ($streamingResponse->closeAndReadAll() as $element) {
      *         // doSomethingWith($element);
      *     }
      *
-     *     // OR write data as it becomes available, making read() calls if required.
-     *     // Call writesDone() once writes are complete, and read the remaining
-     *     // responses from the server.
+     *     // OR write requests individually, making read() calls if
+     *     // required. Call closeWrite() once writes are complete, and read the
+     *     // remaining responses from the server.
      *     $streamingResponse = $libraryServiceClient->discussBook($request);
-     *     foreach (read_data_from_stream() as $data) {
-     *         $streamingResponse->write($data);
+     *     foreach ($requests as $request) {
+     *         $streamingResponse->write($request);
      *         // if required, read a single response from the stream
      *         $element = $streamingResponse->read();
      *         // doSomethingWith($element)
      *     }
-     *     streamingResponse->writesDone();
+     *     streamingResponse->closeWrite();
      *     $element = $streamingResponse->read();
      *     while (!is_null($element)) {
      *         // doSomethingWith($element)
-     *         // ... perform other work if necessary ...
      *         $element = $streamingResponse->read();
      *     }
      * } finally {
@@ -1574,25 +1554,19 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\Comment
+     * @return \Google\GAX\BidiStreamingResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function discussBook($optionalArgs = [])
     {
-        $request = new DiscussBookRequest();
-        $request->setName($name);
-        if (isset($optionalArgs['comment'])) {
-            $request->setComment($optionalArgs['comment']);
-        }
-
         $mergedSettings = $this->defaultCallSettings['discussBook']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'DiscussBook', $mergedSettings, $this->descriptors['discussBook']);
 
         return $callable(
-            $request,
+            null,
             [],
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }

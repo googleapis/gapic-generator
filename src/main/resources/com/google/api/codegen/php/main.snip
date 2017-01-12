@@ -240,7 +240,10 @@
             return [
                 @join descriptor : xapiClass.grpcStreamingDescriptors
                     '{@descriptor.methodName}' => [
-                        'grpcStreamingType' => '{@descriptor.grpcStreamingType.toString}'
+                        'grpcStreamingType' => '{@descriptor.grpcStreamingType.toString}',
+                        @if descriptor.hasGrpcResourcesField
+                            'resourcesField' => '{@descriptor.grpcResourcesField}',
+                        @end
                     ],
                 @end
             ];
@@ -443,6 +446,8 @@
             return $callable(
                 @if apiMethod.isNotGrpcRequestStreamingMethod
                     $request,
+                @else
+                    null,
                 @end
                 [],
                 ['call_credentials_callback' => $this->createCredentialsCallback()]);

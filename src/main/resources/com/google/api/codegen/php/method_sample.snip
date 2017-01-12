@@ -118,15 +118,6 @@
     foreach ($streamingResponse->readAll() as $element) {
         // doSomethingWith($element);
     }
-    
-    // OR read a single response at a time from the server until the stream is
-    // complete
-    $streamingResponse = {@methodCallSampleCode(apiMethod)};
-    $element = $streamingResponse->read();
-    while (!is_null($element)) {
-        // doSomethingWith($element)
-        $element = $streamingResponse->read();
-    }
 @end
 
 @private bidiStreamingMethodSampleCode(apiMethod)
@@ -136,21 +127,21 @@
     // stream is complete
     $streamingResponse = {@methodCallSampleCode(apiMethod)};
     streamingResponse->writeAll($requests);
-    foreach ($streamingResponse->readAll() as $element) {
+    foreach ($streamingResponse->closeAndReadAll() as $element) {
         // doSomethingWith($element);
     }
     
-    // OR write requests as they becomes available, making read() calls if
-    // required. Call writesDone() once writes are complete, and read the
+    // OR write requests individually, making read() calls if
+    // required. Call closeWrite() once writes are complete, and read the
     // remaining responses from the server.
     $streamingResponse = {@methodCallSampleCode(apiMethod)};
-    foreach (read_requests_from_stream() as $request) {
+    foreach ($requests as $request) {
         $streamingResponse->write($request);
         // if required, read a single response from the stream
         $element = $streamingResponse->read();
         // doSomethingWith($element)
     }
-    streamingResponse->writesDone();
+    streamingResponse->closeWrite();
     $element = $streamingResponse->read();
     while (!is_null($element)) {
         // doSomethingWith($element)

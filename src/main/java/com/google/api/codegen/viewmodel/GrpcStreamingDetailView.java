@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class GrpcStreamingDetailView {
@@ -23,6 +24,13 @@ public abstract class GrpcStreamingDetailView {
   public abstract String methodName();
 
   public abstract GrpcStreamingType grpcStreamingType();
+
+  @Nullable
+  public abstract String grpcResourcesField();
+
+  public boolean hasGrpcResourcesField() {
+    return grpcResourcesField() != null;
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_GrpcStreamingDetailView.Builder();
@@ -34,6 +42,8 @@ public abstract class GrpcStreamingDetailView {
     public abstract Builder methodName(String val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
+
+    public abstract Builder grpcResourcesField(String val);
 
     public abstract GrpcStreamingDetailView build();
   }

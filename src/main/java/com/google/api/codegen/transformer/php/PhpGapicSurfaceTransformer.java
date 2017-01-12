@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -185,11 +186,18 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     List<GrpcStreamingDetailView> result = new ArrayList<>();
 
     for (Method method : context.getGrpcStreamingMethods()) {
-      MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
+      GrpcStreamingConfig grpcStreamingConfig =
+          context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
       result.add(
           GrpcStreamingDetailView.newBuilder()
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
-              .grpcStreamingType(methodContext.getMethodConfig().getGrpcStreamingType())
+              .grpcStreamingType(grpcStreamingConfig.getType())
+              .grpcResourcesField(
+                  grpcStreamingConfig.hasResourceField()
+                      ? context
+                          .getNamer()
+                          .getFieldGetFunctionName(grpcStreamingConfig.getResourcesField())
+                      : null)
               .build());
     }
 

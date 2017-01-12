@@ -64,7 +64,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   public boolean isLongRunningOperation() {
     return longRunningView() != null;
   }
-  
+
   public boolean isNotGrpcRequestStreamingMethod() {
     return !(grpcStreamingType().equals(GrpcStreamingType.BidiStreaming)
         || grpcStreamingType().equals(GrpcStreamingType.ClientStreaming));
