@@ -19,8 +19,9 @@ var assert = require('assert');
 var libraryV1 = require('../src/').v1();
 var through2 = require('through2');
 
-// Used by mock errors
 var FAKE_STATUS_CODE = 1;
+var error = new Error();
+error.code = FAKE_STATUS_CODE;
 
 describe('LibraryServiceClient', function() {
   describe('createShelf', function() {
@@ -43,10 +44,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._createShelf = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._createShelf = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.createShelf(request, function(err, response) {
         assert.ifError(err);
@@ -64,12 +62,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._createShelf = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._createShelf = mockSimpleGrpcMethod(request, null, error);
 
       client.createShelf(request, function(err, response) {
         assert(err instanceof Error);
@@ -101,10 +94,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getShelf = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._getShelf = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.getShelf(request, function(err, response) {
         assert.ifError(err);
@@ -124,12 +114,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getShelf = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._getShelf = mockSimpleGrpcMethod(request, null, error);
 
       client.getShelf(request, function(err, response) {
         assert(err instanceof Error);
@@ -173,12 +158,7 @@ describe('LibraryServiceClient', function() {
       var request = {};
 
       // Mock Grpc layer
-      client._listShelves = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._listShelves = mockSimpleGrpcMethod(request, null, error);
 
       client.listShelves(request, function(err, response) {
         assert(err instanceof Error);
@@ -198,10 +178,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._deleteShelf = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null);
-      };
+      client._deleteShelf = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.deleteShelf(request, function(err) {
         assert.ifError(err);
@@ -218,14 +195,9 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._deleteShelf = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._deleteShelf = mockSimpleGrpcMethod(request, null, error);
 
-      client.deleteShelf(request, function(err, response) {
+      client.deleteShelf(request, function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
@@ -255,10 +227,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._mergeShelves = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._mergeShelves = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.mergeShelves(request, function(err, response) {
         assert.ifError(err);
@@ -278,12 +247,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._mergeShelves = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._mergeShelves = mockSimpleGrpcMethod(request, null, error);
 
       client.mergeShelves(request, function(err, response) {
         assert(err instanceof Error);
@@ -317,10 +281,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._createBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._createBook = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.createBook(request, function(err, response) {
         assert.ifError(err);
@@ -340,12 +301,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._createBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._createBook = mockSimpleGrpcMethod(request, null, error);
 
       client.createBook(request, function(err, response) {
         assert(err instanceof Error);
@@ -374,10 +330,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._publishSeries = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._publishSeries = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.publishSeries(request, function(err, response) {
         assert.ifError(err);
@@ -397,12 +350,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._publishSeries = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._publishSeries = mockSimpleGrpcMethod(request, null, error);
 
       client.publishSeries(request, function(err, response) {
         assert(err instanceof Error);
@@ -434,10 +382,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._getBook = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.getBook(request, function(err, response) {
         assert.ifError(err);
@@ -455,12 +400,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._getBook = mockSimpleGrpcMethod(request, null, error);
 
       client.getBook(request, function(err, response) {
         assert(err instanceof Error);
@@ -510,12 +450,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._listBooks = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._listBooks = mockSimpleGrpcMethod(request, null, error);
 
       client.listBooks(request, function(err, response) {
         assert(err instanceof Error);
@@ -535,10 +470,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._deleteBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null);
-      };
+      client._deleteBook = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.deleteBook(request, function(err) {
         assert.ifError(err);
@@ -555,14 +487,9 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._deleteBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._deleteBook = mockSimpleGrpcMethod(request, null, error);
 
-      client.deleteBook(request, function(err, response) {
+      client.deleteBook(request, function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
@@ -594,10 +521,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._updateBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._updateBook = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.updateBook(request, function(err, response) {
         assert.ifError(err);
@@ -617,12 +541,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._updateBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._updateBook = mockSimpleGrpcMethod(request, null, error);
 
       client.updateBook(request, function(err, response) {
         assert(err instanceof Error);
@@ -656,10 +575,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._moveBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._moveBook = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.moveBook(request, function(err, response) {
         assert.ifError(err);
@@ -679,12 +595,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._moveBook = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._moveBook = mockSimpleGrpcMethod(request, null, error);
 
       client.moveBook(request, function(err, response) {
         assert(err instanceof Error);
@@ -728,12 +639,7 @@ describe('LibraryServiceClient', function() {
       var request = {};
 
       // Mock Grpc layer
-      client._listStrings = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._listStrings = mockSimpleGrpcMethod(request, null, error);
 
       client.listStrings(request, function(err, response) {
         assert(err instanceof Error);
@@ -763,10 +669,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._addComments = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null);
-      };
+      client._addComments = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.addComments(request, function(err) {
         assert.ifError(err);
@@ -793,14 +696,9 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._addComments = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._addComments = mockSimpleGrpcMethod(request, null, error);
 
-      client.addComments(request, function(err, response) {
+      client.addComments(request, function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
@@ -830,10 +728,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBookFromArchive = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._getBookFromArchive = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.getBookFromArchive(request, function(err, response) {
         assert.ifError(err);
@@ -851,12 +746,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBookFromArchive = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._getBookFromArchive = mockSimpleGrpcMethod(request, null, error);
 
       client.getBookFromArchive(request, function(err, response) {
         assert(err instanceof Error);
@@ -890,10 +780,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBookFromAnywhere = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._getBookFromAnywhere = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.getBookFromAnywhere(request, function(err, response) {
         assert.ifError(err);
@@ -913,12 +800,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBookFromAnywhere = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._getBookFromAnywhere = mockSimpleGrpcMethod(request, null, error);
 
       client.getBookFromAnywhere(request, function(err, response) {
         assert(err instanceof Error);
@@ -943,10 +825,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._updateBookIndex = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null);
-      };
+      client._updateBookIndex = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.updateBookIndex(request, function(err) {
         assert.ifError(err);
@@ -968,14 +847,9 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._updateBookIndex = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._updateBookIndex = mockSimpleGrpcMethod(request, null, error);
 
-      client.updateBookIndex(request, function(err, response) {
+      client.updateBookIndex(request, function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
@@ -993,14 +867,7 @@ describe('LibraryServiceClient', function() {
       var expectedResponse = {};
 
       // Mock Grpc layer
-      client._streamShelves = function(actualRequest) {
-        assert.deepStrictEqual(actualRequest, request);
-        var mockStream = through2.obj(function (chunk, enc, callback) {
-          callback(null, expectedResponse);
-        });
-        mockStream.write();
-        return mockStream;
-      };
+      client._streamShelves = mockServerStreamingGrpcMethod(request, expectedResponse);
 
       client.streamShelves(request).on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
@@ -1016,16 +883,7 @@ describe('LibraryServiceClient', function() {
       var request = {};
 
       // Mock Grpc layer
-      client._streamShelves = function(actualRequest) {
-        assert.deepStrictEqual(actualRequest, request);
-        var mockStream = through2.obj(function (chunk, enc, callback) {
-          var error = new Error('Fake error');
-          error.code = FAKE_STATUS_CODE;
-          callback(error);
-        });
-        mockStream.write();
-        return mockStream;
-      };
+      client._streamShelves = mockServerStreamingGrpcMethod(request, null, error);
 
       client.streamShelves(request).on('data', function(response) {
         assert.fail();
@@ -1033,7 +891,6 @@ describe('LibraryServiceClient', function() {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
-        }
       });
     });
   });
@@ -1060,14 +917,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._streamBooks = function(actualRequest) {
-        assert.deepStrictEqual(actualRequest, request);
-        var mockStream = through2.obj(function (chunk, enc, callback) {
-          callback(null, expectedResponse);
-        });
-        mockStream.write();
-        return mockStream;
-      };
+      client._streamBooks = mockServerStreamingGrpcMethod(request, expectedResponse);
 
       client.streamBooks(request).on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
@@ -1086,16 +936,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._streamBooks = function(actualRequest) {
-        assert.deepStrictEqual(actualRequest, request);
-        var mockStream = through2.obj(function (chunk, enc, callback) {
-          var error = new Error('Fake error');
-          error.code = FAKE_STATUS_CODE;
-          callback(error);
-        });
-        mockStream.write();
-        return mockStream;
-      };
+      client._streamBooks = mockServerStreamingGrpcMethod(request, null, error);
 
       client.streamBooks(request).on('data', function(response) {
         assert.fail();
@@ -1103,7 +944,6 @@ describe('LibraryServiceClient', function() {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
-        }
       });
     });
   });
@@ -1126,13 +966,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._discussBook = function() {
-        var mockStream = through2.obj(function (chunk, enc, callback) {
-          assert.deepStrictEqual(chunk, request);
-          callback(null, expectedResponse);
-        });
-        return mockStream;
-      };
+      client._discussBook = mockBidiStreamingGrpcMethod(request, expectedResponse);
 
       var stream = client.discussBook().on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
@@ -1153,15 +987,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._discussBook = function() {
-        var mockStream = through2.obj(function (chunk, enc, callback) {
-          assert.deepStrictEqual(chunk, request);
-          var error = new Error('Fake error');
-          error.code = FAKE_STATUS_CODE;
-          callback(error);
-        });
-        return mockStream;
-      };
+      client._discussBook = mockBidiStreamingGrpcMethod(request, null, error);
 
       var stream = client.discussBook().on('data', function(response) {
         assert.fail();
@@ -1221,12 +1047,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._findRelatedBooks = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._findRelatedBooks = mockSimpleGrpcMethod(request, null, error);
 
       client.findRelatedBooks(request, function(err, response) {
         assert(err instanceof Error);
@@ -1251,10 +1072,7 @@ describe('LibraryServiceClient', function() {
       var expectedResponse = {};
 
       // Mock Grpc layer
-      client._addTag = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._addTag = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.addTag(request, function(err, response) {
         assert.ifError(err);
@@ -1274,12 +1092,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._addTag = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._addTag = mockSimpleGrpcMethod(request, null, error);
 
       client.addTag(request, function(err, response) {
         assert(err instanceof Error);
@@ -1304,10 +1117,7 @@ describe('LibraryServiceClient', function() {
       var expectedResponse = {};
 
       // Mock Grpc layer
-      client._addLabel = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._addLabel = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.addLabel(request, function(err, response) {
         assert.ifError(err);
@@ -1327,12 +1137,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._addLabel = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._addLabel = mockSimpleGrpcMethod(request, null, error);
 
       client.addLabel(request, function(err, response) {
         assert(err instanceof Error);
@@ -1364,10 +1169,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBigBookAsync = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null, expectedResponse);
-      };
+      client._getBigBookAsync = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.getBigBookAsync(request, function(err, response) {
         assert.ifError(err);
@@ -1385,12 +1187,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBigBookAsync = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._getBigBookAsync = mockSimpleGrpcMethod(request, null, error);
 
       client.getBigBookAsync(request, function(err, response) {
         assert(err instanceof Error);
@@ -1410,10 +1207,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBigNothingAsync = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null);
-      };
+      client._getBigNothingAsync = mockSimpleGrpcMethod(request, expectedResponse);
 
       client.getBigNothingAsync(request, function(err) {
         assert.ifError(err);
@@ -1430,14 +1224,9 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBigNothingAsync = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        var error = new Error('Fake error');
-        error.code = FAKE_STATUS_CODE;
-        callback(error);
-      };
+      client._getBigNothingAsync = mockSimpleGrpcMethod(request, null, error);
 
-      client.getBigNothingAsync(request, function(err, response) {
+      client.getBigNothingAsync(request, function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
@@ -1446,4 +1235,44 @@ describe('LibraryServiceClient', function() {
   });
 
 });
+
+function mockSimpleGrpcMethod(expectedRequest, response, error) {
+  return function(actualRequest, options, callback) {
+    assert.deepStrictEqual(actualRequest, expectedRequest);
+    if (error) {
+      callback(error);
+    } else {
+      callback(null, response);
+    }
+  };
+}
+
+function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
+  return function(actualRequest) {
+    assert.deepStrictEqual(actualRequest, expectedRequest);
+    var mockStream = through2.obj(function (chunk, enc, callback) {
+      if (error) {
+        callback(error);
+      } else {
+        callback(null, response);
+      }
+    });
+    mockStream.write();
+    return mockStream;
+  };
+}
+
+function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
+  return function() {
+    var mockStream = through2.obj(function (chunk, enc, callback) {
+      assert.deepStrictEqual(chunk, expectedRequest);
+      if (error) {
+        callback(error);
+      } else {
+        callback(null, response);
+      }
+    });
+    return mockStream;
+  }
+}
 
