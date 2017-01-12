@@ -75,8 +75,15 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract boolean hasMultipleServices();
 
+  // Python-specific configuration
   @Nullable
-  public abstract List<String> namespacePackages();
+  public abstract List<String> pythonNamespacePackages();
+
+  @Nullable
+  public abstract List<String> pythonApiModules();
+
+  @Nullable
+  public abstract List<String> pythonTypeModules();
 
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder();
@@ -119,17 +126,29 @@ public abstract class PackageMetadataView implements ViewModel {
     /** The path to the API protos in the googleapis repo. */
     public abstract Builder protoPath(String val);
 
+    /** The author of the package. */
     public abstract Builder author(String val);
 
+    /** The email of the author of the package. */
     public abstract Builder email(String val);
 
+    /** The URL of the homepage of the author of the package. */
     public abstract Builder homepage(String val);
 
+    /** The name of the license that the package is licensed under. */
     public abstract Builder licenseName(String val);
 
-    public abstract Builder namespacePackages(List<String> val);
-
+    /** Whether the package contains multiple service objects */
     public abstract Builder hasMultipleServices(boolean val);
+
+    /** Python-only. The Python packages that should be declared as namespace packages. */
+    public abstract Builder pythonNamespacePackages(List<String> val);
+
+    /** Python-only. The names of the Python modules defining service objects. */
+    public abstract Builder pythonApiModules(List<String> val);
+
+    /** Python-only. The names of the Python modules defining service types. */
+    public abstract Builder pythonTypeModules(List<String> val);
 
     public abstract PackageMetadataView build();
   }

@@ -15,30 +15,50 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-/** Responsible for producing package metadata related views for Python */
+/**
+ * Responsible for producing package metadata related views for Python
+ *
+ * <p>TODO(geigerj): Once Python is on MVVM it will not be necessary to store copies of the other
+ * GAPIC providers in this class. The only information that is needed from these providers is the
+ * names of the output files they produce. With MVVM should be possible to derive this information
+ * from the corresponding transformers/view models without actually rendering the templates.
+ */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
 
-  PackageMetadataConfig packageConfig;
-  PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
+  private final PackageMetadataConfig packageConfig;
+  private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
+  private final List<GapicProvider<? extends Object>> gapicProviders;
+  private List<String> apiModules = null;
+  private List<String> typeModules = null;
 
-  public PythonPackageMetadataTransformer(PackageMetadataConfig packageConfig) {
+  public PythonPackageMetadataTransformer(
+      PackageMetadataConfig packageConfig, List<GapicProvider<? extends Object>> gapicProviders) {
     this.packageConfig = packageConfig;
+    this.gapicProviders = gapicProviders;
   }
 
   @Override
@@ -68,7 +88,11 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         "py/setup.py.snip",
         "py/requirements.txt.snip",
         "py/README.rst.snip",
-        "py/tox.ini.snip");
+        "py/tox.ini.snip",
+        "py/docs/apis.rst.snip",
+        "py/docs/conf.py.snip",
+        "py/docs/index.rst.snip",
+        "py/docs/starting.rst.snip");
   }
 
   public List<String> getInitTemplateFileNames() {
@@ -78,12 +102,43 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private ViewModel generateMetadataView(Model model, ApiConfig apiConfig, String template) {
     int extensionIndex = template.lastIndexOf(".");
     String outputPath = template.substring(0, extensionIndex);
+    computeModules(gapicProviders);
 
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
-        .namespacePackages(
+        .pythonNamespacePackages(
             computeNamespacePackages(apiConfig.getPackageName(), packageConfig.apiVersion()))
+        .pythonApiModules(apiModules)
+        .pythonTypeModules(typeModules)
         .build();
+  }
+
+  /** Determines the Python files generated in the main phase of generation. */
+  private void computeModules(List<GapicProvider<? extends Object>> gapicProviders) {
+    // Only run generation once.
+    if (apiModules != null && typeModules != null) {
+      return;
+    }
+    Set<String> apiModuleSet = new HashSet<>();
+    Set<String> typeModuleSet = new HashSet<>();
+
+    for (GapicProvider<? extends Object> provider : gapicProviders) {
+      Map<String, Doc> result = provider.generate();
+      for (String fileName : result.keySet()) {
+        if (Files.getFileExtension(fileName).equals("py")) {
+          String moduleName =
+              fileName.substring(0, fileName.length() - ".py".length()).replace("/", ".");
+          if (moduleName.endsWith(GapicContext.API_WRAPPER_SUFFIX.toLowerCase())) {
+            apiModuleSet.add(moduleName);
+          } else {
+            typeModuleSet.add(moduleName);
+          }
+        }
+      }
+    }
+
+    apiModules = (new ImmutableList.Builder<String>()).addAll(apiModuleSet).build();
+    typeModules = (new ImmutableList.Builder<String>()).addAll(typeModuleSet).build();
   }
 
   /**

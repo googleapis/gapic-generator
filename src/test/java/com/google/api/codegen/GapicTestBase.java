@@ -146,7 +146,10 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {
         String fileNamePath = snippetFileName.split("\\.")[0];
-        String fileName = fileNamePath.indexOf("/") > 0 ? fileNamePath.split("/")[1] : fileNamePath;
+        String fileName =
+            fileNamePath.indexOf("/") > 0
+                ? fileNamePath.split("/", 2)[1].replace("/", "_")
+                : fileNamePath;
         String id = idForFactory + "_" + fileName;
         testArgs.add(
             new Object[] {
