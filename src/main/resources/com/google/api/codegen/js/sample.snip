@@ -64,7 +64,7 @@
         @if class.isPageStreaming
           {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)});
         @else
-          var {@class.requestVarName} = gapi.client.{@callChain(class.methodNameComponents)}({@argList(class, @FALSE)});
+          var {@class.requestVarName} = gapi.client.{@callChain(class.methodNameComponents)}({@argList(class, @TRUE)});
           @if class.hasResponse
             {@class.requestVarName}.then(function({@class.responseVarName}) {
               // TODO: Change code below to process the `{@class.responseVarName}` object:
@@ -82,7 +82,7 @@
 
       @if class.isPageStreaming
         function {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)}) {
-          var {@class.requestVarName} = gapi.client.{@callChain(class.methodNameComponents)}({@argList(class, @FALSE)});
+          var {@class.requestVarName} = gapi.client.{@callChain(class.methodNameComponents)}({@argList(class, @TRUE)});
           request.then(function({@class.responseVarName}) {
             var {@class.pageStreaming.pageVarName} = {@class.responseVarName}.result.{@class.pageStreaming.resourceFieldName};
             @if class.pageStreaming.isResourceRepeated

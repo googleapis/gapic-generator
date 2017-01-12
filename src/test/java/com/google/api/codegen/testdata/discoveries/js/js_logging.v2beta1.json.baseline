@@ -86,7 +86,7 @@
     }
 
     function executeRequest(listLogEntriesRequestBody) {
-      var request = gapi.client.logging.entries.list(listLogEntriesRequestBody);
+      var request = gapi.client.logging.entries.list({}, listLogEntriesRequestBody);
       request.then(function(response) {
         var entriesPage = response.result.entries;
         for (var i = 0; i < entriesPage.length; i++) {
@@ -159,7 +159,7 @@
         // TODO: Add desired properties to the request body.
       };
 
-      var request = gapi.client.logging.entries.write(writeLogEntriesRequestBody);
+      var request = gapi.client.logging.entries.write({}, writeLogEntriesRequestBody);
       request.then(function(response) {
         // TODO: Change code below to process the `response` object:
         console.log(response.result);

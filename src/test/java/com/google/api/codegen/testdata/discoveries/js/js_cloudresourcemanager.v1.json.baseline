@@ -226,7 +226,7 @@
     }
 
     function executeRequest(searchOrganizationsRequestBody) {
-      var request = gapi.client.cloudresourcemanager.organizations.search(searchOrganizationsRequestBody);
+      var request = gapi.client.cloudresourcemanager.organizations.search({}, searchOrganizationsRequestBody);
       request.then(function(response) {
         var organizationsPage = response.result.organizations;
         for (var i = 0; i < organizationsPage.length; i++) {
@@ -443,7 +443,7 @@
         // TODO: Add desired properties to the request body.
       };
 
-      var request = gapi.client.cloudresourcemanager.projects.create(projectBody);
+      var request = gapi.client.cloudresourcemanager.projects.create({}, projectBody);
       request.then(function(response) {
         // TODO: Change code below to process the `response` object:
         console.log(response.result);
