@@ -161,10 +161,10 @@ public abstract class SampleView implements ViewModel {
   public abstract String updateSignInStatusFuncName();
 
   @Nullable
-  public abstract String handleAuthClickFuncName();
+  public abstract String handleSignInClickFuncName();
 
   @Nullable
-  public abstract String handleSignoutClickFuncName();
+  public abstract String handleSignOutClickFuncName();
 
   @Nullable
   public abstract String paramsVarName();
@@ -284,9 +284,9 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder updateSignInStatusFuncName(String val);
 
-    public abstract Builder handleAuthClickFuncName(String val);
+    public abstract Builder handleSignInClickFuncName(String val);
 
-    public abstract Builder handleSignoutClickFuncName(String val);
+    public abstract Builder handleSignOutClickFuncName(String val);
 
     public abstract Builder needParams(Boolean val);
 

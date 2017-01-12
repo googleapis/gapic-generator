@@ -68,8 +68,8 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
     builder.initClientFuncName(symbolTable.getNewSymbol("initClient"));
     builder.handleClientLoadFuncName(symbolTable.getNewSymbol("handleClientLoad"));
     builder.updateSignInStatusFuncName(symbolTable.getNewSymbol("updateSignInStatus"));
-    builder.handleAuthClickFuncName(symbolTable.getNewSymbol("handleAuthClick"));
-    builder.handleSignoutClickFuncName(symbolTable.getNewSymbol("handleSignoutClick"));
+    builder.handleSignInClickFuncName(symbolTable.getNewSymbol("handleSignInClick"));
+    builder.handleSignOutClickFuncName(symbolTable.getNewSymbol("handleSignOutClick"));
     builder.paramsVarName(symbolTable.getNewSymbol("params"));
 
     if (methodInfo.isPageStreaming()) {

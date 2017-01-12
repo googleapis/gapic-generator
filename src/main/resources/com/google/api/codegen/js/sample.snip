@@ -68,7 +68,7 @@
           @if class.hasResponse
             {@class.requestVarName}.then(function({@class.responseVarName}) {
               // TODO: Change code below to process the `{@class.responseVarName}` object:
-              console.log(JSON.stringify({@class.responseVarName}.result, null, 2));
+              console.log({@class.responseVarName}.result);
             }, function(reason) {
               console.log('error: ' + reason.result.error.message);
             });
@@ -89,12 +89,12 @@
               @if class.pageStreaming.isResourceMap
                 Object.keys({@class.pageStreaming.pageVarName}).forEach(function({@class.pageStreaming.resourceKeyVarName}) {
                   // TODO: Change code below to process each `{@class.pageStreaming.resourceKeyVarName}` property:
-                  console.log({@class.pageStreaming.resourceKeyVarName} + ': ' + JSON.stringify({@class.pageStreaming.pageVarName}[{@class.pageStreaming.resourceKeyVarName}], null, 2));
+                  console.log({@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.pageVarName}[{@class.pageStreaming.resourceKeyVarName}]);
                 });
               @else
                 for (var i = 0; i < {@class.pageStreaming.pageVarName}.length; i++) {
                   // TODO: Change code below to process each resource in `{@class.pageStreaming.pageVarName}`:
-                  console.log(JSON.stringify({@class.pageStreaming.pageVarName}[i], null, 2));
+                  console.log({@class.pageStreaming.pageVarName}[i]);
                 }
               @end
             @else
@@ -149,11 +149,11 @@
           }
         }
 
-        function {@class.handleAuthClickFuncName}(event) {
+        function {@class.handleSignInClickFuncName}(event) {
           gapi.auth2.getAuthInstance().signIn();
         }
 
-        function {@class.handleSignoutClickFuncName}(event) {
+        function {@class.handleSignOutClickFuncName}(event) {
           gapi.auth2.getAuthInstance().signOut();
         }
       @end
@@ -163,8 +163,8 @@
         onreadystatechange="if (this.readyState === 'complete') this.onload()">
       </script>
       @if class.auth.type != "API_KEY"
-        <button id="authorize-button" onclick="{@class.handleAuthClickFuncName}()">Authorize</button>
-        <button id="signout-button" onclick="{@class.handleSignoutClickFuncName}()">Sign out</button>
+        <button id="signin-button" onclick="{@class.handleSignInClickFuncName}()">Sign in</button>
+        <button id="signout-button" onclick="{@class.handleSignOutClickFuncName}()">Sign out</button>
       @end
     </body>
   </html>
