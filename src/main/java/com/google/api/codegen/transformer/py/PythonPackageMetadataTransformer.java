@@ -34,10 +34,10 @@ import com.google.common.io.Files;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Responsible for producing package metadata related views for Python
@@ -119,8 +119,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     if (apiModules != null && typeModules != null) {
       return;
     }
-    Set<String> apiModuleSet = new HashSet<>();
-    Set<String> typeModuleSet = new HashSet<>();
+    Set<String> apiModuleSet = new TreeSet<>();
+    Set<String> typeModuleSet = new TreeSet<>();
 
     for (GapicProvider<? extends Object> provider : gapicProviders) {
       Map<String, Doc> result = provider.generate();
