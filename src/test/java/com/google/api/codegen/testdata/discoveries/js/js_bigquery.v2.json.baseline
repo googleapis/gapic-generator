@@ -1,1028 +1,1532 @@
 
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the dataset being deleted
-    projectId: '',  // TODO: Update placeholder value.
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the dataset being deleted
+        projectId: '',  // TODO: Update placeholder value.
 
-    // Dataset ID of dataset being deleted
-    datasetId: '',  // TODO: Update placeholder value.
-  };
+        // Dataset ID of dataset being deleted
+        datasetId: '',  // TODO: Update placeholder value.
+      };
 
-  var request = gapi.client.bigquery.datasets.delete(params);
-  request.then(function() {}, function(reason) {
-    console.log('error: ' + reason.result.error.message');
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the requested dataset
-    projectId: '',  // TODO: Update placeholder value.
-
-    // Dataset ID of the requested dataset
-    datasetId: '',  // TODO: Update placeholder value.
-  };
-
-  var request = gapi.client.bigquery.datasets.get(params);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the new dataset
-    projectId: '',  // TODO: Update placeholder value.
-  };
-
-  var datasetBody = {
-    // TODO: Add desired properties to the request body.
-  };
-
-  var request = gapi.client.bigquery.datasets.insert(params, datasetBody);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the datasets to be listed
-    projectId: '',  // TODO: Update placeholder value.
-  };
-
-  executeRequest(params);
-}
-
-function executeRequest(params) {
-  var request = gapi.client.bigquery.datasets.list(params);
-  request.then(function(response) {
-    var datasetsPage = response.result.datasets;
-    for (var i = 0; i < datasetsPage.length; i++) {
-      // TODO: Change code below to process each resource in `datasetsPage`:
-      console.log(JSON.stringify(datasetsPage[i], null, 2));
+      var request = gapi.client.bigquery.datasets.delete(params);
+      request.then(function() {}, function(reason) {
+        console.log('error: ' + reason.result.error.message');
+      });
     }
 
-    if (response.result.nextPageToken) {
-      params.pageToken = response.result.nextPageToken;
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the requested dataset
+        projectId: '',  // TODO: Update placeholder value.
+
+        // Dataset ID of the requested dataset
+        datasetId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.bigquery.datasets.get(params);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the new dataset
+        projectId: '',  // TODO: Update placeholder value.
+      };
+
+      var datasetBody = {
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.bigquery.datasets.insert(params, datasetBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the datasets to be listed
+        projectId: '',  // TODO: Update placeholder value.
+      };
+
       executeRequest(params);
     }
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
 
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the dataset being updated
-    projectId: '',  // TODO: Update placeholder value.
+    function executeRequest(params) {
+      var request = gapi.client.bigquery.datasets.list(params);
+      request.then(function(response) {
+        var datasetsPage = response.result.datasets;
+        for (var i = 0; i < datasetsPage.length; i++) {
+          // TODO: Change code below to process each resource in `datasetsPage`:
+          console.log(JSON.stringify(datasetsPage[i], null, 2));
+        }
 
-    // Dataset ID of the dataset being updated
-    datasetId: '',  // TODO: Update placeholder value.
-  };
-
-  var datasetBody = {
-    // TODO: Add desired properties to the request body. Only these properties
-    // will be changed.
-  };
-
-  var request = gapi.client.bigquery.datasets.patch(params, datasetBody);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the dataset being updated
-    projectId: '',  // TODO: Update placeholder value.
-
-    // Dataset ID of the dataset being updated
-    datasetId: '',  // TODO: Update placeholder value.
-  };
-
-  var datasetBody = {
-    // TODO: Add desired properties to the request body. All existing properties
-    // will be replaced.
-  };
-
-  var request = gapi.client.bigquery.datasets.update(params, datasetBody);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // [Required] Project ID of the job to cancel
-    projectId: '',  // TODO: Update placeholder value.
-
-    // [Required] Job ID of the job to cancel
-    jobId: '',  // TODO: Update placeholder value.
-  };
-
-  var request = gapi.client.bigquery.jobs.cancel(params);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // [Required] Project ID of the requested job
-    projectId: '',  // TODO: Update placeholder value.
-
-    // [Required] Job ID of the requested job
-    jobId: '',  // TODO: Update placeholder value.
-  };
-
-  var request = gapi.client.bigquery.jobs.get(params);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // [Required] Project ID of the query job
-    projectId: '',  // TODO: Update placeholder value.
-
-    // [Required] Job ID of the query job
-    jobId: '',  // TODO: Update placeholder value.
-  };
-
-  var request = gapi.client.bigquery.jobs.getQueryResults(params);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the project that will be billed for the job
-    projectId: '',  // TODO: Update placeholder value.
-  };
-
-  var jobBody = {
-    // TODO: Add desired properties to the request body.
-  };
-
-  // TODO: To do media uploads, use CORS. See
-  // https://developers.google.com/api-client-library/javascript/features/cors
-
-  var request = gapi.client.bigquery.jobs.insert(params, jobBody);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/devstorage.full_control https://www.googleapis.com/auth/devstorage.read_only https://www.googleapis.com/auth/devstorage.read_write',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the jobs to list
-    projectId: '',  // TODO: Update placeholder value.
-  };
-
-  executeRequest(params);
-}
-
-function executeRequest(params) {
-  var request = gapi.client.bigquery.jobs.list(params);
-  request.then(function(response) {
-    var jobsPage = response.result.jobs;
-    for (var i = 0; i < jobsPage.length; i++) {
-      // TODO: Change code below to process each resource in `jobsPage`:
-      console.log(JSON.stringify(jobsPage[i], null, 2));
+        if (response.result.nextPageToken) {
+          params.pageToken = response.result.nextPageToken;
+          executeRequest(params);
+        }
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
     }
 
-    if (response.result.nextPageToken) {
-      params.pageToken = response.result.nextPageToken;
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the dataset being updated
+        projectId: '',  // TODO: Update placeholder value.
+
+        // Dataset ID of the dataset being updated
+        datasetId: '',  // TODO: Update placeholder value.
+      };
+
+      var datasetBody = {
+        // TODO: Add desired properties to the request body. Only these properties
+        // will be changed.
+      };
+
+      var request = gapi.client.bigquery.datasets.patch(params, datasetBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the dataset being updated
+        projectId: '',  // TODO: Update placeholder value.
+
+        // Dataset ID of the dataset being updated
+        datasetId: '',  // TODO: Update placeholder value.
+      };
+
+      var datasetBody = {
+        // TODO: Add desired properties to the request body. All existing properties
+        // will be replaced.
+      };
+
+      var request = gapi.client.bigquery.datasets.update(params, datasetBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // [Required] Project ID of the job to cancel
+        projectId: '',  // TODO: Update placeholder value.
+
+        // [Required] Job ID of the job to cancel
+        jobId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.bigquery.jobs.cancel(params);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // [Required] Project ID of the requested job
+        projectId: '',  // TODO: Update placeholder value.
+
+        // [Required] Job ID of the requested job
+        jobId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.bigquery.jobs.get(params);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // [Required] Project ID of the query job
+        projectId: '',  // TODO: Update placeholder value.
+
+        // [Required] Job ID of the query job
+        jobId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.bigquery.jobs.getQueryResults(params);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the project that will be billed for the job
+        projectId: '',  // TODO: Update placeholder value.
+      };
+
+      var jobBody = {
+        // TODO: Add desired properties to the request body.
+      };
+
+      // TODO: To do media uploads, use CORS. See
+      // https://developers.google.com/api-client-library/javascript/features/cors
+
+      var request = gapi.client.bigquery.jobs.insert(params, jobBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/devstorage.full_control https://www.googleapis.com/auth/devstorage.read_only https://www.googleapis.com/auth/devstorage.read_write',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the jobs to list
+        projectId: '',  // TODO: Update placeholder value.
+      };
+
       executeRequest(params);
     }
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
 
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the project billed for the query
-    projectId: '',  // TODO: Update placeholder value.
-  };
+    function executeRequest(params) {
+      var request = gapi.client.bigquery.jobs.list(params);
+      request.then(function(response) {
+        var jobsPage = response.result.jobs;
+        for (var i = 0; i < jobsPage.length; i++) {
+          // TODO: Change code below to process each resource in `jobsPage`:
+          console.log(JSON.stringify(jobsPage[i], null, 2));
+        }
 
-  var queryRequestBody = {
-    // TODO: Add desired properties to the request body.
-  };
-
-  var request = gapi.client.bigquery.jobs.query(params, queryRequestBody);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {};
-
-  executeRequest(params);
-}
-
-function executeRequest(params) {
-  var request = gapi.client.bigquery.projects.list(params);
-  request.then(function(response) {
-    var projectsPage = response.result.projects;
-    for (var i = 0; i < projectsPage.length; i++) {
-      // TODO: Change code below to process each resource in `projectsPage`:
-      console.log(JSON.stringify(projectsPage[i], null, 2));
+        if (response.result.nextPageToken) {
+          params.pageToken = response.result.nextPageToken;
+          executeRequest(params);
+        }
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
     }
 
-    if (response.result.nextPageToken) {
-      params.pageToken = response.result.nextPageToken;
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the project billed for the query
+        projectId: '',  // TODO: Update placeholder value.
+      };
+
+      var queryRequestBody = {
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.bigquery.jobs.query(params, queryRequestBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {};
+
       executeRequest(params);
     }
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
 
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the destination table.
-    projectId: '',  // TODO: Update placeholder value.
+    function executeRequest(params) {
+      var request = gapi.client.bigquery.projects.list(params);
+      request.then(function(response) {
+        var projectsPage = response.result.projects;
+        for (var i = 0; i < projectsPage.length; i++) {
+          // TODO: Change code below to process each resource in `projectsPage`:
+          console.log(JSON.stringify(projectsPage[i], null, 2));
+        }
 
-    // Dataset ID of the destination table.
-    datasetId: '',  // TODO: Update placeholder value.
-
-    // Table ID of the destination table.
-    tableId: '',  // TODO: Update placeholder value.
-  };
-
-  var tableDataInsertAllRequestBody = {
-    // TODO: Add desired properties to the request body.
-  };
-
-  var request = gapi.client.bigquery.tabledata.insertAll(params, tableDataInsertAllRequestBody);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/bigquery.insertdata https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the table to read
-    projectId: '',  // TODO: Update placeholder value.
-
-    // Dataset ID of the table to read
-    datasetId: '',  // TODO: Update placeholder value.
-
-    // Table ID of the table to read
-    tableId: '',  // TODO: Update placeholder value.
-  };
-
-  var request = gapi.client.bigquery.tabledata.list(params);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the table to delete
-    projectId: '',  // TODO: Update placeholder value.
-
-    // Dataset ID of the table to delete
-    datasetId: '',  // TODO: Update placeholder value.
-
-    // Table ID of the table to delete
-    tableId: '',  // TODO: Update placeholder value.
-  };
-
-  var request = gapi.client.bigquery.tables.delete(params);
-  request.then(function() {}, function(reason) {
-    console.log('error: ' + reason.result.error.message');
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the requested table
-    projectId: '',  // TODO: Update placeholder value.
-
-    // Dataset ID of the requested table
-    datasetId: '',  // TODO: Update placeholder value.
-
-    // Table ID of the requested table
-    tableId: '',  // TODO: Update placeholder value.
-  };
-
-  var request = gapi.client.bigquery.tables.get(params);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the new table
-    projectId: '',  // TODO: Update placeholder value.
-
-    // Dataset ID of the new table
-    datasetId: '',  // TODO: Update placeholder value.
-  };
-
-  var tableBody = {
-    // TODO: Add desired properties to the request body.
-  };
-
-  var request = gapi.client.bigquery.tables.insert(params, tableBody);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
-
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
-      }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the tables to list
-    projectId: '',  // TODO: Update placeholder value.
-
-    // Dataset ID of the tables to list
-    datasetId: '',  // TODO: Update placeholder value.
-  };
-
-  executeRequest(params);
-}
-
-function executeRequest(params) {
-  var request = gapi.client.bigquery.tables.list(params);
-  request.then(function(response) {
-    var tablesPage = response.result.tables;
-    for (var i = 0; i < tablesPage.length; i++) {
-      // TODO: Change code below to process each resource in `tablesPage`:
-      console.log(JSON.stringify(tablesPage[i], null, 2));
+        if (response.result.nextPageToken) {
+          params.pageToken = response.result.nextPageToken;
+          executeRequest(params);
+        }
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
     }
 
-    if (response.result.nextPageToken) {
-      params.pageToken = response.result.nextPageToken;
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the destination table.
+        projectId: '',  // TODO: Update placeholder value.
+
+        // Dataset ID of the destination table.
+        datasetId: '',  // TODO: Update placeholder value.
+
+        // Table ID of the destination table.
+        tableId: '',  // TODO: Update placeholder value.
+      };
+
+      var tableDataInsertAllRequestBody = {
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.bigquery.tabledata.insertAll(params, tableDataInsertAllRequestBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/bigquery.insertdata https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the table to read
+        projectId: '',  // TODO: Update placeholder value.
+
+        // Dataset ID of the table to read
+        datasetId: '',  // TODO: Update placeholder value.
+
+        // Table ID of the table to read
+        tableId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.bigquery.tabledata.list(params);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the table to delete
+        projectId: '',  // TODO: Update placeholder value.
+
+        // Dataset ID of the table to delete
+        datasetId: '',  // TODO: Update placeholder value.
+
+        // Table ID of the table to delete
+        tableId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.bigquery.tables.delete(params);
+      request.then(function() {}, function(reason) {
+        console.log('error: ' + reason.result.error.message');
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the requested table
+        projectId: '',  // TODO: Update placeholder value.
+
+        // Dataset ID of the requested table
+        datasetId: '',  // TODO: Update placeholder value.
+
+        // Table ID of the requested table
+        tableId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.bigquery.tables.get(params);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the new table
+        projectId: '',  // TODO: Update placeholder value.
+
+        // Dataset ID of the new table
+        datasetId: '',  // TODO: Update placeholder value.
+      };
+
+      var tableBody = {
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.bigquery.tables.insert(params, tableBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the tables to list
+        projectId: '',  // TODO: Update placeholder value.
+
+        // Dataset ID of the tables to list
+        datasetId: '',  // TODO: Update placeholder value.
+      };
+
       executeRequest(params);
     }
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
 
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+    function executeRequest(params) {
+      var request = gapi.client.bigquery.tables.list(params);
+      request.then(function(response) {
+        var tablesPage = response.result.tables;
+        for (var i = 0; i < tablesPage.length; i++) {
+          // TODO: Change code below to process each resource in `tablesPage`:
+          console.log(JSON.stringify(tablesPage[i], null, 2));
+        }
+
+        if (response.result.nextPageToken) {
+          params.pageToken = response.result.nextPageToken;
+          executeRequest(params);
+        }
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
       if (isSignedIn) {
         makeApiCall();
       }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the table to update
-    projectId: '',  // TODO: Update placeholder value.
+    }
 
-    // Dataset ID of the table to update
-    datasetId: '',  // TODO: Update placeholder value.
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
 
-    // Table ID of the table to update
-    tableId: '',  // TODO: Update placeholder value.
-  };
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the table to update
+        projectId: '',  // TODO: Update placeholder value.
 
-  var tableBody = {
-    // TODO: Add desired properties to the request body. Only these properties
-    // will be changed.
-  };
+        // Dataset ID of the table to update
+        datasetId: '',  // TODO: Update placeholder value.
 
-  var request = gapi.client.bigquery.tables.patch(params, tableBody);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
+        // Table ID of the table to update
+        tableId: '',  // TODO: Update placeholder value.
+      };
 
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      var tableBody = {
+        // TODO: Add desired properties to the request body. Only these properties
+        // will be changed.
+      };
+
+      var request = gapi.client.bigquery.tables.patch(params, tableBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
       if (isSignedIn) {
         makeApiCall();
       }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
-<!--
-BEFORE RUNNING:
----------------
-1. If not already done, enable the BigQuery API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/bigquery
-2. Get access keys for your application. See
-   https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
--->
-<script src="https://apis.google.com/js/api.js"></script>
-<script>
-function makeApiCall() {
-  var params = {
-    // Project ID of the table to update
-    projectId: '',  // TODO: Update placeholder value.
+    }
 
-    // Dataset ID of the table to update
-    datasetId: '',  // TODO: Update placeholder value.
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
 
-    // Table ID of the table to update
-    tableId: '',  // TODO: Update placeholder value.
-  };
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the BigQuery API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/bigquery
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Project ID of the table to update
+        projectId: '',  // TODO: Update placeholder value.
 
-  var tableBody = {
-    // TODO: Add desired properties to the request body. All existing properties
-    // will be replaced.
-  };
+        // Dataset ID of the table to update
+        datasetId: '',  // TODO: Update placeholder value.
 
-  var request = gapi.client.bigquery.tables.update(params, tableBody);
-  request.then(function(response) {
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response.result, null, 2));
-  }, function(reason) {
-    console.log('error: ' + reason.result.error.message);
-  });
-}
+        // Table ID of the table to update
+        tableId: '',  // TODO: Update placeholder value.
+      };
 
-function start() {
-  gapi.client.init({
-    'clientId': '',  // TODO: Update placeholder with desired client ID.
-    'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
-    'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
-  }).then(function() {
-    gapi.auth2.getAuthInstance().signIn();
-    gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+      var tableBody = {
+        // TODO: Add desired properties to the request body. All existing properties
+        // will be replaced.
+      };
+
+      var request = gapi.client.bigquery.tables.update(params, tableBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(JSON.stringify(response.result, null, 2));
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/bigquery/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
       if (isSignedIn) {
         makeApiCall();
       }
-    });
-  });
-}
-gapi.load('client', start);
-</script>
+    }
+
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="authorize-button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout-button" onclick="handleSignoutClick()">Sign out</button>
+  </body>
+</html>

@@ -152,7 +152,19 @@ public abstract class SampleView implements ViewModel {
   public abstract String makeApiCallFuncName();
 
   @Nullable
-  public abstract String startFuncName();
+  public abstract String initClientFuncName();
+
+  @Nullable
+  public abstract String handleClientLoadFuncName();
+
+  @Nullable
+  public abstract String updateSignInStatusFuncName();
+
+  @Nullable
+  public abstract String handleAuthClickFuncName();
+
+  @Nullable
+  public abstract String handleSignoutClickFuncName();
 
   @Nullable
   public abstract String paramsVarName();
@@ -266,7 +278,15 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder makeApiCallFuncName(String val);
 
-    public abstract Builder startFuncName(String val);
+    public abstract Builder initClientFuncName(String val);
+
+    public abstract Builder handleClientLoadFuncName(String val);
+
+    public abstract Builder updateSignInStatusFuncName(String val);
+
+    public abstract Builder handleAuthClickFuncName(String val);
+
+    public abstract Builder handleSignoutClickFuncName(String val);
 
     public abstract Builder needParams(Boolean val);
 

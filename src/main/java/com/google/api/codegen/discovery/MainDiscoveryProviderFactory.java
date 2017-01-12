@@ -22,6 +22,7 @@ import com.google.api.codegen.discovery.config.csharp.CSharpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.go.GoTypeNameGenerator;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
 import com.google.api.codegen.discovery.config.js.JSTypeNameGenerator;
+import com.google.api.codegen.discovery.config.nodejs.NodeJSTypeNameGenerator;
 import com.google.api.codegen.discovery.config.php.PhpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.py.PythonTypeNameGenerator;
 import com.google.api.codegen.discovery.config.ruby.RubyTypeNameGenerator;
@@ -77,7 +78,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .put(GO, GoTypeNameGenerator.class)
           .put(JAVA, JavaTypeNameGenerator.class)
           .put(JS, JSTypeNameGenerator.class)
-          .put(NODEJS, JSTypeNameGenerator.class)
+          .put(NODEJS, NodeJSTypeNameGenerator.class)
           .put(PHP, PhpTypeNameGenerator.class)
           .put(PYTHON, PythonTypeNameGenerator.class)
           .put(RUBY, RubyTypeNameGenerator.class)

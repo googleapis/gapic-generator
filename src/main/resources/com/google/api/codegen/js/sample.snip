@@ -1,144 +1,173 @@
 @snippet generate(class)
-  <!--
-  BEFORE RUNNING:
-  ---------------
-  1. If not already done, enable the {@class.apiTitle}
-     and check the quota for your project at
-     https://console.developers.google.com/apis/api/{@class.apiName}
-  2. Get access keys for your application. See
-     https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
-  -->
-  <script src="https://apis.google.com/js/api.js"></script>
-  <script>
-  function {@class.makeApiCallFuncName}() {
-    @if class.needParams
-      @if class.fields
-        var {@class.paramsVarName} = {
-          @join field : class.fields if class.fields on BREAK.add(BREAK)
-            @if field.description
-              @join line : util.getDocLines(field.description, 100)
-                // {@line}
+  <html>
+    <head></head>
+    <body>
+      <!--
+      BEFORE RUNNING:
+      ---------------
+      1. If not already done, enable the {@class.apiTitle}
+         and check the quota for your project at
+         https://console.developers.google.com/apis/api/{@class.apiName}
+      2. Get access keys for your application. See
+         https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+      -->
+      <script>
+      function {@class.makeApiCallFuncName}() {
+        @if class.needParams
+          @if class.fields
+            var {@class.paramsVarName} = {
+              @join field : class.fields if class.fields on BREAK.add(BREAK)
+                @if field.description
+                  @join line : util.getDocLines(field.description, 100)
+                    // {@line}
+                  @end
+
+
+                @end
+                {@field.name}: {@field.defaultValue},  // TODO: Update placeholder value.
+                @if field.example
+                  // {@field.example}
+                @end
               @end
-
-
-            @end
-            {@field.name}: {@field.defaultValue},  // TODO: Update placeholder value.
-            @if field.example
-              // {@field.example}
-            @end
+            };
+          @else
+            var {@class.paramsVarName} = {};
           @end
-        };
-      @else
-        var {@class.paramsVarName} = {};
-      @end
 
 
-    @end
-    @if class.hasRequestBody
-      var {@class.requestBodyVarName} = {
-        @switch class.methodVerb
-        @case "PATCH"
-          // TODO: Add desired properties to the request body. Only these properties
-          // will be changed.
-        @case "PUT"
-          // TODO: Add desired properties to the request body. All existing properties
-          // will be replaced.
-        @default
-          // TODO: Add desired properties to the request body.
         @end
-      };
+        @if class.hasRequestBody
+          var {@class.requestBodyVarName} = {
+            @switch class.methodVerb
+            @case "PATCH"
+              // TODO: Add desired properties to the request body. Only these properties
+              // will be changed.
+            @case "PUT"
+              // TODO: Add desired properties to the request body. All existing properties
+              // will be replaced.
+            @default
+              // TODO: Add desired properties to the request body.
+            @end
+          };
 
-    @end
-    @if class.hasMediaUpload
-      // TODO: To do media uploads, use CORS. See
-      // https://developers.google.com/api-client-library/javascript/features/cors
+        @end
+        @if class.hasMediaUpload
+          // TODO: To do media uploads, use CORS. See
+          // https://developers.google.com/api-client-library/javascript/features/cors
 
-    @end
-    @if class.hasMediaDownload
-      // TODO: To do media downloads, use CORS. See
-      // https://developers.google.com/api-client-library/javascript/features/cors
+        @end
+        @if class.hasMediaDownload
+          // TODO: To do media downloads, use CORS. See
+          // https://developers.google.com/api-client-library/javascript/features/cors
 
-    @end
-    @if class.isPageStreaming
-      {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)});
-    @else
-      var {@class.requestVarName} = gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@argList(class, @FALSE)});
-      @if class.hasResponse
-        {@class.requestVarName}.then(function({@class.responseVarName}) {
-          // TODO: Change code below to process the `{@class.responseVarName}` object:
-          console.log(JSON.stringify({@class.responseVarName}.result, null, 2));
-        }, function(reason) {
-          console.log('error: ' + reason.result.error.message);
-        });
-      @else
-        {@class.requestVarName}.then(function() {}, function(reason) {
-          console.log('error: ' + reason.result.error.message');
-        });
-      @end
-    @end
-  }
-
-  @if class.isPageStreaming
-    function {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)}) {
-      var {@class.requestVarName} = gapi.client.{@class.apiName}.{@callChain(class.methodNameComponents)}({@argList(class, @FALSE)});
-      request.then(function({@class.responseVarName}) {
-        var {@class.pageStreaming.pageVarName} = {@class.responseVarName}.result.{@class.pageStreaming.resourceFieldName};
-        @if class.pageStreaming.isResourceRepeated
-          @if class.pageStreaming.isResourceMap
-            Object.keys({@class.pageStreaming.pageVarName}).forEach(function({@class.pageStreaming.resourceKeyVarName}) {
-              // TODO: Change code below to process each `{@class.pageStreaming.resourceKeyVarName}` property:
-              console.log({@class.pageStreaming.resourceKeyVarName} + ': ' + JSON.stringify({@class.pageStreaming.pageVarName}[{@class.pageStreaming.resourceKeyVarName}], null, 2));
+        @end
+        @if class.isPageStreaming
+          {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)});
+        @else
+          var {@class.requestVarName} = gapi.client.{@callChain(class.methodNameComponents)}({@argList(class, @FALSE)});
+          @if class.hasResponse
+            {@class.requestVarName}.then(function({@class.responseVarName}) {
+              // TODO: Change code below to process the `{@class.responseVarName}` object:
+              console.log(JSON.stringify({@class.responseVarName}.result, null, 2));
+            }, function(reason) {
+              console.log('error: ' + reason.result.error.message);
             });
           @else
-            for (var i = 0; i < {@class.pageStreaming.pageVarName}.length; i++) {
-              // TODO: Change code below to process each resource in `{@class.pageStreaming.pageVarName}`:
-              console.log(JSON.stringify({@class.pageStreaming.pageVarName}[i], null, 2));
-            }
+            {@class.requestVarName}.then(function() {}, function(reason) {
+              console.log('error: ' + reason.result.error.message');
+            });
           @end
-        @else
-          // TODO: Change code below to process each `{@class.pageStreaming.pageVarName}` resource:
-          console.log({@class.pageStreaming.pageVarName});
         @end
+      }
 
-        if ({@class.responseVarName}.result.nextPageToken) {
-          @if class.pageStreaming.isResourceSetterInRequestBody
-            {@class.requestBodyVarName}.pageToken = {@class.responseVarName()}.result.nextPageToken;
-          @else
-            {@class.paramsVarName}.pageToken = {@class.responseVarName()}.result.nextPageToken;
-          @end
-          {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)});
+      @if class.isPageStreaming
+        function {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)}) {
+          var {@class.requestVarName} = gapi.client.{@callChain(class.methodNameComponents)}({@argList(class, @FALSE)});
+          request.then(function({@class.responseVarName}) {
+            var {@class.pageStreaming.pageVarName} = {@class.responseVarName}.result.{@class.pageStreaming.resourceFieldName};
+            @if class.pageStreaming.isResourceRepeated
+              @if class.pageStreaming.isResourceMap
+                Object.keys({@class.pageStreaming.pageVarName}).forEach(function({@class.pageStreaming.resourceKeyVarName}) {
+                  // TODO: Change code below to process each `{@class.pageStreaming.resourceKeyVarName}` property:
+                  console.log({@class.pageStreaming.resourceKeyVarName} + ': ' + JSON.stringify({@class.pageStreaming.pageVarName}[{@class.pageStreaming.resourceKeyVarName}], null, 2));
+                });
+              @else
+                for (var i = 0; i < {@class.pageStreaming.pageVarName}.length; i++) {
+                  // TODO: Change code below to process each resource in `{@class.pageStreaming.pageVarName}`:
+                  console.log(JSON.stringify({@class.pageStreaming.pageVarName}[i], null, 2));
+                }
+              @end
+            @else
+              // TODO: Change code below to process each `{@class.pageStreaming.pageVarName}` resource:
+              console.log({@class.pageStreaming.pageVarName});
+            @end
+
+            if ({@class.responseVarName}.result.nextPageToken) {
+              @if class.pageStreaming.isResourceSetterInRequestBody
+                {@class.requestBodyVarName}.pageToken = {@class.responseVarName()}.result.nextPageToken;
+              @else
+                {@class.paramsVarName}.pageToken = {@class.responseVarName()}.result.nextPageToken;
+              @end
+              {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)});
+            }
+          }, function(reason) {
+            console.log('error: ' + reason.result.error.message);
+          });
         }
-      }, function(reason) {
-        console.log('error: ' + reason.result.error.message);
-      });
-    }
 
-  @end
-  function {@class.startFuncName}() {
-    gapi.client.init({
-      @switch class.auth.type
-      @case "API_KEY"
-        'apiKey': '',  // TODO: Update placeholder with desired API key.
-      @default
-        'clientId': '',  // TODO: Update placeholder with desired client ID.
-        'scope': '{@scopeString(class.auth.scopes)}',
       @end
-      'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/{@class.apiName}/{@class.apiVersion}/rest'],
-    }).then(function() {
+      function {@class.initClientFuncName}() {
+        gapi.client.init({
+          'apiKey': '',  // TODO: Update placeholder with desired API key.
+          @if class.auth.type != "API_KEY"
+            'clientId': '',  // TODO: Update placeholder with desired client ID.
+            'scope': '{@scopeString(class.auth.scopes)}',
+          @end
+          'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/{@class.apiName}/{@class.apiVersion}/rest'],
+        }).then(function() {
+          @if class.auth.type != "API_KEY"
+            gapi.auth2.getAuthInstance().isSignedIn.listen({@class.updateSignInStatusFuncName});
+            {@class.updateSignInStatusFuncName}(gapi.auth2.getAuthInstance().isSignedIn.get());
+          @else
+            {@class.makeApiCallFuncName}();
+          @end
+        });
+      }
+
+      function {@class.handleClientLoadFuncName}() {
+        @if class.auth.type != "API_KEY"
+          gapi.load('client:auth2', {@class.initClientFuncName});
+        @else
+          gapi.load('client', {@class.initClientFuncName});
+        @end
+      }
       @if class.auth.type != "API_KEY"
-        gapi.auth2.getAuthInstance().signIn();
-        gapi.auth2.getAuthInstance().isSignedIn.listen(function(isSignedIn) {
+
+        function {@class.updateSignInStatusFuncName}(isSignedIn) {
           if (isSignedIn) {
             {@class.makeApiCallFuncName}();
           }
-        });
-      @else
-        {@class.makeApiCallFuncName}();
+        }
+
+        function {@class.handleAuthClickFuncName}(event) {
+          gapi.auth2.getAuthInstance().signIn();
+        }
+
+        function {@class.handleSignoutClickFuncName}(event) {
+          gapi.auth2.getAuthInstance().signOut();
+        }
       @end
-    });
-  }
-  gapi.load('client', {@class.startFuncName});
-  </script>
+      </script>
+      <script async defer src="https://apis.google.com/js/api.js"
+        onload="this.onload=function(){};{@class.handleClientLoadFuncName}()"
+        onreadystatechange="if (this.readyState === 'complete') this.onload()">
+      </script>
+      @if class.auth.type != "API_KEY"
+        <button id="authorize-button" onclick="{@class.handleAuthClickFuncName}()">Authorize</button>
+        <button id="signout-button" onclick="{@class.handleSignoutClickFuncName}()">Sign out</button>
+      @end
+    </body>
+  </html>
 @end
 
 # If `isApiCall` is true, then if `needParams` is false and `hasRequestBody` is

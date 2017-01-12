@@ -65,7 +65,11 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
     // Call first so function names take precedence in the symbol table.
     builder.makeApiCallFuncName(symbolTable.getNewSymbol("makeApiCall"));
-    builder.startFuncName(symbolTable.getNewSymbol("start"));
+    builder.initClientFuncName(symbolTable.getNewSymbol("initClient"));
+    builder.handleClientLoadFuncName(symbolTable.getNewSymbol("handleClientLoad"));
+    builder.updateSignInStatusFuncName(symbolTable.getNewSymbol("updateSignInStatus"));
+    builder.handleAuthClickFuncName(symbolTable.getNewSymbol("handleAuthClick"));
+    builder.handleSignoutClickFuncName(symbolTable.getNewSymbol("handleSignoutClick"));
     builder.paramsVarName(symbolTable.getNewSymbol("params"));
 
     if (methodInfo.isPageStreaming()) {
