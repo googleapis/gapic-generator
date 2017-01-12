@@ -150,8 +150,12 @@
 @end
 
 @private methodCallSampleCode(apiMethod)
-    ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
-        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+    @if apiMethod.isNotGrpcRequestStreamingMethod
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+    @else
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}()
+    @end
 @end
 
 @private pageSizeMethodCallSampleCode(apiMethod)
