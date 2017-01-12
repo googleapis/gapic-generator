@@ -30,7 +30,7 @@ describe('NoTemplatesApiServiceClient', function() {
       var request = {};
 
       // Mock Grpc layer
-      client._increment = mockSimpleGrpcMethod(request, expectedResponse);
+      client._increment = mockSimpleGrpcMethod(request);
 
       client.increment(request, function(err) {
         assert.ifError(err);
@@ -61,8 +61,10 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     assert.deepStrictEqual(actualRequest, expectedRequest);
     if (error) {
       callback(error);
-    } else {
+    } else if (response) {
       callback(null, response);
+    } else {
+      callback(null);
     }
   };
 }

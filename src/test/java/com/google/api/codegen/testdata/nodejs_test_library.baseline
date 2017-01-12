@@ -178,7 +178,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._deleteShelf = mockSimpleGrpcMethod(request, expectedResponse);
+      client._deleteShelf = mockSimpleGrpcMethod(request);
 
       client.deleteShelf(request, function(err) {
         assert.ifError(err);
@@ -470,7 +470,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._deleteBook = mockSimpleGrpcMethod(request, expectedResponse);
+      client._deleteBook = mockSimpleGrpcMethod(request);
 
       client.deleteBook(request, function(err) {
         assert.ifError(err);
@@ -669,7 +669,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._addComments = mockSimpleGrpcMethod(request, expectedResponse);
+      client._addComments = mockSimpleGrpcMethod(request);
 
       client.addComments(request, function(err) {
         assert.ifError(err);
@@ -825,7 +825,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._updateBookIndex = mockSimpleGrpcMethod(request, expectedResponse);
+      client._updateBookIndex = mockSimpleGrpcMethod(request);
 
       client.updateBookIndex(request, function(err) {
         assert.ifError(err);
@@ -1207,7 +1207,7 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBigNothingAsync = mockSimpleGrpcMethod(request, expectedResponse);
+      client._getBigNothingAsync = mockSimpleGrpcMethod(request);
 
       client.getBigNothingAsync(request, function(err) {
         assert.ifError(err);
@@ -1241,8 +1241,10 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     assert.deepStrictEqual(actualRequest, expectedRequest);
     if (error) {
       callback(error);
-    } else {
+    } else if (response) {
       callback(null, response);
+    } else {
+      callback(null);
     }
   };
 }

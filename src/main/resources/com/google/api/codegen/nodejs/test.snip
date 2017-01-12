@@ -43,8 +43,10 @@
       assert.deepStrictEqual(actualRequest, expectedRequest);
       if (error) {
         callback(error);
-      } else {
+      } else if (response) {
         callback(null, response);
+      } else {
+        callback(null);
       }
     };
   }
@@ -116,7 +118,11 @@
 
       @end
       // Mock Grpc layer
-      client._{@test.clientMethodName} = mockSimpleGrpcMethod(request, expectedResponse);
+      @if test.hasReturnValue
+        client._{@test.clientMethodName} = mockSimpleGrpcMethod(request, expectedResponse);
+      @else
+        client._{@test.clientMethodName} = mockSimpleGrpcMethod(request);
+      @end
 
       @if test.hasReturnValue
         client.{@test.clientMethodName}(request, function(err, response) {
