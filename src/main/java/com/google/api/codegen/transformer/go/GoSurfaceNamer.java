@@ -201,7 +201,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
-    return visibility.methodName(this, Name.upperCamel(method.getSimpleName()));
+    return getApiMethodName(method, visibility);
   }
 
   @Override

@@ -43,6 +43,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String responseTypeName();
 
+  public abstract String visibility();
+
   public abstract String name();
 
   public abstract String exampleName();
@@ -112,6 +114,8 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder serviceResponseTypeName(String val);
 
     public abstract Builder responseTypeName(String responseTypeName);
+
+    public abstract Builder visibility(String visibility);
 
     public abstract Builder name(String name);
 
