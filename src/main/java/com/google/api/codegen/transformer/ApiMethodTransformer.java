@@ -488,6 +488,8 @@ public class ApiMethodTransformer {
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
     methodViewBuilder.modifyMethodName(namer.getModifyMethodName(context.getMethod()));
     methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
+    methodViewBuilder.visibility(
+        namer.getVisiblityKeyword(context.getMethodConfig().getVisibility()));
 
     ServiceMessages messages = new ServiceMessages();
     if (context.getMethodConfig().isLongRunningOperation()) {
