@@ -348,7 +348,7 @@ class LibraryServiceClient
         } else {
             $options = [];
         }
-        $operation = OperationResponse($operationName, $this->getOperationsClient(), $options);
+        $operation = new OperationResponse($operationName, $this->getOperationsClient(), $options);
         $operation->reload();
         return $operation;
     }
@@ -1606,6 +1606,23 @@ class LibraryServiceClient
      *       $error = $operationResponse->getError();
      *       // handleError($error)
      *     }
+     *
+     *     // OR start the operation, keep the operation name, and resume later
+     *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+     *     $operationName = $operationResponse->getName();
+     *     // ... do other work
+     *     $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigBook');
+     *     while (!$newOperationResponse->isDone()) {
+     *         // ... do other work
+     *         $newOperationResponse->reload();
+     *     }
+     *     if ($newOperationResponse->operationSucceeded()) {
+     *       $result = $newOperationResponse->getResult();
+     *       // doSomethingWith($result)
+     *     } else {
+     *       $error = $newOperationResponse->getError();
+     *       // handleError($error)
+     *     }
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -1656,6 +1673,22 @@ class LibraryServiceClient
      *       // operation succeeded and returns no value
      *     } else {
      *       $error = $operationResponse->getError();
+     *       // handleError($error)
+     *     }
+     *
+     *     // OR start the operation, keep the operation name, and resume later
+     *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+     *     $operationName = $operationResponse->getName();
+     *     // ... do other work
+     *     $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigNothing');
+     *     while (!$newOperationResponse->isDone()) {
+     *         // ... do other work
+     *         $newOperationResponse->reload();
+     *     }
+     *     if ($newOperationResponse->operationSucceeded()) {
+     *       // operation succeeded and returns no value
+     *     } else {
+     *       $error = $newOperationResponse->getError();
      *       // handleError($error)
      *     }
      * } finally {
