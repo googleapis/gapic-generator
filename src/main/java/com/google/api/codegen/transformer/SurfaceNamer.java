@@ -614,7 +614,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
       case PUBLIC:
         return "public";
       case PACKAGE:
-        return "";
+        return "/* package-private */";
       case PRIVATE:
         return "private";
       default:
