@@ -1041,4 +1041,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
     return getNotImplementedString("SurfaceNamer.getReleaseAnnotation");
   }
+
+  /** Indicates whether the specified method supports retry settings. */
+  public boolean methodHasRetrySettings(MethodConfig methodConfig) {
+    return true;
+  }
+
+  /** Indicates whether the specified method supports timeout settings. */
+  public boolean methodHasTimeoutSettings(MethodConfig methodConfig) {
+    return true;
+  }
 }

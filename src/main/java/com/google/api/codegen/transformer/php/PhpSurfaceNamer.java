@@ -155,4 +155,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     }
     return PhpPackageUtil.buildPackageName(packageComponents);
   }
+
+  @Override
+  public boolean methodHasRetrySettings(MethodConfig methodConfig) {
+    return !methodConfig.isGrpcStreaming();
+  }
 }
