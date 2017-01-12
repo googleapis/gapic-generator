@@ -1147,8 +1147,8 @@ describe('LibraryServiceClient', function() {
     });
   });
 
-  describe('getBigBookAsync', function() {
-    it('invokes getBigBookAsync without error', function(done) {
+  describe('getBigBook', function() {
+    it('invokes getBigBook without error', function(done) {
       var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
@@ -1169,16 +1169,16 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBigBookAsync = mockSimpleGrpcMethod(request, expectedResponse);
+      client._getBigBook = mockSimpleGrpcMethod(request, expectedResponse);
 
-      client.getBigBookAsync(request, function(err, response) {
+      client.getBigBook(request, function(err, response) {
         assert.ifError(err);
         assert.deepStrictEqual(response, expectedResponse);
         done();
       });
     });
 
-    it('invokes getBigBookAsync with error', function(done) {
+    it('invokes getBigBook with error', function(done) {
       var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
@@ -1187,9 +1187,9 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBigBookAsync = mockSimpleGrpcMethod(request, null, error);
+      client._getBigBook = mockSimpleGrpcMethod(request, null, error);
 
-      client.getBigBookAsync(request, function(err, response) {
+      client.getBigBook(request, function(err, response) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
@@ -1197,8 +1197,8 @@ describe('LibraryServiceClient', function() {
     });
   });
 
-  describe('getBigNothingAsync', function() {
-    it('invokes getBigNothingAsync without error', function(done) {
+  describe('getBigNothing', function() {
+    it('invokes getBigNothing without error', function(done) {
       var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
@@ -1207,15 +1207,15 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBigNothingAsync = mockSimpleGrpcMethod(request);
+      client._getBigNothing = mockSimpleGrpcMethod(request);
 
-      client.getBigNothingAsync(request, function(err) {
+      client.getBigNothing(request, function(err) {
         assert.ifError(err);
         done();
       });
     });
 
-    it('invokes getBigNothingAsync with error', function(done) {
+    it('invokes getBigNothing with error', function(done) {
       var client = libraryV1.libraryServiceClient();
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
@@ -1224,9 +1224,9 @@ describe('LibraryServiceClient', function() {
       };
 
       // Mock Grpc layer
-      client._getBigNothingAsync = mockSimpleGrpcMethod(request, null, error);
+      client._getBigNothing = mockSimpleGrpcMethod(request, null, error);
 
-      client.getBigNothingAsync(request, function(err) {
+      client.getBigNothing(request, function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
