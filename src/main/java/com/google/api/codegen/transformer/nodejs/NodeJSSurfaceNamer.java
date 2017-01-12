@@ -66,7 +66,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     if (names.size() < 2) {
       return null;
     }
-    return names.get(1);
+    return names.get(names.size() - 1);
   }
 
   @Override
