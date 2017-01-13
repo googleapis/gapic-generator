@@ -833,7 +833,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
 
-
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
 
@@ -852,7 +851,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
-        $client->getBigNothing($formattedName);
+        $response = $client->getBigNothing($formattedName);
         $response->pollUntilComplete();
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -861,9 +860,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
 
-
         $this->assertTrue($response->isDone());
-        $this->assertEquals($expectedResponse, $response->getResult());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
