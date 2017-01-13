@@ -1,0 +1,624 @@
+
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The spreadsheet to apply the updates to.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    BatchUpdateSpreadsheetRequest requestBody = new BatchUpdateSpreadsheetRequest();
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.BatchUpdate request = sheetsService.spreadsheets().batchUpdate(spreadsheetId, requestBody);
+
+    BatchUpdateSpreadsheetResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.Spreadsheet;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // TODO: Assign values to desired fields of `requestBody`:
+    Spreadsheet requestBody = new Spreadsheet();
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.Create request = sheetsService.spreadsheets().create(requestBody);
+
+    Spreadsheet response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.Spreadsheet;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The spreadsheet to request.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.Get request = sheetsService.spreadsheets().get(spreadsheetId);
+
+    Spreadsheet response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/drive.readonly"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    //   "https://www.googleapis.com/auth/spreadsheets.readonly"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.CopySheetToAnotherSpreadsheetRequest;
+import com.google.api.services.sheets.v4.model.SheetProperties;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the spreadsheet containing the sheet to copy.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    // The ID of the sheet to copy.
+    int sheetId = 0;  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    CopySheetToAnotherSpreadsheetRequest requestBody = new CopySheetToAnotherSpreadsheetRequest();
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.SheetsOperations.CopyTo request = sheetsService.spreadsheets().sheets().copyTo(spreadsheetId, sheetId, requestBody);
+
+    SheetProperties response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.AppendValuesResponse;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the spreadsheet to update.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    // The A1 notation of a range to search for a logical table of data.
+    // Values will be appended after the last row of the table.
+    String range = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    ValueRange requestBody = new ValueRange();
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.Values.Append request = sheetsService.spreadsheets().values().append(spreadsheetId, range, requestBody);
+
+    AppendValuesResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.BatchClearValuesRequest;
+import com.google.api.services.sheets.v4.model.BatchClearValuesResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the spreadsheet to update.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    BatchClearValuesRequest requestBody = new BatchClearValuesRequest();
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.Values.BatchClear request = sheetsService.spreadsheets().values().batchClear(spreadsheetId, requestBody);
+
+    BatchClearValuesResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the spreadsheet to retrieve data from.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.Values.BatchGet request = sheetsService.spreadsheets().values().batchGet(spreadsheetId);
+
+    BatchGetValuesResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/drive.readonly"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    //   "https://www.googleapis.com/auth/spreadsheets.readonly"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.BatchUpdateValuesRequest;
+import com.google.api.services.sheets.v4.model.BatchUpdateValuesResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the spreadsheet to update.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    BatchUpdateValuesRequest requestBody = new BatchUpdateValuesRequest();
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.Values.BatchUpdate request = sheetsService.spreadsheets().values().batchUpdate(spreadsheetId, requestBody);
+
+    BatchUpdateValuesResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.ClearValuesRequest;
+import com.google.api.services.sheets.v4.model.ClearValuesResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the spreadsheet to update.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    // The A1 notation of the values to clear.
+    String range = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    ClearValuesRequest requestBody = new ClearValuesRequest();
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.Values.Clear request = sheetsService.spreadsheets().values().clear(spreadsheetId, range, requestBody);
+
+    ClearValuesResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the spreadsheet to retrieve data from.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    // The A1 notation of the values to retrieve.
+    String range = "";  // TODO: Update placeholder value.
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.Values.Get request = sheetsService.spreadsheets().values().get(spreadsheetId, range);
+
+    ValueRange response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/drive.readonly"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    //   "https://www.googleapis.com/auth/spreadsheets.readonly"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Sheets API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sheets
+ * 2. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sheets/v4/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+public class SheetsExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the spreadsheet to update.
+    String spreadsheetId = "";  // TODO: Update placeholder value.
+
+    // The A1 notation of the values to update.
+    String range = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`. All existing
+    // fields will be replaced:
+    ValueRange requestBody = new ValueRange();
+
+    Sheets sheetsService = createSheetsService();
+    Sheets.Spreadsheets.Values.Update request = sheetsService.spreadsheets().values().update(spreadsheetId, range, requestBody);
+
+    UpdateValuesResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    // TODO: Change placeholder below to generate authentication credentials. See
+    // https://foo.com/bar
+    //
+    // Authorize using one of the following scopes:
+    //   "https://www.googleapis.com/auth/drive"
+    //   "https://www.googleapis.com/auth/spreadsheets"
+    GoogleCredential credential = null;
+
+    return new Sheets.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-SheetsSample/0.1")
+        .build();
+  }
+}
