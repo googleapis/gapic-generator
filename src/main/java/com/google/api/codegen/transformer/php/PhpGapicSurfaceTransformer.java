@@ -221,6 +221,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("\\Google\\GAX\\LongRunning\\OperationsClient");
+      typeTable.saveNicknameFor("\\Google\\GAX\\OperationResponse");
     }
   }
 

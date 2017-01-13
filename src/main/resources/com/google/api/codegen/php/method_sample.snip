@@ -93,6 +93,27 @@
       $error = $operationResponse->getError();
       // handleError($error)
     }
+    
+    // OR start the operation, keep the operation name, and resume later
+    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationName = $operationResponse->getName();
+    // ... do other work
+    $newOperationResponse = ${@apiMethod.apiVariableName}->resumeOperation($operationName, '{@apiMethod.name}');
+    while (!$newOperationResponse->isDone()) {
+        // ... do other work
+        $newOperationResponse->reload();
+    }
+    if ($newOperationResponse->operationSucceeded()) {
+      @if apiMethod.longRunningView.isEmptyOperation
+          // operation succeeded and returns no value
+      @else
+          $result = $newOperationResponse->getResult();
+          // doSomethingWith($result)
+      @end
+    } else {
+      $error = $newOperationResponse->getError();
+      // handleError($error)
+    }
 @end
 
 @private clientStreamingMethodSampleCode(apiMethod)
@@ -150,7 +171,7 @@
 @end
 
 @private methodCallSampleCode(apiMethod)
-    @if apiMethod.isNotGrpcRequestStreamingMethod
+    @if apiMethod.isSingularRequestMethod
         ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
             {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
     @else
