@@ -100,6 +100,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private ViewModel generateMetadataView(Model model, ApiConfig apiConfig, String template) {
+    if (template.startsWith("py/")) {
+      template = template.substring("py/".length());
+    }
     int extensionIndex = template.lastIndexOf(".");
     String outputPath = template.substring(0, extensionIndex);
     computeModules(gapicProviders);

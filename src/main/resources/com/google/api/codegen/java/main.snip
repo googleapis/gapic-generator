@@ -338,7 +338,7 @@
   @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
+  {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
     @join pathTemplateCheck : apiMethod.pathTemplateChecks
       {@pathTemplateCheckLine(pathTemplateCheck)}
     @end
@@ -379,7 +379,7 @@
   @let coreSampleCode = syncMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final {@apiMethod.responseTypeName} {@apiMethod.name}(\
+  {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}(\
        {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
     @if apiMethod.hasReturnValue
@@ -412,7 +412,7 @@
 @end
 
 @private callableMethodImpl(apiMethod)
-  public final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
+  {@apiMethod.visibility} final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }
@@ -422,7 +422,7 @@
   @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
+  {@apiMethod.visibility} final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }
@@ -432,7 +432,7 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final OperationFuture<{@apiMethod.responseTypeName}> {@apiMethod.name}(\
+  {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}> {@apiMethod.name}(\
        {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
     return {@apiMethod.name}(request);
@@ -453,7 +453,7 @@
   @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
+  {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }
