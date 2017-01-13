@@ -112,6 +112,36 @@
     $this->assertTrue($grpcStub->isExhausted());
 @end
 
+@private nonStreamingOptionalArrayExceptionTestCase(test)
+    /**
+     * @@test
+     */
+    public function {@test.name}()
+    {
+        list($grpcStub, $client) = $this->createStubAndClient([$this, 'create{@test.mockGrpcStubTypeName}'], '{@test.createStubFunctionName}');
+    
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new Status();
+        $status->setCode(\Grpc\STATUS_INTERNAL)->setDetails("internal error");
+        $grpcStub->addResponse(null, $status);
+        @if test.hasRequestParameters
+          // Mock request
+          {@initCode(test.initCode)}
+
+        @end
+        try {
+            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->getCode(), $ex->getCode());
+            $this->assertEquals($status->getDetails(), $ex->getMessage());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+@end
+
 @private lroTestCase(test)
     $operationsStub = $this->createStub([$this, 'createMockOperationsStub']);
     $operationsClient = new OperationsClient([
