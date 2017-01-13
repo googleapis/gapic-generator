@@ -121,14 +121,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $shelf = new Shelf();
 
         $response = $client->createShelf($shelf);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('CreateShelf', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($shelf, $actualRequestObject->getShelf());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -157,6 +156,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $options = "options-1249474914";
 
         $response = $client->getShelf($formattedName, $options);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -164,8 +164,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($options, $actualRequestObject->getOptions());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -191,16 +189,15 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $grpcStub->addResponse($expectedResponse);
 
         $response = $client->listShelves();
+        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+        $resources = iterator_to_array($response->iterateAllElements());
+        $this->assertSame(1, count($resources));
+        $this->assertEquals($expectedResponse->getShelvesList()[0], $resources[0]);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('ListShelves', explode('/', $actualFuncCall)[2]);
 
-
-        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
-        $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertSame(1, count($resources));
-        $this->assertEquals($expectedResponse->getShelvesList()[0], $resources[0]);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -224,7 +221,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertSame('DeleteShelf', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
-
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -253,6 +249,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
         $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -260,8 +257,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -292,6 +287,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $book = new Book();
 
         $response = $client->createBook($formattedName, $book);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -299,8 +295,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($book, $actualRequestObject->getBook());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -328,6 +322,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $books = [];
 
         $response = $client->publishSeries($shelf, $books);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -335,8 +330,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($shelf, $actualRequestObject->getShelf());
         $this->assertEquals($books, $actualRequestObject->getBooksList());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -366,14 +359,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBook($formattedName);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('GetBook', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -402,17 +394,16 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
         $response = $client->listBooks($formattedName);
+        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+        $resources = iterator_to_array($response->iterateAllElements());
+        $this->assertSame(1, count($resources));
+        $this->assertEquals($expectedResponse->getBooksList()[0], $resources[0]);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('ListBooks', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
-
-        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
-        $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertSame(1, count($resources));
-        $this->assertEquals($expectedResponse->getBooksList()[0], $resources[0]);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -436,7 +427,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertSame('DeleteBook', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
-
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -467,6 +457,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $book = new Book();
 
         $response = $client->updateBook($formattedName, $book);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -474,8 +465,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($book, $actualRequestObject->getBook());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -506,6 +495,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -513,8 +503,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -540,16 +528,15 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $grpcStub->addResponse($expectedResponse);
 
         $response = $client->listStrings();
+        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+        $resources = iterator_to_array($response->iterateAllElements());
+        $this->assertSame(1, count($resources));
+        $this->assertEquals($expectedResponse->getStringsList()[0], $resources[0]);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('ListStrings', explode('/', $actualFuncCall)[2]);
 
-
-        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
-        $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertSame(1, count($resources));
-        $this->assertEquals($expectedResponse->getStringsList()[0], $resources[0]);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -583,7 +570,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($comments, $actualRequestObject->getCommentsList());
 
-
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -612,14 +598,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
 
         $response = $client->getBookFromArchive($formattedName);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('GetBookFromArchive', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -650,6 +635,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -657,8 +643,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($formattedAltBookName, $actualRequestObject->getAltBookName());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -687,7 +671,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($indexName, $actualRequestObject->getIndexName());
         $this->assertEquals($indexMap, $actualRequestObject->getIndexMap());
-
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -718,6 +701,10 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $shelves = [];
 
         $response = $client->findRelatedBooks($names, $shelves);
+        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+        $resources = iterator_to_array($response->iterateAllElements());
+        $this->assertSame(1, count($resources));
+        $this->assertEquals($expectedResponse->getNamesList()[0], $resources[0]);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -725,11 +712,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($names, $actualRequestObject->getNamesList());
         $this->assertEquals($shelves, $actualRequestObject->getShelvesList());
-
-        $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
-        $resources = iterator_to_array($response->iterateAllElements());
-        $this->assertSame(1, count($resources));
-        $this->assertEquals($expectedResponse->getNamesList()[0], $resources[0]);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -752,6 +734,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $tag = "tag114586";
 
         $response = $client->addTag($formattedResource, $tag);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -759,8 +742,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedResource, $actualRequestObject->getResource());
         $this->assertEquals($tag, $actualRequestObject->getTag());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -783,6 +764,7 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $label = "label102727412";
 
         $response = $client->addLabel($formattedResource, $label);
+        $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
@@ -790,8 +772,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedResource, $actualRequestObject->getResource());
         $this->assertEquals($label, $actualRequestObject->getLabel());
-
-        $this->assertEquals($expectedResponse, $response);
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -826,15 +806,14 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $response = $client->getBigBook($formattedName);
         $response->pollUntilComplete();
+        $this->assertTrue($response->isDone());
+        $this->assertEquals($expectedResponse, $response->getResult());
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('GetBigBook', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
-
-        $this->assertTrue($response->isDone());
-        $this->assertEquals($expectedResponse, $response->getResult());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -853,14 +832,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         $response = $client->getBigNothing($formattedName);
         $response->pollUntilComplete();
+        $this->assertTrue($response->isDone());
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('GetBigNothing', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
-
-        $this->assertTrue($response->isDone());
 
         $this->assertTrue($grpcStub->isExhausted());
     }

@@ -49,7 +49,7 @@
     @case "NonStreaming"
         {@nonStreamingOptionalArrayTestCase(test)}
     @default
-        $unhandled case: {@test.grpcStreamingType.toString}$
+        $unhandled case: {@test.grpcStreamingType}$
     @end
 @end
 
@@ -79,12 +79,14 @@
     @case "OptionalArrayMethod"
         {@successAsserts(test)}
     @case "PagedOptionalArrayMethod"
-        {@pagedSuccessAsserts(test)}
+        {@pagedMethodSuccessAsserts(test)}
     @case "OperationOptionalArrayMethod"
-        {@operationSuccessAsserts(test)}
+        {@longRunningMethodSuccessAsserts(test)}
     @default
-        $unhandled case: {@test.clientMethodType.toString}$
+        $unhandled case: {@test.clientMethodType}$
     @end
+
+    {@singleCallSuccessAsserts(test)}
 @end
 
 @private mockResponse(test)
@@ -104,7 +106,7 @@
             $completeOperation->setName('operations/{@test.name}')->setDone(true)->setResponse($anyResponse);
             $grpcStub->addResponse($completeOperation);
         @default
-            $unhandled case: {@test.clientMethodType.toString}$
+            $unhandled case: {@test.clientMethodType}$
         @end
 
     @end
@@ -126,26 +128,19 @@
                 $actualRequestObject->{@assert.actualValueGetter}());
         @end
     @end
-    
 @end
 
 @private successAsserts(test)
     @if test.hasReturnValue
         $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
-        
+        $this->assertEquals($expectedResponse, $response);
     @else
         $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
-        
-    @end
-    {@singleCallSuccessAsserts(test)}
-    @if test.hasReturnValue
-        $this->assertEquals($expectedResponse, $response);
     @end
 @end
 
-@private pagedSuccessAsserts(test)
+@private pagedMethodSuccessAsserts(test)
     $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
-    {@singleCallSuccessAsserts(test)}
     $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
     @join pageStreamingResponseView : test.pageStreamingResponseViews
         ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
@@ -154,10 +149,9 @@
     @end
 @end
 
-@private operationSuccessAsserts(test)
+@private longRunningMethodSuccessAsserts(test)
     $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
-    $response->pollUntilComplete();    
-    {@singleCallSuccessAsserts(test)}
+    $response->pollUntilComplete();
     $this->assertTrue($response->isDone());
     @if test.hasReturnValue
         $this->assertEquals($expectedResponse, $response->getResult());
