@@ -26,6 +26,7 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -76,8 +77,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private ViewModel generateMetadataView(Model model, ApiConfig apiConfig, String template) {
-    int extensionIndex = template.lastIndexOf(".");
-    String outputPath = template.substring(0, extensionIndex);
+    String outputPath = Files.getNameWithoutExtension(template);
 
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
