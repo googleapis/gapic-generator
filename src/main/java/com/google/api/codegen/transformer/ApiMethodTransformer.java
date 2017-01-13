@@ -814,7 +814,6 @@ public class ApiMethodTransformer {
             ? lroTransformer.generateDetailView(context)
             : null);
 
-    
     return apiMethod.build();
   }
 
