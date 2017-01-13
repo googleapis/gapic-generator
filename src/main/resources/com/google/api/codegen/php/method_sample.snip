@@ -32,15 +32,15 @@
     @if apiMethod.isLongRunningOperation
         {@longRunningMethodSampleCode(apiMethod)}
     @else
-      @switch apiMethod.grpcStreamingType.toString
+      @switch apiMethod.grpcStreamingType
       @case "NonStreaming"
-          @switch apiMethod.type.toString
+          @switch apiMethod.type
           @case "OptionalArrayMethod"
               {@methodSampleCode(apiMethod)}
           @case "PagedOptionalArrayMethod"
               {@pagedMethodSampleCode(apiMethod)}
           @default
-              $unhandledCase: {@apiMethod.type.toString}$
+              $unhandledCase: {@apiMethod.type}$
           @end
       @case "ClientStreaming"
           {@clientStreamingMethodSampleCode(apiMethod)}
@@ -49,7 +49,7 @@
       @case "BidiStreaming"
           {@bidiStreamingMethodSampleCode(apiMethod)}
       @default
-          $unhandledCase: {@apiMethod.grpcStreamingType.toString}$
+          $unhandledCase: {@apiMethod.grpcStreamingType}$
       @end
       
     @end
@@ -99,16 +99,16 @@
     $requests = [$request];
     
     // Write data to server and wait for a response
-    $streamingResponse = {@methodCallSampleCode(apiMethod)};
-    $result = $streamingResponse->writeAllAndWait($requests);
+    $clientStreamingResponse = {@methodCallSampleCode(apiMethod)};
+    $result = $clientStreamingResponse->writeAllAndWait($requests);
     // doSomethingWith($result)
     
     // OR write data as it becomes available, then wait for a response
-    $streamingResponse = {@methodCallSampleCode(apiMethod)};
+    $clientStreamingResponse = {@methodCallSampleCode(apiMethod)};
     foreach (read_requests_from_stream() as $request) {
-        $streamingResponse->write($request);
+        $clientStreamingResponse->write($request);
     }
-    $result = $streamingResponse->wait();
+    $result = $clientStreamingResponse->wait();
     // doSomethingWith($result)
 @end
 
@@ -175,7 +175,7 @@
 
 @snippet initCode(initCodeSpec)
     @join line : initCodeSpec.lines
-        @switch line.lineType.toString
+        @switch line.lineType
         @case "StructureInitLine"
             {@initLineStructure(line)}
         @case "ListInitLine"
@@ -185,7 +185,7 @@
         @case "SimpleInitLine"
             {@initLineSimple(line)}
         @default
-            $unhandledCase: {@line.lineType.toString}$
+            $unhandledCase: {@line.lineType}$
         @end
     @end
 @end

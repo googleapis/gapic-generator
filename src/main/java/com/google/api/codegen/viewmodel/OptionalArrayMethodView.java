@@ -65,10 +65,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     return longRunningView() != null;
   }
 
-  public boolean isNotGrpcRequestStreamingMethod() {
-    return !(grpcStreamingType().equals(GrpcStreamingType.BidiStreaming)
-        || grpcStreamingType().equals(GrpcStreamingType.ClientStreaming));
-  }
+  public abstract boolean isSingularRequestMethod();
 
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
@@ -114,6 +111,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder stubName(String val);
 
     public abstract Builder longRunningView(LongRunningOperationDetailView val);
+    
+    public abstract Builder isSingularRequestMethod(boolean val);
 
     public abstract OptionalArrayMethodView build();
   }

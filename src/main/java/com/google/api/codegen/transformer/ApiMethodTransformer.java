@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -799,13 +800,19 @@ public class ApiMethodTransformer {
         removePageTokenFieldConfig(context, context.getMethodConfig().getOptionalFieldConfigs());
     apiMethod.optionalRequestObjectParamsNoPageToken(
         generateRequestObjectParams(context, filteredFieldConfigs));
-    apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
-
+    
+    GrpcStreamingType grpcStreamingType = context.getMethodConfig().getGrpcStreamingType();
+    apiMethod.grpcStreamingType(grpcStreamingType);
+    apiMethod.isSingularRequestMethod(
+        grpcStreamingType.equals(GrpcStreamingType.NonStreaming)
+            || grpcStreamingType.equals(GrpcStreamingType.ServerStreaming));
+    
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)
             : null);
 
+    
     return apiMethod.build();
   }
 

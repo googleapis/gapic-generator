@@ -240,7 +240,7 @@
             return [
                 @join descriptor : xapiClass.grpcStreamingDescriptors
                     '{@descriptor.methodName}' => [
-                        'grpcStreamingType' => '{@descriptor.grpcStreamingType.toString}',
+                        'grpcStreamingType' => '{@descriptor.grpcStreamingType}',
                         @if descriptor.hasGrpcResourcesField
                             'resourcesField' => '{@descriptor.grpcResourcesField}',
                         @end
@@ -428,7 +428,7 @@
         @end
         public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
         {
-            @if apiMethod.isNotGrpcRequestStreamingMethod
+            @if apiMethod.isSingularRequestMethod
                 $request = new {@apiMethod.requestTypeName}();
                 @join param : apiMethod.requiredRequestObjectParams
                     {@setRequiredFieldCall(param)}
@@ -444,7 +444,7 @@
                 $this->{@apiMethod.stubName}, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
 
             return $callable(
-                @if apiMethod.isNotGrpcRequestStreamingMethod
+                @if apiMethod.isSingularRequestMethod
                     $request,
                 @else
                     null,
