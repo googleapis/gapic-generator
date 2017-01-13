@@ -80,22 +80,6 @@
 @end
 
 @private unarySuccessAsserts(test)
-    $actualRequests = $grpcStub->getReceivedCalls();
-    $this->assertSame(1, count($actualRequests));
-    list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-    $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
-
-    @join assert : test.asserts
-        @if assert.hasExpectedValueTransformFunction
-            $this->assertEquals({@assert.expectedValueTransformFunction}(\
-                ${@assert.expectedValueIdentifier}), \
-                $actualRequestObject->{@assert.actualValueGetter}());
-        @else
-            $this->assertEquals(${@assert.expectedValueIdentifier}, \
-                $actualRequestObject->{@assert.actualValueGetter}());
-        @end
-    @end
-    
     @switch test.clientMethodType
     @case "OptionalArrayMethod"
         {@successAsserts(test)}
@@ -121,9 +105,9 @@
         @case "OperationOptionalArrayMethod"
             $anyResponse = new Any();
             $anyResponse->setValue($expectedResponse->serialize());
-            $operation = new Operation();
-            $operation->setName('operations/{@test.name}')->setDone(true)->setResponse($anyResponse);
-            $grpcStub->addResponse($operation);
+            $completeOperation = new Operation();
+            $completeOperation->setName('operations/{@test.name}')->setDone(true)->setResponse($anyResponse);
+            $grpcStub->addResponse($completeOperation);
         @default
             $unhandled case: {@test.clientMethodType.toString}$
         @end
@@ -131,13 +115,34 @@
     @end
 @end
 
+@private singleCallSuccessAsserts(test)
+    $actualRequests = $grpcStub->getReceivedCalls();
+    $this->assertSame(1, count($actualRequests));
+    list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
+    $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
+
+    @join assert : test.asserts
+        @if assert.hasExpectedValueTransformFunction
+            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+                ${@assert.expectedValueIdentifier}), \
+                $actualRequestObject->{@assert.actualValueGetter}());
+        @else
+            $this->assertEquals(${@assert.expectedValueIdentifier}, \
+                $actualRequestObject->{@assert.actualValueGetter}());
+        @end
+    @end
+    
+@end
+
 @private successAsserts(test)
+    {@singleCallSuccessAsserts(test)}
     @if test.hasReturnValue
         $this->assertEquals($expectedResponse, $response);
     @end
 @end
 
 @private pagedSuccessAsserts(test)
+    {@singleCallSuccessAsserts(test)}
     $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
     @join pageStreamingResponseView : test.pageStreamingResponseViews
         ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
@@ -147,6 +152,9 @@
 @end
 
 @private operationSuccessAsserts(test)
+    $response->pollUntilComplete();    
+    {@singleCallSuccessAsserts(test)}
+    
     $this->assertTrue($response->isDone());
     $this->assertEquals($expectedResponse, $response->getResult());
 @end

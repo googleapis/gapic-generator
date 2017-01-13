@@ -59,6 +59,7 @@ use \google\example\library\v1\SomeMessage2\SomeMessage3\Alignment;
 use \google\example\library\v1\UpdateBookIndexRequest;
 use \google\example\library\v1\UpdateBookRequest;
 use \google\longrunning\Operation;
+use \google\protobuf\Any;
 use \google\protobuf\EmptyC;
 use \google\tagger\v1\AddLabelRequest;
 use \google\tagger\v1\AddLabelResponse;
@@ -816,20 +817,22 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $expectedResponse->setRead($read);
         $anyResponse = new Any();
         $anyResponse->setValue($expectedResponse->serialize());
-        $operation = new Operation();
-        $operation->setName('operations/getBigBookTest')->setDone(true)->setResponse($anyResponse);
-        $grpcStub->addResponse($operation);
+        $completeOperation = new Operation();
+        $completeOperation->setName('operations/getBigBookTest')->setDone(true)->setResponse($anyResponse);
+        $grpcStub->addResponse($completeOperation);
 
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigBook($formattedName);
+        $response->pollUntilComplete();
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('GetBigBook', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
+
 
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
@@ -850,12 +853,14 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
         $client->getBigNothing($formattedName);
+        $response->pollUntilComplete();
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
         $this->assertSame('GetBigNothing', explode('/', $actualFuncCall)[2]);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
+
 
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
