@@ -596,7 +596,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()).join("async"), visibility);
   }
 
-  private String getApiMethodName(Name name, VisibilityConfig visibility) {
+  protected String getApiMethodName(Name name, VisibilityConfig visibility) {
     switch (visibility) {
       case PUBLIC:
         return publicMethodName(name);

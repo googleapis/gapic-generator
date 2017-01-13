@@ -6,7 +6,7 @@
    {@copyright()}
    */
 
-  {@imports(apiTest)}
+  {@header(apiTest)}
 
   @join testClass : apiTest.testClasses
     describe('{@testClass.apiClassName}', function() {
@@ -16,9 +16,12 @@
       @end
     });
   @end
+
+  {@helpers(apiTest)}
+
 @end
 
-@private imports(apiTest)
+@private header(apiTest)
   var assert = require('assert');
   @if apiTest.fileHeader.hasVersion
     var {@apiTest.apiWrapperModuleName} = require('../src/').{@apiTest.fileHeader.version}();
@@ -27,6 +30,58 @@
   @end
   @if apiTest.hasGrpcStreaming
     var through2 = require('through2');
+  @end
+
+  var FAKE_STATUS_CODE = 1;
+  var error = new Error();
+  error.code = FAKE_STATUS_CODE;
+@end
+
+@private helpers(apiTest)
+  function mockSimpleGrpcMethod(expectedRequest, response, error) {
+    return function(actualRequest, options, callback) {
+      assert.deepStrictEqual(actualRequest, expectedRequest);
+      if (error) {
+        callback(error);
+      } else if (response) {
+        callback(null, response);
+      } else {
+        callback(null);
+      }
+    };
+  }
+  @if apiTest.hasServerStreaming
+
+    function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
+      return function(actualRequest) {
+        assert.deepStrictEqual(actualRequest, expectedRequest);
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          if (error) {
+            callback(error);
+          } else {
+            callback(null, response);
+          }
+        });
+        mockStream.write();
+        return mockStream;
+      };
+    }
+  @end
+  @if apiTest.hasBidiStreaming
+
+    function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
+      return function() {
+        var mockStream = through2.obj(function (chunk, enc, callback) {
+          assert.deepStrictEqual(chunk, expectedRequest);
+          if (error) {
+            callback(error);
+          } else {
+            callback(null, response);
+          }
+        });
+        return mockStream;
+      }
+    }
   @end
 @end
 
@@ -63,14 +118,11 @@
 
       @end
       // Mock Grpc layer
-      client._{@test.clientMethodName} = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        @if test.hasReturnValue
-          callback(null, expectedResponse);
-        @else
-          callback(null);
-        @end
-      };
+      @if test.hasReturnValue
+        client._{@test.clientMethodName} = mockSimpleGrpcMethod(request, expectedResponse);
+      @else
+        client._{@test.clientMethodName} = mockSimpleGrpcMethod(request);
+      @end
 
       @if test.hasReturnValue
         client.{@test.clientMethodName}(request, function(err, response) {
@@ -85,6 +137,8 @@
         });
       @end
     });
+
+    {@nonStreamingTestWithError(test, moduleName)}
   });
 @end
 
@@ -114,6 +168,8 @@
         done();
       });
     });
+
+    {@nonStreamingTestWithError(test, moduleName)}
   });
 @end
 
@@ -130,22 +186,9 @@
       // Mock Grpc layer
       @switch test.grpcStreamingType
       @case "ServerStreaming"
-        client._{@test.clientMethodName} = function(actualRequest) {
-          assert.deepStrictEqual(actualRequest, request);
-          var mockStream = through2.obj(function (chunk, enc, callback) {
-            callback(null, expectedResponse);
-          });
-          mockStream.write();
-          return mockStream;
-        };
+        client._{@test.clientMethodName} = mockServerStreamingGrpcMethod(request, expectedResponse);
       @case "BidiStreaming"
-        client._{@test.clientMethodName} = function() {
-          var mockStream = through2.obj(function (chunk, enc, callback) {
-            assert.deepStrictEqual(chunk, request);
-            callback(null, expectedResponse);
-          });
-          return mockStream;
-        };
+        client._{@test.clientMethodName} = mockBidiStreamingGrpcMethod(request, expectedResponse);
       @end
 
       @switch test.grpcStreamingType
@@ -169,5 +212,68 @@
         $unhandled case: {@test.grpcStreamingType.toString}$
       @end
     });
+
+    it('invokes {@test.clientMethodName} with error', function(done) {
+      var client = {@moduleName}.{@test.serviceConstructorName}();
+      // Mock request
+      {@initCodeLines(test.initCode)}
+
+      // Mock Grpc layer
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        client._{@test.clientMethodName} = mockServerStreamingGrpcMethod(request, null, error);
+      @case "BidiStreaming"
+        client._{@test.clientMethodName} = mockBidiStreamingGrpcMethod(request, null, error);
+      @end
+
+      @switch test.grpcStreamingType
+      @case "ServerStreaming"
+        client.{@test.clientMethodName}(request).on('data', function(response) {
+          assert.fail();
+        }).on('error', function(err) {
+          {@assertError()}
+          done();
+        });
+      @case "BidiStreaming"
+        var stream = client.{@test.clientMethodName}().on('data', function(response) {
+          assert.fail();
+        }).on('error', function(err) {
+          {@assertError()}
+          done();
+        });
+
+        stream.write(request);
+      @default
+        $unhandled case: {@test.grpcStreamingType.toString}$
+      @end
+    });
   });
+@end
+
+@private nonStreamingTestWithError(test, moduleName)
+  it('invokes {@test.clientMethodName} with error', function(done) {
+    var client = {@moduleName}.{@test.serviceConstructorName}();
+    // Mock request
+    {@initCodeLines(test.initCode)}
+
+    // Mock Grpc layer
+    client._{@test.clientMethodName} = mockSimpleGrpcMethod(request, null, error);
+
+    @if test.hasReturnValue
+      client.{@test.clientMethodName}(request, function(err, response) {
+        {@assertError()}
+        done();
+      });
+    @else
+      client.{@test.clientMethodName}(request, function(err) {
+        {@assertError()}
+        done();
+      });
+    @end
+  });
+@end
+
+@private assertError()
+  assert(err instanceof Error);
+  assert.equal(err.code, FAKE_STATUS_CODE);
 @end
