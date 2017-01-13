@@ -173,6 +173,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))
+        .required(true)
         .build();
   }
 

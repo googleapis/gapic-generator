@@ -71,6 +71,9 @@
     @end
     {@class.serviceTypeName} {@class.serviceVarName} = {@class.createServiceFuncName}();
     {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@argList(class.fieldVarNames)});
+    @join field : class.optionalFields if class.optionalFields
+      {@class.requestVarName}.{@field.setterFuncName}({@field.name});
+    @end
 
     @if class.hasMediaDownload
       // TODO: Download media content if desired. See

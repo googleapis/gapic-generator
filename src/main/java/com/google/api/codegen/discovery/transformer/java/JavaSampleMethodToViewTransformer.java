@@ -85,11 +85,16 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         typeTable.getRequestTypeName(config.apiTypeName(), methodInfo.requestType()).getNickname();
 
     List<SampleFieldView> fields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
     List<String> fieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView = createSampleFieldView(field, context, symbolTable);
       fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+      if (sampleFieldView.required()) {
+        fieldVarNames.add(sampleFieldView.name());
+      } else {
+        optionalFields.add(sampleFieldView);
+      }
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
@@ -139,6 +144,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
         .fields(fields)
+        .optionalFields(optionalFields)
         .fieldVarNames(fieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
@@ -195,6 +201,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .example(field.example())
         .description(field.description())
         .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
+        .required(field.required())
         .build();
   }
 

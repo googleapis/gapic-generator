@@ -47,6 +47,10 @@ public abstract class FieldInfo {
   @JsonProperty("description")
   public abstract String description();
 
+  /** Whether or not the field is required. */
+  @JsonProperty("required")
+  public abstract Boolean required();
+
   public static Builder newBuilder() {
     return new AutoValue_FieldInfo.Builder();
   }
@@ -68,6 +72,9 @@ public abstract class FieldInfo {
 
     @JsonProperty("description")
     public abstract Builder description(String val);
+
+    @JsonProperty("required")
+    public abstract Builder required(Boolean val);
 
     public abstract FieldInfo build();
   }

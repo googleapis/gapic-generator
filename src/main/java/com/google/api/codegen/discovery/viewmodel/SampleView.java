@@ -86,6 +86,9 @@ public abstract class SampleView implements ViewModel {
   public abstract List<SampleFieldView> fields();
 
   @Nullable
+  public abstract List<SampleFieldView> optionalFields();
+
+  @Nullable
   public abstract List<String> fieldVarNames();
 
   public abstract boolean isPageStreaming();
@@ -205,6 +208,8 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder responseTypeName(String val);
 
     public abstract Builder fields(List<SampleFieldView> val);
+
+    public abstract Builder optionalFields(List<SampleFieldView> val);
 
     public abstract Builder fieldVarNames(List<String> val);
 
