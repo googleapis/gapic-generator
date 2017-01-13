@@ -149,6 +149,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
-    return visibility.methodName(this, Name.upperCamel(method.getSimpleName()));
+    return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 }
