@@ -596,6 +596,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return visibility.methodName(this, Name.upperCamel(method.getSimpleName()).join("async"));
   }
 
+  /** The name of the LRO surface method which can call the given API method. */
+  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+    return getAsyncApiMethodName(method, visibility);
+  }
+
   /** The name of the example for the method. */
   public String getApiMethodExampleName(Interface interfaze, Method method) {
     return getApiMethodName(method, VisibilityConfig.PUBLIC);

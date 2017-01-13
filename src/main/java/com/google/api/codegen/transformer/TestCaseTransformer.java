@@ -67,11 +67,7 @@ public class TestCaseTransformer {
               methodContext.getTypeTable(),
               methodConfig.getPageStreaming().getResourcesFieldConfig());
     } else if (methodConfig.isLongRunningOperation()) {
-      if (clientMethodType == ClientMethodType.OperationOptionalArrayMethod) {
-        clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
-      } else {
-        clientMethodName = namer.getAsyncApiMethodName(method, methodConfig.getVisibility());
-      }
+      clientMethodName = namer.getLroApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
           methodContext
               .getTypeTable()
