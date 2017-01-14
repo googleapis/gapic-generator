@@ -334,6 +334,9 @@ class LibraryServiceClient
             'discussBook' => [
                 'grpcStreamingType' => 'BidiStreaming',
             ],
+            'monologAboutBook' => [
+                'grpcStreamingType' => 'ClientStreaming',
+            ],
         ];
     }
 
@@ -457,6 +460,7 @@ class LibraryServiceClient
             'streamShelves' => $defaultDescriptors,
             'streamBooks' => $defaultDescriptors,
             'discussBook' => $defaultDescriptors,
+            'monologAboutBook' => $defaultDescriptors,
             'findRelatedBooks' => $defaultDescriptors,
             'addTag' => $defaultDescriptors,
             'addLabel' => $defaultDescriptors,
@@ -1542,7 +1546,7 @@ class LibraryServiceClient
      *     // stream is complete
      *     $streamingResponse = $libraryServiceClient->discussBook();
      *     streamingResponse->writeAll($requests);
-     *     foreach ($streamingResponse->closeAndReadAll() as $element) {
+     *     foreach ($streamingResponse->closeWriteAndReadAll() as $element) {
      *         // doSomethingWith($element);
      *     }
      *
@@ -1583,6 +1587,59 @@ class LibraryServiceClient
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'DiscussBook', $mergedSettings, $this->descriptors['discussBook']);
+
+        return $callable(
+            null,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Test client streaming.
+     * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $name = "";
+     *     $request = new DiscussBookRequest();
+     *     $request->setName($name);
+     *     $requests = [$request];
+     *
+     *     // Write data to server and wait for a response
+     *     $clientStreamingResponse = $libraryServiceClient->monologAboutBook();
+     *     $result = $clientStreamingResponse->writeAllAndWait($requests);
+     *     // doSomethingWith($result)
+     *
+     *     // OR write data as it becomes available, then wait for a response
+     *     $clientStreamingResponse = $libraryServiceClient->monologAboutBook();
+     *     foreach ($requests as $request) {
+     *         $clientStreamingResponse->write($request);
+     *     }
+     *     $result = $clientStreamingResponse->wait();
+     *     // doSomethingWith($result)
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call.
+     * }
+     *
+     * @return \Google\GAX\ClientStreamingResponse
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     */
+    public function monologAboutBook($optionalArgs = [])
+    {
+        $mergedSettings = $this->defaultCallSettings['monologAboutBook']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'MonologAboutBook', $mergedSettings, $this->descriptors['monologAboutBook']);
 
         return $callable(
             null,

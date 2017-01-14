@@ -167,6 +167,7 @@ public class LibraryServiceSettings extends ClientSettings {
   private final StreamingCallSettings<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
   private final StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
+  private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
   private final SimpleCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final SimpleCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
@@ -314,6 +315,13 @@ public class LibraryServiceSettings extends ClientSettings {
   }
 
   /**
+   * Returns the object with the settings used for calls to monologAboutBook.
+   */
+  public StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings() {
+    return monologAboutBookSettings;
+  }
+
+  /**
    * Returns the object with the settings used for calls to findRelatedBooks.
    */
   public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
@@ -442,6 +450,7 @@ public class LibraryServiceSettings extends ClientSettings {
     streamShelvesSettings = settingsBuilder.streamShelvesSettings().build();
     streamBooksSettings = settingsBuilder.streamBooksSettings().build();
     discussBookSettings = settingsBuilder.discussBookSettings().build();
+    monologAboutBookSettings = settingsBuilder.monologAboutBookSettings().build();
     findRelatedBooksSettings = settingsBuilder.findRelatedBooksSettings().build();
     addTagSettings = settingsBuilder.addTagSettings().build();
     addLabelSettings = settingsBuilder.addLabelSettings().build();
@@ -715,6 +724,7 @@ public class LibraryServiceSettings extends ClientSettings {
     private final StreamingCallSettings.Builder<StreamShelvesRequest, StreamShelvesResponse> streamShelvesSettings;
     private final StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
+    private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
     private final SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
@@ -802,6 +812,8 @@ public class LibraryServiceSettings extends ClientSettings {
       streamBooksSettings = StreamingCallSettings.newBuilder(LibraryServiceGrpc.METHOD_STREAM_BOOKS);
 
       discussBookSettings = StreamingCallSettings.newBuilder(LibraryServiceGrpc.METHOD_DISCUSS_BOOK);
+
+      monologAboutBookSettings = StreamingCallSettings.newBuilder(LibraryServiceGrpc.METHOD_MONOLOG_ABOUT_BOOK);
 
       findRelatedBooksSettings = PagedCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_FIND_RELATED_BOOKS,
@@ -967,6 +979,7 @@ public class LibraryServiceSettings extends ClientSettings {
       streamShelvesSettings = settings.streamShelvesSettings.toBuilder();
       streamBooksSettings = settings.streamBooksSettings.toBuilder();
       discussBookSettings = settings.discussBookSettings.toBuilder();
+      monologAboutBookSettings = settings.monologAboutBookSettings.toBuilder();
       findRelatedBooksSettings = settings.findRelatedBooksSettings.toBuilder();
       addTagSettings = settings.addTagSettings.toBuilder();
       addLabelSettings = settings.addLabelSettings.toBuilder();
@@ -1159,6 +1172,13 @@ public class LibraryServiceSettings extends ClientSettings {
      */
     public StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings() {
       return discussBookSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to monologAboutBook.
+     */
+    public StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings() {
+      return monologAboutBookSettings;
     }
 
     /**

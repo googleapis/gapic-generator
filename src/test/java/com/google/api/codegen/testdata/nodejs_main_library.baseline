@@ -61,7 +61,8 @@ var PAGE_DESCRIPTORS = {
 var STREAM_DESCRIPTORS = {
   streamShelves: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
   streamBooks: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
-  discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING)
+  discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
+  monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING)
 };
 
 /**
@@ -182,6 +183,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     'streamShelves',
     'streamBooks',
     'discussBook',
+    'monologAboutBook',
     'findRelatedBooks',
     'addTag',
     'getBigBook',
@@ -1467,6 +1469,49 @@ LibraryServiceClient.prototype.discussBook = function(options) {
   }
 
   return this._discussBook(options);
+};
+
+/**
+ * Test client streaming.
+ * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+ *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [Comment]{@link Comment}.
+ * @return {Stream} - A writable stream which accepts objects representing
+ *   [DiscussBookRequest]{@link DiscussBookRequest} for write() method.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ * var stream = client.monologAboutBook(function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
+ * var name = '';
+ * var request = {
+ *     name : name
+ * };
+ * // Write request objects.
+ * stream.write(request);
+ */
+LibraryServiceClient.prototype.monologAboutBook = function(options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+
+  return this._monologAboutBook(options, callback);
 };
 
 /**
