@@ -126,7 +126,7 @@
     
     // OR write data as it becomes available, then wait for a response
     $clientStreamingResponse = {@methodCallSampleCode(apiMethod)};
-    foreach (read_requests_from_stream() as $request) {
+    foreach ($requests as $request) {
         $clientStreamingResponse->write($request);
     }
     $result = $clientStreamingResponse->wait();
@@ -148,7 +148,7 @@
     // stream is complete
     $streamingResponse = {@methodCallSampleCode(apiMethod)};
     streamingResponse->writeAll($requests);
-    foreach ($streamingResponse->closeAndReadAll() as $element) {
+    foreach ($streamingResponse->closeWriteAndReadAll() as $element) {
         // doSomethingWith($element);
     }
     

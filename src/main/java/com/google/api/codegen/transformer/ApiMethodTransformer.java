@@ -802,13 +802,13 @@ public class ApiMethodTransformer {
         removePageTokenFieldConfig(context, context.getMethodConfig().getOptionalFieldConfigs());
     apiMethod.optionalRequestObjectParamsNoPageToken(
         generateRequestObjectParams(context, filteredFieldConfigs));
-    
+
     GrpcStreamingType grpcStreamingType = context.getMethodConfig().getGrpcStreamingType();
     apiMethod.grpcStreamingType(grpcStreamingType);
     apiMethod.isSingularRequestMethod(
         grpcStreamingType.equals(GrpcStreamingType.NonStreaming)
             || grpcStreamingType.equals(GrpcStreamingType.ServerStreaming));
-    
+
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)

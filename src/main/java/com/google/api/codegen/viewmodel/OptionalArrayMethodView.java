@@ -111,7 +111,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder stubName(String val);
 
     public abstract Builder longRunningView(LongRunningOperationDetailView val);
-    
+
     public abstract Builder isSingularRequestMethod(boolean val);
 
     public abstract OptionalArrayMethodView build();

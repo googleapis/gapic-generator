@@ -190,9 +190,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
           context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
       String resourcesFieldGetFunction = null;
       if (grpcStreamingConfig.hasResourceField()) {
-        resourcesFieldGetFunction = context
-            .getNamer()
-            .getFieldGetFunctionName(grpcStreamingConfig.getResourcesField());
+        resourcesFieldGetFunction =
+            context.getNamer().getFieldGetFunctionName(grpcStreamingConfig.getResourcesField());
       }
       result.add(
           GrpcStreamingDetailView.newBuilder()
