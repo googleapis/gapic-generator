@@ -124,8 +124,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('CreateShelf', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/CreateShelf', $actualFuncCall);
 
         $this->assertEquals($shelf, $actualRequestObject->getShelf());
 
@@ -159,8 +160,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('GetShelf', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/GetShelf', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($options, $actualRequestObject->getOptions());
@@ -195,8 +197,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse->getShelvesList()[0], $resources[0]);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('ListShelves', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/ListShelves', $actualFuncCall);
 
 
         $this->assertTrue($grpcStub->isExhausted());
@@ -217,8 +220,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $client->deleteShelf($formattedName);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('DeleteShelf', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/DeleteShelf', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
 
@@ -252,8 +256,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('MergeShelves', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/MergeShelves', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
@@ -290,8 +295,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('CreateBook', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/CreateBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($book, $actualRequestObject->getBook());
@@ -325,8 +331,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('PublishSeries', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/PublishSeries', $actualFuncCall);
 
         $this->assertEquals($shelf, $actualRequestObject->getShelf());
         $this->assertEquals($books, $actualRequestObject->getBooksList());
@@ -362,8 +369,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('GetBook', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/GetBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
 
@@ -400,8 +408,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse->getBooksList()[0], $resources[0]);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('ListBooks', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/ListBooks', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
 
@@ -423,8 +432,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $client->deleteBook($formattedName);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('DeleteBook', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/DeleteBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
 
@@ -460,8 +470,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('UpdateBook', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/UpdateBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($book, $actualRequestObject->getBook());
@@ -498,8 +509,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('MoveBook', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/MoveBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
@@ -534,8 +546,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse->getStringsList()[0], $resources[0]);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('ListStrings', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/ListStrings', $actualFuncCall);
 
 
         $this->assertTrue($grpcStub->isExhausted());
@@ -564,8 +577,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $client->addComments($formattedName, $comments);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('AddComments', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/AddComments', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($comments, $actualRequestObject->getCommentsList());
@@ -601,8 +615,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('GetBookFromArchive', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromArchive', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
 
@@ -638,8 +653,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('GetBookFromAnywhere', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromAnywhere', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($formattedAltBookName, $actualRequestObject->getAltBookName());
@@ -665,8 +681,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $client->updateBookIndex($formattedName, $indexName, $indexMap);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('UpdateBookIndex', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/UpdateBookIndex', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($indexName, $actualRequestObject->getIndexName());
@@ -707,8 +724,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse->getNamesList()[0], $resources[0]);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('FindRelatedBooks', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/FindRelatedBooks', $actualFuncCall);
 
         $this->assertEquals($names, $actualRequestObject->getNamesList());
         $this->assertEquals($shelves, $actualRequestObject->getShelvesList());
@@ -737,8 +755,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('AddTag', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/AddTag', $actualFuncCall);
 
         $this->assertEquals($formattedResource, $actualRequestObject->getResource());
         $this->assertEquals($tag, $actualRequestObject->getTag());
@@ -767,8 +786,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('AddLabel', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.tagger.v1.Labeler/AddLabel', $actualFuncCall);
 
         $this->assertEquals($formattedResource, $actualRequestObject->getResource());
         $this->assertEquals($label, $actualRequestObject->getLabel());
@@ -810,8 +830,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response->getResult());
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('GetBigBook', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/GetBigBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
 
@@ -835,8 +856,9 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($response->isDone());
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-        $this->assertSame('GetBigNothing', explode('/', $actualFuncCall)[2]);
+        $actualFuncCall = actualRequests[0]->getFuncCall();
+        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/GetBigNothing', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
 

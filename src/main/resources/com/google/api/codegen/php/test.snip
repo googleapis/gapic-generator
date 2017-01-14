@@ -115,8 +115,9 @@
 @private singleCallSuccessAsserts(test)
     $actualRequests = $grpcStub->getReceivedCalls();
     $this->assertSame(1, count($actualRequests));
-    list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-    $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
+    $actualFuncCall = actualRequests[0]->getFuncCall();
+    $actualRequestObject = actualRequests[0]->getRequestObject();
+    $this->assertSame('{@test.grpcStubCallString}', $actualFuncCall);
 
     @join assert : test.asserts
         @if assert.hasExpectedValueTransformFunction

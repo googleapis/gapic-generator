@@ -687,6 +687,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return Name.upperCamelKeepUpperAcronyms(method.getSimpleName()).toUpperCamel();
   }
 
+  /** The string used to identify the method in the gRPC stub. Not all languages will use this. */
+  public String getGrpcStubCallString(Interface service, Method method) {
+    return getNotImplementedString("SurfaceNamer.getGrpcStubCallString");
+  }
+
   /** The type name for retry settings. */
   public String getRetrySettingsTypeName() {
     return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");

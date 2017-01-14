@@ -121,6 +121,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getGrpcStubCallString(Interface service, Method method) {
+    return '/' + service.getFullName() + '/' + getGrpcMethodName(method);
+  }
+
+  @Override
   public String getTestPackageName() {
     return getTestPackageName(getPackageName());
   }
