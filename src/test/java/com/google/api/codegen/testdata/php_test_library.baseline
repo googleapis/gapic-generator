@@ -25,6 +25,8 @@ namespace Google\Tests\Example\Library\V1;
 
 use Google\Example\Library\V1\LibraryServiceClient;
 use \Google\GAX\GrpcCredentialsHelper;
+use \Google\GAX\LongRunning\OperationsClient;
+use \Google\GAX\Testing\LongRunning\MockOperationsImpl;
 use \Google\GAX\Testing\MockStubTrait;
 use \PHPUnit_Framework_TestCase;
 use \google\example\library\v1\AddCommentsRequest;
@@ -58,6 +60,7 @@ use \google\example\library\v1\Shelf;
 use \google\example\library\v1\SomeMessage2\SomeMessage3\Alignment;
 use \google\example\library\v1\UpdateBookIndexRequest;
 use \google\example\library\v1\UpdateBookRequest;
+use \google\longrunning\GetOperationRequest;
 use \google\longrunning\Operation;
 use \google\protobuf\Any;
 use \google\protobuf\EmptyC;
@@ -83,27 +86,39 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         return new MockLabelerImpl($hostname, $opts);
     }
 
-    private function createStubAndClient($createGrpcStub, $createStubArg)
+    public function createMockOperationsStub($hostname, $opts)
+    {
+        return new MockOperationsImpl($hostname, $opts);
+    }
+
+    private function createStub($createGrpcStub)
     {
         $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $grpcStub = $grpcCredentialsHelper->createStub(
+        return $grpcCredentialsHelper->createStub(
             $createGrpcStub,
             LibraryServiceClient::SERVICE_ADDRESS,
             LibraryServiceClient::DEFAULT_SERVICE_PORT
         );
-        $client = new LibraryServiceClient([$createStubArg =>
-            function ($hostname, $opts) use ($grpcStub) {
+    }
+
+    /**
+     * @return LibraryServiceClient
+     */
+    private function createClient($createStubFuncName, $grpcStub, $options = [])
+    {
+        return new LibraryServiceClient($options + [
+            $createStubFuncName => function ($hostname, $opts) use ($grpcStub) {
                 return $grpcStub;
             },
         ]);
-        return [$grpcStub, $client];
     }
     /**
      * @test
      */
     public function createShelfTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -120,12 +135,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $shelf = new Shelf();
 
+
         $response = $client->createShelf($shelf);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/CreateShelf', $actualFuncCall);
 
         $this->assertEquals($shelf, $actualRequestObject->getShelf());
@@ -138,7 +154,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function getShelfTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -156,12 +173,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
         $options = "options-1249474914";
 
+
         $response = $client->getShelf($formattedName, $options);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetShelf', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -175,7 +193,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function listShelvesTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -190,17 +209,18 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         }
         $grpcStub->addResponse($expectedResponse);
 
+
         $response = $client->listShelves();
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
         $this->assertEquals($expectedResponse->getShelvesList()[0], $resources[0]);
+
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/ListShelves', $actualFuncCall);
-
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -210,18 +230,20 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function deleteShelfTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock request
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
+
         $client->deleteShelf($formattedName);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/DeleteShelf', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -234,7 +256,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function mergeShelvesTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -252,12 +275,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
         $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
+
         $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/MergeShelves', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -271,7 +295,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function createBookTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -291,12 +316,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
         $book = new Book();
 
+
         $response = $client->createBook($formattedName, $book);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/CreateBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -310,7 +336,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function publishSeriesTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -327,12 +354,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $shelf = new Shelf();
         $books = [];
 
+
         $response = $client->publishSeries($shelf, $books);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/PublishSeries', $actualFuncCall);
 
         $this->assertEquals($shelf, $actualRequestObject->getShelf());
@@ -346,7 +374,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function getBookTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -365,12 +394,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
+
         $response = $client->getBook($formattedName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -383,7 +413,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function listBooksTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -401,19 +432,20 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
+
         $response = $client->listBooks($formattedName);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
         $this->assertEquals($expectedResponse->getBooksList()[0], $resources[0]);
+
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/ListBooks', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
-
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -422,18 +454,20 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function deleteBookTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
+
         $client->deleteBook($formattedName);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/DeleteBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -446,7 +480,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function updateBookTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -466,12 +501,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $book = new Book();
 
+
         $response = $client->updateBook($formattedName, $book);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/UpdateBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -485,7 +521,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function moveBookTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -505,12 +542,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
+
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/MoveBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -524,7 +562,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function listStringsTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -539,17 +578,18 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         }
         $grpcStub->addResponse($expectedResponse);
 
+
         $response = $client->listStrings();
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
         $this->assertEquals($expectedResponse->getStringsList()[0], $resources[0]);
+
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/ListStrings', $actualFuncCall);
-
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -559,7 +599,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function addCommentsTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -574,11 +615,12 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $commentsElement->setAlignment($alignment);
         $comments = [$commentsElement];
 
+
         $client->addComments($formattedName, $comments);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/AddComments', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -592,7 +634,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function getBookFromArchiveTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -611,12 +654,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
 
+
         $response = $client->getBookFromArchive($formattedName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromArchive', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -629,7 +673,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function getBookFromAnywhereTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -649,12 +694,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
+
         $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromAnywhere', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -668,7 +714,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function updateBookIndexTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -678,11 +725,12 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $indexMapItem = "indexMapItem1918721251";
         $indexMap = ["default_key" => $indexMapItem,];
 
+
         $client->updateBookIndex($formattedName, $indexName, $indexMap);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/UpdateBookIndex', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
@@ -697,7 +745,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function findRelatedBooksTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -717,20 +766,21 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $names = [$namesElement];
         $shelves = [];
 
+
         $response = $client->findRelatedBooks($names, $shelves);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
         $this->assertEquals($expectedResponse->getNamesList()[0], $resources[0]);
+
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/FindRelatedBooks', $actualFuncCall);
 
         $this->assertEquals($names, $actualRequestObject->getNamesList());
         $this->assertEquals($shelves, $actualRequestObject->getShelvesList());
-
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -739,7 +789,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function addTagTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -751,12 +802,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $tag = "tag114586";
 
+
         $response = $client->addTag($formattedResource, $tag);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/AddTag', $actualFuncCall);
 
         $this->assertEquals($formattedResource, $actualRequestObject->getResource());
@@ -770,7 +822,8 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function addLabelTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLabelerImpl'], 'createLabelerStubFunction');
+        $grpcStub = $this->createStub([$this, 'createMockLabelerImpl']);
+        $client = $this->createClient('createLabelerStubFunction', $grpcStub);
 
         $this->assertTrue($grpcStub->isExhausted());
 
@@ -782,12 +835,13 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $label = "label102727412";
 
+
         $response = $client->addLabel($formattedResource, $label);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.tagger.v1.Labeler/AddLabel', $actualFuncCall);
 
         $this->assertEquals($formattedResource, $actualRequestObject->getResource());
@@ -801,11 +855,26 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function getBigBookTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $operationsStub = $this->createStub([$this, 'createMockOperationsStub']);
+        $operationsClient = new OperationsClient([
+            'serviceAddress' => '',
+            'scopes' => [],
+            'createOperationsStubFunction' => function ($hostname, $opts) use ($operationsStub) {
+                return $operationsStub;
+            }
+        ]);
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub, [
+            'operationsClient' => $operationsClient
+        ]);
 
         $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($operationsStub->isExhausted());
 
         // Mock response
+        $incompleteOperation = new Operation();
+        $incompleteOperation->setName('operations/getBigBookTest')->setDone(false);
+        $grpcStub->addResponse($incompleteOperation);
         $name2 = "name2-1052831874";
         $author = "author-1406328437";
         $title = "title110371416";
@@ -819,24 +888,42 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $anyResponse->setValue($expectedResponse->serialize());
         $completeOperation = new Operation();
         $completeOperation->setName('operations/getBigBookTest')->setDone(true)->setResponse($anyResponse);
-        $grpcStub->addResponse($completeOperation);
+        $operationsStub->addResponse($completeOperation);
 
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigBook($formattedName);
+        $this->assertFalse($response->isDone());
+        $this->assertNull($response->getResult());
+        $apiRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($apiRequests));
+        $operationsRequestsEmpty = $operationsStub->getReceivedCalls();
+        $this->assertSame(0, count($operationsRequestsEmpty));
+
+        $actualApiFuncCall = $apiRequests[0]->getFuncCall();
+        $actualApiRequestObject = $apiRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/GetBigBook', $actualApiFuncCall);
+        $this->assertEquals($formattedName, $actualApiRequestObject->getName());
+
+        $expectedOperationsRequestObject = new GetOperationRequest();
+        $expectedOperationsRequestObject->setName('operations/getBigBookTest');
+
         $response->pollUntilComplete();
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
-        $actualRequests = $grpcStub->getReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
-        $this->assertSame('/google.example.library.v1.LibraryService/GetBigBook', $actualFuncCall);
+        $apiRequestsEmpty = $grpcStub->getReceivedCalls();
+        $this->assertSame(0, count($apiRequestsEmpty));
+        $operationsRequests = $operationsStub->getReceivedCalls();
+        $this->assertSame(1, count($operationsRequests));
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
+        $actualOperationsRequestObject = $operationsRequests[0]->getRequestObject();
+        $this->assertSame('/google.longrunning.Operations/GetOperation', $actualOperationsFuncCall);
+        $this->assertEquals($expectedOperationsRequestObject, $actualOperationsRequestObject);
 
         $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($operationsStub->isExhausted());
     }
 
     /**
@@ -844,25 +931,67 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
      */
     public function getBigNothingTest()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'createMockLibraryServiceImpl'], 'createLibraryServiceStubFunction');
+        $operationsStub = $this->createStub([$this, 'createMockOperationsStub']);
+        $operationsClient = new OperationsClient([
+            'serviceAddress' => '',
+            'scopes' => [],
+            'createOperationsStubFunction' => function ($hostname, $opts) use ($operationsStub) {
+                return $operationsStub;
+            }
+        ]);
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub, [
+            'operationsClient' => $operationsClient
+        ]);
 
         $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($operationsStub->isExhausted());
+
+        // Mock response
+        $incompleteOperation = new Operation();
+        $incompleteOperation->setName('operations/getBigNothingTest')->setDone(false);
+        $grpcStub->addResponse($incompleteOperation);
+        $expectedResponse = new EmptyC();
+        $anyResponse = new Any();
+        $anyResponse->setValue($expectedResponse->serialize());
+        $completeOperation = new Operation();
+        $completeOperation->setName('operations/getBigNothingTest')->setDone(true)->setResponse($anyResponse);
+        $operationsStub->addResponse($completeOperation);
 
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigNothing($formattedName);
+        $this->assertFalse($response->isDone());
+        $this->assertNull($response->getResult());
+        $apiRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($apiRequests));
+        $operationsRequestsEmpty = $operationsStub->getReceivedCalls();
+        $this->assertSame(0, count($operationsRequestsEmpty));
+
+        $actualApiFuncCall = $apiRequests[0]->getFuncCall();
+        $actualApiRequestObject = $apiRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/GetBigNothing', $actualApiFuncCall);
+        $this->assertEquals($formattedName, $actualApiRequestObject->getName());
+
+        $expectedOperationsRequestObject = new GetOperationRequest();
+        $expectedOperationsRequestObject->setName('operations/getBigNothingTest');
+
         $response->pollUntilComplete();
         $this->assertTrue($response->isDone());
-        $actualRequests = $grpcStub->getReceivedCalls();
-        $this->assertSame(1, count($actualRequests));
-        $actualFuncCall = actualRequests[0]->getFuncCall();
-        $actualRequestObject = actualRequests[0]->getRequestObject();
-        $this->assertSame('/google.example.library.v1.LibraryService/GetBigNothing', $actualFuncCall);
+        $this->assertEquals($expectedResponse, $response->getResult());
+        $apiRequestsEmpty = $grpcStub->getReceivedCalls();
+        $this->assertSame(0, count($apiRequestsEmpty));
+        $operationsRequests = $operationsStub->getReceivedCalls();
+        $this->assertSame(1, count($operationsRequests));
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
+        $actualOperationsRequestObject = $operationsRequests[0]->getRequestObject();
+        $this->assertSame('/google.longrunning.Operations/GetOperation', $actualOperationsFuncCall);
+        $this->assertEquals($expectedOperationsRequestObject, $actualOperationsRequestObject);
 
         $this->assertTrue($grpcStub->isExhausted());
+        $this->assertTrue($operationsStub->isExhausted());
     }
 
 }
