@@ -135,7 +135,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $shelf = new Shelf();
 
-
         $response = $client->createShelf($shelf);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -173,7 +172,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
         $options = "options-1249474914";
 
-
         $response = $client->getShelf($formattedName, $options);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -209,7 +207,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         }
         $grpcStub->addResponse($expectedResponse);
 
-
         $response = $client->listShelves();
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
@@ -237,7 +234,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         // Mock request
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
-
 
         $client->deleteShelf($formattedName);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -274,7 +270,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
         $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
-
 
         $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
@@ -316,7 +311,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
         $book = new Book();
 
-
         $response = $client->createBook($formattedName, $book);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -353,7 +347,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $shelf = new Shelf();
         $books = [];
-
 
         $response = $client->publishSeries($shelf, $books);
         $this->assertEquals($expectedResponse, $response);
@@ -394,7 +387,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
-
         $response = $client->getBook($formattedName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -432,7 +424,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
-
         $response = $client->listBooks($formattedName);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
@@ -461,7 +452,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-
 
         $client->deleteBook($formattedName);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -500,7 +490,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $book = new Book();
-
 
         $response = $client->updateBook($formattedName, $book);
         $this->assertEquals($expectedResponse, $response);
@@ -542,7 +531,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
-
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -577,7 +565,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
             $expectedResponse->addStrings($elem);
         }
         $grpcStub->addResponse($expectedResponse);
-
 
         $response = $client->listStrings();
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
@@ -614,7 +601,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $commentsElement->setStage($stage);
         $commentsElement->setAlignment($alignment);
         $comments = [$commentsElement];
-
 
         $client->addComments($formattedName, $comments);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -653,7 +639,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
 
         // Mock request
         $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
-
 
         $response = $client->getBookFromArchive($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -694,7 +679,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
-
         $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -724,7 +708,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $indexName = "default index";
         $indexMapItem = "indexMapItem1918721251";
         $indexMap = ["default_key" => $indexMapItem,];
-
 
         $client->updateBookIndex($formattedName, $indexName, $indexMap);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -766,7 +749,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $names = [$namesElement];
         $shelves = [];
 
-
         $response = $client->findRelatedBooks($names, $shelves);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
@@ -802,7 +784,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $tag = "tag114586";
 
-
         $response = $client->addTag($formattedResource, $tag);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
@@ -834,7 +815,6 @@ class LibraryServiceTest extends PHPUnit_Framework_TestCase
         // Mock request
         $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
         $label = "label102727412";
-
 
         $response = $client->addLabel($formattedResource, $label);
         $this->assertEquals($expectedResponse, $response);

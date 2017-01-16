@@ -87,7 +87,6 @@
 
 @private simpleTestCase(test)
     {@singleCallTestSetup(test)}
-
     @if test.hasReturnValue
         $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         $this->assertEquals($expectedResponse, $response);
@@ -101,7 +100,6 @@
 
 @private pageStreamingTestCase(test)
     {@singleCallTestSetup(test)}
-
     $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
     $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
     @join pageStreamingResponseView : test.pageStreamingResponseViews
