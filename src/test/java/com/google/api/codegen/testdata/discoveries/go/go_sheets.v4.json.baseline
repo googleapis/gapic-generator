@@ -1,0 +1,647 @@
+
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The spreadsheet to apply the updates to.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  rb := &sheets.BatchUpdateSpreadsheetRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := sheetsService.Spreadsheets.BatchUpdate(spreadsheetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.SpreadsheetsScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &sheets.Spreadsheet{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := sheetsService.Spreadsheets.Create(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.SpreadsheetsScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The spreadsheet to request.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  resp, err := sheetsService.Spreadsheets.Get(spreadsheetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.DriveReadonlyScope
+  //     sheets.SpreadsheetsScope
+  //     sheets.SpreadsheetsReadonlyScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the spreadsheet containing the sheet to copy.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  // The ID of the sheet to copy.
+  sheetId := int64(0)  // TODO: Update placeholder value.
+
+  rb := &sheets.CopySheetToAnotherSpreadsheetRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := sheetsService.Spreadsheets.Sheets.CopyTo(spreadsheetId, sheetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.SpreadsheetsScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the spreadsheet to update.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  // The A1 notation of a range to search for a logical table of data.
+  // Values will be appended after the last row of the table.
+  range2 := ""  // TODO: Update placeholder value.
+
+  rb := &sheets.ValueRange{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := sheetsService.Spreadsheets.Values.Append(spreadsheetId, range2, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.SpreadsheetsScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the spreadsheet to update.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  rb := &sheets.BatchClearValuesRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := sheetsService.Spreadsheets.Values.BatchClear(spreadsheetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.SpreadsheetsScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the spreadsheet to retrieve data from.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  resp, err := sheetsService.Spreadsheets.Values.BatchGet(spreadsheetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.DriveReadonlyScope
+  //     sheets.SpreadsheetsScope
+  //     sheets.SpreadsheetsReadonlyScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the spreadsheet to update.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  rb := &sheets.BatchUpdateValuesRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := sheetsService.Spreadsheets.Values.BatchUpdate(spreadsheetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.SpreadsheetsScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the spreadsheet to update.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  // The A1 notation of the values to clear.
+  range2 := ""  // TODO: Update placeholder value.
+
+  rb := &sheets.ClearValuesRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := sheetsService.Spreadsheets.Values.Clear(spreadsheetId, range2, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.SpreadsheetsScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the spreadsheet to retrieve data from.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  // The A1 notation of the values to retrieve.
+  range2 := ""  // TODO: Update placeholder value.
+
+  resp, err := sheetsService.Spreadsheets.Values.Get(spreadsheetId, range2).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.DriveReadonlyScope
+  //     sheets.SpreadsheetsScope
+  //     sheets.SpreadsheetsReadonlyScope
+  return nil, errors.New("not implemented")
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Sheets API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sheets
+// 2. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "golang.org/x/net/context"
+  "google.golang.org/api/sheets/v4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := getClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sheetsService, err := sheets.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the spreadsheet to update.
+  spreadsheetId := ""  // TODO: Update placeholder value.
+
+  // The A1 notation of the values to update.
+  range2 := ""  // TODO: Update placeholder value.
+
+  rb := &sheets.ValueRange{
+    // TODO: Add desired fields of the request body. All existing fields
+    // will be replaced.
+  }
+
+  resp, err := sheetsService.Spreadsheets.Values.Update(spreadsheetId, range2, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+
+func getClient(ctx context.Context) (*http.Client, error) {
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
+  //
+  // Authorize using the following scopes:
+  //     sheets.DriveScope
+  //     sheets.SpreadsheetsScope
+  return nil, errors.New("not implemented")
+}
