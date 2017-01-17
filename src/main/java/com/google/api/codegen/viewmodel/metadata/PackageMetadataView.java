@@ -59,6 +59,8 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String shortName();
 
+  public abstract String discoveryApiName();
+
   public abstract String grpcPackageName();
 
   public abstract String gapicPackageName();
@@ -111,6 +113,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** A single-word short name of the API. E.g., "logging". */
     public abstract Builder shortName(String val);
+
+    /** The API name used for generating the URL for the Discovery doc and APIs Explorer link. */
+    public abstract Builder discoveryApiName(String val);
 
     /** The base name of the gRPC client library package. E.g., "grpc-google-cloud-logging-v1". */
     public abstract Builder grpcPackageName(String val);

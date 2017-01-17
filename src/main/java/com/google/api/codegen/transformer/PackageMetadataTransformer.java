@@ -27,6 +27,14 @@ public class PackageMetadataTransformer {
       String template,
       String outputPath,
       TargetLanguage language) {
+    // Note that internally, this is overridable using a "discovery" section in the service config,
+    // which is not available externally. See:
+    //   https://github.com/googleapis/toolkit/issues/933
+    String discoveryApiName = model.getServiceConfig().getName();
+    int dotIndex = discoveryApiName.indexOf(".");
+    if (dotIndex > 0) {
+      discoveryApiName = discoveryApiName.substring(0, dotIndex);
+    }
 
     return PackageMetadataView.newBuilder()
         .templateFileName(template)
@@ -47,6 +55,7 @@ public class PackageMetadataTransformer {
         .homepage(packageConfig.homepage())
         .licenseName(packageConfig.licenseName())
         .fullName(model.getServiceConfig().getTitle())
+        .discoveryApiName(discoveryApiName)
         .hasMultipleServices(false);
   }
 }
