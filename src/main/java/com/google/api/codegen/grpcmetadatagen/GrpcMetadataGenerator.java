@@ -102,7 +102,7 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
               .generateMetadataView(
                   config, model, snippetFilename, outputPath(snippetFilename), language)
               // Set language-specific GrpcCopierResults here.
-              .pythonNamespacePackages(copierResults.namespacePackages())
+              .namespacePackages(copierResults.namespacePackages())
               .build();
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view);
       Doc result = runner.generate(view);

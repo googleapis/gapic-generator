@@ -28,7 +28,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import java.io.File;
@@ -36,8 +35,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Responsible for producing package metadata related views for Python
@@ -107,10 +104,10 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
 
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
-        .pythonNamespacePackages(
+        .namespacePackages(
             computeNamespacePackages(apiConfig.getPackageName(), packageConfig.apiVersion()))
-        .pythonApiModules(apiModules)
-        .pythonTypeModules(typeModules)
+        .apiModules(apiModules)
+        .typeModules(typeModules)
         .build();
   }
 
@@ -120,8 +117,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     if (apiModules != null && typeModules != null) {
       return;
     }
-    Set<String> apiModuleSet = new TreeSet<>();
-    Set<String> typeModuleSet = new TreeSet<>();
+    apiModules = new ArrayList<>();
+    typeModules = new ArrayList<>();
 
     for (GapicProvider<? extends Object> provider : gapicProviders) {
       Map<String, Doc> result = provider.generate();
@@ -130,16 +127,13 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
           String moduleName =
               fileName.substring(0, fileName.length() - ".py".length()).replace("/", ".");
           if (moduleName.endsWith(GapicContext.API_WRAPPER_SUFFIX.toLowerCase())) {
-            apiModuleSet.add(moduleName);
+            apiModules.add(moduleName);
           } else {
-            typeModuleSet.add(moduleName);
+            typeModules.add(moduleName);
           }
         }
       }
     }
-
-    apiModules = (new ImmutableList.Builder<String>()).addAll(apiModuleSet).build();
-    typeModules = (new ImmutableList.Builder<String>()).addAll(typeModuleSet).build();
   }
 
   /**

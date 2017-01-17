@@ -79,13 +79,13 @@ public abstract class PackageMetadataView implements ViewModel {
 
   // Python-specific configuration
   @Nullable
-  public abstract List<String> pythonNamespacePackages();
+  public abstract List<String> namespacePackages();
 
   @Nullable
-  public abstract List<String> pythonApiModules();
+  public abstract List<String> apiModules();
 
   @Nullable
-  public abstract List<String> pythonTypeModules();
+  public abstract List<String> typeModules();
 
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder();
@@ -146,14 +146,14 @@ public abstract class PackageMetadataView implements ViewModel {
     /** Whether the package contains multiple service objects */
     public abstract Builder hasMultipleServices(boolean val);
 
-    /** Python-only. The Python packages that should be declared as namespace packages. */
-    public abstract Builder pythonNamespacePackages(List<String> val);
+    /** The packages that should be declared as (Python) namespace packages. */
+    public abstract Builder namespacePackages(List<String> val);
 
-    /** Python-only. The names of the Python modules defining service objects. */
-    public abstract Builder pythonApiModules(List<String> val);
+    /** The names of the GAPIC modules defining service objects. */
+    public abstract Builder apiModules(List<String> val);
 
-    /** Python-only. The names of the Python modules defining service types. */
-    public abstract Builder pythonTypeModules(List<String> val);
+    /** The names of the GAPIC modules defining service types. */
+    public abstract Builder typeModules(List<String> val);
 
     public abstract PackageMetadataView build();
   }
