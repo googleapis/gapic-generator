@@ -22,7 +22,6 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
-import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -54,7 +53,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 
 /** A subclass of ModelToViewTransformer which translates model into API tests in Ruby. */
 // TODO(jcanizales): Much of this implementation is necessarily duplicated from the Java one, even
@@ -88,30 +86,28 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
     return views;
   }
 
-  private GapicSurfaceTestClassView createTestClassView(Interface service, SurfaceNamer namer,
-      ApiConfig apiConfig) {
+  private GapicSurfaceTestClassView createTestClassView(
+      Interface service, SurfaceNamer namer, ApiConfig apiConfig) {
     ModelTypeTable typeTable =
         new ModelTypeTable(
             new RubyTypeTable(apiConfig.getPackageName()),
             new RubyModelTypeNameConverter(apiConfig.getPackageName()));
-    SurfaceTransformerContext context = SurfaceTransformerContext.create(
-        service,
-        apiConfig,
-        typeTable,
-        namer,
-        new RubyFeatureConfig());
+    SurfaceTransformerContext context =
+        SurfaceTransformerContext.create(
+            service, apiConfig, typeTable, namer, new RubyFeatureConfig());
 
-    GapicSurfaceTestClassView.Builder testClass = GapicSurfaceTestClassView.newBuilder()
-        // We want something like language_service_api_test.rb (i.e. append _test to the name of
-        // the generated VKit client).
-        .outputPath("tests/" + namer.getServiceFileName(service) + "_test.rb")
-        .templateFileName(UNIT_TEST_TEMPLATE_FILE)
-        .service(service)
-        .name(namer.getUnitTestClassName(service))
-        .apiClassName(namer.getApiWrapperClassName(service))
-        .apiSettingsClassName(namer.getApiSettingsClassName(service)) // What is this?
-        .mockServices(Collections.<MockServiceUsageView>emptyList())
-        .testCases(createTestCaseViews(context));
+    GapicSurfaceTestClassView.Builder testClass =
+        GapicSurfaceTestClassView.newBuilder()
+            // We want something like language_service_api_test.rb (i.e. append _test to the name of
+            // the generated VKit client).
+            .outputPath("tests/" + namer.getServiceFileName(service) + "_test.rb")
+            .templateFileName(UNIT_TEST_TEMPLATE_FILE)
+            .service(service)
+            .name(namer.getUnitTestClassName(service))
+            .apiClassName(namer.getApiWrapperClassName(service))
+            .apiSettingsClassName(namer.getApiSettingsClassName(service)) // What is this?
+            .mockServices(Collections.<MockServiceUsageView>emptyList())
+            .testCases(createTestCaseViews(context));
 
     // Imports must be done as the last step to catch all imports.
     testClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -129,9 +125,7 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
             context.asFlattenedMethodContext(method, flatteningGroup);
         testCaseViews.add(
             createTestCaseView(
-                methodContext,
-                testNameTable,
-                flatteningGroup.getFlattenedFieldConfigs().values()));
+                methodContext, testNameTable, flatteningGroup.getFlattenedFieldConfigs().values()));
       }
     }
     return testCaseViews;
@@ -148,10 +142,11 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
     // This symbol table is used to produce unique variable names used in the initialization code.
     // Shared by both request and response views.
     SymbolTable initSymbolTable = new SymbolTable();
-    InitCodeView initCodeView = initCodeTransformer.generateInitCode(
-        methodContext,
-        createRequestInitCodeContext(
-            methodContext, initSymbolTable, paramFieldConfigs, InitCodeOutputType.FieldList));
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            methodContext,
+            createRequestInitCodeContext(
+                methodContext, initSymbolTable, paramFieldConfigs, InitCodeOutputType.FieldList));
 
     String requestTypeName =
         methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
