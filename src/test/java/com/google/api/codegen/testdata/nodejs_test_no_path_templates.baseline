@@ -18,6 +18,10 @@
 var assert = require('assert');
 var example = require('../src/')();
 
+var FAKE_STATUS_CODE = 1;
+var error = new Error();
+error.code = FAKE_STATUS_CODE;
+
 describe('NoTemplatesApiServiceClient', function() {
   describe('increment', function() {
     it('invokes increment without error', function(done) {
@@ -26,16 +30,42 @@ describe('NoTemplatesApiServiceClient', function() {
       var request = {};
 
       // Mock Grpc layer
-      client._increment = function(actualRequest, options, callback) {
-        assert.deepStrictEqual(actualRequest, request);
-        callback(null);
-      };
+      client._increment = mockSimpleGrpcMethod(request);
 
       client.increment(request, function(err) {
         assert.ifError(err);
         done();
       });
     });
+
+    it('invokes increment with error', function(done) {
+      var client = example.noTemplatesApiServiceClient();
+      // Mock request
+      var request = {};
+
+      // Mock Grpc layer
+      client._increment = mockSimpleGrpcMethod(request, null, error);
+
+      client.increment(request, function(err) {
+        assert(err instanceof Error);
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
   });
 
 });
+
+function mockSimpleGrpcMethod(expectedRequest, response, error) {
+  return function(actualRequest, options, callback) {
+    assert.deepStrictEqual(actualRequest, expectedRequest);
+    if (error) {
+      callback(error);
+    } else if (response) {
+      callback(null, response);
+    } else {
+      callback(null);
+    }
+  };
+}
+

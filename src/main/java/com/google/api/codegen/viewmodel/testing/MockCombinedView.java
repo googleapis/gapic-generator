@@ -47,6 +47,14 @@ public abstract class MockCombinedView implements ViewModel {
     return false;
   }
 
+  public boolean hasServerStreaming() {
+    return hasStreamingType(GrpcStreamingType.ServerStreaming);
+  }
+
+  public boolean hasBidiStreaming() {
+    return hasStreamingType(GrpcStreamingType.BidiStreaming);
+  }
+
   @Nullable
   public abstract String apiWrapperModuleName();
 
@@ -82,5 +90,16 @@ public abstract class MockCombinedView implements ViewModel {
     public abstract Builder templateFileName(String val);
 
     public abstract MockCombinedView build();
+  }
+
+  private boolean hasStreamingType(GrpcStreamingType type) {
+    for (ClientTestClassView testClass : testClasses()) {
+      for (TestCaseView testCase : testClass.testCases()) {
+        if (testCase.grpcStreamingType() == type) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
