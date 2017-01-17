@@ -133,12 +133,6 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     for (Method method : context.getSupportedMethods()) {
       MethodTransformerContext methodContext = context.asRequestMethodContext(method);
 
-      if (methodContext.getMethodConfig().isLongRunningOperation()) {
-        // TODO: Add LRO support
-        // https://github.com/googleapis/toolkit/issues/925
-        continue;
-      }
-
       Iterable<FieldConfig> fieldConfigs =
           methodContext.getMethodConfig().getRequiredFieldConfigs();
       InitCodeContext initCodeContext =
