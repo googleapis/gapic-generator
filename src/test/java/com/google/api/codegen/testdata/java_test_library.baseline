@@ -1220,50 +1220,6 @@ public class LibraryServiceTest {
 
   @Test
   @SuppressWarnings("all")
-  public void monologAboutBookTest() throws Exception {
-    String userName = "userName339340927";
-    ByteString comment = ByteString.copyFromUtf8("95");
-    Comment expectedResponse = Comment.newBuilder()
-      .setUserName(userName)
-      .setComment(comment)
-      .build();
-    mockLibraryService.addResponse(expectedResponse);
-    String name = "name3373707";
-    DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
-      .build();
-
-    $unhandled case: ClientStreaming$
-
-    List<Comment> actualResponses = responseObserver.future().get();
-    Assert.assertEquals(1, actualResponses.size());
-    Assert.assertEquals(expectedResponse, actualResponses.get(0));
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void monologAboutBookExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
-    mockLibraryService.addException(exception);
-    String name = "name3373707";
-    DiscussBookRequest request = DiscussBookRequest.newBuilder()
-      .setName(name)
-      .build();
-
-    $unhandled case: ClientStreaming$
-
-    try {
-      List<Comment> actualResponses = responseObserver.future().get();
-      Assert.fail("No exception thrown");
-    } catch (ExecutionException e) {
-      Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
-      StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
-    }
-  }
-
-  @Test
-  @SuppressWarnings("all")
   public void findRelatedBooksTest() {
     String nextPageToken = "";
     BookName namesElement2 = BookName.create("[SHELF_ID]", "[BOOK_ID]");

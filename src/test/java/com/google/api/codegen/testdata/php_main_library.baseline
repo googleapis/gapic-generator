@@ -1613,7 +1613,7 @@ class LibraryServiceClient
      *
      *     // Write data to server and wait for a response
      *     $clientStreamingResponse = $libraryServiceClient->monologAboutBook();
-     *     $result = $clientStreamingResponse->writeAllAndWait($requests);
+     *     $result = $clientStreamingResponse->writeAllAndReadResponse($requests);
      *     // doSomethingWith($result)
      *
      *     // OR write data as it becomes available, then wait for a response
@@ -1621,7 +1621,7 @@ class LibraryServiceClient
      *     foreach ($requests as $request) {
      *         $clientStreamingResponse->write($request);
      *     }
-     *     $result = $clientStreamingResponse->wait();
+     *     $result = $clientStreamingResponse->readResponse();
      *     // doSomethingWith($result)
      * } finally {
      *     $libraryServiceClient->close();
