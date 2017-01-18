@@ -45,7 +45,10 @@ import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 import javax.annotation.Nullable;
 
-/** ApiConfig represents the code-gen config for an API library. */
+/**
+ * ApiConfig represents the code-gen config for an API library contained in the {api}_gapic.yaml
+ * configuration file.
+ */
 @AutoValue
 public abstract class ApiConfig {
   abstract ImmutableMap<String, InterfaceConfig> getInterfaceConfigMap();

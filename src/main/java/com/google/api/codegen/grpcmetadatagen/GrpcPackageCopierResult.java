@@ -22,33 +22,29 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class GrpcPackageCopierResult {
-
-  @AutoValue
-  public abstract static class Metadata {
-    // Add new constructor when adding a metadata type
-    public static AutoValue_GrpcPackageCopierResult_Metadata createPython(
-        List<String> namespacePackages) {
-      return new AutoValue_GrpcPackageCopierResult_Metadata(namespacePackages);
-    }
-
-    /**
-     * A list of Python package names that should be declared as namespace packages in the package.
-     */
-    @Nullable
-    public abstract List<String> pythonNamespacePackages();
-  }
-
-  public static AutoValue_GrpcPackageCopierResult createPython(
+  public static GrpcPackageCopierResult createPython(
       List<String> namespacePackages, Map<String, Doc> docs) {
-    return new AutoValue_GrpcPackageCopierResult(Metadata.createPython(namespacePackages), docs);
+    return new AutoValue_GrpcPackageCopierResult.Builder()
+        .namespacePackages(namespacePackages)
+        .docs(docs)
+        .build();
   }
 
   /**
-   * The metadata computed by the PackageCopier phase that will be passed into the template
-   * rendering phase.
+   * A list of Python package names that should be declared as namespace packages in the package.
    */
-  public abstract Metadata metadata();
+  @Nullable
+  public abstract List<String> namespacePackages();
 
   /** Docs to be added to the output doc map in the template rendering phase. */
   public abstract Map<String, Doc> docs();
+
+  @AutoValue.Builder
+  protected abstract static class Builder {
+    public abstract Builder namespacePackages(List<String> val);
+
+    public abstract Builder docs(Map<String, Doc> val);
+
+    public abstract GrpcPackageCopierResult build();
+  }
 }

@@ -78,6 +78,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return packageName;
   }
 
+  public String getTestPackageName() {
+    return getNotImplementedString("SurfaceNamer.getTestPackageName");
+  }
+
   public String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
@@ -584,12 +588,38 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the surface method which can call the given API method. */
   public String getApiMethodName(Method method, VisibilityConfig visibility) {
-    return visibility.methodName(this, Name.upperCamel(method.getSimpleName()));
+    return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 
   /** The name of the async surface method which can call the given API method. */
   public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
-    return visibility.methodName(this, Name.upperCamel(method.getSimpleName()).join("async"));
+    return getApiMethodName(Name.upperCamel(method.getSimpleName()).join("async"), visibility);
+  }
+
+  protected String getApiMethodName(Name name, VisibilityConfig visibility) {
+    switch (visibility) {
+      case PUBLIC:
+        return publicMethodName(name);
+      case PACKAGE:
+      case PRIVATE:
+        return privateMethodName(name);
+      default:
+        throw new IllegalArgumentException("cannot name method with visibility: " + visibility);
+    }
+  }
+
+  /** The keyword controlling the visiblity, eg "public", "protected". */
+  public String getVisiblityKeyword(VisibilityConfig visibility) {
+    switch (visibility) {
+      case PUBLIC:
+        return "public";
+      case PACKAGE:
+        return "/* package-private */";
+      case PRIVATE:
+        return "private";
+      default:
+        throw new IllegalArgumentException("invalid visibility: " + visibility);
+    }
   }
 
   /** The name of the example for the method. */

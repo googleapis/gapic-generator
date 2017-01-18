@@ -243,6 +243,11 @@ public class Name {
     return toLowerUnderscore().replace('_', ' ');
   }
 
+  /** Returns the name in lower case, with a custom separator between components. */
+  public String toSeparatedString(String separator) {
+    return toLowerUnderscore().replace("_", separator);
+  }
+
   /**
    * Returns a new Name containing the pieces from this Name plus the given identifier added on the
    * end.

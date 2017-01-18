@@ -15,7 +15,9 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
+import com.google.api.client.util.Strings;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
@@ -24,11 +26,18 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
 
 /** Base class for code generator baseline tests. */
 public abstract class GapicTestBase extends ConfigBaselineTestCase {
@@ -43,14 +52,26 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
   private final String name;
   private final String idForFactory;
   private final String[] gapicConfigFileNames;
+  @Nullable private final String packageConfigFileName;
   private final String snippetName;
-  protected ConfigProto config;
+  protected ConfigProto gapicConfig;
+  protected PackageMetadataConfig packageConfig;
 
   public GapicTestBase(
       String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+    this(name, idForFactory, gapicConfigFileNames, null, snippetName);
+  }
+
+  public GapicTestBase(
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String packageConfigFileName,
+      String snippetName) {
     this.name = name;
     this.idForFactory = idForFactory;
     this.gapicConfigFileNames = gapicConfigFileNames;
+    this.packageConfigFileName = packageConfigFileName;
     this.snippetName = snippetName;
   }
 
@@ -62,9 +83,19 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
   @Override
   protected void setupModel() {
     super.setupModel();
-    config =
+    gapicConfig =
         CodegenTestUtil.readConfig(
             model.getDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
+    if (!Strings.isNullOrEmpty(packageConfigFileName)) {
+      try {
+        URI packageConfigUrl = getTestDataLocator().findTestData(packageConfigFileName).toURI();
+        String contents =
+            new String(Files.readAllBytes(Paths.get(packageConfigUrl)), StandardCharsets.UTF_8);
+        packageConfig = PackageMetadataConfig.createFromString(contents);
+      } catch (IOException | URISyntaxException e) {
+        throw new IllegalArgumentException("Problem creating packageConfig");
+      }
+    }
     // TODO (garrettjones) depend on the framework to take care of this.
     if (model.getDiagCollector().getErrorCount() > 0) {
       for (Diag diag : model.getDiagCollector().getDiags()) {
@@ -99,9 +130,10 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
    * GapicProviderFactory returns.
    */
   public static List<Object[]> createTestedConfigs(
-      String idForFactory, String[] gapicConfigFileNames) {
+      String idForFactory, String[] gapicConfigFileNames, String packageConfigFileName) {
     Model model = Model.create(Service.getDefaultInstance());
     ApiConfig apiConfig = ApiConfig.createDummyApiConfig();
+    PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
 
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder()
@@ -109,16 +141,25 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
             .enabledArtifacts(new ArrayList<String>())
             .build();
     List<GapicProvider<? extends Object>> providers =
-        MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig);
+        MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig, packageConfig);
     List<Object[]> testArgs = new ArrayList<>();
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {
-        String fileName = snippetFileName.split("\\.")[0].split("/")[1];
+        String fileNamePath = snippetFileName.split("\\.")[0];
+        String fileName = fileNamePath.indexOf("/") > 0 ? fileNamePath.split("/")[1] : fileNamePath;
         String id = idForFactory + "_" + fileName;
-        testArgs.add(new Object[] {id, idForFactory, gapicConfigFileNames, snippetFileName});
+        testArgs.add(
+            new Object[] {
+              id, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetFileName
+            });
       }
     }
     return testArgs;
+  }
+
+  public static List<Object[]> createTestedConfigs(
+      String idForFactory, String[] gapicConfigFileNames) {
+    return createTestedConfigs(idForFactory, gapicConfigFileNames, null);
   }
 
   @Override
@@ -131,7 +172,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
       return null;
     }
 
-    ApiConfig apiConfig = ApiConfig.createApiConfig(model, config);
+    ApiConfig apiConfig = ApiConfig.createApiConfig(model, gapicConfig);
     if (apiConfig == null) {
       for (Diag diag : model.getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
@@ -145,7 +186,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
             .enabledArtifacts(new ArrayList<String>())
             .build();
     List<GapicProvider<? extends Object>> providers =
-        MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig);
+        MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig, packageConfig);
     GapicProvider<? extends Object> testedProvider = null;
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {

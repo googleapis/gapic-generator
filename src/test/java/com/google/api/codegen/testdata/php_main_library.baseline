@@ -35,6 +35,7 @@ use Google\GAX\CallSettings;
 use Google\GAX\GrpcConstants;
 use Google\GAX\GrpcCredentialsHelper;
 use Google\GAX\LongRunning\OperationsClient;
+use Google\GAX\OperationResponse;
 use Google\GAX\PageStreamingDescriptor;
 use Google\GAX\PathTemplate;
 use Google\GAX\ValidationException;
@@ -97,9 +98,7 @@ use google\tagger\v1\LabelerGrpcClient;
  *     $shelf = new Shelf();
  *     $response = $libraryServiceClient->createShelf($shelf);
  * } finally {
- *     if (isset($libraryServiceClient)) {
- *         $libraryServiceClient->close();
- *     }
+ *     $libraryServiceClient->close();
  * }
  * ```
  *
@@ -114,6 +113,7 @@ class LibraryServiceClient
      * The default address of the service.
      */
     const SERVICE_ADDRESS = 'library-example.googleapis.com';
+
     /**
      * The default port of the service.
      */
@@ -124,8 +124,15 @@ class LibraryServiceClient
      */
     const DEFAULT_TIMEOUT_MILLIS = 30000;
 
-    const _CODEGEN_NAME = 'gapic';
-    const _CODEGEN_VERSION = '0.1.0';
+    /**
+     * The name of the code generator, to be included in the agent header.
+     */
+    const CODEGEN_NAME = 'gapic';
+
+    /**
+     * The code generator version, to be included in the agent header.
+     */
+    const CODEGEN_VERSION = '0.1.0';
 
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
@@ -311,10 +318,41 @@ class LibraryServiceClient
         ];
     }
 
+    /**
+     * Return an OperationsClient object with the same endpoint as $this.
+     *
+     * @return \Google\GAX\LongRunning\OperationsClient
+     */
     public function getOperationsClient()
     {
         return $this->operationsClient;
     }
+
+    /**
+     * Resume an existing long running operation that was previously started
+     * by a long running API method. If $methodName is not provided, or does
+     * not match a long running API method, then the operation can still be
+     * resumed, but the OperationResponse object will not deserialize the
+     * final response.
+     *
+     * @param string $operationName The name of the long running operation
+     * @param string $methodName The name of the method used to start the operation
+     *
+     * @return \Google\GAX\OperationResponse
+     */
+    public function resumeOperation($operationName, $methodName = null)
+    {
+        $lroDescriptors = LibraryServiceClient::getLongRunningDescriptors();
+        if (!is_null($methodName) && array_key_exists($methodName, $lroDescriptors)) {
+            $options = $lroDescriptors[$methodName];
+        } else {
+            $options = [];
+        }
+        $operation = new OperationResponse($operationName, $this->getOperationsClient(), $options);
+        $operation->reload();
+        return $operation;
+    }
+
     // TODO(garrettjones): add channel (when supported in gRPC)
     /**
      * Constructor.
@@ -372,8 +410,8 @@ class LibraryServiceClient
         $headerDescriptor = new AgentHeaderDescriptor([
             'clientName' => $options['appName'],
             'clientVersion' => $options['appVersion'],
-            'codeGenName' => self::_CODEGEN_NAME,
-            'codeGenVersion' => self::_CODEGEN_VERSION,
+            'codeGenName' => self::CODEGEN_NAME,
+            'codeGenVersion' => self::CODEGEN_VERSION,
             'gaxVersion' => AgentHeaderDescriptor::getGaxVersion(),
             'phpVersion' => phpversion(),
         ]);
@@ -464,9 +502,7 @@ class LibraryServiceClient
      *     $shelf = new Shelf();
      *     $response = $libraryServiceClient->createShelf($shelf);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -512,9 +548,7 @@ class LibraryServiceClient
      *     $options = "";
      *     $response = $libraryServiceClient->getShelf($formattedName, $options);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -571,20 +605,18 @@ class LibraryServiceClient
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listShelves();
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doThingsWith(element);
+     *         // doSomethingWith($element);
      *     }
      *
      *     // OR iterate over pages of elements, with the maximum page size set to 5
      *     $pagedResponse = $libraryServiceClient->listShelves(['pageSize' => 5]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
-     *             // doThingsWith(element);
+     *             // doSomethingWith($element);
      *         }
      *     }
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -635,9 +667,7 @@ class LibraryServiceClient
      *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
      *     $libraryServiceClient->deleteShelf($formattedName);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -683,9 +713,7 @@ class LibraryServiceClient
      *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
      *     $response = $libraryServiceClient->mergeShelves($formattedName, $formattedOtherShelfName);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -733,9 +761,7 @@ class LibraryServiceClient
      *     $book = new Book();
      *     $response = $libraryServiceClient->createBook($formattedName, $book);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -783,9 +809,7 @@ class LibraryServiceClient
      *     $books = [];
      *     $response = $libraryServiceClient->publishSeries($shelf, $books);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -849,9 +873,7 @@ class LibraryServiceClient
      *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -897,20 +919,18 @@ class LibraryServiceClient
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doThingsWith(element);
+     *         // doSomethingWith($element);
      *     }
      *
      *     // OR iterate over pages of elements, with the maximum page size set to 5
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['pageSize' => 5]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
-     *             // doThingsWith(element);
+     *             // doSomethingWith($element);
      *         }
      *     }
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -975,9 +995,7 @@ class LibraryServiceClient
      *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1021,9 +1039,7 @@ class LibraryServiceClient
      *     $book = new Book();
      *     $response = $libraryServiceClient->updateBook($formattedName, $book);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1081,9 +1097,7 @@ class LibraryServiceClient
      *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
      *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1131,20 +1145,18 @@ class LibraryServiceClient
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listStrings();
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doThingsWith(element);
+     *         // doSomethingWith($element);
      *     }
      *
      *     // OR iterate over pages of elements, with the maximum page size set to 5
      *     $pagedResponse = $libraryServiceClient->listStrings(['pageSize' => 5]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
-     *             // doThingsWith(element);
+     *             // doSomethingWith($element);
      *         }
      *     }
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1214,9 +1226,7 @@ class LibraryServiceClient
      *     $comments = [$commentsElement];
      *     $libraryServiceClient->addComments($formattedName, $comments);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1263,9 +1273,7 @@ class LibraryServiceClient
      *     $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromArchive($formattedName);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1311,9 +1319,7 @@ class LibraryServiceClient
      *     $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1364,9 +1370,7 @@ class LibraryServiceClient
      *     $indexMap = ["default_key" => $indexMapItem,];
      *     $libraryServiceClient->updateBookIndex($formattedName, $indexName, $indexMap);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1418,20 +1422,18 @@ class LibraryServiceClient
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
-     *         // doThingsWith(element);
+     *         // doSomethingWith($element);
      *     }
      *
      *     // OR iterate over pages of elements, with the maximum page size set to 5
      *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves, ['pageSize' => 5]);
      *     foreach ($pagedResponse->iteratePages() as $page) {
      *         foreach ($page as $element) {
-     *             // doThingsWith(element);
+     *             // doSomethingWith($element);
      *         }
      *     }
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1498,9 +1500,7 @@ class LibraryServiceClient
      *     $tag = "";
      *     $response = $libraryServiceClient->addTag($formattedResource, $tag);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1550,9 +1550,7 @@ class LibraryServiceClient
      *     $label = "";
      *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1608,10 +1606,25 @@ class LibraryServiceClient
      *       $error = $operationResponse->getError();
      *       // handleError($error)
      *     }
-     * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
+     *
+     *     // OR start the operation, keep the operation name, and resume later
+     *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+     *     $operationName = $operationResponse->getName();
+     *     // ... do other work
+     *     $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigBook');
+     *     while (!$newOperationResponse->isDone()) {
+     *         // ... do other work
+     *         $newOperationResponse->reload();
      *     }
+     *     if ($newOperationResponse->operationSucceeded()) {
+     *       $result = $newOperationResponse->getResult();
+     *       // doSomethingWith($result)
+     *     } else {
+     *       $error = $newOperationResponse->getError();
+     *       // handleError($error)
+     *     }
+     * } finally {
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1662,10 +1675,24 @@ class LibraryServiceClient
      *       $error = $operationResponse->getError();
      *       // handleError($error)
      *     }
-     * } finally {
-     *     if (isset($libraryServiceClient)) {
-     *         $libraryServiceClient->close();
+     *
+     *     // OR start the operation, keep the operation name, and resume later
+     *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+     *     $operationName = $operationResponse->getName();
+     *     // ... do other work
+     *     $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigNothing');
+     *     while (!$newOperationResponse->isDone()) {
+     *         // ... do other work
+     *         $newOperationResponse->reload();
      *     }
+     *     if ($newOperationResponse->operationSucceeded()) {
+     *       // operation succeeded and returns no value
+     *     } else {
+     *       $error = $newOperationResponse->getError();
+     *       // handleError($error)
+     *     }
+     * } finally {
+     *     $libraryServiceClient->close();
      * }
      * ```
      *

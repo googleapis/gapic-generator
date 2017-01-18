@@ -18,6 +18,7 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -66,7 +67,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     if (names.size() < 2) {
       return null;
     }
-    return names.get(1);
+    return names.get(names.size() - 1);
   }
 
   @Override
@@ -144,5 +145,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return identifier.toLowerCamel();
+  }
+
+  @Override
+  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+    return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 }

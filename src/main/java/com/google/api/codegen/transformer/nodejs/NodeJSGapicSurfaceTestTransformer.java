@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -132,14 +133,10 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     for (Method method : context.getSupportedMethods()) {
       MethodTransformerContext methodContext = context.asRequestMethodContext(method);
 
-      if (methodContext.getMethodConfig().isGrpcStreaming()) {
-        // TODO(shinfan): Remove this check once grpc streaming is supported by test
+      if (methodContext.getMethodConfig().isLongRunningOperation()) {
+        // TODO: Add LRO support
+        // https://github.com/googleapis/toolkit/issues/925
         continue;
-      }
-
-      ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
-      if (methodContext.getMethodConfig().isPageStreaming()) {
-        clientMethodType = ClientMethodType.PagedRequestObjectMethod;
       }
 
       Iterable<FieldConfig> fieldConfigs =
@@ -158,8 +155,23 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
 
       testCaseViews.add(
           testCaseTransformer.createTestCaseView(
-              methodContext, testNameTable, initCodeContext, clientMethodType));
+              methodContext,
+              testNameTable,
+              initCodeContext,
+              getMethodType(methodContext.getMethodConfig())));
     }
     return testCaseViews;
+  }
+
+  private ClientMethodType getMethodType(MethodConfig config) {
+    ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
+    if (config.isPageStreaming()) {
+      clientMethodType = ClientMethodType.PagedRequestObjectMethod;
+    } else if (config.isGrpcStreaming()) {
+      clientMethodType = ClientMethodType.AsyncRequestObjectMethod;
+    } else if (config.isLongRunningOperation()) {
+      clientMethodType = ClientMethodType.OperationCallableMethod;
+    }
+    return clientMethodType;
   }
 }

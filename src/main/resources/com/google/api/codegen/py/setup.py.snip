@@ -1,0 +1,49 @@
+@extends "common.snip"
+
+@snippet generate(metadata)
+  """A setup module for the GAPIC {@metadata.fullName} library.
+  
+  See:
+  https://packaging.python.org/en/latest/distributing.html
+  https://github.com/pypa/sampleproject
+  """
+  
+  from setuptools import setup, find_packages
+  import sys
+  
+  install_requires = [
+      'googleapis-common-protos>={@metadata.commonProtosVersionBound.lower}, <{@metadata.commonProtosVersionBound.upper}',
+      'google-gax>={@metadata.gaxVersionBound.lower}, <{@metadata.gaxVersionBound.upper}',
+      '{@metadata.grpcPackageName}>={@metadata.packageVersionBound.lower}, <{@metadata.packageVersionBound.upper}',
+      'oauth2client>={@metadata.authVersionBound.lower}, <{@metadata.authVersionBound.upper}',
+  ]
+  
+  setup(
+      name='{@metadata.gapicPackageName}',
+      version='{@metadata.packageVersionBound.lower}',
+      author='{@metadata.author}',
+      author_email='{@metadata.email}',
+      classifiers=[
+          'Intended Audience :: Developers',
+          'Development Status :: 3 - Alpha',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Apache Software License',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: Implementation :: CPython',
+      ],
+      description='GAPIC library for the {@metadata.fullName}',
+      include_package_data=True,
+      long_description=open('README.rst').read(),
+      install_requires=install_requires,
+      license='{@metadata.licenseName}',
+      packages=find_packages(),
+      namespace_packages=[{@quotedList(metadata.namespacePackages)}],
+      url='{@metadata.homepage}'
+  )
+
+@end

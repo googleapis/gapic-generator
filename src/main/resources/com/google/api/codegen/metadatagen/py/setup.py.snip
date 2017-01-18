@@ -1,5 +1,7 @@
-@snippet generate(context)
-    """A setup module for the GRPC {@context.getApiNameInfo.fullName} service.
+@extends "common.snip"
+
+@snippet generate(metadata)
+    """A setup module for the GRPC {@metadata.fullName} service.
 
     See:
     https://packaging.python.org/en/latest/distributing.html
@@ -11,16 +13,16 @@
     from setuptools import setup, find_packages
 
     install_requires = [
-      'oauth2client>={@context.getDependencyValue("auth.python.version")}, <{@context.getDependencyValue("auth.python.next_version")}',
-      'grpcio>={@context.getDependencyValue("grpc.python.version")}, <{@context.getDependencyValue("grpc.python.next_version")}',
-      'googleapis-common-protos[grpc]>={@context.getDependencyValue("googleapis_common_protos.python.version")}, <{@context.getDependencyValue("googleapis_common_protos.python.next_version")}'
+      'oauth2client>={@metadata.authVersionBound.lower}, <{@metadata.authVersionBound.upper}',
+      'grpcio>={@metadata.grpcVersionBound.lower}, <{@metadata.grpcVersionBound.upper}',
+      'googleapis-common-protos[grpc]>={@metadata.commonProtosVersionBound.lower}, <{@metadata.commonProtosVersionBound.upper}'
     ]
 
     setuptools.setup(
-      name='grpc-{@context.getApiNameInfo.packageName}',
-      version='{@context.getDefaultsValue("semver.python")}',
-      author='{@context.getDefaultsValue("author")}',
-      author_email='{@context.getDefaultsValue("email")}',
+      name='{@metadata.grpcPackageName}',
+      version='{@metadata.packageVersionBound.lower}',
+      author='{@metadata.author}',
+      author_email='{@metadata.email}',
       classifiers=[
         'Intended Audience :: Developers',
         'Development Status :: 3 - Alpha',
@@ -34,19 +36,13 @@
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
       ],
-      description='GRPC library for the {@context.getApiNameInfo.fullName} service',
+      description='GRPC library for the {@metadata.fullName}',
       long_description=open('README.rst').read(),
       install_requires=install_requires,
-      license='{@context.getDefaultsValue("license")}',
+      license='{@metadata.licenseName}',
       packages=find_packages(),
-      namespace_packages=[{@quotedList(context.getCopierMetadata.pythonNamespacePackages)}],
-      url='{@context.getDefaultsValue("homepage")}'
+      namespace_packages=[{@quotedList(metadata.namespacePackages)}],
+      url='{@metadata.homepage}'
     )
 
-@end
-
-@snippet quotedList(list)
-    @join element : list on ", "
-        '{@element}'
-    @end
 @end

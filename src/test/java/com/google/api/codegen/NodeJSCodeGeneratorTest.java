@@ -28,8 +28,12 @@ public class NodeJSCodeGeneratorTest {
   public static class NodeJSLibraryBaseline extends GapicTestBase {
 
     public NodeJSLibraryBaseline(
-        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, snippetName);
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator()
           .addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
     }
@@ -42,7 +46,8 @@ public class NodeJSCodeGeneratorTest {
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
           MainGapicProviderFactory.NODEJS,
-          new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"});
+          new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"},
+          "library_pkg.yaml");
     }
 
     // Tests
@@ -58,8 +63,12 @@ public class NodeJSCodeGeneratorTest {
   public static class NodeJSLibraryDocBaseline extends GapicTestBase {
 
     public NodeJSLibraryDocBaseline(
-        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, snippetName);
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator()
           .addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
     }
@@ -72,7 +81,8 @@ public class NodeJSCodeGeneratorTest {
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
           MainGapicProviderFactory.NODEJS_DOC,
-          new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"});
+          new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"},
+          "library_pkg.yaml");
     }
 
     // Tests
@@ -88,8 +98,12 @@ public class NodeJSCodeGeneratorTest {
   public static class NodeJSNoPathTemplatesBaseline extends GapicTestBase {
 
     public NodeJSNoPathTemplatesBaseline(
-        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, snippetName);
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator()
           .addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
     }
@@ -102,7 +116,8 @@ public class NodeJSCodeGeneratorTest {
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
           MainGapicProviderFactory.NODEJS,
-          new String[] {"nodejs_gapic.yaml", "no_path_templates_gapic.yaml"});
+          new String[] {"nodejs_gapic.yaml", "no_path_templates_gapic.yaml"},
+          "library_pkg.yaml");
     }
 
     // Tests

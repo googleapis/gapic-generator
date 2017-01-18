@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
@@ -34,6 +35,25 @@ public abstract class MockCombinedView implements ViewModel {
   public abstract List<ClientTestClassView> testClasses();
 
   public abstract List<MockServiceUsageView> mockServices();
+
+  public boolean hasGrpcStreaming() {
+    for (ClientTestClassView testClass : testClasses()) {
+      for (TestCaseView testCase : testClass.testCases()) {
+        if (testCase.grpcStreamingType() != GrpcStreamingType.NonStreaming) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean hasServerStreaming() {
+    return hasStreamingType(GrpcStreamingType.ServerStreaming);
+  }
+
+  public boolean hasBidiStreaming() {
+    return hasStreamingType(GrpcStreamingType.BidiStreaming);
+  }
 
   @Nullable
   public abstract String apiWrapperModuleName();
@@ -70,5 +90,16 @@ public abstract class MockCombinedView implements ViewModel {
     public abstract Builder templateFileName(String val);
 
     public abstract MockCombinedView build();
+  }
+
+  private boolean hasStreamingType(GrpcStreamingType type) {
+    for (ClientTestClassView testClass : testClasses()) {
+      for (TestCaseView testCase : testClass.testCases()) {
+        if (testCase.grpcStreamingType() == type) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
