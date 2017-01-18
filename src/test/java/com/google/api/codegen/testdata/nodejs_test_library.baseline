@@ -1190,18 +1190,6 @@ describe('LibraryServiceClient', function() {
           name : formattedName
       };
 
-      // Mock response
-      var name2 = 'name2-1052831874';
-      var author = 'author-1406328437';
-      var title = 'title110371416';
-      var read = true;
-      var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
-      };
-
       // Mock Grpc layer
       client._getBigBook = mockLongRunningGrpcMethod(request, null, error);
 
@@ -1251,9 +1239,6 @@ describe('LibraryServiceClient', function() {
       var request = {
           name : formattedName
       };
-
-      // Mock response
-      var expectedResponse = {};
 
       // Mock Grpc layer
       client._getBigNothing = mockLongRunningGrpcMethod(request, null, error);
@@ -1329,7 +1314,7 @@ function mockLongRunningGrpcMethod(expectedRequest, response, error) {
         });
       }
     };
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve) {
       resolve([mockOperation]);
     });
   };

@@ -99,7 +99,7 @@
             });
           }
         };
-        return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve) {
           resolve([mockOperation]);
         });
       };
@@ -188,9 +188,6 @@
 
     it('invokes {@test.clientMethodName} with error', function(done) {
       {@commonInit(test, moduleName)}
-
-      // Mock response
-      {@initCodeLines(test.mockResponse.initCode)}
 
       // Mock Grpc layer
       client._{@test.clientMethodName} = mockLongRunningGrpcMethod(request, null, error);
