@@ -71,6 +71,8 @@ public abstract class InterfaceConfig {
 
   public abstract ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
+  public abstract String getManualDoc();
+
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up method configurations
    * with specified methods in methodConfigMap. On errors, null will be returned, and diagnostics
@@ -139,6 +141,8 @@ public abstract class InterfaceConfig {
     }
     ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
+    String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
+
     if (diagCollector.hasErrors()) {
       return null;
     } else {
@@ -150,7 +154,8 @@ public abstract class InterfaceConfig {
           retrySettingsDefinition,
           iamResources,
           requiredConstructorParams,
-          singleResourceNames);
+          singleResourceNames,
+          manualDoc);
     }
   }
 
