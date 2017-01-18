@@ -333,11 +333,8 @@ public class MainGapicProviderFactory
 
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
-<<<<<<< HEAD
-=======
-        providers.add(enumProvider);
+        // providers.add(enumProvider);
         providers.add(metadataProvider);
->>>>>>> master
 
         if (id.equals(PYTHON_DOC)) {
           GapicProvider<? extends Object> messageProvider =
