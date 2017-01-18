@@ -111,6 +111,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
                   namer.getNotImplementedString(
                       "NodeJSGapicSurfaceTestTransformer.generateTestView - name"))
               .testCases(createTestCaseViews(context))
+              .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
               .mockServices(Collections.<MockServiceUsageView>emptyList())
               .build());
     }

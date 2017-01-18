@@ -249,6 +249,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.apiClassName(namer.getApiWrapperClassName(service));
     testClass.name(name);
     testClass.testCases(createTestCaseViews(context));
+    testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());
     testClass.mockServices(
         mockServiceTransformer.createMockServices(
             context.getNamer(), context.getModel(), context.getApiConfig()));
