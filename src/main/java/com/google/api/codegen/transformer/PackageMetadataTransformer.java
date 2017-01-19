@@ -39,7 +39,7 @@ public class PackageMetadataTransformer {
         .protoVersionBound(packageConfig.protoVersionBound(language))
         .commonProtosVersionBound(packageConfig.commonProtosVersionBound(language))
         .authVersionBound(packageConfig.authVersionBound(language))
-        .grpcPackageName("grpc-" + packageConfig.packageName(language))
+        .protoPackageName("proto-" + packageConfig.packageName(language))
         .gapicPackageName("gapic-" + packageConfig.packageName(language))
         .majorVersion(packageConfig.apiVersion())
         .author(packageConfig.author())

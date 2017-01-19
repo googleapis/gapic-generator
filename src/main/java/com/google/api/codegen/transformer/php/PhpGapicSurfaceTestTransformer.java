@@ -174,6 +174,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
                           surfacePackageNamer.getPackageName())
                       .toLowerUnderscore())
               .testCases(createTestCaseViews(context))
+              .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
               .mockServices(mockServiceList)
               .build();
 
@@ -205,13 +206,10 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
         continue;
       }
 
-      if (methodContext.getMethodConfig().isLongRunningOperation()) {
-        // TODO(michaelbausor): remove once LRO methods are supported
-        continue;
-      }
-
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
-      if (methodContext.getMethodConfig().isPageStreaming()) {
+      if (methodContext.getMethodConfig().isLongRunningOperation()) {
+        clientMethodType = ClientMethodType.OperationOptionalArrayMethod;
+      } else if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
       }
 
@@ -238,7 +236,12 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private void addUnitTestImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
+    typeTable.saveNicknameFor("\\Google\\GAX\\LongRunning\\OperationsClient");
     typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\MockStubTrait");
+    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\LongRunning\\MockOperationsImpl");
     typeTable.saveNicknameFor("\\PHPUnit_Framework_TestCase");
+    typeTable.saveNicknameFor("\\google\\protobuf\\Any");
+    typeTable.saveNicknameFor("\\google\\protobuf\\EmptyC");
+    typeTable.saveNicknameFor("\\google\\longrunning\\GetOperationRequest");
   }
 }

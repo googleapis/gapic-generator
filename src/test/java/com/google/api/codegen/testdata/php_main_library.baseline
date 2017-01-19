@@ -402,10 +402,14 @@ class LibraryServiceClient
         ];
         $options = array_merge($defaultOptions, $options);
 
-        $this->operationsClient = new OperationsClient([
-            'serviceAddress' => $options['serviceAddress'],
-            'scopes' => $options['scopes'],
-        ]);
+        if (array_key_exists('operationsClient', $options)) {
+            $this->operationsClient = $options['operationsClient'];
+        } else {
+            $this->operationsClient = new OperationsClient([
+                'serviceAddress' => $options['serviceAddress'],
+                'scopes' => $options['scopes'],
+            ]);
+        }
 
         $headerDescriptor = new AgentHeaderDescriptor([
             'clientName' => $options['appName'],

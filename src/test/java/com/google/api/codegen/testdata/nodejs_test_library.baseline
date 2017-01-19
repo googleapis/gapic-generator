@@ -1147,6 +1147,115 @@ describe('LibraryServiceClient', function() {
     });
   });
 
+  describe('getBigBook', function() {
+    it('invokes getBigBook without error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock response
+      var name2 = 'name2-1052831874';
+      var author = 'author-1406328437';
+      var title = 'title110371416';
+      var read = true;
+      var expectedResponse = {
+          name : name2,
+          author : author,
+          title : title,
+          read : read
+      };
+
+      // Mock Grpc layer
+      client._getBigBook = mockLongRunningGrpcMethod(request, expectedResponse);
+
+      client.getBigBook(request).then(function(responses) {
+        var operation = responses[0];
+        return operation.promise();
+      }).then(function(responses) {
+        assert.deepStrictEqual(responses[0], expectedResponse);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('invokes getBigBook with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._getBigBook = mockLongRunningGrpcMethod(request, null, error);
+
+      client.getBigBook(request).then(function(responses) {
+        var operation = responses[0];
+        return operation.promise();
+      }).then(function(responses) {
+        assert.fail();
+      }).catch(function(err) {
+        assert(err instanceof Error);
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
+  describe('getBigNothing', function() {
+    it('invokes getBigNothing without error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock response
+      var expectedResponse = {};
+
+      // Mock Grpc layer
+      client._getBigNothing = mockLongRunningGrpcMethod(request, expectedResponse);
+
+      client.getBigNothing(request).then(function(responses) {
+        var operation = responses[0];
+        return operation.promise();
+      }).then(function(responses) {
+        assert.deepStrictEqual(responses[0], expectedResponse);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('invokes getBigNothing with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var request = {
+          name : formattedName
+      };
+
+      // Mock Grpc layer
+      client._getBigNothing = mockLongRunningGrpcMethod(request, null, error);
+
+      client.getBigNothing(request).then(function(responses) {
+        var operation = responses[0];
+        return operation.promise();
+      }).then(function(responses) {
+        assert.fail();
+      }).catch(function(err) {
+        assert(err instanceof Error);
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
 });
 
 function mockSimpleGrpcMethod(expectedRequest, response, error) {
@@ -1189,5 +1298,23 @@ function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
     });
     return mockStream;
   }
+}
+
+function mockLongRunningGrpcMethod(expectedRequest, response, error) {
+  return function(request) {
+    assert.deepStrictEqual(request, expectedRequest);
+    var mockOperation = {
+      promise: function() {
+        return new Promise(function(resolve, reject) {
+          if (error) {
+            reject(error)
+          } else {
+            resolve([response]);
+          }
+        });
+      }
+    };
+    return Promise.resolve([mockOperation]);
+  };
 }
 

@@ -101,6 +101,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
                   namer.getNotImplementedString(
                       "GoGapicSurfaceTestTransformer.generateMockServiceView - name"))
               .testCases(createTestCaseViews(context))
+              .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
               .mockServices(Collections.<MockServiceUsageView>emptyList())
               .build());
     }
