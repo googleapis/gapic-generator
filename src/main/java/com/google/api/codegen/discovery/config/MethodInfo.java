@@ -104,6 +104,14 @@ public abstract class MethodInfo {
   @JsonProperty("isPageStreamingResourceSetterInRequestBody")
   public abstract boolean isPageStreamingResourceSetterInRequestBody();
 
+  /** Name of the page streaming page token field used in the request. */
+  @JsonProperty("requestPageTokenName")
+  public abstract String requestPageTokenName();
+
+  /** Name of the page streaming page token field used in the response. */
+  @JsonProperty("responsePageTokenName")
+  public abstract String responsePageTokenName();
+
   /** Returns true if the method supports media upload. */
   @JsonProperty("hasMediaUpload")
   public abstract boolean hasMediaUpload();
@@ -149,6 +157,12 @@ public abstract class MethodInfo {
 
     @JsonProperty("isPageStreamingResourceSetterInRequestBody")
     public abstract Builder isPageStreamingResourceSetterInRequestBody(boolean val);
+
+    @JsonProperty("requestPageTokenName")
+    public abstract Builder requestPageTokenName(String val);
+
+    @JsonProperty("responsePageTokenName")
+    public abstract Builder responsePageTokenName(String val);
 
     @JsonProperty("hasMediaUpload")
     public abstract Builder hasMediaUpload(boolean val);

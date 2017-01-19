@@ -104,11 +104,11 @@
 
         @end
         @if class.pageStreaming.isResourceSetterInRequestBody
-          {@class.requestBodyVarName}.setPageToken({@class.responseVarName()}.getNextPageToken());
+          {@class.requestBodyVarName}.set{@class.pageStreaming.pageTokenName}({@class.responseVarName()}.get{@class.pageStreaming.nextPageTokenName}());
         @else
-          {@class.requestVarName}.setPageToken({@class.responseVarName()}.getNextPageToken());
+          {@class.requestVarName}.set{@class.pageStreaming.pageTokenName}({@class.responseVarName()}.get{@class.pageStreaming.nextPageTokenName}());
         @end
-      } while ({@class.responseVarName}.getNextPageToken() != null);
+      } while ({@class.responseVarName}.get{@class.pageStreaming.nextPageTokenName}() != null);
     @else
       @if class.hasResponse
         {@class.responseTypeName} {@class.responseVarName} = {@class.requestVarName}.execute();

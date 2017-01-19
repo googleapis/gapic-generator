@@ -318,10 +318,14 @@ project_id = ''  # TODO: Update placeholder value.
 job_id = ''  # TODO: Update placeholder value.
 
 request = service.jobs().getQueryResults(projectId=project_id, jobId=job_id)
-response = request.execute()
+while request is not None:
+    response = request.execute()
 
-# TODO: Change code below to process the `response` dict:
-pprint(response)
+    for error_proto in response['errors']:
+        # TODO: Change code below to process each `error_proto` resource:
+        pprint(error_proto)
+
+    request = service.jobs().getQueryResults_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -542,10 +546,14 @@ dataset_id = ''  # TODO: Update placeholder value.
 table_id = ''  # TODO: Update placeholder value.
 
 request = service.tabledata().list(projectId=project_id, datasetId=dataset_id, tableId=table_id)
-response = request.execute()
+while request is not None:
+    response = request.execute()
 
-# TODO: Change code below to process the `response` dict:
-pprint(response)
+    for table_row in response['rows']:
+        # TODO: Change code below to process each `table_row` resource:
+        pprint(table_row)
+
+    request = service.tabledata().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------

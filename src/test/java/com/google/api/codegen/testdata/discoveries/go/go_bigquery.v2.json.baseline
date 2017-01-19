@@ -465,13 +465,16 @@ func main() {
   // [Required] Job ID of the query job
   jobId := ""  // TODO: Update placeholder value.
 
-  resp, err := bigqueryService.Jobs.GetQueryResults(projectId, jobId).Context(ctx).Do()
-  if err != nil {
+  req := bigqueryService.Jobs.GetQueryResults(projectId, jobId)
+  if err := req.Pages(ctx, func(page *bigquery.GetQueryResultsResponse) error {
+    for _, errorProto := range page.Errors {
+      // TODO: Change code below to process each `errorProto` resource:
+      fmt.Printf("%#v\n", errorProto)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -789,13 +792,16 @@ func main() {
   // Table ID of the table to read
   tableId := ""  // TODO: Update placeholder value.
 
-  resp, err := bigqueryService.Tabledata.List(projectId, datasetId, tableId).Context(ctx).Do()
-  if err != nil {
+  req := bigqueryService.Tabledata.List(projectId, datasetId, tableId)
+  if err := req.Pages(ctx, func(page *bigquery.TableDataList) error {
+    for _, tableRow := range page.Rows {
+      // TODO: Change code below to process each `tableRow` resource:
+      fmt.Printf("%#v\n", tableRow)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 

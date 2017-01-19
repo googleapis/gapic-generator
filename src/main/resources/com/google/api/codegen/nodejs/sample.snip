@@ -121,8 +121,8 @@
         console.log({@class.pageStreaming.pageVarName});
       @end
 
-      if ({@class.responseVarName}.nextPageToken) {
-        {@class.requestVarName}.pageToken = {@class.responseVarName}.nextPageToken;
+      if ({@class.responseVarName}.{@class.pageStreaming.nextPageTokenName}) {
+        {@class.requestVarName}.{@class.pageStreaming.pageTokenName} = {@class.responseVarName}.{@class.pageStreaming.nextPageTokenName};
         {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, {@class.pageStreaming.handlePageVarName});
       }
     };
