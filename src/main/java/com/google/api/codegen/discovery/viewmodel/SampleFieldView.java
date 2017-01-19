@@ -55,9 +55,9 @@ public abstract class SampleFieldView {
 
     public abstract Builder description(String val);
 
-    public abstract Builder setterFuncName(String val);
-
     public abstract Builder required(Boolean val);
+
+    public abstract Builder setterFuncName(String val);
 
     public abstract SampleFieldView build();
   }
