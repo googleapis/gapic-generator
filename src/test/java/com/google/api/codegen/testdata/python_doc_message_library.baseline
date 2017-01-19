@@ -805,8 +805,8 @@ class Status(object):
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.cloud.grpc.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
-from google.cloud.grpc.test.shared.data import shared_type_pb2
+from google.cloud.proto.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
+from google.cloud.proto.test.shared.data import shared_type_pb2
 from google.protobuf import any_pb2
 from google.protobuf import duration_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
@@ -830,7 +830,7 @@ class Book(object):
       struct_value (:class:`google.protobuf.struct_pb2.Struct`)
       value_value (:class:`google.protobuf.struct_pb2.Value`)
       list_value_value (:class:`google.protobuf.struct_pb2.ListValue`)
-      map_list_value_value (dict[string -> :class:`google.cloud.grpc.example.library.v1.library_pb2.Book.MapListValueValueEntry`])
+      map_list_value_value (dict[string -> :class:`google.cloud.proto.example.library.v1.library_pb2.Book.MapListValueValueEntry`])
       time_value (:class:`google.protobuf.timestamp_pb2.Timestamp`)
       duration_value (:class:`google.protobuf.duration_pb2.Duration`)
       field_mask_value (:class:`google.protobuf.field_mask_pb2.FieldMask`)
@@ -843,9 +843,9 @@ class Book(object):
       string_value (:class:`google.protobuf.wrappers_pb2.StringValue`)
       bool_value (:class:`google.protobuf.wrappers_pb2.BoolValue`)
       bytes_value (:class:`google.protobuf.wrappers_pb2.BytesValue`)
-      map_string_value (dict[int -> :class:`google.cloud.grpc.example.library.v1.library_pb2.Book.MapStringValueEntry`])
-      map_message_value (dict[string -> :class:`google.cloud.grpc.example.library.v1.library_pb2.Book.MapMessageValueEntry`])
-      resource (:class:`google.cloud.grpc.test.shared.data.shared_type_pb2.Used`): Tests Python doc generation: should generate a dummy file for shared_type
+      map_string_value (dict[int -> :class:`google.cloud.proto.example.library.v1.library_pb2.Book.MapStringValueEntry`])
+      map_message_value (dict[string -> :class:`google.cloud.proto.example.library.v1.library_pb2.Book.MapMessageValueEntry`])
+      resource (:class:`google.cloud.proto.test.shared.data.shared_type_pb2.Used`): Tests Python doc generation: should generate a dummy file for shared_type
         resource, but *not* its import, other_shared_type
 
     """
@@ -871,7 +871,7 @@ class SomeMessage(object):
     """
     Attributes:
       field (int)
-      field2 (:class:`google.cloud.grpc.example.library.v1.library_pb2.SomeMessage2`)
+      field2 (:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage2`)
       alignment (enum :class:`google.cloud.gapic.example.library.v1.enums.SomeMessage.Alignment`)
 
     """
@@ -907,7 +907,7 @@ class CreateShelfRequest(object):
     Request message for LibraryService.CreateShelf.
 
     Attributes:
-      shelf (:class:`google.cloud.grpc.example.library.v1.library_pb2.Shelf`): The shelf to create.
+      shelf (:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`): The shelf to create.
 
     """
     pass
@@ -919,8 +919,8 @@ class GetShelfRequest(object):
 
     Attributes:
       name (string): The name of the shelf to retrieve.
-      message (:class:`google.cloud.grpc.example.library.v1.library_pb2.SomeMessage`): Field to verify that message-type query parameter gets flattened.
-      string_builder (:class:`google.cloud.grpc.example.library.v1.library_pb2.StringBuilder`)
+      message (:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage`): Field to verify that message-type query parameter gets flattened.
+      string_builder (:class:`google.cloud.proto.example.library.v1.library_pb2.StringBuilder`)
       options (string): To test 'options' parameter name conflict.
 
     """
@@ -957,7 +957,7 @@ class ListShelvesResponse(object):
     Response message for LibraryService.ListShelves.
 
     Attributes:
-      shelves (list[:class:`google.cloud.grpc.example.library.v1.library_pb2.Shelf`]): The list of shelves.
+      shelves (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The list of shelves.
       next_page_token (string): A token to retrieve next page of results.
         Pass this value in the
         ``ListShelvesRequest.page_token``
@@ -983,7 +983,7 @@ class StreamShelvesResponse(object):
     Response message for LibraryService.StreamShelves.
 
     Attributes:
-      shelves (list[:class:`google.cloud.grpc.example.library.v1.library_pb2.Shelf`]): The list of shelves.
+      shelves (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The list of shelves.
 
     """
     pass
@@ -1019,7 +1019,7 @@ class CreateBookRequest(object):
 
     Attributes:
       name (string): The name of the shelf in which the book is created.
-      book (:class:`google.cloud.grpc.example.library.v1.library_pb2.Book`): The book to create.
+      book (:class:`google.cloud.proto.example.library.v1.library_pb2.Book`): The book to create.
 
     """
     pass
@@ -1030,8 +1030,8 @@ class PublishSeriesRequest(object):
     Request message for LibraryService.PublishSeries.
 
     Attributes:
-      shelf (:class:`google.cloud.grpc.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
-      books (list[:class:`google.cloud.grpc.example.library.v1.library_pb2.Book`]): The books to publish in the series.
+      shelf (:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
+      books (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The books to publish in the series.
       edition (int): The edition of the series
       review_copy (bool): If the book is in a pre-publish state
       series_uuid (bytes): Uniquely identifies the series to the publishing house.
@@ -1085,7 +1085,7 @@ class ListBooksResponse(object):
     Response message for LibraryService.ListBooks.
 
     Attributes:
-      books (list[:class:`google.cloud.grpc.example.library.v1.library_pb2.Book`]): The list of books.
+      books (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The list of books.
       next_page_token (string): A token to retrieve next page of results.
         Pass this value in the
         ``ListBooksRequest.page_token``
@@ -1113,9 +1113,9 @@ class UpdateBookRequest(object):
 
     Attributes:
       name (string): The name of the book to update.
-      book (:class:`google.cloud.grpc.example.library.v1.library_pb2.Book`): The book to update with.
+      book (:class:`google.cloud.proto.example.library.v1.library_pb2.Book`): The book to update with.
       update_mask (:class:`google.protobuf.field_mask_pb2.FieldMask`): A field mask to apply, rendered as an HTTP parameter.
-      physical_mask (:class:`google.cloud.grpc.example.library.v1.field_mask_pb2.FieldMask`): To test Python import clash resolution.
+      physical_mask (:class:`google.cloud.proto.example.library.v1.field_mask_pb2.FieldMask`): To test Python import clash resolution.
 
     """
     pass
@@ -1170,7 +1170,7 @@ class AddCommentsRequest(object):
     """
     Attributes:
       name (string)
-      comments (list[:class:`google.cloud.grpc.example.library.v1.library_pb2.Comment`])
+      comments (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`])
 
     """
     pass
@@ -1219,7 +1219,7 @@ class UpdateBookIndexRequest(object):
     Attributes:
       name (string): The name of the book to update.
       index_name (string): The name of the index for the book
-      index_map (dict[string -> :class:`google.cloud.grpc.example.library.v1.library_pb2.UpdateBookIndexRequest.IndexMapEntry`]): The index to update the book with
+      index_map (dict[string -> :class:`google.cloud.proto.example.library.v1.library_pb2.UpdateBookIndexRequest.IndexMapEntry`]): The index to update the book with
 
     """
     pass
@@ -1231,7 +1231,7 @@ class DiscussBookRequest(object):
       name (string): The name of the book to be discussed. If this is in the middle
         of the stream and this is not specified, the name in the previous
         message will be reused.
-      comment (:class:`google.cloud.grpc.example.library.v1.library_pb2.Comment`): The new comment.
+      comment (:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`): The new comment.
 
     """
     pass
@@ -1307,7 +1307,7 @@ class Unused(object):
     other_shared_type.proto.
 
     Attributes:
-      other (:class:`google.cloud.grpc.test.shared.data.other_shared_type_pb2.OtherType`)
+      other (:class:`google.cloud.proto.test.shared.data.other_shared_type_pb2.OtherType`)
 
     """
     pass
