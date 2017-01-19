@@ -1453,8 +1453,8 @@ class LibraryServiceClient
      *     $libraryServiceClient = new LibraryServiceClient();
      *
      *     // Read all responses until the stream is complete
-     *     $streamingResponse = $libraryServiceClient->streamShelves();
-     *     foreach ($streamingResponse->readAll() as $element) {
+     *     $stream = $libraryServiceClient->streamShelves();
+     *     foreach ($stream->readAll() as $element) {
      *         // doSomethingWith($element);
      *     }
      * } finally {
@@ -1497,8 +1497,8 @@ class LibraryServiceClient
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $name = "";
      *     // Read all responses until the stream is complete
-     *     $streamingResponse = $libraryServiceClient->streamBooks($name);
-     *     foreach ($streamingResponse->readAll() as $element) {
+     *     $stream = $libraryServiceClient->streamBooks($name);
+     *     foreach ($stream->readAll() as $element) {
      *         // doSomethingWith($element);
      *     }
      * } finally {
@@ -1548,27 +1548,27 @@ class LibraryServiceClient
      *
      *     // Write all requests to the server, then read all responses until the
      *     // stream is complete
-     *     $streamingResponse = $libraryServiceClient->discussBook();
-     *     streamingResponse->writeAll($requests);
-     *     foreach ($streamingResponse->closeWriteAndReadAll() as $element) {
+     *     $stream = $libraryServiceClient->discussBook();
+     *     $stream->writeAll($requests);
+     *     foreach ($stream->closeWriteAndReadAll() as $element) {
      *         // doSomethingWith($element);
      *     }
      *
      *     // OR write requests individually, making read() calls if
      *     // required. Call closeWrite() once writes are complete, and read the
      *     // remaining responses from the server.
-     *     $streamingResponse = $libraryServiceClient->discussBook();
+     *     $stream = $libraryServiceClient->discussBook();
      *     foreach ($requests as $request) {
-     *         $streamingResponse->write($request);
+     *         $stream->write($request);
      *         // if required, read a single response from the stream
-     *         $element = $streamingResponse->read();
+     *         $element = $stream->read();
      *         // doSomethingWith($element)
      *     }
-     *     streamingResponse->closeWrite();
-     *     $element = $streamingResponse->read();
+     *     $stream->closeWrite();
+     *     $element = $stream->read();
      *     while (!is_null($element)) {
      *         // doSomethingWith($element)
-     *         $element = $streamingResponse->read();
+     *         $element = $stream->read();
      *     }
      * } finally {
      *     $libraryServiceClient->close();
@@ -1612,16 +1612,16 @@ class LibraryServiceClient
      *     $requests = [$request];
      *
      *     // Write data to server and wait for a response
-     *     $clientStreamingResponse = $libraryServiceClient->monologAboutBook();
-     *     $result = $clientStreamingResponse->writeAllAndReadResponse($requests);
+     *     $stream = $libraryServiceClient->monologAboutBook();
+     *     $result = $stream->writeAllAndReadResponse($requests);
      *     // doSomethingWith($result)
      *
      *     // OR write data as it becomes available, then wait for a response
-     *     $clientStreamingResponse = $libraryServiceClient->monologAboutBook();
+     *     $stream = $libraryServiceClient->monologAboutBook();
      *     foreach ($requests as $request) {
-     *         $clientStreamingResponse->write($request);
+     *         $stream->write($request);
      *     }
-     *     $result = $clientStreamingResponse->readResponse();
+     *     $result = $stream->readResponse();
      *     // doSomethingWith($result)
      * } finally {
      *     $libraryServiceClient->close();

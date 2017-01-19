@@ -120,23 +120,23 @@
     $requests = [$request];
     
     // Write data to server and wait for a response
-    $clientStreamingResponse = {@methodCallSampleCode(apiMethod)};
-    $result = $clientStreamingResponse->writeAllAndReadResponse($requests);
+    $stream = {@methodCallSampleCode(apiMethod)};
+    $result = $stream->writeAllAndReadResponse($requests);
     // doSomethingWith($result)
     
     // OR write data as it becomes available, then wait for a response
-    $clientStreamingResponse = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(apiMethod)};
     foreach ($requests as $request) {
-        $clientStreamingResponse->write($request);
+        $stream->write($request);
     }
-    $result = $clientStreamingResponse->readResponse();
+    $result = $stream->readResponse();
     // doSomethingWith($result)
 @end
 
 @private serverStreamingMethodSampleCode(apiMethod)
     // Read all responses until the stream is complete
-    $streamingResponse = {@methodCallSampleCode(apiMethod)};
-    foreach ($streamingResponse->readAll() as $element) {
+    $stream = {@methodCallSampleCode(apiMethod)};
+    foreach ($stream->readAll() as $element) {
         // doSomethingWith($element);
     }
 @end
@@ -146,27 +146,27 @@
     
     // Write all requests to the server, then read all responses until the
     // stream is complete
-    $streamingResponse = {@methodCallSampleCode(apiMethod)};
-    streamingResponse->writeAll($requests);
-    foreach ($streamingResponse->closeWriteAndReadAll() as $element) {
+    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream->writeAll($requests);
+    foreach ($stream->closeWriteAndReadAll() as $element) {
         // doSomethingWith($element);
     }
     
     // OR write requests individually, making read() calls if
     // required. Call closeWrite() once writes are complete, and read the
     // remaining responses from the server.
-    $streamingResponse = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(apiMethod)};
     foreach ($requests as $request) {
-        $streamingResponse->write($request);
+        $stream->write($request);
         // if required, read a single response from the stream
-        $element = $streamingResponse->read();
+        $element = $stream->read();
         // doSomethingWith($element)
     }
-    streamingResponse->closeWrite();
-    $element = $streamingResponse->read();
+    $stream->closeWrite();
+    $element = $stream->read();
     while (!is_null($element)) {
         // doSomethingWith($element)
-        $element = $streamingResponse->read();
+        $element = $stream->read();
     }
 @end
 
