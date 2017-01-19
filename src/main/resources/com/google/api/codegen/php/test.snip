@@ -27,20 +27,33 @@
 
     @end
 
-    private function createStubAndClient($createGrpcStub, $createStubArg)
+    @if testClass.apiHasLongRunningMethods
+        public function createMockOperationsStub($hostname, $opts)
+        {
+            return new MockOperationsImpl($hostname, $opts);
+        }
+
+    @end
+    private function createStub($createGrpcStub)
     {
         $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        $grpcStub = $grpcCredentialsHelper->createStub(
+        return $grpcCredentialsHelper->createStub(
             $createGrpcStub,
             {@testClass.apiClassName}::SERVICE_ADDRESS,
             {@testClass.apiClassName}::DEFAULT_SERVICE_PORT
         );
-        $client = new {@testClass.apiClassName}([$createStubArg =>
-            function ($hostname, $opts) use ($grpcStub) {
+    }
+
+    /**
+     * @@return {@testClass.apiClassName}
+     */
+    private function createClient($createStubFuncName, $grpcStub, $options = [])
+    {
+        return new {@testClass.apiClassName}($options + [
+            $createStubFuncName => function ($hostname, $opts) use ($grpcStub) {
                 return $grpcStub;
             },
         ]);
-        return [$grpcStub, $client];
     }
 @end
 
@@ -49,7 +62,7 @@
     @case "NonStreaming"
         {@nonStreamingOptionalArrayTestCase(test)}
     @default
-        $unhandled case: {@test.grpcStreamingType.toString}$
+        $unhandled case: {@test.grpcStreamingType}$
     @end
 @end
 
@@ -59,37 +72,150 @@
      */
     public function {@test.name}()
     {
-        list($grpcStub, $client) = $this->createStubAndClient([$this, 'create{@test.mockGrpcStubTypeName}'], '{@test.createStubFunctionName}');
-
-        $this->assertTrue($grpcStub->isExhausted());
-
-        @if test.hasReturnValue
-            // Mock response
-            {@initCode(test.mockResponse.initCode)}
-            $grpcStub->addResponse($expectedResponse);
-
+        @switch test.clientMethodType
+        @case "OptionalArrayMethod"
+            {@simpleTestCase(test)}
+        @case "PagedOptionalArrayMethod"
+            {@pageStreamingTestCase(test)}
+        @case "OperationOptionalArrayMethod"
+            {@lroTestCase(test)}
+        @default
+            $unhandled case: {@test.clientMethodType}$
         @end
-        @if test.hasRequestParameters
-          // Mock request
-          {@initCode(test.initCode)}
-
-        @end
-        @if test.hasReturnValue
-            $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
-        @else
-            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
-        @end
-        {@unarySuccessAsserts(test)}
-
-        $this->assertTrue($grpcStub->isExhausted());
     }
 @end
 
-@private unarySuccessAsserts(test)
+@private simpleTestCase(test)
+    {@singleCallTestSetup(test)}
+    @if test.hasReturnValue
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $this->assertEquals($expectedResponse, $response);
+    @else
+        $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    @end
+    {@singleCallSuccessAsserts(test)}
+
+    $this->assertTrue($grpcStub->isExhausted());
+@end
+
+@private pageStreamingTestCase(test)
+    {@singleCallTestSetup(test)}
+    $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
+    @join pageStreamingResponseView : test.pageStreamingResponseViews
+        ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
+        $this->assertSame(1, count(${@pageStreamingResponseView.resourcesVarName}));
+        $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
+    @end
+
+    {@singleCallSuccessAsserts(test)}
+    $this->assertTrue($grpcStub->isExhausted());
+@end
+
+@private lroTestCase(test)
+    $operationsStub = $this->createStub([$this, 'createMockOperationsStub']);
+    $operationsClient = new OperationsClient([
+        'serviceAddress' => '',
+        'scopes' => [],
+        'createOperationsStubFunction' => function ($hostname, $opts) use ($operationsStub) {
+            return $operationsStub;
+        }
+    ]);
+    $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+    $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub, [
+        'operationsClient' => $operationsClient
+    ]);
+
+    $this->assertTrue($grpcStub->isExhausted());
+    $this->assertTrue($operationsStub->isExhausted());
+
+    // Mock response
+    $incompleteOperation = new Operation();
+    $incompleteOperation->setName('operations/{@test.name}')->setDone(false);
+    $grpcStub->addResponse($incompleteOperation);
+    @if test.hasReturnValue
+        {@initCode(test.mockResponse.initCode)}
+    @else
+        $expectedResponse = new EmptyC();
+    @end
+    $anyResponse = new Any();
+    $anyResponse->setValue($expectedResponse->serialize());
+    $completeOperation = new Operation();
+    $completeOperation->setName('operations/{@test.name}')->setDone(true)->setResponse($anyResponse);
+    $operationsStub->addResponse($completeOperation);
+
+    @if test.hasRequestParameters
+      // Mock request
+      {@initCode(test.initCode)}
+
+    @end
+    $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    $this->assertFalse($response->isDone());
+    $this->assertNull($response->getResult());
+    $apiRequests = $grpcStub->getReceivedCalls();
+    $this->assertSame(1, count($apiRequests));
+    $operationsRequestsEmpty = $operationsStub->getReceivedCalls();
+    $this->assertSame(0, count($operationsRequestsEmpty));
+
+    $actualApiFuncCall = $apiRequests[0]->getFuncCall();
+    $actualApiRequestObject = $apiRequests[0]->getRequestObject();
+    $this->assertSame('{@test.grpcStubCallString}', $actualApiFuncCall);
+    @join assert : test.asserts
+        @if assert.hasExpectedValueTransformFunction
+            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+                ${@assert.expectedValueIdentifier}), \
+                $actualApiRequestObject->{@assert.actualValueGetter}());
+        @else
+            $this->assertEquals(${@assert.expectedValueIdentifier}, \
+                $actualApiRequestObject->{@assert.actualValueGetter}());
+        @end
+    @end
+
+    $expectedOperationsRequestObject = new GetOperationRequest();
+    $expectedOperationsRequestObject->setName('operations/{@test.name}');
+
+    $response->pollUntilComplete();
+    $this->assertTrue($response->isDone());
+    $this->assertEquals($expectedResponse, $response->getResult());
+    $apiRequestsEmpty = $grpcStub->getReceivedCalls();
+    $this->assertSame(0, count($apiRequestsEmpty));
+    $operationsRequests = $operationsStub->getReceivedCalls();
+    $this->assertSame(1, count($operationsRequests));
+
+    $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
+    $actualOperationsRequestObject = $operationsRequests[0]->getRequestObject();
+    $this->assertSame('/google.longrunning.Operations/GetOperation', $actualOperationsFuncCall);
+    $this->assertEquals($expectedOperationsRequestObject, $actualOperationsRequestObject);
+
+    $this->assertTrue($grpcStub->isExhausted());
+    $this->assertTrue($operationsStub->isExhausted());
+@end
+
+@private singleCallTestSetup(test)
+    $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+    $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+
+    $this->assertTrue($grpcStub->isExhausted());
+
+    @if test.hasReturnValue
+        // Mock response
+        {@initCode(test.mockResponse.initCode)}
+        $grpcStub->addResponse($expectedResponse);
+
+    @end
+    @if test.hasRequestParameters
+      // Mock request
+      {@initCode(test.initCode)}
+
+    @end
+@end
+
+@private singleCallSuccessAsserts(test)
     $actualRequests = $grpcStub->getReceivedCalls();
     $this->assertSame(1, count($actualRequests));
-    list($actualFuncCall, $actualRequestObject) = $actualRequests[0];
-    $this->assertSame('{@test.grpcMethodName}', explode('/', $actualFuncCall)[2]);
+    $actualFuncCall = $actualRequests[0]->getFuncCall();
+    $actualRequestObject = $actualRequests[0]->getRequestObject();
+    $this->assertSame('{@test.grpcStubCallString}', $actualFuncCall);
 
     @join assert : test.asserts
         @if assert.hasExpectedValueTransformFunction
@@ -100,29 +226,5 @@
             $this->assertEquals(${@assert.expectedValueIdentifier}, \
                 $actualRequestObject->{@assert.actualValueGetter}());
         @end
-    @end
-    
-    @switch test.clientMethodType
-    @case "OptionalArrayMethod"
-        {@optionalArraySuccessAsserts(test)}
-    @case "PagedOptionalArrayMethod"
-        {@pagedOptionalArraySuccessAsserts(test)}
-    @default
-        $unhandled case: {@test.clientMethodType.toString}$
-    @end
-@end
-
-@private optionalArraySuccessAsserts(test)
-    @if test.hasReturnValue
-        $this->assertEquals($expectedResponse, $response);
-    @end
-@end
-
-@private pagedOptionalArraySuccessAsserts(test)
-    $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
-    @join pageStreamingResponseView : test.pageStreamingResponseViews
-        ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
-        $this->assertSame(1, count(${@pageStreamingResponseView.resourcesVarName}));
-        $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
     @end
 @end

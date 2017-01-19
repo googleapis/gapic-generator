@@ -59,7 +59,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String shortName();
 
-  public abstract String packageName();
+  public abstract String protoPackageName();
+
+  public abstract String gapicPackageName();
 
   public abstract String majorVersion();
 
@@ -110,8 +112,11 @@ public abstract class PackageMetadataView implements ViewModel {
     /** A single-word short name of the API. E.g., "logging". */
     public abstract Builder shortName(String val);
 
-    /** The base name of the client library package. E.g., "google-cloud-logging-v1". */
-    public abstract Builder packageName(String val);
+    /** The base name of the proto client library package. E.g., "proto-google-cloud-logging-v1". */
+    public abstract Builder protoPackageName(String val);
+
+    /** The base name of the GAPIC client library package. E.g., "gapic-google-cloud-logging-v1". */
+    public abstract Builder gapicPackageName(String val);
 
     /** The major version of the API, as used in the package name. E.g., "v1". */
     public abstract Builder majorVersion(String val);

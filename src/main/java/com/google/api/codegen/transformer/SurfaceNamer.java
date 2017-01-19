@@ -596,7 +596,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()).join("async"), visibility);
   }
 
-  private String getApiMethodName(Name name, VisibilityConfig visibility) {
+  protected String getApiMethodName(Name name, VisibilityConfig visibility) {
     switch (visibility) {
       case PUBLIC:
         return publicMethodName(name);
@@ -620,6 +620,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
       default:
         throw new IllegalArgumentException("invalid visibility: " + visibility);
     }
+  }
+
+  /** The name of the LRO surface method which can call the given API method. */
+  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+    return getAsyncApiMethodName(method, visibility);
   }
 
   /** The name of the example for the method. */
@@ -706,6 +711,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     // This might seem silly, but it makes clear what we're dealing with (upper camel).
     // This is language-independent because of gRPC conventions.
     return Name.upperCamelKeepUpperAcronyms(method.getSimpleName()).toUpperCamel();
+  }
+
+  /** The string used to identify the method in the gRPC stub. Not all languages will use this. */
+  public String getGrpcStubCallString(Interface service, Method method) {
+    return getNotImplementedString("SurfaceNamer.getGrpcStubCallString");
   }
 
   /** The type name for retry settings. */
@@ -926,7 +936,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The unit test class name for the given API service. */
   public String getUnitTestClassName(Interface service) {
-    return publicClassName(Name.upperCamel(service.getSimpleName(), "Test"));
+    return publicClassName(Name.upperCamel(service.getSimpleName(), "Client", "Test"));
   }
 
   /** The smoke test class name for the given API service. */

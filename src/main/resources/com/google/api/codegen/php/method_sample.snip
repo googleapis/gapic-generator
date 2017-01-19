@@ -32,13 +32,13 @@
     @if apiMethod.isLongRunningOperation
         {@longRunningMethodSampleCode(apiMethod)}
     @else
-      @switch apiMethod.type.toString
+      @switch apiMethod.type
       @case "OptionalArrayMethod"
           {@methodSampleCode(apiMethod)}
       @case "PagedOptionalArrayMethod"
           {@pagedMethodSampleCode(apiMethod)}
       @default
-          $unhandledCase: {@apiMethod.type.toString}$
+          $unhandledCase: {@apiMethod.type}$
       @end
     @end
 @end
@@ -81,6 +81,27 @@
       $error = $operationResponse->getError();
       // handleError($error)
     }
+    
+    // OR start the operation, keep the operation name, and resume later
+    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationName = $operationResponse->getName();
+    // ... do other work
+    $newOperationResponse = ${@apiMethod.apiVariableName}->resumeOperation($operationName, '{@apiMethod.name}');
+    while (!$newOperationResponse->isDone()) {
+        // ... do other work
+        $newOperationResponse->reload();
+    }
+    if ($newOperationResponse->operationSucceeded()) {
+      @if apiMethod.longRunningView.isEmptyOperation
+          // operation succeeded and returns no value
+      @else
+          $result = $newOperationResponse->getResult();
+          // doSomethingWith($result)
+      @end
+    } else {
+      $error = $newOperationResponse->getError();
+      // handleError($error)
+    }
 @end
 
 @private methodCallSampleCode(apiMethod)
@@ -105,7 +126,7 @@
 
 @snippet initCode(initCodeSpec)
     @join line : initCodeSpec.lines
-        @switch line.lineType.toString
+        @switch line.lineType
         @case "StructureInitLine"
             {@initLineStructure(line)}
         @case "ListInitLine"
@@ -115,7 +136,7 @@
         @case "SimpleInitLine"
             {@initLineSimple(line)}
         @default
-            $unhandledCase: {@line.lineType.toString}$
+            $unhandledCase: {@line.lineType}$
         @end
     @end
 @end
