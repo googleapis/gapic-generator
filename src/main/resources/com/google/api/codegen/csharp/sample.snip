@@ -56,7 +56,7 @@
             ApplicationName = "{@class.appName}",
         });
 
-        @join field : class.fields if class.fields
+        @join field : class.requiredFields if class.requiredFields
             @if field.description
                 @join line : util.getDocLines(field.description, 100)
                     // {@line}
@@ -90,7 +90,7 @@
             // https://developers.google.com/api-client-library/dotnet/guide/media_upload
 
         @end
-        {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@argList(class.fieldVarNames)});
+        {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@argList(class.methodCallFieldVarNames)});
 
         @if class.hasMediaDownload
             // TODO: Download media content if desired. See
@@ -188,8 +188,8 @@
   @end
 @end
 
-@private argList(fieldVarNames)
-  @join fieldVarName : fieldVarNames on ", "
+@private argList(methodCallFieldVarNames)
+  @join fieldVarName : methodCallFieldVarNames on ", "
     {@fieldVarName}
   @end
 @end

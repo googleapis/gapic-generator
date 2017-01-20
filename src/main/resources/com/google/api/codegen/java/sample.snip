@@ -37,7 +37,7 @@
 
 @private mainFunc(class)
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    @join field : class.fields if class.fields
+    @join field : class.requiredFields if class.requiredFields
       {@field(field)}
 
     @end
@@ -73,7 +73,7 @@
 
     @end
     {@class.serviceTypeName} {@class.serviceVarName} = {@class.createServiceFuncName}();
-    {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@argList(class.fieldVarNames)});
+    {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@argList(class.methodCallFieldVarNames)});
     @join field : class.optionalFields if class.optionalFields
       {@class.requestVarName}.{@field.setterFuncName}({@field.name});
     @end
@@ -183,8 +183,8 @@
   @end
 @end
 
-@private argList(fieldVarNames)
-  @join fieldVarName : fieldVarNames on ", "
+@private argList(methodCallFieldVarNames)
+  @join fieldVarName : methodCallFieldVarNames on ", "
     {@fieldVarName}
   @end
 @end

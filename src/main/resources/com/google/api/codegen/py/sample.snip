@@ -55,7 +55,7 @@
         {@class.serviceVarName} = discovery.build('{@class.apiName}', '{@class.apiVersion}', credentials={@class.credentialsVarName})
     @end
 
-    @join field : class.fields if class.fields
+    @join field : class.requiredFields if class.requiredFields
         @if field.description
             @join line : util.getDocLines(field.description, 100)
                 @# {@line}
