@@ -28,8 +28,23 @@ public class SymbolTable {
 
   private final Set<String> symbolTable = new HashSet<>();
 
+  public enum DisambiguationStrategy {
+    UNDERSCORE,
+    NUMERIC
+  }
+
+  private final DisambiguationStrategy disambiguationStrategy;
+
+  public SymbolTable() {
+    this.disambiguationStrategy = DisambiguationStrategy.NUMERIC;
+  }
+
+  public SymbolTable(DisambiguationStrategy disambiguationStrategy) {
+    this.disambiguationStrategy = disambiguationStrategy;
+  }
+
   /**
-   * Returns a new SymbolTable seeded with all the words in seed.
+   * Returns the same SymbolTable seeded with all the words in seed.
    *
    * <p>For example, if seed is {"int"}, a subsequent call to {@link #getNewSymbol(String)} for
    * "int" will return "int2".
@@ -37,8 +52,8 @@ public class SymbolTable {
    * <p>The behavior of the returned SymbolTable is guaranteed if used with {@link
    * #getNewSymbol(String)}, but not with {@link #getNewSymbol(Name)}.
    */
-  public static SymbolTable fromSeed(Set<String> seed) {
-    SymbolTable symbolTable = new SymbolTable();
+  public SymbolTable seed(Set<String> seed) {
+    SymbolTable symbolTable = new SymbolTable(disambiguationStrategy);
     for (String s : seed) {
       symbolTable.getNewSymbol(s);
     }
@@ -46,7 +61,7 @@ public class SymbolTable {
   }
 
   /**
-   * Returns a unique name, with a numeric suffix in case of conflicts.
+   * Returns a unique name, with a suffix in case of conflicts.
    *
    * <p>Not guaranteed to work as expected if used in combination with {@link
    * #getNewSymbol(String)}.
@@ -61,7 +76,7 @@ public class SymbolTable {
   }
 
   /**
-   * Returns a unique name, with a numeric suffix in case of conflicts.
+   * Returns a unique name, with a suffix in case of conflicts.
    *
    * <p>Not guaranteed to work as expected if used in combination with {@link #getNewSymbol(Name)}.
    */
@@ -70,17 +85,27 @@ public class SymbolTable {
     return desiredName + suffix;
   }
 
-  /**
-   * Returns the next numeric suffix that makes desiredName unique.
-   *
-   * <p>Stores the joined desiredName/suffix in an internal map. For example, if "foo" is passed, ""
-   * is returned. If "foo" is passed again, "2" is returned, and then "3" and so on.
-   */
   private String getAndSaveSuffix(String desiredName) {
     if (!symbolTable.contains(desiredName)) {
       symbolTable.add(desiredName);
       return "";
     }
+    if (disambiguationStrategy == DisambiguationStrategy.NUMERIC) {
+      return getAndSaveNumericSuffix(desiredName);
+    }
+    return getAndSaveUnderscoreSuffix(desiredName);
+  }
+
+  /**
+   * Returns the next numeric suffix that makes desiredName unique.
+   *
+   * <p>Stores the joined desiredName/suffix in an internal map. Assumes that desiredName is already
+   * in the symbolTable.
+   *
+   * <p>For example, if "foo" is passed, "2" is returned. If "foo" is passed again, "3" is returned,
+   * and then "4" and so on.
+   */
+  private String getAndSaveNumericSuffix(String desiredName) {
     // Resolve collisions with a numeric suffix, starting with 2.
     int i = 2;
     while (symbolTable.contains(desiredName + Integer.toString(i))) {
@@ -88,5 +113,25 @@ public class SymbolTable {
     }
     symbolTable.add(desiredName + Integer.toString(i));
     return Integer.toString(i);
+  }
+
+  /**
+   * Returns the next underscore suffix that makes desiredName unique.
+   *
+   * <p>Stores the joined desiredName/suffix in an internal map. Assumes that desiredName is already
+   * in the symbolTable.
+   *
+   * <p>For example, if "foo" is passed, "_" is returned. If "foo" is passed again, "__" is
+   * returned, and then "___" and so on.
+   */
+  private String getAndSaveUnderscoreSuffix(String desiredName) {
+    int i = 0;
+    String name;
+    do {
+      i += 1;
+      name = desiredName + Strings.repeat("_", i);
+    } while (symbolTable.contains(name));
+    symbolTable.add(name);
+    return Strings.repeat("_", i);
   }
 }

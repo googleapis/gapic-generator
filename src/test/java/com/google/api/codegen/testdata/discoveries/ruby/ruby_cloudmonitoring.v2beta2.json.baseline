@@ -143,11 +143,11 @@ youngest = ''  # TODO: Update placeholder value.
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudmonitoringV2beta2::ListTimeseriesRequest.new
 
-timeseries2 = service.fetch_all(items: :timeseries) do |token|
+timeseries_ = service.fetch_all(items: :timeseries) do |token|
   service.list_timeseries(project, metric, youngest, request_body, page_token: token)
 end
 
-timeseries2.each do |timeseries|
+timeseries_.each do |timeseries|
   # TODO: Change code below to process each `timeseries` resource:
   puts JSON.pretty_generate(timeseries)
 end
