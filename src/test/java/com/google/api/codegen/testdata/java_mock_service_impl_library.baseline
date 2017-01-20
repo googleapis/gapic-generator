@@ -484,6 +484,36 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   }
 
   @Override
+  public StreamObserver<DiscussBookRequest> monologAboutBook(
+      final StreamObserver<Comment> responseObserver) {
+    final Object response = responses.remove();
+    StreamObserver<DiscussBookRequest> requestObserver =
+        new StreamObserver<DiscussBookRequest>() {
+      @Override
+      public void onNext(DiscussBookRequest value) {
+        if (response instanceof Comment) {
+          responseObserver.onNext((Comment) response);
+        } else if (response instanceof Exception) {
+          responseObserver.onError((Exception) response);
+        } else {
+          responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+        }
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        responseObserver.onError(t);
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onCompleted();
+      }
+    };
+    return requestObserver;
+  }
+
+  @Override
   public void findRelatedBooks(FindRelatedBooksRequest request,
     StreamObserver<FindRelatedBooksResponse> responseObserver) {
     Object response = responses.remove();

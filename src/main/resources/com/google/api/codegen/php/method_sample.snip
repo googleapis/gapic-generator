@@ -32,14 +32,26 @@
     @if apiMethod.isLongRunningOperation
         {@longRunningMethodSampleCode(apiMethod)}
     @else
-      @switch apiMethod.type
-      @case "OptionalArrayMethod"
-          {@methodSampleCode(apiMethod)}
-      @case "PagedOptionalArrayMethod"
-          {@pagedMethodSampleCode(apiMethod)}
+      @switch apiMethod.grpcStreamingType
+      @case "NonStreaming"
+          @switch apiMethod.type
+          @case "OptionalArrayMethod"
+              {@methodSampleCode(apiMethod)}
+          @case "PagedOptionalArrayMethod"
+              {@pagedMethodSampleCode(apiMethod)}
+          @default
+              $unhandledCase: {@apiMethod.type}$
+          @end
+      @case "ClientStreaming"
+          {@clientStreamingMethodSampleCode(apiMethod)}
+      @case "ServerStreaming"
+          {@serverStreamingMethodSampleCode(apiMethod)}
+      @case "BidiStreaming"
+          {@bidiStreamingMethodSampleCode(apiMethod)}
       @default
-          $unhandledCase: {@apiMethod.type}$
+          $unhandledCase: {@apiMethod.grpcStreamingType}$
       @end
+      
     @end
 @end
 
@@ -104,9 +116,67 @@
     }
 @end
 
+@private clientStreamingMethodSampleCode(apiMethod)
+    $requests = [$request];
+    
+    // Write data to server and wait for a response
+    $stream = {@methodCallSampleCode(apiMethod)};
+    $result = $stream->writeAllAndReadResponse($requests);
+    // doSomethingWith($result)
+    
+    // OR write data as it becomes available, then wait for a response
+    $stream = {@methodCallSampleCode(apiMethod)};
+    foreach ($requests as $request) {
+        $stream->write($request);
+    }
+    $result = $stream->readResponse();
+    // doSomethingWith($result)
+@end
+
+@private serverStreamingMethodSampleCode(apiMethod)
+    // Read all responses until the stream is complete
+    $stream = {@methodCallSampleCode(apiMethod)};
+    foreach ($stream->readAll() as $element) {
+        // doSomethingWith($element);
+    }
+@end
+
+@private bidiStreamingMethodSampleCode(apiMethod)
+    $requests = [$request];
+    
+    // Write all requests to the server, then read all responses until the
+    // stream is complete
+    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream->writeAll($requests);
+    foreach ($stream->closeWriteAndReadAll() as $element) {
+        // doSomethingWith($element);
+    }
+    
+    // OR write requests individually, making read() calls if
+    // required. Call closeWrite() once writes are complete, and read the
+    // remaining responses from the server.
+    $stream = {@methodCallSampleCode(apiMethod)};
+    foreach ($requests as $request) {
+        $stream->write($request);
+        // if required, read a single response from the stream
+        $element = $stream->read();
+        // doSomethingWith($element)
+    }
+    $stream->closeWrite();
+    $element = $stream->read();
+    while (!is_null($element)) {
+        // doSomethingWith($element)
+        $element = $stream->read();
+    }
+@end
+
 @private methodCallSampleCode(apiMethod)
-    ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
-        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+    @if apiMethod.isSingularRequestMethod
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+    @else
+        ${@apiMethod.apiVariableName}->{@apiMethod.name}()
+    @end
 @end
 
 @private pageSizeMethodCallSampleCode(apiMethod)

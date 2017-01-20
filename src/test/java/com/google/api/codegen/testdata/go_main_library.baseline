@@ -67,6 +67,7 @@ type CallOptions struct {
     StreamShelves []gax.CallOption
     StreamBooks []gax.CallOption
     DiscussBook []gax.CallOption
+    MonologAboutBook []gax.CallOption
     FindRelatedBooks []gax.CallOption
     AddLabel []gax.CallOption
     GetBigBook []gax.CallOption
@@ -119,6 +120,7 @@ func defaultCallOptions() *CallOptions {
         StreamShelves: retry[[2]string{"default", "idempotent"}],
         StreamBooks: retry[[2]string{"default", "idempotent"}],
         DiscussBook: retry[[2]string{"default", "non_idempotent"}],
+        MonologAboutBook: retry[[2]string{"default", "non_idempotent"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
@@ -596,6 +598,23 @@ func (c *Client) DiscussBook(ctx context.Context) (librarypb.LibraryService_Disc
         resp, err = c.client.DiscussBook(ctx)
         return err
     }, c.CallOptions.DiscussBook...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// MonologAboutBook test client streaming.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *Client) MonologAboutBook(ctx context.Context) (librarypb.LibraryService_MonologAboutBookClient, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp librarypb.LibraryService_MonologAboutBookClient
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.MonologAboutBook(ctx)
+        return err
+    }, c.CallOptions.MonologAboutBook...)
     if err != nil {
         return nil, err
     }

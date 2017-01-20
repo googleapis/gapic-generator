@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -133,7 +134,12 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
       MethodTransformerContext methodContext = context.asRequestMethodContext(method);
-
+      if (methodContext.getMethodConfig().getGrpcStreamingType()
+          == GrpcStreamingType.ClientStreaming) {
+        //TODO: Add unit test generation for ClientStreaming methods
+        // Issue: https://github.com/googleapis/toolkit/issues/946
+        continue;
+      }
       Iterable<FieldConfig> fieldConfigs =
           methodContext.getMethodConfig().getRequiredFieldConfigs();
       InitCodeContext initCodeContext =
