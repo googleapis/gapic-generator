@@ -249,14 +249,13 @@ public class ApiaryConfigToSampleConfigConverter {
   private MessageTypeInfo createMessageTypeInfo(
       Field field, Method method, ApiaryConfig apiaryConfig) {
     String typeName = typeNameGenerator.getMessageTypeName(field.getTypeUrl());
-    Map<String, FieldInfo> fields = new HashMap<>();
     // Since request body fields aren't used at any point in the process, we
     // don't fill them in here. Note that a recursive approach to exploring
     // message fields must be able to handle cycles.
     return MessageTypeInfo.newBuilder()
         .typeName(typeName)
         .subpackage(typeNameGenerator.getSubpackage(false))
-        .fields(fields)
+        .fields(new HashMap<String, FieldInfo>())
         .build();
   }
 
