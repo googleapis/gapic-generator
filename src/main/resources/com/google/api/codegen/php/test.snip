@@ -248,12 +248,14 @@
 
     $this->assertTrue($grpcStub->isExhausted());
 
+    // Mock response
     @if test.hasReturnValue
-        // Mock response
         {@initCode(test.mockResponse.initCode)}
-        $grpcStub->addResponse($expectedResponse);
-
+    @else
+        $expectedResponse = new EmptyC();
     @end
+    $grpcStub->addResponse($expectedResponse);
+
     @if test.hasRequestParameters
       // Mock request
       {@initCode(test.initCode)}
