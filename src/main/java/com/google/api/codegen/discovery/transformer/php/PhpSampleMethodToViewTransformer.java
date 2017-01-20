@@ -70,8 +70,8 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
-    List<SampleFieldView> fields = new ArrayList<>();
-    List<String> fieldVarNames = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<String> methodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView =
           SampleFieldView.newBuilder()
@@ -80,8 +80,8 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
               .example(field.example())
               .description(field.description())
               .build();
-      fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+      requiredFields.add(sampleFieldView);
+      methodCallFieldVarNames.add(sampleFieldView.name());
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
@@ -90,7 +90,7 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(
           typeTable.getTypeName(methodInfo.requestBodyType()).getNickname());
-      fieldVarNames.add(requestBodyVarName);
+      methodCallFieldVarNames.add(requestBodyVarName);
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -101,7 +101,7 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     String optParamsVarName = "";
     if (methodInfo.isPageStreaming() || methodInfo.hasMediaDownload()) {
       optParamsVarName = namer.localVarName(Name.lowerCamel("optParams"));
-      fieldVarNames.add(optParamsVarName);
+      methodCallFieldVarNames.add(optParamsVarName);
     }
 
     return builder
@@ -118,8 +118,8 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
         .methodNameComponents(methodInfo.nameComponents())
         .hasRequestBody(hasRequestBody)
         .hasResponse(hasResponse)
-        .fields(fields)
-        .fieldVarNames(fieldVarNames)
+        .requiredFields(requiredFields)
+        .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())

@@ -70,7 +70,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
-    List<SampleFieldView> fields = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
     List<String> methodParamAssignments = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       String name = namer.localVarName(Name.lowerCamel(field.name()));
@@ -81,7 +81,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
               .example(field.example())
               .description(field.description())
               .build();
-      fields.add(sampleFieldView);
+      requiredFields.add(sampleFieldView);
       // Ex: "fooBar=foo_bar"
       methodParamAssignments.add(field.name() + "=" + name);
     }
@@ -116,7 +116,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
         .requestVarName(namer.getRequestVarName())
         .hasRequestBody(hasRequestBody)
         .hasResponse(hasResponse)
-        .fields(fields)
+        .requiredFields(requiredFields)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())

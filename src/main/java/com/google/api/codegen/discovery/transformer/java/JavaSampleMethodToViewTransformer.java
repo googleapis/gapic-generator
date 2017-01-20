@@ -85,14 +85,14 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     String requestTypeName =
         typeTable.getRequestTypeName(config.apiTypeName(), methodInfo.requestType()).getNickname();
 
-    List<SampleFieldView> fields = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
     List<SampleFieldView> optionalFields = new ArrayList<>();
-    List<String> fieldVarNames = new ArrayList<>();
+    List<String> methodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView = createSampleFieldView(field, context, symbolTable);
-      fields.add(sampleFieldView);
+      requiredFields.add(sampleFieldView);
       if (sampleFieldView.required()) {
-        fieldVarNames.add(sampleFieldView.name());
+        methodCallFieldVarNames.add(sampleFieldView.name());
       } else {
         optionalFields.add(sampleFieldView);
       }
@@ -104,7 +104,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(typeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
-      fieldVarNames.add(requestBodyVarName);
+      methodCallFieldVarNames.add(requestBodyVarName);
 
       for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
         requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable));
@@ -144,9 +144,9 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .hasRequestBody(hasRequestBody)
         .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
-        .fields(fields)
+        .requiredFields(requiredFields)
         .optionalFields(optionalFields)
-        .fieldVarNames(fieldVarNames)
+        .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
