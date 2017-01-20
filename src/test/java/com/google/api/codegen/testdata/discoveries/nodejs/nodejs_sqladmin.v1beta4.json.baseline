@@ -2069,28 +2069,15 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  var handlePage = function(err, response) {
+  sqlAdmin.users.list(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
 
-    var itemsPage = response['items'];
-    if (!itemsPage) {
-      return;
-    }
-    for (var i = 0; i < itemsPage.length; i++) {
-      // TODO: Change code below to process each resource in `itemsPage`:
-      console.log(JSON.stringify(itemsPage[i], null, 2));
-    }
-
-    if (response.nextPageToken) {
-      request.pageToken = response.nextPageToken;
-      sqlAdmin.users.list(request, handlePage);
-    }
-  };
-
-  sqlAdmin.users.list(request, handlePage);
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
 });
 
 function authorize(callback) {

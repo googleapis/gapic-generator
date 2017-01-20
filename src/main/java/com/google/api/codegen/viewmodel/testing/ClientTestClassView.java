@@ -34,6 +34,8 @@ public abstract class ClientTestClassView {
 
   public abstract List<TestCaseView> testCases();
 
+  public abstract boolean apiHasLongRunningMethods();
+
   public static Builder newBuilder() {
     return new AutoValue_ClientTestClassView.Builder();
   }
@@ -52,6 +54,8 @@ public abstract class ClientTestClassView {
     public abstract Builder mockServices(List<MockServiceUsageView> val);
 
     public abstract Builder testCases(List<TestCaseView> val);
+
+    public abstract Builder apiHasLongRunningMethods(boolean val);
 
     public abstract ClientTestClassView build();
   }

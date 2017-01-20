@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -35,6 +36,7 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
+import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
@@ -127,6 +129,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
     xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
+    xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
 
     xapiClass.methodKeys(generateMethodKeys(context));
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
@@ -172,6 +175,29 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               .metadataTypeName(context.getTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
+              .build());
+    }
+
+    return result;
+  }
+
+  private List<GrpcStreamingDetailView> createGrpcStreamingDescriptors(
+      SurfaceTransformerContext context) {
+    List<GrpcStreamingDetailView> result = new ArrayList<>();
+
+    for (Method method : context.getGrpcStreamingMethods()) {
+      GrpcStreamingConfig grpcStreamingConfig =
+          context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
+      String resourcesFieldGetFunction = null;
+      if (grpcStreamingConfig.hasResourceField()) {
+        resourcesFieldGetFunction =
+            context.getNamer().getFieldGetFunctionName(grpcStreamingConfig.getResourcesField());
+      }
+      result.add(
+          GrpcStreamingDetailView.newBuilder()
+              .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
+              .grpcStreamingType(grpcStreamingConfig.getType())
+              .grpcResourcesField(resourcesFieldGetFunction)
               .build());
     }
 

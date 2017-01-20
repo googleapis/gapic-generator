@@ -549,12 +549,24 @@ namespace BigquerySample
 
             JobsResource.GetQueryResultsRequest request = bigqueryService.Jobs.GetQueryResults(projectId, jobId);
 
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.GetQueryResultsResponse response = request.Execute();
-            // Data.GetQueryResultsResponse response = await request.ExecuteAsync();
+            Data.GetQueryResultsResponse response;
+            do
+            {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+                response = request.Execute();
+                // response = await request.ExecuteAsync();
 
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+                if (response.Errors == null)
+                {
+                    continue;
+                }
+                foreach (Data.ErrorProto errorProto in response.Errors)
+                {
+                    // TODO: Change code below to process each `errorProto` resource:
+                    Console.WriteLine(errorProto);
+                }
+                request.PageToken = response.PageToken;
+            } while (response.PageToken != null);
         }
 
         public static GoogleCredential GetCredential()
@@ -948,12 +960,24 @@ namespace BigquerySample
 
             TabledataResource.ListRequest request = bigqueryService.Tabledata.List(projectId, datasetId, tableId);
 
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.TableDataList response = request.Execute();
-            // Data.TableDataList response = await request.ExecuteAsync();
+            Data.TableDataList response;
+            do
+            {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+                response = request.Execute();
+                // response = await request.ExecuteAsync();
 
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+                if (response.Rows == null)
+                {
+                    continue;
+                }
+                foreach (Data.TableRow tableRow in response.Rows)
+                {
+                    // TODO: Change code below to process each `tableRow` resource:
+                    Console.WriteLine(tableRow);
+                }
+                request.PageToken = response.PageToken;
+            } while (response.PageToken != null);
         }
 
         public static GoogleCredential GetCredential()

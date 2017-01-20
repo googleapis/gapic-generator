@@ -622,6 +622,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  /** The name of the LRO surface method which can call the given API method. */
+  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+    return getAsyncApiMethodName(method, visibility);
+  }
+
   /** The name of the example for the method. */
   public String getApiMethodExampleName(Interface interfaze, Method method) {
     return getApiMethodName(method, VisibilityConfig.PUBLIC);
@@ -706,6 +711,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     // This might seem silly, but it makes clear what we're dealing with (upper camel).
     // This is language-independent because of gRPC conventions.
     return Name.upperCamelKeepUpperAcronyms(method.getSimpleName()).toUpperCamel();
+  }
+
+  /** The string used to identify the method in the gRPC stub. Not all languages will use this. */
+  public String getGrpcStubCallString(Interface service, Method method) {
+    return getNotImplementedString("SurfaceNamer.getGrpcStubCallString");
   }
 
   /** The type name for retry settings. */
@@ -926,7 +936,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The unit test class name for the given API service. */
   public String getUnitTestClassName(Interface service) {
-    return publicClassName(Name.upperCamel(service.getSimpleName(), "Test"));
+    return publicClassName(Name.upperCamel(service.getSimpleName(), "Client", "Test"));
   }
 
   /** The smoke test class name for the given API service. */
@@ -1066,5 +1076,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
     return getNotImplementedString("SurfaceNamer.getReleaseAnnotation");
+  }
+
+  /** Indicates whether the specified method supports retry settings. */
+  public boolean methodHasRetrySettings(MethodConfig methodConfig) {
+    return true;
+  }
+
+  /** Indicates whether the specified method supports timeout settings. */
+  public boolean methodHasTimeoutSettings(MethodConfig methodConfig) {
+    return true;
   }
 }

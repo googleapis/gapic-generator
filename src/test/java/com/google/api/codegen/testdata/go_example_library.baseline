@@ -451,6 +451,32 @@ func ExampleClient_DiscussBook() {
     }
 }
 
+func ExampleClient_MonologAboutBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    stream, err := c.MonologAboutBook(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    reqs := []*librarypb.DiscussBookRequest{
+        // TODO: Create requests.
+    }
+    for _, req := range reqs {
+        if err := stream.Send(req); err != nil {
+            // TODO: Handle error.
+        }
+    }
+    resp, err := stream.CloseAndRecv()
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
 func ExampleClient_FindRelatedBooks() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)

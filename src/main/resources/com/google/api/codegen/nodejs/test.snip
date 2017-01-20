@@ -83,6 +83,26 @@
       }
     }
   @end
+  @if apiTest.hasLongRunning
+
+    function mockLongRunningGrpcMethod(expectedRequest, response, error) {
+      return function(request) {
+        assert.deepStrictEqual(request, expectedRequest);
+        var mockOperation = {
+          promise: function() {
+            return new Promise(function(resolve, reject) {
+              if (error) {
+                reject(error)
+              } else {
+                resolve([response]);
+              }
+            });
+          }
+        };
+        return Promise.resolve([mockOperation]);
+      };
+    }
+  @end
 @end
 
 @private testCase(test, moduleName)
@@ -93,6 +113,8 @@
       {@requestObjectTestCase(test, moduleName)}
     @case "PagedRequestObjectMethod"
       {@pagedRequestObjectTestCase(test, moduleName)}
+    @case "OperationCallableMethod"
+      {@operationTestCase(test, moduleName)}
     @default
       $unhandled case: {@test.clientMethodType.toString}$
     @end
@@ -108,9 +130,7 @@
 @private requestObjectTestCase(test, moduleName)
   describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} without error', function(done) {
-      var client = {@moduleName}.{@test.serviceConstructorName}();
-      // Mock request
-      {@initCodeLines(test.initCode)}
+      {@commonInit(test, moduleName)}
 
       @if test.hasReturnValue
         // Mock response
@@ -138,16 +158,55 @@
       @end
     });
 
-    {@nonStreamingTestWithError(test, moduleName)}
+    {@simpleTestWithError(test, moduleName)}
+  });
+@end
+
+@private operationTestCase(test, moduleName)
+  describe('{@test.clientMethodName}', function() {
+    it('invokes {@test.clientMethodName} without error', function(done) {
+      {@commonInit(test, moduleName)}
+
+      // Mock response
+      {@initCodeLines(test.mockResponse.initCode)}
+
+      // Mock Grpc layer
+      client._{@test.clientMethodName} = mockLongRunningGrpcMethod(request, expectedResponse);
+
+      client.{@test.clientMethodName}(request).then(function(responses) {
+        var operation = responses[0];
+        return operation.promise();
+      }).then(function(responses) {
+        assert.deepStrictEqual(responses[0], expectedResponse);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('invokes {@test.clientMethodName} with error', function(done) {
+      {@commonInit(test, moduleName)}
+
+      // Mock Grpc layer
+      client._{@test.clientMethodName} = mockLongRunningGrpcMethod(request, null, error);
+
+      client.{@test.clientMethodName}(request).then(function(responses) {
+        var operation = responses[0];
+        return operation.promise();
+      }).then(function(responses) {
+        assert.fail();
+      }).catch(function(err) {
+        {@assertError()}
+        done();
+      });
+    });
   });
 @end
 
 @private pagedRequestObjectTestCase(test, moduleName)
   describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} without error', function(done) {
-      var client = {@moduleName}.{@test.serviceConstructorName}();
-      // Mock request
-      {@initCodeLines(test.initCode)}
+      {@commonInit(test, moduleName)}
 
       // Mock response
       {@initCodeLines(test.mockResponse.initCode)}
@@ -169,16 +228,14 @@
       });
     });
 
-    {@nonStreamingTestWithError(test, moduleName)}
+    {@simpleTestWithError(test, moduleName)}
   });
 @end
 
 @private streamingTestCase(test, moduleName)
   describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} without error', function(done) {
-      var client = {@moduleName}.{@test.serviceConstructorName}();
-      // Mock request
-      {@initCodeLines(test.initCode)}
+      {@commonInit(test, moduleName)}
 
       // Mock response
       {@initCodeLines(test.mockResponse.initCode)}
@@ -214,9 +271,7 @@
     });
 
     it('invokes {@test.clientMethodName} with error', function(done) {
-      var client = {@moduleName}.{@test.serviceConstructorName}();
-      // Mock request
-      {@initCodeLines(test.initCode)}
+      {@commonInit(test, moduleName)}
 
       // Mock Grpc layer
       @switch test.grpcStreamingType
@@ -250,11 +305,9 @@
   });
 @end
 
-@private nonStreamingTestWithError(test, moduleName)
+@private simpleTestWithError(test, moduleName)
   it('invokes {@test.clientMethodName} with error', function(done) {
-    var client = {@moduleName}.{@test.serviceConstructorName}();
-    // Mock request
-    {@initCodeLines(test.initCode)}
+    {@commonInit(test, moduleName)}
 
     // Mock Grpc layer
     client._{@test.clientMethodName} = mockSimpleGrpcMethod(request, null, error);
@@ -271,6 +324,12 @@
       });
     @end
   });
+@end
+
+@private commonInit(test, moduleName)
+  var client = {@moduleName}.{@test.serviceConstructorName}();
+  // Mock request
+  {@initCodeLines(test.initCode)}
 @end
 
 @private assertError()

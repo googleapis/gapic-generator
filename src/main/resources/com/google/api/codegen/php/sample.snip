@@ -106,8 +106,8 @@
         echo '<pre>', var_export(${@class.responseVarName}['{@class.pageStreaming.resourceFieldName}'], true), '</pre>', "\n";
       @end
 
-      ${@class.optParamsVarName()}['pageToken'] = ${@class.responseVarName}->getNextPageToken();
-    } while (${@class.optParamsVarName}['pageToken']);
+      ${@class.optParamsVarName()}['{@class.pageStreaming.pageTokenName}'] = ${@class.responseVarName}->get{@class.pageStreaming.nextPageTokenName}();
+    } while (${@class.optParamsVarName}['{@class.pageStreaming.pageTokenName}']);
   @else
     @if class.hasResponse
       ${@class.responseVarName} = ${@class.serviceVarName}->{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)});

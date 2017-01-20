@@ -461,15 +461,28 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  bigquery.jobs.getQueryResults(request, function(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
 
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response, null, 2));
-  });
+    var errorsPage = response['errors'];
+    if (!errorsPage) {
+      return;
+    }
+    for (var i = 0; i < errorsPage.length; i++) {
+      // TODO: Change code below to process each resource in `errorsPage`:
+      console.log(JSON.stringify(errorsPage[i], null, 2));
+    }
+
+    if (response.pageToken) {
+      request.pageToken = response.pageToken;
+      bigquery.jobs.getQueryResults(request, handlePage);
+    }
+  };
+
+  bigquery.jobs.getQueryResults(request, handlePage);
 });
 
 function authorize(callback) {
@@ -809,15 +822,28 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  bigquery.tabledata.list(request, function(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
 
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response, null, 2));
-  });
+    var rowsPage = response['rows'];
+    if (!rowsPage) {
+      return;
+    }
+    for (var i = 0; i < rowsPage.length; i++) {
+      // TODO: Change code below to process each resource in `rowsPage`:
+      console.log(JSON.stringify(rowsPage[i], null, 2));
+    }
+
+    if (response.pageToken) {
+      request.pageToken = response.pageToken;
+      bigquery.tabledata.list(request, handlePage);
+    }
+  };
+
+  bigquery.tabledata.list(request, handlePage);
 });
 
 function authorize(callback) {

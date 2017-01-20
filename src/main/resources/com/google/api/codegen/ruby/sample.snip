@@ -92,9 +92,9 @@
   @if class.isPageStreaming
     {@class.pageStreaming.pageVarName} = {@class.serviceVarName}.fetch_all(items: :{@class.pageStreaming.resourceFieldName}) do |token|
       @if class.fieldVarNames
-        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)}, page_token: token)
+        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)}, {@class.pageStreaming.pageTokenName}: token)
       @else
-        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}(page_token: token)
+        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.pageStreaming.pageTokenName}: token)
       @end
     end
 

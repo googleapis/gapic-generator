@@ -116,7 +116,7 @@
             @end
 
             @if class.pageStreaming.isResourceSetterInRequestBody
-                {@class.requestBodyVarName}.pageToken = {@class.responseVarName}.nextPageToken
+                {@class.requestBodyVarName}.{@class.pageStreaming.pageTokenName} = {@class.responseVarName}.{@class.pageStreaming.nextPageTokenName}
             @else
                 {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}_next(previous_request={@class.requestVarName}, previous_response={@class.responseVarName})
             @end

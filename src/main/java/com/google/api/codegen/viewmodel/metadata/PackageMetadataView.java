@@ -61,7 +61,7 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String discoveryApiName();
 
-  public abstract String grpcPackageName();
+  public abstract String protoPackageName();
 
   public abstract String gapicPackageName();
 
@@ -79,8 +79,15 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract boolean hasMultipleServices();
 
+  // Python-specific configuration
   @Nullable
   public abstract List<String> namespacePackages();
+
+  @Nullable
+  public abstract List<String> apiModules();
+
+  @Nullable
+  public abstract List<String> typeModules();
 
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder();
@@ -117,8 +124,8 @@ public abstract class PackageMetadataView implements ViewModel {
     /** The API name used for generating the URL for the Discovery doc and APIs Explorer link. */
     public abstract Builder discoveryApiName(String val);
 
-    /** The base name of the gRPC client library package. E.g., "grpc-google-cloud-logging-v1". */
-    public abstract Builder grpcPackageName(String val);
+    /** The base name of the proto client library package. E.g., "proto-google-cloud-logging-v1". */
+    public abstract Builder protoPackageName(String val);
 
     /** The base name of the GAPIC client library package. E.g., "gapic-google-cloud-logging-v1". */
     public abstract Builder gapicPackageName(String val);
@@ -129,17 +136,29 @@ public abstract class PackageMetadataView implements ViewModel {
     /** The path to the API protos in the googleapis repo. */
     public abstract Builder protoPath(String val);
 
+    /** The author of the package. */
     public abstract Builder author(String val);
 
+    /** The email of the author of the package. */
     public abstract Builder email(String val);
 
+    /** The URL of the homepage of the author of the package. */
     public abstract Builder homepage(String val);
 
+    /** The name of the license that the package is licensed under. */
     public abstract Builder licenseName(String val);
 
+    /** Whether the package contains multiple service objects */
+    public abstract Builder hasMultipleServices(boolean val);
+
+    /** The packages that should be declared as (Python) namespace packages. */
     public abstract Builder namespacePackages(List<String> val);
 
-    public abstract Builder hasMultipleServices(boolean val);
+    /** The names of the GAPIC modules defining service objects. */
+    public abstract Builder apiModules(List<String> val);
+
+    /** The names of the GAPIC modules defining service types. */
+    public abstract Builder typeModules(List<String> val);
 
     public abstract PackageMetadataView build();
   }

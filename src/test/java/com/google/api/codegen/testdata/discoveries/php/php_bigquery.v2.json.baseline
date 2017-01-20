@@ -345,10 +345,17 @@ $projectId = '';  // TODO: Update placeholder value.
 // [Required] Job ID of the query job
 $jobId = '';  // TODO: Update placeholder value.
 
-$response = $service->jobs->getQueryResults($projectId, $jobId);
+$optParams = [];
+do {
+  $response = $service->jobs->getQueryResults($projectId, $jobId, $optParams);
 
-// TODO: Change code below to process the `response` object:
-echo '<pre>', var_export($response, true), '</pre>', "\n";
+  foreach ($response['errors'] as $errorProto) {
+    // TODO: Change code below to process each `errorProto` resource:
+    echo '<pre>', var_export($errorProto, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getPageToken();
+} while ($optParams['pageToken']);
 ?>
 <?php
 /*
@@ -590,10 +597,17 @@ $datasetId = '';  // TODO: Update placeholder value.
 // Table ID of the table to read
 $tableId = '';  // TODO: Update placeholder value.
 
-$response = $service->tabledata->listTabledata($projectId, $datasetId, $tableId);
+$optParams = [];
+do {
+  $response = $service->tabledata->listTabledata($projectId, $datasetId, $tableId, $optParams);
 
-// TODO: Change code below to process the `response` object:
-echo '<pre>', var_export($response, true), '</pre>', "\n";
+  foreach ($response['rows'] as $tableRow) {
+    // TODO: Change code below to process each `tableRow` resource:
+    echo '<pre>', var_export($tableRow, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getPageToken();
+} while ($optParams['pageToken']);
 ?>
 <?php
 /*
