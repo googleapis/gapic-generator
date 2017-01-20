@@ -24,10 +24,12 @@
 namespace Google\Tests\Example\Library\V1;
 
 use Google\Example\Library\V1\LibraryServiceClient;
+use \Google\GAX\ApiException;
 use \Google\GAX\GrpcCredentialsHelper;
 use \Google\GAX\LongRunning\OperationsClient;
 use \Google\GAX\Testing\LongRunning\MockOperationsImpl;
 use \Google\GAX\Testing\MockStubTrait;
+use \Grpc;
 use \PHPUnit_Framework_TestCase;
 use \google\example\library\v1\AddCommentsRequest;
 use \google\example\library\v1\Book;
@@ -69,6 +71,7 @@ use \google\tagger\v1\AddLabelResponse;
 use \google\tagger\v1\AddTagRequest;
 use \google\tagger\v1\AddTagResponse;
 use \google\tagger\v1\LabelerGrpcClient;
+use \stdClass;
 
 /**
  * @group library
@@ -151,6 +154,43 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function createShelfExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $shelf = new Shelf();
+
+        try {
+            $client->createShelf($shelf);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/CreateShelf', $actualFuncCall);
+
+            $this->assertEquals($shelf, $actualRequestObject->getShelf());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function getShelfTest()
     {
         $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
@@ -182,6 +222,45 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($options, $actualRequestObject->getOptions());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getShelfExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $options = "options-1249474914";
+
+        try {
+            $client->getShelf($formattedName, $options);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/GetShelf', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+            $this->assertEquals($options, $actualRequestObject->getOptions());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -225,6 +304,39 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function listShelvesExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        try {
+            $client->listShelves();
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/ListShelves', $actualFuncCall);
+
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function deleteShelfTest()
     {
         $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
@@ -243,6 +355,43 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame('/google.example.library.v1.LibraryService/DeleteShelf', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function deleteShelfExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+
+        try {
+            $client->deleteShelf($formattedName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/DeleteShelf', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -281,6 +430,45 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function mergeShelvesExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+
+        try {
+            $client->mergeShelves($formattedName, $formattedOtherShelfName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/MergeShelves', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+            $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -328,6 +516,45 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function createBookExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $book = new Book();
+
+        try {
+            $client->createBook($formattedName, $book);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/CreateBook', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+            $this->assertEquals($book, $actualRequestObject->getBook());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function publishSeriesTest()
     {
         $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
@@ -358,6 +585,45 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($shelf, $actualRequestObject->getShelf());
         $this->assertEquals($books, $actualRequestObject->getBooksList());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function publishSeriesExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $shelf = new Shelf();
+        $books = [];
+
+        try {
+            $client->publishSeries($shelf, $books);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/PublishSeries', $actualFuncCall);
+
+            $this->assertEquals($shelf, $actualRequestObject->getShelf());
+            $this->assertEquals($books, $actualRequestObject->getBooksList());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -396,6 +662,43 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame('/google.example.library.v1.LibraryService/GetBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBookExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        try {
+            $client->getBook($formattedName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/GetBook', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -443,6 +746,43 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function listBooksExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+
+        try {
+            $client->listBooks($formattedName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/ListBooks', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function deleteBookTest()
     {
         $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
@@ -461,6 +801,43 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame('/google.example.library.v1.LibraryService/DeleteBook', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function deleteBookExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        try {
+            $client->deleteBook($formattedName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/DeleteBook', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -508,6 +885,45 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function updateBookExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $book = new Book();
+
+        try {
+            $client->updateBook($formattedName, $book);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/UpdateBook', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+            $this->assertEquals($book, $actualRequestObject->getBook());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function moveBookTest()
     {
         $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
@@ -541,6 +957,45 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function moveBookExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+
+        try {
+            $client->moveBook($formattedName, $formattedOtherShelfName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/MoveBook', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+            $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -584,6 +1039,39 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function listStringsExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        try {
+            $client->listStrings();
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/ListStrings', $actualFuncCall);
+
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function addCommentsTest()
     {
         $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
@@ -611,6 +1099,52 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($comments, $actualRequestObject->getCommentsList());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function addCommentsExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $comment = "95";
+        $stage = Stage::UNSET;
+        $alignment = Alignment::CHAR;
+        $commentsElement = new Comment();
+        $commentsElement->setComment($comment);
+        $commentsElement->setStage($stage);
+        $commentsElement->setAlignment($alignment);
+        $comments = [$commentsElement];
+
+        try {
+            $client->addComments($formattedName, $comments);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/AddComments', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+            $this->assertEquals($comments, $actualRequestObject->getCommentsList());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -649,6 +1183,43 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromArchive', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBookFromArchiveExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+
+        try {
+            $client->getBookFromArchive($formattedName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromArchive', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -696,6 +1267,45 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function getBookFromAnywhereExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        try {
+            $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromAnywhere', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+            $this->assertEquals($formattedAltBookName, $actualRequestObject->getAltBookName());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function updateBookIndexTest()
     {
         $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
@@ -719,6 +1329,48 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($formattedName, $actualRequestObject->getName());
         $this->assertEquals($indexName, $actualRequestObject->getIndexName());
         $this->assertEquals($indexMap, $actualRequestObject->getIndexMap());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function updateBookIndexExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $indexName = "default index";
+        $indexMapItem = "indexMapItem1918721251";
+        $indexMap = ["default_key" => $indexMapItem,];
+
+        try {
+            $client->updateBookIndex($formattedName, $indexName, $indexMap);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/UpdateBookIndex', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+            $this->assertEquals($indexName, $actualRequestObject->getIndexName());
+            $this->assertEquals($indexMap, $actualRequestObject->getIndexMap());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -769,6 +1421,46 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function findRelatedBooksExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $namesElement = "namesElement-249113339";
+        $names = [$namesElement];
+        $shelves = [];
+
+        try {
+            $client->findRelatedBooks($names, $shelves);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/FindRelatedBooks', $actualFuncCall);
+
+            $this->assertEquals($names, $actualRequestObject->getNamesList());
+            $this->assertEquals($shelves, $actualRequestObject->getShelvesList());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function addTagTest()
     {
         $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
@@ -801,6 +1493,45 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function addTagExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $tag = "tag114586";
+
+        try {
+            $client->addTag($formattedResource, $tag);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/AddTag', $actualFuncCall);
+
+            $this->assertEquals($formattedResource, $actualRequestObject->getResource());
+            $this->assertEquals($tag, $actualRequestObject->getTag());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function addLabelTest()
     {
         $grpcStub = $this->createStub([$this, 'createMockLabelerImpl']);
@@ -826,6 +1557,45 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($formattedResource, $actualRequestObject->getResource());
         $this->assertEquals($label, $actualRequestObject->getLabel());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function addLabelExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLabelerImpl']);
+        $client = $this->createClient('createLabelerStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $label = "label102727412";
+
+        try {
+            $client->addLabel($formattedResource, $label);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.tagger.v1.Labeler/AddLabel', $actualFuncCall);
+
+            $this->assertEquals($formattedResource, $actualRequestObject->getResource());
+            $this->assertEquals($label, $actualRequestObject->getLabel());
+        }
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -909,6 +1679,43 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function getBigBookExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        try {
+            $client->getBigBook($formattedName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/GetBigBook', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
     public function getBigNothingTest()
     {
         $operationsStub = $this->createStub([$this, 'createMockOperationsStub']);
@@ -972,6 +1779,43 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($grpcStub->isExhausted());
         $this->assertTrue($operationsStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBigNothingExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        try {
+            $client->getBigNothing($formattedName);
+            // If the $client method call did not throw, fail the test
+            $this->assertTrue(false);
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/GetBigNothing', $actualFuncCall);
+
+            $this->assertEquals($formattedName, $actualRequestObject->getName());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
     }
 
 }
