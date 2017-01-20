@@ -51,6 +51,12 @@ public abstract class SamplePageStreamingView {
   @Nullable
   public abstract Boolean isResourceSetterInRequestBody();
 
+  @Nullable
+  public abstract String pageTokenName();
+
+  @Nullable
+  public abstract String nextPageTokenName();
+
   public static Builder newBuilder() {
     return new AutoValue_SamplePageStreamingView.Builder();
   }
@@ -81,5 +87,9 @@ public abstract class SamplePageStreamingView {
     public abstract Builder handlePageVarName(String val);
 
     public abstract Builder isResourceSetterInRequestBody(Boolean val);
+
+    public abstract Builder pageTokenName(String val);
+
+    public abstract Builder nextPageTokenName(String val);
   }
 }

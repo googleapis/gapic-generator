@@ -166,6 +166,8 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(symbolTable.getNewSymbol(fieldInfo.name()));
     builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
+    builder.pageTokenName(methodInfo.requestPageTokenName());
+    builder.nextPageTokenName(methodInfo.responsePageTokenName());
     return builder.build();
   }
 }

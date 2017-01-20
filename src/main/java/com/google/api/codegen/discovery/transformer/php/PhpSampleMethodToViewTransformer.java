@@ -169,6 +169,8 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name()))));
+    builder.pageTokenName(methodInfo.requestPageTokenName());
+    builder.nextPageTokenName(Name.lowerCamel(methodInfo.responsePageTokenName()).toUpperCamel());
     return builder.build();
   }
 }

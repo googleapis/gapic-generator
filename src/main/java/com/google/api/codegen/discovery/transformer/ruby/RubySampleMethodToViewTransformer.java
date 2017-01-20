@@ -175,6 +175,7 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name()))));
+    builder.pageTokenName(Name.lowerCamel(methodInfo.requestPageTokenName()).toLowerUnderscore());
     return builder.build();
   }
 }

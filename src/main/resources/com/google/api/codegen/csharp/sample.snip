@@ -129,11 +129,11 @@
 
                 @end
                 @if class.pageStreaming.isResourceSetterInRequestBody
-                    {@class.requestBodyVarName}.PageToken = {@class.responseVarName}.NextPageToken;
+                    {@class.requestBodyVarName}.{@class.pageStreaming.pageTokenName} = {@class.responseVarName}.{@class.pageStreaming.nextPageTokenName};
                 @else
-                    {@class.requestVarName}.PageToken = {@class.responseVarName}.NextPageToken;
+                    {@class.requestVarName}.{@class.pageStreaming.pageTokenName} = {@class.responseVarName}.{@class.pageStreaming.nextPageTokenName};
                 @end
-            } while ({@class.responseVarName}.NextPageToken != null);
+            } while ({@class.responseVarName}.{@class.pageStreaming.nextPageTokenName} != null);
         @else
             @if class.hasResponse
                 // To execute asynchronously in an async method, replace `{@class.requestVarName}.Execute()` as shown:
