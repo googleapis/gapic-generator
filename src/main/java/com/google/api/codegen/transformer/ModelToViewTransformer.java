@@ -24,7 +24,7 @@ import java.util.List;
  * rendered by a template engine.
  */
 public interface ModelToViewTransformer {
-  List<ViewModel> transform(Model model, ApiConfig apiConfig);
+  List<? extends ViewModel> transform(Model model, ApiConfig apiConfig);
 
   List<String> getTemplateFileNames();
 }

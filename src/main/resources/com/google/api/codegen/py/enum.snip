@@ -1,17 +1,14 @@
 @extends "py/common.snip"
 
-@snippet generateFilename(service)
-    enums.py
-@end
-
-@snippet generateBody(service)
+@snippet generate(viewModel)
+    {@generateModule(viewModel.model())}
 @end
 
 @snippet generateMethodSampleCode(docConfig)
 @end
 
-@snippet generateModule(service, _, __)
-    @let enums = enumConstants(service.getModel)
+@snippet generateModule(model)
+    @let enums = enumConstants(model)
         @if enums
             {@licenseSection()}
         

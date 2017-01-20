@@ -61,13 +61,14 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
       return null;
     }
 
-    List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model, apiConfig);
+    List<? extends ViewModel> surfaceDocs = modelToViewTransformer.transform(model, apiConfig);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
 
     Map<String, Doc> docs = new TreeMap<>();
     for (ViewModel surfaceDoc : surfaceDocs) {
+      // TODO: Why not have modelToViewTransformer.transform() return a Map or MultiMap?
       if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
         continue;
       }

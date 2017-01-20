@@ -1,14 +1,12 @@
 @extends "py/common.snip"
 @extends "py/method_sample.snip"
 
-@snippet generateFilename(service)
-    {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.py
+@snippet generate(viewModel)
+    {@generateModule(viewModel.service(), importHandler.calculateImports())}
 @end
 
-@snippet generateBody(service)
-@end
-
-@snippet generateModule(service, body, imports)
+# Args: Interface, Iterable<String>
+@snippet generateModule(service, imports)
     {@licenseSection(service)}
 
     {@moduleDocstring(service)}

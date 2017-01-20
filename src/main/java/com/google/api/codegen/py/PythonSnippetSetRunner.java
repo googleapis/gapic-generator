@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.List;
 
 /** A PythonProvider provides general Python code generation logic. */
+// TODO(jcanizales): Remove when Python docgen is moved to MVVM.
 public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
   private PythonSnippetSetInputInitializer<ElementT> initializer;
