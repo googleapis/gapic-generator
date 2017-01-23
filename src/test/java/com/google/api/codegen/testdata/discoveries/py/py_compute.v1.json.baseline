@@ -486,6 +486,42 @@ credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('compute', 'v1', credentials=credentials)
 
+# Name of the project scoping this request.
+project = ''  # TODO: Update placeholder value.
+
+request = service.backendServices().aggregatedList(project=project)
+while request is not None:
+    response = request.execute()
+
+    for name, backend_services_scoped_list in response['items'].items():
+        # TODO: Change code below to process each (name, backend_services_scoped_list) item:
+        pprint(name, backend_services_scoped_list)
+
+    request = service.backendServices().aggregatedList_next(previous_request=request, previous_response=response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
 # Project ID for this request.
 project = ''  # TODO: Update placeholder value.
 
@@ -4529,6 +4565,48 @@ project = ''  # TODO: Update placeholder value.
 # The name of the zone for this request.
 zone = ''  # TODO: Update placeholder value.
 
+# Name of the instance resource to start.
+instance = ''  # TODO: Update placeholder value.
+
+instances_set_service_account_request_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.instances().setServiceAccount(project=project, zone=zone, instance=instance, body=instances_set_service_account_request_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# The name of the zone for this request.
+zone = ''  # TODO: Update placeholder value.
+
 # Name of the instance scoping this request.
 instance = ''  # TODO: Update placeholder value.
 
@@ -4976,6 +5054,41 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # Project ID for this request.
 project = ''  # TODO: Update placeholder value.
 
+# Name of the network to be updated.
+network = ''  # TODO: Update placeholder value.
+
+request = service.networks().switchToCustomMode(project=project, network=network)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
 request = service.projects().get(project=project)
 response = request.execute()
 
@@ -5121,6 +5234,1132 @@ usage_export_location_body = {
 }
 
 request = service.projects().setUsageExportBucket(project=project, body=usage_export_location_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the autoscaler to delete.
+autoscaler = ''  # TODO: Update placeholder value.
+
+request = service.regionAutoscalers().delete(project=project, region=region, autoscaler=autoscaler)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the autoscaler to return.
+autoscaler = ''  # TODO: Update placeholder value.
+
+request = service.regionAutoscalers().get(project=project, region=region, autoscaler=autoscaler)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+autoscaler_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionAutoscalers().insert(project=project, region=region, body=autoscaler_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+request = service.regionAutoscalers().list(project=project, region=region)
+while request is not None:
+    response = request.execute()
+
+    for autoscaler in response['items']:
+        # TODO: Change code below to process each `autoscaler` resource:
+        pprint(autoscaler)
+
+    request = service.regionAutoscalers().list_next(previous_request=request, previous_response=response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the autoscaler to update.
+autoscaler = ''  # TODO: Update placeholder value.
+
+autoscaler_body = {
+    # TODO: Add desired entries to the request body. Only assigned entries
+    # will be changed.
+}
+
+request = service.regionAutoscalers().patch(project=project, region=region, autoscaler=autoscaler, body=autoscaler_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+autoscaler_body = {
+    # TODO: Add desired entries to the request body. All existing entries
+    # will be replaced.
+}
+
+request = service.regionAutoscalers().update(project=project, region=region, body=autoscaler_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to delete.
+backend_service = ''  # TODO: Update placeholder value.
+
+request = service.regionBackendServices().delete(project=project, region=region, backendService=backend_service)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to return.
+backend_service = ''  # TODO: Update placeholder value.
+
+request = service.regionBackendServices().get(project=project, region=region, backendService=backend_service)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to which the queried instance belongs.
+backend_service = ''  # TODO: Update placeholder value.
+
+resource_group_reference_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionBackendServices().getHealth(project=project, region=region, backendService=backend_service, body=resource_group_reference_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+backend_service_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionBackendServices().insert(project=project, region=region, body=backend_service_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+request = service.regionBackendServices().list(project=project, region=region)
+while request is not None:
+    response = request.execute()
+
+    for backend_service in response['items']:
+        # TODO: Change code below to process each `backend_service` resource:
+        pprint(backend_service)
+
+    request = service.regionBackendServices().list_next(previous_request=request, previous_response=response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to update.
+backend_service = ''  # TODO: Update placeholder value.
+
+backend_service_body = {
+    # TODO: Add desired entries to the request body. Only assigned entries
+    # will be changed.
+}
+
+request = service.regionBackendServices().patch(project=project, region=region, backendService=backend_service, body=backend_service_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to update.
+backend_service = ''  # TODO: Update placeholder value.
+
+backend_service_body = {
+    # TODO: Add desired entries to the request body. All existing entries
+    # will be replaced.
+}
+
+request = service.regionBackendServices().update(project=project, region=region, backendService=backend_service, body=backend_service_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+region_instance_group_managers_abandon_instances_request_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionInstanceGroupManagers().abandonInstances(project=project, region=region, instanceGroupManager=instance_group_manager, body=region_instance_group_managers_abandon_instances_request_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group to delete.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+request = service.regionInstanceGroupManagers().delete(project=project, region=region, instanceGroupManager=instance_group_manager)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+region_instance_group_managers_delete_instances_request_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionInstanceGroupManagers().deleteInstances(project=project, region=region, instanceGroupManager=instance_group_manager, body=region_instance_group_managers_delete_instances_request_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group to return.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+request = service.regionInstanceGroupManagers().get(project=project, region=region, instanceGroupManager=instance_group_manager)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+instance_group_manager_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionInstanceGroupManagers().insert(project=project, region=region, body=instance_group_manager_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+request = service.regionInstanceGroupManagers().list(project=project, region=region)
+while request is not None:
+    response = request.execute()
+
+    for instance_group_manager in response['items']:
+        # TODO: Change code below to process each `instance_group_manager` resource:
+        pprint(instance_group_manager)
+
+    request = service.regionInstanceGroupManagers().list_next(previous_request=request, previous_response=response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# The name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+request = service.regionInstanceGroupManagers().listManagedInstances(project=project, region=region, instanceGroupManager=instance_group_manager)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+region_instance_group_managers_recreate_request_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionInstanceGroupManagers().recreateInstances(project=project, region=region, instanceGroupManager=instance_group_manager, body=region_instance_group_managers_recreate_request_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+# Number of instances that should exist in this instance group manager.
+size = 0  # TODO: Update placeholder value.
+
+request = service.regionInstanceGroupManagers().resize(project=project, region=region, instanceGroupManager=instance_group_manager, size=size)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# The name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+region_instance_group_managers_set_template_request_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionInstanceGroupManagers().setInstanceTemplate(project=project, region=region, instanceGroupManager=instance_group_manager, body=region_instance_group_managers_set_template_request_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+region_instance_group_managers_set_target_pools_request_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionInstanceGroupManagers().setTargetPools(project=project, region=region, instanceGroupManager=instance_group_manager, body=region_instance_group_managers_set_target_pools_request_body)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the instance group resource to return.
+instance_group = ''  # TODO: Update placeholder value.
+
+request = service.regionInstanceGroups().get(project=project, region=region, instanceGroup=instance_group)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+request = service.regionInstanceGroups().list(project=project, region=region)
+while request is not None:
+    response = request.execute()
+
+    for instance_group in response['items']:
+        # TODO: Change code below to process each `instance_group` resource:
+        pprint(instance_group)
+
+    request = service.regionInstanceGroups().list_next(previous_request=request, previous_response=response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the regional instance group for which we want to list the instances.
+instance_group = ''  # TODO: Update placeholder value.
+
+region_instance_groups_list_instances_request_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionInstanceGroups().listInstances(project=project, region=region, instanceGroup=instance_group, body=region_instance_groups_list_instances_request_body)
+while request is not None:
+    response = request.execute()
+
+    for instance_with_named_ports in response['items']:
+        # TODO: Change code below to process each `instance_with_named_ports` resource:
+        pprint(instance_with_named_ports)
+
+    request = service.regionInstanceGroups().listInstances_next(previous_request=request, previous_response=response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# The name of the regional instance group where the named ports are updated.
+instance_group = ''  # TODO: Update placeholder value.
+
+region_instance_groups_set_named_ports_request_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.regionInstanceGroups().setNamedPorts(project=project, region=region, instanceGroup=instance_group, body=region_instance_groups_set_named_ports_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -6123,6 +7362,48 @@ region = ''  # TODO: Update placeholder value.
 subnetwork = ''  # TODO: Update placeholder value.
 
 request = service.subnetworks().delete(project=project, region=region, subnetwork=subnetwork)
+response = request.execute()
+
+# TODO: Change code below to process the `response` dict:
+pprint(response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Compute Engine API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/compute
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('compute', 'v1', credentials=credentials)
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the Subnetwork resource to update.
+subnetwork = ''  # TODO: Update placeholder value.
+
+subnetworks_expand_ip_cidr_range_request_body = {
+    # TODO: Add desired entries to the request body.
+}
+
+request = service.subnetworks().expandIpCidrRange(project=project, region=region, subnetwork=subnetwork, body=subnetworks_expand_ip_cidr_range_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:

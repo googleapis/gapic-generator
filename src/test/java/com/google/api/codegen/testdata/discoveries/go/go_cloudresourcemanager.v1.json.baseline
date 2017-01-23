@@ -88,7 +88,6 @@ func main() {
 
   // The resource name of the Organization to fetch, e.g. "organizations/1234".
   name := ""  // TODO: Update placeholder value.
-  // ex: "organizations/my-organization"
 
   resp, err := cloudresourcemanagerService.Organizations.Get(name).Context(ctx).Do()
   if err != nil {
@@ -136,10 +135,10 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-  // a path. For example, a Project resource is specified as `projects/{project}`.
+  // REQUIRED: The resource for which the policy is being requested.
+  // `resource` is usually specified as a path. For example, a Project
+  // resource is specified as `projects/{project}`.
   resource := ""  // TODO: Update placeholder value.
-  // ex: "organizations/my-organization"
 
   rb := &cloudresourcemanager.GetIamPolicyRequest{
     // TODO: Add desired fields of the request body.
@@ -241,10 +240,10 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-  // a path. For example, a Project resource is specified as `projects/{project}`.
+  // REQUIRED: The resource for which the policy is being specified.
+  // `resource` is usually specified as a path. For example, a Project
+  // resource is specified as `projects/{project}`.
   resource := ""  // TODO: Update placeholder value.
-  // ex: "organizations/my-organization"
 
   rb := &cloudresourcemanager.SetIamPolicyRequest{
     // TODO: Add desired fields of the request body.
@@ -296,10 +295,10 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-  // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+  // REQUIRED: The resource for which the policy detail is being requested.
+  // `resource` is usually specified as a path. For example, a Project
+  // resource is specified as `projects/{project}`.
   resource := ""  // TODO: Update placeholder value.
-  // ex: "organizations/my-organization"
 
   rb := &cloudresourcemanager.TestIamPermissionsRequest{
     // TODO: Add desired fields of the request body.
@@ -401,7 +400,8 @@ func main() {
     log.Fatal(err)
   }
 
-  // The Project ID (for example, `foo-bar-123`). Required.
+  // The Project ID (for example, `foo-bar-123`).
+  // Required.
   projectId := ""  // TODO: Update placeholder value.
 
   resp, err := cloudresourcemanagerService.Projects.Delete(projectId).Context(ctx).Do()
@@ -450,7 +450,8 @@ func main() {
     log.Fatal(err)
   }
 
-  // The Project ID (for example, `my-project-123`). Required.
+  // The Project ID (for example, `my-project-123`).
+  // Required.
   projectId := ""  // TODO: Update placeholder value.
 
   resp, err := cloudresourcemanagerService.Projects.Get(projectId).Context(ctx).Do()
@@ -499,8 +500,63 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-  // a path. For example, a Project resource is specified as `projects/{project}`.
+  // The Project ID (for example, `my-project-123`).
+  // Required.
+  projectId := ""  // TODO: Update placeholder value.
+
+  rb := &cloudresourcemanager.GetAncestryRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := cloudresourcemanagerService.Projects.GetAncestry(projectId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/cloudresourcemanager/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  cloudresourcemanagerService, err := cloudresourcemanager.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // REQUIRED: The resource for which the policy is being requested.
+  // `resource` is usually specified as a path. For example, a Project
+  // resource is specified as `projects/{project}`.
   resource := ""  // TODO: Update placeholder value.
 
   rb := &cloudresourcemanager.GetIamPolicyRequest{
@@ -602,8 +658,9 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-  // a path. For example, a Project resource is specified as `projects/{project}`.
+  // REQUIRED: The resource for which the policy is being specified.
+  // `resource` is usually specified as a path. For example, a Project
+  // resource is specified as `projects/{project}`.
   resource := ""  // TODO: Update placeholder value.
 
   rb := &cloudresourcemanager.SetIamPolicyRequest{
@@ -656,8 +713,9 @@ func main() {
     log.Fatal(err)
   }
 
-  // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-  // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+  // REQUIRED: The resource for which the policy detail is being requested.
+  // `resource` is usually specified as a path. For example, a Project
+  // resource is specified as `projects/{project}`.
   resource := ""  // TODO: Update placeholder value.
 
   rb := &cloudresourcemanager.TestIamPermissionsRequest{
@@ -710,7 +768,8 @@ func main() {
     log.Fatal(err)
   }
 
-  // The project ID (for example, `foo-bar-123`). Required.
+  // The project ID (for example, `foo-bar-123`).
+  // Required.
   projectId := ""  // TODO: Update placeholder value.
 
   rb := &cloudresourcemanager.UndeleteProjectRequest{
@@ -763,7 +822,8 @@ func main() {
     log.Fatal(err)
   }
 
-  // The project ID (for example, `my-project-123`). Required.
+  // The project ID (for example, `my-project-123`).
+  // Required.
   projectId := ""  // TODO: Update placeholder value.
 
   rb := &cloudresourcemanager.Project{

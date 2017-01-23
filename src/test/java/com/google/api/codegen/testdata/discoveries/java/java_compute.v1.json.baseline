@@ -807,6 +807,73 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.BackendServiceAggregatedList;
+import com.google.api.services.compute.model.BackendServicesScopedList;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+import java.util.Map;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Name of the project scoping this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.BackendServices.AggregatedList request = computeService.backendServices().aggregatedList(project);
+
+    BackendServiceAggregatedList response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null) {
+        continue;
+      }
+      for (Map.Entry<String, BackendServicesScopedList> item : response.getItems().entrySet()) {
+        // TODO: Change code below to process each `item` entry:
+        System.out.println(item.getKey() + ": " + item.getValue());
+      }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
 import com.google.api.services.compute.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -7621,6 +7688,73 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.InstancesSetServiceAccountRequest;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // The name of the zone for this request.
+    String zone = "";  // TODO: Update placeholder value.
+
+    // Name of the instance resource to start.
+    String instance = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    InstancesSetServiceAccountRequest requestBody = new InstancesSetServiceAccountRequest();
+
+    Compute computeService = createComputeService();
+    Compute.Instances.SetServiceAccount request = computeService.instances().setServiceAccount(project, zone, instance, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
 import com.google.api.services.compute.model.Operation;
 import com.google.api.services.compute.model.Tags;
 import java.io.IOException;
@@ -8387,6 +8521,66 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the network to be updated.
+    String network = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.Networks.SwitchToCustomMode request = computeService.networks().switchToCustomMode(project, network);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
 import com.google.api.services.compute.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -8643,6 +8837,1857 @@ public class ComputeExample {
 
     Compute computeService = createComputeService();
     Compute.Projects.SetUsageExportBucket request = computeService.projects().setUsageExportBucket(project, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the autoscaler to delete.
+    String autoscaler = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionAutoscalers.Delete request = computeService.regionAutoscalers().delete(project, region, autoscaler);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Autoscaler;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the autoscaler to return.
+    String autoscaler = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionAutoscalers.Get request = computeService.regionAutoscalers().get(project, region, autoscaler);
+
+    Autoscaler response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Autoscaler;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    Autoscaler requestBody = new Autoscaler();
+
+    Compute computeService = createComputeService();
+    Compute.RegionAutoscalers.Insert request = computeService.regionAutoscalers().insert(project, region, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Autoscaler;
+import com.google.api.services.compute.model.RegionAutoscalerList;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionAutoscalers.List request = computeService.regionAutoscalers().list(project, region);
+
+    RegionAutoscalerList response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null) {
+        continue;
+      }
+      for (Autoscaler autoscaler : response.getItems()) {
+        // TODO: Change code below to process each `autoscaler` resource:
+        System.out.println(autoscaler);
+      }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Autoscaler;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the autoscaler to update.
+    String autoscaler = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`. Only assigned
+    // fields will be changed:
+    Autoscaler requestBody = new Autoscaler();
+
+    Compute computeService = createComputeService();
+    Compute.RegionAutoscalers.Patch request = computeService.regionAutoscalers().patch(project, region, autoscaler, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Autoscaler;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`. All existing
+    // fields will be replaced:
+    Autoscaler requestBody = new Autoscaler();
+
+    Compute computeService = createComputeService();
+    Compute.RegionAutoscalers.Update request = computeService.regionAutoscalers().update(project, region, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to delete.
+    String backendService = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionBackendServices.Delete request = computeService.regionBackendServices().delete(project, region, backendService);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.BackendService;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to return.
+    String backendService = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionBackendServices.Get request = computeService.regionBackendServices().get(project, region, backendService);
+
+    BackendService response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.BackendServiceGroupHealth;
+import com.google.api.services.compute.model.ResourceGroupReference;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to which the queried instance belongs.
+    String backendService = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    ResourceGroupReference requestBody = new ResourceGroupReference();
+
+    Compute computeService = createComputeService();
+    Compute.RegionBackendServices.GetHealth request = computeService.regionBackendServices().getHealth(project, region, backendService, requestBody);
+
+    BackendServiceGroupHealth response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.BackendService;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    BackendService requestBody = new BackendService();
+
+    Compute computeService = createComputeService();
+    Compute.RegionBackendServices.Insert request = computeService.regionBackendServices().insert(project, region, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.BackendService;
+import com.google.api.services.compute.model.BackendServiceList;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionBackendServices.List request = computeService.regionBackendServices().list(project, region);
+
+    BackendServiceList response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null) {
+        continue;
+      }
+      for (BackendService backendService : response.getItems()) {
+        // TODO: Change code below to process each `backendService` resource:
+        System.out.println(backendService);
+      }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.BackendService;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to update.
+    String backendService = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`. Only assigned
+    // fields will be changed:
+    BackendService requestBody = new BackendService();
+
+    Compute computeService = createComputeService();
+    Compute.RegionBackendServices.Patch request = computeService.regionBackendServices().patch(project, region, backendService, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.BackendService;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to update.
+    String backendService = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`. All existing
+    // fields will be replaced:
+    BackendService requestBody = new BackendService();
+
+    Compute computeService = createComputeService();
+    Compute.RegionBackendServices.Update request = computeService.regionBackendServices().update(project, region, backendService, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import com.google.api.services.compute.model.RegionInstanceGroupManagersAbandonInstancesRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    String instanceGroupManager = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    RegionInstanceGroupManagersAbandonInstancesRequest requestBody = new RegionInstanceGroupManagersAbandonInstancesRequest();
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.AbandonInstances request = computeService.regionInstanceGroupManagers().abandonInstances(project, region, instanceGroupManager, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the managed instance group to delete.
+    String instanceGroupManager = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.Delete request = computeService.regionInstanceGroupManagers().delete(project, region, instanceGroupManager);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import com.google.api.services.compute.model.RegionInstanceGroupManagersDeleteInstancesRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    String instanceGroupManager = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    RegionInstanceGroupManagersDeleteInstancesRequest requestBody = new RegionInstanceGroupManagersDeleteInstancesRequest();
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.DeleteInstances request = computeService.regionInstanceGroupManagers().deleteInstances(project, region, instanceGroupManager, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.InstanceGroupManager;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the managed instance group to return.
+    String instanceGroupManager = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.Get request = computeService.regionInstanceGroupManagers().get(project, region, instanceGroupManager);
+
+    InstanceGroupManager response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.InstanceGroupManager;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    InstanceGroupManager requestBody = new InstanceGroupManager();
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.Insert request = computeService.regionInstanceGroupManagers().insert(project, region, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.InstanceGroupManager;
+import com.google.api.services.compute.model.RegionInstanceGroupManagerList;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.List request = computeService.regionInstanceGroupManagers().list(project, region);
+
+    RegionInstanceGroupManagerList response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null) {
+        continue;
+      }
+      for (InstanceGroupManager instanceGroupManager : response.getItems()) {
+        // TODO: Change code below to process each `instanceGroupManager` resource:
+        System.out.println(instanceGroupManager);
+      }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.RegionInstanceGroupManagersListInstancesResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // The name of the managed instance group.
+    String instanceGroupManager = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.ListManagedInstances request = computeService.regionInstanceGroupManagers().listManagedInstances(project, region, instanceGroupManager);
+
+    RegionInstanceGroupManagersListInstancesResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import com.google.api.services.compute.model.RegionInstanceGroupManagersRecreateRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    String instanceGroupManager = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    RegionInstanceGroupManagersRecreateRequest requestBody = new RegionInstanceGroupManagersRecreateRequest();
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.RecreateInstances request = computeService.regionInstanceGroupManagers().recreateInstances(project, region, instanceGroupManager, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    String instanceGroupManager = "";  // TODO: Update placeholder value.
+
+    // Number of instances that should exist in this instance group manager.
+    int size = 0;  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.Resize request = computeService.regionInstanceGroupManagers().resize(project, region, instanceGroupManager, size);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import com.google.api.services.compute.model.RegionInstanceGroupManagersSetTemplateRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // The name of the managed instance group.
+    String instanceGroupManager = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    RegionInstanceGroupManagersSetTemplateRequest requestBody = new RegionInstanceGroupManagersSetTemplateRequest();
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.SetInstanceTemplate request = computeService.regionInstanceGroupManagers().setInstanceTemplate(project, region, instanceGroupManager, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import com.google.api.services.compute.model.RegionInstanceGroupManagersSetTargetPoolsRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    String instanceGroupManager = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    RegionInstanceGroupManagersSetTargetPoolsRequest requestBody = new RegionInstanceGroupManagersSetTargetPoolsRequest();
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroupManagers.SetTargetPools request = computeService.regionInstanceGroupManagers().setTargetPools(project, region, instanceGroupManager, requestBody);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.InstanceGroup;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the instance group resource to return.
+    String instanceGroup = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroups.Get request = computeService.regionInstanceGroups().get(project, region, instanceGroup);
+
+    InstanceGroup response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.InstanceGroup;
+import com.google.api.services.compute.model.RegionInstanceGroupList;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroups.List request = computeService.regionInstanceGroups().list(project, region);
+
+    RegionInstanceGroupList response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null) {
+        continue;
+      }
+      for (InstanceGroup instanceGroup : response.getItems()) {
+        // TODO: Change code below to process each `instanceGroup` resource:
+        System.out.println(instanceGroup);
+      }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.InstanceWithNamedPorts;
+import com.google.api.services.compute.model.RegionInstanceGroupsListInstances;
+import com.google.api.services.compute.model.RegionInstanceGroupsListInstancesRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the regional instance group for which we want to list the instances.
+    String instanceGroup = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    RegionInstanceGroupsListInstancesRequest requestBody = new RegionInstanceGroupsListInstancesRequest();
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroups.ListInstances request = computeService.regionInstanceGroups().listInstances(project, region, instanceGroup, requestBody);
+
+    RegionInstanceGroupsListInstances response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null) {
+        continue;
+      }
+      for (InstanceWithNamedPorts instanceWithNamedPorts : response.getItems()) {
+        // TODO: Change code below to process each `instanceWithNamedPorts` resource:
+        System.out.println(instanceWithNamedPorts);
+      }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import com.google.api.services.compute.model.RegionInstanceGroupsSetNamedPortsRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // The name of the regional instance group where the named ports are updated.
+    String instanceGroup = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    RegionInstanceGroupsSetNamedPortsRequest requestBody = new RegionInstanceGroupsSetNamedPortsRequest();
+
+    Compute computeService = createComputeService();
+    Compute.RegionInstanceGroups.SetNamedPorts request = computeService.regionInstanceGroups().setNamedPorts(project, region, instanceGroup, requestBody);
 
     Operation response = request.execute();
 
@@ -10362,6 +12407,73 @@ public class ComputeExample {
 
     Compute computeService = createComputeService();
     Compute.Subnetworks.Delete request = computeService.subnetworks().delete(project, region, subnetwork);
+
+    Operation response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Compute createComputeService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Compute.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-ComputeSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/compute/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.compute.Compute;
+import com.google.api.services.compute.model.Operation;
+import com.google.api.services.compute.model.SubnetworksExpandIpCidrRangeRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class ComputeExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Project ID for this request.
+    String project = "";  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    String region = "";  // TODO: Update placeholder value.
+
+    // Name of the Subnetwork resource to update.
+    String subnetwork = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    SubnetworksExpandIpCidrRangeRequest requestBody = new SubnetworksExpandIpCidrRangeRequest();
+
+    Compute computeService = createComputeService();
+    Compute.Subnetworks.ExpandIpCidrRange request = computeService.subnetworks().expandIpCidrRange(project, region, subnetwork, requestBody);
 
     Operation response = request.execute();
 

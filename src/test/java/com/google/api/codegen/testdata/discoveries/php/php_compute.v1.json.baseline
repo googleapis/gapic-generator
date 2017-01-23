@@ -533,6 +533,48 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Compute($client);
 
+// Name of the project scoping this request.
+$project = '';  // TODO: Update placeholder value.
+
+$optParams = [];
+do {
+  $response = $service->backendServices->aggregatedList($project, $optParams);
+
+  foreach ($response['items'] as $name => $backendServicesScopedList) {
+    // TODO: Change code below to process each (name => backendServicesScopedList) element:
+    echo '<pre>', $name, ' => ', var_export($backendServicesScopedList, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
 // Project ID for this request.
 $project = '';  // TODO: Update placeholder value.
 
@@ -4923,6 +4965,50 @@ $project = '';  // TODO: Update placeholder value.
 // The name of the zone for this request.
 $zone = '';  // TODO: Update placeholder value.
 
+// Name of the instance resource to start.
+$instance = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_InstancesSetServiceAccountRequest();
+
+$response = $service->instances->setServiceAccount($project, $zone, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// The name of the zone for this request.
+$zone = '';  // TODO: Update placeholder value.
+
 // Name of the instance scoping this request.
 $instance = '';  // TODO: Update placeholder value.
 
@@ -5412,6 +5498,44 @@ $service = new Google_Service_Compute($client);
 // Project ID for this request.
 $project = '';  // TODO: Update placeholder value.
 
+// Name of the network to be updated.
+$network = '';  // TODO: Update placeholder value.
+
+$response = $service->networks->switchToCustomMode($project, $network);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
 $response = $service->projects->get($project);
 
 // TODO: Change code below to process the `response` object:
@@ -5565,6 +5689,1216 @@ $project = '';  // TODO: Update placeholder value.
 $requestBody = new Google_Service_Compute_UsageExportLocation();
 
 $response = $service->projects->setUsageExportBucket($project, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the autoscaler to delete.
+$autoscaler = '';  // TODO: Update placeholder value.
+
+$response = $service->regionAutoscalers->delete($project, $region, $autoscaler);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the autoscaler to return.
+$autoscaler = '';  // TODO: Update placeholder value.
+
+$response = $service->regionAutoscalers->get($project, $region, $autoscaler);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_Autoscaler();
+
+$response = $service->regionAutoscalers->insert($project, $region, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+$optParams = [];
+do {
+  $response = $service->regionAutoscalers->listRegionAutoscalers($project, $region, $optParams);
+
+  foreach ($response['items'] as $autoscaler) {
+    // TODO: Change code below to process each `autoscaler` resource:
+    echo '<pre>', var_export($autoscaler, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the autoscaler to update.
+$autoscaler = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`. Only assigned
+// properties will be changed:
+$requestBody = new Google_Service_Compute_Autoscaler();
+
+$response = $service->regionAutoscalers->patch($project, $region, $autoscaler, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`. All existing
+// properties will be replaced:
+$requestBody = new Google_Service_Compute_Autoscaler();
+
+$response = $service->regionAutoscalers->update($project, $region, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the BackendService resource to delete.
+$backendService = '';  // TODO: Update placeholder value.
+
+$response = $service->regionBackendServices->delete($project, $region, $backendService);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the BackendService resource to return.
+$backendService = '';  // TODO: Update placeholder value.
+
+$response = $service->regionBackendServices->get($project, $region, $backendService);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the BackendService resource to which the queried instance belongs.
+$backendService = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_ResourceGroupReference();
+
+$response = $service->regionBackendServices->getHealth($project, $region, $backendService, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_BackendService();
+
+$response = $service->regionBackendServices->insert($project, $region, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+$optParams = [];
+do {
+  $response = $service->regionBackendServices->listRegionBackendServices($project, $region, $optParams);
+
+  foreach ($response['items'] as $backendService) {
+    // TODO: Change code below to process each `backendService` resource:
+    echo '<pre>', var_export($backendService, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the BackendService resource to update.
+$backendService = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`. Only assigned
+// properties will be changed:
+$requestBody = new Google_Service_Compute_BackendService();
+
+$response = $service->regionBackendServices->patch($project, $region, $backendService, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the BackendService resource to update.
+$backendService = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`. All existing
+// properties will be replaced:
+$requestBody = new Google_Service_Compute_BackendService();
+
+$response = $service->regionBackendServices->update($project, $region, $backendService, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the managed instance group.
+$instanceGroupManager = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_RegionInstanceGroupManagersAbandonInstancesRequest();
+
+$response = $service->regionInstanceGroupManagers->abandonInstances($project, $region, $instanceGroupManager, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the managed instance group to delete.
+$instanceGroupManager = '';  // TODO: Update placeholder value.
+
+$response = $service->regionInstanceGroupManagers->delete($project, $region, $instanceGroupManager);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the managed instance group.
+$instanceGroupManager = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_RegionInstanceGroupManagersDeleteInstancesRequest();
+
+$response = $service->regionInstanceGroupManagers->deleteInstances($project, $region, $instanceGroupManager, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the managed instance group to return.
+$instanceGroupManager = '';  // TODO: Update placeholder value.
+
+$response = $service->regionInstanceGroupManagers->get($project, $region, $instanceGroupManager);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_InstanceGroupManager();
+
+$response = $service->regionInstanceGroupManagers->insert($project, $region, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+$optParams = [];
+do {
+  $response = $service->regionInstanceGroupManagers->listRegionInstanceGroupManagers($project, $region, $optParams);
+
+  foreach ($response['items'] as $instanceGroupManager) {
+    // TODO: Change code below to process each `instanceGroupManager` resource:
+    echo '<pre>', var_export($instanceGroupManager, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// The name of the managed instance group.
+$instanceGroupManager = '';  // TODO: Update placeholder value.
+
+$response = $service->regionInstanceGroupManagers->listManagedInstances($project, $region, $instanceGroupManager);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the managed instance group.
+$instanceGroupManager = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_RegionInstanceGroupManagersRecreateRequest();
+
+$response = $service->regionInstanceGroupManagers->recreateInstances($project, $region, $instanceGroupManager, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the managed instance group.
+$instanceGroupManager = '';  // TODO: Update placeholder value.
+
+// Number of instances that should exist in this instance group manager.
+$size = 0;  // TODO: Update placeholder value.
+
+$response = $service->regionInstanceGroupManagers->resize($project, $region, $instanceGroupManager, $size);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// The name of the managed instance group.
+$instanceGroupManager = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_RegionInstanceGroupManagersSetTemplateRequest();
+
+$response = $service->regionInstanceGroupManagers->setInstanceTemplate($project, $region, $instanceGroupManager, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the managed instance group.
+$instanceGroupManager = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_RegionInstanceGroupManagersSetTargetPoolsRequest();
+
+$response = $service->regionInstanceGroupManagers->setTargetPools($project, $region, $instanceGroupManager, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the instance group resource to return.
+$instanceGroup = '';  // TODO: Update placeholder value.
+
+$response = $service->regionInstanceGroups->get($project, $region, $instanceGroup);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+$optParams = [];
+do {
+  $response = $service->regionInstanceGroups->listRegionInstanceGroups($project, $region, $optParams);
+
+  foreach ($response['items'] as $instanceGroup) {
+    // TODO: Change code below to process each `instanceGroup` resource:
+    echo '<pre>', var_export($instanceGroup, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the regional instance group for which we want to list the instances.
+$instanceGroup = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_RegionInstanceGroupsListInstancesRequest();
+
+$optParams = [];
+do {
+  $response = $service->regionInstanceGroups->listInstances($project, $region, $instanceGroup, $requestBody, $optParams);
+
+  foreach ($response['items'] as $instanceWithNamedPorts) {
+    // TODO: Change code below to process each `instanceWithNamedPorts` resource:
+    echo '<pre>', var_export($instanceWithNamedPorts, true), '</pre>', "\n";
+  }
+
+  $optParams['pageToken'] = $response->getNextPageToken();
+} while ($optParams['pageToken']);
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// The name of the regional instance group where the named ports are updated.
+$instanceGroup = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_RegionInstanceGroupsSetNamedPortsRequest();
+
+$response = $service->regionInstanceGroups->setNamedPorts($project, $region, $instanceGroup, $requestBody);
 
 // TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
@@ -6667,6 +8001,50 @@ $region = '';  // TODO: Update placeholder value.
 $subnetwork = '';  // TODO: Update placeholder value.
 
 $response = $service->subnetworks->delete($project, $region, $subnetwork);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+?>
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Compute Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/compute
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setApplicationName('Google-ComputeSample/0.1');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Compute($client);
+
+// Project ID for this request.
+$project = '';  // TODO: Update placeholder value.
+
+// Name of the region scoping this request.
+$region = '';  // TODO: Update placeholder value.
+
+// Name of the Subnetwork resource to update.
+$subnetwork = '';  // TODO: Update placeholder value.
+
+// TODO: Assign values to desired properties of `requestBody`:
+$requestBody = new Google_Service_Compute_SubnetworksExpandIpCidrRangeRequest();
+
+$response = $service->subnetworks->expandIpCidrRange($project, $region, $subnetwork, $requestBody);
 
 // TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
