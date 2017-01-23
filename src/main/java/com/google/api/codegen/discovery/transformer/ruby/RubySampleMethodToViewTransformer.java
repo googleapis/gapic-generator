@@ -79,8 +79,8 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
-    List<SampleFieldView> fields = new ArrayList<>();
-    List<String> fieldVarNames = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<String> methodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       String name = namer.localVarName(Name.lowerCamel(field.name()));
       if (FIELD_RENAMES.containsKey(field.name())) {
@@ -93,8 +93,8 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
               .example(field.example())
               .description(field.description())
               .build();
-      fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+      requiredFields.add(sampleFieldView);
+      methodCallFieldVarNames.add(sampleFieldView.name());
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
@@ -103,7 +103,7 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(
           typeTable.getTypeName(methodInfo.requestBodyType()).getNickname());
-      fieldVarNames.add(requestBodyVarName);
+      methodCallFieldVarNames.add(requestBodyVarName);
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -124,8 +124,8 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
         .methodNameComponents(methodInfo.nameComponents())
         .hasRequestBody(hasRequestBody)
         .hasResponse(hasResponse)
-        .fields(fields)
-        .fieldVarNames(fieldVarNames)
+        .requiredFields(requiredFields)
+        .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())

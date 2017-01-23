@@ -41,7 +41,7 @@
 
   ${@class.serviceVarName} = new {@class.serviceTypeName}(${@class.clientVarName});
 
-  @join field : class.fields if class.fields
+  @join field : class.requiredFields if class.requiredFields
     @if field.description
       @join line : util.getDocLines(field.description, 100)
         // {@line}
@@ -87,7 +87,7 @@
   @end
   @if class.isPageStreaming
     do {
-      ${@class.responseVarName} = ${@class.serviceVarName}->{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)});
+      ${@class.responseVarName} = ${@class.serviceVarName}->{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)});
 
       @if class.pageStreaming.isResourceRepeated
         @if class.pageStreaming.isResourceMap
@@ -110,12 +110,12 @@
     } while (${@class.optParamsVarName}['{@class.pageStreaming.pageTokenName}']);
   @else
     @if class.hasResponse
-      ${@class.responseVarName} = ${@class.serviceVarName}->{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)});
+      ${@class.responseVarName} = ${@class.serviceVarName}->{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)});
 
       // TODO: Change code below to process the `{@class.responseVarName}` object:
       echo '<pre>', var_export(${@class.responseVarName}, true), '</pre>', "\n";
     @else
-      ${@class.serviceVarName}->{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)});
+      ${@class.serviceVarName}->{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)});
     @end
   @end
   @if class.auth.type == "OAUTH_3L"
@@ -148,8 +148,8 @@
   @end
 @end
 
-@private paramList(fieldVarNames)
-  @join fieldVarName : fieldVarNames on ", "
+@private paramList(methodCallFieldVarNames)
+  @join fieldVarName : methodCallFieldVarNames on ", "
     ${@fieldVarName}
   @end
 @end

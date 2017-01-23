@@ -48,7 +48,7 @@
     {@class.serviceVarName}.key = ''  @# TODO: Update placeholder with desired API key.
   @end
 
-  @join field : class.fields if class.fields
+  @join field : class.requiredFields if class.requiredFields
     @if field.description
       @join line : util.getDocLines(field.description, 100)
         @# {@line}
@@ -91,8 +91,8 @@
   @end
   @if class.isPageStreaming
     {@class.pageStreaming.pageVarName} = {@class.serviceVarName}.fetch_all(items: :{@class.pageStreaming.resourceFieldName}) do |token|
-      @if class.fieldVarNames
-        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)}, {@class.pageStreaming.pageTokenName}: token)
+      @if class.methodCallFieldVarNames
+        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)}, {@class.pageStreaming.pageTokenName}: token)
       @else
         {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.pageStreaming.pageTokenName}: token)
       @end
@@ -113,12 +113,12 @@
     @end
   @else
     @if class.hasResponse
-      {@class.responseVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)})
+      {@class.responseVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)})
 
       @# TODO: Change code below to process the `{@class.responseVarName}` object:
       puts JSON.pretty_generate({@class.responseVarName})
     @else
-      {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.fieldVarNames)})
+      {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)})
     @end
   @end
 @end
@@ -129,8 +129,8 @@
   @end
 @end
 
-@private paramList(fieldVarNames)
-  @join fieldVarName : fieldVarNames on ", "
+@private paramList(methodCallFieldVarNames)
+  @join fieldVarName : methodCallFieldVarNames on ", "
     {@fieldVarName}
   @end
 @end

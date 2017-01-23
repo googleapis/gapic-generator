@@ -37,21 +37,19 @@
 
 @private mainFunc(class)
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    @join field : class.fields if class.fields
-      @if field.description
-        @join line : util.getDocLines(field.description, 100)
-          // {@line}
+    @join field : class.requiredFields if class.requiredFields
+      {@field(field)}
+
+    @end
+    @if class.hasRequestBody
+      @if class.requestBodyFields
+        @join field : class.requestBodyFields
+          {@field(field)}
+
         @end
 
 
       @end
-      {@field.typeName} {@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
-      @if field.example
-        // {@field.example}
-      @end
-
-    @end
-    @if class.hasRequestBody
       @switch class.methodVerb
       @case "PATCH"
         // TODO: Assign values to desired fields of `{@class.requestBodyVarName}`. Only assigned
@@ -64,6 +62,9 @@
       @end
 
       {@class.requestBodyTypeName} {@class.requestBodyVarName} = new {@class.requestBodyTypeName}();
+      @join field : class.requestBodyFields if class.requestBodyFields
+        {@class.requestBodyVarName}.{@field.setterFuncName}({@field.name});
+      @end
 
     @end
     @if class.hasMediaUpload
@@ -72,7 +73,10 @@
 
     @end
     {@class.serviceTypeName} {@class.serviceVarName} = {@class.createServiceFuncName}();
-    {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@argList(class.fieldVarNames)});
+    {@class.requestTypeName} {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@argList(class.methodCallFieldVarNames)});
+    @join field : class.optionalFields if class.optionalFields
+      {@class.requestVarName}.{@field.setterFuncName}({@field.name});
+    @end
 
     @if class.hasMediaDownload
       // TODO: Download media content if desired. See
@@ -159,14 +163,28 @@
   }
 @end
 
+@private field(field)
+      @if field.description
+        @join line : util.getDocLines(field.description, 100)
+          // {@line}
+        @end
+
+
+      @end
+      {@field.typeName} {@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
+      @if field.example
+        // {@field.example}
+      @end
+@end
+
 @private callChain(methodNameComponents)
   @join resource : methodNameComponents on "()."
     {@resource}
   @end
 @end
 
-@private argList(fieldVarNames)
-  @join fieldVarName : fieldVarNames on ", "
+@private argList(methodCallFieldVarNames)
+  @join fieldVarName : methodCallFieldVarNames on ", "
     {@fieldVarName}
   @end
 @end

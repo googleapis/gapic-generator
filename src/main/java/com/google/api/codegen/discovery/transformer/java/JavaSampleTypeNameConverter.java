@@ -86,32 +86,6 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
-    if (typeInfo.isMessage()) {
-      MessageTypeInfo messageInfo = typeInfo.message();
-      return typeNameConverter.getTypeName(
-          Joiner.on('.').join(packagePrefix, "model", messageInfo.typeName()));
-    }
-    return getNonMessageTypeName(typeInfo);
-  }
-
-  @Override
-  public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
-    // Maps are special-cased so we return Map.Entry types.
-    if (typeInfo.isMap()) {
-      TypeName mapTypeName = new TypeName("java.util.Map", "Map.Entry");
-      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey(), true);
-      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue(), true);
-      return new TypeName(
-          mapTypeName.getFullName(),
-          mapTypeName.getNickname(),
-          "%s<%i, %i>",
-          keyTypeName,
-          valueTypeName);
-    }
-    return getTypeNameForElementType(typeInfo, true);
-  }
-
-  private TypeName getNonMessageTypeName(TypeInfo typeInfo) {
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
       TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey(), true);
@@ -132,6 +106,28 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     return getTypeNameForElementType(typeInfo, false);
   }
 
+  @Override
+  public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
+    if (typeInfo.isMessage()) {
+      MessageTypeInfo messageInfo = typeInfo.message();
+      return typeNameConverter.getTypeName(
+          Joiner.on('.').join(packagePrefix, "model", messageInfo.typeName()));
+    }
+    // Maps are special-cased so we return Map.Entry types.
+    if (typeInfo.isMap()) {
+      TypeName mapTypeName = new TypeName("java.util.Map", "Map.Entry");
+      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey(), true);
+      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue(), true);
+      return new TypeName(
+          mapTypeName.getFullName(),
+          mapTypeName.getNickname(),
+          "%s<%i, %i>",
+          keyTypeName,
+          valueTypeName);
+    }
+    return getTypeNameForElementType(typeInfo, true);
+  }
+
   private TypeName getTypeNameForElementType(TypeInfo typeInfo, boolean shouldBoxPrimitives) {
     String primitiveTypeName = PRIMIVITVE_TYPE_MAP.get(typeInfo.kind());
     if (primitiveTypeName != null) {
@@ -147,7 +143,7 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     }
     switch (typeInfo.kind()) {
       case TYPE_MESSAGE:
-        return getTypeName(typeInfo);
+        return getTypeNameForElementType(typeInfo);
       default:
         throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
     }

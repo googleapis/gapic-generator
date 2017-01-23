@@ -81,21 +81,21 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     String requestTypeName =
         typeTable.getAndSaveNicknameForRequestType(config.apiTypeName(), methodInfo.requestType());
 
-    List<String> fieldVarNames = new ArrayList<>();
+    List<String> methodCallFieldVarNames = new ArrayList<>();
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(typeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
-      fieldVarNames.add(requestBodyVarName);
+      methodCallFieldVarNames.add(requestBodyVarName);
     }
 
-    List<SampleFieldView> fields = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView =
           createSampleFieldView(methodInfo, field, typeTable, symbolTable);
-      fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+      requiredFields.add(sampleFieldView);
+      methodCallFieldVarNames.add(sampleFieldView.name());
     }
 
     if (methodInfo.isPageStreaming()) {
@@ -131,8 +131,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)
         .hasResponse(hasResponse)
-        .fields(fields)
-        .fieldVarNames(fieldVarNames)
+        .requiredFields(requiredFields)
+        .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())

@@ -72,6 +72,9 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract String requestBodyTypeName();
 
+  @Nullable
+  public abstract List<SampleFieldView> requestBodyFields();
+
   public abstract boolean hasResponse();
 
   @Nullable
@@ -80,10 +83,13 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract String responseTypeName();
 
-  public abstract List<SampleFieldView> fields();
+  public abstract List<SampleFieldView> requiredFields();
 
   @Nullable
-  public abstract List<String> fieldVarNames();
+  public abstract List<SampleFieldView> optionalFields();
+
+  @Nullable
+  public abstract List<String> methodCallFieldVarNames();
 
   public abstract boolean isPageStreaming();
 
@@ -193,15 +199,19 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder requestBodyTypeName(String val);
 
+    public abstract Builder requestBodyFields(List<SampleFieldView> val);
+
     public abstract Builder hasResponse(boolean val);
 
     public abstract Builder responseVarName(String val);
 
     public abstract Builder responseTypeName(String val);
 
-    public abstract Builder fields(List<SampleFieldView> val);
+    public abstract Builder requiredFields(List<SampleFieldView> val);
 
-    public abstract Builder fieldVarNames(List<String> val);
+    public abstract Builder optionalFields(List<SampleFieldView> val);
+
+    public abstract Builder methodCallFieldVarNames(List<String> val);
 
     public abstract Builder isPageStreaming(boolean val);
 

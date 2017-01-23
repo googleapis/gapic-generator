@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class SampleFieldView {
 
+  @Nullable
   public abstract String name();
 
   @Nullable
@@ -30,6 +31,12 @@ public abstract class SampleFieldView {
   public abstract String example();
 
   public abstract String description();
+
+  @Nullable
+  public abstract Boolean required();
+
+  @Nullable
+  public abstract String setterFuncName();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleFieldView.Builder();
@@ -47,6 +54,10 @@ public abstract class SampleFieldView {
     public abstract Builder example(String val);
 
     public abstract Builder description(String val);
+
+    public abstract Builder required(Boolean val);
+
+    public abstract Builder setterFuncName(String val);
 
     public abstract SampleFieldView build();
   }
