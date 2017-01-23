@@ -83,19 +83,29 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
 
     List<String> methodCallFieldVarNames = new ArrayList<>();
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(typeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
       methodCallFieldVarNames.add(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(methodInfo, fieldInfo, context, symbolTable));
+      }
     }
 
     List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView =
-          createSampleFieldView(methodInfo, field, typeTable, symbolTable);
+          createSampleFieldView(methodInfo, field, context, symbolTable);
       requiredFields.add(sampleFieldView);
-      methodCallFieldVarNames.add(sampleFieldView.name());
+      if (sampleFieldView.required()) {
+        methodCallFieldVarNames.add(sampleFieldView.name());
+      } else {
+        optionalFields.add(sampleFieldView);
+      }
     }
 
     if (methodInfo.isPageStreaming()) {
@@ -130,8 +140,10 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .requestVarName(requestVarName)
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
         .requiredFields(requiredFields)
+        .optionalFields(optionalFields)
         .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
@@ -188,8 +200,10 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
   private SampleFieldView createSampleFieldView(
       MethodInfo methodInfo,
       FieldInfo field,
-      SampleTypeTable sampleTypeTable,
+      SampleTransformerContext context,
       SymbolTable symbolTable) {
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
     TypeInfo typeInfo = field.type();
 
     String defaultValue = "";
@@ -203,8 +217,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
       typeName = typedValue.getTypeName().getNickname();
       defaultValue = String.format(typedValue.getValuePattern(), typeName);
     } else {
-      defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
-      typeName = sampleTypeTable.getAndSaveNicknameFor(typeInfo);
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+      typeName = typeTable.getAndSaveNicknameFor(typeInfo);
     }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
@@ -212,6 +226,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
+        .setterFuncName(namer.publicMethodName(Name.lowerCamel(field.name())))
+        .required(field.required())
         .build();
   }
 
