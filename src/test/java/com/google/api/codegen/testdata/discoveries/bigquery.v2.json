@@ -1,11 +1,11 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"C5oy1hgQsABtYOYIOXWcR3BgYqU/mUCGVe_U0F1Pct-EFDtztf8GfGk\"",
+ "etag": "\"tbys6C40o18GZwyMen5GMkdK-3s/8QZR0WZ1-NVsTgfIYMT8jh3XhtQ\"",
  "discoveryVersion": "v1",
  "id": "bigquery:v2",
  "name": "bigquery",
  "version": "v2",
- "revision": "20161006",
+ "revision": "20170114",
  "title": "BigQuery API",
  "description": "A data platform for customers to create, manage, share and query data.",
  "ownerDomain": "google.com",
@@ -442,6 +442,10 @@
      "description": "Number of records written by the stage.",
      "format": "int64"
     },
+    "status": {
+     "type": "string",
+     "description": "Current status for the stage."
+    },
     "steps": {
      "type": "array",
      "description": "List of operations within the stage in dependency order (approximately chronological).",
@@ -687,6 +691,13 @@
      "$ref": "JobConfigurationExtract",
      "description": "[Pick one] Configures an extract job."
     },
+    "labels": {
+     "type": "object",
+     "description": "[Experimental] The labels associated with this job. You can use these to organize and group your jobs. Label keys and values can be no longer than 63 characters, can only contain letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter and must be unique within a dataset. Both keys and values are additionally constrained to be \u003c= 128 bytes in size.",
+     "additionalProperties": {
+      "type": "string"
+     }
+    },
     "load": {
      "$ref": "JobConfigurationLoad",
      "description": "[Pick one] Configures a load job."
@@ -775,6 +786,10 @@
      "type": "integer",
      "description": "[Optional] The maximum number of bad records that BigQuery can ignore when running the job. If the number of bad records exceeds this value, an invalid error is returned in the job result. The default value is 0, which requires that all records are valid.",
      "format": "int32"
+    },
+    "nullMarker": {
+     "type": "string",
+     "description": "[Optional] Specifies a string that represents a null value in a CSV file. For example, if you specify \"\\N\", BigQuery interprets \"\\N\" as a null value when loading a CSV file. The default value is the empty string. If you set this property to a custom value, BigQuery still interprets the empty string as a null value for all data types except for STRING and BYTE. For STRING and BYTE columns, BigQuery interprets the empty string as an empty value."
     },
     "projectionFields": {
      "type": "array",
@@ -868,7 +883,7 @@
     },
     "parameterMode": {
      "type": "string",
-     "description": "[Experimental] Standard SQL only. Whether to use positional (?) or named (@myparam) query parameters in this query."
+     "description": "[Experimental] Standard SQL only. Set to POSITIONAL to use positional (?) query parameters or to NAMED to use named (@myparam) query parameters in this query."
     },
     "preserveNulls": {
      "type": "boolean",
@@ -884,14 +899,14 @@
     },
     "queryParameters": {
      "type": "array",
-     "description": "[Experimental] Query parameters for Standard SQL queries.",
+     "description": "Query parameters for standard SQL queries.",
      "items": {
       "$ref": "QueryParameter"
      }
     },
     "schemaUpdateOptions": {
      "type": "array",
-     "description": "[Experimental] Allows the schema of the desitination table to be updated as a side effect of the query job. Schema update options are supported in two cases: when writeDisposition is WRITE_APPEND; when writeDisposition is WRITE_TRUNCATE and the destination table is a partition of a table, specified by partition decorators. For normal tables, WRITE_TRUNCATE will always overwrite the schema. One or more of the following values are specified: ALLOW_FIELD_ADDITION: allow adding a nullable field to the schema. ALLOW_FIELD_RELAXATION: allow relaxing a required field in the original schema to nullable.",
+     "description": "[Experimental] Allows the schema of the destination table to be updated as a side effect of the query job. Schema update options are supported in two cases: when writeDisposition is WRITE_APPEND; when writeDisposition is WRITE_TRUNCATE and the destination table is a partition of a table, specified by partition decorators. For normal tables, WRITE_TRUNCATE will always overwrite the schema. One or more of the following values are specified: ALLOW_FIELD_ADDITION: allow adding a nullable field to the schema. ALLOW_FIELD_RELAXATION: allow relaxing a required field in the original schema to nullable.",
      "items": {
       "type": "string"
      }
@@ -905,7 +920,7 @@
     },
     "useLegacySql": {
      "type": "boolean",
-     "description": "[Experimental] Specifies whether to use BigQuery's legacy SQL dialect for this query. The default value is true. If set to false, the query will use BigQuery's standard SQL: https://cloud.google.com/bigquery/sql-reference/ When useLegacySql is set to false, the values of allowLargeResults and flattenResults are ignored; query will be run as if allowLargeResults is true and flattenResults is false."
+     "description": "Specifies whether to use BigQuery's legacy SQL dialect for this query. The default value is true. If set to false, the query will use BigQuery's standard SQL: https://cloud.google.com/bigquery/sql-reference/ When useLegacySql is set to false, the values of allowLargeResults and flattenResults are ignored; query will be run as if allowLargeResults is true and flattenResults is false."
     },
     "useQueryCache": {
      "type": "boolean",
@@ -1116,6 +1131,10 @@
     "schema": {
      "$ref": "TableSchema",
      "description": "[Output-only, Experimental] The schema of the results. Present only for successful dry run of non-legacy SQL queries."
+    },
+    "statementType": {
+     "type": "string",
+     "description": "[Output-only, Experimental] The type of query statement, if valid."
     },
     "totalBytesBilled": {
      "type": "string",
@@ -1375,7 +1394,7 @@
     },
     "parameterMode": {
      "type": "string",
-     "description": "[Experimental] Standard SQL only. Whether to use positional (?) or named (@myparam) query parameters in this query."
+     "description": "[Experimental] Standard SQL only. Set to POSITIONAL to use positional (?) query parameters or to NAMED to use named (@myparam) query parameters in this query."
     },
     "preserveNulls": {
      "type": "boolean",
@@ -1404,7 +1423,7 @@
     },
     "useLegacySql": {
      "type": "boolean",
-     "description": "[Experimental] Specifies whether to use BigQuery's legacy SQL dialect for this query. The default value is true. If set to false, the query will use BigQuery's standard SQL: https://cloud.google.com/bigquery/sql-reference/ When useLegacySql is set to false, the values of allowLargeResults and flattenResults are ignored; query will be run as if allowLargeResults is true and flattenResults is false.",
+     "description": "Specifies whether to use BigQuery's legacy SQL dialect for this query. The default value is true. If set to false, the query will use BigQuery's standard SQL: https://cloud.google.com/bigquery/sql-reference/ When useLegacySql is set to false, the values of allowLargeResults and flattenResults are ignored; query will be run as if allowLargeResults is true and flattenResults is false.",
      "default": "true"
     },
     "useQueryCache": {
@@ -1533,6 +1552,13 @@
      "type": "string",
      "description": "[Output-only] The type of the resource.",
      "default": "bigquery#table"
+    },
+    "labels": {
+     "type": "object",
+     "description": "[Experimental] The labels associated with this table. You can use these to organize and group your tables. Label keys and values can be no longer than 63 characters, can only contain letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter and must be unique within a dataset. Both keys and values are additionally constrained to be \u003c= 128 bytes in size.",
+     "additionalProperties": {
+      "type": "string"
+     }
     },
     "lastModifiedTime": {
      "type": "string",
@@ -1725,7 +1751,7 @@
     },
     "type": {
      "type": "string",
-     "description": "[Required] The field data type. Possible values include STRING, BYTES, INTEGER, FLOAT, BOOLEAN, TIMESTAMP, DATE, TIME, DATETIME, or RECORD (where RECORD indicates that the field contains a nested schema)."
+     "description": "[Required] The field data type. Possible values include STRING, BYTES, INTEGER, INT64 (same as INTEGER), FLOAT, FLOAT64 (same as FLOAT), BOOLEAN, BOOL (same as BOOLEAN), TIMESTAMP, DATE, TIME, DATETIME, RECORD (where RECORD indicates that the field contains a nested schema) or STRUCT (same as RECORD)."
     }
    }
   },
@@ -1764,6 +1790,13 @@
         "type": "string",
         "description": "The resource type.",
         "default": "bigquery#table"
+       },
+       "labels": {
+        "type": "object",
+        "description": "[Experimental] The labels associated with this table. You can use these to organize and group your tables.",
+        "additionalProperties": {
+         "type": "string"
+        }
        },
        "tableReference": {
         "$ref": "TableReference",
@@ -1881,7 +1914,7 @@
     },
     "useLegacySql": {
      "type": "boolean",
-     "description": "[Experimental] Specifies whether to use BigQuery's legacy SQL for this view. The default value is true. If set to false, the view will use BigQuery's standard SQL: https://cloud.google.com/bigquery/sql-reference/ Queries and views that reference this view must use the same flag value."
+     "description": "Specifies whether to use BigQuery's legacy SQL for this view. The default value is true. If set to false, the view will use BigQuery's standard SQL: https://cloud.google.com/bigquery/sql-reference/ Queries and views that reference this view must use the same flag value."
     },
     "userDefinedFunctionResources": {
      "type": "array",
