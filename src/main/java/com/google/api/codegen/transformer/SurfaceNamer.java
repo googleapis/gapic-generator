@@ -776,7 +776,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the return type of the given grpc streaming method. */
-  public String getGrpcStreamingApiReturnTypeName(Method method) {
+  public String getGrpcStreamingApiReturnTypeName(Method method, ModelTypeTable typeTable) {
     return publicClassName(
         Name.upperCamel(method.getOutputType().getMessageType().getSimpleName()));
   }
