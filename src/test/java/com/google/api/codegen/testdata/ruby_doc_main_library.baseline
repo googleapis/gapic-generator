@@ -363,6 +363,10 @@ module Library
           @library_service_stub.method(:discuss_book),
           defaults["discuss_book"]
         )
+        @monolog_about_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:monolog_about_book),
+          defaults["monolog_about_book"]
+        )
         @find_related_books = Google::Gax.create_api_call(
           @library_service_stub.method(:find_related_books),
           defaults["find_related_books"]
@@ -1090,6 +1094,39 @@ module Library
 
       def discuss_book reqs, options: nil
         @discuss_book.call(reqs, options)
+      end
+
+      # Test client streaming.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      #
+      # @param reqs [Enumerable<Google::Example::Library::V1::DiscussBookRequest>]
+      #   The input requests.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::Comment]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      #
+      # @note
+      #   EXPERIMENTAL:
+      #     Streaming requests are still undergoing review.
+      #     This method interface might change in the future.
+      #
+      # @example
+      #   require "library/v1/library_service_client"
+      #
+      #   DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
+      #   LibraryServiceClient = Library::V1::LibraryServiceClient
+      #
+      #   library_service_client = LibraryServiceClient.new
+      #   name = ''
+      #   request = DiscussBookRequest.new
+      #   request.name = name
+      #   requests = [request]
+      #   response = library_service_client.monolog_about_book(requests)
+
+      def monolog_about_book reqs, options: nil
+        @monolog_about_book.call(reqs, options)
       end
 
       # @param names [Array<String>]

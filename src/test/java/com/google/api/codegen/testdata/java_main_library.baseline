@@ -185,6 +185,7 @@ public class LibraryServiceClient implements AutoCloseable {
   private final StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable;
   private final StreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
   private final StreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
+  private final StreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
   private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
@@ -261,6 +262,7 @@ public class LibraryServiceClient implements AutoCloseable {
     this.streamShelvesCallable = StreamingCallable.create(settings.streamShelvesSettings(), this.channel);
     this.streamBooksCallable = StreamingCallable.create(settings.streamBooksSettings(), this.channel);
     this.discussBookCallable = StreamingCallable.create(settings.discussBookSettings(), this.channel);
+    this.monologAboutBookCallable = StreamingCallable.create(settings.monologAboutBookSettings(), this.channel);
     this.findRelatedBooksCallable = UnaryCallable.create(settings.findRelatedBooksSettings(), this.channel, this.executor);
     this.findRelatedBooksPagedCallable =
         UnaryCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
@@ -1866,6 +1868,46 @@ public class LibraryServiceClient implements AutoCloseable {
    */
   public final StreamingCallable<DiscussBookRequest, Comment> discussBookCallable() {
     return discussBookCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test client streaming.
+   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   StreamObserver&lt;Comment&gt; responseObserver =
+   *       new StreamObserver&lt;Comment&gt;() {
+   *         {@literal @}Override
+   *         public void onNext(Comment response) {
+   *           // Do something when receive a response
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onError(Throwable t) {
+   *           // Add error-handling
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onCompleted() {
+   *           // Do something when complete.
+   *         }
+   *       };
+   *   StreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
+   *       libraryServiceClient.monologAboutBookCallable().clientStreamingCall(responseObserver)});
+   *
+   *   String name = "";
+   *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
+   *     .setName(name)
+   *     .build();
+   *   requestObserver.onNext(request);
+   * }
+   * </code></pre>
+   */
+  public final StreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable() {
+    return monologAboutBookCallable;
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD

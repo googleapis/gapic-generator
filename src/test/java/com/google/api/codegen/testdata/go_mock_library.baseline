@@ -243,6 +243,22 @@ func (s *mockLibraryServer) DiscussBook(stream librarypb.LibraryService_DiscussB
     return nil
 }
 
+func (s *mockLibraryServer) MonologAboutBook(stream librarypb.LibraryService_MonologAboutBookServer) error {
+    for {
+        if req, err := stream.Recv(); err == io.EOF {
+            break
+        } else if err != nil {
+            return err
+        } else {
+            s.reqs = append(s.reqs, req)
+        }
+    }
+    if s.err != nil {
+        return s.err
+    }
+    return stream.SendAndClose(s.resps[0].(*librarypb.Comment))
+}
+
 func (s *mockLibraryServer) FindRelatedBooks(_ context.Context, req *librarypb.FindRelatedBooksRequest) (*librarypb.FindRelatedBooksResponse, error) {
     s.reqs = append(s.reqs, req)
     if s.err != nil {
@@ -1609,6 +1625,73 @@ func TestLibraryServiceDiscussBookError(t *testing.T) {
         t.Fatal(err)
     }
     resp, err := stream.Recv()
+
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceMonologAboutBook(t *testing.T) {
+    var userName string = "userName339340927"
+    var comment []byte = []byte("95")
+    var expectedResponse = &librarypb.Comment{
+        UserName: userName,
+        Comment: comment,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var name string = "name3373707"
+    var request = &librarypb.DiscussBookRequest{
+        Name: name,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.MonologAboutBook(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.CloseAndRecv()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceMonologAboutBookError(t *testing.T) {
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
+
+    var name string = "name3373707"
+    var request = &librarypb.DiscussBookRequest{
+        Name: name,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.MonologAboutBook(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.CloseAndRecv()
 
     if c := grpc.Code(err); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)

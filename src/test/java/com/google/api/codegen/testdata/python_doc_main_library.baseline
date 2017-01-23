@@ -371,6 +371,9 @@ class LibraryServiceClient(object):
         self._discuss_book = api_callable.create_api_call(
             self.library_service_stub.DiscussBook,
             settings=defaults['discuss_book'])
+        self._monolog_about_book = api_callable.create_api_call(
+            self.library_service_stub.MonologAboutBook,
+            settings=defaults['monolog_about_book'])
         self._find_related_books = api_callable.create_api_call(
             self.library_service_stub.FindRelatedBooks,
             settings=defaults['find_related_books'])
@@ -1098,6 +1101,39 @@ class LibraryServiceClient(object):
           :exc:`ValueError` if the parameters are invalid.
         """
         return self._discuss_book(requests, options)
+
+    def monolog_about_book(
+            self,
+            requests,
+            options=None):
+        """
+        Test client streaming.
+        gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+
+        EXPERIMENTAL: This method interface might change in the future.
+
+        Example:
+          >>> from google.cloud.gapic.example.library.v1 import library_service_client
+          >>> from google.cloud.proto.example.library.v1 import library_pb2
+          >>> api = library_service_client.LibraryServiceClient()
+          >>> name = ''
+          >>> request = library_pb2.DiscussBookRequest(name)
+          >>> requests = [request]
+          >>> response = api.monolog_about_book(requests)
+
+        Args:
+          requests (iterator[:class:`google.cloud.proto.example.library.v1.library_pb2.DiscussBookRequest`]): The input objects.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Returns:
+          A :class:`google.cloud.proto.example.library.v1.library_pb2.Comment` instance.
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+          :exc:`ValueError` if the parameters are invalid.
+        """
+        return self._monolog_about_book(requests, options)
 
     def find_related_books(
             self,

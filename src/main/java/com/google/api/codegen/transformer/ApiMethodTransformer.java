@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -801,9 +802,13 @@ public class ApiMethodTransformer {
         removePageTokenFieldConfig(context, context.getMethodConfig().getOptionalFieldConfigs());
     apiMethod.optionalRequestObjectParamsNoPageToken(
         generateRequestObjectParams(context, filteredFieldConfigs));
-    apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
-    apiMethod.isLongRunningOperation(context.getMethodConfig().isLongRunningOperation());
+    GrpcStreamingType grpcStreamingType = context.getMethodConfig().getGrpcStreamingType();
+    apiMethod.grpcStreamingType(grpcStreamingType);
+    apiMethod.isSingularRequestMethod(
+        grpcStreamingType.equals(GrpcStreamingType.NonStreaming)
+            || grpcStreamingType.equals(GrpcStreamingType.ServerStreaming));
+
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)
@@ -855,13 +860,15 @@ public class ApiMethodTransformer {
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(
       MethodTransformerContext context, Iterable<Field> fields) {
     List<DynamicLangDefaultableParamView> methodParams = new ArrayList<>();
-    for (Field field : context.getMethodConfig().getRequiredFields()) {
-      DynamicLangDefaultableParamView param =
-          DynamicLangDefaultableParamView.newBuilder()
-              .name(context.getNamer().getVariableName(field))
-              .defaultValue("")
-              .build();
-      methodParams.add(param);
+    if (!context.getMethod().getRequestStreaming()) {
+      for (Field field : context.getMethodConfig().getRequiredFields()) {
+        DynamicLangDefaultableParamView param =
+            DynamicLangDefaultableParamView.newBuilder()
+                .name(context.getNamer().getVariableName(field))
+                .defaultValue("")
+                .build();
+        methodParams.add(param);
+      }
     }
     return methodParams;
   }
@@ -948,6 +955,10 @@ public class ApiMethodTransformer {
       Iterable<FieldConfig> fieldConfigs,
       List<ParamWithSimpleDoc> additionalParamDocs) {
     List<ParamDocView> allDocs = new ArrayList<>();
+    if (context.getMethod().getRequestStreaming()) {
+      allDocs.addAll(ParamWithSimpleDoc.asParamDocViews(additionalParamDocs));
+      return allDocs;
+    }
     for (FieldConfig fieldConfig : fieldConfigs) {
       Field field = fieldConfig.getField();
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
@@ -1032,29 +1043,37 @@ public class ApiMethodTransformer {
     Name retrySettingsName = Name.from("retry", "settings");
     Name timeoutMillisName = Name.from("timeout", "millis");
 
-    retrySettingsDoc.paramName(context.getNamer().localVarName(retrySettingsName));
-    // TODO figure out a reliable way to line-wrap comments across all languages
-    // instead of encoding it in the transformer
-    String retrySettingsDocText =
-        String.format(
-            "Retry settings to use for this call. If present, then\n%s is ignored.",
-            context.getNamer().varReference(timeoutMillisName));
-    List<String> retrySettingsDocLines = context.getNamer().getDocLines(retrySettingsDocText);
-    retrySettingsDoc.lines(retrySettingsDocLines);
-    arrayKeyDocs.add(retrySettingsDoc.build());
+    if (context.getNamer().methodHasRetrySettings(context.getMethodConfig())) {
+      retrySettingsDoc.paramName(context.getNamer().localVarName(retrySettingsName));
+      // TODO figure out a reliable way to line-wrap comments across all languages
+      // instead of encoding it in the transformer
+      String retrySettingsDocText =
+          String.format(
+              "Retry settings to use for this call. If present, then\n%s is ignored.",
+              context.getNamer().varReference(timeoutMillisName));
+      List<String> retrySettingsDocLines = context.getNamer().getDocLines(retrySettingsDocText);
+      retrySettingsDoc.lines(retrySettingsDocLines);
+      arrayKeyDocs.add(retrySettingsDoc.build());
+    }
 
-    SimpleParamDocView.Builder timeoutDoc = SimpleParamDocView.newBuilder();
-    timeoutDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32)));
-    timeoutDoc.paramName(context.getNamer().localVarName(timeoutMillisName));
-    // TODO figure out a reliable way to line-wrap comments across all languages
-    // instead of encoding it in the transformer
-    String timeoutMillisDocText =
-        String.format(
-            "Timeout to use for this call. Only used if %s\nis not set.",
-            context.getNamer().varReference(retrySettingsName));
-    List<String> timeoutMillisDocLines = context.getNamer().getDocLines(timeoutMillisDocText);
-    timeoutDoc.lines(timeoutMillisDocLines);
-    arrayKeyDocs.add(timeoutDoc.build());
+    if (context.getNamer().methodHasTimeoutSettings(context.getMethodConfig())) {
+      SimpleParamDocView.Builder timeoutDoc = SimpleParamDocView.newBuilder();
+      timeoutDoc.typeName(
+          context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32)));
+      timeoutDoc.paramName(context.getNamer().localVarName(timeoutMillisName));
+      // TODO figure out a reliable way to line-wrap comments across all languages
+      // instead of encoding it in the transformer
+      String timeoutMillisDocText = "Timeout to use for this call.";
+      if (context.getNamer().methodHasRetrySettings(context.getMethodConfig())) {
+        timeoutMillisDocText +=
+            String.format(
+                " Only used if %s\nis not set.",
+                context.getNamer().varReference(retrySettingsName));
+      }
+      List<String> timeoutMillisDocLines = context.getNamer().getDocLines(timeoutMillisDocText);
+      timeoutDoc.lines(timeoutMillisDocLines);
+      arrayKeyDocs.add(timeoutDoc.build());
+    }
 
     return arrayKeyDocs;
   }

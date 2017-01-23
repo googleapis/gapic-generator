@@ -470,6 +470,41 @@ service = Google::Apis::ComputeV1::ComputeService.new
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
+# Name of the project scoping this request.
+project = ''  # TODO: Update placeholder value.
+
+items = service.fetch_all(items: :items) do |token|
+  service.aggregated_backend_service_list(project, page_token: token)
+end
+
+items.each do |name, backend_services_scoped_list|
+  # TODO: Change code below to process each (name, backend_services_scoped_list) pair:
+  puts String(name << " => " << JSON.pretty_generate(backend_services_scoped_list)
+end
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
 # Project ID for this request.
 project = ''  # TODO: Update placeholder value.
 
@@ -4363,6 +4398,46 @@ project = ''  # TODO: Update placeholder value.
 # The name of the zone for this request.
 zone = ''  # TODO: Update placeholder value.
 
+# Name of the instance resource to start.
+instance = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::InstancesSetServiceAccountRequest.new
+
+response = service.set_instance_service_account(project, zone, instance, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# The name of the zone for this request.
+zone = ''  # TODO: Update placeholder value.
+
 # Name of the instance scoping this request.
 instance = ''  # TODO: Update placeholder value.
 
@@ -4795,6 +4870,40 @@ service.authorization = \
 # Project ID for this request.
 project = ''  # TODO: Update placeholder value.
 
+# Name of the network to be updated.
+network = ''  # TODO: Update placeholder value.
+
+response = service.switch_network_to_custom_mode(project, network)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
 response = service.get_project(project)
 
 # TODO: Change code below to process the `response` object:
@@ -4932,6 +5041,1089 @@ project = ''  # TODO: Update placeholder value.
 request_body = Google::Apis::ComputeV1::UsageExportLocation.new
 
 response = service.set_usage_export_bucket(project, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the autoscaler to delete.
+autoscaler = ''  # TODO: Update placeholder value.
+
+response = service.delete_region_autoscaler(project, region, autoscaler)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the autoscaler to return.
+autoscaler = ''  # TODO: Update placeholder value.
+
+response = service.get_region_autoscaler(project, region, autoscaler)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::Autoscaler.new
+
+response = service.insert_region_autoscaler(project, region, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+items = service.fetch_all(items: :items) do |token|
+  service.list_region_autoscalers(project, region, page_token: token)
+end
+
+items.each do |autoscaler|
+  # TODO: Change code below to process each `autoscaler` resource:
+  puts JSON.pretty_generate(autoscaler)
+end
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the autoscaler to update.
+autoscaler = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`. Only assigned
+# members will be changed:
+request_body = Google::Apis::ComputeV1::Autoscaler.new
+
+response = service.patch_region_autoscaler(project, region, autoscaler, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`. All existing
+# members will be replaced:
+request_body = Google::Apis::ComputeV1::Autoscaler.new
+
+response = service.update_region_autoscaler(project, region, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to delete.
+backend_service = ''  # TODO: Update placeholder value.
+
+response = service.delete_region_backend_service(project, region, backend_service)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to return.
+backend_service = ''  # TODO: Update placeholder value.
+
+response = service.get_region_backend_service(project, region, backend_service)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to which the queried instance belongs.
+backend_service = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::ResourceGroupReference.new
+
+response = service.get_region_backend_service_health(project, region, backend_service, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::BackendService.new
+
+response = service.insert_region_backend_service(project, region, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+items = service.fetch_all(items: :items) do |token|
+  service.list_region_backend_services(project, region, page_token: token)
+end
+
+items.each do |backend_service|
+  # TODO: Change code below to process each `backend_service` resource:
+  puts JSON.pretty_generate(backend_service)
+end
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to update.
+backend_service = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`. Only assigned
+# members will be changed:
+request_body = Google::Apis::ComputeV1::BackendService.new
+
+response = service.patch_region_backend_service(project, region, backend_service, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the BackendService resource to update.
+backend_service = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`. All existing
+# members will be replaced:
+request_body = Google::Apis::ComputeV1::BackendService.new
+
+response = service.update_region_backend_service(project, region, backend_service, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::RegionInstanceGroupManagersAbandonInstancesRequest.new
+
+response = service.abandon_region_instance_group_manager_instances(project, region, instance_group_manager, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group to delete.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+response = service.delete_region_instance_group_manager(project, region, instance_group_manager)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::RegionInstanceGroupManagersDeleteInstancesRequest.new
+
+response = service.delete_region_instance_group_manager_instances(project, region, instance_group_manager, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group to return.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+response = service.get_region_instance_group_manager(project, region, instance_group_manager)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::InstanceGroupManager.new
+
+response = service.insert_region_instance_group_manager(project, region, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+items = service.fetch_all(items: :items) do |token|
+  service.list_region_instance_group_managers(project, region, page_token: token)
+end
+
+items.each do |instance_group_manager|
+  # TODO: Change code below to process each `instance_group_manager` resource:
+  puts JSON.pretty_generate(instance_group_manager)
+end
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# The name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+response = service.list_region_instance_group_manager_managed_instances(project, region, instance_group_manager)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::RegionInstanceGroupManagersRecreateRequest.new
+
+response = service.recreate_region_instance_group_manager_instances(project, region, instance_group_manager, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+# Number of instances that should exist in this instance group manager.
+size = 0  # TODO: Update placeholder value.
+
+response = service.resize_region_instance_group_manager(project, region, instance_group_manager, size)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# The name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::RegionInstanceGroupManagersSetTemplateRequest.new
+
+response = service.set_region_instance_group_manager_instance_template(project, region, instance_group_manager, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the managed instance group.
+instance_group_manager = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::RegionInstanceGroupManagersSetTargetPoolsRequest.new
+
+response = service.set_region_instance_group_manager_target_pools(project, region, instance_group_manager, request_body)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the instance group resource to return.
+instance_group = ''  # TODO: Update placeholder value.
+
+response = service.get_region_instance_group(project, region, instance_group)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+items = service.fetch_all(items: :items) do |token|
+  service.list_region_instance_groups(project, region, page_token: token)
+end
+
+items.each do |instance_group|
+  # TODO: Change code below to process each `instance_group` resource:
+  puts JSON.pretty_generate(instance_group)
+end
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the regional instance group for which we want to list the instances.
+instance_group = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::RegionInstanceGroupsListInstancesRequest.new
+
+items = service.fetch_all(items: :items) do |token|
+  service.list_region_instance_group_instances(project, region, instance_group, request_body, page_token: token)
+end
+
+items.each do |instance_with_named_ports|
+  # TODO: Change code below to process each `instance_with_named_ports` resource:
+  puts JSON.pretty_generate(instance_with_named_ports)
+end
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# The name of the regional instance group where the named ports are updated.
+instance_group = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::RegionInstanceGroupsSetNamedPortsRequest.new
+
+response = service.set_region_instance_group_named_ports(project, region, instance_group, request_body)
 
 # TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)
@@ -5901,6 +7093,46 @@ region = ''  # TODO: Update placeholder value.
 subnetwork = ''  # TODO: Update placeholder value.
 
 response = service.delete_subnetwork(project, region, subnetwork)
+
+# TODO: Change code below to process the `response` object:
+puts JSON.pretty_generate(response)
+# BEFORE RUNNING:
+# ---------------
+# 1. If not already done, enable the Compute Engine API
+#    and check the quota for your project at
+#    https://console.developers.google.com/apis/api/compute
+# 2. This sample uses Application Default Credentials for authentication.
+#    If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk and run
+#    `gcloud beta auth application-default login`.
+#    For more information, see
+#    https://developers.google.com/identity/protocols/application-default-credentials
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running `gem install google-api-client` and
+#    `gem install googleauth`
+
+require 'googleauth'
+require 'google/apis/compute_v1'
+require 'json'
+
+service = Google::Apis::ComputeV1::ComputeService.new
+
+service.authorization = \
+    Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# Project ID for this request.
+project = ''  # TODO: Update placeholder value.
+
+# Name of the region scoping this request.
+region = ''  # TODO: Update placeholder value.
+
+# Name of the Subnetwork resource to update.
+subnetwork = ''  # TODO: Update placeholder value.
+
+# TODO: Assign values to desired members of `request_body`:
+request_body = Google::Apis::ComputeV1::SubnetworksExpandIpCidrRangeRequest.new
+
+response = service.expand_subnetwork_ip_cidr_range(project, region, subnetwork, request_body)
 
 # TODO: Change code below to process the `response` object:
 puts JSON.pretty_generate(response)

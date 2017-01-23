@@ -133,6 +133,7 @@
     @end
     {@pageStreamingDescriptorFunction(xapiClass)}
     {@longRunningDescriptorFunction(xapiClass)}
+    {@grpcStreamingDescriptorFunction(xapiClass)}
 @end
 
 @private formatResourceFunction(function)
@@ -224,6 +225,25 @@
                     '{@descriptor.methodName}' => [
                         'operationReturnType' => '{@descriptor.operationPayloadTypeName}',
                         'metadataReturnType' => '{@descriptor.metadataTypeName}',
+                    ],
+                @end
+            ];
+        }
+        {@""}
+    @end
+@end
+
+@private grpcStreamingDescriptorFunction(xapiClass)
+    @if xapiClass.hasGrpcStreamingMethods
+        private static function getGrpcStreamingDescriptors()
+        {
+            return [
+                @join descriptor : xapiClass.grpcStreamingDescriptors
+                    '{@descriptor.methodName}' => [
+                        'grpcStreamingType' => '{@descriptor.grpcStreamingType}',
+                        @if descriptor.hasGrpcResourcesField
+                            'resourcesField' => '{@descriptor.grpcResourcesField}',
+                        @end
                     ],
                 @end
             ];
@@ -393,6 +413,12 @@
                 $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
             }
         @end
+        @if xapiClass.hasGrpcStreamingMethods
+            $grpcStreamingDescriptors = self::getGrpcStreamingDescriptors();
+            foreach ($grpcStreamingDescriptors as $method => $grpcStreamingDescriptor) {
+                $this->descriptors[$method]['grpcStreamingDescriptor'] = $grpcStreamingDescriptor;
+            }
+        @end
 
         $clientConfigJsonString = file_get_contents(__DIR__ . '/{@xapiClass.clientConfigPath}');
         $clientConfig = json_decode($clientConfigJsonString, true);
@@ -436,21 +462,27 @@
         @end
         public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
         {
-            $request = new {@apiMethod.requestTypeName}();
-            @join param : apiMethod.requiredRequestObjectParams
-                {@setRequiredFieldCall(param)}
+            @if apiMethod.isSingularRequestMethod
+                $request = new {@apiMethod.requestTypeName}();
+                @join param : apiMethod.requiredRequestObjectParams
+                    {@setRequiredFieldCall(param)}
+                @end
+                @join param : apiMethod.optionalRequestObjectParams
+                    {@setOptionalFieldCall(param)}
+                @end
+                
             @end
-            @join param : apiMethod.optionalRequestObjectParams
-                {@setOptionalFieldCall(param)}
-            @end
-
             $mergedSettings = $this->defaultCallSettings['{@apiMethod.key}']->merge(
                 new CallSettings($optionalArgs));
             $callable = ApiCallable::createApiCall(
                 $this->{@apiMethod.stubName}, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
 
             return $callable(
-                $request,
+                @if apiMethod.isSingularRequestMethod
+                    $request,
+                @else
+                    null,
+                @end
                 [],
                 ['call_credentials_callback' => $this->createCredentialsCallback()]);
         }

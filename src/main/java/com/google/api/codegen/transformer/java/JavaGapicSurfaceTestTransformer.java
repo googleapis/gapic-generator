@@ -18,6 +18,7 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -272,6 +273,11 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Method method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.isGrpcStreaming()) {
+        if (methodConfig.getGrpcStreamingType() == GrpcStreamingType.ClientStreaming) {
+          //TODO: Add unit test generation for ClientStreaming methods
+          // Issue: https://github.com/googleapis/toolkit/issues/946
+          continue;
+        }
         addGrpcStreamingTestImport(context);
         MethodTransformerContext methodContext = context.asRequestMethodContext(method);
         InitCodeContext initCodeContext =

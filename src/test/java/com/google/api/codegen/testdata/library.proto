@@ -142,6 +142,11 @@ service LibraryService {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
   }
 
+  // Test client streaming.
+  rpc MonologAboutBook(stream DiscussBookRequest) returns (Comment) {
+    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+  }
+
   rpc FindRelatedBooks(FindRelatedBooksRequest) returns (FindRelatedBooksResponse) {
     option (google.api.http) = { get: "/v1/bookShelves" };
   }
