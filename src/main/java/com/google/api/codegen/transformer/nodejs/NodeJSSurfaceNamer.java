@@ -21,9 +21,12 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.nodejs.NodeJSCommentFixer;
 import com.google.api.codegen.util.nodejs.NodeJSNameFormatter;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
 import com.google.api.tools.framework.model.Field;
@@ -40,6 +43,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         new NodeJSNameFormatter(),
         new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter(packageName)),
         new NodeJSTypeTable(packageName),
+        new NodeJSCommentFixer(),
         packageName);
   }
 
@@ -110,6 +114,27 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean shouldImportRequestObjectParamType(Field field) {
     return field.getType().isMap();
+  }
+
+  @Override
+  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+    if (type.isMap()) {
+      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
+      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());
+      return new TypeName(
+              typeTable.getFullNameFor(type),
+              typeTable.getNicknameFor(type),
+              "%s.<%i, %i>",
+              new TypeName(keyTypeName),
+              new TypeName(valueTypeName))
+          .getFullName();
+    }
+
+    if (type.isRepeated()) {
+      return typeTable.getFullNameFor(type);
+    }
+
+    return typeTable.getFullNameForElementType(type);
   }
 
   @Override

@@ -6,7 +6,7 @@
     package {@view.fileHeader.localPackageName}
 
     import (
-        {@imports(view.fileHeader.imports)}
+        {@imports(view.fileHeader.importSection.typeImports)}
     )
 
     @if view.pathTemplates
@@ -79,8 +79,7 @@
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
     //
-    // {@view.serviceDoc.firstLine}
-    @join line : view.serviceDoc.remainingLines
+    @join line : view.serviceDoc.lines
         // {@line}
     @end
     func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientTypeName}, error) {

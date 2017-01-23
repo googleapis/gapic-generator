@@ -36,7 +36,7 @@
         /// Constructs a new <see cref="{@settings.name}"/> object with default settings.
         /// </summary>
         public {@settings.name}() { }
-        
+
         private {@settings.name}({@settings.name} existing) : base(existing)
         {
             GaxPreconditions.CheckNotNull(existing, nameof(existing));
@@ -56,7 +56,7 @@
                 LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
             @end
         }
-        
+
         @join retry : settings.retryCodesDefinitions
             /// <summary>
             /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
@@ -98,7 +98,7 @@
                 maxDelay: TimeSpan.FromMilliseconds({@retry.maxRetryDelay.getMillis}),
                 delayMultiplier: {@retry.retryDelayMultiplier}
             );
-            
+
             /// <summary>
             /// "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods.
             /// </summary>
@@ -235,7 +235,7 @@
         // - Might be more reassuring on first use
         // - Allows method group conversions
         // Con: overloads!
-        
+
         /// <summary>
         /// Asynchronously creates a <see cref="{@api.name}"/>, applying defaults for all unspecified settings,
         /// and creating a channel connecting to the given endpoint with application default credentials where
@@ -389,7 +389,7 @@
                 *** ERROR: Cannot handle grpc streaming type '{@method.grpcStreamingType.toString}' ***
             @end
         @end
-        
+
         @join method : api.apiMethodsImpl
             {@xmlDoc(method.doc)}
             {@method(api, method, TRUE)}
@@ -542,7 +542,7 @@
                     call.RequestStream, effectiveStreamingSettings.BufferedClientWriterCapacity);
             return new {@method.name}StreamImpl(this, call, writeBuffer);
         }
-        
+
         /// <summary>
         /// Bidirectional streaming methods for <c>{@method.name}</c>.
         /// </summary>

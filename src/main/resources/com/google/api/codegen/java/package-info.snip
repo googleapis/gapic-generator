@@ -31,11 +31,15 @@
   # The join above doesn't properly add a newline on the end, so we need to force it
   {@""}
    *
-   * Service Description: {@xapiClassDoc.firstLine}
-  @if xapiClassDoc.remainingLines
-    @join commentLine : xapiClassDoc.remainingLines
-      {@""} * {@commentLine}
+  @if xapiClassDoc.lines
+    {@""} * Service Description: {@xapiClassDoc.firstLine}
+    @if xapiClassDoc.remainingLines
+      @join commentLine : xapiClassDoc.remainingLines
+        {@""} * {@commentLine}
+      @end
     @end
+  @else
+    {@""} * Service Description:
   @end
   @if xapiClassDoc.hasDefaultInstance
     {@""} *

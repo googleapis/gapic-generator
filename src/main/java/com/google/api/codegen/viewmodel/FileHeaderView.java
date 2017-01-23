@@ -16,7 +16,6 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -41,7 +40,7 @@ public abstract class FileHeaderView {
 
   public abstract String localExamplePackageName();
 
-  public abstract List<ImportTypeView> imports();
+  public abstract ImportSectionView importSection();
 
   public static Builder newBuilder() {
     return new AutoValue_FileHeaderView.Builder();
@@ -63,7 +62,7 @@ public abstract class FileHeaderView {
 
     public abstract Builder localExamplePackageName(String val);
 
-    public abstract Builder imports(List<ImportTypeView> val);
+    public abstract Builder importSection(ImportSectionView val);
 
     public abstract FileHeaderView build();
   }

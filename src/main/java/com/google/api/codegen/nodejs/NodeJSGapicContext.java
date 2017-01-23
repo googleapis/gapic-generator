@@ -18,13 +18,14 @@ import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
 import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
+import com.google.api.codegen.transformer.nodejs.NodeJSParamDocTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
@@ -82,9 +83,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   public ApiMethodView getApiMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
-    ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+    DynamicLangApiMethodTransformer apiMethodTransformer =
+        new DynamicLangApiMethodTransformer(new NodeJSParamDocTransformer());
 
-    return apiMethodTransformer.generateDynamicLangApiMethod(methodContext);
+    return apiMethodTransformer.generateApiMethod(methodContext);
   }
 
   /**

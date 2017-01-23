@@ -21,6 +21,7 @@ import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.util.CommentFixer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
@@ -53,16 +54,19 @@ import java.util.List;
 public class SurfaceNamer extends NameFormatterDelegator {
   private final ModelTypeFormatter modelTypeFormatter;
   private final TypeNameConverter typeNameConverter;
+  private final CommentFixer fixer;
   private final String packageName;
 
   public SurfaceNamer(
       NameFormatter languageNamer,
       ModelTypeFormatter modelTypeFormatter,
       TypeNameConverter typeNameConverter,
+      CommentFixer fixer,
       String packageName) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
     this.typeNameConverter = typeNameConverter;
+    this.fixer = fixer;
     this.packageName = packageName;
   }
 
@@ -631,6 +635,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withHead(publicClassName));
   }
 
+  /** The type name for the gRPC request */
+  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getRequestTypeName");
+  }
+
+  /** The type name for the method param */
+  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getParamTypeName");
+  }
+
   /** The type name for retry settings. */
   public String getRetrySettingsTypeName() {
     return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
@@ -659,6 +673,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The async return type name in a static language for the given method. */
   public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
+  }
+
+  /**
+   * The formatted name of a type used in long running operations, i.e. the operation payload and
+   * metadata.
+   */
+  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getLongRunningTypeName");
   }
 
   /**
@@ -860,6 +882,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return keyName(Name.upperCamel(method.getSimpleName()));
   }
 
+  /** The key to use in a dictionary for the given field. */
+  public String getFieldKey(Field field) {
+    return keyName(Name.from(field.getSimpleName()));
+  }
+
   /** The path to the client config for the given interface. */
   public String getClientConfigPath(Interface service) {
     return getNotImplementedString("SurfaceNamer.getClientConfigPath");
@@ -954,12 +981,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Converts the given text to doc lines in the format of the current language. */
   public List<String> getDocLines(String text) {
-    return CommonRenderingUtil.getDocLines(text);
+    return CommonRenderingUtil.getDocLines(fixer.fix(text));
   }
 
   /** Provides the doc lines for the given proto element in the current language. */
   public List<String> getDocLines(ProtoElement element) {
-    return getDocLines(DocumentationUtil.getDescription(element));
+    return getDocLines(DocumentationUtil.getScopedDescription(element));
   }
 
   /** Provides the doc lines for the given method element in the current language. */
@@ -1123,15 +1150,5 @@ public class SurfaceNamer extends NameFormatterDelegator {
       original = original.substring(0, original.length() - suffix.length());
     }
     return original;
-  }
-
-  /** Indicates whether the specified method supports retry settings. */
-  public boolean methodHasRetrySettings(MethodConfig methodConfig) {
-    return true;
-  }
-
-  /** Indicates whether the specified method supports timeout settings. */
-  public boolean methodHasTimeoutSettings(MethodConfig methodConfig) {
-    return true;
   }
 }

@@ -19,16 +19,36 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.BundlingConfigView;
 import com.google.api.codegen.viewmodel.BundlingDescriptorClassView;
+import com.google.api.codegen.viewmodel.BundlingDescriptorView;
 import com.google.api.codegen.viewmodel.BundlingPartitionKeyView;
 import com.google.api.codegen.viewmodel.FieldCopyView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BundlingTransformer {
+  public List<BundlingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ImmutableList.Builder<BundlingDescriptorView> descriptors = ImmutableList.builder();
+    for (Method method : context.getBundlingMethods()) {
+      BundlingConfig bundling = context.getMethodConfig(method).getBundling();
+      BundlingDescriptorView.Builder descriptor = BundlingDescriptorView.newBuilder();
+      descriptor.methodName(namer.getMethodKey(method));
+      descriptor.bundledFieldName(namer.getFieldName(bundling.getBundledField()));
+      descriptor.discriminatorFieldNames(generateDiscriminatorFieldNames(bundling));
+
+      if (bundling.hasSubresponseField()) {
+        descriptor.subresponseFieldName(namer.getFieldName(bundling.getSubresponseField()));
+      }
+
+      descriptors.add(descriptor.build());
+    }
+    return descriptors.build();
+  }
 
   public List<BundlingDescriptorClassView> generateDescriptorClasses(
       SurfaceTransformerContext context) {
@@ -56,6 +76,14 @@ public class BundlingTransformer {
     bundlingConfigView.delayThresholdMillis(bundlingConfig.getDelayThresholdMillis());
 
     return bundlingConfigView.build();
+  }
+
+  private List<String> generateDiscriminatorFieldNames(BundlingConfig bundling) {
+    ImmutableList.Builder<String> fieldNames = ImmutableList.builder();
+    for (FieldSelector fieldSelector : bundling.getDiscriminatorFields()) {
+      fieldNames.add(fieldSelector.getParamName());
+    }
+    return fieldNames.build();
   }
 
   private BundlingDescriptorClassView generateDescriptorClass(MethodTransformerContext context) {

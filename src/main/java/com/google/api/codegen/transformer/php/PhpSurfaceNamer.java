@@ -19,12 +19,13 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.php.PhpCommentFixer;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
-import com.google.api.codegen.util.php.PhpRenderingUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -40,6 +41,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         new PhpNameFormatter(),
         new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(packageName)),
         new PhpTypeTable(packageName),
+        new PhpCommentFixer(),
         packageName);
   }
 
@@ -77,8 +79,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(String text) {
-    return PhpRenderingUtil.getDocLines(text);
+  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getAndSaveNicknameFor(type);
+  }
+
+  @Override
+  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override
@@ -116,6 +123,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getAndSaveNicknameFor(type);
+  }
+
+  @Override
   public String getFullyQualifiedApiWrapperClassName(Interface service) {
     return getPackageName() + "\\" + getApiWrapperClassName(service);
   }
@@ -147,7 +159,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   private static String getTestPackageName(String packageName) {
     final String[] PACKAGE_PREFIX = PhpPackageUtil.getStandardPackagePrefix();
 
-    ArrayList<String> packageComponents = new ArrayList<>();
+    List<String> packageComponents = new ArrayList<>();
     String[] packageSplit = PhpPackageUtil.splitPackageName(packageName);
     int packageStartIndex = 0;
     for (int i = 0; i < PACKAGE_PREFIX.length && i < packageSplit.length; i++) {

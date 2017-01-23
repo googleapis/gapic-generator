@@ -1,87 +1,61 @@
 @extends "ruby/common.snip"
 @extends "ruby/method_sample.snip"
 
-@snippet generateFilename(service)
-  {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.rb
-@end
+@snippet generate(xapiClass)
+  {@renderFileHeader(xapiClass.protoFilename, xapiClass.fileHeader)}
 
-@snippet generateClass(service)
-  {@licenseSection(service)}
-
-  {@importSection(service)}
-
-  {@serviceClass(service)}
+  {@serviceClass(xapiClass)}
 
 @end
 
-@private licenseSection(service)
-  @# Copyright 2016 Google Inc. All rights reserved.
+@private renderFileHeader(protoFilename, fileHeader)
+  {@comments(fileHeader.copyrightLines)}
   @#
-  @# Licensed under the Apache License, Version 2.0 (the "License");
-  @# you may not use this file except in compliance with the License.
-  @# You may obtain a copy of the License at
-  @#
-  @# http://www.apache.org/licenses/LICENSE-2.0
-  @#
-  @# Unless required by applicable law or agreed to in writing, software
-  @# distributed under the License is distributed on an "AS IS" BASIS,
-  @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  @# See the License for the specific language governing permissions and
-  @# limitations under the License.
+  {@comments(fileHeader.licenseLines)}
   @#
   @# EDITING INSTRUCTIONS
   @# This file was generated from the file
-  @# https://github.com/googleapis/googleapis/blob/master/{@service.getFile().getSimpleName()},
+  @# https://github.com/googleapis/googleapis/blob/master/{@protoFilename},
   @# and updates to that file get reflected here through a refresh process.
   @# For the short term, the refresh process will only be runnable by Google
   @# engineers.
   @#
   @# The only allowed edits are to method and file documentation. A 3-way
   @# merge preserves those additions if the generated source changes.
+
+  {@importSection(fileHeader.importSection)}
 @end
 
-@private importSection(service)
-  require "json"
-  require "pathname"
+@private importSection(imports)
+  {@importGroup(imports.standardImports)}
 
-  require "google/gax"
-  @if context.hasLongrunningMethod(service)
-    require "google/gax/operation"
-    require "google/longrunning/operations_api"
+  {@importGroup(imports.externalImports)}
 
-  @end
-  @join import : {@context.getProtoImports(service)}
-    require "{@import.fullName}"
-  @end
+  {@importGroup(imports.appImports)}
 @end
 
-@private serviceClass(service)
-  @let body = serviceClassBody(service)
-    {@module(context.getApiModules().iterator, body) }
+@private serviceClass(xapiClass)
+  @let body = serviceClassBody(xapiClass)
+    {@module(util.getApiModules(xapiClass.fileHeader.packageName).iterator, body)}
   @end
 @end
 
-@private serviceClassBody(service)
-  @let path_templates = {@pathTemplateSection(service)}, \
-       documentation = {@comments(context.defaultComments(service))}, \
-       stubs = {@context.getStubs(service)}
-    @if documentation
-      {@documentation}
-      @#
+@private serviceClassBody(xapiClass)
+  @let path_templates = {@pathTemplateSection(xapiClass)}
+    {@comments(xapiClass.doc.lines)}
+    @#
+    {@stubComments(xapiClass.stubs)}
+    class {@xapiClass.name}
+      attr_reader {@listStubNames(xapiClass.stubs)}
 
-    @end
-    {@stubComments(stubs)}
-    class {@context.getApiWrapperName(service)}
-      attr_reader {@listStubNames(stubs)}
-
-      {@constantSection(service)}
+      {@constantSection(xapiClass)}
       @if path_templates
         {@path_templates}
       @end
 
-      {@initMethodSection(service)}
+      {@initMethodSection(xapiClass)}
 
-      {@serviceMethodsSection(service)}
+      {@serviceMethodsSection(xapiClass)}
     end
   @end
 @end
@@ -99,305 +73,245 @@
   @end
 @end
 
-@private constantSection(service)
-  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-    @# The default address of the service.
-    SERVICE_ADDRESS = "{@context.getServiceConfig.getServiceAddress(service)}".freeze
+@private constantSection(xapiClass)
+  @# The default address of the service.
+  SERVICE_ADDRESS = "{@xapiClass.serviceAddress}".freeze
 
-    @# The default port of the service.
-    DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()}
+  @# The default port of the service.
+  DEFAULT_SERVICE_PORT = {@xapiClass.servicePort}
 
-    CODE_GEN_NAME_VERSION = "gapic/0.1.0".freeze
+  CODE_GEN_NAME_VERSION = "gapic/0.1.0".freeze
 
-    DEFAULT_TIMEOUT = 30
-    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
+  DEFAULT_TIMEOUT = 30
+  @if xapiClass.hasPageStreamingMethods
 
-      PAGE_DESCRIPTORS = {
-        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
-          @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
-               requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
-               responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-               resources = pageStreaming.getResourcesFieldName, \
-               methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-            "{@methodName}" => Google::Gax::PageDescriptor.new(
-              "{@requestToken}",
-              "{@responseToken}",
-              "{@resources}")
-          @end
-        @end
-      }.freeze
-
-      private_constant :PAGE_DESCRIPTORS
-    @end
-    @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
-
-      BUNDLE_DESCRIPTORS = {
-        @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
-            @let bundling = ifaceConfig.getMethodConfig(method).getBundling(), \
-                 methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-              "{@methodName}" => Google::Gax::BundleDescriptor.new(
-                {@bundleDescriptorBody(bundling, method)})
-            @end
-          @end
-        @end
-      }.freeze
-
-      private_constant :BUNDLE_DESCRIPTORS
-    @end
-
-    @# The scopes needed to make gRPC calls to all of the methods defined in
-    @# this service.
-    ALL_SCOPES = [
-      @join auth_scope : context.getServiceConfig.getAuthScopes(service) on ",".add(BREAK)
-        "{@auth_scope}"
+    PAGE_DESCRIPTORS = {
+      @join descriptor : xapiClass.pageStreamingDescriptors on {@", "}.add(BREAK)
+        "{@descriptor.methodName}" => Google::Gax::PageDescriptor.new(
+          "{@descriptor.requestTokenFieldName}",
+          "{@descriptor.responseTokenFieldName}",
+          "{@descriptor.resourcesFieldName}")
       @end
-    ].freeze
-  @end
-@end
+    }.freeze
 
-@private constructDefaults(service)
-  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-       jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
-    client_config_file = Pathname.new(__dir__).join(
-      "{@jsonBaseName}_client_config.json"
-    )
-    defaults = client_config_file.open do |f|
-      @if or(context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service)), \
-             context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service)))
-        Google::Gax.construct_settings(
-          "{@service.getFullName}",
-          JSON.parse(f.read),
-          client_config,
-          Google::Gax::Grpc::STATUS_CODE_NAMES,
-          timeout,
-          @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
-            @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
-              bundle_descriptors: BUNDLE_DESCRIPTORS,
-            @else
-              bundle_descriptors: BUNDLE_DESCRIPTORS,
-            @end
-          @end
-          @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
-            page_descriptors: PAGE_DESCRIPTORS,
-          @end
-          errors: Google::Gax::Grpc::API_ERRORS,
-          kwargs: headers
-        )
-      @else
-        Google::Gax.construct_settings(
-          "{@service.getFullName}",
-          JSON.parse(f.read),
-          client_config,
-          Google::Gax::Grpc::STATUS_CODE_NAMES,
-          timeout,
-          errors: Google::Gax::Grpc::API_ERRORS,
-          kwargs: headers
-        )
+    private_constant :PAGE_DESCRIPTORS
+  @end
+  @if xapiClass.hasBundlingMethods
+
+    BUNDLE_DESCRIPTORS = {
+      @join descriptor : xapiClass.bundlingDescriptors on {@", "}.add(BREAK)
+        "{@descriptor.methodName}" => Google::Gax::BundleDescriptor.new(
+          {@bundleDescriptorBody(descriptor)})
       @end
-    end
+    }.freeze
+
+    private_constant :BUNDLE_DESCRIPTORS
   @end
+
+  @# The scopes needed to make gRPC calls to all of the methods defined in
+  @# this service.
+  ALL_SCOPES = [
+    @join auth_scope : xapiClass.authScopes on ",".add(BREAK)
+      "{@auth_scope}"
+    @end
+  ].freeze
 @end
 
-@private initMethodSection(service)
-  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-    @# @@param service_path [String]
-    @#   The domain name of the API remote host.
-    @# @@param port [Integer]
-    @#   The port on which to connect to the remote host.
-    @# @@param channel [Channel]
-    @#   A Channel object through which to make calls.
-    @# @@param chan_creds [Grpc::ChannelCredentials]
-    @#   A ChannelCredentials for the setting up the RPC client.
-    @# @@param client_config[Hash]
-    @#   A Hash for call options for each method. See
-    @#   Google::Gax#construct_settings for the structure of
-    @#   this data. Falls back to the default config if not specified
-    @#   or the specified config is missing data points.
-    @# @@param timeout [Numeric]
-    @#   The default timeout, in seconds, for calls made through this client.
-    @# @@param app_name [String]
-    @#   The codename of the calling service.
-    @# @@param app_version [String]
-    @#   The version of the calling service.
-    def initialize @\
-        service_path: SERVICE_ADDRESS,
-        port: DEFAULT_SERVICE_PORT,
-        channel: nil,
-        chan_creds: nil,
-        scopes: ALL_SCOPES,
-        client_config: {},
-        timeout: DEFAULT_TIMEOUT,
-        app_name: "gax",
-        app_version: Google::Gax::VERSION
-      @# These require statements are intentionally placed here to initialize
-      @# the gRPC module only when it's required.
-      @# See https://github.com/googleapis/toolkit/issues/446
-      require "google/gax/grpc"
-      @join import : {@context.getServiceImports(service)}
-        require "{@import.fullName}"
+@private constructDefaults(xapiClass)
+  client_config_file = Pathname.new(__dir__).join(
+    "{@xapiClass.clientConfigPath}"
+  )
+  defaults = client_config_file.open do |f|
+    Google::Gax.construct_settings(
+      "{@xapiClass.interfaceKey}",
+      JSON.parse(f.read),
+      client_config,
+      Google::Gax::Grpc::STATUS_CODE_NAMES,
+      timeout,
+      @if xapiClass.hasBundlingMethods
+        bundle_descriptors: BUNDLE_DESCRIPTORS,
       @end
-
-      @if context.hasLongrunningMethod(service)
-        @@operations_client = Google::Longrunning::OperationsApi.new(
-          service_path: service_path,
-          port: port,
-          channel: channel,
-          chan_creds: chan_creds,
-          scopes: scopes,
-          client_config: client_config,
-          timeout: timeout,
-          app_name: app_name,
-          app_version: app_version
-        )
+      @if xapiClass.hasPageStreamingMethods
+        page_descriptors: PAGE_DESCRIPTORS,
       @end
-
-      google_api_client = "#{app_name}/#{app_version} " @\
-        "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " @\
-        "ruby/#{RUBY_VERSION}".freeze
-      headers = { :"x-goog-api-client" => google_api_client }
-      {@constructDefaults(service)}
-      @let stubs = @context.getStubs(service)
-        @join stubView : stubs
-          @@{@stubView.name} = Google::Gax::Grpc.create_stub(
-            service_path,
-            port,
-            chan_creds: chan_creds,
-            channel: channel,
-            scopes: scopes,
-            &{@stubView.fullyQualifiedType}.method(:new)
-          )
-        @end
-
-
-        @join stubView : stubs
-          @join methodName : stubView.methodNames
-            @@{@methodName} = Google::Gax.create_api_call(
-              @@{@stubView.name}.method(:{@methodName}),
-              defaults["{@methodName}"]
-            )
-          @end
-        @end
-      @end
-    end
-  @end
-@end
-
-@private bundleDescriptorBody(bundling, method)
-  @let bundledField = bundling.getBundledField().getSimpleName(), \
-       discriminatorFields = bundling.getDiscriminatorFields()
-    @if {@bundling.hasSubresponseField}
-      "{@bundledField}",
-      [
-        @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          "{@fieldSelector.getParamName}"
-        @end
-      ],
-      subresponse_field: "{@bundling.getSubresponseField().getSimpleName()}"
-    @else
-      "{@bundledField}",
-      [
-        @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          "{@fieldSelector.getParamName}"
-        @end
-      ]
-    @end
-  @end
-@end
-
-@private pathTemplateName(collectionConfig)
-    {@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName)}_PATH_TEMPLATE
-@end
-
-@private pathTemplateSection(service)
-  @if context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-
-      {@pathTemplateName(collectionConfig)} = Google::Gax::PathTemplate.new(
-        "{@collectionConfig.getNamePattern}"
-      )
-
-      private_constant :{@pathTemplateName(collectionConfig)}
-    @end
-
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-
-      {@createResourceFunction(collectionConfig)}
-    @end
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-
-        {@createMatchFunctions(collectionConfig)}
-    @end
-  @end
-@end
-
-@private createResourceFunction(collectionConfig)
-  @# Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
-  @join param : collectionConfig.getNameTemplate.vars()
-    @# @@param {@context.wrapIfKeywordOrBuiltIn(param)} [String]
-  @end
-  @# @@return [String]
-  def self.{@collectionConfig.getEntityName}_path {@createResourceFunctionParams(collectionConfig)}
-    {@pathTemplateName(collectionConfig)}.render(
-      {@createRenderDictionary(collectionConfig)}
+      errors: Google::Gax::Grpc::API_ERRORS,
+      kwargs: headers
     )
   end
 @end
 
-@private createResourceFunctionParams(collectionConfig)
-  @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@context.wrapIfKeywordOrBuiltIn(param)}
+@private initMethodSection(xapiClass)
+  @# @@param service_path [String]
+  @#   The domain name of the API remote host.
+  @# @@param port [Integer]
+  @#   The port on which to connect to the remote host.
+  @# @@param channel [Channel]
+  @#   A Channel object through which to make calls.
+  @# @@param chan_creds [Grpc::ChannelCredentials]
+  @#   A ChannelCredentials for the setting up the RPC client.
+  @# @@param client_config[Hash]
+  @#   A Hash for call options for each method. See
+  @#   Google::Gax#construct_settings for the structure of
+  @#   this data. Falls back to the default config if not specified
+  @#   or the specified config is missing data points.
+  @# @@param timeout [Numeric]
+  @#   The default timeout, in seconds, for calls made through this client.
+  @# @@param app_name [String]
+  @#   The codename of the calling service.
+  @# @@param app_version [String]
+  @#   The version of the calling service.
+  def initialize @\
+      service_path: SERVICE_ADDRESS,
+      port: DEFAULT_SERVICE_PORT,
+      channel: nil,
+      chan_creds: nil,
+      scopes: ALL_SCOPES,
+      client_config: {},
+      timeout: DEFAULT_TIMEOUT,
+      app_name: "gax",
+      app_version: Google::Gax::VERSION
+    @# These require statements are intentionally placed here to initialize
+    @# the gRPC module only when it's required.
+    @# See https://github.com/googleapis/toolkit/issues/446
+    {@importGroup(xapiClass.fileHeader.importSection.serviceImports)}
+
+    @if xapiClass.hasLongRunningOperations
+      @@operations_client = Google::Longrunning::OperationsApi.new(
+        service_path: service_path,
+        port: port,
+        channel: channel,
+        chan_creds: chan_creds,
+        scopes: scopes,
+        client_config: client_config,
+        timeout: timeout,
+        app_name: app_name,
+        app_version: app_version
+      )
+    @end
+
+    google_api_client = "#{app_name}/#{app_version} " @\
+      "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " @\
+      "ruby/#{RUBY_VERSION}".freeze
+    headers = { :"x-goog-api-client" => google_api_client }
+    {@constructDefaults(xapiClass)}
+    @join stubView : xapiClass.stubs
+      @@{@stubView.name} = Google::Gax::Grpc.create_stub(
+        service_path,
+        port,
+        chan_creds: chan_creds,
+        channel: channel,
+        scopes: scopes,
+        &{@stubView.fullyQualifiedType}.method(:new)
+      )
+    @end
+
+    @join stubView : xapiClass.stubs
+      @join methodName : stubView.methodNames
+        @@{@methodName} = Google::Gax.create_api_call(
+          @@{@stubView.name}.method(:{@methodName}),
+          defaults["{@methodName}"]
+        )
+      @end
+    @end
+  end
+@end
+
+@private bundleDescriptorBody(descriptor)
+  "{@descriptor.bundledFieldName}",
+  [
+    @join name : descriptor.discriminatorFieldNames on {@","}.add(BREAK)
+      "{@name}"
+    @end
+  @if {@descriptor.hasSubresponseField}
+    ],
+    subresponse_field: "{@descriptor.subresponseFieldName}"
+  @else
+    ]
   @end
 @end
 
-@private createRenderDictionary(collectionConfig)
-  @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    :"{@param}" => {@context.wrapIfKeywordOrBuiltIn(param)}
-  @end
-@end
+@private pathTemplateSection(xapiClass)
+  @if xapiClass.pathTemplates
+    @join pathTemplate : xapiClass.pathTemplates
 
-@private createMatchFunctions(collectionConfig)
-  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
-    @let fieldPath = resourceName(collectionConfig)
-      @# Parses the {@subField} from a {@collectionConfig.getEntityName} resource.
-      @# @@param {@fieldPath} [String]
-      @# @@return [String]
-      def self.match_{@subField}_from_{@fieldPath} {@fieldPath}
-        {@pathTemplateName(collectionConfig)}.match({@fieldPath})["{@subField}"]
-      end
+      {@pathTemplate.name} = Google::Gax::PathTemplate.new(
+        "{@pathTemplate.pattern}"
+      )
+
+      private_constant :{@pathTemplate.name}
+    @end
+
+    @join function : xapiClass.formatResourceFunctions
+
+      {@createResourceFunction(function)}
+    @end
+    @join function : xapiClass.parseResourceFunctions
+
+      {@createMatchFunction(function)}
     @end
   @end
 @end
 
-@private resourceName(collectionConfig)
-  {@collectionConfig.getEntityName}_name
+@private createResourceFunction(function)
+  @# Returns a fully-qualified {@function.entityName} resource name string.
+  @join param : function.resourceIdParams
+    @# @@param {@param.docName} [String]
+  @end
+  @# @@return [String]
+  def self.{@function.name} {@createResourceFunctionParams(function.resourceIdParams)}
+    {@function.pathTemplateName}.render(
+      {@createRenderDictionary(function.resourceIdParams)}
+    )
+  end
 @end
+
+@private createResourceFunctionParams(params)
+  @join param : params on ", "
+    {@param.name}
+  @end
+@end
+
+@private createRenderDictionary(params)
+  @join param: params on {@","}.add(BREAK)
+    :"{@param.templateKey}" => {@param.name}
+  @end
+@end
+
+@private createMatchFunction(function)
+  @# Parses the {@function.outputResourceId} from a {@function.entityName} resource.
+  @# @@param {@function.entityNameParamName} [String]
+  @# @@return [String]
+  def self.{@function.name} {@function.entityNameParamName}
+    {@function.pathTemplateName}.match({@function.entityNameParamName})["{@function.outputResourceId}"]
+  end
+@end
+
 @private comments(commentLines)
   @join comment : commentLines
     @# {@comment}
   @end
 @end
 
-@private serviceMethodsSection(service)
-  @# Service calls
-  @join method : context.getSupportedMethodsV2(service)
-
-    {@flattenedMethod(service, method)}
+@private importGroup(group)
+  @join import : group
+    require "{@import.attributeName}"
   @end
 @end
 
-@private flattenedMethod(service, method)
-  @let methodName = {@getMethodName(method)}, \
-       inputTypeName = context.rubyTypeName(method.getInputType()), \
-       documentation = comments(context.methodComments(service, method)), \
-       methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-       requiredParams = methodConfig.getRequiredFields(), \
-       optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
-       methodView = context.getMethodView(service, method), \
-       sample = comments(util.getDocLines(sampleCode(methodView)))
+@private serviceMethodsSection(xapiClass)
+  @# Service calls
+  @join method : xapiClass.apiMethods
+
+    {@flattenedMethod(method)}
+  @end
+@end
+
+@private flattenedMethod(apiMethod)
+  @let documentation = methodComments(apiMethod.doc), \
+       sample = util.getDocLines(sampleCode(apiMethod))
     @if documentation
       {@documentation}
-      @if method.getRequestStreaming()
+      @if apiMethod.hasRequestStreaming
         @#
         @# @@note
         @#   EXPERIMENTAL:
@@ -408,75 +322,108 @@
     @end
 
     @if sample
-      {@sample}
+      {@comments(sample)}
     @end
 
-    @if method.getRequestStreaming()
-      def {@methodName} reqs, options: nil
-        {@makeApiCall(methodConfig)}
+    @if apiMethod.hasRequestStreaming
+      def {@apiMethod.name} reqs, options: nil
+        {@makeApiCall(apiMethod)}
       end
     @else
-      @if or(requiredParams, optionalParams)
-        def {@methodName} @\
-            @if requiredParams
-              {@requiredParameterNames(requiredParams)},
+      @if apiMethod.hasRequestParameters
+        def {@apiMethod.name} @\
+            @if apiMethod.requiredRequestObjectParams
+              {@requiredParameterNames(apiMethod.requiredRequestObjectParams)},
             @end
-            @if optionalParams
-              {@optionalParameterValues(optionalParams)},
+            @if apiMethod.optionalRequestObjectParamsNoPageToken
+              {@optionalParameterValues(apiMethod.optionalRequestObjectParamsNoPageToken)},
             @end
             options: nil
-          req = {@inputTypeName}.new({
-            @if requiredParams
-              @if optionalParams
-                {@namedParameters(requiredParams)},
-                {@namedParameters(optionalParams)}
+          req = {@apiMethod.requestTypeName}.new({
+            @if apiMethod.requiredRequestObjectParams
+              @if apiMethod.optionalRequestObjectParamsNoPageToken
+                {@namedParameters(apiMethod.requiredRequestObjectParams)},
+                {@namedParameters(apiMethod.optionalRequestObjectParamsNoPageToken)}
               @else
-                {@namedParameters(requiredParams)}
+                {@namedParameters(apiMethod.requiredRequestObjectParams)}
               @end
             @else
-              {@namedParameters(optionalParams)}
+              {@namedParameters(apiMethod.optionalRequestObjectParamsNoPageToken)}
             @end
           }.delete_if { |_, v| v.nil? })
-          {@makeApiCall(methodConfig)}
+          {@makeApiCall(apiMethod)}
         end
       @else
-        def {@methodName} options: nil
-          req = {@inputTypeName}.new
-          {@makeApiCall(methodConfig)}
+        def {@apiMethod.name} options: nil
+          req = {@apiMethod.requestTypeName}.new
+          {@makeApiCall(apiMethod)}
         end
       @end
     @end
   @end
 @end
 
-@private getMethodName(method)
-  {@context.upperCamelToLowerUnderscore(method.getSimpleName())}
+@private methodComments(apiMethodDoc)
+  @let mainComment = comments(apiMethodDoc.mainDocLines), \
+    paramTypesComment = createParamTypesComment(apiMethodDoc.paramDocs), \
+    returnTypeComment = createReturnTypeComment(apiMethodDoc)
+    @if mainComment
+      {@mainComment}
+      @#{@BREAK}
+    @end
+    {@paramTypesComment}
+    @if returnTypeComment
+      {@returnTypeComment}
+    @end
+    {@comments(apiMethodDoc.throwsDocLines)}
+  @end
 @end
 
-@private makeApiCall(methodConfig)
-  @let request = requestParameterName(methodConfig), \
-       method = methodConfig.getMethod
-    @if methodConfig.isLongRunningOperation
+@private createParamTypesComment(paramDocs)
+  @join doc : paramDocs
+    {@paramDoc(doc)}
+  @end
+@end
+
+@private paramDoc(doc)
+  @# @@param {@doc.paramName} [{@doc.typeName}]
+  @join line : doc.lines
+    @#   {@line}
+  @end
+@end
+
+@private createReturnTypeComment(apiMethodDoc)
+  @if apiMethodDoc.returnTypeName
+    @# @@return [{@apiMethodDoc.returnTypeName}]
+    @join line : apiMethodDoc.returnsDocLines
+      @#   {@line}
+    @end
+  @end
+@end
+
+@private makeApiCall(apiMethod)
+  @let request = requestParameterName(apiMethod)
+    @if apiMethod.isLongRunningOperation
       operation = Google::Gax::Operation.new(
-        @@{@getMethodName(method)}.call({@request}, options),
+        @@{@apiMethod.name}.call({@request}, options),
         @@operations_client,
-        {@context.rubyTypeName(methodConfig.getLongRunningConfig.getReturnType)},
-        {@context.rubyTypeName(methodConfig.getLongRunningConfig.getMetadataType)},
+        {@apiMethod.longRunningView.operationPayloadTypeName},
+        {@apiMethod.longRunningView.metadataTypeName},
         call_options: options
       )
       operation.on_done { |operation| yield(operation) } if block_given?
       operation
     @else
-      @@{@getMethodName(method)}.call({@request}, options)
-      @if methodConfig.isReturnEmptyMessageMethod(method)
+      @@{@apiMethod.name}.call({@request}, options)
+      @if apiMethod.isReturnEmpty
         nil
       @end
     @end
   @end
 @end
 
-@private requestParameterName(methodConfig)
-  @if methodConfig.getMethod.getRequestStreaming
+@private requestParameterName(apiMethod)
+  @if apiMethod.hasRequestStreaming
     reqs
   @else
     req
@@ -484,21 +431,19 @@
 @end
 
 @private requiredParameterNames(params)
-  @join field : params on ",".add(BREAK)
-    {@context.wrapIfKeywordOrBuiltIn({@field.getSimpleName()})}
+  @join param : params on ",".add(BREAK)
+    {@param.name}
   @end
 @end
 
 @private optionalParameterValues(params)
-  @join field : params on ",".add(BREAK)
-    {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName)}: nil
+  @join param : params on ",".add(BREAK)
+    {@param.keyName}: nil
   @end
 @end
 
 @private namedParameters(params)
-  @join field : params on ",".add(BREAK)
-    @let paramName = {@field.getSimpleName()}
-      {@paramName}: {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-     @end
+  @join param : params on ",".add(BREAK)
+    {@param.keyName}: {@param.name}
   @end
 @end

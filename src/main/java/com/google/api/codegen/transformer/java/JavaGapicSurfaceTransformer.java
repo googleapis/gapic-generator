@@ -23,7 +23,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -33,14 +32,16 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.TypeImportSectionTransformer;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PagedResponseIterateMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
@@ -69,11 +70,14 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
-  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final TypeImportSectionTransformer importSectionTransformer =
+      new TypeImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new StandardImportTypeTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
 
@@ -237,8 +241,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     pagedResponseWrappers.pagedResponseWrapperList(pagedResponseWrappersList);
 
     // must be done as the last step to catch all imports
+    ImportSectionView importSection =
+        importSectionTransformer.generateImportSection(typeTable.getImports());
     pagedResponseWrappers.fileHeader(
-        fileHeaderTransformer.generateFileHeader(apiConfig, typeTable.getImports(), namer));
+        fileHeaderTransformer.generateFileHeader(apiConfig, importSection, namer));
 
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, apiConfig);
@@ -383,9 +389,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     packageInfo.serviceDocs(serviceDocs);
     packageInfo.domainLayerLocation(apiConfig.getDomainLayerLocation());
 
+    ImportSectionView importSection =
+        importSectionTransformer.generateImportSection(Collections.<String, TypeAlias>emptyMap());
     packageInfo.fileHeader(
-        fileHeaderTransformer.generateFileHeader(
-            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer));
+        fileHeaderTransformer.generateFileHeader(apiConfig, importSection, namer));
 
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, apiConfig);

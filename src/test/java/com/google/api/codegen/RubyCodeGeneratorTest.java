@@ -34,8 +34,7 @@ public class RubyCodeGeneratorTest {
         String packageConfigFileName,
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
-      getTestDataLocator()
-          .addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
+      getTestDataLocator().addTestDataSource(getClass(), "ruby");
     }
 
     /**
@@ -67,8 +66,7 @@ public class RubyCodeGeneratorTest {
         String packageConfigFileName,
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
-      getTestDataLocator()
-          .addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
+      getTestDataLocator().addTestDataSource(getClass(), "ruby");
     }
 
     /**

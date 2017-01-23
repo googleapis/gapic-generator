@@ -27,16 +27,17 @@ import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.transformer.TypeImportSectionTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
 import com.google.api.codegen.util.testing.NodeJSValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
@@ -56,8 +57,10 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   private static final String TEST_TEMPLATE_FILE = "nodejs/test.snip";
 
   private final NodeJSValueProducer valueProducer = new NodeJSValueProducer();
+  private final TypeImportSectionTransformer importSectionTransformer =
+      new TypeImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new StandardImportTypeTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
@@ -117,6 +120,8 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .build());
     }
 
+    ImportSectionView importSection =
+        importSectionTransformer.generateImportSection(typeTable.getImports());
     return MockCombinedView.newBuilder()
         .outputPath("test" + File.separator + "test.js")
         .serviceImpls(impls)
@@ -124,8 +129,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         .testClasses(testClasses)
         .apiWrapperModuleName(namer.getApiWrapperModuleName())
         .templateFileName(TEST_TEMPLATE_FILE)
-        .fileHeader(
-            fileHeaderTransformer.generateFileHeader(apiConfig, typeTable.getImports(), namer))
+        .fileHeader(fileHeaderTransformer.generateFileHeader(apiConfig, importSection, namer))
         .build();
   }
 

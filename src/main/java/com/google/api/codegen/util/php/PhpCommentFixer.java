@@ -14,34 +14,17 @@
  */
 package com.google.api.codegen.util.php;
 
-import com.google.common.base.Splitter;
+import com.google.api.codegen.util.CommentFixer;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Utility class for PHP to process text in the templates. It is necessary to escape special
- * characters used in DocBlocks, including @ and *.
- *
- * <p>TODO(michaelbausor): update these escape chars once PHP documentation style is finalized. See
- * issue https://github.com/googleapis/toolkit/issues/768
- */
-public class PhpRenderingUtil {
+public class PhpCommentFixer implements CommentFixer {
   /** Escaper for formatting PHP doc strings. */
   private static final Escaper PHP_ESCAPER =
       Escapers.builder().addEscape('*', "&#42;").addEscape('@', "&#64;").build();
 
-  /**
-   * Splits given text into lines and returns an list of strings, each one representing a line.
-   * Performs escaping of '@' and '*' characters.
-   */
-  public static List<String> getDocLines(String text) {
-    List<String> result = new ArrayList<>();
-    text = PHP_ESCAPER.escape(text);
-    for (String line : Splitter.on(String.format("%n")).split(text)) {
-      result.add(line);
-    }
-    return result;
+  @Override
+  public String fix(String documentation) {
+    return PHP_ESCAPER.escape(documentation).trim();
   }
 }
