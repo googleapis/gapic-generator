@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.util;
 
-import com.google.api.client.util.Joiner;
 import com.google.api.codegen.util.CommonAcronyms.NamePieceCasingType;
 import com.google.api.codegen.util.CommonAcronyms.SubNamePiece;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
 
