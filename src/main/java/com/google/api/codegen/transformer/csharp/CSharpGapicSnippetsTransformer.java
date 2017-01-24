@@ -53,7 +53,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportTypeTransformer());
-  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final ApiMethodTransformer apiMethodTransformer = new CSharpApiMethodTransformer();
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
 
   public CSharpGapicSnippetsTransformer(GapicCodePathMapper pathMapper) {
@@ -113,16 +113,14 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   }
 
   private List<StaticLangApiMethodSnippetView> generateMethods(SurfaceTransformerContext context) {
-    boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
     List<StaticLangApiMethodSnippetView> methods = new ArrayList<>();
 
-    for (Method method : context.getSupportedMethods()) {
+    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      if (mixinsDisabled && methodConfig.getRerouteToGrpcInterface() != null) {
-        continue;
-      }
       MethodTransformerContext methodContext = context.asRequestMethodContext(method);
-      if (methodConfig.isLongRunningOperation()) {
+      if (methodConfig.isGrpcStreaming()) {
+        methods.add(generateGrpcStreamingRequestMethod(methodContext));
+      } else if (methodConfig.isLongRunningOperation()) {
         if (methodConfig.isFlattening()) {
           ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
           boolean requiresNameSuffix = flatteningGroups.size() > 1;
@@ -171,6 +169,23 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     }
 
     return methods;
+  }
+
+  private StaticLangApiMethodSnippetView generateGrpcStreamingRequestMethod(
+      MethodTransformerContext methodContext) {
+    SurfaceNamer namer = methodContext.getNamer();
+    StaticLangApiMethodView method =
+        apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(methodContext);
+    String callerResponseTypeName = method.name() + "Stream";
+    return StaticLangApiMethodSnippetView.newBuilder()
+        .method(method)
+        .snippetMethodName(method.name())
+        .callerResponseTypeName(callerResponseTypeName)
+        .apiClassName(
+            namer.getApiWrapperClassName(
+                methodContext.getSurfaceTransformerContext().getInterface()))
+        .apiVariableName(method.apiVariableName())
+        .build();
   }
 
   private StaticLangApiMethodSnippetView generateOperationFlattenedAsyncMethod(

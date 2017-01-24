@@ -378,6 +378,29 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getGrpcStreamingApiReturnTypeName(Method method, ModelTypeTable typeTable) {
+    if (method.getRequestStreaming() && method.getResponseStreaming()) {
+      // Bidirectional streaming
+      return typeTable.getAndSaveNicknameForContainer(
+          "Grpc.Core.AsyncDuplexStreamingCall",
+          typeTable.getFullNameFor(method.getInputType()),
+          typeTable.getFullNameFor(method.getOutputType()));
+    } else if (method.getRequestStreaming()) {
+      // Client streaming
+      return typeTable.getAndSaveNicknameForContainer(
+          "Grpc.Core.AsyncClientStreamingCall",
+          typeTable.getFullNameFor(method.getInputType()),
+          typeTable.getFullNameFor(method.getOutputType()));
+    } else if (method.getResponseStreaming()) {
+      // Server streaming
+      return typeTable.getAndSaveNicknameForContainer(
+          "Grpc.Core.AsyncServerStreamingCall", typeTable.getFullNameFor(method.getOutputType()));
+    } else {
+      throw new IllegalArgumentException("Expected some sort of streaming here.");
+    }
+  }
+
+  @Override
   public List<String> getReturnDocLines(
       SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     if (methodConfig.isPageStreaming()) {
@@ -394,6 +417,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
                   + resourceTypeName
                   + "\"/> resources.");
       }
+    } else if (methodConfig.isGrpcStreaming()) {
+      return ImmutableList.of("The client-server stream.");
     } else {
       switch (synchronicity) {
         case Sync:

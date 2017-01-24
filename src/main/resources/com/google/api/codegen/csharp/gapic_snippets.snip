@@ -31,7 +31,11 @@
     @case "PagedFlattenedAsyncMethod" 
         {@pagedFlattenedMethodAsync(snippetMethod)}
     @case "RequestObjectMethod"
-        {@requestObjectMethodSync(snippetMethod)}
+        @if snippetMethod.method.isStreaming
+            {@streamingRequestObjectMethod(snippetMethod)}
+        @else
+            {@requestObjectMethodSync(snippetMethod)}
+        @end
     @case "AsyncRequestObjectMethod"
         {@requestObjectMethodAsync(snippetMethod)}
     @case "PagedRequestObjectMethod"
@@ -207,6 +211,58 @@
         @else
             {@sampleMethodCall(snippetMethod)};
         @end
+        // End snippet
+    }
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private streamingRequestObjectMethod(snippetMethod)
+    @switch snippetMethod.method.grpcStreamingType
+    @case "BidiStreaming"
+        {@streamingRequestObjectMethodBidirectional(snippetMethod)}
+    @default
+        *** ERROR: Cannot handle streaming type '{@snippetMethod.method.grpcStreamingType.toString}' ***
+    @end
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private streamingRequestObjectMethodBidirectional(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}(CallSettings,BidirectionalStreamingSettings)
+        // Create client
+        {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
+        // Initialize streaming call, retrieving the stream object
+        {@snippetMethod.apiClassName}.{@snippetMethod.callerResponseTypeName} duplexStream = {@snippetMethod.method.apiVariableName}.{@snippetMethod.method.name}();
+        
+        // Sending requests and retrieving responses can be arbitrarily interleaved.
+        // Exact sequence will depend on client/server behavior.
+        
+        // Create task to do something with responses from server
+        Task.Run(async () =>
+        {
+            IAsyncEnumerator<{@snippetMethod.method.serviceResponseTypeName}> responseStream = duplexStream.ResponseStream;
+            while (await responseStream.MoveNext())
+            {
+                {@snippetMethod.method.serviceResponseTypeName} response = responseStream.Current;
+                // Do something with streamed response
+            }
+            // The response stream has completed
+        });
+        
+        // Send requests to the server
+        bool done = false;
+        while (!done)
+        {
+            // Initialize a request
+            {@topLevelInitCode(snippetMethod.method.initCode)}
+            // Stream a request to the server
+            await duplexStream.WriteAsync(request);
+            
+            // Set "done" to true when sending requests is complete
+        }
+        // Complete writing requests to the stream
+        await duplexStream.WriteCompleteAsync();
         // End snippet
     }
 @end

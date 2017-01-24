@@ -1582,6 +1582,48 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
+        public async Task DiscussBook()
+        {
+            // Snippet: DiscussBook(CallSettings,BidirectionalStreamingSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize streaming call, retrieving the stream object
+            LibraryServiceClient.DiscussBookStream duplexStream = libraryServiceClient.DiscussBook();
+
+            // Sending requests and retrieving responses can be arbitrarily interleaved.
+            // Exact sequence will depend on client/server behavior.
+
+            // Create task to do something with responses from server
+            Task.Run(async () =>
+            {
+                IAsyncEnumerator<Comment> responseStream = duplexStream.ResponseStream;
+                while (await responseStream.MoveNext())
+                {
+                    Comment response = responseStream.Current;
+                    // Do something with streamed response
+                }
+                // The response stream has completed
+            });
+
+            // Send requests to the server
+            bool done = false;
+            while (!done)
+            {
+                // Initialize a request
+                DiscussBookRequest request = new DiscussBookRequest
+                {
+                    Name = "",
+                };
+                // Stream a request to the server
+                await duplexStream.WriteAsync(request);
+
+                // Set "done" to true when sending requests is complete
+            }
+            // Complete writing requests to the stream
+            await duplexStream.WriteCompleteAsync();
+            // End snippet
+        }
+
         public async Task FindRelatedBooksAsync()
         {
             // Snippet: FindRelatedBooksAsync(IEnumerable<BookName>,IEnumerable<ShelfName>,string,int?,CallSettings)
