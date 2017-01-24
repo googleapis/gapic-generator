@@ -534,11 +534,11 @@
         {
             {@method.modifyMethodName}CallSettings(ref callSettings);
             BidirectionalStreamingSettings effectiveStreamingSettings =
-                streamingSettings ?? _callStreamingRecognize.StreamingSettings;
+                streamingSettings ?? {@method.callableName}.StreamingSettings;
             {@method.responseTypeName} call =
                 {@method.callableName}.Call(callSettings);
             BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer =
-                new BufferedClientStreamWriter<StreamingRecognizeRequest>(
+                new BufferedClientStreamWriter<{@method.serviceRequestTypeName}>(
                     call.RequestStream, effectiveStreamingSettings.BufferedClientWriterCapacity);
             return new {@method.name}StreamImpl(this, call, writeBuffer);
         }

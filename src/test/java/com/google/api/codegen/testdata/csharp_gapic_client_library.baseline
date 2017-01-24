@@ -4567,11 +4567,11 @@ namespace Google.Example.Library.V1
         {
             Modify_DiscussBookRequestCallSettings(ref callSettings);
             BidirectionalStreamingSettings effectiveStreamingSettings =
-                streamingSettings ?? _callStreamingRecognize.StreamingSettings;
+                streamingSettings ?? _callDiscussBook.StreamingSettings;
             AsyncDuplexStreamingCall<DiscussBookRequest,Comment> call =
                 _callDiscussBook.Call(callSettings);
             BufferedClientStreamWriter<DiscussBookRequest> writeBuffer =
-                new BufferedClientStreamWriter<StreamingRecognizeRequest>(
+                new BufferedClientStreamWriter<DiscussBookRequest>(
                     call.RequestStream, effectiveStreamingSettings.BufferedClientWriterCapacity);
             return new DiscussBookStreamImpl(this, call, writeBuffer);
         }
