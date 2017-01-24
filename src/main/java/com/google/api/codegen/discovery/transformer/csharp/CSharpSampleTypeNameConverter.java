@@ -86,46 +86,6 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
-    if (typeInfo.isMessage()) {
-      String messageTypeName = typeInfo.message().typeName();
-      // A rule for cases like DatasetList.Datasets
-      if (messageTypeName.contains(".")) {
-        messageTypeName = messageTypeName + "Data";
-      }
-      return new TypeName(Joiner.on('.').join("Data", messageTypeName));
-    }
-    return getNonMessageTypeName(typeInfo);
-  }
-
-  @Override
-  public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
-    // Maps are special-cased so we return KeyValuePair types.
-    if (typeInfo.isMap()) {
-      TypeName mapTypeName =
-          typeNameConverter.getTypeName("System.Collections.Generic.KeyValuePair");
-      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey());
-      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue());
-      return new TypeName(
-          mapTypeName.getFullName(),
-          mapTypeName.getNickname(),
-          "%s<%i, %i>",
-          keyTypeName,
-          valueTypeName);
-    } else if (typeInfo.kind() == Field.Kind.TYPE_MESSAGE) {
-      return getTypeName(typeInfo);
-    }
-    String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(typeInfo.kind());
-    if (primitiveTypeName != null) {
-      if (primitiveTypeName.contains(".")) {
-        // For fully-qualified type names, use the regular resolver.
-        return typeNameConverter.getTypeName(primitiveTypeName);
-      }
-      return new TypeName(primitiveTypeName);
-    }
-    throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
-  }
-
-  private TypeName getNonMessageTypeName(TypeInfo typeInfo) {
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
       TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey());
@@ -144,6 +104,40 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     }
     return getTypeNameForElementType(typeInfo);
+  }
+
+  @Override
+  public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
+    if (typeInfo.isMessage()) {
+      String messageTypeName = typeInfo.message().typeName();
+      // A rule for cases like DatasetList.Datasets
+      if (messageTypeName.contains(".")) {
+        messageTypeName = messageTypeName + "Data";
+      }
+      return new TypeName(Joiner.on('.').join("Data", messageTypeName));
+    }
+    // Maps are special-cased so we return KeyValuePair types.
+    if (typeInfo.isMap()) {
+      TypeName mapTypeName =
+          typeNameConverter.getTypeName("System.Collections.Generic.KeyValuePair");
+      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey());
+      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue());
+      return new TypeName(
+          mapTypeName.getFullName(),
+          mapTypeName.getNickname(),
+          "%s<%i, %i>",
+          keyTypeName,
+          valueTypeName);
+    }
+    String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(typeInfo.kind());
+    if (primitiveTypeName != null) {
+      if (primitiveTypeName.contains(".")) {
+        // For fully-qualified type names, use the regular resolver.
+        return typeNameConverter.getTypeName(primitiveTypeName);
+      }
+      return new TypeName(primitiveTypeName);
+    }
+    throw new IllegalArgumentException("unknown type kind: " + typeInfo.kind());
   }
 
   /** Returns the zero value for typeInfo. */
