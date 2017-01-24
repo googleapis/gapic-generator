@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -21,6 +22,8 @@ public abstract class ModifyMethodView {
   public abstract String name();
 
   public abstract String requestTypeName();
+
+  public abstract GrpcStreamingType grpcStreamingType();
 
   public static Builder builder() {
     return new AutoValue_ModifyMethodView.Builder();
@@ -31,6 +34,8 @@ public abstract class ModifyMethodView {
     public abstract Builder name(String val);
 
     public abstract Builder requestTypeName(String val);
+
+    public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract ModifyMethodView build();
   }

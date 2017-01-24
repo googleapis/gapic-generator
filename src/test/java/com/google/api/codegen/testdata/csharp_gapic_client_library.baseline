@@ -68,11 +68,14 @@ namespace Google.Example.Library.V1
             GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings;
             GetBookFromAnywhereSettings = existing.GetBookFromAnywhereSettings;
             UpdateBookIndexSettings = existing.UpdateBookIndexSettings;
+            DiscussBookSettings = existing.DiscussBookSettings;
+            DiscussBookStreamingSettings = existing.DiscussBookStreamingSettings;
             FindRelatedBooksSettings = existing.FindRelatedBooksSettings;
             AddTagSettings = existing.AddTagSettings;
             AddLabelSettings = existing.AddLabelSettings;
             GetBigBookSettings = existing.GetBigBookSettings;
             GetBigNothingSettings = existing.GetBigNothingSettings;
+            LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
         }
 
         /// <summary>
@@ -642,6 +645,25 @@ namespace Google.Example.Library.V1
                 totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
                 retryFilter: IdempotentRetryFilter
             )));
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for calls to <c>LibraryServiceClient.DiscussBook</c>.
+        /// </summary>
+        /// <remarks>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings DiscussBookSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromTimeout(TimeSpan.FromMilliseconds(30000)));
+
+        /// <summary>
+        /// <see cref="BidirectionalStreamingSettings"/> for calls to
+        /// <c>LibraryServiceClient.DiscussBook</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default local send queue size is 100.
+        /// </remarks>
+        public BidirectionalStreamingSettings DiscussBookStreamingSettings { get; set; } =
+            new BidirectionalStreamingSettings(100);
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
@@ -3081,6 +3103,33 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Test bidi-streaming.
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <param name="streamingSettings">
+        /// If not null, applies streaming overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The client-server stream.
+        /// </returns>
+        public virtual DiscussBookStream DiscussBook(
+            CallSettings callSettings = null,
+            BidirectionalStreamingSettings streamingSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Bidirectional streaming methods for <c>DiscussBook</c>.
+        /// </summary>
+        public abstract class DiscussBookStream : BidirectionalStreamingBase<DiscussBookRequest, Comment>
+        {
+        }
+
+        /// <summary>
         ///
         /// </summary>
         /// <param name="names">
@@ -3711,6 +3760,7 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<GetBookFromArchiveRequest, BookFromArchive> _callGetBookFromArchive;
         private readonly ApiCall<GetBookFromAnywhereRequest, BookFromAnywhere> _callGetBookFromAnywhere;
         private readonly ApiCall<UpdateBookIndexRequest, Empty> _callUpdateBookIndex;
+        private readonly ApiBidirectionalStreamingCall<DiscussBookRequest, Comment> _callDiscussBook;
         private readonly ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> _callFindRelatedBooks;
         private readonly ApiCall<AddTagRequest, AddTagResponse> _callAddTag;
         private readonly ApiCall<AddLabelRequest, AddLabelResponse> _callAddLabel;
@@ -3764,6 +3814,8 @@ namespace Google.Example.Library.V1
                 GrpcClient.GetBookFromAnywhereAsync, GrpcClient.GetBookFromAnywhere, effectiveSettings.GetBookFromAnywhereSettings);
             _callUpdateBookIndex = _clientHelper.BuildApiCall<UpdateBookIndexRequest, Empty>(
                 GrpcClient.UpdateBookIndexAsync, GrpcClient.UpdateBookIndex, effectiveSettings.UpdateBookIndexSettings);
+            _callDiscussBook = _clientHelper.BuildApiCall<DiscussBookRequest, Comment>(
+                GrpcClient.DiscussBook, effectiveSettings.DiscussBookSettings, effectiveSettings.DiscussBookStreamingSettings);
             _callFindRelatedBooks = _clientHelper.BuildApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse>(
                 GrpcClient.FindRelatedBooksAsync, GrpcClient.FindRelatedBooks, effectiveSettings.FindRelatedBooksSettings);
             _callAddTag = _clientHelper.BuildApiCall<AddTagRequest, AddTagResponse>(
@@ -3804,6 +3856,8 @@ namespace Google.Example.Library.V1
         partial void Modify_GetBookFromArchiveRequest(ref GetBookFromArchiveRequest request, ref CallSettings settings);
         partial void Modify_GetBookFromAnywhereRequest(ref GetBookFromAnywhereRequest request, ref CallSettings settings);
         partial void Modify_UpdateBookIndexRequest(ref UpdateBookIndexRequest request, ref CallSettings settings);
+        partial void Modify_DiscussBookRequestCallSettings(ref CallSettings settings);
+        partial void Modify_DiscussBookRequestRequest(ref DiscussBookRequest request);
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref CallSettings settings);
         partial void Modify_AddTagRequest(ref AddTagRequest request, ref CallSettings settings);
         partial void Modify_AddLabelRequest(ref AddLabelRequest request, ref CallSettings settings);
@@ -4492,6 +4546,97 @@ namespace Google.Example.Library.V1
         {
             Modify_UpdateBookIndexRequest(ref request, ref callSettings);
             _callUpdateBookIndex.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Test bidi-streaming.
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <param name="streamingSettings">
+        /// If not null, applies streaming overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The client-server stream.
+        /// </returns>
+        public override DiscussBookStream DiscussBook(
+            CallSettings callSettings = null,
+            BidirectionalStreamingSettings streamingSettings = null)
+        {
+            Modify_DiscussBookRequestCallSettings(ref callSettings);
+            BidirectionalStreamingSettings effectiveStreamingSettings =
+                streamingSettings ?? _callDiscussBook.StreamingSettings;
+            AsyncDuplexStreamingCall<DiscussBookRequest,Comment> call =
+                _callDiscussBook.Call(callSettings);
+            BufferedClientStreamWriter<DiscussBookRequest> writeBuffer =
+                new BufferedClientStreamWriter<DiscussBookRequest>(
+                    call.RequestStream, effectiveStreamingSettings.BufferedClientWriterCapacity);
+            return new DiscussBookStreamImpl(this, call, writeBuffer);
+        }
+
+        /// <summary>
+        /// Bidirectional streaming methods for <c>DiscussBook</c>.
+        /// </summary>
+        public sealed class DiscussBookStreamImpl : DiscussBookStream
+        {
+            /// <summary>
+            /// Construct the bidirectional streaming method for <c>DiscussBook</c>.
+            /// </summary>
+            /// <param name="service">The service containing this streaming method.</param>
+            /// <param name="call">The underlying gRPC duplex streaming call.</param>
+            /// <param name="writeBuffer">The <see cref="BufferedClientStreamWriter{DiscussBookRequest}"/>
+            /// instance associated with this streaming call.</param>
+            public DiscussBookStreamImpl(
+                LibraryServiceClientImpl service,
+                AsyncDuplexStreamingCall<DiscussBookRequest,Comment> call,
+                BufferedClientStreamWriter<DiscussBookRequest> writeBuffer)
+            {
+                _service = service;
+                GrpcCall = call;
+                _writeBuffer = writeBuffer;
+            }
+
+            private LibraryServiceClientImpl _service;
+            private BufferedClientStreamWriter<DiscussBookRequest> _writeBuffer;
+
+            private DiscussBookRequest ModifyRequest(DiscussBookRequest request)
+            {
+                _service.Modify_DiscussBookRequestRequest(ref request);
+                return request;
+            }
+
+            /// <inheritdoc/>
+            public override AsyncDuplexStreamingCall<DiscussBookRequest,Comment> GrpcCall { get; }
+
+            /// <inheritdoc/>
+            public override Task TryWriteAsync(DiscussBookRequest message) =>
+                _writeBuffer.TryWriteAsync(ModifyRequest(message));
+
+            /// <inheritdoc/>
+            public override Task WriteAsync(DiscussBookRequest message) =>
+                _writeBuffer.WriteAsync(ModifyRequest(message));
+
+            /// <inheritdoc/>
+            public override Task TryWriteAsync(DiscussBookRequest message, WriteOptions options) =>
+                _writeBuffer.TryWriteAsync(ModifyRequest(message), options);
+
+            /// <inheritdoc/>
+            public override Task WriteAsync(DiscussBookRequest message, WriteOptions options) =>
+                _writeBuffer.WriteAsync(ModifyRequest(message), options);
+
+            /// <inheritdoc/>
+            public override Task TryWriteCompleteAsync() =>
+                _writeBuffer.TryWriteCompleteAsync();
+
+            /// <inheritdoc/>
+            public override Task WriteCompleteAsync() =>
+                _writeBuffer.WriteCompleteAsync();
+
+            /// <inheritdoc/>
+            public override IAsyncEnumerator<Comment> ResponseStream =>
+                GrpcCall.ResponseStream;
         }
 
         /// <summary>

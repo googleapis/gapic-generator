@@ -700,6 +700,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel(service.getSimpleName(), "Settings"));
   }
 
+  /** The name of the return type of the given grpc streaming method. */
+  public String getGrpcStreamingApiReturnTypeName(Method method, ModelTypeTable typeTable) {
+    return publicClassName(
+        Name.upperCamel(method.getOutputType().getMessageType().getSimpleName()));
+  }
+
   /**
    * The generic-aware response type name for the given type. For example, in Java, this will be the
    * type used for ListenableFuture&lt;...&gt;.

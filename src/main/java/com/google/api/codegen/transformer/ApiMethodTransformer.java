@@ -471,16 +471,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.serviceRequestTypeName(requestTypeName);
     methodViewBuilder.serviceRequestTypeConstructor(namer.getTypeConstructor(requestTypeName));
 
-    if (context.getMethodConfig().isGrpcStreaming()) {
-      String returnTypeFullName = namer.getGrpcStreamingApiReturnTypeName(context.getMethod());
-      String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
-      methodViewBuilder.serviceResponseTypeName(returnTypeNickname);
-
-    } else {
-      String responseTypeName =
-          context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType());
-      methodViewBuilder.serviceResponseTypeName(responseTypeName);
-    }
+    setServiceResponseTypeName(context, methodViewBuilder);
 
     methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     methodViewBuilder.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
@@ -498,6 +489,21 @@ public class ApiMethodTransformer {
           !messages.isEmptyType(context.getMethodConfig().getLongRunningConfig().getReturnType()));
     } else {
       methodViewBuilder.hasReturnValue(!messages.isEmptyType(context.getMethod().getOutputType()));
+    }
+  }
+
+  protected void setServiceResponseTypeName(
+      MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+    SurfaceNamer namer = context.getNamer();
+    if (context.getMethodConfig().isGrpcStreaming()) {
+      String returnTypeFullName =
+          namer.getGrpcStreamingApiReturnTypeName(context.getMethod(), context.getTypeTable());
+      String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
+      methodViewBuilder.serviceResponseTypeName(returnTypeNickname);
+    } else {
+      String responseTypeName =
+          context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType());
+      methodViewBuilder.serviceResponseTypeName(responseTypeName);
     }
   }
 
@@ -613,7 +619,7 @@ public class ApiMethodTransformer {
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     List<ParamDocView> paramDocs = new ArrayList<>();
-    paramDocs.add(getRequestObjectParamDoc(context, context.getMethod().getInputType()));
+    paramDocs.addAll(getRequestObjectParamDocs(context, context.getMethod().getInputType()));
     paramDocs.addAll(ParamWithSimpleDoc.asParamDocViews(additionalParams));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
@@ -701,7 +707,8 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     // use the api return type name as the surface return type name
-    String returnTypeFullName = namer.getGrpcStreamingApiReturnTypeName(context.getMethod());
+    String returnTypeFullName =
+        namer.getGrpcStreamingApiReturnTypeName(context.getMethod(), context.getTypeTable());
     String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
     methodViewBuilder.responseTypeName(returnTypeNickname);
   }
@@ -999,15 +1006,17 @@ public class ApiMethodTransformer {
     return allDocs;
   }
 
-  public SimpleParamDocView getRequestObjectParamDoc(
+  public List<SimpleParamDocView> getRequestObjectParamDocs(
       MethodTransformerContext context, TypeRef typeRef) {
-    return SimpleParamDocView.newBuilder()
-        .paramName("request")
-        .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
-        .lines(
-            Arrays.<String>asList(
-                "The request object containing all of the parameters for the API call."))
-        .build();
+    SimpleParamDocView doc =
+        SimpleParamDocView.newBuilder()
+            .paramName("request")
+            .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
+            .lines(
+                Arrays.<String>asList(
+                    "The request object containing all of the parameters for the API call."))
+            .build();
+    return ImmutableList.of(doc);
   }
 
   private ParamDocView getOptionalArrayParamDoc(
