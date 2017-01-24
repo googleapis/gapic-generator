@@ -100,71 +100,23 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return Name.upperCamel(service.getSimpleName()).toPhrase();
   }
 
-  /////////////////////////////////////// Class names /////////////////////////////////////////////
+  /////////////////////////////////////// Constructors /////////////////////////////////////////////
 
-  /** The name of the class that implements a particular proto interface. */
-  public String getApiWrapperClassName(Interface interfaze) {
+  /** The name of the constructor for the service client. The client is VKit generated, not GRPC. */
+  public String getApiWrapperClassConstructorName(Interface interfaze) {
     return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
-  /** The name of the implementation class that implements a particular proto interface. */
-  public String getApiWrapperClassImplName(Interface interfaze) {
-    return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
-  }
-
-  /** The name of the class that implements snippets for a particular proto interface. */
-  public String getApiSnippetsClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ApiSnippets"));
-  }
-
-  /**
-   * The name of the settings class for a particular proto interface; not used in most languages.
-   */
-  public String getApiSettingsClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
-  }
-
-  /** The name of the class that contains paged list response wrappers. */
-  public String getPagedResponseWrappersClassName() {
-    return publicClassName(Name.upperCamel("PagedResponseWrappers"));
-  }
-
-  /**
-   * The type name of the Grpc service class This needs to match what Grpc generates for the
-   * particular language.
-   */
-  public String getGrpcServiceClassName(Interface service) {
-    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
-    String grpcContainerName =
-        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
-    String serviceClassName =
-        publicClassName(Name.upperCamelKeepUpperAcronyms(service.getSimpleName(), "ImplBase"));
-    return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
-  }
-
-  /**
-   * The fully qualified class name of a an API service. TODO: Support the general pattern of
-   * package + class name in NameFormatter.
-   */
-  public String getFullyQualifiedApiWrapperClassName(Interface interfaze) {
-    return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
+  /** Constructor name for the type with the given nickname. */
+  public String getTypeConstructor(String typeNickname) {
+    return typeNickname;
   }
 
   //////////////////////////////////// Package & module names /////////////////////////////////////
 
-  /** The name of the example package */
-  public String getExamplePackageName() {
-    return getNotImplementedString("SurfaceNamer.getExamplePackageName");
-  }
-
   /** The local (unqualified) name of the package */
   public String getLocalPackageName() {
     return getNotImplementedString("SurfaceNamer.getLocalPackageName");
-  }
-
-  /** The local (unqualified) name of the example package */
-  public String getLocalExamplePackageName() {
-    return getNotImplementedString("SurfaceNamer.getLocalExamplePackageName");
   }
 
   /**
@@ -189,76 +141,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
-  ///////////////////////////////// Function & Callable names /////////////////////////////////////
-
-  /** The name of the constructor for the service client. The client is VKit generated, not GRPC. */
-  public String getApiWrapperClassConstructorName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
-  }
-
-  /**
-   * The name of example of the constructor for the service client. The client is VKit generated,
-   * not GRPC.
-   */
-  public String getApiWrapperClassConstructorExampleName(Interface interfaze) {
-    return getApiWrapperClassConstructorName(interfaze);
-  }
-
-  /** Constructor name for the type with the given nickname. */
-  public String getTypeConstructor(String typeNickname) {
-    return typeNickname;
-  }
-
-  /** The function name to retrieve default client option */
-  public String getDefaultApiSettingsFunctionName(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getDefaultClientOptionFunctionName");
-  }
-
-  /** The method name to create a rerouted gRPC client. Used in C# */
-  public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
-    return getNotImplementedString("SurfaceNamer.getReroutedGrpcMethodName");
-  }
-
-  /** The name of the surface method which can call the given API method. */
-  public String getApiMethodName(Method method, VisibilityConfig visibility) {
-    return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
-  }
-
-  /** The name of the async surface method which can call the given API method. */
-  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
-    return getApiMethodName(Name.upperCamel(method.getSimpleName()).join("async"), visibility);
-  }
-
-  protected String getApiMethodName(Name name, VisibilityConfig visibility) {
-    switch (visibility) {
-      case PUBLIC:
-        return publicMethodName(name);
-      case PACKAGE:
-      case PRIVATE:
-        return privateMethodName(name);
-      default:
-        throw new IllegalArgumentException("cannot name method with visibility: " + visibility);
-    }
-  }
-
-  /**
-   * The name of the iterate method of the PagedListResponse type for a field, returning the
-   * resource type iterate method if available
-   */
-  public String getPagedResponseIterateMethod(
-      FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-      Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
-      return publicMethodName(Name.from("iterate_all_as").join(resourceName));
-    } else {
-      return getPagedResponseIterateMethod();
-    }
-  }
-
-  /** The name of the iterate method of the PagedListResponse type for a field */
-  public String getPagedResponseIterateMethod() {
-    return publicMethodName(Name.from("iterate_all_elements"));
-  }
+  /////////////////////////////////// Protos methods /////////////////////////////////////////////
 
   /** The function name to set the given proto field. */
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
@@ -378,6 +261,59 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  ///////////////////////////////// Function & Callable names /////////////////////////////////////
+
+  /** The function name to retrieve default client option */
+  public String getDefaultApiSettingsFunctionName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getDefaultClientOptionFunctionName");
+  }
+
+  /** The method name to create a rerouted gRPC client. Used in C# */
+  public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getReroutedGrpcMethodName");
+  }
+
+  /** The name of the surface method which can call the given API method. */
+  public String getApiMethodName(Method method, VisibilityConfig visibility) {
+    return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
+  }
+
+  /** The name of the async surface method which can call the given API method. */
+  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+    return getApiMethodName(Name.upperCamel(method.getSimpleName()).join("async"), visibility);
+  }
+
+  protected String getApiMethodName(Name name, VisibilityConfig visibility) {
+    switch (visibility) {
+      case PUBLIC:
+        return publicMethodName(name);
+      case PACKAGE:
+      case PRIVATE:
+        return privateMethodName(name);
+      default:
+        throw new IllegalArgumentException("cannot name method with visibility: " + visibility);
+    }
+  }
+
+  /**
+   * The name of the iterate method of the PagedListResponse type for a field, returning the
+   * resource type iterate method if available
+   */
+  public String getPagedResponseIterateMethod(
+      FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+      Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
+      return publicMethodName(Name.from("iterate_all_as").join(resourceName));
+    } else {
+      return getPagedResponseIterateMethod();
+    }
+  }
+
+  /** The name of the iterate method of the PagedListResponse type for a field */
+  public String getPagedResponseIterateMethod() {
+    return publicMethodName(Name.from("iterate_all_elements"));
+  }
+
   public String getResourceTypeParseMethodName(
       ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
     return getNotImplementedString("SurfaceNamer.getResourceTypeParseMethodName");
@@ -416,19 +352,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
         Name.upperCamel(method.getOutputType().getMessageType().getSimpleName()));
   }
 
-  /** The name of the paged callable variant of the given method. */
-  public String getPagedCallableMethodName(Method method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
-  }
-
-  /** The name of the example for the paged callable variant. */
-  public String getPagedCallableMethodExampleName(Interface interfaze, Method method) {
-    return getPagedCallableMethodName(method);
-  }
-
   /** The name of the callable for the paged callable variant of the given method. */
   public String getPagedCallableName(Method method) {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+  }
+
+  /** The name of the paged callable variant of the given method. */
+  public String getPagedCallableMethodName(Method method) {
+    return publicMethodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
   }
 
   /** The name of the plain callable variant of the given method. */
@@ -441,19 +372,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "CallableAsync"));
   }
 
-  /** The name of the example for the plain callable variant. */
-  public String getCallableMethodExampleName(Interface interfaze, Method method) {
-    return getCallableMethodName(method);
-  }
-
   /** The name of the operation callable variant of the given method. */
   public String getOperationCallableMethodName(Method method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
-  }
-
-  /** The name of the example for the operation callable variant of the given method. */
-  public String getOperationCallableMethodExampleName(Interface interfaze, Method method) {
-    return getOperationCallableMethodName(method);
   }
 
   /** The name of the plain callable for the given method. */
@@ -486,32 +407,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.upperCamel(service.getSimpleName(), "Settings"));
   }
 
-  /** The name of the example for the method. */
-  public String getApiMethodExampleName(Interface interfaze, Method method) {
-    return getApiMethodName(method, VisibilityConfig.PUBLIC);
-  }
-
-  /** The name of the example for the async variant of the given method. */
-  public String getAsyncApiMethodExampleName(Interface interfaze, Method method) {
-    return getAsyncApiMethodName(method, VisibilityConfig.PUBLIC);
-  }
-
-  /**
-   * The name of the example of the GRPC streaming surface method which can call the given API
-   * method.
-   */
-  public String getGrpcStreamingApiMethodExampleName(Interface interfaze, Method method) {
-    return getGrpcStreamingApiMethodName(method, VisibilityConfig.PUBLIC);
-  }
-
   /** The name of the IAM resource getter function. */
   public String getIamResourceGetterFunctionName(Field field) {
     return getNotImplementedString("SurfaceNamer.getIamResourceGetterFunctionName");
-  }
-
-  /** The example name of the IAM resource getter function. */
-  public String getIamResourceGetterFunctionExampleName(Interface service, Field field) {
-    return getIamResourceGetterFunctionName(field);
   }
 
   /** The name of the function that will create a stub. */
@@ -618,7 +516,55 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedListResponseFactory"));
   }
 
-  /////////////////////////////////////// Type names //////////////////////////////////////////
+  /////////////////////////////////////// Type names /////////////////////////////////////////////
+
+  /** The name of the class that implements a particular proto interface. */
+  public String getApiWrapperClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  }
+
+  /** The name of the implementation class that implements a particular proto interface. */
+  public String getApiWrapperClassImplName(Interface interfaze) {
+    return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
+  }
+
+  /** The name of the class that implements snippets for a particular proto interface. */
+  public String getApiSnippetsClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ApiSnippets"));
+  }
+
+  /**
+   * The name of the settings class for a particular proto interface; not used in most languages.
+   */
+  public String getApiSettingsClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+  }
+
+  /** The name of the class that contains paged list response wrappers. */
+  public String getPagedResponseWrappersClassName() {
+    return publicClassName(Name.upperCamel("PagedResponseWrappers"));
+  }
+
+  /**
+   * The type name of the Grpc service class This needs to match what Grpc generates for the
+   * particular language.
+   */
+  public String getGrpcServiceClassName(Interface service) {
+    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
+    String grpcContainerName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
+    String serviceClassName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(service.getSimpleName(), "ImplBase"));
+    return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
+  }
+
+  /**
+   * The fully qualified class name of a an API service. TODO: Support the general pattern of
+   * package + class name in NameFormatter.
+   */
+  public String getFullyQualifiedApiWrapperClassName(Interface interfaze) {
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
+  }
 
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
@@ -1037,11 +983,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getServiceFileName");
   }
 
-  /** The file name for the example of an API service. */
-  public String getExampleFileName(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getExampleFileName");
-  }
-
   public String getSourceFilePath(String path, String publicClassName) {
     return getNotImplementedString("SurfaceNamer.getSourceFilePath");
   }
@@ -1096,14 +1037,70 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getRandomStringValue");
   }
 
-  ////////////////////////////////////////// Private /////////////////////////////////////////////
+  ////////////////////////////////////////// Examples ////////////////////////////////////////////
 
-  private static String removeSuffix(String original, String suffix) {
-    if (original.endsWith(suffix)) {
-      original = original.substring(0, original.length() - suffix.length());
-    }
-    return original;
+  /** The name of the example package */
+  public String getExamplePackageName() {
+    return getNotImplementedString("SurfaceNamer.getExamplePackageName");
   }
+
+  /** The local (unqualified) name of the example package */
+  public String getLocalExamplePackageName() {
+    return getNotImplementedString("SurfaceNamer.getLocalExamplePackageName");
+  }
+
+  /**
+   * The name of example of the constructor for the service client. The client is VKit generated,
+   * not GRPC.
+   */
+  public String getApiWrapperClassConstructorExampleName(Interface interfaze) {
+    return getApiWrapperClassConstructorName(interfaze);
+  }
+
+  /** The name of the example for the paged callable variant. */
+  public String getPagedCallableMethodExampleName(Interface interfaze, Method method) {
+    return getPagedCallableMethodName(method);
+  }
+
+  /** The name of the example for the plain callable variant. */
+  public String getCallableMethodExampleName(Interface interfaze, Method method) {
+    return getCallableMethodName(method);
+  }
+
+  /** The name of the example for the operation callable variant of the given method. */
+  public String getOperationCallableMethodExampleName(Interface interfaze, Method method) {
+    return getOperationCallableMethodName(method);
+  }
+
+  /** The name of the example for the method. */
+  public String getApiMethodExampleName(Interface interfaze, Method method) {
+    return getApiMethodName(method, VisibilityConfig.PUBLIC);
+  }
+
+  /** The name of the example for the async variant of the given method. */
+  public String getAsyncApiMethodExampleName(Interface interfaze, Method method) {
+    return getAsyncApiMethodName(method, VisibilityConfig.PUBLIC);
+  }
+
+  /**
+   * The name of the example of the GRPC streaming surface method which can call the given API
+   * method.
+   */
+  public String getGrpcStreamingApiMethodExampleName(Interface interfaze, Method method) {
+    return getGrpcStreamingApiMethodName(method, VisibilityConfig.PUBLIC);
+  }
+
+  /** The example name of the IAM resource getter function. */
+  public String getIamResourceGetterFunctionExampleName(Interface service, Field field) {
+    return getIamResourceGetterFunctionName(field);
+  }
+
+  /** The file name for the example of an API service. */
+  public String getExampleFileName(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getExampleFileName");
+  }
+
+  ////////////////////////////////////////// Utility /////////////////////////////////////////////
 
   /** Indicates whether the specified method supports retry settings. */
   public boolean methodHasRetrySettings(MethodConfig methodConfig) {
@@ -1113,5 +1110,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** Indicates whether the specified method supports timeout settings. */
   public boolean methodHasTimeoutSettings(MethodConfig methodConfig) {
     return true;
+  }
+
+  private static String removeSuffix(String original, String suffix) {
+    if (original.endsWith(suffix)) {
+      original = original.substring(0, original.length() - suffix.length());
+    }
+    return original;
   }
 }
