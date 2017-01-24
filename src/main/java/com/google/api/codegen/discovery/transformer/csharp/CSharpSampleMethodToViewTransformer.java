@@ -102,8 +102,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView =
           createSampleFieldView(methodInfo, field, context, symbolTable);
-      requiredFields.add(sampleFieldView);
       if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
         methodCallFieldVarNames.add(sampleFieldView.name());
       } else {
         optionalFields.add(sampleFieldView);

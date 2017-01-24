@@ -90,8 +90,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     List<String> methodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView = createSampleFieldView(field, context, symbolTable);
-      requiredFields.add(sampleFieldView);
       if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
         methodCallFieldVarNames.add(sampleFieldView.name());
       } else {
         optionalFields.add(sampleFieldView);
