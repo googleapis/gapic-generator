@@ -57,7 +57,9 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
             new CSharpTypeTable(""),
-            new CSharpSampleTypeNameConverter(sampleConfig.packagePrefix()));
+            new CSharpSampleTypeNameConverter(
+                sampleConfig.packagePrefix(),
+                sampleConfig.methods().get(method.getName()).nameComponents()));
     CSharpSampleNamer csharpSampleNamer = new CSharpSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(
@@ -213,7 +215,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     if (typeInfo.kind() == Field.Kind.TYPE_ENUM) {
       TypedValue typedValue =
           CSharpSampleTypeNameConverter.getEnumZeroValue(
-              methodInfo.requestType().message().typeName(), field.name());
+              typeTable.getAndSaveNicknameForRequestType("", methodInfo.requestType()),
+              field.name());
       typeName = typedValue.getTypeName().getNickname();
       defaultValue = String.format(typedValue.getValuePattern(), typeName);
     } else {

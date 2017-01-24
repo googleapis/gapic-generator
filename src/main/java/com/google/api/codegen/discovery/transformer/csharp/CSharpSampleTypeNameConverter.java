@@ -24,6 +24,8 @@ import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Maps SampleConfig and TypeInfo instances to C# specific TypeName instances. */
 class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
@@ -58,10 +60,12 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
 
   private final TypeNameConverter typeNameConverter;
   private final String packagePrefix;
+  private final List<String> methodNameComponents;
 
-  public CSharpSampleTypeNameConverter(String packagePrefix) {
+  public CSharpSampleTypeNameConverter(String packagePrefix, List<String> methodNameComponents) {
     this.typeNameConverter = new CSharpTypeTable("");
     this.packagePrefix = packagePrefix;
+    this.methodNameComponents = methodNameComponents;
   }
 
   @Override
@@ -71,13 +75,24 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getRequestTypeName(String apiTypeName, TypeInfo typeInfo) {
-    return getTypeName(typeInfo);
+    List<String> copy = new ArrayList<>(methodNameComponents);
+    String requestTypeName = copy.remove(copy.size() - 1) + "Request";
+    String path = "";
+    for (String s : copy) {
+      path += s + "Resource.";
+    }
+    return new TypeName(path + requestTypeName);
   }
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
     if (typeInfo.isMessage()) {
-      return new TypeName(typeInfo.message().typeName());
+      String messageTypeName = typeInfo.message().typeName();
+      // A rule for cases like DatasetList.Datasets
+      if (messageTypeName.contains(".")) {
+        messageTypeName = messageTypeName + "Data";
+      }
+      return new TypeName(Joiner.on('.').join("Data", messageTypeName));
     }
     return getNonMessageTypeName(typeInfo);
   }
