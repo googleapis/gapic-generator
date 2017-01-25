@@ -88,8 +88,8 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
   public TypeName getTypeName(TypeInfo typeInfo) {
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
-      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey(), true);
-      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue(), true);
+      TypeName keyTypeName = getTypeName(typeInfo.mapKey(), true);
+      TypeName valueTypeName = getTypeName(typeInfo.mapValue(), true);
       return new TypeName(
           mapTypeName.getFullName(),
           mapTypeName.getNickname(),
@@ -106,6 +106,13 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     return getTypeNameForElementType(typeInfo, false);
   }
 
+  private TypeName getTypeName(TypeInfo typeInfo, boolean shouldBoxPrimitives) {
+    if (typeInfo.isMap() || typeInfo.isArray()) {
+      return getTypeName(typeInfo);
+    }
+    return getTypeNameForElementType(typeInfo, shouldBoxPrimitives);
+  }
+
   @Override
   public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
     if (typeInfo.isMessage()) {
@@ -116,8 +123,8 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
     // Maps are special-cased so we return Map.Entry types.
     if (typeInfo.isMap()) {
       TypeName mapTypeName = new TypeName("java.util.Map", "Map.Entry");
-      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey(), true);
-      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue(), true);
+      TypeName keyTypeName = getTypeName(typeInfo.mapKey(), true);
+      TypeName valueTypeName = getTypeName(typeInfo.mapValue(), true);
       return new TypeName(
           mapTypeName.getFullName(),
           mapTypeName.getNickname(),

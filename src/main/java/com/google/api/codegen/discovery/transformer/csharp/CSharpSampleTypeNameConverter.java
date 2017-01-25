@@ -88,8 +88,8 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
   public TypeName getTypeName(TypeInfo typeInfo) {
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
-      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey());
-      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue());
+      TypeName keyTypeName = getTypeName(typeInfo.mapKey());
+      TypeName valueTypeName = getTypeName(typeInfo.mapValue());
       return new TypeName(
           mapTypeName.getFullName(),
           mapTypeName.getNickname(),
@@ -120,8 +120,8 @@ class CSharpSampleTypeNameConverter implements SampleTypeNameConverter {
     if (typeInfo.isMap()) {
       TypeName mapTypeName =
           typeNameConverter.getTypeName("System.Collections.Generic.KeyValuePair");
-      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey());
-      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue());
+      TypeName keyTypeName = getTypeName(typeInfo.mapKey());
+      TypeName valueTypeName = getTypeName(typeInfo.mapValue());
       return new TypeName(
           mapTypeName.getFullName(),
           mapTypeName.getNickname(),
