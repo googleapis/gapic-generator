@@ -52,6 +52,9 @@ public abstract class SamplePageStreamingView {
   public abstract Boolean isResourceSetterInRequestBody();
 
   @Nullable
+  public abstract String executeRequestFuncName();
+
+  @Nullable
   public abstract String pageTokenName();
 
   @Nullable
@@ -87,6 +90,8 @@ public abstract class SamplePageStreamingView {
     public abstract Builder handlePageVarName(String val);
 
     public abstract Builder isResourceSetterInRequestBody(Boolean val);
+
+    public abstract Builder executeRequestFuncName(String val);
 
     public abstract Builder pageTokenName(String val);
 

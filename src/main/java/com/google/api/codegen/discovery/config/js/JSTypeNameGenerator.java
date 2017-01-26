@@ -12,11 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.config.nodejs;
+package com.google.api.codegen.discovery.config.js;
 
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
+import java.util.List;
 
-public class NodeJSTypeNameGenerator extends TypeNameGenerator {
+public class JSTypeNameGenerator extends TypeNameGenerator {
+
+  @Override
+  public List<String> getMethodNameComponents(List<String> nameComponents) {
+    // In JS, we want the whole name components list to make it to the
+    // transformer because every element is part of the method construction.
+    return nameComponents;
+  }
 
   @Override
   public String stringDelimiter() {
