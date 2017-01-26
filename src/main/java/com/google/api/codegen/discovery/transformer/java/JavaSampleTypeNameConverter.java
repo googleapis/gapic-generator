@@ -86,6 +86,10 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
+    return getTypeName(typeInfo, false);
+  }
+
+  private TypeName getTypeName(TypeInfo typeInfo, boolean shouldBoxPrimitives) {
     if (typeInfo.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
       TypeName keyTypeName = getTypeName(typeInfo.mapKey(), true);
@@ -102,13 +106,6 @@ class JavaSampleTypeNameConverter implements SampleTypeNameConverter {
       TypeName elementTypeName = getTypeNameForElementType(typeInfo, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
-    }
-    return getTypeNameForElementType(typeInfo, false);
-  }
-
-  private TypeName getTypeName(TypeInfo typeInfo, boolean shouldBoxPrimitives) {
-    if (typeInfo.isMap() || typeInfo.isArray()) {
-      return getTypeName(typeInfo);
     }
     return getTypeNameForElementType(typeInfo, shouldBoxPrimitives);
   }
