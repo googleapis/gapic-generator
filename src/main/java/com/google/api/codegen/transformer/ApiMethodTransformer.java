@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -470,16 +471,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.serviceRequestTypeName(requestTypeName);
     methodViewBuilder.serviceRequestTypeConstructor(namer.getTypeConstructor(requestTypeName));
 
-    if (context.getMethodConfig().isGrpcStreaming()) {
-      String returnTypeFullName = namer.getGrpcStreamingApiReturnTypeName(context.getMethod());
-      String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
-      methodViewBuilder.serviceResponseTypeName(returnTypeNickname);
-
-    } else {
-      String responseTypeName =
-          context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType());
-      methodViewBuilder.serviceResponseTypeName(responseTypeName);
-    }
+    setServiceResponseTypeName(context, methodViewBuilder);
 
     methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     methodViewBuilder.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
@@ -488,6 +480,8 @@ public class ApiMethodTransformer {
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
     methodViewBuilder.modifyMethodName(namer.getModifyMethodName(context.getMethod()));
     methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
+    methodViewBuilder.visibility(
+        namer.getVisiblityKeyword(context.getMethodConfig().getVisibility()));
 
     ServiceMessages messages = new ServiceMessages();
     if (context.getMethodConfig().isLongRunningOperation()) {
@@ -495,6 +489,21 @@ public class ApiMethodTransformer {
           !messages.isEmptyType(context.getMethodConfig().getLongRunningConfig().getReturnType()));
     } else {
       methodViewBuilder.hasReturnValue(!messages.isEmptyType(context.getMethod().getOutputType()));
+    }
+  }
+
+  protected void setServiceResponseTypeName(
+      MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+    SurfaceNamer namer = context.getNamer();
+    if (context.getMethodConfig().isGrpcStreaming()) {
+      String returnTypeFullName =
+          namer.getGrpcStreamingApiReturnTypeName(context.getMethod(), context.getTypeTable());
+      String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
+      methodViewBuilder.serviceResponseTypeName(returnTypeNickname);
+    } else {
+      String responseTypeName =
+          context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType());
+      methodViewBuilder.serviceResponseTypeName(responseTypeName);
     }
   }
 
@@ -610,7 +619,7 @@ public class ApiMethodTransformer {
       StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     List<ParamDocView> paramDocs = new ArrayList<>();
-    paramDocs.add(getRequestObjectParamDoc(context, context.getMethod().getInputType()));
+    paramDocs.addAll(getRequestObjectParamDocs(context, context.getMethod().getInputType()));
     paramDocs.addAll(ParamWithSimpleDoc.asParamDocViews(additionalParams));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
@@ -698,7 +707,8 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     // use the api return type name as the surface return type name
-    String returnTypeFullName = namer.getGrpcStreamingApiReturnTypeName(context.getMethod());
+    String returnTypeFullName =
+        namer.getGrpcStreamingApiReturnTypeName(context.getMethod(), context.getTypeTable());
     String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
     methodViewBuilder.responseTypeName(returnTypeNickname);
   }
@@ -799,9 +809,13 @@ public class ApiMethodTransformer {
         removePageTokenFieldConfig(context, context.getMethodConfig().getOptionalFieldConfigs());
     apiMethod.optionalRequestObjectParamsNoPageToken(
         generateRequestObjectParams(context, filteredFieldConfigs));
-    apiMethod.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
 
-    apiMethod.isLongRunningOperation(context.getMethodConfig().isLongRunningOperation());
+    GrpcStreamingType grpcStreamingType = context.getMethodConfig().getGrpcStreamingType();
+    apiMethod.grpcStreamingType(grpcStreamingType);
+    apiMethod.isSingularRequestMethod(
+        grpcStreamingType.equals(GrpcStreamingType.NonStreaming)
+            || grpcStreamingType.equals(GrpcStreamingType.ServerStreaming));
+
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)
@@ -853,13 +867,15 @@ public class ApiMethodTransformer {
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(
       MethodTransformerContext context, Iterable<Field> fields) {
     List<DynamicLangDefaultableParamView> methodParams = new ArrayList<>();
-    for (Field field : context.getMethodConfig().getRequiredFields()) {
-      DynamicLangDefaultableParamView param =
-          DynamicLangDefaultableParamView.newBuilder()
-              .name(context.getNamer().getVariableName(field))
-              .defaultValue("")
-              .build();
-      methodParams.add(param);
+    if (!context.getMethod().getRequestStreaming()) {
+      for (Field field : context.getMethodConfig().getRequiredFields()) {
+        DynamicLangDefaultableParamView param =
+            DynamicLangDefaultableParamView.newBuilder()
+                .name(context.getNamer().getVariableName(field))
+                .defaultValue("")
+                .build();
+        methodParams.add(param);
+      }
     }
     return methodParams;
   }
@@ -946,6 +962,10 @@ public class ApiMethodTransformer {
       Iterable<FieldConfig> fieldConfigs,
       List<ParamWithSimpleDoc> additionalParamDocs) {
     List<ParamDocView> allDocs = new ArrayList<>();
+    if (context.getMethod().getRequestStreaming()) {
+      allDocs.addAll(ParamWithSimpleDoc.asParamDocViews(additionalParamDocs));
+      return allDocs;
+    }
     for (FieldConfig fieldConfig : fieldConfigs) {
       Field field = fieldConfig.getField();
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
@@ -986,15 +1006,17 @@ public class ApiMethodTransformer {
     return allDocs;
   }
 
-  public SimpleParamDocView getRequestObjectParamDoc(
+  public List<SimpleParamDocView> getRequestObjectParamDocs(
       MethodTransformerContext context, TypeRef typeRef) {
-    return SimpleParamDocView.newBuilder()
-        .paramName("request")
-        .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
-        .lines(
-            Arrays.<String>asList(
-                "The request object containing all of the parameters for the API call."))
-        .build();
+    SimpleParamDocView doc =
+        SimpleParamDocView.newBuilder()
+            .paramName("request")
+            .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
+            .lines(
+                Arrays.<String>asList(
+                    "The request object containing all of the parameters for the API call."))
+            .build();
+    return ImmutableList.of(doc);
   }
 
   private ParamDocView getOptionalArrayParamDoc(
@@ -1030,29 +1052,37 @@ public class ApiMethodTransformer {
     Name retrySettingsName = Name.from("retry", "settings");
     Name timeoutMillisName = Name.from("timeout", "millis");
 
-    retrySettingsDoc.paramName(context.getNamer().localVarName(retrySettingsName));
-    // TODO figure out a reliable way to line-wrap comments across all languages
-    // instead of encoding it in the transformer
-    String retrySettingsDocText =
-        String.format(
-            "Retry settings to use for this call. If present, then\n%s is ignored.",
-            context.getNamer().varReference(timeoutMillisName));
-    List<String> retrySettingsDocLines = context.getNamer().getDocLines(retrySettingsDocText);
-    retrySettingsDoc.lines(retrySettingsDocLines);
-    arrayKeyDocs.add(retrySettingsDoc.build());
+    if (context.getNamer().methodHasRetrySettings(context.getMethodConfig())) {
+      retrySettingsDoc.paramName(context.getNamer().localVarName(retrySettingsName));
+      // TODO figure out a reliable way to line-wrap comments across all languages
+      // instead of encoding it in the transformer
+      String retrySettingsDocText =
+          String.format(
+              "Retry settings to use for this call. If present, then\n%s is ignored.",
+              context.getNamer().varReference(timeoutMillisName));
+      List<String> retrySettingsDocLines = context.getNamer().getDocLines(retrySettingsDocText);
+      retrySettingsDoc.lines(retrySettingsDocLines);
+      arrayKeyDocs.add(retrySettingsDoc.build());
+    }
 
-    SimpleParamDocView.Builder timeoutDoc = SimpleParamDocView.newBuilder();
-    timeoutDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32)));
-    timeoutDoc.paramName(context.getNamer().localVarName(timeoutMillisName));
-    // TODO figure out a reliable way to line-wrap comments across all languages
-    // instead of encoding it in the transformer
-    String timeoutMillisDocText =
-        String.format(
-            "Timeout to use for this call. Only used if %s\nis not set.",
-            context.getNamer().varReference(retrySettingsName));
-    List<String> timeoutMillisDocLines = context.getNamer().getDocLines(timeoutMillisDocText);
-    timeoutDoc.lines(timeoutMillisDocLines);
-    arrayKeyDocs.add(timeoutDoc.build());
+    if (context.getNamer().methodHasTimeoutSettings(context.getMethodConfig())) {
+      SimpleParamDocView.Builder timeoutDoc = SimpleParamDocView.newBuilder();
+      timeoutDoc.typeName(
+          context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32)));
+      timeoutDoc.paramName(context.getNamer().localVarName(timeoutMillisName));
+      // TODO figure out a reliable way to line-wrap comments across all languages
+      // instead of encoding it in the transformer
+      String timeoutMillisDocText = "Timeout to use for this call.";
+      if (context.getNamer().methodHasRetrySettings(context.getMethodConfig())) {
+        timeoutMillisDocText +=
+            String.format(
+                " Only used if %s\nis not set.",
+                context.getNamer().varReference(retrySettingsName));
+      }
+      List<String> timeoutMillisDocLines = context.getNamer().getDocLines(timeoutMillisDocText);
+      timeoutDoc.lines(timeoutMillisDocLines);
+      arrayKeyDocs.add(timeoutDoc.build());
+    }
 
     return arrayKeyDocs;
   }

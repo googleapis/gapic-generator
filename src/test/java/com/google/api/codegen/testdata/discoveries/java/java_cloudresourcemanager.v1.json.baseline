@@ -88,7 +88,6 @@ public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
     // The resource name of the Organization to fetch, e.g. "organizations/1234".
     String name = "";  // TODO: Update placeholder value.
-    // ex: "organizations/my-organization"
 
     CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
     CloudResourceManager.Organizations.Get request = cloudResourceManagerService.organizations().get(name);
@@ -145,10 +144,10 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-    // a path. For example, a Project resource is specified as `projects/{project}`.
+    // REQUIRED: The resource for which the policy is being requested.
+    // `resource` is usually specified as a path. For example, a Project
+    // resource is specified as `projects/{project}`.
     String resource = "";  // TODO: Update placeholder value.
-    // ex: "organizations/my-organization"
 
     // TODO: Assign values to desired fields of `requestBody`:
     GetIamPolicyRequest requestBody = new GetIamPolicyRequest();
@@ -275,10 +274,10 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-    // a path. For example, a Project resource is specified as `projects/{project}`.
+    // REQUIRED: The resource for which the policy is being specified.
+    // `resource` is usually specified as a path. For example, a Project
+    // resource is specified as `projects/{project}`.
     String resource = "";  // TODO: Update placeholder value.
-    // ex: "organizations/my-organization"
 
     // TODO: Assign values to desired fields of `requestBody`:
     SetIamPolicyRequest requestBody = new SetIamPolicyRequest();
@@ -338,10 +337,10 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-    // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+    // REQUIRED: The resource for which the policy detail is being requested.
+    // `resource` is usually specified as a path. For example, a Project
+    // resource is specified as `projects/{project}`.
     String resource = "";  // TODO: Update placeholder value.
-    // ex: "organizations/my-organization"
 
     // TODO: Assign values to desired fields of `requestBody`:
     TestIamPermissionsRequest requestBody = new TestIamPermissionsRequest();
@@ -457,7 +456,8 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The Project ID (for example, `foo-bar-123`). Required.
+    // The Project ID (for example, `foo-bar-123`).
+    // Required.
     String projectId = "";  // TODO: Update placeholder value.
 
     CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
@@ -511,13 +511,76 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The Project ID (for example, `my-project-123`). Required.
+    // The Project ID (for example, `my-project-123`).
+    // Required.
     String projectId = "";  // TODO: Update placeholder value.
 
     CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
     CloudResourceManager.Projects.Get request = cloudResourceManagerService.projects().get(projectId);
 
     Project response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static CloudResourceManager createCloudResourceManagerService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new CloudResourceManager.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-CloudResourceManagerSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Resource Manager API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/cloudresourcemanager
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/cloudresourcemanager/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.model.GetAncestryRequest;
+import com.google.api.services.cloudresourcemanager.model.GetAncestryResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class CloudResourceManagerExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The Project ID (for example, `my-project-123`).
+    // Required.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    GetAncestryRequest requestBody = new GetAncestryRequest();
+
+    CloudResourceManager cloudResourceManagerService = createCloudResourceManagerService();
+    CloudResourceManager.Projects.GetAncestry request = cloudResourceManagerService.projects().getAncestry(projectId, requestBody);
+
+    GetAncestryResponse response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);
@@ -569,8 +632,9 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-    // a path. For example, a Project resource is specified as `projects/{project}`.
+    // REQUIRED: The resource for which the policy is being requested.
+    // `resource` is usually specified as a path. For example, a Project
+    // resource is specified as `projects/{project}`.
     String resource = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`:
@@ -694,8 +758,9 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-    // a path. For example, a Project resource is specified as `projects/{project}`.
+    // REQUIRED: The resource for which the policy is being specified.
+    // `resource` is usually specified as a path. For example, a Project
+    // resource is specified as `projects/{project}`.
     String resource = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`:
@@ -756,8 +821,9 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-    // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+    // REQUIRED: The resource for which the policy detail is being requested.
+    // `resource` is usually specified as a path. For example, a Project
+    // resource is specified as `projects/{project}`.
     String resource = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`:
@@ -817,7 +883,8 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The project ID (for example, `foo-bar-123`). Required.
+    // The project ID (for example, `foo-bar-123`).
+    // Required.
     String projectId = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`:
@@ -874,7 +941,8 @@ import java.util.Arrays;
 
 public class CloudResourceManagerExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The project ID (for example, `my-project-123`). Required.
+    // The project ID (for example, `my-project-123`).
+    // Required.
     String projectId = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`. All existing

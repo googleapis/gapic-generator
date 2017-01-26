@@ -46,7 +46,7 @@
 
 @private mainFuncBody(class)
   var {@class.requestVarName} = {
-    @join field : class.fields if class.fields
+    @join field : class.requiredFields if class.requiredFields
       @if field.description
         @join line : util.getDocLines(field.description, 100)
           // {@line}
@@ -121,8 +121,8 @@
         console.log({@class.pageStreaming.pageVarName});
       @end
 
-      if ({@class.responseVarName}.nextPageToken) {
-        {@class.requestVarName}.pageToken = {@class.responseVarName}.nextPageToken;
+      if ({@class.responseVarName}.{@class.pageStreaming.nextPageTokenName}) {
+        {@class.requestVarName}.{@class.pageStreaming.pageTokenName} = {@class.responseVarName}.{@class.pageStreaming.nextPageTokenName};
         {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, {@class.pageStreaming.handlePageVarName});
       }
     };

@@ -14,8 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceTransformer {
@@ -26,7 +28,15 @@ public class ServiceTransformer {
     ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
     List<String> docLines = context.getNamer().getDocLines(context.getInterface());
     serviceDoc.firstLine(docLines.get(0));
-    serviceDoc.remainingLines(docLines.subList(1, docLines.size()));
+
+    List<String> remainingLines = new ArrayList<>(docLines.subList(1, docLines.size()));
+    InterfaceConfig conf = context.getInterfaceConfig();
+    if (!conf.getManualDoc().isEmpty()) {
+      remainingLines.add("");
+      remainingLines.addAll(context.getNamer().getDocLines(conf.getManualDoc()));
+    }
+    serviceDoc.remainingLines(remainingLines);
+
     serviceDoc.exampleApiMethod(exampleApiMethod);
     serviceDoc.apiVarName(namer.getApiWrapperVariableName(context.getInterface()));
     serviceDoc.apiClassName(namer.getApiWrapperClassName(context.getInterface()));

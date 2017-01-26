@@ -1883,6 +1883,79 @@
     <script>
     function makeApiCall() {
       var params = {
+        // Project ID of the Cloud SQL project.
+        project: '',  // TODO: Update placeholder value.
+
+        // Cloud SQL instance ID. This does not include the project ID.
+        instance: '',  // TODO: Update placeholder value.
+      };
+
+      var instancesTruncateLogRequestBody = {
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.sql.instances.truncateLog(params, instancesTruncateLogRequestBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/sqlservice.admin',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Cloud SQL Administration API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/sqladmin
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
         // Project ID of the project that contains the instance.
         project: '',  // TODO: Update placeholder value.
 
@@ -2687,22 +2760,10 @@
         instance: '',  // TODO: Update placeholder value.
       };
 
-      executeRequest(params);
-    }
-
-    function executeRequest(params) {
       var request = gapi.client.sql.users.list(params);
       request.then(function(response) {
-        var itemsPage = response.result.items;
-        for (var i = 0; i < itemsPage.length; i++) {
-          // TODO: Change code below to process each resource in `itemsPage`:
-          console.log(itemsPage[i]);
-        }
-
-        if (response.result.nextPageToken) {
-          params.pageToken = response.result.nextPageToken;
-          executeRequest(params);
-        }
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
       }, function(reason) {
         console.log('error: ' + reason.result.error.message);
       });

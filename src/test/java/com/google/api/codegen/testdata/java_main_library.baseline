@@ -100,6 +100,8 @@ import javax.annotation.Generated;
  * Check out [cloud docs!](/library/example/link).
  * This is [not a cloud link](http://www.google.com).
  *
+ * Also see this awesome doc there! and there! and everywhere!
+ *
  * <p>This class provides the ability to make remote calls to the backing service through method
  * calls that map to API methods. Sample code to get started:
  *
@@ -183,6 +185,7 @@ public class LibraryServiceClient implements AutoCloseable {
   private final StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable;
   private final StreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
   private final StreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
+  private final StreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
   private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
@@ -259,6 +262,7 @@ public class LibraryServiceClient implements AutoCloseable {
     this.streamShelvesCallable = StreamingCallable.create(settings.streamShelvesSettings(), this.channel);
     this.streamBooksCallable = StreamingCallable.create(settings.streamBooksSettings(), this.channel);
     this.discussBookCallable = StreamingCallable.create(settings.discussBookSettings(), this.channel);
+    this.monologAboutBookCallable = StreamingCallable.create(settings.monologAboutBookSettings(), this.channel);
     this.findRelatedBooksCallable = UnaryCallable.create(settings.findRelatedBooksSettings(), this.channel, this.executor);
     this.findRelatedBooksPagedCallable =
         UnaryCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
@@ -1868,6 +1872,46 @@ public class LibraryServiceClient implements AutoCloseable {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Test client streaming.
+   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   StreamObserver&lt;Comment&gt; responseObserver =
+   *       new StreamObserver&lt;Comment&gt;() {
+   *         {@literal @}Override
+   *         public void onNext(Comment response) {
+   *           // Do something when receive a response
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onError(Throwable t) {
+   *           // Add error-handling
+   *         }
+   *
+   *         {@literal @}Override
+   *         public void onCompleted() {
+   *           // Do something when complete.
+   *         }
+   *       };
+   *   StreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
+   *       libraryServiceClient.monologAboutBookCallable().clientStreamingCall(responseObserver)});
+   *
+   *   String name = "";
+   *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
+   *     .setName(name)
+   *     .build();
+   *   requestObserver.onNext(request);
+   * }
+   * </code></pre>
+   */
+  public final StreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable() {
+    return monologAboutBookCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    *
    *
    * Sample code:
@@ -2077,7 +2121,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * @param label REQUIRED: The label to add.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final AddLabelResponse addLabel(String resource, String label) {
+  /* package-private */ final AddLabelResponse addLabel(String resource, String label) {
 
     AddLabelRequest request =
         AddLabelRequest.newBuilder()
@@ -2130,7 +2174,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable() {
+  /* package-private */ final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable() {
     return addLabelCallable;
   }
 

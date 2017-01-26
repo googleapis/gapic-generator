@@ -700,6 +700,58 @@ func main() {
     log.Fatal(err)
   }
 
+  // Name of the project scoping this request.
+  project := ""  // TODO: Update placeholder value.
+
+  req := computeService.BackendServices.AggregatedList(project)
+  if err := req.Pages(ctx, func(page *compute.BackendServiceAggregatedList) error {
+    for name, backendServicesScopedList := range page.Items {
+      // TODO: Change code below to process each (name: backendServicesScopedList) element:
+      fmt.Printf("%v: %#v\n", name, backendServicesScopedList)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
   // Project ID for this request.
   project := ""  // TODO: Update placeholder value.
 
@@ -6517,6 +6569,65 @@ func main() {
   // The name of the zone for this request.
   zone := ""  // TODO: Update placeholder value.
 
+  // Name of the instance resource to start.
+  instance := ""  // TODO: Update placeholder value.
+
+  rb := &compute.InstancesSetServiceAccountRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.Instances.SetServiceAccount(project, zone, instance, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // The name of the zone for this request.
+  zone := ""  // TODO: Update placeholder value.
+
   // Name of the instance scoping this request.
   instance := ""  // TODO: Update placeholder value.
 
@@ -7165,6 +7276,58 @@ func main() {
   // Project ID for this request.
   project := ""  // TODO: Update placeholder value.
 
+  // Name of the network to be updated.
+  network := ""  // TODO: Update placeholder value.
+
+  resp, err := computeService.Networks.SwitchToCustomMode(project, network).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
   resp, err := computeService.Projects.Get(project).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
@@ -7378,6 +7541,1600 @@ func main() {
   }
 
   resp, err := computeService.Projects.SetUsageExportBucket(project, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the autoscaler to delete.
+  autoscaler := ""  // TODO: Update placeholder value.
+
+  resp, err := computeService.RegionAutoscalers.Delete(project, region, autoscaler).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the autoscaler to return.
+  autoscaler := ""  // TODO: Update placeholder value.
+
+  resp, err := computeService.RegionAutoscalers.Get(project, region, autoscaler).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  rb := &compute.Autoscaler{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionAutoscalers.Insert(project, region, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  req := computeService.RegionAutoscalers.List(project, region)
+  if err := req.Pages(ctx, func(page *compute.RegionAutoscalerList) error {
+    for _, autoscaler := range page.Items {
+      // TODO: Change code below to process each `autoscaler` resource:
+      fmt.Printf("%#v\n", autoscaler)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the autoscaler to update.
+  autoscaler := ""  // TODO: Update placeholder value.
+
+  rb := &compute.Autoscaler{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
+  }
+
+  resp, err := computeService.RegionAutoscalers.Patch(project, region, autoscaler, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  rb := &compute.Autoscaler{
+    // TODO: Add desired fields of the request body. All existing fields
+    // will be replaced.
+  }
+
+  resp, err := computeService.RegionAutoscalers.Update(project, region, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the BackendService resource to delete.
+  backendService := ""  // TODO: Update placeholder value.
+
+  resp, err := computeService.RegionBackendServices.Delete(project, region, backendService).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the BackendService resource to return.
+  backendService := ""  // TODO: Update placeholder value.
+
+  resp, err := computeService.RegionBackendServices.Get(project, region, backendService).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the BackendService resource to which the queried instance belongs.
+  backendService := ""  // TODO: Update placeholder value.
+
+  rb := &compute.ResourceGroupReference{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionBackendServices.GetHealth(project, region, backendService, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  rb := &compute.BackendService{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionBackendServices.Insert(project, region, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  req := computeService.RegionBackendServices.List(project, region)
+  if err := req.Pages(ctx, func(page *compute.BackendServiceList) error {
+    for _, backendService := range page.Items {
+      // TODO: Change code below to process each `backendService` resource:
+      fmt.Printf("%#v\n", backendService)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the BackendService resource to update.
+  backendService := ""  // TODO: Update placeholder value.
+
+  rb := &compute.BackendService{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
+  }
+
+  resp, err := computeService.RegionBackendServices.Patch(project, region, backendService, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the BackendService resource to update.
+  backendService := ""  // TODO: Update placeholder value.
+
+  rb := &compute.BackendService{
+    // TODO: Add desired fields of the request body. All existing fields
+    // will be replaced.
+  }
+
+  resp, err := computeService.RegionBackendServices.Update(project, region, backendService, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the managed instance group.
+  instanceGroupManager := ""  // TODO: Update placeholder value.
+
+  rb := &compute.RegionInstanceGroupManagersAbandonInstancesRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionInstanceGroupManagers.AbandonInstances(project, region, instanceGroupManager, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the managed instance group to delete.
+  instanceGroupManager := ""  // TODO: Update placeholder value.
+
+  resp, err := computeService.RegionInstanceGroupManagers.Delete(project, region, instanceGroupManager).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the managed instance group.
+  instanceGroupManager := ""  // TODO: Update placeholder value.
+
+  rb := &compute.RegionInstanceGroupManagersDeleteInstancesRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionInstanceGroupManagers.DeleteInstances(project, region, instanceGroupManager, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the managed instance group to return.
+  instanceGroupManager := ""  // TODO: Update placeholder value.
+
+  resp, err := computeService.RegionInstanceGroupManagers.Get(project, region, instanceGroupManager).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  rb := &compute.InstanceGroupManager{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionInstanceGroupManagers.Insert(project, region, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  req := computeService.RegionInstanceGroupManagers.List(project, region)
+  if err := req.Pages(ctx, func(page *compute.RegionInstanceGroupManagerList) error {
+    for _, instanceGroupManager := range page.Items {
+      // TODO: Change code below to process each `instanceGroupManager` resource:
+      fmt.Printf("%#v\n", instanceGroupManager)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // The name of the managed instance group.
+  instanceGroupManager := ""  // TODO: Update placeholder value.
+
+  resp, err := computeService.RegionInstanceGroupManagers.ListManagedInstances(project, region, instanceGroupManager).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the managed instance group.
+  instanceGroupManager := ""  // TODO: Update placeholder value.
+
+  rb := &compute.RegionInstanceGroupManagersRecreateRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionInstanceGroupManagers.RecreateInstances(project, region, instanceGroupManager, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the managed instance group.
+  instanceGroupManager := ""  // TODO: Update placeholder value.
+
+  // Number of instances that should exist in this instance group manager.
+  size := int64(0)  // TODO: Update placeholder value.
+
+  resp, err := computeService.RegionInstanceGroupManagers.Resize(project, region, instanceGroupManager, size).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // The name of the managed instance group.
+  instanceGroupManager := ""  // TODO: Update placeholder value.
+
+  rb := &compute.RegionInstanceGroupManagersSetTemplateRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionInstanceGroupManagers.SetInstanceTemplate(project, region, instanceGroupManager, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the managed instance group.
+  instanceGroupManager := ""  // TODO: Update placeholder value.
+
+  rb := &compute.RegionInstanceGroupManagersSetTargetPoolsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionInstanceGroupManagers.SetTargetPools(project, region, instanceGroupManager, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the instance group resource to return.
+  instanceGroup := ""  // TODO: Update placeholder value.
+
+  resp, err := computeService.RegionInstanceGroups.Get(project, region, instanceGroup).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  req := computeService.RegionInstanceGroups.List(project, region)
+  if err := req.Pages(ctx, func(page *compute.RegionInstanceGroupList) error {
+    for _, instanceGroup := range page.Items {
+      // TODO: Change code below to process each `instanceGroup` resource:
+      fmt.Printf("%#v\n", instanceGroup)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the regional instance group for which we want to list the instances.
+  instanceGroup := ""  // TODO: Update placeholder value.
+
+  rb := &compute.RegionInstanceGroupsListInstancesRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionInstanceGroups.ListInstances(project, region, instanceGroup, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // The name of the regional instance group where the named ports are updated.
+  instanceGroup := ""  // TODO: Update placeholder value.
+
+  rb := &compute.RegionInstanceGroupsSetNamedPortsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.RegionInstanceGroups.SetNamedPorts(project, region, instanceGroup, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -8830,6 +10587,65 @@ func main() {
   subnetwork := ""  // TODO: Update placeholder value.
 
   resp, err := computeService.Subnetworks.Delete(project, region, subnetwork).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/compute/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  computeService, err := compute.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID for this request.
+  project := ""  // TODO: Update placeholder value.
+
+  // Name of the region scoping this request.
+  region := ""  // TODO: Update placeholder value.
+
+  // Name of the Subnetwork resource to update.
+  subnetwork := ""  // TODO: Update placeholder value.
+
+  rb := &compute.SubnetworksExpandIpCidrRangeRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := computeService.Subnetworks.ExpandIpCidrRange(project, region, subnetwork, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

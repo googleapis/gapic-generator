@@ -74,7 +74,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context, symbolTable);
 
-    List<SampleFieldView> fields = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       String name = field.name();
       // Since the requestBody is named `resource`, all fields named `resource`
@@ -83,7 +83,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
         name = "resource_";
       }
 
-      fields.add(
+      requiredFields.add(
           SampleFieldView.newBuilder()
               .name(name)
               .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
@@ -111,7 +111,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
         .requestVarName(requestVarName)
         .hasRequestBody(methodInfo.requestBodyType() != null)
         .hasResponse(hasResponse)
-        .fields(fields)
+        .requiredFields(requiredFields)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
@@ -165,6 +165,8 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("handlePage"))));
     builder.pageVarName(
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name(), "page"))));
+    builder.pageTokenName(methodInfo.requestPageTokenName());
+    builder.nextPageTokenName(methodInfo.responsePageTokenName());
     return builder.build();
   }
 }

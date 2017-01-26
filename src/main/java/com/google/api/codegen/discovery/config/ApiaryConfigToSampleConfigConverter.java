@@ -17,7 +17,9 @@ package com.google.api.codegen.discovery.config;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Table;
 import com.google.protobuf.Field;
 import com.google.protobuf.Field.Kind;
 import com.google.protobuf.Method;
@@ -32,8 +34,8 @@ public class ApiaryConfigToSampleConfigConverter {
 
   private static final String KEY_FIELD_NAME = "key";
   private static final String VALUE_FIELD_NAME = "value";
-  private static final String PAGE_TOKEN_FIELD_NAME = "pageToken";
-  private static final String NEXT_PAGE_TOKEN_FIELD_NAME = "nextPageToken";
+  private static final ImmutableList<String> PAGE_TOKEN_NAMES =
+      ImmutableList.of("pageToken", "nextPageToken");
 
   private final List<Method> methods;
   private final ApiaryConfig apiaryConfig;
@@ -86,53 +88,101 @@ public class ApiaryConfigToSampleConfigConverter {
   /** Creates a method. */
   private MethodInfo createMethod(Method method) {
     // The order of fields must be preserved, so we use an ImmutableMap.
-    ImmutableMap.Builder<String, FieldInfo> fields = new ImmutableMap.Builder<>();
+    ImmutableMap.Builder<String, FieldInfo> fieldsBuilder = new ImmutableMap.Builder<>();
     TypeInfo requestBodyType = null;
+    Type requestType = apiaryConfig.getType(method.getRequestTypeUrl());
+
+    boolean isPageStreamingResourceSetterInRequestBody = false;
+    String requestPageTokenName = "";
+
     for (String fieldName : apiaryConfig.getMethodParams(method.getName())) {
-      Type containerType = apiaryConfig.getType(method.getRequestTypeUrl());
-      Field field = apiaryConfig.getField(containerType, fieldName);
+      Field field = apiaryConfig.getField(requestType, fieldName);
       // If one of the method arguments has the field name "request$", it's the
       // request body.
       if (fieldName.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
         requestBodyType = createTypeInfo(field, method);
+
+        // Below is the request body specific portion of the page streaming logic.
+        for (Field field2 : apiaryConfig.getType(field.getTypeUrl()).getFieldsList()) {
+          for (String tokenName : PAGE_TOKEN_NAMES) {
+            if (field2.getName().equals(tokenName)) {
+              isPageStreamingResourceSetterInRequestBody = true;
+              requestPageTokenName = tokenName;
+              break;
+            }
+          }
+        }
         continue;
       }
-      fields.put(field.getName(), createFieldInfo(field, containerType, method));
+      fieldsBuilder.put(field.getName(), createFieldInfo(field, requestType, method));
     }
+    ImmutableMap<String, FieldInfo> fields = fieldsBuilder.build();
 
-    TypeInfo requestType = createTypeInfo(method, true);
-    TypeInfo responseType = null;
+    TypeInfo requestTypeInfo = createTypeInfo(method, true);
+    TypeInfo responseTypeInfo = null;
     String responseTypeUrl = typeNameGenerator.getResponseTypeUrl(method.getResponseTypeUrl());
     if (!Strings.isNullOrEmpty(responseTypeUrl)) {
-      responseType = createTypeInfo(method, false);
+      responseTypeInfo = createTypeInfo(method, false);
     }
 
-    boolean isPageStreaming = isPageStreaming(method);
+    // Heuristic implementation interprets method to be page streaming iff one of the names
+    // "pageToken" or "nextPageToken" occurs among the fields of both the method's response type and
+    // either the method's request (query parameters) or request body.
+    boolean hasResponsePageToken = false;
+    String responsePageTokenName = "";
+    Type responseType = apiaryConfig.getType(method.getResponseTypeUrl());
+    if (responseType != null) {
+      String fieldName;
+      FIELDS:
+      for (Field field : responseType.getFieldsList()) {
+        fieldName = field.getName();
+        for (String tokenName : PAGE_TOKEN_NAMES) {
+          if (fieldName.equals(tokenName)) {
+            hasResponsePageToken = true;
+            responsePageTokenName = tokenName;
+            break FIELDS;
+          }
+        }
+      }
+    }
+    boolean isPageStreaming = false;
+    if (hasResponsePageToken) {
+      if (isPageStreamingResourceSetterInRequestBody) {
+        isPageStreaming = true;
+      } else {
+        Table<Type, String, Field> requestFields = apiaryConfig.getFields();
+        for (String tokenName : PAGE_TOKEN_NAMES) {
+          if (requestFields.contains(requestType, tokenName)) {
+            isPageStreaming = true;
+            requestPageTokenName = tokenName;
+            break;
+          }
+        }
+      }
+    }
     FieldInfo pageStreamingResourceField = null;
     if (isPageStreaming) {
-      Type containerType = apiaryConfig.getType(responseTypeUrl);
-      Field field = getPageStreamingResourceField(containerType);
-      pageStreamingResourceField = createFieldInfo(field, containerType, method);
+      Field field = getPageStreamingResourceField(responseType);
+      pageStreamingResourceField = createFieldInfo(field, responseType, method);
     }
-    boolean isPageStreamingResourceSetterInRequestBody = false;
-    if (requestBodyType != null) {
-      isPageStreamingResourceSetterInRequestBody =
-          requestBodyType.message().fields().containsKey(PAGE_TOKEN_FIELD_NAME);
-    }
+
     boolean hasMediaUpload = apiaryConfig.getMediaUpload().contains(method.getName());
+
     MethodInfo methodInfo =
         MethodInfo.newBuilder()
             .verb(apiaryConfig.getHttpMethod(method.getName()))
             .nameComponents(
                 typeNameGenerator.getMethodNameComponents(
                     methodNameComponents.get(method.getName())))
-            .fields(fields.build())
-            .requestType(requestType)
+            .fields(fields)
+            .requestType(requestTypeInfo)
             .requestBodyType(requestBodyType)
-            .responseType(responseType)
+            .responseType(responseTypeInfo)
             .isPageStreaming(isPageStreaming)
             .pageStreamingResourceField(pageStreamingResourceField)
             .isPageStreamingResourceSetterInRequestBody(isPageStreamingResourceSetterInRequestBody)
+            .requestPageTokenName(requestPageTokenName)
+            .responsePageTokenName(responsePageTokenName)
             .hasMediaUpload(hasMediaUpload)
             // Ignore media download for methods supporting media upload, as
             // Apiary cannot combine both in a single request, and no sensible
@@ -169,6 +219,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))
+        .required(true)
         .build();
   }
 
@@ -189,7 +240,7 @@ public class ApiaryConfigToSampleConfigConverter {
       mapValue = createTypeInfo(apiaryConfig.getField(type, VALUE_FIELD_NAME), method);
     } else if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
       isMessage = true;
-      messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig, true);
+      messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig);
     }
     return TypeInfo.newBuilder()
         .kind(field.getKind())
@@ -242,44 +293,16 @@ public class ApiaryConfigToSampleConfigConverter {
    * important.
    */
   private MessageTypeInfo createMessageTypeInfo(
-      Field field, Method method, ApiaryConfig apiaryConfig, boolean deep) {
-    Type type = apiaryConfig.getType(field.getTypeUrl());
+      Field field, Method method, ApiaryConfig apiaryConfig) {
     String typeName = typeNameGenerator.getMessageTypeName(field.getTypeUrl());
-    Map<String, FieldInfo> fields = new HashMap<>();
-    if (deep) {
-      for (Field field2 : type.getFieldsList()) {
-        // TODO(saicheems): We ignore messages as an easy way around cycles for the moment.
-        if (field2.getKind() != Kind.TYPE_MESSAGE) {
-          fields.put(field2.getName(), createFieldInfo(field2, type, method));
-        }
-      }
-    }
+    // Since request body fields aren't used at any point in the process, we
+    // don't fill them in here. Note that a recursive approach to exploring
+    // message fields must be able to handle cycles.
     return MessageTypeInfo.newBuilder()
         .typeName(typeName)
         .subpackage(typeNameGenerator.getSubpackage(false))
-        .fields(fields)
+        .fields(new HashMap<String, FieldInfo>())
         .build();
-  }
-
-  /**
-   * Returns true if method is page streaming.
-   *
-   * <p>The heuristic implemented checks if there is some field "nextPageToken" within the method's
-   * response type, and returns true if so.
-   */
-  private boolean isPageStreaming(Method method) {
-    Type type = apiaryConfig.getType(method.getResponseTypeUrl());
-    if (type == null) {
-      return false;
-    }
-    // If the response type contains a field named "nextPageToken", we can
-    // safely assume that the method is page streaming.
-    for (Field field : type.getFieldsList()) {
-      if (field.getName().equals(NEXT_PAGE_TOKEN_FIELD_NAME)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**

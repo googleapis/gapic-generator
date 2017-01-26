@@ -141,8 +141,11 @@ message InterfaceConfigProto {
   // The fully qualified name of the API interface.
   string name = 1;
 
+  // Language specific documentation. Injected after proto docs.
+  map<string, string> lang_doc = 2;
+
   // Configuration of smoke test.
-  SmokeTestConfigProto smoke_test = 2;
+  SmokeTestConfigProto smoke_test = 5;
 
   // A list of resource collection configurations.
   repeated CollectionConfigProto collections = 10;
@@ -457,8 +460,9 @@ message SurfaceTreatmentProto {
 enum VisibilityProto {
   UNSET = 0;
   PUBLIC = 1;
-  PRIVATE = 2;
-  DISABLED = 3;
+  PACKAGE = 2;
+  PRIVATE = 3;
+  DISABLED = 4;
 }
 
 // LongRunningProto describes settings to use when generating API methods

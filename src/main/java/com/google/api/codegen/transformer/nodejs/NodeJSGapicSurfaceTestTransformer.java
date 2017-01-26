@@ -17,6 +17,8 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -110,6 +112,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
                   namer.getNotImplementedString(
                       "NodeJSGapicSurfaceTestTransformer.generateTestView - name"))
               .testCases(createTestCaseViews(context))
+              .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
               .mockServices(Collections.<MockServiceUsageView>emptyList())
               .build());
     }
@@ -131,14 +134,12 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
       MethodTransformerContext methodContext = context.asRequestMethodContext(method);
-
-      ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
-      if (methodContext.getMethodConfig().isPageStreaming()) {
-        clientMethodType = ClientMethodType.PagedRequestObjectMethod;
-      } else if (methodContext.getMethodConfig().isGrpcStreaming()) {
-        clientMethodType = ClientMethodType.AsyncRequestObjectMethod;
+      if (methodContext.getMethodConfig().getGrpcStreamingType()
+          == GrpcStreamingType.ClientStreaming) {
+        //TODO: Add unit test generation for ClientStreaming methods
+        // Issue: https://github.com/googleapis/toolkit/issues/946
+        continue;
       }
-
       Iterable<FieldConfig> fieldConfigs =
           methodContext.getMethodConfig().getRequiredFieldConfigs();
       InitCodeContext initCodeContext =
@@ -155,8 +156,23 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
 
       testCaseViews.add(
           testCaseTransformer.createTestCaseView(
-              methodContext, testNameTable, initCodeContext, clientMethodType));
+              methodContext,
+              testNameTable,
+              initCodeContext,
+              getMethodType(methodContext.getMethodConfig())));
     }
     return testCaseViews;
+  }
+
+  private ClientMethodType getMethodType(MethodConfig config) {
+    ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
+    if (config.isPageStreaming()) {
+      clientMethodType = ClientMethodType.PagedRequestObjectMethod;
+    } else if (config.isGrpcStreaming()) {
+      clientMethodType = ClientMethodType.AsyncRequestObjectMethod;
+    } else if (config.isLongRunningOperation()) {
+      clientMethodType = ClientMethodType.OperationCallableMethod;
+    }
+    return clientMethodType;
   }
 }

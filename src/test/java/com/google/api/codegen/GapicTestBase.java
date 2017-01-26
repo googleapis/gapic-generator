@@ -15,7 +15,6 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
-import com.google.api.client.util.Strings;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
@@ -26,6 +25,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -146,7 +146,10 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {
         String fileNamePath = snippetFileName.split("\\.")[0];
-        String fileName = fileNamePath.indexOf("/") > 0 ? fileNamePath.split("/")[1] : fileNamePath;
+        String fileName =
+            fileNamePath.indexOf("/") > 0
+                ? fileNamePath.split("/", 2)[1].replace("/", "_")
+                : fileNamePath;
         String id = idForFactory + "_" + fileName;
         testArgs.add(
             new Object[] {

@@ -14,10 +14,14 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +40,24 @@ public class CSharpCommonTransformer {
     typeTable.saveNicknameFor("System.NotImplementedException");
     typeTable.saveNicknameFor("System.Collections.IEnumerable");
     typeTable.saveNicknameFor("System.Collections.Generic.IEnumerable");
+  }
+
+  public List<Method> getSupportedMethods(SurfaceTransformerContext context) {
+    List<Method> result = new ArrayList<>();
+    boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
+    for (Method method : context.getSupportedMethods()) {
+      if (mixinsDisabled && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
+        continue;
+      }
+      MethodConfig methodConfig = context.getMethodConfig(method);
+      if (methodConfig.getGrpcStreamingType() != GrpcStreamingType.NonStreaming
+          && methodConfig.getGrpcStreamingType() != GrpcStreamingType.BidiStreaming) {
+        // Only support non-streaming and duplex-streaming for now
+        continue;
+      }
+      result.add(method);
+    }
+    return result;
   }
 
   public List<ParamWithSimpleDoc> callSettingsParam() {

@@ -133,6 +133,7 @@
     @end
     {@pageStreamingDescriptorFunction(xapiClass)}
     {@longRunningDescriptorFunction(xapiClass)}
+    {@grpcStreamingDescriptorFunction(xapiClass)}
 @end
 
 @private formatResourceFunction(function)
@@ -232,11 +233,60 @@
     @end
 @end
 
+@private grpcStreamingDescriptorFunction(xapiClass)
+    @if xapiClass.hasGrpcStreamingMethods
+        private static function getGrpcStreamingDescriptors()
+        {
+            return [
+                @join descriptor : xapiClass.grpcStreamingDescriptors
+                    '{@descriptor.methodName}' => [
+                        'grpcStreamingType' => '{@descriptor.grpcStreamingType}',
+                        @if descriptor.hasGrpcResourcesField
+                            'resourcesField' => '{@descriptor.grpcResourcesField}',
+                        @end
+                    ],
+                @end
+            ];
+        }
+        {@""}
+    @end
+@end
+
 @private functions(xapiClass)
     @if xapiClass.hasLongRunningOperations
+        /**
+         * Return an OperationsClient object with the same endpoint as $this.
+         * 
+         * @@return \Google\GAX\LongRunning\OperationsClient
+         */
         public function getOperationsClient()
         {
             return $this->operationsClient;
+        }
+        
+        /**
+         * Resume an existing long running operation that was previously started
+         * by a long running API method. If $methodName is not provided, or does
+         * not match a long running API method, then the operation can still be
+         * resumed, but the OperationResponse object will not deserialize the
+         * final response.
+         * 
+         * @@param string $operationName The name of the long running operation
+         * @@param string $methodName The name of the method used to start the operation
+         * 
+         * @@return \Google\GAX\OperationResponse
+         */
+        public function resumeOperation($operationName, $methodName = null)
+        {
+            $lroDescriptors = {@xapiClass.name}::getLongRunningDescriptors();
+            if (!is_null($methodName) && array_key_exists($methodName, $lroDescriptors)) {
+                $options = $lroDescriptors[$methodName];
+            } else {
+                $options = [];
+            }
+            $operation = new OperationResponse($operationName, $this->getOperationsClient(), $options);
+            $operation->reload();
+            return $operation;
         }
     @end
     {@""}
@@ -326,10 +376,14 @@
         $options = array_merge($defaultOptions, $options);
 
         @if xapiClass.hasLongRunningOperations
-            $this->operationsClient = new OperationsClient([
-                'serviceAddress' => $options['serviceAddress'],
-                'scopes' => $options['scopes'],
-            ]);
+            if (array_key_exists('operationsClient', $options)) {
+                $this->operationsClient = $options['operationsClient'];
+            } else {
+                $this->operationsClient = new OperationsClient([
+                    'serviceAddress' => $options['serviceAddress'],
+                    'scopes' => $options['scopes'],
+                ]);
+            }
         @end
 
         $headerDescriptor = new AgentHeaderDescriptor([
@@ -357,6 +411,12 @@
             $longRunningDescriptors = self::getLongRunningDescriptors();
             foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
                 $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
+            }
+        @end
+        @if xapiClass.hasGrpcStreamingMethods
+            $grpcStreamingDescriptors = self::getGrpcStreamingDescriptors();
+            foreach ($grpcStreamingDescriptors as $method => $grpcStreamingDescriptor) {
+                $this->descriptors[$method]['grpcStreamingDescriptor'] = $grpcStreamingDescriptor;
             }
         @end
 
@@ -402,21 +462,27 @@
         @end
         public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
         {
-            $request = new {@apiMethod.requestTypeName}();
-            @join param : apiMethod.requiredRequestObjectParams
-                {@setRequiredFieldCall(param)}
+            @if apiMethod.isSingularRequestMethod
+                $request = new {@apiMethod.requestTypeName}();
+                @join param : apiMethod.requiredRequestObjectParams
+                    {@setRequiredFieldCall(param)}
+                @end
+                @join param : apiMethod.optionalRequestObjectParams
+                    {@setOptionalFieldCall(param)}
+                @end
+                
             @end
-            @join param : apiMethod.optionalRequestObjectParams
-                {@setOptionalFieldCall(param)}
-            @end
-
             $mergedSettings = $this->defaultCallSettings['{@apiMethod.key}']->merge(
                 new CallSettings($optionalArgs));
             $callable = ApiCallable::createApiCall(
                 $this->{@apiMethod.stubName}, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
 
             return $callable(
-                $request,
+                @if apiMethod.isSingularRequestMethod
+                    $request,
+                @else
+                    null,
+                @end
                 [],
                 ['call_credentials_callback' => $this->createCredentialsCallback()]);
         }

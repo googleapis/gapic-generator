@@ -41,6 +41,8 @@ public class GapicContext extends CodegenContext {
   private final ServiceMessages serviceMessages;
   private final ServiceConfig serviceConfig;
 
+  public static final String API_WRAPPER_SUFFIX = "Client";
+
   /** Constructs the abstract instance. */
   protected GapicContext(Model model, ApiConfig apiConfig) {
     this.model = Preconditions.checkNotNull(model);
@@ -69,7 +71,7 @@ public class GapicContext extends CodegenContext {
 
   /** Return the name of the class which is the GAPIC wrapper for this service interface. */
   public String getApiWrapperName(Interface service) {
-    return service.getSimpleName() + "Client";
+    return service.getSimpleName() + API_WRAPPER_SUFFIX;
   }
 
   /** Returns the description of the proto element, in markdown format. */

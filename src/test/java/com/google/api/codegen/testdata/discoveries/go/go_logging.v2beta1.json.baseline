@@ -37,10 +37,13 @@ func main() {
     log.Fatal(err)
   }
 
-  // Required. The resource name of the log to delete.  Example:
-  // `"projects/my-project/logs/syslog"`.
+  // Required. The resource name of the log to delete:
+  // "projects/[PROJECT_ID]/logs/[LOG_ID]"
+  // "organizations/[ORGANIZATION_ID]/logs/[LOG_ID]"
+  // [LOG_ID] must be URL-encoded. For example, "projects/my-project-id/logs/syslog",
+  // "organizations/1234567890/logs/cloudresourcemanager.googleapis.com%2Factivity". For more
+  // information about log names, see LogEntry.
   logName := ""  // TODO: Update placeholder value.
-  // ex: "billingAccounts/my-billingAccount/logs/my-log"
 
   resp, err := loggingService.BillingAccounts.Logs.Delete(logName).Context(ctx).Do()
   if err != nil {
@@ -49,6 +52,60 @@ func main() {
 
   // TODO: Change code below to process the `resp` object:
   fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/logging/v2beta1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  loggingService, err := logging.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Required. The resource name that owns the logs:
+  // "projects/[PROJECT_ID]"
+  // "organizations/[ORGANIZATION_ID]"
+  parent := ""  // TODO: Update placeholder value.
+
+  req := loggingService.BillingAccounts.Logs.List(parent)
+  if err := req.Pages(ctx, func(page *logging.ListLogsResponse) error {
+    for _, item := range page.LogNames {
+      // TODO: Change code below to process each `item` resource:
+      fmt.Printf("%#v\n", item)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
 }
 package main
 
@@ -237,10 +294,13 @@ func main() {
     log.Fatal(err)
   }
 
-  // Required. The resource name of the log to delete.  Example:
-  // `"projects/my-project/logs/syslog"`.
+  // Required. The resource name of the log to delete:
+  // "projects/[PROJECT_ID]/logs/[LOG_ID]"
+  // "organizations/[ORGANIZATION_ID]/logs/[LOG_ID]"
+  // [LOG_ID] must be URL-encoded. For example, "projects/my-project-id/logs/syslog",
+  // "organizations/1234567890/logs/cloudresourcemanager.googleapis.com%2Factivity". For more
+  // information about log names, see LogEntry.
   logName := ""  // TODO: Update placeholder value.
-  // ex: "organizations/my-organization/logs/my-log"
 
   resp, err := loggingService.Organizations.Logs.Delete(logName).Context(ctx).Do()
   if err != nil {
@@ -288,10 +348,67 @@ func main() {
     log.Fatal(err)
   }
 
-  // Required. The resource name of the log to delete.  Example:
-  // `"projects/my-project/logs/syslog"`.
+  // Required. The resource name that owns the logs:
+  // "projects/[PROJECT_ID]"
+  // "organizations/[ORGANIZATION_ID]"
+  parent := ""  // TODO: Update placeholder value.
+
+  req := loggingService.Organizations.Logs.List(parent)
+  if err := req.Pages(ctx, func(page *logging.ListLogsResponse) error {
+    for _, item := range page.LogNames {
+      // TODO: Change code below to process each `item` resource:
+      fmt.Printf("%#v\n", item)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/logging/v2beta1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  loggingService, err := logging.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Required. The resource name of the log to delete:
+  // "projects/[PROJECT_ID]/logs/[LOG_ID]"
+  // "organizations/[ORGANIZATION_ID]/logs/[LOG_ID]"
+  // [LOG_ID] must be URL-encoded. For example, "projects/my-project-id/logs/syslog",
+  // "organizations/1234567890/logs/cloudresourcemanager.googleapis.com%2Factivity". For more
+  // information about log names, see LogEntry.
   logName := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project/logs/my-log"
 
   resp, err := loggingService.Projects.Logs.Delete(logName).Context(ctx).Do()
   if err != nil {
@@ -339,11 +456,64 @@ func main() {
     log.Fatal(err)
   }
 
-  // The resource name of the project in which to create the metric.
-  // Example: `"projects/my-project-id"`.
+  // Required. The resource name that owns the logs:
+  // "projects/[PROJECT_ID]"
+  // "organizations/[ORGANIZATION_ID]"
+  parent := ""  // TODO: Update placeholder value.
+
+  req := loggingService.Projects.Logs.List(parent)
+  if err := req.Pages(ctx, func(page *logging.ListLogsResponse) error {
+    for _, item := range page.LogNames {
+      // TODO: Change code below to process each `item` resource:
+      fmt.Printf("%#v\n", item)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Stackdriver Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/logging/v2beta1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  loggingService, err := logging.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The resource name of the project in which to create the metric:
+  // "projects/[PROJECT_ID]"
   // The new metric must be provided in the request.
   parent := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project"
 
   rb := &logging.LogMetric{
     // TODO: Add desired fields of the request body.
@@ -395,10 +565,9 @@ func main() {
     log.Fatal(err)
   }
 
-  // The resource name of the metric to delete.
-  // Example: `"projects/my-project-id/metrics/my-metric-id"`.
+  // The resource name of the metric to delete:
+  // "projects/[PROJECT_ID]/metrics/[METRIC_ID]"
   metricName := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project/metrics/my-metric"
 
   resp, err := loggingService.Projects.Metrics.Delete(metricName).Context(ctx).Do()
   if err != nil {
@@ -446,10 +615,9 @@ func main() {
     log.Fatal(err)
   }
 
-  // The resource name of the desired metric.
-  // Example: `"projects/my-project-id/metrics/my-metric-id"`.
+  // The resource name of the desired metric:
+  // "projects/[PROJECT_ID]/metrics/[METRIC_ID]"
   metricName := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project/metrics/my-metric"
 
   resp, err := loggingService.Projects.Metrics.Get(metricName).Context(ctx).Do()
   if err != nil {
@@ -497,10 +665,9 @@ func main() {
     log.Fatal(err)
   }
 
-  // Required. The resource name containing the metrics.
-  // Example: `"projects/my-project-id"`.
+  // Required. The name of the project containing the metrics:
+  // "projects/[PROJECT_ID]"
   parent := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project"
 
   req := loggingService.Projects.Metrics.List(parent)
   if err := req.Pages(ctx, func(page *logging.ListLogMetricsResponse) error {
@@ -551,13 +718,11 @@ func main() {
     log.Fatal(err)
   }
 
-  // The resource name of the metric to update.
-  // Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  // The updated metric must be provided in the request and have the
-  // same identifier that is specified in `metricName`.
-  // If the metric does not exist, it is created.
+  // The resource name of the metric to update:
+  // "projects/[PROJECT_ID]/metrics/[METRIC_ID]"
+  // The updated metric must be provided in the request and it's name field must be the same as
+  // [METRIC_ID] If the metric does not exist in [PROJECT_ID], then a new metric is created.
   metricName := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project/metrics/my-metric"
 
   rb := &logging.LogMetric{
     // TODO: Add desired fields of the request body. All existing fields
@@ -610,11 +775,11 @@ func main() {
     log.Fatal(err)
   }
 
-  // Required. The resource in which to create the sink.
-  // Example: `"projects/my-project-id"`.
-  // The new sink must be provided in the request.
+  // Required. The resource in which to create the sink:
+  // "projects/[PROJECT_ID]"
+  // "organizations/[ORGANIZATION_ID]"
+  // Examples: "projects/my-logging-project", "organizations/123456789".
   parent := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project"
 
   rb := &logging.LogSink{
     // TODO: Add desired fields of the request body.
@@ -666,12 +831,13 @@ func main() {
     log.Fatal(err)
   }
 
-  // Required. The resource name of the sink to delete, including the parent
-  // resource and the sink identifier.  Example:
-  // `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
-  // does not exist.
+  // Required. The full resource name of the sink to delete, including the parent resource and the sink
+  // identifier:
+  // "projects/[PROJECT_ID]/sinks/[SINK_ID]"
+  // "organizations/[ORGANIZATION_ID]/sinks/[SINK_ID]"
+  // It is an error if the sink does not exist. Example: "projects/my-project-id/sinks/my-sink-id". It
+  // is an error if the sink does not exist.
   sinkName := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project/sinks/my-sink"
 
   resp, err := loggingService.Projects.Sinks.Delete(sinkName).Context(ctx).Do()
   if err != nil {
@@ -719,10 +885,11 @@ func main() {
     log.Fatal(err)
   }
 
-  // Required. The resource name of the sink to return.
-  // Example: `"projects/my-project-id/sinks/my-sink-id"`.
+  // Required. The parent resource name of the sink:
+  // "projects/[PROJECT_ID]/sinks/[SINK_ID]"
+  // "organizations/[ORGANIZATION_ID]/sinks/[SINK_ID]"
+  // Example: "projects/my-project-id/sinks/my-sink-id".
   sinkName := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project/sinks/my-sink"
 
   resp, err := loggingService.Projects.Sinks.Get(sinkName).Context(ctx).Do()
   if err != nil {
@@ -770,10 +937,9 @@ func main() {
     log.Fatal(err)
   }
 
-  // Required. The cloud resource containing the sinks.
-  // Example: `"projects/my-logging-project"`.
+  // Required. The parent resource whose sinks are to be listed. Examples:
+  // "projects/my-logging-project", "organizations/123456789".
   parent := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project"
 
   req := loggingService.Projects.Sinks.List(parent)
   if err := req.Pages(ctx, func(page *logging.ListSinksResponse) error {
@@ -824,11 +990,12 @@ func main() {
     log.Fatal(err)
   }
 
-  // Required. The resource name of the sink to update, including the parent
-  // resource and the sink identifier.  If the sink does not exist, this method
-  // creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
+  // Required. The full resource name of the sink to update, including the parent resource and the sink
+  // identifier:
+  // "projects/[PROJECT_ID]/sinks/[SINK_ID]"
+  // "organizations/[ORGANIZATION_ID]/sinks/[SINK_ID]"
+  // Example: "projects/my-project-id/sinks/my-sink-id".
   sinkName := ""  // TODO: Update placeholder value.
-  // ex: "projects/my-project/sinks/my-sink"
 
   rb := &logging.LogSink{
     // TODO: Add desired fields of the request body. All existing fields

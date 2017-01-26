@@ -512,6 +512,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
+import com.google.api.services.bigquery.model.ErrorProto;
 import com.google.api.services.bigquery.model.GetQueryResultsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -528,10 +529,18 @@ public class BigqueryExample {
     Bigquery bigqueryService = createBigqueryService();
     Bigquery.Jobs.GetQueryResults request = bigqueryService.jobs().getQueryResults(projectId, jobId);
 
-    GetQueryResultsResponse response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
+    GetQueryResultsResponse response;
+    do {
+      response = request.execute();
+      if (response.getErrors() == null) {
+        continue;
+      }
+      for (ErrorProto errorProto : response.getErrors()) {
+        // TODO: Change code below to process each `errorProto` resource:
+        System.out.println(errorProto);
+      }
+      request.setPageToken(response.getPageToken());
+    } while (response.getPageToken() != null);
   }
 
   public static Bigquery createBigqueryService() throws IOException, GeneralSecurityException {
@@ -893,6 +902,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.TableDataList;
+import com.google.api.services.bigquery.model.TableRow;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -911,10 +921,18 @@ public class BigqueryExample {
     Bigquery bigqueryService = createBigqueryService();
     Bigquery.Tabledata.List request = bigqueryService.tabledata().list(projectId, datasetId, tableId);
 
-    TableDataList response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
+    TableDataList response;
+    do {
+      response = request.execute();
+      if (response.getRows() == null) {
+        continue;
+      }
+      for (TableRow tableRow : response.getRows()) {
+        // TODO: Change code below to process each `tableRow` resource:
+        System.out.println(tableRow);
+      }
+      request.setPageToken(response.getPageToken());
+    } while (response.getPageToken() != null);
   }
 
   public static Bigquery createBigqueryService() throws IOException, GeneralSecurityException {

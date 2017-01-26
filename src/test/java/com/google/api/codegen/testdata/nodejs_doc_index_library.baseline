@@ -16,7 +16,7 @@
  */
 'use strict';
 
-var LibraryServiceClient = require('./library_service_client');
+var libraryServiceClient = require('./library_service_client');
 var gax = require('google-gax');
 var extend = require('extend');
 
@@ -25,10 +25,11 @@ function v1(options) {
     scopes: v1.ALL_SCOPES
   }, options);
   var gaxGrpc = gax.grpc(options);
-  return LibraryServiceClient(gaxGrpc);
+  return libraryServiceClient(gaxGrpc);
 }
 
-v1.SERVICE_ADDRESS = LibraryServiceClient.SERVICE_ADDRESS;
-v1.ALL_SCOPES = LibraryServiceClient.ALL_SCOPES;
+v1.SERVICE_ADDRESS = libraryServiceClient.SERVICE_ADDRESS;
+v1.ALL_SCOPES = libraryServiceClient.ALL_SCOPES;
 
 module.exports = v1;
+

@@ -76,9 +76,9 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
-    List<SampleFieldView> fields = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      fields.add(
+      requiredFields.add(
           SampleFieldView.newBuilder()
               .name(field.name())
               .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
@@ -120,7 +120,7 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .requestVarName(requestVarName)
         .hasRequestBody(hasRequestBody)
         .hasResponse(hasResponse)
-        .fields(fields)
+        .requiredFields(requiredFields)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())

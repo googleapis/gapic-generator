@@ -53,6 +53,7 @@ import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -341,18 +342,9 @@ public class MainGapicProviderFactory
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(pythonPathMapper)
                 .build();
-        GapicProvider<? extends Object> metadataProvider =
-            ViewModelGapicProvider.newBuilder()
-                .setModel(model)
-                .setApiConfig(apiConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new PythonPackageMetadataTransformer(packageConfig))
-                .build();
-
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
         providers.add(enumProvider);
-        providers.add(metadataProvider);
 
         if (id.equals(PYTHON_DOC)) {
           GapicProvider<? extends Object> messageProvider =
@@ -369,6 +361,17 @@ public class MainGapicProviderFactory
 
           providers.add(messageProvider);
         }
+
+        GapicProvider<? extends Object> metadataProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new PythonPackageMetadataTransformer(
+                        packageConfig, ImmutableList.copyOf(providers)))
+                .build();
+        providers.add(metadataProvider);
       }
 
     } else if (id.equals(RUBY) || id.equals(RUBY_DOC)) {

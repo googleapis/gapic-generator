@@ -93,6 +93,16 @@ var FieldMask = {
  *       foo = any.unpack(Foo.class);
  *     }
  *
+ *  Example 3: Pack and unpack a message in Python.
+ *
+ *     foo = Foo(...)
+ *     any = Any()
+ *     any.Pack(foo)
+ *     ...
+ *     if any.Is(Foo.DESCRIPTOR):
+ *       any.Unpack(foo)
+ *       ...
+ *
  * The pack methods provided by protobuf library will by default use
  * 'type.googleapis.com/full.type.name' as the type URL and the unpack
  * methods only use the fully qualified type name after the last '/'
@@ -133,10 +143,10 @@ var FieldMask = {
  *   A URL/resource name whose content describes the type of the
  *   serialized protocol buffer message.
  *
- *   For URLs which use the schema `http`, `https`, or no schema, the
+ *   For URLs which use the scheme `http`, `https`, or no scheme, the
  *   following restrictions and interpretations apply:
  *
- *   * If no schema is provided, `https` is assumed.
+ *   * If no scheme is provided, `https` is assumed.
  *   * The last segment of the URL's path must represent the fully
  *     qualified name of the type (as in `path/google.protobuf.Duration`).
  *     The name should be in a canonical form (e.g., leading "." is
@@ -149,7 +159,7 @@ var FieldMask = {
  *     on changes to types. (Use versioned type names to manage
  *     breaking changes.)
  *
- *   Schemas other than `http`, `https` (or the empty schema) might be
+ *   Schemes other than `http`, `https` (or the empty scheme) might be
  *   used with implementation specific semantics.
  *
  * @property {string} value
@@ -326,6 +336,58 @@ var FieldMask = {
  * and leave the others untouched. If a resource is passed in to
  * describe the updated values, the API ignores the values of all
  * fields not covered by the mask.
+ *
+ * If a repeated field is specified for an update operation, the existing
+ * repeated values in the target resource will be overwritten by the new values.
+ * Note that a repeated field is only allowed in the last position of a field
+ * mask.
+ *
+ * If a sub-message is specified in the last position of the field mask for an
+ * update operation, then the existing sub-message in the target resource is
+ * overwritten. Given the target message:
+ *
+ *     f {
+ *       b {
+ *         d : 1
+ *         x : 2
+ *       }
+ *       c : 1
+ *     }
+ *
+ * And an update message:
+ *
+ *     f {
+ *       b {
+ *         d : 10
+ *       }
+ *     }
+ *
+ * then if the field mask is:
+ *
+ *  paths: "f.b"
+ *
+ * then the result will be:
+ *
+ *     f {
+ *       b {
+ *         d : 10
+ *       }
+ *       c : 1
+ *     }
+ *
+ * However, if the update mask was:
+ *
+ *  paths: "f.b.d"
+ *
+ * then the result would be:
+ *
+ *     f {
+ *       b {
+ *         d : 10
+ *         x : 2
+ *       }
+ *       c : 1
+ *     }
  *
  * In order to reset a field's value to the default, the field must
  * be in the mask and set to the default value in the provided resource.

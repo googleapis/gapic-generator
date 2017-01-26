@@ -82,7 +82,6 @@
       var params = {
         // The resource name of the Organization to fetch, e.g. "organizations/1234".
         name: '',  // TODO: Update placeholder value.
-        // ex: 'organizations/my-organization'
       };
 
       var request = gapi.client.cloudresourcemanager.organizations.get(params);
@@ -147,10 +146,10 @@
     <script>
     function makeApiCall() {
       var params = {
-        // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-        // a path. For example, a Project resource is specified as `projects/{project}`.
+        // REQUIRED: The resource for which the policy is being requested.
+        // `resource` is usually specified as a path. For example, a Project
+        // resource is specified as `projects/{project}`.
         resource: '',  // TODO: Update placeholder value.
-        // ex: 'organizations/my-organization'
       };
 
       var getIamPolicyRequestBody = {
@@ -296,10 +295,10 @@
     <script>
     function makeApiCall() {
       var params = {
-        // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-        // a path. For example, a Project resource is specified as `projects/{project}`.
+        // REQUIRED: The resource for which the policy is being specified.
+        // `resource` is usually specified as a path. For example, a Project
+        // resource is specified as `projects/{project}`.
         resource: '',  // TODO: Update placeholder value.
-        // ex: 'organizations/my-organization'
       };
 
       var setIamPolicyRequestBody = {
@@ -368,10 +367,10 @@
     <script>
     function makeApiCall() {
       var params = {
-        // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-        // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+        // REQUIRED: The resource for which the policy detail is being requested.
+        // `resource` is usually specified as a path. For example, a Project
+        // resource is specified as `projects/{project}`.
         resource: '',  // TODO: Update placeholder value.
-        // ex: 'organizations/my-organization'
       };
 
       var testIamPermissionsRequestBody = {
@@ -505,7 +504,8 @@
     <script>
     function makeApiCall() {
       var params = {
-        // The Project ID (for example, `foo-bar-123`). Required.
+        // The Project ID (for example, `foo-bar-123`).
+        // Required.
         projectId: '',  // TODO: Update placeholder value.
       };
 
@@ -568,7 +568,8 @@
     <script>
     function makeApiCall() {
       var params = {
-        // The Project ID (for example, `my-project-123`). Required.
+        // The Project ID (for example, `my-project-123`).
+        // Required.
         projectId: '',  // TODO: Update placeholder value.
       };
 
@@ -634,8 +635,80 @@
     <script>
     function makeApiCall() {
       var params = {
-        // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as
-        // a path. For example, a Project resource is specified as `projects/{project}`.
+        // The Project ID (for example, `my-project-123`).
+        // Required.
+        projectId: '',  // TODO: Update placeholder value.
+      };
+
+      var getAncestryRequestBody = {
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.cloudresourcemanager.projects.getAncestry(params, getAncestryRequestBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud-platform.read-only',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Google Cloud Resource Manager API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/cloudresourcemanager
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // REQUIRED: The resource for which the policy is being requested.
+        // `resource` is usually specified as a path. For example, a Project
+        // resource is specified as `projects/{project}`.
         resource: '',  // TODO: Update placeholder value.
       };
 
@@ -780,8 +853,9 @@
     <script>
     function makeApiCall() {
       var params = {
-        // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as
-        // a path. For example, a Project resource is specified as `projects/{project}`.
+        // REQUIRED: The resource for which the policy is being specified.
+        // `resource` is usually specified as a path. For example, a Project
+        // resource is specified as `projects/{project}`.
         resource: '',  // TODO: Update placeholder value.
       };
 
@@ -851,8 +925,9 @@
     <script>
     function makeApiCall() {
       var params = {
-        // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-        // specified as a path. For example, a Project resource is specified as `projects/{project}`.
+        // REQUIRED: The resource for which the policy detail is being requested.
+        // `resource` is usually specified as a path. For example, a Project
+        // resource is specified as `projects/{project}`.
         resource: '',  // TODO: Update placeholder value.
       };
 
@@ -922,7 +997,8 @@
     <script>
     function makeApiCall() {
       var params = {
-        // The project ID (for example, `foo-bar-123`). Required.
+        // The project ID (for example, `foo-bar-123`).
+        // Required.
         projectId: '',  // TODO: Update placeholder value.
       };
 
@@ -989,7 +1065,8 @@
     <script>
     function makeApiCall() {
       var params = {
-        // The project ID (for example, `my-project-123`). Required.
+        // The project ID (for example, `my-project-123`).
+        // Required.
         projectId: '',  // TODO: Update placeholder value.
       };
 

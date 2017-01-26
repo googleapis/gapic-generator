@@ -721,6 +721,68 @@ var compute = google.compute('v1');
 
 authorize(function(authClient) {
   var request = {
+    // Name of the project scoping this request.
+    project: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  var handlePage = function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      return;
+    }
+    Object.keys(itemsPage).forEach(function(name) {
+      // TODO: Change code below to process each `name` property:
+      console.log(name + ': ' + JSON.stringify(itemsPage[name], null, 2));
+    });
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      compute.backendServices.aggregatedList(request, handlePage);
+    }
+  };
+
+  compute.backendServices.aggregatedList(request, handlePage);
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
     // Project ID for this request.
     project: '',  // TODO: Update placeholder value.
 
@@ -6783,6 +6845,65 @@ authorize(function(authClient) {
     // The name of the zone for this request.
     zone: '',  // TODO: Update placeholder value.
 
+    // Name of the instance resource to start.
+    instance: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.instances.setServiceAccount(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // The name of the zone for this request.
+    zone: '',  // TODO: Update placeholder value.
+
     // Name of the instance scoping this request.
     instance: '',  // TODO: Update placeholder value.
 
@@ -7461,6 +7582,58 @@ authorize(function(authClient) {
     // Project ID for this request.
     project: '',  // TODO: Update placeholder value.
 
+    // Name of the network to be updated.
+    network: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.networks.switchToCustomMode(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
     auth: authClient
   };
 
@@ -7677,6 +7850,1653 @@ authorize(function(authClient) {
   };
 
   compute.projects.setUsageExportBucket(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the autoscaler to delete.
+    autoscaler: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.regionAutoscalers.delete(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the autoscaler to return.
+    autoscaler: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.regionAutoscalers.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionAutoscalers.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  var handlePage = function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Change code below to process each resource in `itemsPage`:
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      compute.regionAutoscalers.list(request, handlePage);
+    }
+  };
+
+  compute.regionAutoscalers.list(request, handlePage);
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the autoscaler to update.
+    autoscaler: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body. Only these properties
+      // will be changed.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionAutoscalers.patch(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body. All existing properties
+      // will be replaced.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionAutoscalers.update(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to delete.
+    backendService: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.regionBackendServices.delete(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to return.
+    backendService: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.regionBackendServices.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to which the queried instance belongs.
+    backendService: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionBackendServices.getHealth(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionBackendServices.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  var handlePage = function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Change code below to process each resource in `itemsPage`:
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      compute.regionBackendServices.list(request, handlePage);
+    }
+  };
+
+  compute.regionBackendServices.list(request, handlePage);
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to update.
+    backendService: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body. Only these properties
+      // will be changed.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionBackendServices.patch(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the BackendService resource to update.
+    backendService: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body. All existing properties
+      // will be replaced.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionBackendServices.update(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    instanceGroupManager: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.abandonInstances(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the managed instance group to delete.
+    instanceGroupManager: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.delete(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    instanceGroupManager: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.deleteInstances(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the managed instance group to return.
+    instanceGroupManager: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.insert(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  var handlePage = function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Change code below to process each resource in `itemsPage`:
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      compute.regionInstanceGroupManagers.list(request, handlePage);
+    }
+  };
+
+  compute.regionInstanceGroupManagers.list(request, handlePage);
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // The name of the managed instance group.
+    instanceGroupManager: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.listManagedInstances(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    instanceGroupManager: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.recreateInstances(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    instanceGroupManager: '',  // TODO: Update placeholder value.
+
+    // Number of instances that should exist in this instance group manager.
+    size: 0,  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.resize(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // The name of the managed instance group.
+    instanceGroupManager: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.setInstanceTemplate(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the managed instance group.
+    instanceGroupManager: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroupManagers.setTargetPools(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the instance group resource to return.
+    instanceGroup: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroups.get(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    auth: authClient
+  };
+
+  var handlePage = function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Change code below to process each resource in `itemsPage`:
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      compute.regionInstanceGroups.list(request, handlePage);
+    }
+  };
+
+  compute.regionInstanceGroups.list(request, handlePage);
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the regional instance group for which we want to list the instances.
+    instanceGroup: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  var handlePage = function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var itemsPage = response['items'];
+    if (!itemsPage) {
+      return;
+    }
+    for (var i = 0; i < itemsPage.length; i++) {
+      // TODO: Change code below to process each resource in `itemsPage`:
+      console.log(JSON.stringify(itemsPage[i], null, 2));
+    }
+
+    if (response.nextPageToken) {
+      request.pageToken = response.nextPageToken;
+      compute.regionInstanceGroups.listInstances(request, handlePage);
+    }
+  };
+
+  compute.regionInstanceGroups.listInstances(request, handlePage);
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // The name of the regional instance group where the named ports are updated.
+    instanceGroup: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.regionInstanceGroups.setNamedPorts(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -9211,6 +11031,65 @@ authorize(function(authClient) {
   };
 
   compute.subnetworks.delete(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var compute = google.compute('v1');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID for this request.
+    project: '',  // TODO: Update placeholder value.
+
+    // Name of the region scoping this request.
+    region: '',  // TODO: Update placeholder value.
+
+    // Name of the Subnetwork resource to update.
+    subnetwork: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  compute.subnetworks.expandIpCidrRange(request, function(err, response) {
     if (err) {
       console.log(err);
       return;

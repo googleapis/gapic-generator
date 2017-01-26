@@ -50,6 +50,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
 
+  public abstract List<GrpcStreamingDetailView> grpcStreamingDescriptors();
+
   public abstract List<String> methodKeys();
 
   public abstract String clientConfigPath();
@@ -67,6 +69,10 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract boolean hasPageStreamingMethods();
 
   public abstract boolean hasLongRunningOperations();
+
+  public boolean hasGrpcStreamingMethods() {
+    return grpcStreamingDescriptors().size() > 0;
+  }
 
   public abstract boolean hasDefaultServiceAddress();
 
@@ -124,6 +130,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder pageStreamingDescriptors(List<PageStreamingDescriptorView> val);
 
     public abstract Builder longRunningDescriptors(List<LongRunningOperationDetailView> val);
+
+    public abstract Builder grpcStreamingDescriptors(List<GrpcStreamingDetailView> val);
 
     public abstract Builder methodKeys(List<String> val);
 

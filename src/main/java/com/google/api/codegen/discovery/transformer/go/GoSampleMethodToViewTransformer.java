@@ -80,12 +80,12 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     // addStaticImports, skipping the TypeTable can't result in missing imports.
     String requestTypeName = methodInfo.requestType().message().typeName();
 
-    List<SampleFieldView> fields = new ArrayList<>();
-    List<String> fieldVarNames = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<String> methodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView = createSampleFieldView(field, typeTable, symbolTable);
-      fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+      requiredFields.add(sampleFieldView);
+      methodCallFieldVarNames.add(sampleFieldView.name());
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
@@ -93,7 +93,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(methodInfo.requestBodyType().message().typeName());
-      fieldVarNames.add(requestBodyVarName);
+      methodCallFieldVarNames.add(requestBodyVarName);
     }
 
     // The Go client only considers methods whose verb is "GET" to be page
@@ -133,8 +133,8 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)
         .hasResponse(hasResponse)
-        .fields(fields)
-        .fieldVarNames(fieldVarNames)
+        .requiredFields(requiredFields)
+        .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(isPageStreaming)
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())

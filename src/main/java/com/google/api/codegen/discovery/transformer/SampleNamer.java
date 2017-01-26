@@ -77,6 +77,10 @@ public class SampleNamer extends NameFormatterDelegator {
     return getRequestBodyVarName();
   }
 
+  public String getRequestBodyFieldSetterName(String fieldName) {
+    return publicMethodName(Name.lowerCamel("set", fieldName));
+  }
+
   /** Returns the variable name of the response. */
   public String getResponseVarName() {
     return localVarName(Name.lowerCamel("response"));

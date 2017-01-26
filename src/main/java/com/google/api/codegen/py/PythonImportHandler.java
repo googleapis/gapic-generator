@@ -313,7 +313,7 @@ public class PythonImportHandler {
       } else {
         packages = packages.subList(1, packages.size());
       }
-      packages.addAll(0, Lists.newArrayList("google", "cloud", "grpc"));
+      packages.addAll(0, Lists.newArrayList("google", "cloud", "proto"));
       return Joiner.on(sep).join(packages);
     }
     return protoPackage;

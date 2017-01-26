@@ -590,10 +590,22 @@
         jobId: '',  // TODO: Update placeholder value.
       };
 
+      executeRequest(params);
+    }
+
+    function executeRequest(params) {
       var request = gapi.client.bigquery.jobs.getQueryResults(params);
       request.then(function(response) {
-        // TODO: Change code below to process the `response` object:
-        console.log(response.result);
+        var errorsPage = response.result.errors;
+        for (var i = 0; i < errorsPage.length; i++) {
+          // TODO: Change code below to process each resource in `errorsPage`:
+          console.log(errorsPage[i]);
+        }
+
+        if (response.result.nextPageToken) {
+          params.pageToken = response.result.nextPageToken;
+          executeRequest(params);
+        }
       }, function(reason) {
         console.log('error: ' + reason.result.error.message);
       });
@@ -1034,10 +1046,22 @@
         tableId: '',  // TODO: Update placeholder value.
       };
 
+      executeRequest(params);
+    }
+
+    function executeRequest(params) {
       var request = gapi.client.bigquery.tabledata.list(params);
       request.then(function(response) {
-        // TODO: Change code below to process the `response` object:
-        console.log(response.result);
+        var rowsPage = response.result.rows;
+        for (var i = 0; i < rowsPage.length; i++) {
+          // TODO: Change code below to process each resource in `rowsPage`:
+          console.log(rowsPage[i]);
+        }
+
+        if (response.result.nextPageToken) {
+          params.pageToken = response.result.nextPageToken;
+          executeRequest(params);
+        }
       }, function(reason) {
         console.log('error: ' + reason.result.error.message);
       });

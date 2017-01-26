@@ -40,8 +40,20 @@
         private {@settings.name}({@settings.name} existing) : base(existing)
         {
             GaxPreconditions.CheckNotNull(existing, nameof(existing));
+            # call: ApiCallSettingsView
             @join call : settings.callSettings
-                {@call.memberName} = existing.{@call.memberName};
+                @switch call.grpcStreamingType.toString
+                @case "NonStreaming"
+                    {@call.memberName} = existing.{@call.memberName};
+                @case "BidiStreaming"
+                    {@call.memberName} = existing.{@call.memberName};
+                    {@call.methodName}StreamingSettings = existing.{@call.methodName}StreamingSettings;
+                @default
+                    *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
+                @end
+            @end
+            @if api.hasLongRunningOperations
+                LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
             @end
         }
         
@@ -108,41 +120,67 @@
             );
 
         @end
+        # call: ApiCallSettingsView
         @join call : settings.callSettings
-            /// <summary>
-            /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-            /// <c>{@api.name}.{@call.methodName}</c> and <c>{@api.name}.{@call.asyncMethodName}</c>.
-            /// </summary>
-            /// <remarks>
-            /// The default <c>{@api.name}.{@call.methodName}</c> and
-            /// <c>{@api.name}.{@call.asyncMethodName}</c> <see cref="RetrySettings"/> are:
-            /// <list type="bullet">
-            /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.getMillis} milliseconds</description></item>
-            /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
-            /// <item><description>Retry maximum delay: {@call.retryParamsView.maxRetryDelay.getMillis} milliseconds</description></item>
-            /// <item><description>Initial timeout: {@call.retryParamsView.initialRpcTimeout.getMillis} milliseconds</description></item>
-            /// <item><description>Timeout multiplier: {@call.retryParamsView.rpcTimeoutMultiplier}</description></item>
-            /// <item><description>Timeout maximum delay: {@call.retryParamsView.maxRpcTimeout.getMillis} milliseconds</description></item>
-            /// </list>
-            /// Retry will be attempted on the following response status codes:
-            /// <list>
-            @if call.retryCodesView.codeNames
-                @join code : call.retryCodesView.codeNames
-                    /// <item><description><see cref="StatusCode.{@code}"/></description></item>
+            @switch call.grpcStreamingType.toString
+            @case "NonStreaming"
+                /// <summary>
+                /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+                /// <c>{@api.name}.{@call.methodName}</c> and <c>{@api.name}.{@call.asyncMethodName}</c>.
+                /// </summary>
+                /// <remarks>
+                /// The default <c>{@api.name}.{@call.methodName}</c> and
+                /// <c>{@api.name}.{@call.asyncMethodName}</c> <see cref="RetrySettings"/> are:
+                /// <list type="bullet">
+                /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.getMillis} milliseconds</description></item>
+                /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
+                /// <item><description>Retry maximum delay: {@call.retryParamsView.maxRetryDelay.getMillis} milliseconds</description></item>
+                /// <item><description>Initial timeout: {@call.retryParamsView.initialRpcTimeout.getMillis} milliseconds</description></item>
+                /// <item><description>Timeout multiplier: {@call.retryParamsView.rpcTimeoutMultiplier}</description></item>
+                /// <item><description>Timeout maximum delay: {@call.retryParamsView.maxRpcTimeout.getMillis} milliseconds</description></item>
+                /// </list>
+                /// Retry will be attempted on the following response status codes:
+                /// <list>
+                @if call.retryCodesView.codeNames
+                    @join code : call.retryCodesView.codeNames
+                        /// <item><description><see cref="StatusCode.{@code}"/></description></item>
+                    @end
+                @else
+                    /// <item><description>No status codes</description></item>
                 @end
-            @else
-                /// <item><description>No status codes</description></item>
+                /// </list>
+                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
+                /// </remarks>
+                public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
+                    CallTiming.FromRetry(new RetrySettings(
+                        retryBackoff: {@call.retryParamsView.retryBackoffMethodName}(),
+                        timeoutBackoff: {@call.retryParamsView.timeoutBackoffMethodName}(),
+                        totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
+                        retryFilter: {@call.retryCodesView.retryFilterMethodName}
+                    )));
+            @case "BidiStreaming"
+                /// <summary>
+                /// <see cref="CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
+                /// </summary>
+                /// <remarks>
+                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
+                /// </remarks>
+                public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
+                    CallTiming.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})));
+
+                /// <summary>
+                /// <see cref="BidirectionalStreamingSettings"/> for calls to
+                /// <c>{@api.name}.{@call.methodName}</c>.
+                /// </summary>
+                /// <remarks>
+                /// The default local send queue size is 100.
+                /// </remarks>
+                public BidirectionalStreamingSettings {@call.methodName}StreamingSettings { get; set; } =
+                    new BidirectionalStreamingSettings(100);
+            @default
+                *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
             @end
-            /// </list>
-            /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
-            /// </remarks>
-            public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
-                CallTiming.FromRetry(new RetrySettings(
-                    retryBackoff: {@call.retryParamsView.retryBackoffMethodName}(),
-                    timeoutBackoff: {@call.retryParamsView.timeoutBackoffMethodName}(),
-                    totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
-                    retryFilter: {@call.retryCodesView.retryFilterMethodName}
-                )));
+
 
         @end
         @if api.hasLongRunningOperations
@@ -270,7 +308,7 @@
         @end
         @join method : api.apiMethods
             {@xmlDoc(method.doc)}
-            {@method(method, FALSE)}
+            {@method(api, method, FALSE)}
 
         @end
     }
@@ -285,7 +323,14 @@
     {
         private readonly ClientHelper _clientHelper;
         @join call : api.apiCallableMembers
-            private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+            @switch call.grpcStreamingType.toString
+            @case "NonStreaming"
+                private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+            @case "BidiStreaming"
+                private readonly ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+            @default
+                *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
+            @end
         @end
 
         /// <summary>
@@ -306,8 +351,16 @@
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
             @end
             @join call : api.apiCallableMembers
-                {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
-                    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
+                @switch call.grpcStreamingType.toString
+                @case "NonStreaming"
+                    {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
+                        {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
+                @case "BidiStreaming"
+                    {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
+                        {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName}, effectiveSettings.{@call.methodName}StreamingSettings);
+                @default
+                    *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
+                @end
             @end
         }
 
@@ -324,20 +377,29 @@
 
         @end
         // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
+        # method: ModifyMethodView
         @join method : api.modifyMethods
-            partial void {@method.name}(ref {@method.requestTypeName} request, ref CallSettings settings);
+            @switch method.grpcStreamingType.toString
+            @case "NonStreaming"
+                partial void {@method.name}(ref {@method.requestTypeName} request, ref CallSettings settings);
+            @case "BidiStreaming"
+                partial void {@method.name}CallSettings(ref CallSettings settings);
+                partial void {@method.name}Request(ref {@method.requestTypeName} request);
+            @default
+                *** ERROR: Cannot handle grpc streaming type '{@method.grpcStreamingType.toString}' ***
+            @end
         @end
         
         @join method : api.apiMethodsImpl
             {@xmlDoc(method.doc)}
-            {@method(method, TRUE)}
+            {@method(api, method, TRUE)}
 
         @end
     }
 @end
 
-# method: StaticLangApiMethodView, isImpl: boolean
-@private method(method, isImpl)
+# api: StaticLangApiView, method: StaticLangApiMethodView, isImpl: boolean
+@private method(api, method, isImpl)
     @switch method.type.toString
     @case "FlattenedMethod"
         {@flattenedMethodSync(method, isImpl)}
@@ -350,7 +412,11 @@
     @case "PagedFlattenedAsyncMethod"
         {@pagedFlattenedMethodAsync(method, isImpl)}
     @case "RequestObjectMethod"
-        {@requestObjectMethodSync(method, isImpl)}
+        @if method.isStreaming
+            {@streamingRequestObjectMethod(api, method, isImpl)}
+        @else
+            {@requestObjectMethodSync(method, isImpl)}
+        @end
     @case "AsyncRequestObjectMethod"
         {@requestObjectMethodAsync(method, isImpl)}
     @case "PagedRequestObjectMethod"
@@ -445,6 +511,113 @@
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
+        }
+    @end
+@end
+
+# api: StaticLangApiView, method: StaticLangApiMethodView, isImp: boolean
+@private streamingRequestObjectMethod(api, method, isImpl)
+    @switch method.grpcStreamingType
+    @case "BidiStreaming"
+        {@streamingRequestObjectMethodBidirectional(api, method, isImpl)}
+    @default
+        *** ERROR: Cannot handle streaming type '{@method.grpcStreamingType.toString}' ***
+    @end
+@end
+
+# api: StaticLangApiView, method: StaticLangApiMethodView, isImp: boolean
+@private streamingRequestObjectMethodBidirectional(api, method, isImpl)
+    @if isImpl
+        public override {@method.name}Stream {@method.name}(
+            CallSettings callSettings = null,
+            BidirectionalStreamingSettings streamingSettings = null)
+        {
+            {@method.modifyMethodName}CallSettings(ref callSettings);
+            BidirectionalStreamingSettings effectiveStreamingSettings =
+                streamingSettings ?? {@method.callableName}.StreamingSettings;
+            {@method.responseTypeName} call =
+                {@method.callableName}.Call(callSettings);
+            BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer =
+                new BufferedClientStreamWriter<{@method.serviceRequestTypeName}>(
+                    call.RequestStream, effectiveStreamingSettings.BufferedClientWriterCapacity);
+            return new {@method.name}StreamImpl(this, call, writeBuffer);
+        }
+        
+        /// <summary>
+        /// Bidirectional streaming methods for <c>{@method.name}</c>.
+        /// </summary>
+        public sealed class {@method.name}StreamImpl : {@method.name}Stream
+        {
+            /// <summary>
+            /// Construct the bidirectional streaming method for <c>{@method.name}</c>.
+            /// </summary>
+            /// <param name="service">The service containing this streaming method.</param>
+            /// <param name="call">The underlying gRPC duplex streaming call.</param>
+            /// <param name="writeBuffer">The <see cref="BufferedClientStreamWriter{{@method.serviceRequestTypeName}}"/>
+            /// instance associated with this streaming call.</param>
+            public {@method.name}StreamImpl(
+                {@api.implName} service,
+                {@method.responseTypeName} call,
+                BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer)
+            {
+                _service = service;
+                GrpcCall = call;
+                _writeBuffer = writeBuffer;
+            }
+
+            private {@api.implName} _service;
+            private BufferedClientStreamWriter<{@method.serviceRequestTypeName}> _writeBuffer;
+
+            private {@method.serviceRequestTypeName} ModifyRequest({@method.serviceRequestTypeName} request)
+            {
+                _service.Modify_{@method.serviceRequestTypeName}Request(ref request);
+                return request;
+            }
+
+            /// <inheritdoc/>
+            public override {@method.responseTypeName} GrpcCall { get; }
+
+            /// <inheritdoc/>
+            public override Task TryWriteAsync({@method.serviceRequestTypeName} message) =>
+                _writeBuffer.TryWriteAsync(ModifyRequest(message));
+
+            /// <inheritdoc/>
+            public override Task WriteAsync({@method.serviceRequestTypeName} message) =>
+                _writeBuffer.WriteAsync(ModifyRequest(message));
+
+            /// <inheritdoc/>
+            public override Task TryWriteAsync({@method.serviceRequestTypeName} message, WriteOptions options) =>
+                _writeBuffer.TryWriteAsync(ModifyRequest(message), options);
+
+            /// <inheritdoc/>
+            public override Task WriteAsync({@method.serviceRequestTypeName} message, WriteOptions options) =>
+                _writeBuffer.WriteAsync(ModifyRequest(message), options);
+
+            /// <inheritdoc/>
+            public override Task TryWriteCompleteAsync() =>
+                _writeBuffer.TryWriteCompleteAsync();
+
+            /// <inheritdoc/>
+            public override Task WriteCompleteAsync() =>
+                _writeBuffer.WriteCompleteAsync();
+
+            /// <inheritdoc/>
+            public override IAsyncEnumerator<{@method.serviceResponseTypeName}> ResponseStream =>
+                GrpcCall.ResponseStream;
+        }
+    @else
+        public virtual {@method.name}Stream {@method.name}(
+            CallSettings callSettings = null,
+            BidirectionalStreamingSettings streamingSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Bidirectional streaming methods for <c>{@method.name}</c>.
+        /// </summary>
+        public abstract class {@method.name}Stream : BidirectionalStreamingBase<{@method.serviceRequestTypeName}, {@method.serviceResponseTypeName}>
+        {
         }
     @end
 @end

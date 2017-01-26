@@ -14,9 +14,9 @@
       <script>
       function {@class.makeApiCallFuncName}() {
         @if class.needParams
-          @if class.fields
+          @if class.requiredFields
             var {@class.paramsVarName} = {
-              @join field : class.fields if class.fields on BREAK.add(BREAK)
+              @join field : class.requiredFields if class.requiredFields on BREAK.add(BREAK)
                 @if field.description
                   @join line : util.getDocLines(field.description, 100)
                     // {@line}
