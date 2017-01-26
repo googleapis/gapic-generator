@@ -173,13 +173,8 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     } else if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {
-      TypeName enumTypeName = getTypeName(type);
       EnumValue enumValue = type.getEnumType().getValues().get(0);
-      List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
-      String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
-      String enumValueName =
-          enumNamer.getEnumValueName(enumShortTypeName, enumValue.getSimpleName());
-      return TypedValue.create(enumTypeName, "%s." + enumValueName);
+      return getEnumValue(type, enumValue.getSimpleName());
     } else {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
@@ -244,6 +239,10 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, String value) {
-    throw new UnsupportedOperationException("getEnumValue not supported by C#");
+    TypeName enumTypeName = getTypeName(type);
+    List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
+    String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
+    String enumValue = enumNamer.getEnumValueName(enumShortTypeName, value);
+    return TypedValue.create(enumTypeName, "%s." + enumValue);
   }
 }

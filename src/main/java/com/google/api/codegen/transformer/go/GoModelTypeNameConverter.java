@@ -269,6 +269,12 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, String value) {
-    throw new UnsupportedOperationException("getEnumValue not supported by Go");
+    TypeName typeName;
+    if (type.isEnum()) {
+      typeName = getTypeName(type.getEnumType().getParent());
+    } else {
+      typeName = getTypeName(type);
+    }
+    return TypedValue.create(typeName, "%s_" + value);
   }
 }

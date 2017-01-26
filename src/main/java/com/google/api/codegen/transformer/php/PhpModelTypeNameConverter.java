@@ -145,7 +145,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
     }
     if (type.isEnum()) {
       EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s::" + enumValue.getSimpleName());
+      return getEnumValue(type, enumValue.getSimpleName());
     }
     return TypedValue.create(new TypeName(""), "null");
   }
@@ -188,6 +188,6 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, String value) {
-    throw new UnsupportedOperationException("getEnumValue not supported by PHP");
+    return TypedValue.create(getTypeName(type), "%s::" + value);
   }
 }

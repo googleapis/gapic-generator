@@ -137,7 +137,7 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
     }
     if (type.isEnum()) {
       EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s::" + enumValue.getSimpleName());
+      return getEnumValue(type, enumValue.getSimpleName());
     }
     return TypedValue.create(new TypeName(""), "nil");
   }
@@ -181,6 +181,6 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, String value) {
-    throw new UnsupportedOperationException("getEnumValue not supported by Ruby");
+    return TypedValue.create(getTypeName(type), "%s::" + value);
   }
 }
