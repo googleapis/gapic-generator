@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.nodejs;
+package com.google.api.codegen.discovery.transformer.js;
 
 import com.google.api.codegen.discovery.config.TypeInfo;
 import com.google.api.codegen.discovery.transformer.SampleTypeNameConverter;
@@ -21,9 +21,9 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 
-public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
+public class JSSampleTypeNameConverter implements SampleTypeNameConverter {
 
-  /** A map from primitive types in proto to NodeJS counterparts. */
+  /** A map from primitive types in proto to JS counterparts. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "boolean")
@@ -37,7 +37,7 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_ENUM, "String")
           .build();
 
-  /** A map from primitive types in proto to zero value in NodeJS */
+  /** A map from primitive types in proto to zero value in JS. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
           .put(Field.Kind.TYPE_BOOL, "false")
@@ -51,7 +51,7 @@ public class NodeJSSampleTypeNameConverter implements SampleTypeNameConverter {
           .put(Field.Kind.TYPE_ENUM, "''")
           .build();
 
-  public NodeJSSampleTypeNameConverter() {}
+  public JSSampleTypeNameConverter() {}
 
   @Override
   public TypeName getServiceTypeName(String apiTypeName) {

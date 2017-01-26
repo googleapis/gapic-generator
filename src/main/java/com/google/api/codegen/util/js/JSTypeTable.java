@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util.nodejs;
+package com.google.api.codegen.util.js;
 
 import com.google.api.codegen.util.DynamicLangTypeTable;
 import com.google.api.codegen.util.Name;
@@ -27,18 +27,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** The TypeTable for NodeJS. */
-public class NodeJSTypeTable implements TypeTable {
+/** The TypeTable for JS. */
+public class JSTypeTable implements TypeTable {
 
   private final DynamicLangTypeTable dynamicTypeTable;
 
-  public NodeJSTypeTable(String implicitPackageName) {
+  public JSTypeTable(String implicitPackageName) {
     dynamicTypeTable = new DynamicLangTypeTable(implicitPackageName, ".");
   }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new NodeJSTypeTable(dynamicTypeTable.getImplicitPackageName());
+    return new JSTypeTable(dynamicTypeTable.getImplicitPackageName());
   }
 
   @Override

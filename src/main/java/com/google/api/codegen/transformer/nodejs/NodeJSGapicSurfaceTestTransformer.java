@@ -33,7 +33,7 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.util.testing.NodeJSValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ClientMethodType;
@@ -79,7 +79,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   private static ModelTypeTable createTypeTable(ApiConfig apiConfig) {
     String packageName = apiConfig.getPackageName();
     return new ModelTypeTable(
-        new NodeJSTypeTable(packageName), new NodeJSModelTypeNameConverter(packageName));
+        new JSTypeTable(packageName), new NodeJSModelTypeNameConverter(packageName));
   }
 
   private MockCombinedView generateTestView(Model model, ApiConfig apiConfig, SurfaceNamer namer) {

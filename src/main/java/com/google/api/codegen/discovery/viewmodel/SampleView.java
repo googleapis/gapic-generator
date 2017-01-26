@@ -49,6 +49,7 @@ public abstract class SampleView implements ViewModel {
 
   public abstract SampleAuthView auth();
 
+  @Nullable
   public abstract String serviceVarName();
 
   @Nullable
@@ -100,18 +101,18 @@ public abstract class SampleView implements ViewModel {
 
   public abstract boolean hasMediaDownload();
 
-  // Java specific section...
+  // Java specific section.
   @Nullable
   public abstract String className();
 
   @Nullable
   public abstract String createServiceFuncName();
 
-  // Node.js specific section...
+  // Node.js specific section.
   @Nullable
   public abstract String googleImportVarName();
 
-  // Go specific section...
+  // Go specific section.
   @Nullable
   public abstract String servicePackageName();
 
@@ -124,25 +125,25 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract String contextVarName();
 
-  // PHP specific section...
+  // PHP specific section.
   @Nullable
   public abstract String optParamsVarName();
 
-  // Ruby specific section...
+  // Ruby specific section.
   @Nullable
   public abstract String serviceRequirePath();
 
   @Nullable
   public abstract String serviceTypeNamespace();
 
-  // C# specific section...
+  // C# specific section.
   @Nullable
   public abstract String dataNamespace();
 
   @Nullable
   public abstract String namespaceName();
 
-  // Python specific section...
+  // Python specific section.
   @Nullable
   public abstract String credentialsVarName();
 
@@ -151,6 +152,38 @@ public abstract class SampleView implements ViewModel {
 
   @Nullable
   public abstract List<String> methodParamAssigments();
+
+  // JS specific section.
+  @Nullable
+  public abstract String makeApiCallFuncName();
+
+  @Nullable
+  public abstract String initClientFuncName();
+
+  @Nullable
+  public abstract String handleClientLoadFuncName();
+
+  @Nullable
+  public abstract String updateSignInStatusFuncName();
+
+  @Nullable
+  public abstract String handleSignInClickFuncName();
+
+  @Nullable
+  public abstract String handleSignOutClickFuncName();
+
+  @Nullable
+  public abstract String paramsVarName();
+
+  /**
+   * Returns true if there are fields, or if the method is page streaming and the `pageToken` field
+   * is in the `params` object.
+   *
+   * <p>Only intended to be used in the JS sample, where `params` may not contain any required
+   * fields, but is necessary if the method is page streaming.
+   */
+  @Nullable
+  public abstract Boolean needParams();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
@@ -250,6 +283,22 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder lastMethodNameComponent(String val);
 
     public abstract Builder methodParamAssigments(List<String> val);
+
+    public abstract Builder paramsVarName(String val);
+
+    public abstract Builder makeApiCallFuncName(String val);
+
+    public abstract Builder initClientFuncName(String val);
+
+    public abstract Builder handleClientLoadFuncName(String val);
+
+    public abstract Builder updateSignInStatusFuncName(String val);
+
+    public abstract Builder handleSignInClickFuncName(String val);
+
+    public abstract Builder handleSignOutClickFuncName(String val);
+
+    public abstract Builder needParams(Boolean val);
 
     public abstract SampleView build();
   }

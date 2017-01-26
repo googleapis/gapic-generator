@@ -26,7 +26,7 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
 import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -101,7 +101,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
-            new NodeJSTypeTable(getApiConfig().getPackageName()),
+            new JSTypeTable(getApiConfig().getPackageName()),
             new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
     return SurfaceTransformerContext.create(
         service, getApiConfig(), modelTypeTable, namer, new NodeJSFeatureConfig());
