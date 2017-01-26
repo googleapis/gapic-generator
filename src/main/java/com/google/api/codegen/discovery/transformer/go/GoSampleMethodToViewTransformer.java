@@ -81,19 +81,29 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     String requestTypeName = methodInfo.requestType().message().typeName();
 
     List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
     List<String> methodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      SampleFieldView sampleFieldView = createSampleFieldView(field, typeTable, symbolTable);
-      requiredFields.add(sampleFieldView);
-      methodCallFieldVarNames.add(sampleFieldView.name());
+      SampleFieldView sampleFieldView = createSampleFieldView(field, context, symbolTable);
+      if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
+        methodCallFieldVarNames.add(sampleFieldView.name());
+      } else {
+        optionalFields.add(sampleFieldView);
+      }
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(methodInfo.requestBodyType().message().typeName());
       methodCallFieldVarNames.add(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable));
+      }
     }
 
     // The Go client only considers methods whose verb is "GET" to be page
@@ -132,8 +142,10 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .requestVarName(requestVarName)
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
         .requiredFields(requiredFields)
+        .optionalFields(optionalFields)
         .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(isPageStreaming)
         .hasMediaUpload(methodInfo.hasMediaUpload())
@@ -199,12 +211,17 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
   }
 
   private SampleFieldView createSampleFieldView(
-      FieldInfo field, SampleTypeTable typeTable, SymbolTable symbolTable) {
+      FieldInfo field, SampleTransformerContext context, SymbolTable symbolTable) {
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
         .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
         .example(field.example())
         .description(field.description())
+        .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
+        .required(field.required())
+        .isArray(field.type().isArray())
         .build();
   }
 
