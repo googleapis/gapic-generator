@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.util;
 
-public class NullCommentFixer implements CommentFixer {
+public class PassThroughCommentFixer implements CommentFixer {
   @Override
   public String fix(String documentation) {
     return documentation;

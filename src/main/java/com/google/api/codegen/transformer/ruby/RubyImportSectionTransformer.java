@@ -33,8 +33,8 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateStandardImports());
     importSection.externalImports(generateExternalImports(context));
-    importSection.appImports(generateAppImports(importFilenames));
-    importSection.serviceImports(generateServiceImports(importFilenames));
+    importSection.appImports(generateAppImports(context, importFilenames));
+    importSection.serviceImports(generateServiceImports(context, importFilenames));
     return importSection.build();
   }
 
@@ -54,19 +54,21 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return imports.build();
   }
 
-  private List<ImportFileView> generateAppImports(Set<String> filenames) {
+  private List<ImportFileView> generateAppImports(
+      SurfaceTransformerContext context, Set<String> filenames) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     for (String filename : filenames) {
-      imports.add(createImport(filename.replace(".proto", "_pb")));
+      imports.add(createImport(context.getNamer().getProtoFileImportName(filename)));
     }
     return imports.build();
   }
 
-  private List<ImportFileView> generateServiceImports(Set<String> filenames) {
+  private List<ImportFileView> generateServiceImports(
+      SurfaceTransformerContext context, Set<String> filenames) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     imports.add(createImport("google/gax/grpc"));
     for (String filename : filenames) {
-      imports.add(createImport(filename.replace(".proto", "_services_pb")));
+      imports.add(createImport(context.getNamer().getServiceFileImportName(filename)));
     }
     return imports.build();
   }
