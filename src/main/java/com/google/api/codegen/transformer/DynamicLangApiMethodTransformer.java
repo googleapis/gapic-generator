@@ -193,48 +193,14 @@ public class DynamicLangApiMethodTransformer {
     FeatureConfig featureConfig = context.getFeatureConfig();
     ModelTypeTable typeTable = context.getTypeTable();
     Field field = fieldConfig.getField();
-
-    String typeName =
-        namer.getNotImplementedString(
-            "DynamicLangApiMethodTransformer.generateRequestObjectParam - typeName");
-    String elementTypeName =
-        namer.getNotImplementedString(
-            "DynamicLangApiMethodTransformer.generateRequestObjectParam - elementTypeName");
-
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-      if (namer.shouldImportRequestObjectParamType(field)) {
-        typeName = namer.getAndSaveResourceTypeName(typeTable, fieldConfig);
-      }
-      if (namer.shouldImportRequestObjectParamElementType(field)) {
-        // Use makeOptional to remove repeated property from type
-        elementTypeName = namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig);
-      }
-    } else {
-      if (namer.shouldImportRequestObjectParamType(field)) {
-        typeName = typeTable.getAndSaveNicknameFor(field.getType());
-      }
-      if (namer.shouldImportRequestObjectParamElementType(field)) {
-        elementTypeName = typeTable.getAndSaveNicknameForElementType(field.getType());
-      }
-    }
-
-    String setCallName = namer.getFieldSetFunctionName(featureConfig, fieldConfig);
-    String addCallName = namer.getFieldAddFunctionName(field);
-    String transformParamFunctionName = null;
-    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-        && fieldConfig.hasDifferentMessageResourceNameConfig()) {
-      transformParamFunctionName = namer.getResourceOneofCreateMethod(typeTable, fieldConfig);
-    }
-
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
     param.keyName(namer.getFieldKey(field));
     param.nameAsMethodName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
-    param.typeName(typeName);
-    param.elementTypeName(elementTypeName);
-    param.setCallName(setCallName);
-    param.addCallName(addCallName);
-    param.transformParamFunctionName(transformParamFunctionName);
+    param.typeName(typeTable.getAndSaveNicknameFor(field.getType()));
+    param.elementTypeName(typeTable.getAndSaveNicknameForElementType(field.getType()));
+    param.setCallName(namer.getFieldSetFunctionName(featureConfig, fieldConfig));
+    param.addCallName(namer.getFieldAddFunctionName(field));
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
     return param.build();
