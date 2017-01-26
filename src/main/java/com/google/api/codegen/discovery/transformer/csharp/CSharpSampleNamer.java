@@ -45,4 +45,9 @@ class CSharpSampleNamer extends SampleNamer {
   public static String getNamespaceName(String apiCanonicalName) {
     return apiCanonicalName.replace(" ", "") + "Sample";
   }
+
+  @Override
+  public String getRequestBodyFieldSetterName(String fieldName) {
+    return publicMethodName(Name.lowerCamel(fieldName));
+  }
 }

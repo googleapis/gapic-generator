@@ -229,7 +229,7 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
-        .setterFuncName(namer.publicMethodName(Name.lowerCamel(field.name())))
+        .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
         .required(field.required())
         .build();
   }
