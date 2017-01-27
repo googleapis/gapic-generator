@@ -1,9 +1,7 @@
 @extends "ruby/method_sample.snip"
 
-# TODO: rename testClass -> testedApi? Unlike in Java, each Ruby unit test file
-# isn't one class only.
-@snippet generate(testClass)
-  # TODO: Use testClass.fileHeader here and in main.snip.
+@snippet generate(testViewModel)
+  # TODO: Use testViewModel.fileHeader here and in main.snip.
   @# Copyright 2016 Google Inc. All rights reserved.
   @#
   @# Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,17 +17,15 @@
   @# limitations under the License.
 
   require "minitest/autorun"
-  # TODO(jcanizales): I can get this from:
-  # new RubySurfaceNamer(apiConfig.getPackageName()).getServiceFileName(service)
-  # How should we expose it?
-  require "google/cloud/language/v1beta1/language_service_api"
+  # require "google/cloud/language/v1beta1/language_service_api"
+  require "{@testViewModel.libraryUnderTest.outputFile}"
   # include Google::Cloud::Language::V1beta1
-  include {@util.getStubs(testClass.service).get(0).namespace}
+  include {@testViewModel.libraryUnderTest.namespace}
 
   # describe LanguageServiceApi do
-  describe {@testClass.apiClassName} do
+  describe {@testViewModel.libraryUnderTest.apiClassName} do
 
-    @let gRPCClass = util.getStubs(testClass.service).get(0).grpcClientTypeName
+    @let gRPCClass = testViewModel.libraryUnderTest.grpcClientTypeName
       def stub_grpc_client
         mock_client = Minitest::Mock.new
 
@@ -51,49 +47,43 @@
         {@gRPCClass}::Stub.stub(:new, mock_client) { yield(mock_client) }
       end
 
-      @join testCase : testClass.testCases
-        @let methodName = testCase.surfaceMethodName
-          # TODO(jcanizales): Undo this join-if hack.
-          @join method : util.getSupportedMethodsV2(testClass.service)
-            @if util.upperCamelToLowerUnderscore(method.getSimpleName()).equals(methodName)
-              @let methodView = util.getMethodView(testClass.service, method)
-                # describe "#annotate_text" do
-                describe "#{@methodName}" do
-                  it "forwards calls to {@gRPCClass}::Stub" do
-                    stub_grpc_client do |mock_client|
-                      # TODO(jcanizales): Initialize enums with the second value, strings
-                      # with "sample", arrays with 1 element, etc. Do the same with the
-                      # mocked response.
-                      # TODO(jcanizales): Instead of aliasing all used types,
-                      # include Google::Cloud::Language::V1beta1 in the sample.
-                      {@sampleCodeAliases(methodView)}
+      @join testCase : testViewModel.testCases
+        @let methodView = testCase.methodView, \
+             methodName = methodView.name
+          # describe "#annotate_text" do
+          describe "#{@methodName}" do
+            it "forwards calls to {@gRPCClass}::Stub" do
+              stub_grpc_client do |mock_client|
+                # TODO(jcanizales): Initialize enums with the second value, strings
+                # with "sample", arrays with 1 element, etc. Do the same with the
+                # mocked response.
+                # TODO(jcanizales): Instead of aliasing all used types,
+                # include Google::Cloud::Language::V1beta1 in the sample.
+                {@sampleCodeAliases(methodView)}
 
-                      # expected_request = AnnotateTextRequest.new(            
-                      expected_request = {@testCase.requestTypeName}.new(
-                        {@initRequest(methodView.initCode)}
-                      )
+                # expected_request = AnnotateTextRequest.new(            
+                expected_request = {@testCase.requestTypeName}.new(
+                  {@initRequest(methodView.initCode)}
+                )
 
-                      # mocked_response = AnnotateTextResponse.new
-                      mocked_response = {@testCase.responseTypeName}.new
-                      # TODO(jcanizales): testCase.mockResponse.initCode
+                # mocked_response = AnnotateTextResponse.new
+                mocked_response = {@testCase.responseTypeName}.new
+                # TODO(jcanizales): testCase.mockResponse.initCode
 
-                      mock_client.expect(
-                        :{@methodName},
-                        mocked_response,
-                        [expected_request, Hash],
-                      )
+                mock_client.expect(
+                  :{@methodName},
+                  mocked_response,
+                  [expected_request, Hash],
+                )
 
-                      {@sampleCodeBody(methodView)}
+                {@sampleCodeBody(methodView)}
 
-                      @# Verification:
-                      response.must_equal mocked_response
-                    end
-                  end
-                end
-
-              @end
-            @end
-          @end
+                @# Verification:
+                response.must_equal mocked_response
+              end
+            end
+          end
+          
         @end
       @end
     @end    
