@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer.nodejs;
+package com.google.api.codegen.discovery.transformer.js;
 
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -21,8 +21,6 @@ import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransforme
 import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.discovery.transformer.SampleTransformerContext;
 import com.google.api.codegen.discovery.transformer.SampleTypeTable;
-import com.google.api.codegen.discovery.transformer.js.JSSampleNamer;
-import com.google.api.codegen.discovery.transformer.js.JSSampleTypeNameConverter;
 import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
@@ -37,11 +35,11 @@ import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
+public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
-  private static final String TEMPLATE_FILENAME = "nodejs/sample.snip";
+  private static final String TEMPLATE_FILENAME = "js/sample.snip";
 
-  public NodeJSSampleMethodToViewTransformer() {}
+  public JSSampleMethodToViewTransformer() {}
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
@@ -63,33 +61,38 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
 
     SampleView.Builder builder = SampleView.newBuilder();
 
-    String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
-    String serviceTypeName = typeTable.getAndSaveNicknameForServiceType(config.apiTypeName());
     String requestVarName = symbolTable.getNewSymbol(namer.getRequestVarName());
+
+    // Call first so function names take precedence in the symbol table.
+    builder.makeApiCallFuncName(symbolTable.getNewSymbol("makeApiCall"));
+    builder.initClientFuncName(symbolTable.getNewSymbol("initClient"));
+    builder.handleClientLoadFuncName(symbolTable.getNewSymbol("handleClientLoad"));
+    builder.updateSignInStatusFuncName(symbolTable.getNewSymbol("updateSignInStatus"));
+    builder.handleSignInClickFuncName(symbolTable.getNewSymbol("handleSignInClick"));
+    builder.handleSignOutClickFuncName(symbolTable.getNewSymbol("handleSignOutClick"));
+    builder.paramsVarName(symbolTable.getNewSymbol("params"));
 
     if (methodInfo.isPageStreaming()) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
-    // Created before the fields in case there are naming conflicts in the symbol table.
-    SampleAuthView sampleAuthView = createSampleAuthView(context, symbolTable);
-
     List<SampleFieldView> requiredFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      String name = field.name();
-      // Since the requestBody is named `resource`, all fields named `resource`
-      // are renamed by the Node.js client library generator to `resource_`.
-      if (name.equals("resource")) {
-        name = "resource_";
-      }
-
       requiredFields.add(
           SampleFieldView.newBuilder()
-              .name(name)
+              .name(field.name())
               .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
               .example(field.example())
               .description(field.description())
               .build());
+    }
+
+    boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    if (hasRequestBody) {
+      String requestBodyVarName =
+          symbolTable.getNewSymbol(
+              namer.getRequestBodyVarName(methodInfo.requestBodyType().message().typeName()));
+      builder.requestBodyVarName(requestBodyVarName);
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -97,52 +100,41 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
       builder.responseVarName(symbolTable.getNewSymbol(namer.getResponseVarName()));
     }
 
+    // If there are fields, or if the method is page streaming and the
+    // `pageToken` field is in the `params` object, then the `params` object
+    // must be present.
+    builder.needParams(
+        methodInfo.fields().size() > 0
+            || (methodInfo.isPageStreaming()
+                && !methodInfo.isPageStreamingResourceSetterInRequestBody()));
+
     return builder
         .templateFileName(TEMPLATE_FILENAME)
-        .outputPath(context.getMethodName() + ".frag.njs")
+        .outputPath(context.getMethodName() + ".frag.js")
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
-        .auth(sampleAuthView)
-        .serviceVarName(serviceVarName)
-        .serviceTypeName(serviceTypeName)
+        .auth(createSampleAuthView(context))
         .methodVerb(methodInfo.verb())
         .methodNameComponents(methodInfo.nameComponents())
         .requestVarName(requestVarName)
-        .hasRequestBody(methodInfo.requestBodyType() != null)
+        .hasRequestBody(hasRequestBody)
         .hasResponse(hasResponse)
         .requiredFields(requiredFields)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
-        .googleImportVarName(
-            symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("google"))))
         .build();
   }
 
-  private SampleAuthView createSampleAuthView(
-      SampleTransformerContext context, SymbolTable symbolTable) {
+  private SampleAuthView createSampleAuthView(SampleTransformerContext context) {
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
-    SampleNamer namer = context.getSampleNamer();
-
-    String authVarName = "";
-    switch (config.authType()) {
-      case API_KEY:
-        authVarName = "apiKey";
-        break;
-      default:
-        authVarName = "authClient";
-    }
-
     return SampleAuthView.newBuilder()
         .type(config.authType())
         .instructionsUrl(config.authInstructionsUrl())
         .scopes(methodInfo.authScopes())
         .isScopesSingular(methodInfo.authScopes().size() == 1)
-        .authFuncName(
-            symbolTable.getNewSymbol(namer.staticFunctionName(Name.lowerCamel("authorize"))))
-        .authVarName(symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(authVarName))))
         .build();
   }
 
@@ -154,19 +146,20 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
+    // Since the JS sample's page streaming logic is in it's own function, the
+    // only identifier that needs to be added to the symbol table is the name of
+    // the function. `resourceKeyVarName` and `pageVarName` cannot collide with
+    // one another, so we don't add them to the table.
     if (fieldInfo.type().isMap()) {
-      builder.resourceKeyVarName(
-          symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("name"))));
+      builder.resourceKeyVarName(namer.localVarName(Name.lowerCamel("name")));
     }
     builder.resourceFieldName(namer.getFieldVarName(fieldInfo.name()));
     builder.isResourceRepeated(fieldInfo.cardinality() == Cardinality.CARDINALITY_REPEATED);
     builder.isResourceMap(fieldInfo.type().isMap());
-    builder.handlePageVarName(
-        symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("handlePage"))));
-    builder.pageVarName(
-        symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name(), "page"))));
-    builder.pageTokenName(methodInfo.requestPageTokenName());
-    builder.nextPageTokenName(methodInfo.responsePageTokenName());
+    builder.pageVarName(namer.localVarName(Name.lowerCamel(fieldInfo.name(), "page")));
+
+    builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
+    builder.executeRequestFuncName(symbolTable.getNewSymbol("executeRequest"));
     return builder.build();
   }
 }

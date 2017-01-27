@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util.nodejs;
+package com.google.api.codegen.util.js;
 
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
 import com.google.common.collect.ImmutableSet;
 
-/** The NameFormatter for NodeJS. */
-public class NodeJSNameFormatter implements NameFormatter {
+/** The NameFormatter for JS. */
+public class JSNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {
     if (RESERVED_IDENTIFIER_SET.contains(name)) {

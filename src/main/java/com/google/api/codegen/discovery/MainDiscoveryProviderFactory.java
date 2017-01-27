@@ -21,6 +21,7 @@ import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.discovery.config.csharp.CSharpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.go.GoTypeNameGenerator;
 import com.google.api.codegen.discovery.config.java.JavaTypeNameGenerator;
+import com.google.api.codegen.discovery.config.js.JSTypeNameGenerator;
 import com.google.api.codegen.discovery.config.nodejs.NodeJSTypeNameGenerator;
 import com.google.api.codegen.discovery.config.php.PhpTypeNameGenerator;
 import com.google.api.codegen.discovery.config.py.PythonTypeNameGenerator;
@@ -29,6 +30,7 @@ import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransforme
 import com.google.api.codegen.discovery.transformer.csharp.CSharpSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.go.GoSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.java.JavaSampleMethodToViewTransformer;
+import com.google.api.codegen.discovery.transformer.js.JSSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.nodejs.NodeJSSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.php.PhpSampleMethodToViewTransformer;
 import com.google.api.codegen.discovery.transformer.py.PythonSampleMethodToViewTransformer;
@@ -52,6 +54,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
   public static final String CSHARP = "csharp";
   public static final String GO = "go";
   public static final String JAVA = "java";
+  public static final String JS = "js";
   public static final String NODEJS = "nodejs";
   public static final String PHP = "php";
   public static final String PYTHON = "python";
@@ -63,6 +66,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
               .put(CSHARP, CSharpSampleMethodToViewTransformer.class)
               .put(GO, GoSampleMethodToViewTransformer.class)
               .put(JAVA, JavaSampleMethodToViewTransformer.class)
+              .put(JS, JSSampleMethodToViewTransformer.class)
               .put(NODEJS, NodeJSSampleMethodToViewTransformer.class)
               .put(PHP, PhpSampleMethodToViewTransformer.class)
               .put(PYTHON, PythonSampleMethodToViewTransformer.class)
@@ -73,6 +77,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .put(CSHARP, CSharpTypeNameGenerator.class)
           .put(GO, GoTypeNameGenerator.class)
           .put(JAVA, JavaTypeNameGenerator.class)
+          .put(JS, JSTypeNameGenerator.class)
           .put(NODEJS, NodeJSTypeNameGenerator.class)
           .put(PHP, PhpTypeNameGenerator.class)
           .put(PYTHON, PythonTypeNameGenerator.class)

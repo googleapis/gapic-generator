@@ -43,24 +43,4 @@ public class CSharpTypeNameGenerator extends TypeNameGenerator {
   public String getApiTypeName(String canonicalName) {
     return canonicalName.replace(" ", "") + "Service";
   }
-
-  @Override
-  public String getRequestTypeName(List<String> methodNameComponents) {
-    List<String> copy = getMethodNameComponents(methodNameComponents);
-    String requestTypeName = copy.remove(copy.size() - 1) + "Request";
-    String path = "";
-    for (String s : copy) {
-      path += s + "Resource.";
-    }
-    return path + requestTypeName;
-  }
-
-  @Override
-  public String getMessageTypeName(String messageTypeName) {
-    // A rule for cases like DatasetList.Datasets
-    if (messageTypeName.contains(".")) {
-      messageTypeName = messageTypeName + "Data";
-    }
-    return Joiner.on('.').join("Data", messageTypeName);
-  }
 }
