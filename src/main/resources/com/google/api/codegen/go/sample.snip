@@ -97,7 +97,7 @@
 
     @end
     @if class.isPageStreaming
-      {@class.requestVarName} := {@class.serviceVarName}.{@callChain(class)}
+      {@class.requestVarName} := {@methodCall(class)}
       if err := {@class.requestVarName}.Pages({@class.contextVarName}, func({@class.pageStreaming.pageVarName} *{@class.servicePackageName}.{@class.responseTypeName}) error {
         @if class.pageStreaming.isResourceRepeated
           @if class.pageStreaming.isResourceMap
@@ -129,7 +129,7 @@
 
       @end
       @if class.hasResponse
-        {@class.responseVarName}, err := {@class.serviceVarName}.{@callChain(class)}.Context({@class.contextVarName}).Do()
+        {@class.responseVarName}, err := {@methodCall(class)}.Context({@class.contextVarName}).Do()
         if err != nil {
           log.Fatal(err)
         }
@@ -137,7 +137,7 @@
         // TODO: Change code below to process the `{@class.responseVarName}` object:
         fmt.Printf("%#v\n", {@class.responseVarName})
       @else
-        if err := {@class.serviceVarName}.{@callChain(class)}.Context({@class.contextVarName}).Do(); err != nil {
+        if err := {@methodCall(class)}.Context({@class.contextVarName}).Do(); err != nil {
           log.Fatal(err)
         }
       @end
@@ -178,11 +178,11 @@
   @end
 @end
 
-@private callChain(class)
-  {@resourceCallChain(class)}({@paramList(class.methodCallFieldVarNames)}){@optionalFieldCallChain(class)}
+@private methodCall(class)
+  {@class.serviceVarName}.{@methodResource(class)}({@paramList(class.methodCallFieldVarNames)}){@optionalFieldCallChain(class)}
 @end
 
-@private resourceCallChain(class)
+@private methodResource(class)
   @join resource : class.methodNameComponents on "."
     {@resource}
   @end
