@@ -993,6 +993,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getSourceFilePath");
   }
 
+  public String getIndexOutputFilePath(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getIndexOutputFilePath");
+  }
+
   ////////////////////////////////////////// Test /////////////////////////////////////////////
 
   public String getTestPackageName() {

@@ -41,6 +41,9 @@ public abstract class IndexView implements ViewModel {
 
   public abstract List<IndexRequireView> requireViews();
 
+  @Nullable
+  public abstract List<IndexRequireView> protoRequireViews();
+
   public boolean hasMultipleServices() {
     return requireViews().size() > 1;
   }
@@ -61,6 +64,8 @@ public abstract class IndexView implements ViewModel {
     public abstract Builder apiVersion(String val);
 
     public abstract Builder requireViews(List<IndexRequireView> val);
+
+    public abstract Builder protoRequireViews(List<IndexRequireView> val);
 
     public abstract IndexView build();
   }

@@ -45,11 +45,13 @@ import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
+import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
+import com.google.api.codegen.util.ruby.RubyRenderingUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -403,9 +405,17 @@ public class MainGapicProviderFactory
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(rubyPathMapper)
                 .build();
+        GapicProvider<? extends Object> indexProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new RubyRenderingUtil()))
+                .setModelToViewTransformer(new RubyGapicSurfaceTransformer())
+                .build();
 
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
+        providers.add(indexProvider);
 
         if (id.equals(RUBY_DOC)) {
           GapicProvider<? extends Object> messageProvider =

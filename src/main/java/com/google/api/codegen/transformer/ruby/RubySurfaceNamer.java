@@ -25,6 +25,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** The SurfaceNamer for Ruby. */
@@ -97,5 +98,19 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getProtoFileImportFromService(Interface service) {
     return service.getFile().getSimpleName().replace(".proto", "_pb");
+  }
+
+  @Override
+  public String getIndexOutputFilePath(Interface service) {
+    String indexOutputPath = "";
+    List<String> fileNameParts =
+        new ArrayList<>(Arrays.asList(getServiceFileName(service).split("/")));
+    if (fileNameParts.size() > 1) {
+      fileNameParts.remove(fileNameParts.size() - 1);
+      indexOutputPath = "lib/" + Joiner.on("/").join(fileNameParts) + ".rb";
+    } else {
+      indexOutputPath = "lib/" + getApiWrapperModuleVersion() + ".rb";
+    }
+    return indexOutputPath;
   }
 }
