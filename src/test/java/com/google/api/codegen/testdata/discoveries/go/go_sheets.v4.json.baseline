@@ -35,7 +35,12 @@ func main() {
   // The spreadsheet to apply the updates to.
   spreadsheetId := ""  // TODO: Update placeholder value.
 
+  // A list of updates to apply to the spreadsheet.
+  requests := []*sheets.Request{}  // TODO: Update placeholder value.
+
   rb := &sheets.BatchUpdateSpreadsheetRequest{
+    Requests: requests,
+
     // TODO: Add desired fields of the request body.
   }
 
@@ -148,7 +153,14 @@ func main() {
   // The spreadsheet to request.
   spreadsheetId := ""  // TODO: Update placeholder value.
 
-  resp, err := sheetsService.Spreadsheets.Get(spreadsheetId).Context(ctx).Do()
+  // The ranges to retrieve from the spreadsheet.
+  ranges := []string{}  // TODO: Update placeholder value.
+
+  // True if grid data should be returned.
+  // This parameter is ignored if a field mask was set in the request.
+  includeGridData := false  // TODO: Update placeholder value.
+
+  resp, err := sheetsService.Spreadsheets.Get(spreadsheetId).Ranges(ranges...).IncludeGridData(includeGridData).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -207,7 +219,12 @@ func main() {
   // The ID of the sheet to copy.
   sheetId := int64(0)  // TODO: Update placeholder value.
 
+  // The ID of the spreadsheet to copy the sheet to.
+  destinationSpreadsheetId := ""  // TODO: Update placeholder value.
+
   rb := &sheets.CopySheetToAnotherSpreadsheetRequest{
+    DestinationSpreadsheetId: destinationSpreadsheetId,
+
     // TODO: Add desired fields of the request body.
   }
 
@@ -269,11 +286,17 @@ func main() {
   // Values will be appended after the last row of the table.
   range2 := ""  // TODO: Update placeholder value.
 
+  // How the input data should be interpreted.
+  valueInputOption := ""  // TODO: Update placeholder value.
+
+  // How the input data should be inserted.
+  insertDataOption := ""  // TODO: Update placeholder value.
+
   rb := &sheets.ValueRange{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sheetsService.Spreadsheets.Values.Append(spreadsheetId, range2, rb).Context(ctx).Do()
+  resp, err := sheetsService.Spreadsheets.Values.Append(spreadsheetId, range2, rb).ValueInputOption(valueInputOption).InsertDataOption(insertDataOption).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -327,7 +350,12 @@ func main() {
   // The ID of the spreadsheet to update.
   spreadsheetId := ""  // TODO: Update placeholder value.
 
+  // The ranges to clear, in A1 notation.
+  ranges := []string{}  // TODO: Update placeholder value.
+
   rb := &sheets.BatchClearValuesRequest{
+    Ranges: ranges,
+
     // TODO: Add desired fields of the request body.
   }
 
@@ -385,7 +413,20 @@ func main() {
   // The ID of the spreadsheet to retrieve data from.
   spreadsheetId := ""  // TODO: Update placeholder value.
 
-  resp, err := sheetsService.Spreadsheets.Values.BatchGet(spreadsheetId).Context(ctx).Do()
+  // The A1 notation of the values to retrieve.
+  ranges := []string{}  // TODO: Update placeholder value.
+
+  // How values should be represented in the output.
+  // The default render option is ValueRenderOption.FORMATTED_VALUE.
+  valueRenderOption := ""  // TODO: Update placeholder value.
+
+  // How dates, times, and durations should be represented in the output.
+  // This is ignored if value_render_option is
+  // FORMATTED_VALUE.
+  // The default dateTime render option is [DateTimeRenderOption.SERIAL_NUMBER].
+  dateTimeRenderOption := ""  // TODO: Update placeholder value.
+
+  resp, err := sheetsService.Spreadsheets.Values.BatchGet(spreadsheetId).Ranges(ranges...).ValueRenderOption(valueRenderOption).DateTimeRenderOption(dateTimeRenderOption).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -441,7 +482,16 @@ func main() {
   // The ID of the spreadsheet to update.
   spreadsheetId := ""  // TODO: Update placeholder value.
 
+  // How the input data should be interpreted.
+  valueInputOption := ""  // TODO: Update placeholder value.
+
+  // The new values to apply to the spreadsheet.
+  data := []*sheets.ValueRange{}  // TODO: Update placeholder value.
+
   rb := &sheets.BatchUpdateValuesRequest{
+    ValueInputOption: valueInputOption,
+    Data: data,
+
     // TODO: Add desired fields of the request body.
   }
 
@@ -563,7 +613,17 @@ func main() {
   // The A1 notation of the values to retrieve.
   range2 := ""  // TODO: Update placeholder value.
 
-  resp, err := sheetsService.Spreadsheets.Values.Get(spreadsheetId, range2).Context(ctx).Do()
+  // How values should be represented in the output.
+  // The default render option is ValueRenderOption.FORMATTED_VALUE.
+  valueRenderOption := ""  // TODO: Update placeholder value.
+
+  // How dates, times, and durations should be represented in the output.
+  // This is ignored if value_render_option is
+  // FORMATTED_VALUE.
+  // The default dateTime render option is [DateTimeRenderOption.SERIAL_NUMBER].
+  dateTimeRenderOption := ""  // TODO: Update placeholder value.
+
+  resp, err := sheetsService.Spreadsheets.Values.Get(spreadsheetId, range2).ValueRenderOption(valueRenderOption).DateTimeRenderOption(dateTimeRenderOption).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -622,12 +682,15 @@ func main() {
   // The A1 notation of the values to update.
   range2 := ""  // TODO: Update placeholder value.
 
+  // How the input data should be interpreted.
+  valueInputOption := ""  // TODO: Update placeholder value.
+
   rb := &sheets.ValueRange{
     // TODO: Add desired fields of the request body. All existing fields
     // will be replaced.
   }
 
-  resp, err := sheetsService.Spreadsheets.Values.Update(spreadsheetId, range2, rb).Context(ctx).Do()
+  resp, err := sheetsService.Spreadsheets.Values.Update(spreadsheetId, range2, rb).ValueInputOption(valueInputOption).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
