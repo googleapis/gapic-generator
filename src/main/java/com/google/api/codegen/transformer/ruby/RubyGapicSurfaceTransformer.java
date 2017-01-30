@@ -84,12 +84,11 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       protoRequireViewsBuilder.add(simpleRequireView("google/longrunning/operations_pb", namer));
     }
 
-    List<IndexRequireView> requireViews = requireViewsBuilder.build();
     IndexView.Builder versionIndexViewBuilder =
         IndexView.newBuilder()
             .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
             .outputPath(namer.getIndexOutputFilePath(services.iterator().next()))
-            .requireViews(requireViews)
+            .requireViews(requireViewsBuilder.build())
             .protoRequireViews(protoRequireViewsBuilder.build());
     versionIndexViewBuilder.apiVersion(namer.getApiWrapperModuleVersion());
 
