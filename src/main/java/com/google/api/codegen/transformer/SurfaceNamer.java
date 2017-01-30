@@ -708,7 +708,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /**
    * The generic-aware response type name for the given type. For example, in Java, this will be the
-   * type used for ListenableFuture&lt;...&gt;.
+   * type used for RpcFuture&lt;...&gt;.
    */
   public String getGenericAwareResponseTypeName(TypeRef outputType) {
     return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
