@@ -185,9 +185,14 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
       boolean disambiguateName) {
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    String name = field.name();
+    String name = namer.getFieldVarName(field.name());
     if (disambiguateName) {
-      name = symbolTable.getNewSymbol(namer.getFieldVarName(name));
+      // Force names which are in the reserved set to be disambiguated with an
+      // `_` before being added to the symbol table.
+      if (PythonTypeTable.RESERVED_IDENTIFIER_SET.contains(name)) {
+        name += "_";
+      }
+      name = symbolTable.getNewSymbol(name);
     }
     return SampleFieldView.newBuilder()
         .name(name)
