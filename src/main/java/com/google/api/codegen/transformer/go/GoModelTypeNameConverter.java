@@ -18,6 +18,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -269,12 +270,12 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, String value) {
-    TypeName typeName;
-    if (type.isEnum()) {
-      typeName = getTypeName(type.getEnumType().getParent());
-    } else {
-      typeName = getTypeName(type);
+    for (EnumValue enumValue : type.getEnumType().getValues()) {
+      if (enumValue.getSimpleName().equals(value)) {
+        return TypedValue.create(
+            getTypeName(type.getEnumType().getParent()), "%s_" + enumValue.getSimpleName());
+      }
     }
-    return TypedValue.create(typeName, "%s_" + value);
+    throw new IllegalArgumentException("Unrecognized enum value: " + value);
   }
 }
