@@ -95,11 +95,16 @@
 
   @end
   @if class.isPageStreaming
-    {@class.pageStreaming.pageVarName} = {@class.serviceVarName}.fetch_all(items: :{@class.pageStreaming.resourceFieldName}) do |token|
-      @if class.methodCallFieldVarNames
-        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)}, {@class.pageStreaming.pageTokenName}: token)
+    {@class.pageStreaming.pageVarName} = {@class.serviceVarName}.fetch_all{@fetchParams(class)} do |token|
+      @if class.pageStreaming.isResourceSetterInRequestBody
+        {@class.requestBodyVarName}.{@class.pageStreaming.pageTokenName} = token
+        {@methodCall(class)}({@paramList(class.methodCallFieldVarNames)})
       @else
-        {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.pageStreaming.pageTokenName}: token)
+        @if class.methodCallFieldVarNames
+          {@methodCall(class)}({@paramList(class.methodCallFieldVarNames)}, {@class.pageStreaming.pageTokenName}: token)
+        @else
+          {@methodCall(class)}({@class.pageStreaming.pageTokenName}: token)
+        @end
       @end
     end
 
@@ -118,12 +123,12 @@
     @end
   @else
     @if class.hasResponse
-      {@class.responseVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)})
+      {@class.responseVarName} = {@methodCall(class)}({@paramList(class.methodCallFieldVarNames)})
 
       @# TODO: Change code below to process the `{@class.responseVarName}` object:
       puts JSON.pretty_generate({@class.responseVarName})
     @else
-      {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)})
+      {@methodCall(class)}({@paramList(class.methodCallFieldVarNames)})
     @end
   @end
 @end
@@ -142,14 +147,45 @@
   @end
 @end
 
+@private methodCall(class)
+  {@class.serviceVarName}.{@callChain(class.methodNameComponents)}
+@end
+
 @private callChain(methodNameComponents)
   @join resource : methodNameComponents on "."
     {@resource}
   @end
 @end
 
-@private paramList(methodCallFieldVarNames)
-  @join fieldVarName : methodCallFieldVarNames on ", "
-    {@fieldVarName}
+@private paramList(params)
+  @join param : params on ", "
+    {@param}
   @end
+@end
+
+@private paramGroup(paramsList, param)
+  @if paramsList
+    @if param
+      ({@paramsList}, {@param})
+    @else
+      ({@paramsList})
+    @end
+  @else
+    @if param
+      ({@param})
+    @end
+  @end
+@end
+
+@private namedParam(name, value)
+  @if value
+    {@name}: :{@value}
+  @end
+@end
+
+@private fetchParams(class)
+  {@paramGroup( \
+      namedParam("items", class.pageStreaming.resourceFieldName), \
+      namedParam("response_page_token", class.pageStreaming.nextPageTokenName) \
+      )}
 @end
