@@ -329,16 +329,8 @@ public class MainGapicProviderFactory
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(rubyPathMapper)
                 .build();
-        GapicProvider<?> testsProvider =
-            ViewModelGapicProvider.newBuilder()
-                .setModel(model)
-                .setApiConfig(apiConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(snippetContext))
-                .setModelToViewTransformer(new RubyTestsTransformer())
-                .build();
 
         providers.add(mainProvider);
-        providers.add(testsProvider);
         providers.add(clientConfigProvider);
 
         if (id.equals(RUBY_DOC)) {
@@ -353,6 +345,15 @@ public class MainGapicProviderFactory
                   .setCodePathMapper(rubyPathMapper)
                   .build();
           providers.add(messageProvider);
+        } else {
+          GapicProvider<?> testsProvider =
+              ViewModelGapicProvider.newBuilder()
+                  .setModel(model)
+                  .setApiConfig(apiConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(snippetContext))
+                  .setModelToViewTransformer(new RubyTestsTransformer())
+                  .build();
+          providers.add(testsProvider);
         }
       }
 
