@@ -25,22 +25,22 @@ import org.junit.rules.TemporaryFolder;
 
 public class ModelTypeNameConverterTestUtil {
   public static TypeRef getTestEnumType(TemporaryFolder tempDir) {
-    TestDataLocator locator = TestDataLocator.create(ModelTypeNameConverterTestUtil.class);
+    TestDataLocator locator = TestDataLocator.create(CodegenTestUtil.class);
     Model model =
         CodegenTestUtil.readModel(
-            locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
+            locator, tempDir, new String[] {"library.proto"}, new String[] {"library.yaml"});
     for (ProtoFile file : model.getFiles()) {
-      if (!file.getSimpleName().equals("myproto.proto")) {
+      if (!file.getSimpleName().equals("library.proto")) {
         continue;
       }
 
       for (MessageType message : file.getMessages()) {
-        if (!message.getSimpleName().equals("SimpleRequest")) {
+        if (!message.getSimpleName().equals("Book")) {
           continue;
         }
 
         for (EnumType enumType : message.getEnums()) {
-          if (enumType.getSimpleName().equals("Alignment")) {
+          if (enumType.getSimpleName().equals("Rating")) {
             return TypeRef.of(enumType);
           }
         }

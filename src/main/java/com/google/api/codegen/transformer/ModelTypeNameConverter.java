@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -26,7 +27,7 @@ public interface ModelTypeNameConverter {
   TypeName getTypeName(TypeRef type);
 
   /** Provides a TypedValue for the given enum TypeRef. */
-  TypedValue getEnumValue(TypeRef type, String value);
+  TypedValue getEnumValue(TypeRef type, EnumValue value);
 
   /** Provides a TypeName for the element type of the given TypeRef. */
   TypeName getTypeNameForElementType(TypeRef type);

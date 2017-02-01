@@ -173,8 +173,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     } else if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return getEnumValue(type, enumValue.getSimpleName());
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     } else {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
@@ -238,17 +237,11 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getEnumValue(TypeRef type, String value) {
-    for (EnumValue enumValue : type.getEnumType().getValues()) {
-      if (enumValue.getSimpleName().equals(value)) {
-        TypeName enumTypeName = getTypeName(type);
-        List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
-        String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
-        String enumValueName =
-            enumNamer.getEnumValueName(enumShortTypeName, enumValue.getSimpleName());
-        return TypedValue.create(enumTypeName, "%s." + enumValueName);
-      }
-    }
-    throw new IllegalArgumentException("Unrecognized enum value: " + value);
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    TypeName enumTypeName = getTypeName(type);
+    List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
+    String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
+    String enumValueName = enumNamer.getEnumValueName(enumShortTypeName, value.getSimpleName());
+    return TypedValue.create(enumTypeName, "%s." + enumValueName);
   }
 }

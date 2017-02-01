@@ -269,13 +269,8 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getEnumValue(TypeRef type, String value) {
-    for (EnumValue enumValue : type.getEnumType().getValues()) {
-      if (enumValue.getSimpleName().equals(value)) {
-        return TypedValue.create(
-            getTypeName(type.getEnumType().getParent()), "%s_" + enumValue.getSimpleName());
-      }
-    }
-    throw new IllegalArgumentException("Unrecognized enum value: " + value);
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    return TypedValue.create(
+        getTypeName(type.getEnumType().getParent()), "%s_" + value.getSimpleName());
   }
 }

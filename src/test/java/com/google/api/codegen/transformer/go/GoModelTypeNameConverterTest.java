@@ -14,14 +14,10 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.CodegenTestUtil;
+import com.google.api.codegen.transformer.ModelTypeNameConverterTestUtil;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.tools.framework.model.EnumType;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.truth.Truth;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -82,36 +78,10 @@ public class GoModelTypeNameConverterTest {
 
   @Test
   public void testGetEnumValue() {
-    TypeRef type = getTestEnumType(tempDir);
+    TypeRef type = ModelTypeNameConverterTestUtil.getTestEnumType(tempDir);
+    EnumValue value = type.getEnumType().getValues().get(0);
     Truth.assertThat(
-            converter.getEnumValue(type, "GOOD").getValueAndSaveTypeNicknameIn(new GoTypeTable()))
-        .isEqualTo("*myprotopb.SimpleRequest_GOOD");
-  }
-
-  private TypeRef getTestEnumType(TemporaryFolder tempDir) {
-    TestDataLocator locator = TestDataLocator.create(GoModelTypeNameConverterTest.class);
-    Model model =
-        CodegenTestUtil.readModel(
-            locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
-    for (ProtoFile file : model.getFiles()) {
-      if (!file.getSimpleName().equals("myproto.proto")) {
-        continue;
-      }
-
-      for (MessageType message : file.getMessages()) {
-        if (!message.getSimpleName().equals("SimpleRequest")) {
-          continue;
-        }
-
-        for (EnumType enumType : message.getEnums()) {
-          if (enumType.getSimpleName().equals("Alignment")) {
-            return TypeRef.of(enumType);
-          }
-        }
-        break;
-      }
-      break;
-    }
-    throw new IllegalStateException("test enum not found");
+            converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(new GoTypeTable()))
+        .isEqualTo("*librarypb.Book_GOOD");
   }
 }
