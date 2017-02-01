@@ -54,21 +54,30 @@
     }
 
     @join field : class.requiredFields if class.requiredFields
-      @if field.description
-        @join line : util.getDocLines(field.description, 100)
-          // {@line}
+      {@field(field)}
+
+    @end
+    @join field : class.optionalFields if class.optionalFields
+      {@field(field)}
+
+    @end
+    @if class.hasRequestBody
+      @if class.requestBodyFields
+        @join field : class.requestBodyFields
+          {@field(field)}
+
         @end
 
 
       @end
-      {@field.name} := {@field.defaultValue}  // TODO: Update placeholder value.
-      @if field.example
-        // {@field.example}
-      @end
-
-    @end
-    @if class.hasRequestBody
       {@class.requestBodyVarName} := &{@class.servicePackageName}.{@class.requestBodyTypeName}{
+        @if class.requestBodyFields
+          @join field : class.requestBodyFields
+            {@field.setterFuncName}: {@field.name},
+          @end
+
+
+        @end
         @switch class.methodVerb
         @case "PATCH"
           // TODO: Add desired fields of the request body. Only assigned fields
@@ -88,7 +97,7 @@
 
     @end
     @if class.isPageStreaming
-      {@class.requestVarName} := {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)})
+      {@class.requestVarName} := {@methodCall(class)}
       if err := {@class.requestVarName}.Pages({@class.contextVarName}, func({@class.pageStreaming.pageVarName} *{@class.servicePackageName}.{@class.responseTypeName}) error {
         @if class.pageStreaming.isResourceRepeated
           @if class.pageStreaming.isResourceMap
@@ -120,7 +129,7 @@
 
       @end
       @if class.hasResponse
-        {@class.responseVarName}, err := {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)}).Context({@class.contextVarName}).Do()
+        {@class.responseVarName}, err := {@methodCall(class)}.Context({@class.contextVarName}).Do()
         if err != nil {
           log.Fatal(err)
         }
@@ -128,7 +137,7 @@
         // TODO: Change code below to process the `{@class.responseVarName}` object:
         fmt.Printf("%#v\n", {@class.responseVarName})
       @else
-        if err := {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)}).Context({@class.contextVarName}).Do(); err != nil {
+        if err := {@methodCall(class)}.Context({@class.contextVarName}).Do(); err != nil {
           log.Fatal(err)
         }
       @end
@@ -155,9 +164,39 @@
   }
 @end
 
-@private callChain(methodNameComponents)
-  @join resource : methodNameComponents on "."
+@private field(field)
+  @if field.description
+    @join line : util.getDocLines(field.description, 100)
+      // {@line}
+    @end
+
+
+  @end
+  {@field.name} := {@field.defaultValue}  // TODO: Update placeholder value.
+  @if field.example
+    // {@field.example}
+  @end
+@end
+
+@private methodCall(class)
+  {@class.serviceVarName}.{@methodResource(class)}({@paramList(class.methodCallFieldVarNames)}){@optionalFieldCallChain(class)}
+@end
+
+@private methodResource(class)
+  @join resource : class.methodNameComponents on "."
     {@resource}
+  @end
+@end
+
+@private optionalFieldCallChain(class)
+  @join field : class.optionalFields on EMPTY
+    # Array types must be expanded if set on the request body.
+    # There's not really a good way to do this at the transformer level, so we do it here.
+    @if field.isArray
+      .{@field.setterFuncName}({@field.name}...)
+    @else
+      .{@field.setterFuncName}({@field.name})
+    @end
   @end
 @end
 

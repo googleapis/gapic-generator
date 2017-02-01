@@ -48,7 +48,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       imports.add(createImport("google/gax/operation"));
-      imports.add(createImport("google/longrunning/operations_api"));
+      imports.add(createImport("google/longrunning/operations_client"));
     }
 
     return imports.build();

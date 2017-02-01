@@ -38,6 +38,11 @@ public abstract class SampleFieldView {
   @Nullable
   public abstract String setterFuncName();
 
+  // Only intended for use in Go, where some slices must be exploded depending
+  // on the context. It's easiest to deal with this at the snippet level.
+  @Nullable
+  public abstract Boolean isArray();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleFieldView.Builder();
   }
@@ -58,6 +63,8 @@ public abstract class SampleFieldView {
     public abstract Builder required(Boolean val);
 
     public abstract Builder setterFuncName(String val);
+
+    public abstract Builder isArray(Boolean val);
 
     public abstract SampleFieldView build();
   }

@@ -41,6 +41,10 @@
       {@field(field)}
 
     @end
+    @join field : class.optionalFields if class.optionalFields
+      {@field(field)}
+
+    @end
     @if class.hasRequestBody
       @if class.requestBodyFields
         @join field : class.requestBodyFields
@@ -164,17 +168,17 @@
 @end
 
 @private field(field)
-      @if field.description
-        @join line : util.getDocLines(field.description, 100)
-          // {@line}
-        @end
+  @if field.description
+    @join line : util.getDocLines(field.description, 100)
+      // {@line}
+    @end
 
 
-      @end
-      {@field.typeName} {@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
-      @if field.example
-        // {@field.example}
-      @end
+  @end
+  {@field.typeName} {@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
+  @if field.example
+    // {@field.example}
+  @end
 @end
 
 @private callChain(methodNameComponents)
