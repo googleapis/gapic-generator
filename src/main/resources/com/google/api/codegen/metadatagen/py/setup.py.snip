@@ -14,9 +14,15 @@
 
     install_requires = [
       'oauth2client>={@metadata.authVersionBound.lower}, <{@metadata.authVersionBound.upper}',
-      'grpcio>={@metadata.grpcVersionBound.lower}, <{@metadata.grpcVersionBound.upper}',
-      'googleapis-common-protos[grpc]>={@metadata.commonProtosVersionBound.lower}, <{@metadata.commonProtosVersionBound.upper}'
+      'googleapis-common-protos>={@metadata.commonProtosVersionBound.lower}, <{@metadata.commonProtosVersionBound.upper}',
     ]
+
+    extras_require = {
+      'grpc': [
+        'googleapis-common-protos[grpc]>={@metadata.commonProtosVersionBound.lower}, <{@metadata.commonProtosVersionBound.upper}',
+        'grpcio>={@metadata.grpcVersionBound.lower}, <{@metadata.grpcVersionBound.upper}',
+      ],
+    }
 
     setuptools.setup(
       name='{@metadata.protoPackageName}',
@@ -39,6 +45,7 @@
       description='GRPC library for the {@metadata.fullName}',
       long_description=open('README.rst').read(),
       install_requires=install_requires,
+      extras_require=extras_require,
       license='{@metadata.licenseName}',
       packages=find_packages(),
       namespace_packages=[{@quotedList(metadata.namespacePackages)}],
