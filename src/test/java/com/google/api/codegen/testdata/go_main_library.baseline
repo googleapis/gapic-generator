@@ -1,11 +1,11 @@
 ============== file: cloud.google.com/go/library/apiv1/library_client.go ==============
-// Copyright 2016 Google Inc. All Rights Reserved.
+// Copyright 2016, Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,7 @@ import (
     "fmt"
     "math"
     "runtime"
+    "strings"
     "time"
 
     "cloud.google.com/go/iam"
@@ -41,7 +42,7 @@ import (
 var (
     libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}")
     libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}/books/{book_id}")
-    libraryArchivedBookPathTemplate = gax.MustCompilePathTemplate("archives/{archive_path=**}/books/{book_id}")
+    libraryReturnPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}/returns/{return}")
 )
 
 // CallOptions contains the retry settings for each method of Client.
@@ -61,13 +62,16 @@ type CallOptions struct {
     ListStrings []gax.CallOption
     AddComments []gax.CallOption
     GetBookFromArchive []gax.CallOption
+    GetBookFromAnywhere []gax.CallOption
     UpdateBookIndex []gax.CallOption
     StreamShelves []gax.CallOption
     StreamBooks []gax.CallOption
     DiscussBook []gax.CallOption
+    MonologAboutBook []gax.CallOption
     FindRelatedBooks []gax.CallOption
     AddLabel []gax.CallOption
     GetBigBook []gax.CallOption
+    GetBigNothing []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -111,13 +115,16 @@ func defaultCallOptions() *CallOptions {
         ListStrings: retry[[2]string{"default", "idempotent"}],
         AddComments: retry[[2]string{"default", "non_idempotent"}],
         GetBookFromArchive: retry[[2]string{"default", "idempotent"}],
+        GetBookFromAnywhere: retry[[2]string{"default", "idempotent"}],
         UpdateBookIndex: retry[[2]string{"default", "idempotent"}],
         StreamShelves: retry[[2]string{"default", "idempotent"}],
         StreamBooks: retry[[2]string{"default", "idempotent"}],
         DiscussBook: retry[[2]string{"default", "non_idempotent"}],
+        MonologAboutBook: retry[[2]string{"default", "non_idempotent"}],
         FindRelatedBooks: retry[[2]string{"default", "idempotent"}],
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
+        GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -151,6 +158,8 @@ type Client struct {
 //
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
+//
+// Write more docs here as an offering to the Great Gopher
 func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error) {
     conn, err := transport.DialGRPC(ctx, append(defaultClientOptions(), opts...)...)
     if err != nil {
@@ -182,7 +191,8 @@ func (c *Client) Close() error {
 // the `x-goog-api-client` header passed on each request. Intended for
 // use by Google-written clients.
 func (c *Client) SetGoogleClientInfo(name, version string) {
-    v := fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())
+    goVersion := strings.Replace(runtime.Version(), " ", "_", -1)
+    v := fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, goVersion)
     c.metadata = metadata.Pairs("x-goog-api-client", v)
 }
 
@@ -209,11 +219,12 @@ func LibraryBookPath(shelfId, bookId string) string {
     return path
 }
 
-// LibraryArchivedBookPath returns the path for the archived book resource.
-func LibraryArchivedBookPath(archivePath, bookId string) string {
-    path, err := libraryArchivedBookPathTemplate.Render(map[string]string{
-        "archive_path": archivePath,
-        "book_id": bookId,
+// LibraryReturnPath returns the path for the return resource.
+func LibraryReturnPath(shelf, book, return_ string) string {
+    path, err := libraryReturnPathTemplate.Render(map[string]string{
+        "shelf": shelf,
+        "book": book,
+        "return": return_,
     })
     if err != nil {
         panic(err)
@@ -264,8 +275,7 @@ func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequ
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     it := &ShelfIterator{}
-
-    fetch := func(pageSize int, pageToken string) (string, error) {
+    it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Shelf, string, error) {
         var resp *librarypb.ListShelvesResponse
         req.PageToken = pageToken
         if pageSize > math.MaxInt32 {
@@ -279,19 +289,19 @@ func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequ
             return err
         }, c.CallOptions.ListShelves...)
         if err != nil {
+            return nil, "", err
+        }
+        return resp.Shelves, resp.NextPageToken, nil
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+        if err != nil {
             return "", err
         }
-        it.items = append(it.items, resp.Shelves...)
-        return resp.NextPageToken, nil
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
     }
-    bufLen := func() int { return len(it.items) }
-    takeBuf := func() interface{} {
-        b := it.items
-        it.items = nil
-        return b
-    }
-
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     return it
 }
 
@@ -378,8 +388,7 @@ func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest)
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     it := &BookIterator{}
-
-    fetch := func(pageSize int, pageToken string) (string, error) {
+    it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Book, string, error) {
         var resp *librarypb.ListBooksResponse
         req.PageToken = pageToken
         if pageSize > math.MaxInt32 {
@@ -393,19 +402,19 @@ func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest)
             return err
         }, c.CallOptions.ListBooks...)
         if err != nil {
+            return nil, "", err
+        }
+        return resp.Books, resp.NextPageToken, nil
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+        if err != nil {
             return "", err
         }
-        it.items = append(it.items, resp.Books...)
-        return resp.NextPageToken, nil
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
     }
-    bufLen := func() int { return len(it.items) }
-    takeBuf := func() interface{} {
-        b := it.items
-        it.items = nil
-        return b
-    }
-
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     return it
 }
 
@@ -458,8 +467,7 @@ func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequ
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     it := &StringIterator{}
-
-    fetch := func(pageSize int, pageToken string) (string, error) {
+    it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
         var resp *librarypb.ListStringsResponse
         req.PageToken = pageToken
         if pageSize > math.MaxInt32 {
@@ -473,19 +481,19 @@ func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequ
             return err
         }, c.CallOptions.ListStrings...)
         if err != nil {
+            return nil, "", err
+        }
+        return resp.Strings, resp.NextPageToken, nil
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+        if err != nil {
             return "", err
         }
-        it.items = append(it.items, resp.Strings...)
-        return resp.NextPageToken, nil
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
     }
-    bufLen := func() int { return len(it.items) }
-    takeBuf := func() interface{} {
-        b := it.items
-        it.items = nil
-        return b
-    }
-
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     return it
 }
 
@@ -502,15 +510,31 @@ func (c *Client) AddComments(ctx context.Context, req *librarypb.AddCommentsRequ
 }
 
 // GetBookFromArchive gets a book from an archive.
-func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.Book, error) {
+func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
-    var resp *librarypb.Book
+    var resp *librarypb.BookFromArchive
     err := gax.Invoke(ctx, func(ctx context.Context) error {
         var err error
         resp, err = c.client.GetBookFromArchive(ctx, req)
         return err
     }, c.CallOptions.GetBookFromArchive...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// GetBookFromAnywhere gets a book from a shelf or archive.
+func (c *Client) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp *librarypb.BookFromAnywhere
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetBookFromAnywhere(ctx, req)
+        return err
+    }, c.CallOptions.GetBookFromAnywhere...)
     if err != nil {
         return nil, err
     }
@@ -580,13 +604,29 @@ func (c *Client) DiscussBook(ctx context.Context) (librarypb.LibraryService_Disc
     return resp, nil
 }
 
+// MonologAboutBook test client streaming.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+func (c *Client) MonologAboutBook(ctx context.Context) (librarypb.LibraryService_MonologAboutBookClient, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp librarypb.LibraryService_MonologAboutBookClient
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.MonologAboutBook(ctx)
+        return err
+    }, c.CallOptions.MonologAboutBook...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
 // FindRelatedBooks
 func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest) *StringIterator {
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     it := &StringIterator{}
-
-    fetch := func(pageSize int, pageToken string) (string, error) {
+    it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
         var resp *librarypb.FindRelatedBooksResponse
         req.PageToken = pageToken
         if pageSize > math.MaxInt32 {
@@ -600,19 +640,19 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
             return err
         }, c.CallOptions.FindRelatedBooks...)
         if err != nil {
+            return nil, "", err
+        }
+        return resp.Names, resp.NextPageToken, nil
+    }
+    fetch := func(pageSize int, pageToken string) (string, error) {
+        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+        if err != nil {
             return "", err
         }
-        it.items = append(it.items, resp.Names...)
-        return resp.NextPageToken, nil
+        it.items = append(it.items, items...)
+        return nextPageToken, nil
     }
-    bufLen := func() int { return len(it.items) }
-    takeBuf := func() interface{} {
-        b := it.items
-        it.items = nil
-        return b
-    }
-
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
     return it
 }
 
@@ -632,8 +672,8 @@ func (c *Client) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*
     return resp, nil
 }
 
-// GetBigBook
-func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*longrunning.Operation, error) {
+// GetBigBook test long-running operations
+func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*BookOperation, error) {
     md, _ := metadata.FromContext(ctx)
     ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
     var resp *longrunningpb.Operation
@@ -645,7 +685,27 @@ func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) 
     if err != nil {
         return nil, err
     }
-    return longrunning.InternalNewOperation(c.Connection(), resp), nil
+    return &BookOperation{
+        lro: longrunning.InternalNewOperation(c.Connection(), resp),
+    }, nil
+}
+
+// GetBigNothing test long-running operations with empty return type.
+func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookRequest) (*EmptyOperation, error) {
+    md, _ := metadata.FromContext(ctx)
+    ctx = metadata.NewContext(ctx, metadata.Join(md, c.metadata))
+    var resp *longrunningpb.Operation
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetBigNothing(ctx, req)
+        return err
+    }, c.CallOptions.GetBigNothing...)
+    if err != nil {
+        return nil, err
+    }
+    return &EmptyOperation{
+        lro: longrunning.InternalNewOperation(c.Connection(), resp),
+    }, nil
 }
 
 
@@ -654,6 +714,14 @@ type BookIterator struct {
     items    []*librarypb.Book
     pageInfo *iterator.PageInfo
     nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []*librarypb.Book, nextPageToken string, err error)
 }
 
 // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
@@ -664,12 +732,23 @@ func (it *BookIterator) PageInfo() *iterator.PageInfo {
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
 func (it *BookIterator) Next() (*librarypb.Book, error) {
+    var item *librarypb.Book
     if err := it.nextFunc(); err != nil {
-        return nil, err
+        return item, err
     }
-    item := it.items[0]
+    item = it.items[0]
     it.items = it.items[1:]
     return item, nil
+}
+
+func (it *BookIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *BookIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
 }
 
 // ShelfIterator manages a stream of *librarypb.Shelf.
@@ -677,6 +756,14 @@ type ShelfIterator struct {
     items    []*librarypb.Shelf
     pageInfo *iterator.PageInfo
     nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []*librarypb.Shelf, nextPageToken string, err error)
 }
 
 // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
@@ -687,12 +774,23 @@ func (it *ShelfIterator) PageInfo() *iterator.PageInfo {
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
 func (it *ShelfIterator) Next() (*librarypb.Shelf, error) {
+    var item *librarypb.Shelf
     if err := it.nextFunc(); err != nil {
-        return nil, err
+        return item, err
     }
-    item := it.items[0]
+    item = it.items[0]
     it.items = it.items[1:]
     return item, nil
+}
+
+func (it *ShelfIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *ShelfIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
 }
 
 // StringIterator manages a stream of string.
@@ -700,6 +798,14 @@ type StringIterator struct {
     items    []string
     pageInfo *iterator.PageInfo
     nextFunc func() error
+
+    // InternalFetch is for use by the Google Cloud Libraries only.
+    // It is not part of the stable interface of this package.
+    //
+    // InternalFetch returns results from a single call to the underlying RPC.
+    // The number of results is no greater than pageSize.
+    // If there are no more results, nextPageToken is empty and err is nil.
+    InternalFetch func(pageSize int, pageToken string) (results []string, nextPageToken string, err error)
 }
 
 // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
@@ -710,11 +816,164 @@ func (it *StringIterator) PageInfo() *iterator.PageInfo {
 // Next returns the next result. Its second return value is iterator.Done if there are no more
 // results. Once Next returns Done, all subsequent calls will return Done.
 func (it *StringIterator) Next() (string, error) {
+    var item string
     if err := it.nextFunc(); err != nil {
-        return "", err
+        return item, err
     }
-    item := it.items[0]
+    item = it.items[0]
     it.items = it.items[1:]
     return item, nil
 }
 
+func (it *StringIterator) bufLen() int {
+    return len(it.items)
+}
+
+func (it *StringIterator) takeBuf() interface{} {
+    b := it.items
+    it.items = nil
+    return b
+}
+
+
+// BookOperation manages a long-running operation yielding librarypb.Book.
+type BookOperation struct {
+    lro *longrunning.Operation
+}
+
+// BookOperation returns a new BookOperation from a given name.
+// The name must be that of a previously created BookOperation, possibly from a different process.
+func (c *Client) BookOperation(name string) *BookOperation {
+    return &BookOperation{
+        lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+    }
+}
+
+// Wait blocks until the long-running operation is completed, returning the response and any errors encountered.
+//
+// See documentation of Poll for error-handling information.
+func (op *BookOperation) Wait(ctx context.Context) (*librarypb.Book, error) {
+    var resp librarypb.Book
+    if err := op.lro.Wait(ctx, &resp); err != nil {
+        return nil, err
+    }
+    return &resp, nil
+}
+
+// Poll fetches the latest state of the long-running operation.
+//
+// Poll also fetches the latest metadata, which can be retrieved by Metadata.
+//
+// If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+// the operation has completed with failure, the error is returned and op.Done will return true.
+// If Poll succeeds and the operation has completed successfully,
+// op.Done will return true, and the response of the operation is returned.
+// If Poll succeeds and the operation has not completed, the returned response and error are both nil.
+func (op *BookOperation) Poll(ctx context.Context) (*librarypb.Book, error) {
+    var resp librarypb.Book
+    if err := op.lro.Poll(ctx, &resp); err != nil {
+        return nil, err
+    }
+    if !op.Done() {
+        return nil, nil
+    }
+    return &resp, nil
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// Metadata itself does not contact the server, but Poll does.
+// To get the latest metadata, call this method after a successful call to Poll.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (op *BookOperation) Metadata() (*librarypb.GetBigBookMetadata, error) {
+    var meta librarypb.GetBigBookMetadata
+    if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+        return nil, nil
+    } else if err != nil {
+        return nil, err
+    }
+    return &meta, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (op *BookOperation) Done() bool {
+    return op.lro.Done()
+}
+
+// Name returns the name of the long-running operation.
+// The name is assigned by the server and is unique within the service from which the operation is created.
+func (op *BookOperation) Name() string {
+    return op.lro.Name()
+}
+
+// Cancel starts asynchronous cancellation on a long-running operation.
+// The server makes a best effort to cancel the operation, but success is not guaranteed.
+// Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
+// completed despite cancellation. On successful cancellation, the operation is not deleted;
+// instead, op.Poll returns an error with code Canceled.
+func (op *BookOperation) Cancel(ctx context.Context) error {
+    return op.lro.Cancel(ctx)
+}
+
+// EmptyOperation manages a long-running operation with no result.
+type EmptyOperation struct {
+    lro *longrunning.Operation
+}
+
+// EmptyOperation returns a new EmptyOperation from a given name.
+// The name must be that of a previously created EmptyOperation, possibly from a different process.
+func (c *Client) EmptyOperation(name string) *EmptyOperation {
+    return &EmptyOperation{
+        lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+    }
+}
+
+// Wait blocks until the long-running operation is completed, returning any error encountered.
+//
+// See documentation of Poll for error-handling information.
+func (op *EmptyOperation) Wait(ctx context.Context) error {
+    return op.lro.Wait(ctx, nil)
+}
+
+// Poll fetches the latest state of the long-running operation.
+//
+// Poll also fetches the latest metadata, which can be retrieved by Metadata.
+//
+// If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+// the operation has completed with failure, the error is returned and op.Done will return true.
+// If Poll succeeds and the operation has completed successfully, op.Done will return true.
+func (op *EmptyOperation) Poll(ctx context.Context) error {
+    return op.lro.Poll(ctx, nil)
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// Metadata itself does not contact the server, but Poll does.
+// To get the latest metadata, call this method after a successful call to Poll.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (op *EmptyOperation) Metadata() (*librarypb.GetBigBookMetadata, error) {
+    var meta librarypb.GetBigBookMetadata
+    if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+        return nil, nil
+    } else if err != nil {
+        return nil, err
+    }
+    return &meta, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (op *EmptyOperation) Done() bool {
+    return op.lro.Done()
+}
+
+// Name returns the name of the long-running operation.
+// The name is assigned by the server and is unique within the service from which the operation is created.
+func (op *EmptyOperation) Name() string {
+    return op.lro.Name()
+}
+
+
+// Delete deletes a long-running operation.
+// This method indicates that the client is no longer interested in the operation result.
+// It does not cancel the operation.
+func (op *EmptyOperation) Delete(ctx context.Context) error {
+    return op.lro.Delete(ctx)
+}

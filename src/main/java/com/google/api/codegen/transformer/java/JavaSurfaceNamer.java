@@ -14,20 +14,28 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,8 +51,13 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getSourceFilePath(String path, String className) {
-    return path + File.separator + className + ".java";
+  public String getApiSnippetsClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
+  }
+
+  @Override
+  public String getSourceFilePath(String path, String publicClassName) {
+    return path + File.separator + publicClassName + ".java";
   }
 
   @Override
@@ -67,49 +80,20 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
-  }
-
-  @Override
-  public void addPagedListResponseFactoryImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
-  }
-
-  @Override
-  public void addPagedListResponseImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
-  }
-
-  @Override
-  public void addBundlingDescriptorImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingDescriptor");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.RequestIssuer");
-    typeTable.saveNicknameFor("java.util.ArrayList");
-    typeTable.saveNicknameFor("java.util.Collection");
-  }
-
-  @Override
-  public void addPageStreamingCallSettingsImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
-  }
-
-  @Override
-  public void addBundlingCallSettingsImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingCallSettings");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingSettings");
-  }
-
-  @Override
   public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "void";
     }
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+  }
+
+  @Override
+  public String getAndSaveOperationResponseTypeName(
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+    String responseTypeName =
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+    return typeTable.getAndSaveNicknameForContainer(
+        "com.google.api.gax.grpc.OperationFuture", responseTypeName);
   }
 
   @Override
@@ -122,24 +106,86 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getResourceTypeParseMethodName(
+      ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    String resourceTypeName = getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
+    String concreteResourceTypeName;
+    if (resourceFieldConfig.getResourceNameType() == ResourceNameType.ANY) {
+      concreteResourceTypeName = publicClassName(Name.from("untyped_resource_name"));
+    } else {
+      concreteResourceTypeName = resourceTypeName;
+    }
+    return concreteResourceTypeName + "." + publicMethodName(Name.from("parse"));
+  }
+
+  @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
     // TODO(michaelbausor) make sure this uses the typeTable correctly
 
     String fullPackageWrapperName =
         typeTable.getImplicitPackageFullNameFor(getPagedResponseWrappersClassName());
-    String pagedResponseShortName = getPagedResponseTypeInnerName(method, typeTable, resourceField);
+    String pagedResponseShortName =
+        getPagedResponseTypeInnerName(method, typeTable, resourceFieldConfig.getField());
     return typeTable.getAndSaveNicknameForInnerType(fullPackageWrapperName, pagedResponseShortName);
   }
 
   @Override
   public String getPagedResponseTypeInnerName(
       Method method, ModelTypeTable typeTable, Field resourceField) {
-    return className(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
+    return publicClassName(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
   }
 
   @Override
   public String getFullyQualifiedApiWrapperClassName(Interface service) {
     return getPackageName() + "." + getApiWrapperClassName(service);
+  }
+
+  @Override
+  public String injectRandomStringGeneratorCode(String randomString) {
+    String delimiter = ",";
+    String[] split =
+        CommonRenderingUtil.stripQuotes(randomString)
+            .replace(
+                InitFieldConfig.RANDOM_TOKEN, delimiter + InitFieldConfig.RANDOM_TOKEN + delimiter)
+            .split(delimiter);
+    ArrayList<String> stringParts = new ArrayList<>();
+    for (String token : split) {
+      if (token.length() > 0) {
+        if (token.equals(InitFieldConfig.RANDOM_TOKEN)) {
+          stringParts.add("System.currentTimeMillis()");
+        } else {
+          stringParts.add("\"" + token + "\"");
+        }
+      }
+    }
+    return Joiner.on(" + ").join(stringParts);
+  }
+
+  @Override
+  public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
+    switch (serviceMethodType) {
+      case UnaryMethod:
+        return "UnaryCallable";
+      case GrpcStreamingMethod:
+        return "StreamingCallable";
+      case LongRunningMethod:
+        return "OperationCallable";
+      default:
+        return getNotImplementedString("getApiCallableTypeName() for " + serviceMethodType);
+    }
+  }
+
+  @Override
+  public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
+    String annotation = "";
+    switch (releaseLevel) {
+      case UNSET_RELEASE_LEVEL:
+      case ALPHA:
+        annotation = "@ExperimentalApi";
+        break;
+      default:
+    }
+    return annotation;
   }
 }

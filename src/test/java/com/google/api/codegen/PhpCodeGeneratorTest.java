@@ -26,9 +26,13 @@ import org.junit.runners.Parameterized.Parameters;
 public class PhpCodeGeneratorTest extends GapicTestBase {
 
   public PhpCodeGeneratorTest(
-      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-    super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.php.PhpContext.class, "");
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String packageConfigFileName,
+      String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
+    getTestDataLocator().addTestDataSource(getClass(), "php");
   }
 
   /**
@@ -38,7 +42,9 @@ public class PhpCodeGeneratorTest extends GapicTestBase {
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     return GapicTestBase.createTestedConfigs(
-        MainGapicProviderFactory.PHP, new String[] {"php_gapic.yaml", "library_gapic.yaml"});
+        MainGapicProviderFactory.PHP,
+        new String[] {"php_gapic.yaml", "library_gapic.yaml"},
+        "library_pkg.yaml");
   }
 
   // Tests

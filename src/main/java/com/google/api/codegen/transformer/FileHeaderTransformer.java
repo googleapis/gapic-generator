@@ -20,7 +20,12 @@ import com.google.api.codegen.viewmodel.FileHeaderView;
 import java.util.Map;
 
 public class FileHeaderTransformer {
-  private ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
+
+  private final ImportTypeTransformer importTypeTransformer;
+
+  public FileHeaderTransformer(ImportTypeTransformer importTypeTransformer) {
+    this.importTypeTransformer = importTypeTransformer;
+  }
 
   public FileHeaderView generateFileHeader(SurfaceTransformerContext context) {
     return generateFileHeader(
@@ -38,6 +43,7 @@ public class FileHeaderTransformer {
     fileHeader.localPackageName(namer.getLocalPackageName());
     fileHeader.localExamplePackageName(namer.getLocalExamplePackageName());
     fileHeader.imports(importTypeTransformer.generateImports(imports));
+    fileHeader.version(namer.getApiWrapperModuleVersion());
 
     return fileHeader.build();
   }

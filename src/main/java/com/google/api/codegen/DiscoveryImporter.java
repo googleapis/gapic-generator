@@ -116,13 +116,7 @@ public class DiscoveryImporter {
     if (disco.get("documentationLink") != null) {
       docs.setDocumentationRootUrl(disco.get("documentationLink").asText());
     }
-    String title = disco.get("title").asText();
-    builder.setTitle(title);
-    if (disco.get("canonicalName") != null) {
-      docs.setSummary(disco.get("canonicalName").asText());
-    } else {
-      docs.setSummary(title);
-    }
+    builder.setTitle(disco.get("title").asText());
     // substitute Documentation overview field for lack of API revision field
     if (disco.get("revision") != null) {
       docs.setOverview(disco.get("revision").asText());
@@ -147,6 +141,17 @@ public class DiscoveryImporter {
     importer.config.setApiName(serv.getApis(0).getName());
     importer.config.setApiVersion(serv.getApis(0).getVersion());
 
+    boolean versionModule = false;
+    JsonNode versionModuleNode = disco.get("version_module");
+    if (versionModuleNode != null) {
+      // Annoyingly, "version_module" seems to be arbitrarily defined either as
+      // the string "True" or an actual boolean.
+      versionModule =
+          disco.get("version_module").asText().equals("True")
+              || disco.get("version_module").asBoolean();
+    }
+    importer.config.setVersionModule(versionModule);
+
     importer.config.getTypes().putAll(importer.types);
     for (Type type : importer.types.values()) {
       for (Field field : type.getFieldsList()) {
@@ -156,10 +161,9 @@ public class DiscoveryImporter {
     if (disco.get("canonicalName") != null) {
       importer.config.setServiceCanonicalName(disco.get("canonicalName").asText());
     } else {
-      importer.config.setServiceCanonicalName(apiName);
+      importer.config.setServiceCanonicalName(lowerCamelToUpperCamel(apiName));
     }
     importer.config.setServiceVersion(apiVersion);
-
     return importer;
   }
 

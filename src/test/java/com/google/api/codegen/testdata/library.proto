@@ -4,6 +4,7 @@ syntax = "proto3";
 
 package google.example.library.v1;
 
+import "book_from_anywhere.proto";
 import "field_mask.proto";
 import "google/api/annotations.proto";
 import "google/longrunning/operations.proto";
@@ -14,12 +15,13 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
+import "shared_type.proto";
 import "tagger.proto";
 
 option java_multiple_files = true;
 option java_outer_classname = "LibraryProto";
 option java_package = "com.google.example.library.v1";
-option go_package = "google.golang.org/genproto/googleapis/example/library/v1";
+option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
 
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
@@ -109,8 +111,15 @@ service LibraryService {
   }
 
   // Gets a book from an archive.
-  rpc GetBookFromArchive(GetBookFromArchiveRequest) returns (Book) {
-    option (google.api.http) = { get: "/v1/{name=archives/**/books/*}"};
+  rpc GetBookFromArchive(GetBookFromArchiveRequest) returns (BookFromArchive) {
+    // The http binding on this field does not include the "**" path in order to
+    // test the name conflict resolution in configgen.
+    option (google.api.http) = { get: "/v1/{name=archives/*/books/*}"};
+  }
+
+  // Gets a book from a shelf or archive.
+  rpc GetBookFromAnywhere(GetBookFromAnywhereRequest) returns (BookFromAnywhere) {
+    option (google.api.http) = { get: "/v1/{name=archives/*/books/**}"};
   }
 
   // Updates the index of a book.
@@ -133,6 +142,11 @@ service LibraryService {
     // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
   }
 
+  // Test client streaming.
+  rpc MonologAboutBook(stream DiscussBookRequest) returns (Comment) {
+    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+  }
+
   rpc FindRelatedBooks(FindRelatedBooksRequest) returns (FindRelatedBooksResponse) {
     option (google.api.http) = { get: "/v1/bookShelves" };
   }
@@ -144,8 +158,14 @@ service LibraryService {
 
   // AddLabel intentionally left out to test the reroute_to_grpc_interface feature
 
+  // Test long-running operations
   rpc GetBigBook(GetBookRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:big" };
+  }
+
+  // Test long-running operations with empty return type.
+  rpc GetBigNothing(GetBookRequest) returns (google.longrunning.Operation) {
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:bignothing" };
   }
 }
 
@@ -194,6 +214,26 @@ message Book {
 
   map<int32, string> map_string_value = 25;
   map<string, SomeMessage> map_message_value = 26;
+
+  // Tests Python doc generation: should generate a dummy file for shared_type
+  // resource, but *not* its import, other_shared_type
+  google.test.shared.data.Used resource = 29;
+}
+
+// A single book in the archives.
+message BookFromArchive {
+  // The resource name of the book.
+  // Book names have the form `archives/{archive_id}/books/{book_id}`.
+  string name = 1;
+
+  // The name of the book author.
+  string author = 2;
+
+  // The title of the book.
+  string title = 3;
+
+  // Value indicating whether the book has been read.
+  bool read = 4;
 }
 
 message SomeMessage {
@@ -349,6 +389,9 @@ message PublishSeriesRequest {
     // If the book is in a pre-publish state
     bool review_copy = 4;
   }
+
+  // Uniquely identifies the series to the publishing house.
+  bytes series_uuid = 5;
 }
 
 // Response message for LibraryService.PublishSeries.
@@ -476,6 +519,16 @@ message GetBookFromArchiveRequest {
   string name = 1;
 }
 
+// Request message for LibraryService.GetBookFromAnywhere.
+message GetBookFromAnywhereRequest {
+  // The name of the book to retrieve.
+  string name = 1;
+
+  // An alternate book name, used to test restricting flattened field to a
+  // single resource name type in a oneof.
+  string alt_book_name = 2;
+}
+
 // Request message for LibraryService.UpdateBookIndex.
 message UpdateBookIndexRequest {
   // The name of the book to update.
@@ -510,4 +563,10 @@ message FindRelatedBooksRequest {
 message FindRelatedBooksResponse {
   repeated string names = 1;
   string next_page_token = 2;
+}
+
+// Metadata for a longrunning operation.
+message GetBigBookMetadata {
+    // Approximate percentage of the book processed thus far.
+    int32 progress_percent = 1;
 }

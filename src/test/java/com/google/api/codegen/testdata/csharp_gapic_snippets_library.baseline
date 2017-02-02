@@ -18,8 +18,7 @@
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
 using Google.Example.Library.V1;
-using Google.Example.Library.V1.UpdateBookIndexRequest.Types;
-using Google.Longrunning;
+using Google.LongRunning;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Google.Tagger.V1;
@@ -41,7 +40,7 @@ namespace Google.Example.Library.V1.Snippets
             // Snippet: CreateShelfAsync(Shelf,CallSettings)
             // Additional: CreateShelfAsync(Shelf,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             Shelf shelf = new Shelf();
             // Make the request
@@ -61,28 +60,58 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task GetShelfAsync1()
+        public async Task CreateShelfAsync_RequestObject()
         {
-            // Snippet: GetShelfAsync(string,CallSettings)
-            // Additional: GetShelfAsync(string,CancellationToken)
+            // Snippet: CreateShelfAsync(CreateShelfRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            CreateShelfRequest request = new CreateShelfRequest
+            {
+                Shelf = new Shelf(),
+            };
+            // Make the request
+            Shelf response = await libraryServiceClient.CreateShelfAsync(request);
+            // End snippet
+        }
+
+        public void CreateShelf_RequestObject()
+        {
+            // Snippet: CreateShelf(CreateShelfRequest,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            CreateShelfRequest request = new CreateShelfRequest
+            {
+                Shelf = new Shelf(),
+            };
             // Make the request
-            Shelf response = await libraryServiceClient.GetShelfAsync(formattedName);
+            Shelf response = libraryServiceClient.CreateShelf(request);
+            // End snippet
+        }
+
+        public async Task GetShelfAsync1()
+        {
+            // Snippet: GetShelfAsync(ShelfName,CallSettings)
+            // Additional: GetShelfAsync(ShelfName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            ShelfName name = new ShelfName("[SHELF_ID]");
+            // Make the request
+            Shelf response = await libraryServiceClient.GetShelfAsync(name);
             // End snippet
         }
 
         public void GetShelf1()
         {
-            // Snippet: GetShelf(string,CallSettings)
+            // Snippet: GetShelf(ShelfName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            ShelfName name = new ShelfName("[SHELF_ID]");
             // Make the request
-            Shelf response = libraryServiceClient.GetShelf(formattedName);
+            Shelf response = libraryServiceClient.GetShelf(name);
             // End snippet
         }
 
@@ -91,9 +120,9 @@ namespace Google.Example.Library.V1.Snippets
             // Snippet: GetShelfAsync(string,SomeMessage,CallSettings)
             // Additional: GetShelfAsync(string,SomeMessage,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            string formattedName = new ShelfName("[SHELF_ID]").ToString();
             SomeMessage message = new SomeMessage();
             // Make the request
             Shelf response = await libraryServiceClient.GetShelfAsync(formattedName, message);
@@ -106,7 +135,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            string formattedName = new ShelfName("[SHELF_ID]").ToString();
             SomeMessage message = new SomeMessage();
             // Make the request
             Shelf response = libraryServiceClient.GetShelf(formattedName, message);
@@ -118,9 +147,9 @@ namespace Google.Example.Library.V1.Snippets
             // Snippet: GetShelfAsync(string,SomeMessage,StringBuilder,CallSettings)
             // Additional: GetShelfAsync(string,SomeMessage,StringBuilder,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            string formattedName = new ShelfName("[SHELF_ID]").ToString();
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
             // Make the request
@@ -134,7 +163,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            string formattedName = new ShelfName("[SHELF_ID]").ToString();
             SomeMessage message = new SomeMessage();
             StringBuilder stringBuilder = new StringBuilder();
             // Make the request
@@ -142,15 +171,47 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
+        public async Task GetShelfAsync_RequestObject()
+        {
+            // Snippet: GetShelfAsync(GetShelfRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = new ShelfName("[SHELF_ID]").ToString(),
+                Options = "",
+            };
+            // Make the request
+            Shelf response = await libraryServiceClient.GetShelfAsync(request);
+            // End snippet
+        }
+
+        public void GetShelf_RequestObject()
+        {
+            // Snippet: GetShelf(GetShelfRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = new ShelfName("[SHELF_ID]").ToString(),
+                Options = "",
+            };
+            // Make the request
+            Shelf response = libraryServiceClient.GetShelf(request);
+            // End snippet
+        }
+
         public async Task ListShelvesAsync()
         {
             // Snippet: ListShelvesAsync(string,int?,CallSettings)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
 
             // Make the request
-            IPagedAsyncEnumerable<ListShelvesResponse,Shelf> response =
+            PagedAsyncEnumerable<ListShelvesResponse,Shelf> response =
                 libraryServiceClient.ListShelvesAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -160,10 +221,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             });
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            IAsyncEnumerable<FixedSizePage<Shelf>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-            await fixedSizePages.ForEachAsync((FixedSizePage<Shelf> page) =>
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListShelvesResponse page) =>
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -172,6 +231,18 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Shelf> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Shelf item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -183,7 +254,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedEnumerable<ListShelvesResponse,Shelf> response =
+            PagedEnumerable<ListShelvesResponse,Shelf> response =
                 libraryServiceClient.ListShelves();
 
             // Iterate over all response items, lazily performing RPCs as required
@@ -193,9 +264,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             }
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            foreach (FixedSizePage<Shelf> page in response.AsPages().WithFixedSize(pageSize))
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListShelvesResponse page in response.AsRawResponses())
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -204,58 +274,218 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Shelf> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Shelf item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public async Task ListShelvesAsync_RequestObject()
+        {
+            // Snippet: ListShelvesAsync(ListShelvesRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            ListShelvesRequest request = new ListShelvesRequest();
+            // Make the request
+            PagedAsyncEnumerable<ListShelvesResponse,Shelf> response =
+                libraryServiceClient.ListShelvesAsync(request);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            await response.ForEachAsync((Shelf item) =>
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            });
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListShelvesResponse page) =>
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (Shelf item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Shelf> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Shelf item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public void ListShelves_RequestObject()
+        {
+            // Snippet: ListShelves(ListShelvesRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            ListShelvesRequest request = new ListShelvesRequest();
+            // Make the request
+            PagedEnumerable<ListShelvesResponse,Shelf> response =
+                libraryServiceClient.ListShelves(request);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (Shelf item in response)
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            }
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListShelvesResponse page in response.AsRawResponses())
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (Shelf item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Shelf> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Shelf item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
         public async Task DeleteShelfAsync()
         {
-            // Snippet: DeleteShelfAsync(string,CallSettings)
-            // Additional: DeleteShelfAsync(string,CancellationToken)
+            // Snippet: DeleteShelfAsync(ShelfName,CallSettings)
+            // Additional: DeleteShelfAsync(ShelfName,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            ShelfName name = new ShelfName("[SHELF_ID]");
             // Make the request
-            await libraryServiceClient.DeleteShelfAsync(formattedName);
+            await libraryServiceClient.DeleteShelfAsync(name);
             // End snippet
         }
 
         public void DeleteShelf()
         {
-            // Snippet: DeleteShelf(string,CallSettings)
+            // Snippet: DeleteShelf(ShelfName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            ShelfName name = new ShelfName("[SHELF_ID]");
             // Make the request
-            libraryServiceClient.DeleteShelf(formattedName);
+            libraryServiceClient.DeleteShelf(name);
+            // End snippet
+        }
+
+        public async Task DeleteShelfAsync_RequestObject()
+        {
+            // Snippet: DeleteShelfAsync(DeleteShelfRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            DeleteShelfRequest request = new DeleteShelfRequest
+            {
+                ShelfName = new ShelfName("[SHELF_ID]"),
+            };
+            // Make the request
+            await libraryServiceClient.DeleteShelfAsync(request);
+            // End snippet
+        }
+
+        public void DeleteShelf_RequestObject()
+        {
+            // Snippet: DeleteShelf(DeleteShelfRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            DeleteShelfRequest request = new DeleteShelfRequest
+            {
+                ShelfName = new ShelfName("[SHELF_ID]"),
+            };
+            // Make the request
+            libraryServiceClient.DeleteShelf(request);
             // End snippet
         }
 
         public async Task MergeShelvesAsync()
         {
-            // Snippet: MergeShelvesAsync(string,string,CallSettings)
-            // Additional: MergeShelvesAsync(string,string,CancellationToken)
+            // Snippet: MergeShelvesAsync(ShelfName,ShelfName,CallSettings)
+            // Additional: MergeShelvesAsync(ShelfName,ShelfName,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
-            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            ShelfName name = new ShelfName("[SHELF_ID]");
+            ShelfName otherShelfName = new ShelfName("[SHELF_ID]");
             // Make the request
-            Shelf response = await libraryServiceClient.MergeShelvesAsync(formattedName, formattedOtherShelfName);
+            Shelf response = await libraryServiceClient.MergeShelvesAsync(name, otherShelfName);
             // End snippet
         }
 
         public void MergeShelves()
         {
-            // Snippet: MergeShelves(string,string,CallSettings)
+            // Snippet: MergeShelves(ShelfName,ShelfName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
-            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            ShelfName name = new ShelfName("[SHELF_ID]");
+            ShelfName otherShelfName = new ShelfName("[SHELF_ID]");
             // Make the request
-            Shelf response = libraryServiceClient.MergeShelves(formattedName, formattedOtherShelfName);
+            Shelf response = libraryServiceClient.MergeShelves(name, otherShelfName);
+            // End snippet
+        }
+
+        public async Task MergeShelvesAsync_RequestObject()
+        {
+            // Snippet: MergeShelvesAsync(MergeShelvesRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            MergeShelvesRequest request = new MergeShelvesRequest
+            {
+                ShelfName = new ShelfName("[SHELF_ID]"),
+                OtherShelfNameAsShelfName = new ShelfName("[SHELF_ID]"),
+            };
+            // Make the request
+            Shelf response = await libraryServiceClient.MergeShelvesAsync(request);
+            // End snippet
+        }
+
+        public void MergeShelves_RequestObject()
+        {
+            // Snippet: MergeShelves(MergeShelvesRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            MergeShelvesRequest request = new MergeShelvesRequest
+            {
+                ShelfName = new ShelfName("[SHELF_ID]"),
+                OtherShelfNameAsShelfName = new ShelfName("[SHELF_ID]"),
+            };
+            // Make the request
+            Shelf response = libraryServiceClient.MergeShelves(request);
             // End snippet
         }
 
@@ -264,9 +494,9 @@ namespace Google.Example.Library.V1.Snippets
             // Snippet: CreateBookAsync(string,Book,CallSettings)
             // Additional: CreateBookAsync(string,Book,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            string formattedName = new ShelfName("[SHELF_ID]").ToString();
             Book book = new Book();
             // Make the request
             Book response = await libraryServiceClient.CreateBookAsync(formattedName, book);
@@ -279,10 +509,42 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            string formattedName = new ShelfName("[SHELF_ID]").ToString();
             Book book = new Book();
             // Make the request
             Book response = libraryServiceClient.CreateBook(formattedName, book);
+            // End snippet
+        }
+
+        public async Task CreateBookAsync_RequestObject()
+        {
+            // Snippet: CreateBookAsync(CreateBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            CreateBookRequest request = new CreateBookRequest
+            {
+                Name = new ShelfName("[SHELF_ID]").ToString(),
+                Book = new Book(),
+            };
+            // Make the request
+            Book response = await libraryServiceClient.CreateBookAsync(request);
+            // End snippet
+        }
+
+        public void CreateBook_RequestObject()
+        {
+            // Snippet: CreateBook(CreateBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            CreateBookRequest request = new CreateBookRequest
+            {
+                Name = new ShelfName("[SHELF_ID]").ToString(),
+                Book = new Book(),
+            };
+            // Make the request
+            Book response = libraryServiceClient.CreateBook(request);
             // End snippet
         }
 
@@ -291,7 +553,7 @@ namespace Google.Example.Library.V1.Snippets
             // Snippet: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint,CallSettings)
             // Additional: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             Shelf shelf = new Shelf();
             IEnumerable<Book> books = new List<Book>();
@@ -315,42 +577,104 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task GetBookAsync()
+        public async Task PublishSeriesAsync_RequestObject()
         {
-            // Snippet: GetBookAsync(string,CallSettings)
-            // Additional: GetBookAsync(string,CancellationToken)
+            // Snippet: PublishSeriesAsync(PublishSeriesRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            PublishSeriesRequest request = new PublishSeriesRequest
+            {
+                Shelf = new Shelf(),
+                Books = { },
+            };
+            // Make the request
+            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(request);
+            // End snippet
+        }
+
+        public void PublishSeries_RequestObject()
+        {
+            // Snippet: PublishSeries(PublishSeriesRequest,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            PublishSeriesRequest request = new PublishSeriesRequest
+            {
+                Shelf = new Shelf(),
+                Books = { },
+            };
             // Make the request
-            Book response = await libraryServiceClient.GetBookAsync(formattedName);
+            PublishSeriesResponse response = libraryServiceClient.PublishSeries(request);
+            // End snippet
+        }
+
+        public async Task GetBookAsync()
+        {
+            // Snippet: GetBookAsync(BookName,CallSettings)
+            // Additional: GetBookAsync(BookName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            Book response = await libraryServiceClient.GetBookAsync(name);
             // End snippet
         }
 
         public void GetBook()
         {
-            // Snippet: GetBook(string,CallSettings)
+            // Snippet: GetBook(BookName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            Book response = libraryServiceClient.GetBook(formattedName);
+            Book response = libraryServiceClient.GetBook(name);
+            // End snippet
+        }
+
+        public async Task GetBookAsync_RequestObject()
+        {
+            // Snippet: GetBookAsync(GetBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            GetBookRequest request = new GetBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            };
+            // Make the request
+            Book response = await libraryServiceClient.GetBookAsync(request);
+            // End snippet
+        }
+
+        public void GetBook_RequestObject()
+        {
+            // Snippet: GetBook(GetBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            GetBookRequest request = new GetBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            };
+            // Make the request
+            Book response = libraryServiceClient.GetBook(request);
             // End snippet
         }
 
         public async Task ListBooksAsync()
         {
-            // Snippet: ListBooksAsync(string,string,string,int?,CallSettings)
+            // Snippet: ListBooksAsync(ShelfName,string,string,int?,CallSettings)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            ShelfName name = new ShelfName("[SHELF_ID]");
             string filter = "";
             // Make the request
-            IPagedAsyncEnumerable<ListBooksResponse,Book> response =
-                libraryServiceClient.ListBooksAsync(formattedName, filter);
+            PagedAsyncEnumerable<ListBooksResponse,Book> response =
+                libraryServiceClient.ListBooksAsync(name, filter);
 
             // Iterate over all response items, lazily performing RPCs as required
             await response.ForEachAsync((Book item) =>
@@ -359,10 +683,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             });
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            IAsyncEnumerable<FixedSizePage<Book>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-            await fixedSizePages.ForEachAsync((FixedSizePage<Book> page) =>
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListBooksResponse page) =>
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -371,20 +693,32 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Book> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Book item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
         public void ListBooks()
         {
-            // Snippet: ListBooks(string,string,string,int?,CallSettings)
+            // Snippet: ListBooks(ShelfName,string,string,int?,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
+            ShelfName name = new ShelfName("[SHELF_ID]");
             string filter = "";
             // Make the request
-            IPagedEnumerable<ListBooksResponse,Book> response =
-                libraryServiceClient.ListBooks(formattedName, filter);
+            PagedEnumerable<ListBooksResponse,Book> response =
+                libraryServiceClient.ListBooks(name, filter);
 
             // Iterate over all response items, lazily performing RPCs as required
             foreach (Book item in response)
@@ -393,9 +727,8 @@ namespace Google.Example.Library.V1.Snippets
                 Console.WriteLine(item);
             }
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            foreach (FixedSizePage<Book> page in response.AsPages().WithFixedSize(pageSize))
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListBooksResponse page in response.AsRawResponses())
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
@@ -404,153 +737,361 @@ namespace Google.Example.Library.V1.Snippets
                     Console.WriteLine(item);
                 }
             }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Book> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Book item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
-        public async Task DeleteBookAsync()
+        public async Task ListBooksAsync_RequestObject()
         {
-            // Snippet: DeleteBookAsync(string,CallSettings)
-            // Additional: DeleteBookAsync(string,CancellationToken)
+            // Snippet: ListBooksAsync(ListBooksRequest,CallSettings)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            ListBooksRequest request = new ListBooksRequest
+            {
+                ShelfName = new ShelfName("[SHELF_ID]"),
+            };
             // Make the request
-            await libraryServiceClient.DeleteBookAsync(formattedName);
-            // End snippet
-        }
-
-        public void DeleteBook()
-        {
-            // Snippet: DeleteBook(string,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
-            // Make the request
-            libraryServiceClient.DeleteBook(formattedName);
-            // End snippet
-        }
-
-        public async Task UpdateBookAsync1()
-        {
-            // Snippet: UpdateBookAsync(string,Book,CallSettings)
-            // Additional: UpdateBookAsync(string,Book,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
-            Book book = new Book();
-            // Make the request
-            Book response = await libraryServiceClient.UpdateBookAsync(formattedName, book);
-            // End snippet
-        }
-
-        public void UpdateBook1()
-        {
-            // Snippet: UpdateBook(string,Book,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
-            Book book = new Book();
-            // Make the request
-            Book response = libraryServiceClient.UpdateBook(formattedName, book);
-            // End snippet
-        }
-
-        public async Task UpdateBookAsync2()
-        {
-            // Snippet: UpdateBookAsync(string,Book,FieldMask,FieldMask,CallSettings)
-            // Additional: UpdateBookAsync(string,Book,FieldMask,FieldMask,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
-            Book book = new Book();
-            FieldMask updateMask = new FieldMask();
-            FieldMask physicalMask = new FieldMask();
-            // Make the request
-            Book response = await libraryServiceClient.UpdateBookAsync(formattedName, book, updateMask, physicalMask);
-            // End snippet
-        }
-
-        public void UpdateBook2()
-        {
-            // Snippet: UpdateBook(string,Book,FieldMask,FieldMask,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
-            Book book = new Book();
-            FieldMask updateMask = new FieldMask();
-            FieldMask physicalMask = new FieldMask();
-            // Make the request
-            Book response = libraryServiceClient.UpdateBook(formattedName, book, updateMask, physicalMask);
-            // End snippet
-        }
-
-        public async Task MoveBookAsync()
-        {
-            // Snippet: MoveBookAsync(string,string,CallSettings)
-            // Additional: MoveBookAsync(string,string,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
-            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
-            // Make the request
-            Book response = await libraryServiceClient.MoveBookAsync(formattedName, formattedOtherShelfName);
-            // End snippet
-        }
-
-        public void MoveBook()
-        {
-            // Snippet: MoveBook(string,string,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
-            string formattedOtherShelfName = LibraryServiceClient.FormatShelfName("[SHELF_ID]");
-            // Make the request
-            Book response = libraryServiceClient.MoveBook(formattedName, formattedOtherShelfName);
-            // End snippet
-        }
-
-        public async Task ListStringsAsync()
-        {
-            // Snippet: ListStringsAsync(string,int?,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-
-            // Make the request
-            IPagedAsyncEnumerable<ListStringsResponse,string> response =
-                libraryServiceClient.ListStringsAsync();
+            PagedAsyncEnumerable<ListBooksResponse,Book> response =
+                libraryServiceClient.ListBooksAsync(request);
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((Book item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
             });
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListBooksResponse page) =>
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (Book item in page)
                 {
                     Console.WriteLine(item);
                 }
             });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Book> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Book item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
-        public void ListStrings()
+        public void ListBooks_RequestObject()
+        {
+            // Snippet: ListBooks(ListBooksRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            ListBooksRequest request = new ListBooksRequest
+            {
+                ShelfName = new ShelfName("[SHELF_ID]"),
+            };
+            // Make the request
+            PagedEnumerable<ListBooksResponse,Book> response =
+                libraryServiceClient.ListBooks(request);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (Book item in response)
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            }
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListBooksResponse page in response.AsRawResponses())
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (Book item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<Book> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (Book item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public async Task DeleteBookAsync()
+        {
+            // Snippet: DeleteBookAsync(BookName,CallSettings)
+            // Additional: DeleteBookAsync(BookName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            await libraryServiceClient.DeleteBookAsync(name);
+            // End snippet
+        }
+
+        public void DeleteBook()
+        {
+            // Snippet: DeleteBook(BookName,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            libraryServiceClient.DeleteBook(name);
+            // End snippet
+        }
+
+        public async Task DeleteBookAsync_RequestObject()
+        {
+            // Snippet: DeleteBookAsync(DeleteBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            DeleteBookRequest request = new DeleteBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            };
+            // Make the request
+            await libraryServiceClient.DeleteBookAsync(request);
+            // End snippet
+        }
+
+        public void DeleteBook_RequestObject()
+        {
+            // Snippet: DeleteBook(DeleteBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            DeleteBookRequest request = new DeleteBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            };
+            // Make the request
+            libraryServiceClient.DeleteBook(request);
+            // End snippet
+        }
+
+        public async Task UpdateBookAsync1()
+        {
+            // Snippet: UpdateBookAsync(BookName,Book,CallSettings)
+            // Additional: UpdateBookAsync(BookName,Book,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            Book book = new Book();
+            // Make the request
+            Book response = await libraryServiceClient.UpdateBookAsync(name, book);
+            // End snippet
+        }
+
+        public void UpdateBook1()
+        {
+            // Snippet: UpdateBook(BookName,Book,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            Book book = new Book();
+            // Make the request
+            Book response = libraryServiceClient.UpdateBook(name, book);
+            // End snippet
+        }
+
+        public async Task UpdateBookAsync2()
+        {
+            // Snippet: UpdateBookAsync(BookName,Book,FieldMask,FieldMask,CallSettings)
+            // Additional: UpdateBookAsync(BookName,Book,FieldMask,FieldMask,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            Book book = new Book();
+            FieldMask updateMask = new FieldMask();
+            FieldMask physicalMask = new FieldMask();
+            // Make the request
+            Book response = await libraryServiceClient.UpdateBookAsync(name, book, updateMask, physicalMask);
+            // End snippet
+        }
+
+        public void UpdateBook2()
+        {
+            // Snippet: UpdateBook(BookName,Book,FieldMask,FieldMask,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            Book book = new Book();
+            FieldMask updateMask = new FieldMask();
+            FieldMask physicalMask = new FieldMask();
+            // Make the request
+            Book response = libraryServiceClient.UpdateBook(name, book, updateMask, physicalMask);
+            // End snippet
+        }
+
+        public async Task UpdateBookAsync_RequestObject()
+        {
+            // Snippet: UpdateBookAsync(UpdateBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                Book = new Book(),
+            };
+            // Make the request
+            Book response = await libraryServiceClient.UpdateBookAsync(request);
+            // End snippet
+        }
+
+        public void UpdateBook_RequestObject()
+        {
+            // Snippet: UpdateBook(UpdateBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                Book = new Book(),
+            };
+            // Make the request
+            Book response = libraryServiceClient.UpdateBook(request);
+            // End snippet
+        }
+
+        public async Task MoveBookAsync()
+        {
+            // Snippet: MoveBookAsync(BookName,ShelfName,CallSettings)
+            // Additional: MoveBookAsync(BookName,ShelfName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            ShelfName otherShelfName = new ShelfName("[SHELF_ID]");
+            // Make the request
+            Book response = await libraryServiceClient.MoveBookAsync(name, otherShelfName);
+            // End snippet
+        }
+
+        public void MoveBook()
+        {
+            // Snippet: MoveBook(BookName,ShelfName,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            ShelfName otherShelfName = new ShelfName("[SHELF_ID]");
+            // Make the request
+            Book response = libraryServiceClient.MoveBook(name, otherShelfName);
+            // End snippet
+        }
+
+        public async Task MoveBookAsync_RequestObject()
+        {
+            // Snippet: MoveBookAsync(MoveBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            MoveBookRequest request = new MoveBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                OtherShelfNameAsShelfName = new ShelfName("[SHELF_ID]"),
+            };
+            // Make the request
+            Book response = await libraryServiceClient.MoveBookAsync(request);
+            // End snippet
+        }
+
+        public void MoveBook_RequestObject()
+        {
+            // Snippet: MoveBook(MoveBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            MoveBookRequest request = new MoveBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                OtherShelfNameAsShelfName = new ShelfName("[SHELF_ID]"),
+            };
+            // Make the request
+            Book response = libraryServiceClient.MoveBook(request);
+            // End snippet
+        }
+
+        public async Task ListStringsAsync1()
+        {
+            // Snippet: ListStringsAsync(string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+
+            // Make the request
+            PagedAsyncEnumerable<ListStringsResponse,IResourceName> response =
+                libraryServiceClient.ListStringsAsync();
+
+            // Iterate over all response items, lazily performing RPCs as required
+            await response.ForEachAsync((IResourceName item) =>
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            });
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListStringsResponse page) =>
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (IResourceName item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (IResourceName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public void ListStrings1()
         {
             // Snippet: ListStrings(string,int?,CallSettings)
             // Create client
@@ -558,27 +1099,210 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
 
             // Make the request
-            IPagedEnumerable<ListStringsResponse,string> response =
+            PagedEnumerable<ListStringsResponse,IResourceName> response =
                 libraryServiceClient.ListStrings();
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (IResourceName item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
             }
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListStringsResponse page in response.AsRawResponses())
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
             }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (IResourceName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public async Task ListStringsAsync2()
+        {
+            // Snippet: ListStringsAsync(IResourceName,string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            IResourceName name = new ShelfName("[SHELF_ID]");
+            // Make the request
+            PagedAsyncEnumerable<ListStringsResponse,IResourceName> response =
+                libraryServiceClient.ListStringsAsync(name);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            await response.ForEachAsync((IResourceName item) =>
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            });
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListStringsResponse page) =>
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (IResourceName item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (IResourceName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public void ListStrings2()
+        {
+            // Snippet: ListStrings(IResourceName,string,int?,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            IResourceName name = new ShelfName("[SHELF_ID]");
+            // Make the request
+            PagedEnumerable<ListStringsResponse,IResourceName> response =
+                libraryServiceClient.ListStrings(name);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (IResourceName item in response)
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            }
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListStringsResponse page in response.AsRawResponses())
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (IResourceName item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (IResourceName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public async Task ListStringsAsync_RequestObject()
+        {
+            // Snippet: ListStringsAsync(ListStringsRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            ListStringsRequest request = new ListStringsRequest();
+            // Make the request
+            PagedAsyncEnumerable<ListStringsResponse,IResourceName> response =
+                libraryServiceClient.ListStringsAsync(request);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            await response.ForEachAsync((IResourceName item) =>
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            });
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((ListStringsResponse page) =>
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (IResourceName item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (IResourceName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public void ListStrings_RequestObject()
+        {
+            // Snippet: ListStrings(ListStringsRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            ListStringsRequest request = new ListStringsRequest();
+            // Make the request
+            PagedEnumerable<ListStringsResponse,IResourceName> response =
+                libraryServiceClient.ListStrings(request);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (IResourceName item in response)
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            }
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (ListStringsResponse page in response.AsRawResponses())
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (IResourceName item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (IResourceName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -587,16 +1311,16 @@ namespace Google.Example.Library.V1.Snippets
             // Snippet: AddCommentsAsync(string,IEnumerable<Comment>,CallSettings)
             // Additional: AddCommentsAsync(string,IEnumerable<Comment>,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
                 {
                     Comment = ByteString.CopyFromUtf8(""),
-                    Stage = Stage.Unset,
-                    Alignment = Alignment.Char,
+                    Stage = Comment.Types.Stage.Unset,
+                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
                 },
             };
             // Make the request
@@ -610,14 +1334,14 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string formattedName = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
                 {
                     Comment = ByteString.CopyFromUtf8(""),
-                    Stage = Stage.Unset,
-                    Alignment = Alignment.Char,
+                    Stage = Comment.Types.Stage.Unset,
+                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
                 },
             };
             // Make the request
@@ -625,136 +1349,470 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        public async Task GetBookFromArchiveAsync()
+        public async Task AddCommentsAsync_RequestObject()
         {
-            // Snippet: GetBookFromArchiveAsync(string,CallSettings)
-            // Additional: GetBookFromArchiveAsync(string,CancellationToken)
+            // Snippet: AddCommentsAsync(AddCommentsRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            AddCommentsRequest request = new AddCommentsRequest
+            {
+                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                Comments = {
+                               new Comment
+                               {
+                                   Comment = ByteString.CopyFromUtf8(""),
+                                   Stage = Comment.Types.Stage.Unset,
+                                   Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
+                               },
+                           },
+            };
+            // Make the request
+            await libraryServiceClient.AddCommentsAsync(request);
+            // End snippet
+        }
+
+        public void AddComments_RequestObject()
+        {
+            // Snippet: AddComments(AddCommentsRequest,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+            AddCommentsRequest request = new AddCommentsRequest
+            {
+                Name = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                Comments = {
+                               new Comment
+                               {
+                                   Comment = ByteString.CopyFromUtf8(""),
+                                   Stage = Comment.Types.Stage.Unset,
+                                   Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
+                               },
+                           },
+            };
             // Make the request
-            Book response = await libraryServiceClient.GetBookFromArchiveAsync(formattedName);
+            libraryServiceClient.AddComments(request);
+            // End snippet
+        }
+
+        public async Task GetBookFromArchiveAsync()
+        {
+            // Snippet: GetBookFromArchiveAsync(ArchivedBookName,CallSettings)
+            // Additional: GetBookFromArchiveAsync(ArchivedBookName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            ArchivedBookName name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+            // Make the request
+            BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(name);
             // End snippet
         }
 
         public void GetBookFromArchive()
         {
-            // Snippet: GetBookFromArchive(string,CallSettings)
+            // Snippet: GetBookFromArchive(ArchivedBookName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+            ArchivedBookName name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
             // Make the request
-            Book response = libraryServiceClient.GetBookFromArchive(formattedName);
+            BookFromArchive response = libraryServiceClient.GetBookFromArchive(name);
+            // End snippet
+        }
+
+        public async Task GetBookFromArchiveAsync_RequestObject()
+        {
+            // Snippet: GetBookFromArchiveAsync(GetBookFromArchiveRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
+            {
+                ArchivedBookName = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]"),
+            };
+            // Make the request
+            BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(request);
+            // End snippet
+        }
+
+        public void GetBookFromArchive_RequestObject()
+        {
+            // Snippet: GetBookFromArchive(GetBookFromArchiveRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
+            {
+                ArchivedBookName = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]"),
+            };
+            // Make the request
+            BookFromArchive response = libraryServiceClient.GetBookFromArchive(request);
+            // End snippet
+        }
+
+        public async Task GetBookFromAnywhereAsync()
+        {
+            // Snippet: GetBookFromAnywhereAsync(BookNameOneof,BookName,CallSettings)
+            // Additional: GetBookFromAnywhereAsync(BookNameOneof,BookName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]"));
+            BookName altBookName = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name, altBookName);
+            // End snippet
+        }
+
+        public void GetBookFromAnywhere()
+        {
+            // Snippet: GetBookFromAnywhere(BookNameOneof,BookName,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]"));
+            BookName altBookName = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name, altBookName);
+            // End snippet
+        }
+
+        public async Task GetBookFromAnywhereAsync_RequestObject()
+        {
+            // Snippet: GetBookFromAnywhereAsync(GetBookFromAnywhereRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
+                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
+            };
+            // Make the request
+            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(request);
+            // End snippet
+        }
+
+        public void GetBookFromAnywhere_RequestObject()
+        {
+            // Snippet: GetBookFromAnywhere(GetBookFromAnywhereRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
+                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
+            };
+            // Make the request
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(request);
             // End snippet
         }
 
         public async Task UpdateBookIndexAsync()
         {
-            // Snippet: UpdateBookIndexAsync(string,string,IDictionary<string, string>,CallSettings)
-            // Additional: UpdateBookIndexAsync(string,string,IDictionary<string, string>,CancellationToken)
+            // Snippet: UpdateBookIndexAsync(BookName,string,IDictionary<string, string>,CallSettings)
+            // Additional: UpdateBookIndexAsync(BookName,string,IDictionary<string, string>,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
                 { "default_key", "" },
             };
             // Make the request
-            await libraryServiceClient.UpdateBookIndexAsync(formattedName, indexName, indexMap);
+            await libraryServiceClient.UpdateBookIndexAsync(name, indexName, indexMap);
             // End snippet
         }
 
         public void UpdateBookIndex()
         {
-            // Snippet: UpdateBookIndex(string,string,IDictionary<string, string>,CallSettings)
+            // Snippet: UpdateBookIndex(BookName,string,IDictionary<string, string>,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
                 { "default_key", "" },
             };
             // Make the request
-            libraryServiceClient.UpdateBookIndex(formattedName, indexName, indexMap);
+            libraryServiceClient.UpdateBookIndex(name, indexName, indexMap);
+            // End snippet
+        }
+
+        public async Task UpdateBookIndexAsync_RequestObject()
+        {
+            // Snippet: UpdateBookIndexAsync(UpdateBookIndexRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            UpdateBookIndexRequest request = new UpdateBookIndexRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                IndexName = "default index",
+                IndexMap = {
+                               { "default_key", "" },
+                           },
+            };
+            // Make the request
+            await libraryServiceClient.UpdateBookIndexAsync(request);
+            // End snippet
+        }
+
+        public void UpdateBookIndex_RequestObject()
+        {
+            // Snippet: UpdateBookIndex(UpdateBookIndexRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            UpdateBookIndexRequest request = new UpdateBookIndexRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                IndexName = "default index",
+                IndexMap = {
+                               { "default_key", "" },
+                           },
+            };
+            // Make the request
+            libraryServiceClient.UpdateBookIndex(request);
+            // End snippet
+        }
+
+        public async Task DiscussBook()
+        {
+            // Snippet: DiscussBook(CallSettings,BidirectionalStreamingSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize streaming call, retrieving the stream object
+            LibraryServiceClient.DiscussBookStream duplexStream = libraryServiceClient.DiscussBook();
+
+            // Sending requests and retrieving responses can be arbitrarily interleaved.
+            // Exact sequence will depend on client/server behavior.
+
+            // Create task to do something with responses from server
+            Task.Run(async () =>
+            {
+                IAsyncEnumerator<Comment> responseStream = duplexStream.ResponseStream;
+                while (await responseStream.MoveNext())
+                {
+                    Comment response = responseStream.Current;
+                    // Do something with streamed response
+                }
+                // The response stream has completed
+            });
+
+            // Send requests to the server
+            bool done = false;
+            while (!done)
+            {
+                // Initialize a request
+                DiscussBookRequest request = new DiscussBookRequest
+                {
+                    Name = "",
+                };
+                // Stream a request to the server
+                await duplexStream.WriteAsync(request);
+
+                // Set "done" to true when sending requests is complete
+            }
+            // Complete writing requests to the stream
+            await duplexStream.WriteCompleteAsync();
             // End snippet
         }
 
         public async Task FindRelatedBooksAsync()
         {
-            // Snippet: FindRelatedBooksAsync(IEnumerable<string>,IEnumerable<string>,string,int?,CallSettings)
+            // Snippet: FindRelatedBooksAsync(IEnumerable<BookName>,IEnumerable<ShelfName>,string,int?,CallSettings)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            IEnumerable<string> names = new[]
+            IEnumerable<BookName> names = new[]
             {
-                "",
+                new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
-            IEnumerable<string> shelves = new List<string>();
+            IEnumerable<ShelfName> shelves = new List<string>();
             // Make the request
-            IPagedAsyncEnumerable<FindRelatedBooksResponse,string> response =
+            PagedAsyncEnumerable<FindRelatedBooksResponse,BookName> response =
                 libraryServiceClient.FindRelatedBooksAsync(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((BookName item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
             });
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            IAsyncEnumerable<FixedSizePage<string>> fixedSizePages = response.AsPages().WithFixedSize(pageSize);
-            await fixedSizePages.ForEachAsync((FixedSizePage<string> page) =>
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (BookName item in page)
                 {
                     Console.WriteLine(item);
                 }
             });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<BookName> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (BookName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
         public void FindRelatedBooks()
         {
-            // Snippet: FindRelatedBooks(IEnumerable<string>,IEnumerable<string>,string,int?,CallSettings)
+            // Snippet: FindRelatedBooks(IEnumerable<BookName>,IEnumerable<ShelfName>,string,int?,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            IEnumerable<string> names = new[]
+            IEnumerable<BookName> names = new[]
             {
-                "",
+                new BookName("[SHELF_ID]", "[BOOK_ID]"),
             };
-            IEnumerable<string> shelves = new List<string>();
+            IEnumerable<ShelfName> shelves = new List<string>();
             // Make the request
-            IPagedEnumerable<FindRelatedBooksResponse,string> response =
+            PagedEnumerable<FindRelatedBooksResponse,BookName> response =
                 libraryServiceClient.FindRelatedBooks(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (BookName item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
             }
 
-            // Or iterate over fixed-sized pages, lazily performing RPCs as required
-            int pageSize = 10;
-            foreach (FixedSizePage<string> page in response.AsPages().WithFixedSize(pageSize))
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (FindRelatedBooksResponse page in response.AsRawResponses())
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (BookName item in page)
                 {
                     Console.WriteLine(item);
                 }
             }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<BookName> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (BookName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public async Task FindRelatedBooksAsync_RequestObject()
+        {
+            // Snippet: FindRelatedBooksAsync(FindRelatedBooksRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            FindRelatedBooksRequest request = new FindRelatedBooksRequest
+            {
+                BookNames = {
+                                new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                            },
+                ShelvesAsShelfNames = { },
+            };
+            // Make the request
+            PagedAsyncEnumerable<FindRelatedBooksResponse,BookName> response =
+                libraryServiceClient.FindRelatedBooksAsync(request);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            await response.ForEachAsync((BookName item) =>
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            });
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (BookName item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            });
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<BookName> singlePage = await response.ReadPageAsync(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (BookName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
+            // End snippet
+        }
+
+        public void FindRelatedBooks_RequestObject()
+        {
+            // Snippet: FindRelatedBooks(FindRelatedBooksRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            FindRelatedBooksRequest request = new FindRelatedBooksRequest
+            {
+                BookNames = {
+                                new BookName("[SHELF_ID]", "[BOOK_ID]"),
+                            },
+                ShelvesAsShelfNames = { },
+            };
+            // Make the request
+            PagedEnumerable<FindRelatedBooksResponse,BookName> response =
+                libraryServiceClient.FindRelatedBooks(request);
+
+            // Iterate over all response items, lazily performing RPCs as required
+            foreach (BookName item in response)
+            {
+                // Do something with each item
+                Console.WriteLine(item);
+            }
+
+            // Or iterate over pages (of server-defined size), performing one RPC per page
+            foreach (FindRelatedBooksResponse page in response.AsRawResponses())
+            {
+                // Do something with each page of items
+                Console.WriteLine("A page of results:");
+                foreach (BookName item in page)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
+            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
+            int pageSize = 10;
+            Page<BookName> singlePage = response.ReadPage(pageSize);
+            // Do something with the page of items
+            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
+            foreach (BookName item in singlePage)
+            {
+                Console.WriteLine(item);
+            }
+            // Store the pageToken, for when the next page is required.
+            string nextPageToken = singlePage.NextPageToken;
             // End snippet
         }
 
@@ -763,9 +1821,9 @@ namespace Google.Example.Library.V1.Snippets
             // Snippet: AddTagAsync(string,string,CallSettings)
             // Additional: AddTagAsync(string,string,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string formattedResource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
             string tag = "";
             // Make the request
             AddTagResponse response = await libraryServiceClient.AddTagAsync(formattedResource, tag);
@@ -778,10 +1836,42 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string formattedResource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
             string tag = "";
             // Make the request
             AddTagResponse response = libraryServiceClient.AddTag(formattedResource, tag);
+            // End snippet
+        }
+
+        public async Task AddTagAsync_RequestObject()
+        {
+            // Snippet: AddTagAsync(AddTagRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            AddTagRequest request = new AddTagRequest
+            {
+                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                Tag = "",
+            };
+            // Make the request
+            AddTagResponse response = await libraryServiceClient.AddTagAsync(request);
+            // End snippet
+        }
+
+        public void AddTag_RequestObject()
+        {
+            // Snippet: AddTag(AddTagRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            AddTagRequest request = new AddTagRequest
+            {
+                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                Tag = "",
+            };
+            // Make the request
+            AddTagResponse response = libraryServiceClient.AddTag(request);
             // End snippet
         }
 
@@ -790,9 +1880,9 @@ namespace Google.Example.Library.V1.Snippets
             // Snippet: AddLabelAsync(string,string,CallSettings)
             // Additional: AddLabelAsync(string,string,CancellationToken)
             // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string formattedResource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
             string label = "";
             // Make the request
             AddLabelResponse response = await libraryServiceClient.AddLabelAsync(formattedResource, label);
@@ -805,35 +1895,296 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedResource = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            string formattedResource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString();
             string label = "";
             // Make the request
             AddLabelResponse response = libraryServiceClient.AddLabel(formattedResource, label);
             // End snippet
         }
 
-        public async Task GetBigBookAsync()
+        public async Task AddLabelAsync_RequestObject()
         {
-            // Snippet: GetBigBookAsync(string,CallSettings)
-            // Additional: GetBigBookAsync(string,CancellationToken)
+            // Snippet: AddLabelAsync(AddLabelRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            AddLabelRequest request = new AddLabelRequest
+            {
+                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                Label = "",
+            };
+            // Make the request
+            AddLabelResponse response = await libraryServiceClient.AddLabelAsync(request);
+            // End snippet
+        }
+
+        public void AddLabel_RequestObject()
+        {
+            // Snippet: AddLabel(AddLabelRequest,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            AddLabelRequest request = new AddLabelRequest
+            {
+                Resource = new BookName("[SHELF_ID]", "[BOOK_ID]").ToString(),
+                Label = "",
+            };
             // Make the request
-            Operation response = await libraryServiceClient.GetBigBookAsync(formattedName);
+            AddLabelResponse response = libraryServiceClient.AddLabel(request);
+            // End snippet
+        }
+
+        public async Task GetBigBookAsync()
+        {
+            // Snippet: GetBigBookAsync(BookName,CallSettings)
+            // Additional: GetBigBookAsync(BookName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            Operation<Book> response =
+                await libraryServiceClient.GetBigBookAsync(name);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Book> completedResponse =
+                await response.PollUntilCompletedAsync();
+            // Retrieve the operation result
+            Book result = completedResponse.Result;
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Book> retrievedResponse =
+                await libraryServiceClient.PollOnceGetBigBookAsync(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // If it has completed, then access the result
+                Book retrievedResult = retrievedResponse.Result;
+            }
             // End snippet
         }
 
         public void GetBigBook()
         {
-            // Snippet: GetBigBook(string,CallSettings)
+            // Snippet: GetBigBook(BookName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            string formattedName = LibraryServiceClient.FormatBookName("[SHELF_ID]", "[BOOK_ID]");
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
             // Make the request
-            Operation response = libraryServiceClient.GetBigBook(formattedName);
+            Operation<Book> response =
+                libraryServiceClient.GetBigBook(name);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Book> completedResponse =
+                response.PollUntilCompleted();
+            // Retrieve the operation result
+            Book result = completedResponse.Result;
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Book> retrievedResponse =
+                libraryServiceClient.PollOnceGetBigBook(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // If it has completed, then access the result
+                Book retrievedResult = retrievedResponse.Result;
+            }
+            // End snippet
+        }
+
+        public async Task GetBigBookAsync_RequestObject()
+        {
+            // Snippet: GetBigBookAsync(GetBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            GetBookRequest request = new GetBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            };
+            // Make the request
+            Operation<Book> response =
+                await libraryServiceClient.GetBigBookAsync(request);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Book> completedResponse =
+                await response.PollUntilCompletedAsync();
+            // Retrieve the operation result
+            Book result = completedResponse.Result;
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Book> retrievedResponse =
+                await libraryServiceClient.PollOnceGetBigBookAsync(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // If it has completed, then access the result
+                Book retrievedResult = retrievedResponse.Result;
+            }
+            // End snippet
+        }
+
+        public void GetBigBook_RequestObject()
+        {
+            // Snippet: GetBigBook(GetBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            GetBookRequest request = new GetBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            };
+            // Make the request
+            Operation<Book> response =
+                libraryServiceClient.GetBigBook(request);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Book> completedResponse =
+                response.PollUntilCompleted();
+            // Retrieve the operation result
+            Book result = completedResponse.Result;
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Book> retrievedResponse =
+                libraryServiceClient.PollOnceGetBigBook(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // If it has completed, then access the result
+                Book retrievedResult = retrievedResponse.Result;
+            }
+            // End snippet
+        }
+
+        public async Task GetBigNothingAsync()
+        {
+            // Snippet: GetBigNothingAsync(BookName,CallSettings)
+            // Additional: GetBigNothingAsync(BookName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            Operation<Empty> response =
+                await libraryServiceClient.GetBigNothingAsync(name);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Empty> completedResponse =
+                await response.PollUntilCompletedAsync();
+            // The long-running operation is now complete.
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Empty> retrievedResponse =
+                await libraryServiceClient.PollOnceGetBigNothingAsync(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // The long-running operation is now complete.
+            }
+            // End snippet
+        }
+
+        public void GetBigNothing()
+        {
+            // Snippet: GetBigNothing(BookName,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            // Make the request
+            Operation<Empty> response =
+                libraryServiceClient.GetBigNothing(name);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Empty> completedResponse =
+                response.PollUntilCompleted();
+            // The long-running operation is now complete.
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Empty> retrievedResponse =
+                libraryServiceClient.PollOnceGetBigNothing(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // The long-running operation is now complete.
+            }
+            // End snippet
+        }
+
+        public async Task GetBigNothingAsync_RequestObject()
+        {
+            // Snippet: GetBigNothingAsync(GetBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            GetBookRequest request = new GetBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            };
+            // Make the request
+            Operation<Empty> response =
+                await libraryServiceClient.GetBigNothingAsync(request);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Empty> completedResponse =
+                await response.PollUntilCompletedAsync();
+            // The long-running operation is now complete.
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Empty> retrievedResponse =
+                await libraryServiceClient.PollOnceGetBigNothingAsync(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // The long-running operation is now complete.
+            }
+            // End snippet
+        }
+
+        public void GetBigNothing_RequestObject()
+        {
+            // Snippet: GetBigNothing(GetBookRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            GetBookRequest request = new GetBookRequest
+            {
+                BookName = new BookName("[SHELF_ID]", "[BOOK_ID]"),
+            };
+            // Make the request
+            Operation<Empty> response =
+                libraryServiceClient.GetBigNothing(request);
+
+            // Poll until the returned long-running operation is complete
+            Operation<Empty> completedResponse =
+                response.PollUntilCompleted();
+            // The long-running operation is now complete.
+
+            // Or get the name of the operation
+            string operationName = response.Name;
+            // This name can be stored, then the long-running operation retrieved later by name
+            Operation<Empty> retrievedResponse =
+                libraryServiceClient.PollOnceGetBigNothing(operationName);
+            // Check if the retrieved long-running operation has completed
+            if (retrievedResponse.IsCompleted)
+            {
+                // The long-running operation is now complete.
+            }
             // End snippet
         }
 

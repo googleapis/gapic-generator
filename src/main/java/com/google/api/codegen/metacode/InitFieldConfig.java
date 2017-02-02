@@ -22,7 +22,10 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class InitFieldConfig {
-  private static final String randomValueToken = "$RANDOM";
+  public static final String PROJECT_ID_VARIABLE_NAME = "project_id";
+  public static final String RANDOM_TOKEN = "$RANDOM";
+
+  private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
 
   public abstract String fieldPath();
 
@@ -30,7 +33,7 @@ public abstract class InitFieldConfig {
   public abstract String entityName();
 
   @Nullable
-  public abstract String value();
+  public abstract InitValue value();
 
   /*
    * Parses the given config string and returns the corresponding object.
@@ -38,13 +41,13 @@ public abstract class InitFieldConfig {
   public static InitFieldConfig from(String initFieldConfigString) {
     String fieldName = null;
     String entityName = null;
-    String value = null;
+    InitValue value = null;
 
     String[] equalsParts = initFieldConfigString.split("[=]");
     if (equalsParts.length > 2) {
       throw new IllegalArgumentException("Inconsistent: found multiple '=' characters");
     } else if (equalsParts.length == 2) {
-      value = parseValueString(equalsParts[1], equalsParts[0]);
+      value = parseValueString(equalsParts[1]);
     }
 
     String[] fieldSpecs = equalsParts[0].split("[%]");
@@ -69,11 +72,17 @@ public abstract class InitFieldConfig {
     return entityName() != null && value() != null;
   }
 
-  private static String parseValueString(String valueString, String stringToHash) {
-    if (valueString.contains(randomValueToken)) {
-      String randomValue = Integer.toString(Math.abs(stringToHash.hashCode()));
-      valueString = valueString.replace(randomValueToken, randomValue);
+  private static InitValue parseValueString(String valueString) {
+    InitValue initValue = InitValue.createLiteral(valueString);
+    if (valueString.contains(RANDOM_TOKEN)) {
+      initValue = InitValue.createRandom(valueString);
+    } else if (valueString.contains(PROJECT_ID_TOKEN)) {
+      if (!valueString.equals(PROJECT_ID_TOKEN)) {
+        throw new IllegalArgumentException("Inconsistent: found project ID as a substring ");
+      }
+      valueString = PROJECT_ID_VARIABLE_NAME;
+      initValue = InitValue.createVariable(valueString);
     }
-    return valueString;
+    return initValue;
   }
 }

@@ -5,19 +5,19 @@
   {@renderFileHeader(xapiTest.fileHeader)}
 
   @@javax.annotation.Generated("by GAPIC")
-  public class {@xapiTest.name} {
-    @join mockService : xapiTest.mockServices
+  public class {@xapiTest.testClass.name} {
+    @join mockService : xapiTest.testClass.mockServices
       private static {@mockService.className} {@mockService.varName};
     @end
     private static MockServiceHelper serviceHelper;
-    private {@xapiTest.apiClassName} api;
+    private {@xapiTest.testClass.apiClassName} client;
 
     @@BeforeClass
     public static void startStaticServer() {
-      @join mockService : xapiTest.mockServices
+      @join mockService : xapiTest.testClass.mockServices
         {@mockService.varName} = new {@mockService.className}();
       @end
-      serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList({@mockServiceArgs(xapiTest.mockServices)}));
+      serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList({@mockServiceArgs(xapiTest.testClass.mockServices)}));
       serviceHelper.start();
     }
 
@@ -29,18 +29,18 @@
     @@Before
     public void setUp() throws IOException {
       serviceHelper.reset();
-      {@xapiTest.apiSettingsClassName} settings = {@xapiTest.apiSettingsClassName}.defaultBuilder()
-          .provideChannelWith(serviceHelper.createChannel(), true)
+      {@xapiTest.testClass.apiSettingsClassName} settings = {@xapiTest.testClass.apiSettingsClassName}.defaultBuilder()
+          .setChannelProvider(serviceHelper.createChannelProvider())
           .build();
-      api = {@xapiTest.apiClassName}.create(settings);
+      client = {@xapiTest.testClass.apiClassName}.create(settings);
     }
 
     @@After
     public void tearDown() throws Exception {
-      api.close();
+      client.close();
     }
 
-    @join test : xapiTest.testCases
+    @join test : xapiTest.testClass.testCases
       {@testCase(test)}
 
     @end
@@ -54,31 +54,52 @@
 @end
 
 @private testCase(test)
-  @if test.isGrpcStreaming
-    {@grpcStreamingTestCase(test)}
-  @else
-    {@nonGrpcStreamingTestCase(test)}
+  @switch test.grpcStreamingType
+  @case "BidiStreaming"
+      {@grpcStreamingTestCase(test)}
+  @case "ServerStreaming"
+      {@grpcStreamingTestCase(test)}
+  @case "ClientStreaming"
+      {@grpcStreamingTestCase(test)}
+  @case "NonStreaming"
+      @switch test.clientMethodType
+      @case "FlattenedMethod"
+          {@unaryTestCase(test)}
+      @case "PagedFlattenedMethod"
+          {@unaryTestCase(test)}
+      @case "AsyncOperationFlattenedMethod"
+          {@longRunningMethodTestCase(test)}
+      @end
   @end
 @end
 
-@private nonGrpcStreamingTestCase(test)
+@private unaryTestCase(test)
   @@Test
   @@SuppressWarnings("all")
   public void {@test.name}() {
-    {@setResponse(test)}
+    {@addResponse(test)}
 
     {@initCode(test.initCode)}
 
     {@methodCall(test)}
 
-    List<GeneratedMessageV3> actualRequests = {@test.mockServiceVarName}.getRequests();
-    Assert.assertEquals(1, actualRequests.size());
-    {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
+    {@unarySuccessAsserts(test)}
+  }
 
-    @join assert : test.asserts
-      Assert.assertEquals({@assert.expectedValueIdentifier}, \
-        actualRequest.{@assert.actualValueGetter}());
-    @end
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.nameWithException}() throws Exception {
+    {@addException(test)}
+
+    try {
+      {@initCode(test.initCode)}
+
+      client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+      Assert.fail("No exception raised");
+    } catch (ApiException e) {
+      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+    }
   }
 @end
 
@@ -86,56 +107,131 @@
   @@Test
   @@SuppressWarnings("all")
   public void {@test.name}() throws Exception {
-    {@setResponse(test)}
+    {@addResponse(test)}
     {@initCode(test.initCode)}
 
-    @switch test.grpcStreamingType
-    @case "BidiStreaming"
-      {@bidiStreamingCall(test)}
-    @case "ServerStreaming"
-      {@serverStreamingCall(test)}
-    @default
-      $unhandled case - test.grpcStreamingType.toString$
-    @end
+    {@streamingMethodCall(test)}
 
     List<{@test.responseTypeName}> actualResponses = responseObserver.future().get();
     Assert.assertEquals(1, actualResponses.size());
     Assert.assertEquals(expectedResponse, actualResponses.get(0));
-    Assert.assertEquals(0, responseObserver.errors().size());
+  }
+
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.nameWithException}() throws Exception {
+    {@addException(test)}
+    {@initCode(test.initCode)}
+
+    {@streamingMethodCallWithException(test)}
+
+    try {
+      List<{@test.responseTypeName}> actualResponses = responseObserver.future().get();
+      Assert.fail("No exception thrown");
+    } catch (ExecutionException e) {
+      Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
+      StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
+      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+    }
   }
 @end
 
+@private longRunningMethodTestCase(test)
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.name}() throws Exception {
+    {@initCode(test.mockResponse.initCode)}
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("{@test.name}")
+            .setDone(true)
+            .setResponse(Any.pack(expectedResponse))
+            .build();
+    {@test.mockServiceVarName}.addResponse(resultOperation);
+
+    {@initCode(test.initCode)}
+
+    {@longRunningMethodCall(test)}
+
+    {@unarySuccessAsserts(test)}
+  }
+
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.nameWithException}() throws Exception {
+    {@addException(test)}
+
+    try {
+      {@initCode(test.initCode)}
+
+      client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(ApiException.class, e.getCause().getClass());
+      ApiException apiException = (ApiException) e.getCause();
+      Assert.assertEquals(Status.INTERNAL.getCode(), apiException.getStatusCode());
+    }
+  }
+
+@end
+
+@private streamingMethodCall(test)
+  @switch test.grpcStreamingType
+  @case "BidiStreaming"
+    {@bidiStreamingCall(test)}
+    requestObserver.onCompleted();
+  @case "ServerStreaming"
+    {@serverStreamingCall(test)}
+  @default
+    $unhandled case: {@test.grpcStreamingType.toString}$
+  @end
+@end
+
+@private streamingMethodCallWithException(test)
+  @switch test.grpcStreamingType
+  @case "BidiStreaming"
+    {@bidiStreamingCall(test)}
+  @case "ServerStreaming"
+    {@serverStreamingCall(test)}
+  @default
+    $unhandled case: {@test.grpcStreamingType.toString}$
+  @end
+@end
+
 @private bidiStreamingCall(test)
-  MockStreamObserver<StreamingRecognizeResponse> responseObserver = new MockStreamObserver<>();
+  MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
   StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
-      api.{@test.surfaceMethodName}();
+      client.{@test.clientMethodName}();
   StreamObserver<{@test.requestTypeName}> requestObserver =
       callable.bidiStreamingCall(responseObserver);
 
   requestObserver.onNext(request);
-  requestObserver.onCompleted();
 @end
 
 @private serverStreamingCall(test)
   MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
   StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
-      api.{@test.surfaceMethodName}();
+      client.{@test.clientMethodName}();
   callable.serverStreamingCall(request, responseObserver);
 @end
 
-@private setResponse(test)
+@private addResponse(test)
   {@initCode(test.mockResponse.initCode)}
-  List<GeneratedMessageV3> expectedResponses = new ArrayList<>();
-  expectedResponses.add(expectedResponse);
-  {@test.mockServiceVarName}.setResponses(expectedResponses);
+  {@test.mockServiceVarName}.addResponse(expectedResponse);
+@end
+
+@private addException(test)
+  StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+  {@test.mockServiceVarName}.addException(exception);
 @end
 
 @private methodCall(test)
-  @switch test.methodType
+  @switch test.clientMethodType
   @case "PagedFlattenedMethod"
-    {@test.responseTypeName} pagedListResponse = api.{@test.surfaceMethodName}(\
+    {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
 
     @join pageStreamingResponseView : test.pageStreamingResponseViews
@@ -146,15 +242,39 @@
   @case "FlattenedMethod"
     @if test.hasReturnValue
       {@test.responseTypeName} actualResponse =
-          api.{@test.surfaceMethodName}(\
+          client.{@test.clientMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)});
       Assert.assertEquals(expectedResponse, actualResponse);
     @else
-      api.{@test.surfaceMethodName}(\
+      client.{@test.clientMethodName}(\
             {@sampleMethodCallArgList(test.initCode.fieldSettings)});
     @end
   @default
-    $unhandledCase: {@test.type}$
+    $unhandledCase: {@test.clientMethodType}$
+  @end
+@end
+
+@private longRunningMethodCall(test)
+  {@test.responseTypeName} actualResponse =
+      client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
+  Assert.assertEquals(expectedResponse, actualResponse);
+@end
+
+@private unarySuccessAsserts(test)
+  List<GeneratedMessageV3> actualRequests = {@test.mockServiceVarName}.getRequests();
+  Assert.assertEquals(1, actualRequests.size());
+  {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
+
+  @join assert : test.asserts
+    @if assert.hasExpectedValueTransformFunction
+      Assert.assertEquals({@assert.expectedValueTransformFunction}(\
+        {@assert.expectedValueIdentifier}), \
+        actualRequest.{@assert.actualValueGetter}());
+    @else
+      Assert.assertEquals({@assert.expectedValueIdentifier}, \
+        actualRequest.{@assert.actualValueGetter}());
+    @end
   @end
 @end
 

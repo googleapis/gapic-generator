@@ -15,12 +15,19 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class MockServiceUsageView {
   public abstract String className();
 
   public abstract String varName();
+
+  public abstract String implName();
+
+  /** Used in Go. The function to register the GRPC server. */
+  @Nullable
+  public abstract String registerFunctionName();
 
   public static Builder newBuilder() {
     return new AutoValue_MockServiceUsageView.Builder();
@@ -31,6 +38,10 @@ public abstract class MockServiceUsageView {
     public abstract Builder className(String modifier);
 
     public abstract Builder varName(String name);
+
+    public abstract Builder implName(String name);
+
+    public abstract Builder registerFunctionName(String val);
 
     public abstract MockServiceUsageView build();
   }

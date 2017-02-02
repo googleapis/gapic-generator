@@ -15,6 +15,7 @@
 package com.google.api.codegen.discovery.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -41,10 +42,14 @@ public abstract class SampleView implements ViewModel {
   public abstract String apiVersion();
 
   @Nullable
-  public abstract List<String> imports();
+  public abstract String appName();
+
+  @Nullable
+  public abstract List<ImportTypeView> imports();
 
   public abstract SampleAuthView auth();
 
+  @Nullable
   public abstract String serviceVarName();
 
   @Nullable
@@ -54,6 +59,7 @@ public abstract class SampleView implements ViewModel {
 
   public abstract List<String> methodNameComponents();
 
+  @Nullable
   public abstract String requestVarName();
 
   @Nullable
@@ -67,6 +73,9 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract String requestBodyTypeName();
 
+  @Nullable
+  public abstract List<SampleFieldView> requestBodyFields();
+
   public abstract boolean hasResponse();
 
   @Nullable
@@ -75,10 +84,13 @@ public abstract class SampleView implements ViewModel {
   @Nullable
   public abstract String responseTypeName();
 
-  public abstract List<SampleFieldView> fields();
+  public abstract List<SampleFieldView> requiredFields();
 
   @Nullable
-  public abstract List<String> fieldVarNames();
+  public abstract List<SampleFieldView> optionalFields();
+
+  @Nullable
+  public abstract List<String> methodCallFieldVarNames();
 
   public abstract boolean isPageStreaming();
 
@@ -89,18 +101,18 @@ public abstract class SampleView implements ViewModel {
 
   public abstract boolean hasMediaDownload();
 
-  // Java specific section...
+  // Java specific section.
   @Nullable
   public abstract String className();
 
   @Nullable
   public abstract String createServiceFuncName();
 
-  // Node.js specific section...
+  // Node.js specific section.
   @Nullable
   public abstract String googleImportVarName();
 
-  // Go specific section...
+  // Go specific section.
   @Nullable
   public abstract String servicePackageName();
 
@@ -112,6 +124,66 @@ public abstract class SampleView implements ViewModel {
 
   @Nullable
   public abstract String contextVarName();
+
+  // PHP specific section.
+  @Nullable
+  public abstract String optParamsVarName();
+
+  // Ruby specific section.
+  @Nullable
+  public abstract String serviceRequirePath();
+
+  @Nullable
+  public abstract String serviceTypeNamespace();
+
+  // C# specific section.
+  @Nullable
+  public abstract String dataNamespace();
+
+  @Nullable
+  public abstract String namespaceName();
+
+  // Python specific section.
+  @Nullable
+  public abstract String credentialsVarName();
+
+  @Nullable
+  public abstract String lastMethodNameComponent();
+
+  @Nullable
+  public abstract List<String> methodParamAssigments();
+
+  // JS specific section.
+  @Nullable
+  public abstract String makeApiCallFuncName();
+
+  @Nullable
+  public abstract String initClientFuncName();
+
+  @Nullable
+  public abstract String handleClientLoadFuncName();
+
+  @Nullable
+  public abstract String updateSignInStatusFuncName();
+
+  @Nullable
+  public abstract String handleSignInClickFuncName();
+
+  @Nullable
+  public abstract String handleSignOutClickFuncName();
+
+  @Nullable
+  public abstract String paramsVarName();
+
+  /**
+   * Returns true if there are fields, or if the method is page streaming and the `pageToken` field
+   * is in the `params` object.
+   *
+   * <p>Only intended to be used in the JS sample, where `params` may not contain any required
+   * fields, but is necessary if the method is page streaming.
+   */
+  @Nullable
+  public abstract Boolean needParams();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleView.Builder();
@@ -136,7 +208,9 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder apiVersion(String val);
 
-    public abstract Builder imports(List<String> val);
+    public abstract Builder appName(String val);
+
+    public abstract Builder imports(List<ImportTypeView> val);
 
     public abstract Builder auth(SampleAuthView val);
 
@@ -158,15 +232,19 @@ public abstract class SampleView implements ViewModel {
 
     public abstract Builder requestBodyTypeName(String val);
 
+    public abstract Builder requestBodyFields(List<SampleFieldView> val);
+
     public abstract Builder hasResponse(boolean val);
 
     public abstract Builder responseVarName(String val);
 
     public abstract Builder responseTypeName(String val);
 
-    public abstract Builder fields(List<SampleFieldView> val);
+    public abstract Builder requiredFields(List<SampleFieldView> val);
 
-    public abstract Builder fieldVarNames(List<String> val);
+    public abstract Builder optionalFields(List<SampleFieldView> val);
+
+    public abstract Builder methodCallFieldVarNames(List<String> val);
 
     public abstract Builder isPageStreaming(boolean val);
 
@@ -189,6 +267,38 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder getClientFuncName(String val);
 
     public abstract Builder contextVarName(String val);
+
+    public abstract Builder optParamsVarName(String val);
+
+    public abstract Builder serviceRequirePath(String val);
+
+    public abstract Builder serviceTypeNamespace(String val);
+
+    public abstract Builder dataNamespace(String val);
+
+    public abstract Builder namespaceName(String val);
+
+    public abstract Builder credentialsVarName(String val);
+
+    public abstract Builder lastMethodNameComponent(String val);
+
+    public abstract Builder methodParamAssigments(List<String> val);
+
+    public abstract Builder paramsVarName(String val);
+
+    public abstract Builder makeApiCallFuncName(String val);
+
+    public abstract Builder initClientFuncName(String val);
+
+    public abstract Builder handleClientLoadFuncName(String val);
+
+    public abstract Builder updateSignInStatusFuncName(String val);
+
+    public abstract Builder handleSignInClickFuncName(String val);
+
+    public abstract Builder handleSignOutClickFuncName(String val);
+
+    public abstract Builder needParams(Boolean val);
 
     public abstract SampleView build();
   }

@@ -1,0 +1,2841 @@
+
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.BatchCreateAnnotationsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Annotations.BatchCreate(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.Annotation{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Annotations.Create(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the annotation to be deleted.
+  annotationId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Annotations.Delete(annotationId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the annotation to be retrieved.
+  annotationId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Annotations.Get(annotationId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.SearchAnnotationsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Annotations.Search(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the annotation to be updated.
+  annotationId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.Annotation{
+    // TODO: Add desired fields of the request body. All existing fields
+    // will be replaced.
+  }
+
+  resp, err := genomicsService.Annotations.Update(annotationId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.AnnotationSet{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Annotationsets.Create(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the annotation set to be deleted.
+  annotationSetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Annotationsets.Delete(annotationSetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the annotation set to be retrieved.
+  annotationSetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Annotationsets.Get(annotationSetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.SearchAnnotationSetsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Annotationsets.Search(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the annotation set to be updated.
+  annotationSetId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.AnnotationSet{
+    // TODO: Add desired fields of the request body. All existing fields
+    // will be replaced.
+  }
+
+  resp, err := genomicsService.Annotationsets.Update(annotationSetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.CallSet{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Callsets.Create(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the call set to be deleted.
+  callSetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Callsets.Delete(callSetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the call set.
+  callSetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Callsets.Get(callSetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the call set to be updated.
+  callSetId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.CallSet{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
+  }
+
+  resp, err := genomicsService.Callsets.Patch(callSetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.SearchCallSetsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Callsets.Search(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.Dataset{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Datasets.Create(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the dataset to be deleted.
+  datasetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Datasets.Delete(datasetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the dataset.
+  datasetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Datasets.Get(datasetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // REQUIRED: The resource for which policy is being specified. Format is `datasets/`.
+  resource := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.GetIamPolicyRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Datasets.GetIamPolicy(resource, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  req := genomicsService.Datasets.List()
+  if err := req.Pages(ctx, func(page *genomics.ListDatasetsResponse) error {
+    for _, dataset := range page.Datasets {
+      // TODO: Change code below to process each `dataset` resource:
+      fmt.Printf("%#v\n", dataset)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the dataset to be updated.
+  datasetId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.Dataset{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
+  }
+
+  resp, err := genomicsService.Datasets.Patch(datasetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // REQUIRED: The resource for which policy is being specified. Format is `datasets/`.
+  resource := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.SetIamPolicyRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Datasets.SetIamPolicy(resource, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // REQUIRED: The resource for which policy is being specified. Format is `datasets/`.
+  resource := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.TestIamPermissionsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Datasets.TestIamPermissions(resource, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the dataset to be undeleted.
+  datasetId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.UndeleteDatasetRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Datasets.Undelete(datasetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The name of the operation resource to be cancelled.
+  name := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.CancelOperationRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Operations.Cancel(name, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The name of the operation resource.
+  name := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Operations.Get(name).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The name of the operation collection.
+  name := ""  // TODO: Update placeholder value.
+
+  req := genomicsService.Operations.List(name)
+  if err := req.Pages(ctx, func(page *genomics.ListOperationsResponse) error {
+    for _, operation := range page.Operations {
+      // TODO: Change code below to process each `operation` resource:
+      fmt.Printf("%#v\n", operation)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Required. The ID of the read group set over which coverage is requested.
+  readGroupSetId := ""  // TODO: Update placeholder value.
+
+  req := genomicsService.Readgroupsets.Coveragebuckets.List(readGroupSetId)
+  if err := req.Pages(ctx, func(page *genomics.ListCoverageBucketsResponse) error {
+    for _, coverageBucket := range page.CoverageBuckets {
+      // TODO: Change code below to process each `coverageBucket` resource:
+      fmt.Printf("%#v\n", coverageBucket)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the read group set to be deleted. The caller must have WRITE permissions to the dataset
+  // associated with this read group set.
+  readGroupSetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Readgroupsets.Delete(readGroupSetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Required. The ID of the read group set to export. The caller must have READ access to this read
+  // group set.
+  readGroupSetId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.ExportReadGroupSetRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Readgroupsets.Export(readGroupSetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the read group set.
+  readGroupSetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Readgroupsets.Get(readGroupSetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.ImportReadGroupSetsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Readgroupsets.Import(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the read group set to be updated. The caller must have WRITE permissions to the dataset
+  // associated with this read group set.
+  readGroupSetId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.ReadGroupSet{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
+  }
+
+  resp, err := genomicsService.Readgroupsets.Patch(readGroupSetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.SearchReadGroupSetsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Readgroupsets.Search(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.SearchReadsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Reads.Search(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.StreamReadsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Reads.Stream(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the reference.
+  referenceId := ""  // TODO: Update placeholder value.
+
+  req := genomicsService.References.Bases.List(referenceId)
+  if err := req.Pages(ctx, func(page *genomics.ListBasesResponse) error {
+    // TODO: Change code below to process each `page.Sequence` resource:
+    fmt.Printf("%#v\n", page.Sequence)
+
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the reference.
+  referenceId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.References.Get(referenceId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.SearchReferencesRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.References.Search(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the reference set.
+  referenceSetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Referencesets.Get(referenceSetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.SearchReferenceSetsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Referencesets.Search(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.Variant{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Variants.Create(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the variant to be deleted.
+  variantId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Variants.Delete(variantId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the variant.
+  variantId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Variants.Get(variantId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.ImportVariantsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Variants.Import(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.MergeVariantsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Variants.Merge(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the variant to be updated.
+  variantId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.Variant{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
+  }
+
+  resp, err := genomicsService.Variants.Patch(variantId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.SearchVariantsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Variants.Search(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.StreamVariantsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Variants.Stream(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.VariantSet{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Variantsets.Create(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the variant set to be deleted.
+  variantSetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Variantsets.Delete(variantSetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Required. The ID of the variant set that contains variant data which should be exported. The caller
+  // must have READ access to this variant set.
+  variantSetId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.ExportVariantSetRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Variantsets.Export(variantSetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Required. The ID of the variant set.
+  variantSetId := ""  // TODO: Update placeholder value.
+
+  resp, err := genomicsService.Variantsets.Get(variantSetId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // The ID of the variant to be updated (must already exist).
+  variantSetId := ""  // TODO: Update placeholder value.
+
+  rb := &genomics.VariantSet{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
+  }
+
+  resp, err := genomicsService.Variantsets.Patch(variantSetId, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Genomics API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/genomics
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/genomics/v1"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, genomics.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  genomicsService, err := genomics.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  rb := &genomics.SearchVariantSetsRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := genomicsService.Variantsets.Search(rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}

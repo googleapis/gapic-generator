@@ -1,4 +1,4 @@
-============== file: src/v1/library_service_api.js ==============
+============== file: src/v1/library_service_client.js ==============
 /*
  * Copyright 2016 Google Inc. All rights reserved.
  *
@@ -31,13 +31,13 @@
 var configData = require('./library_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
+var merge = require('lodash.merge');
 
 var SERVICE_ADDRESS = 'library-example.googleapis.com';
 
 var DEFAULT_SERVICE_PORT = 443;
 
 var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
-
 
 var PAGE_DESCRIPTORS = {
   listShelves: new gax.PageDescriptor(
@@ -56,6 +56,13 @@ var PAGE_DESCRIPTORS = {
       'pageToken',
       'nextPageToken',
       'names')
+};
+
+var STREAM_DESCRIPTORS = {
+  streamShelves: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
+  streamBooks: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
+  discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
+  monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING)
 };
 
 /**
@@ -83,17 +90,17 @@ var ALL_SCOPES = [
  *
  * This will be created through a builder function which can be obtained by the module.
  * See the following example of how to initialize the module and how to access to the builder.
- * @see {@link libraryServiceApi}
+ * @see {@link libraryServiceClient}
  *
  * @example
  * var libraryV1 = require('@google-cloud/library').v1({
  *   // optional auth parameters.
  * });
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  *
  * @class
  */
-function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
+function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   opts = opts || {};
   var servicePath = opts.servicePath || SERVICE_ADDRESS;
   var port = opts.port || DEFAULT_SERVICE_PORT;
@@ -108,29 +115,52 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'gax/' + gax.version,
     'nodejs/' + process.version].join(' ');
 
-
   var bundleDescriptors = {
     publishSeries: new gax.BundleDescriptor(
-        'books',
-        [
-          'edition',
-          'shelf.name'
-        ],
-        'bookNames',
-        gax.createByteLengthFunction(grpcClients.libraryServiceClient.google.example.library.v1.Book))
+      'books',
+      [
+        'edition',
+        'shelf.name'
+      ],
+      'bookNames',
+      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book))
   };
+
+  this.operationsClient = new gax.lro({
+    auth: gaxGrpc.auth,
+    grpc: gaxGrpc.grpc
+  }).operationsClient({
+    servicePath: servicePath,
+    port: port,
+    sslCreds: sslCreds,
+    clientConfig: clientConfig,
+    appName: appName,
+    appVersion: appVersion
+  });
+
+  this.longrunningDescriptors = {
+    getBigBook: new gax.LongrunningDescriptor(
+      this.operationsClient,
+      grpcClients.google.example.library.v1.Book.decode,
+      grpcClients.google.example.library.v1.GetBigBookMetadata.decode),
+    getBigNothing: new gax.LongrunningDescriptor(
+      this.operationsClient,
+      grpcClients.google.protobuf.Empty.decode,
+      grpcClients.google.example.library.v1.GetBigBookMetadata.decode)
+  };
+
   var defaults = gaxGrpc.constructSettings(
       'google.example.library.v1.LibraryService',
       configData,
       clientConfig,
-      PAGE_DESCRIPTORS,
-      bundleDescriptors,
       {'x-goog-api-client': googleApiClient});
+
+  var self = this;
 
   var libraryServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
-      grpcClients.libraryServiceClient.google.example.library.v1.LibraryService,
+      grpcClients.google.example.library.v1.LibraryService,
       {sslCreds: sslCreds});
   var libraryServiceStubMethods = [
     'createShelf',
@@ -148,34 +178,48 @@ function LibraryServiceApi(gaxGrpc, grpcClients, opts) {
     'listStrings',
     'addComments',
     'getBookFromArchive',
+    'getBookFromAnywhere',
     'updateBookIndex',
+    'streamShelves',
+    'streamBooks',
+    'discussBook',
+    'monologAboutBook',
     'findRelatedBooks',
     'addTag',
-    'getBigBook'
+    'getBigBook',
+    'getBigNothing'
   ];
   libraryServiceStubMethods.forEach(function(methodName) {
-    this['_' + methodName] = gax.createApiCall(
+    self['_' + methodName] = gax.createApiCall(
       libraryServiceStub.then(function(libraryServiceStub) {
-        return libraryServiceStub[methodName].bind(libraryServiceStub);
+        return function() {
+          var args = Array.prototype.slice.call(arguments, 0);
+          return libraryServiceStub[methodName].apply(libraryServiceStub, args);
+        };
       }),
-      defaults[methodName]);
-  }.bind(this));
+      defaults[methodName],
+      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || self.longrunningDescriptors[methodName]);
+  });
 
   var labelerStub = gaxGrpc.createStub(
       servicePath,
       port,
-      grpcClients.labelerClient.google.tagger.v1.Labeler,
+      grpcClients.google.tagger.v1.Labeler,
       {sslCreds: sslCreds});
   var labelerStubMethods = [
     'addLabel'
   ];
   labelerStubMethods.forEach(function(methodName) {
-    this['_' + methodName] = gax.createApiCall(
+    self['_' + methodName] = gax.createApiCall(
       labelerStub.then(function(labelerStub) {
-        return labelerStub[methodName].bind(labelerStub);
+        return function() {
+          var args = Array.prototype.slice.call(arguments, 0);
+          return labelerStub[methodName].apply(labelerStub, args);
+        };
       }),
-      defaults[methodName]);
-  }.bind(this));
+      defaults[methodName],
+      PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || self.longrunningDescriptors[methodName]);
+  });
 }
 
 // Path templates
@@ -186,15 +230,15 @@ var SHELF_PATH_TEMPLATE = new gax.PathTemplate(
 var BOOK_PATH_TEMPLATE = new gax.PathTemplate(
     'shelves/{shelf_id}/books/{book_id}');
 
-var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
-    'archives/{archive_path=**}/books/{book_id}');
+var RETURN_PATH_TEMPLATE = new gax.PathTemplate(
+    'shelves/{shelf}/books/{book}/returns/{return}');
 
 /**
  * Returns a fully-qualified shelf resource name string.
  * @param {String} shelfId
  * @returns {String}
  */
-LibraryServiceApi.prototype.shelfPath = function(shelfId) {
+LibraryServiceClient.prototype.shelfPath = function(shelfId) {
   return SHELF_PATH_TEMPLATE.render({
     shelf_id: shelfId
   });
@@ -206,7 +250,7 @@ LibraryServiceApi.prototype.shelfPath = function(shelfId) {
  *   A fully-qualified path representing a shelf resources.
  * @returns {String} - A string representing the shelf_id.
  */
-LibraryServiceApi.prototype.matchShelfIdFromShelfName = function(shelfName) {
+LibraryServiceClient.prototype.matchShelfIdFromShelfName = function(shelfName) {
   return SHELF_PATH_TEMPLATE.match(shelfName).shelf_id;
 };
 
@@ -216,7 +260,7 @@ LibraryServiceApi.prototype.matchShelfIdFromShelfName = function(shelfName) {
  * @param {String} bookId
  * @returns {String}
  */
-LibraryServiceApi.prototype.bookPath = function(shelfId, bookId) {
+LibraryServiceClient.prototype.bookPath = function(shelfId, bookId) {
   return BOOK_PATH_TEMPLATE.render({
     shelf_id: shelfId,
     book_id: bookId
@@ -229,7 +273,7 @@ LibraryServiceApi.prototype.bookPath = function(shelfId, bookId) {
  *   A fully-qualified path representing a book resources.
  * @returns {String} - A string representing the shelf_id.
  */
-LibraryServiceApi.prototype.matchShelfIdFromBookName = function(bookName) {
+LibraryServiceClient.prototype.matchShelfIdFromBookName = function(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).shelf_id;
 };
 
@@ -239,41 +283,53 @@ LibraryServiceApi.prototype.matchShelfIdFromBookName = function(bookName) {
  *   A fully-qualified path representing a book resources.
  * @returns {String} - A string representing the book_id.
  */
-LibraryServiceApi.prototype.matchBookIdFromBookName = function(bookName) {
+LibraryServiceClient.prototype.matchBookIdFromBookName = function(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).book_id;
 };
 
 /**
- * Returns a fully-qualified archived_book resource name string.
- * @param {String} archivePath
- * @param {String} bookId
+ * Returns a fully-qualified return resource name string.
+ * @param {String} shelf
+ * @param {String} book
+ * @param {String} return
  * @returns {String}
  */
-LibraryServiceApi.prototype.archivedBookPath = function(archivePath, bookId) {
-  return ARCHIVED_BOOK_PATH_TEMPLATE.render({
-    archive_path: archivePath,
-    book_id: bookId
+LibraryServiceClient.prototype.returnPath = function(shelf, book, return_) {
+  return RETURN_PATH_TEMPLATE.render({
+    shelf: shelf,
+    book: book,
+    return: return_
   });
 };
 
 /**
- * Parses the archivedBookName from a archived_book resource.
- * @param {String} archivedBookName
- *   A fully-qualified path representing a archived_book resources.
- * @returns {String} - A string representing the archive_path.
+ * Parses the returnName from a return resource.
+ * @param {String} returnName
+ *   A fully-qualified path representing a return resources.
+ * @returns {String} - A string representing the shelf.
  */
-LibraryServiceApi.prototype.matchArchivePathFromArchivedBookName = function(archivedBookName) {
-  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).archive_path;
+LibraryServiceClient.prototype.matchShelfFromReturnName = function(returnName) {
+  return RETURN_PATH_TEMPLATE.match(returnName).shelf;
 };
 
 /**
- * Parses the archivedBookName from a archived_book resource.
- * @param {String} archivedBookName
- *   A fully-qualified path representing a archived_book resources.
- * @returns {String} - A string representing the book_id.
+ * Parses the returnName from a return resource.
+ * @param {String} returnName
+ *   A fully-qualified path representing a return resources.
+ * @returns {String} - A string representing the book.
  */
-LibraryServiceApi.prototype.matchBookIdFromArchivedBookName = function(archivedBookName) {
-  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).book_id;
+LibraryServiceClient.prototype.matchBookFromReturnName = function(returnName) {
+  return RETURN_PATH_TEMPLATE.match(returnName).book;
+};
+
+/**
+ * Parses the returnName from a return resource.
+ * @param {String} returnName
+ *   A fully-qualified path representing a return resources.
+ * @returns {String} - A string representing the return.
+ */
+LibraryServiceClient.prototype.matchReturnFromReturnName = function(returnName) {
+  return RETURN_PATH_TEMPLATE.match(returnName).return;
 };
 
 // Service calls
@@ -293,21 +349,23 @@ LibraryServiceApi.prototype.matchBookIdFromArchivedBookName = function(archivedB
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Shelf]{@link Shelf}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  * var shelf = {};
- * api.createShelf({shelf: shelf}).then(function(response) {
+ * client.createShelf({shelf: shelf}).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
+LibraryServiceClient.prototype.createShelf = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -315,6 +373,7 @@ LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._createShelf(request, options, callback);
 };
 
@@ -339,26 +398,28 @@ LibraryServiceApi.prototype.createShelf = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Shelf]{@link Shelf}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
  * var options = '';
  * var request = {
  *     name: formattedName,
  *     options: options
  * };
- * api.getShelf(request).then(function(response) {
+ * client.getShelf(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
+LibraryServiceClient.prototype.getShelf = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -366,51 +427,76 @@ LibraryServiceApi.prototype.getShelf = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._getShelf(request, options, callback);
 };
 
 /**
  * Lists shelves.
  *
+ * @param {Object=} request
+ *   The request object that will be sent.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @param {function(?Error, ?Object, ?string)=} callback
- *   When specified, the results are not streamed but this callback
- *   will be called with the response object representing [ListShelvesResponse]{@link ListShelvesResponse}.
- *   The third item will be set if the response contains the token for the further results
- *   and can be reused to `pageToken` field in the options in the next request.
- * @returns {Stream|Promise}
- *   An object stream which emits an object representing
- *   [Shelf]{@link Shelf} on 'data' event.
- *   When the callback is specified or streaming is suppressed through options,
- *   it will return a promise that resolves to the response object. The promise
- *   has a method named "cancel" which cancels the ongoing API call.
+ * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is Array of [Shelf]{@link Shelf}.
+ *
+ *   When autoPaginate: false is specified through options, it contains the result
+ *   in a single response. If the response indicates the next page exists, the third
+ *   parameter is set to be used for the next request object. The fourth parameter keeps
+ *   the raw response object of an object representing [ListShelvesResponse]{@link ListShelvesResponse}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is Array of [Shelf]{@link Shelf}.
+ *
+ *   When autoPaginate: false is specified through options, the array has three elements.
+ *   The first element is Array of [Shelf]{@link Shelf} in a single response.
+ *   The second element is the next request object if the response
+ *   indicates the next page exists, or null. The third element is
+ *   an object representing [ListShelvesResponse]{@link ListShelvesResponse}.
+ *
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  *
  * // Iterate over all elements.
- * api.listShelves().on('data', function(element) {
- *     // doThingsWith(element)
+ * client.listShelves({}).then(function(responses) {
+ *     var resources = responses[0];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[i])
+ *     }
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  *
- * // Or obtain the paged response through the callback.
- * function callback(err, response, nextPageToken) {
- *     if (err) {
- *         console.error(err);
- *         return;
+ * // Or obtain the paged response.
+ * var options = {autoPaginate: false};
+ * function callback(responses) {
+ *     // The actual resources in a response.
+ *     var resources = responses[0];
+ *     // The next request if the response shows there's more responses.
+ *     var nextRequest = responses[1];
+ *     // The actual response object, if necessary.
+ *     // var rawResponse = responses[2];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[i]);
  *     }
- *     // doThingsWith(response)
- *     if (nextPageToken) {
- *         // fetch the next page.
- *         api.listShelves({pageToken: nextPageToken}, callback);
+ *     if (nextRequest) {
+ *         // Fetch the next page.
+ *         return client.listShelves(nextRequest, options).then(callback);
  *     }
  * }
- * api.listShelves({flattenPages: false}, callback);
+ * client.listShelves({}, options)
+ *     .then(callback)
+ *     .catch(function(err) {
+ *         console.error(err);
+ *     });
  */
-LibraryServiceApi.prototype.listShelves = function(options, callback) {
+LibraryServiceClient.prototype.listShelves = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -418,7 +504,51 @@ LibraryServiceApi.prototype.listShelves = function(options, callback) {
   if (options === undefined) {
     options = {};
   }
-  return this._listShelves({}, options, callback);
+  if (request === undefined) {
+    request = {};
+  }
+  return this._listShelves(request, options, callback);
+};
+
+/**
+ * Equivalent to {@link listShelves}, but returns a NodeJS Stream object.
+ *
+ * This fetches the paged responses for {@link listShelves} continuously
+ * and invokes the callback registered for 'data' event for each element in the
+ * responses.
+ *
+ * The returned object has 'end' method when no more elements are required.
+ *
+ * autoPaginate option will be ignored.
+ *
+ * @see {@link https://nodejs.org/api/stream.html}
+ *
+ * @param {Object=} request
+ *   The request object that will be sent.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @return {Stream}
+ *   An object stream which emits an object representing [Shelf]{@link Shelf} on 'data' event.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ *
+ * client.listShelvesStream({}).on('data', function(element) {
+ *     // doThingsWith(element)
+ * }).on('error', function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceClient.prototype.listShelvesStream = function(request, options) {
+  if (options === undefined) {
+    options = {};
+  }
+  if (request === undefined) {
+    request = {};
+  }
+  return PAGE_DESCRIPTORS.listShelves.createStream(this._listShelves, request, options);
 };
 
 /**
@@ -433,18 +563,18 @@ LibraryServiceApi.prototype.listShelves = function(options, callback) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @return {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
- * api.deleteShelf({name: formattedName}).catch(function(err) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
+ * client.deleteShelf({name: formattedName}).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
+LibraryServiceClient.prototype.deleteShelf = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -452,6 +582,7 @@ LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._deleteShelf(request, options, callback);
 };
 
@@ -472,26 +603,28 @@ LibraryServiceApi.prototype.deleteShelf = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Shelf]{@link Shelf}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
- * var formattedOtherShelfName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
+ * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
  * var request = {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * api.mergeShelves(request).then(function(response) {
+ * client.mergeShelves(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) {
+LibraryServiceClient.prototype.mergeShelves = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -499,6 +632,7 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
   if (options === undefined) {
     options = {};
   }
+
   return this._mergeShelves(request, options, callback);
 };
 
@@ -519,26 +653,28 @@ LibraryServiceApi.prototype.mergeShelves = function(request, options, callback) 
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [Book]{@link Book}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
  * var book = {};
  * var request = {
  *     name: formattedName,
  *     book: book
  * };
- * api.createBook(request).then(function(response) {
+ * client.createBook(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.createBook = function(request, options, callback) {
+LibraryServiceClient.prototype.createBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -546,6 +682,7 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._createBook(request, options, callback);
 };
 
@@ -566,32 +703,36 @@ LibraryServiceApi.prototype.createBook = function(request, options, callback) {
  *   The edition of the series
  * @param {boolean=} request.reviewCopy
  *   If the book is in a pre-publish state
+ * @param {string=} request.seriesUuid
+ *   Uniquely identifies the series to the publishing house.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [PublishSeriesResponse]{@link PublishSeriesResponse}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [PublishSeriesResponse]{@link PublishSeriesResponse}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [PublishSeriesResponse]{@link PublishSeriesResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  * var shelf = {};
  * var books = [];
  * var request = {
  *     shelf: shelf,
  *     books: books
  * };
- * api.publishSeries(request).then(function(response) {
+ * client.publishSeries(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.publishSeries = function(request, options, callback) {
+LibraryServiceClient.prototype.publishSeries = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -599,6 +740,7 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
   if (options === undefined) {
     options = {};
   }
+
   return this._publishSeries(request, options, callback);
 };
 
@@ -615,21 +757,23 @@ LibraryServiceApi.prototype.publishSeries = function(request, options, callback)
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [Book]{@link Book}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * api.getBook({name: formattedName}).then(function(response) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * client.getBook({name: formattedName}).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.getBook = function(request, options, callback) {
+LibraryServiceClient.prototype.getBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -637,6 +781,7 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._getBook(request, options, callback);
 };
 
@@ -658,42 +803,64 @@ LibraryServiceApi.prototype.getBook = function(request, options, callback) {
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @param {function(?Error, ?Object, ?string)=} callback
- *   When specified, the results are not streamed but this callback
- *   will be called with the response object representing [ListBooksResponse]{@link ListBooksResponse}.
- *   The third item will be set if the response contains the token for the further results
- *   and can be reused to `pageToken` field in the options in the next request.
- * @returns {Stream|Promise}
- *   An object stream which emits an object representing
- *   [Book]{@link Book} on 'data' event.
- *   When the callback is specified or streaming is suppressed through options,
- *   it will return a promise that resolves to the response object. The promise
- *   has a method named "cancel" which cancels the ongoing API call.
+ * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is Array of [Book]{@link Book}.
+ *
+ *   When autoPaginate: false is specified through options, it contains the result
+ *   in a single response. If the response indicates the next page exists, the third
+ *   parameter is set to be used for the next request object. The fourth parameter keeps
+ *   the raw response object of an object representing [ListBooksResponse]{@link ListBooksResponse}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is Array of [Book]{@link Book}.
+ *
+ *   When autoPaginate: false is specified through options, the array has three elements.
+ *   The first element is Array of [Book]{@link Book} in a single response.
+ *   The second element is the next request object if the response
+ *   indicates the next page exists, or null. The third element is
+ *   an object representing [ListBooksResponse]{@link ListBooksResponse}.
+ *
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
  * // Iterate over all elements.
- * api.listBooks({name: formattedName}).on('data', function(element) {
- *     // doThingsWith(element)
+ * client.listBooks({name: formattedName}).then(function(responses) {
+ *     var resources = responses[0];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[i])
+ *     }
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  *
- * // Or obtain the paged response through the callback.
- * function callback(err, response, nextPageToken) {
- *     if (err) {
- *         console.error(err);
- *         return;
+ * // Or obtain the paged response.
+ * var options = {autoPaginate: false};
+ * function callback(responses) {
+ *     // The actual resources in a response.
+ *     var resources = responses[0];
+ *     // The next request if the response shows there's more responses.
+ *     var nextRequest = responses[1];
+ *     // The actual response object, if necessary.
+ *     // var rawResponse = responses[2];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[i]);
  *     }
- *     // doThingsWith(response)
- *     if (nextPageToken) {
- *         // fetch the next page.
- *         api.listBooks({name: formattedName}, {pageToken: nextPageToken}, callback);
+ *     if (nextRequest) {
+ *         // Fetch the next page.
+ *         return client.listBooks(nextRequest, options).then(callback);
  *     }
  * }
- * api.listBooks({name: formattedName}, {flattenPages: false}, callback);
+ * client.listBooks({name: formattedName}, options)
+ *     .then(callback)
+ *     .catch(function(err) {
+ *         console.error(err);
+ *     });
  */
-LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
+LibraryServiceClient.prototype.listBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -701,7 +868,57 @@ LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._listBooks(request, options, callback);
+};
+
+/**
+ * Equivalent to {@link listBooks}, but returns a NodeJS Stream object.
+ *
+ * This fetches the paged responses for {@link listBooks} continuously
+ * and invokes the callback registered for 'data' event for each element in the
+ * responses.
+ *
+ * The returned object has 'end' method when no more elements are required.
+ *
+ * autoPaginate option will be ignored.
+ *
+ * @see {@link https://nodejs.org/api/stream.html}
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.name
+ *   The name of the shelf whose books we'd like to list.
+ * @param {number=} request.pageSize
+ *   The maximum number of resources contained in the underlying API
+ *   response. If page streaming is performed per-resource, this
+ *   parameter does not affect the return value. If page streaming is
+ *   performed per-page, this determines the maximum number of
+ *   resources in a page.
+ * @param {string=} request.filter
+ *   To test python built-in wrapping.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @return {Stream}
+ *   An object stream which emits an object representing [Book]{@link Book} on 'data' event.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.shelfPath("[SHELF_ID]");
+ * client.listBooksStream({name: formattedName}).on('data', function(element) {
+ *     // doThingsWith(element)
+ * }).on('error', function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceClient.prototype.listBooksStream = function(request, options) {
+  if (options === undefined) {
+    options = {};
+  }
+
+  return PAGE_DESCRIPTORS.listBooks.createStream(this._listBooks, request, options);
 };
 
 /**
@@ -716,18 +933,18 @@ LibraryServiceApi.prototype.listBooks = function(request, options, callback) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @return {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * api.deleteBook({name: formattedName}).catch(function(err) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * client.deleteBook({name: formattedName}).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
+LibraryServiceClient.prototype.deleteBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -735,6 +952,7 @@ LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._deleteBook(request, options, callback);
 };
 
@@ -763,26 +981,28 @@ LibraryServiceApi.prototype.deleteBook = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [Book]{@link Book}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var book = {};
  * var request = {
  *     name: formattedName,
  *     book: book
  * };
- * api.updateBook(request).then(function(response) {
+ * client.updateBook(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
+LibraryServiceClient.prototype.updateBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -790,6 +1010,7 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._updateBook(request, options, callback);
 };
 
@@ -808,26 +1029,28 @@ LibraryServiceApi.prototype.updateBook = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [Book]{@link Book}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * var formattedOtherShelfName = api.shelfPath("[SHELF_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
  * var request = {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * api.moveBook(request).then(function(response) {
+ * client.moveBook(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
+LibraryServiceClient.prototype.moveBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -835,6 +1058,7 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._moveBook(request, options, callback);
 };
 
@@ -853,41 +1077,64 @@ LibraryServiceApi.prototype.moveBook = function(request, options, callback) {
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @param {function(?Error, ?Object, ?string)=} callback
- *   When specified, the results are not streamed but this callback
- *   will be called with the response object representing [ListStringsResponse]{@link ListStringsResponse}.
- *   The third item will be set if the response contains the token for the further results
- *   and can be reused to `pageToken` field in the options in the next request.
- * @returns {Stream|Promise}
- *   An object stream which emits a string on 'data' event.
- *   When the callback is specified or streaming is suppressed through options,
- *   it will return a promise that resolves to the response object. The promise
- *   has a method named "cancel" which cancels the ongoing API call.
+ * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is Array of string.
+ *
+ *   When autoPaginate: false is specified through options, it contains the result
+ *   in a single response. If the response indicates the next page exists, the third
+ *   parameter is set to be used for the next request object. The fourth parameter keeps
+ *   the raw response object of an object representing [ListStringsResponse]{@link ListStringsResponse}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is Array of string.
+ *
+ *   When autoPaginate: false is specified through options, the array has three elements.
+ *   The first element is Array of string in a single response.
+ *   The second element is the next request object if the response
+ *   indicates the next page exists, or null. The third element is
+ *   an object representing [ListStringsResponse]{@link ListStringsResponse}.
+ *
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  *
  * // Iterate over all elements.
- * api.listStrings({}).on('data', function(element) {
- *     // doThingsWith(element)
+ * client.listStrings({}).then(function(responses) {
+ *     var resources = responses[0];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[i])
+ *     }
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  *
- * // Or obtain the paged response through the callback.
- * function callback(err, response, nextPageToken) {
- *     if (err) {
- *         console.error(err);
- *         return;
+ * // Or obtain the paged response.
+ * var options = {autoPaginate: false};
+ * function callback(responses) {
+ *     // The actual resources in a response.
+ *     var resources = responses[0];
+ *     // The next request if the response shows there's more responses.
+ *     var nextRequest = responses[1];
+ *     // The actual response object, if necessary.
+ *     // var rawResponse = responses[2];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[i]);
  *     }
- *     // doThingsWith(response)
- *     if (nextPageToken) {
- *         // fetch the next page.
- *         api.listStrings({}, {pageToken: nextPageToken}, callback);
+ *     if (nextRequest) {
+ *         // Fetch the next page.
+ *         return client.listStrings(nextRequest, options).then(callback);
  *     }
  * }
- * api.listStrings({}, {flattenPages: false}, callback);
+ * client.listStrings({}, options)
+ *     .then(callback)
+ *     .catch(function(err) {
+ *         console.error(err);
+ *     });
  */
-LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
+LibraryServiceClient.prototype.listStrings = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -895,7 +1142,54 @@ LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._listStrings(request, options, callback);
+};
+
+/**
+ * Equivalent to {@link listStrings}, but returns a NodeJS Stream object.
+ *
+ * This fetches the paged responses for {@link listStrings} continuously
+ * and invokes the callback registered for 'data' event for each element in the
+ * responses.
+ *
+ * The returned object has 'end' method when no more elements are required.
+ *
+ * autoPaginate option will be ignored.
+ *
+ * @see {@link https://nodejs.org/api/stream.html}
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string=} request.name
+ * @param {number=} request.pageSize
+ *   The maximum number of resources contained in the underlying API
+ *   response. If page streaming is performed per-resource, this
+ *   parameter does not affect the return value. If page streaming is
+ *   performed per-page, this determines the maximum number of
+ *   resources in a page.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @return {Stream}
+ *   An object stream which emits a string on 'data' event.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ *
+ * client.listStringsStream({}).on('data', function(element) {
+ *     // doThingsWith(element)
+ * }).on('error', function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceClient.prototype.listStringsStream = function(request, options) {
+  if (options === undefined) {
+    options = {};
+  }
+
+  return PAGE_DESCRIPTORS.listStrings.createStream(this._listStrings, request, options);
 };
 
 /**
@@ -911,16 +1205,16 @@ LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @return {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var comment = '';
- * var stage = Stage.UNSET;
- * var alignment = Alignment.CHAR;
+ * var stage = libraryV1.Comment.Stage.UNSET;
+ * var alignment = libraryV1.SomeMessage2.SomeMessage3.Alignment.CHAR;
  * var commentsElement = {
  *     comment : comment,
  *     stage : stage,
@@ -931,11 +1225,11 @@ LibraryServiceApi.prototype.listStrings = function(request, options, callback) {
  *     name: formattedName,
  *     comments: comments
  * };
- * api.addComments(request).catch(function(err) {
+ * client.addComments(request).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.addComments = function(request, options, callback) {
+LibraryServiceClient.prototype.addComments = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -943,6 +1237,7 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._addComments(request, options, callback);
 };
 
@@ -959,21 +1254,23 @@ LibraryServiceApi.prototype.addComments = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [BookFromArchive]{@link BookFromArchive}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [BookFromArchive]{@link BookFromArchive}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
- * api.getBookFromArchive({name: formattedName}).then(function(response) {
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+ * client.getBookFromArchive({name: formattedName}).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.getBookFromArchive = function(request, options, callback) {
+LibraryServiceClient.prototype.getBookFromArchive = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -981,7 +1278,57 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
   if (options === undefined) {
     options = {};
   }
+
   return this._getBookFromArchive(request, options, callback);
+};
+
+/**
+ * Gets a book from a shelf or archive.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.name
+ *   The name of the book to retrieve.
+ * @param {string} request.altBookName
+ *   An alternate book name, used to test restricting flattened field to a
+ *   single resource name type in a oneof.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var request = {
+ *     name: formattedName,
+ *     altBookName: formattedAltBookName
+ * };
+ * client.getBookFromAnywhere(request).then(function(responses) {
+ *     var response = responses[0];
+ *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceClient.prototype.getBookFromAnywhere = function(request, options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+
+  return this._getBookFromAnywhere(request, options, callback);
 };
 
 /**
@@ -1000,13 +1347,13 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise} - The promise which resolves to the response object.
+ * @return {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var indexName = 'default index';
  * var indexMapItem = '';
  * var indexMap = {'default_key' : indexMapItem,};
@@ -1015,11 +1362,11 @@ LibraryServiceApi.prototype.getBookFromArchive = function(request, options, call
  *     indexName: indexName,
  *     indexMap: indexMap
  * };
- * api.updateBookIndex(request).catch(function(err) {
+ * client.updateBookIndex(request).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.updateBookIndex = function(request, options, callback) {
+LibraryServiceClient.prototype.updateBookIndex = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1027,7 +1374,144 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
   if (options === undefined) {
     options = {};
   }
+
   return this._updateBookIndex(request, options, callback);
+};
+
+/**
+ * Test server streaming
+ * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+ *
+ * @param {Object=} request
+ *   The request object that will be sent.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @returns {Stream}
+ *   An object stream which emits [StreamShelvesResponse]{@link StreamShelvesResponse} on 'data' event.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ *
+ * client.streamShelves({}).on('data', function(response) {
+ *     // doThingsWith(response)
+ * });
+ */
+LibraryServiceClient.prototype.streamShelves = function(request, options) {
+  if (options === undefined) {
+    options = {};
+  }
+  if (request === undefined) {
+    request = {};
+  }
+  return this._streamShelves(request, options);
+};
+
+/**
+ * Test server streaming, non-paged responses.
+ * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.name
+ *   The name of the shelf whose books we'd like to list.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @returns {Stream}
+ *   An object stream which emits [Book]{@link Book} on 'data' event.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ * var name = '';
+ * client.streamBooks({name: name}).on('data', function(response) {
+ *     // doThingsWith(response)
+ * });
+ */
+LibraryServiceClient.prototype.streamBooks = function(request, options) {
+  if (options === undefined) {
+    options = {};
+  }
+
+  return this._streamBooks(request, options);
+};
+
+/**
+ * Test bidi-streaming.
+ * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+ *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @returns {Stream}
+ *   An object stream which is both readable and writable. It accepts objects
+ *   representing [DiscussBookRequest]{@link DiscussBookRequest} for write() method, and
+ *   will emit objects representing [Comment]{@link Comment} on 'data' event asynchronously.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ * var stream = client.discussBook().on('data', function(response) {
+ *     // doThingsWith(response);
+ * });
+ * var name = '';
+ * var request = {
+ *     name : name
+ * };
+ * // Write request objects.
+ * stream.write(request);
+ */
+LibraryServiceClient.prototype.discussBook = function(options) {
+  if (options === undefined) {
+    options = {};
+  }
+
+  return this._discussBook(options);
+};
+
+/**
+ * Test client streaming.
+ * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+ *
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [Comment]{@link Comment}.
+ * @return {Stream} - A writable stream which accepts objects representing
+ *   [DiscussBookRequest]{@link DiscussBookRequest} for write() method.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ * var stream = client.monologAboutBook(function(err, response) {
+ *     if (err) {
+ *         console.error(err);
+ *         return;
+ *     }
+ *     // doThingsWith(response)
+ * });
+ * var name = '';
+ * var request = {
+ *     name : name
+ * };
+ * // Write request objects.
+ * stream.write(request);
+ */
+LibraryServiceClient.prototype.monologAboutBook = function(options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+
+  return this._monologAboutBook(options, callback);
 };
 
 /**
@@ -1044,20 +1528,29 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @param {function(?Error, ?Object, ?string)=} callback
- *   When specified, the results are not streamed but this callback
- *   will be called with the response object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
- *   The third item will be set if the response contains the token for the further results
- *   and can be reused to `pageToken` field in the options in the next request.
- * @returns {Stream|Promise}
- *   An object stream which emits a string on 'data' event.
- *   When the callback is specified or streaming is suppressed through options,
- *   it will return a promise that resolves to the response object. The promise
- *   has a method named "cancel" which cancels the ongoing API call.
+ * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is Array of string.
+ *
+ *   When autoPaginate: false is specified through options, it contains the result
+ *   in a single response. If the response indicates the next page exists, the third
+ *   parameter is set to be used for the next request object. The fourth parameter keeps
+ *   the raw response object of an object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is Array of string.
+ *
+ *   When autoPaginate: false is specified through options, the array has three elements.
+ *   The first element is Array of string in a single response.
+ *   The second element is the next request object if the response
+ *   indicates the next page exists, or null. The third element is
+ *   an object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
+ *
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
+ * var client = libraryV1.libraryServiceClient();
  * var namesElement = '';
  * var names = [namesElement];
  * var shelves = [];
@@ -1066,25 +1559,39 @@ LibraryServiceApi.prototype.updateBookIndex = function(request, options, callbac
  *     shelves: shelves
  * };
  * // Iterate over all elements.
- * api.findRelatedBooks(request).on('data', function(element) {
- *     // doThingsWith(element)
+ * client.findRelatedBooks(request).then(function(responses) {
+ *     var resources = responses[0];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[i])
+ *     }
+ * }).catch(function(err) {
+ *     console.error(err);
  * });
  *
- * // Or obtain the paged response through the callback.
- * function callback(err, response, nextPageToken) {
- *     if (err) {
- *         console.error(err);
- *         return;
+ * // Or obtain the paged response.
+ * var options = {autoPaginate: false};
+ * function callback(responses) {
+ *     // The actual resources in a response.
+ *     var resources = responses[0];
+ *     // The next request if the response shows there's more responses.
+ *     var nextRequest = responses[1];
+ *     // The actual response object, if necessary.
+ *     // var rawResponse = responses[2];
+ *     for (var i = 0; i < resources.length; ++i) {
+ *         // doThingsWith(resources[i]);
  *     }
- *     // doThingsWith(response)
- *     if (nextPageToken) {
- *         // fetch the next page.
- *         api.findRelatedBooks(request, {pageToken: nextPageToken}, callback);
+ *     if (nextRequest) {
+ *         // Fetch the next page.
+ *         return client.findRelatedBooks(nextRequest, options).then(callback);
  *     }
  * }
- * api.findRelatedBooks(request, {flattenPages: false}, callback);
+ * client.findRelatedBooks(request, options)
+ *     .then(callback)
+ *     .catch(function(err) {
+ *         console.error(err);
+ *     });
  */
-LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callback) {
+LibraryServiceClient.prototype.findRelatedBooks = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1092,7 +1599,61 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
   if (options === undefined) {
     options = {};
   }
+
   return this._findRelatedBooks(request, options, callback);
+};
+
+/**
+ * Equivalent to {@link findRelatedBooks}, but returns a NodeJS Stream object.
+ *
+ * This fetches the paged responses for {@link findRelatedBooks} continuously
+ * and invokes the callback registered for 'data' event for each element in the
+ * responses.
+ *
+ * The returned object has 'end' method when no more elements are required.
+ *
+ * autoPaginate option will be ignored.
+ *
+ * @see {@link https://nodejs.org/api/stream.html}
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string[]} request.names
+ * @param {string[]} request.shelves
+ * @param {number=} request.pageSize
+ *   The maximum number of resources contained in the underlying API
+ *   response. If page streaming is performed per-resource, this
+ *   parameter does not affect the return value. If page streaming is
+ *   performed per-page, this determines the maximum number of
+ *   resources in a page.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @return {Stream}
+ *   An object stream which emits a string on 'data' event.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ * var namesElement = '';
+ * var names = [namesElement];
+ * var shelves = [];
+ * var request = {
+ *     names: names,
+ *     shelves: shelves
+ * };
+ * client.findRelatedBooksStream(request).on('data', function(element) {
+ *     // doThingsWith(element)
+ * }).on('error', function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceClient.prototype.findRelatedBooksStream = function(request, options) {
+  if (options === undefined) {
+    options = {};
+  }
+
+  return PAGE_DESCRIPTORS.findRelatedBooks.createStream(this._findRelatedBooks, request, options);
 };
 
 /**
@@ -1112,26 +1673,28 @@ LibraryServiceApi.prototype.findRelatedBooks = function(request, options, callba
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [AddTagResponse]{@link AddTagResponse}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [AddTagResponse]{@link AddTagResponse}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [AddTagResponse]{@link AddTagResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedResource = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var tag = '';
  * var request = {
  *     resource: formattedResource,
  *     tag: tag
  * };
- * api.addTag(request).then(function(response) {
+ * client.addTag(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.addTag = function(request, options, callback) {
+LibraryServiceClient.prototype.addTag = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1139,6 +1702,7 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._addTag(request, options, callback);
 };
 
@@ -1159,26 +1723,28 @@ LibraryServiceApi.prototype.addTag = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [AddLabelResponse]{@link AddLabelResponse}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is an object representing [AddLabelResponse]{@link AddLabelResponse}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [AddLabelResponse]{@link AddLabelResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedResource = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var label = '';
  * var request = {
  *     resource: formattedResource,
  *     label: label
  * };
- * api.addLabel(request).then(function(response) {
+ * client.addLabel(request).then(function(responses) {
+ *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
+LibraryServiceClient.prototype.addLabel = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1186,10 +1752,13 @@ LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._addLabel(request, options, callback);
 };
 
 /**
+ * Test long-running operations
+ *
  * @param {Object} request
  *   The request object that will be sent.
  * @param {string} request.name
@@ -1200,21 +1769,62 @@ LibraryServiceApi.prototype.addLabel = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [google.longrunning.Operation]{@link external:"google.longrunning.Operation"}
- * @returns {Promise} - The promise which resolves to the response object.
+ *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
  *
- * var api = libraryV1.libraryServiceApi();
- * var formattedName = api.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * api.getBigBook({name: formattedName}).then(function(response) {
- *     // doThingsWith(response)
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ *
+ * // Handle the operation using the promise pattern.
+ * client.getBigBook({name: formattedName}).then(function(responses) {
+ *     var operation = responses[0];
+ *     var initialApiResponse = responses[1];
+ *
+ *     // Operation#promise starts polling for the completion of the LRO.
+ *     return operation.promise();
+ * }).then(function(responses) {
+ *     // The final result of the operation.
+ *     var result = responses[0];
+ *
+ *     // The metadata value of the completed operation.
+ *     var metadata = responses[1];
+ *
+ *     // The response of the api call returning the complete operation.
+ *     var finalApiResponse = responses[2];
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
+ *
+ * // Handle the operation using the event emitter pattern.
+ * client.getBigBook({name: formattedName}).then(function(responses) {
+ *     var operation = responses[0];
+ *     var initialApiResponse = responses[1];
+ *
+ *     // Adding a listener for the "complete" event starts polling for the
+ *     // completion of the operation.
+ *     operation.on('complete', function(result, metadata, finalApiResponse) {
+ *       // doSomethingWith(result);
+ *     });
+ *
+ *     // Adding a listener for the "progress" event causes the callback to be
+ *     // called on any change in metadata when the operation is polled.
+ *     operation.on('progress', function(metadata, apiResponse) {
+ *       // doSomethingWith(metadata)
+ *     })
+ *
+ *     // Adding a listener for the "error" event handles any errors found during polling.
+ *     operation.on('error', function(err) {
+ *       // throw(err);
+ *     })
  * }).catch(function(err) {
  *     console.error(err);
  * });
  */
-LibraryServiceApi.prototype.getBigBook = function(request, options, callback) {
+LibraryServiceClient.prototype.getBigBook = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -1222,12 +1832,93 @@ LibraryServiceApi.prototype.getBigBook = function(request, options, callback) {
   if (options === undefined) {
     options = {};
   }
+
   return this._getBigBook(request, options, callback);
 };
 
-function LibraryServiceApiBuilder(gaxGrpc) {
-  if (!(this instanceof LibraryServiceApiBuilder)) {
-    return new LibraryServiceApiBuilder(gaxGrpc);
+/**
+ * Test long-running operations with empty return type.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.name
+ *   The name of the book to retrieve.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ *
+ * // Handle the operation using the promise pattern.
+ * client.getBigNothing({name: formattedName}).then(function(responses) {
+ *     var operation = responses[0];
+ *     var initialApiResponse = responses[1];
+ *
+ *     // Operation#promise starts polling for the completion of the LRO.
+ *     return operation.promise();
+ * }).then(function(responses) {
+ *     // The final result of the operation.
+ *     var result = responses[0];
+ *
+ *     // The metadata value of the completed operation.
+ *     var metadata = responses[1];
+ *
+ *     // The response of the api call returning the complete operation.
+ *     var finalApiResponse = responses[2];
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
+ *
+ * // Handle the operation using the event emitter pattern.
+ * client.getBigNothing({name: formattedName}).then(function(responses) {
+ *     var operation = responses[0];
+ *     var initialApiResponse = responses[1];
+ *
+ *     // Adding a listener for the "complete" event starts polling for the
+ *     // completion of the operation.
+ *     operation.on('complete', function(result, metadata, finalApiResponse) {
+ *       // doSomethingWith(result);
+ *     });
+ *
+ *     // Adding a listener for the "progress" event causes the callback to be
+ *     // called on any change in metadata when the operation is polled.
+ *     operation.on('progress', function(metadata, apiResponse) {
+ *       // doSomethingWith(metadata)
+ *     })
+ *
+ *     // Adding a listener for the "error" event handles any errors found during polling.
+ *     operation.on('error', function(err) {
+ *       // throw(err);
+ *     })
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceClient.prototype.getBigNothing = function(request, options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+
+  return this._getBigNothing(request, options, callback);
+};
+
+function LibraryServiceClientBuilder(gaxGrpc) {
+  if (!(this instanceof LibraryServiceClientBuilder)) {
+    return new LibraryServiceClientBuilder(gaxGrpc);
   }
 
   var libraryServiceClient = gaxGrpc.load([{
@@ -1242,13 +1933,14 @@ function LibraryServiceApiBuilder(gaxGrpc) {
   }]);
   extend(this, labelerClient.google.tagger.v1);
 
-  var grpcClients = {
-    libraryServiceClient: libraryServiceClient,
-    labelerClient: labelerClient
-  };
+  var grpcClients = merge(
+    {},
+    libraryServiceClient,
+    labelerClient
+  );
 
   /**
-   * Build a new instance of {@link LibraryServiceApi}.
+   * Build a new instance of {@link LibraryServiceClient}.
    *
    * @param {Object=} opts - The optional parameters.
    * @param {String=} opts.servicePath
@@ -1265,11 +1957,11 @@ function LibraryServiceApiBuilder(gaxGrpc) {
    * @param {String=} opts.appVersion
    *   The version of the calling service.
    */
-  this.libraryServiceApi = function(opts) {
-    return new LibraryServiceApi(gaxGrpc, grpcClients, opts);
+  this.libraryServiceClient = function(opts) {
+    return new LibraryServiceClient(gaxGrpc, grpcClients, opts);
   };
-  extend(this.libraryServiceApi, LibraryServiceApi);
+  extend(this.libraryServiceClient, LibraryServiceClient);
 }
-module.exports = LibraryServiceApiBuilder;
+module.exports = LibraryServiceClientBuilder;
 module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
 module.exports.ALL_SCOPES = ALL_SCOPES;

@@ -1,17 +1,19 @@
-============== file: src/Example/Library/V1/LibraryServiceApi.php ==============
+============== file: src/Example/Library/V1/LibraryServiceClient.php ==============
 <?php
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016, Google Inc. All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /*
@@ -19,6 +21,10 @@
  * This file was generated from the file
  * https://github.com/google/googleapis/blob/master/library.proto
  * and updates to that file get reflected here through a refresh process.
+ *
+ * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
+ * more frequently than those which have been declared beta or 1.0, including changes which break
+ * backwards compatibility.
  */
 
 namespace Google\Example\Library\V1;
@@ -28,8 +34,11 @@ use Google\GAX\ApiCallable;
 use Google\GAX\CallSettings;
 use Google\GAX\GrpcConstants;
 use Google\GAX\GrpcCredentialsHelper;
+use Google\GAX\LongRunning\OperationsClient;
+use Google\GAX\OperationResponse;
 use Google\GAX\PageStreamingDescriptor;
 use Google\GAX\PathTemplate;
+use Google\GAX\ValidationException;
 use google\example\library\v1\AddCommentsRequest;
 use google\example\library\v1\Book;
 use google\example\library\v1\Comment;
@@ -37,11 +46,14 @@ use google\example\library\v1\CreateBookRequest;
 use google\example\library\v1\CreateShelfRequest;
 use google\example\library\v1\DeleteBookRequest;
 use google\example\library\v1\DeleteShelfRequest;
+use google\example\library\v1\DiscussBookRequest;
 use google\example\library\v1\FindRelatedBooksRequest;
+use google\example\library\v1\GetBigBookMetadata;
+use google\example\library\v1\GetBookFromAnywhereRequest;
 use google\example\library\v1\GetBookFromArchiveRequest;
 use google\example\library\v1\GetBookRequest;
 use google\example\library\v1\GetShelfRequest;
-use google\example\library\v1\LibraryServiceClient;
+use google\example\library\v1\LibraryServiceGrpcClient;
 use google\example\library\v1\ListBooksRequest;
 use google\example\library\v1\ListShelvesRequest;
 use google\example\library\v1\ListStringsRequest;
@@ -50,14 +62,17 @@ use google\example\library\v1\MoveBookRequest;
 use google\example\library\v1\PublishSeriesRequest;
 use google\example\library\v1\Shelf;
 use google\example\library\v1\SomeMessage;
+use google\example\library\v1\StreamBooksRequest;
+use google\example\library\v1\StreamShelvesRequest;
 use google\example\library\v1\StringBuilder;
 use google\example\library\v1\UpdateBookIndexRequest;
 use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
 use google\example\library\v1\UpdateBookRequest;
+use google\protobuf\EmptyC;
 use google\protobuf\FieldMask;
 use google\tagger\v1\AddLabelRequest;
 use google\tagger\v1\AddTagRequest;
-use google\tagger\v1\LabelerClient;
+use google\tagger\v1\LabelerGrpcClient;
 
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
@@ -65,26 +80,28 @@ use google\tagger\v1\LabelerClient;
  * resource model:
  *
  * - The API has a collection of [Shelf][google.example.library.v1.Shelf]
- *   resources, named ``bookShelves/*``
+ *   resources, named ``bookShelves/&#42;``
  *
  * - Each Shelf has a collection of [Book][google.example.library.v1.Book]
- *   resources, named `bookShelves/*/books/*`
+ *   resources, named `bookShelves/&#42;/books/&#42;`
  *
  * Check out [cloud docs!](/library/example/link).
  * This is [not a cloud link](http://www.google.com).
+ *
+ * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
+ * more frequently than those which have been declared beta or 1.0, including changes which break
+ * backwards compatibility.
  *
  * This class provides the ability to make remote calls to the backing service through method
  * calls that map to API methods. Sample code to get started:
  *
  * ```
  * try {
- *     $libraryServiceApi = new LibraryServiceApi();
+ *     $libraryServiceClient = new LibraryServiceClient();
  *     $shelf = new Shelf();
- *     $response = $libraryServiceApi->createShelf($shelf);
+ *     $response = $libraryServiceClient->createShelf($shelf);
  * } finally {
- *     if (isset($libraryServiceApi)) {
- *         $libraryServiceApi->close();
- *     }
+ *     $libraryServiceClient->close();
  * }
  * ```
  *
@@ -93,7 +110,7 @@ use google\tagger\v1\LabelerClient;
  * a parse method to extract the individual identifiers contained within names that are
  * returned.
  */
-class LibraryServiceApi
+class LibraryServiceClient
 {
     /**
      * The default address of the service.
@@ -110,13 +127,19 @@ class LibraryServiceApi
      */
     const DEFAULT_TIMEOUT_MILLIS = 30000;
 
-    const _GAX_VERSION = '0.1.0';
-    const _CODEGEN_NAME = 'GAPIC';
-    const _CODEGEN_VERSION = '0.0.0';
+    /**
+     * The name of the code generator, to be included in the agent header.
+     */
+    const CODEGEN_NAME = 'gapic';
+
+    /**
+     * The code generator version, to be included in the agent header.
+     */
+    const CODEGEN_VERSION = '0.1.0';
 
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
-    private static $archivedBookNameTemplate;
+    private static $returnNameTemplate;
 
     private $grpcCredentialsHelper;
     private $libraryServiceStub;
@@ -124,6 +147,7 @@ class LibraryServiceApi
     private $scopes;
     private $defaultCallSettings;
     private $descriptors;
+    private $operationsClient;
 
     /**
      * Formats a string containing the fully-qualified path to represent
@@ -150,13 +174,14 @@ class LibraryServiceApi
 
     /**
      * Formats a string containing the fully-qualified path to represent
-     * a archived_book resource.
+     * a return resource.
      */
-    public static function formatArchivedBookName($archivePath, $bookId)
+    public static function formatReturnName($shelf, $book, $return)
     {
-        return self::getArchivedBookNameTemplate()->render([
-            'archive_path' => $archivePath,
-            'book_id' => $bookId,
+        return self::getReturnNameTemplate()->render([
+            'shelf' => $shelf,
+            'book' => $book,
+            'return' => $return,
         ]);
     }
 
@@ -188,21 +213,30 @@ class LibraryServiceApi
     }
 
     /**
-     * Parses the archive_path from the given fully-qualified path which
-     * represents a archivedBook resource.
+     * Parses the shelf from the given fully-qualified path which
+     * represents a return resource.
      */
-    public static function parseArchivePathFromArchivedBookName($archivedBookName)
+    public static function parseShelfFromReturnName($returnName)
     {
-        return self::getArchivedBookNameTemplate()->match($archivedBookName)['archive_path'];
+        return self::getReturnNameTemplate()->match($returnName)['shelf'];
     }
 
     /**
-     * Parses the book_id from the given fully-qualified path which
-     * represents a archivedBook resource.
+     * Parses the book from the given fully-qualified path which
+     * represents a return resource.
      */
-    public static function parseBookIdFromArchivedBookName($archivedBookName)
+    public static function parseBookFromReturnName($returnName)
     {
-        return self::getArchivedBookNameTemplate()->match($archivedBookName)['book_id'];
+        return self::getReturnNameTemplate()->match($returnName)['book'];
+    }
+
+    /**
+     * Parses the return from the given fully-qualified path which
+     * represents a return resource.
+     */
+    public static function parseReturnFromReturnName($returnName)
+    {
+        return self::getReturnNameTemplate()->match($returnName)['return'];
     }
 
 
@@ -224,13 +258,13 @@ class LibraryServiceApi
         return self::$bookNameTemplate;
     }
 
-    private static function getArchivedBookNameTemplate()
+    private static function getReturnNameTemplate()
     {
-        if (self::$archivedBookNameTemplate == null) {
-            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path=**}/books/{book_id}');
+        if (self::$returnNameTemplate == null) {
+            self::$returnNameTemplate = new PathTemplate('shelves/{shelf}/books/{book}/returns/{return}');
         }
 
-        return self::$archivedBookNameTemplate;
+        return self::$returnNameTemplate;
     }
 
     private static function getPageStreamingDescriptors()
@@ -273,6 +307,74 @@ class LibraryServiceApi
         return $pageStreamingDescriptors;
     }
 
+    private static function getLongRunningDescriptors()
+    {
+        return [
+            'getBigBook' => [
+                'operationReturnType' => '\google\example\library\v1\Book',
+                'metadataReturnType' => '\google\example\library\v1\GetBigBookMetadata',
+            ],
+            'getBigNothing' => [
+                'operationReturnType' => '\google\protobuf\EmptyC',
+                'metadataReturnType' => '\google\example\library\v1\GetBigBookMetadata',
+            ],
+        ];
+    }
+
+    private static function getGrpcStreamingDescriptors()
+    {
+        return [
+            'streamShelves' => [
+                'grpcStreamingType' => 'ServerStreaming',
+                'resourcesField' => 'getShelvesList',
+            ],
+            'streamBooks' => [
+                'grpcStreamingType' => 'ServerStreaming',
+            ],
+            'discussBook' => [
+                'grpcStreamingType' => 'BidiStreaming',
+            ],
+            'monologAboutBook' => [
+                'grpcStreamingType' => 'ClientStreaming',
+            ],
+        ];
+    }
+
+    /**
+     * Return an OperationsClient object with the same endpoint as $this.
+     *
+     * @return \Google\GAX\LongRunning\OperationsClient
+     */
+    public function getOperationsClient()
+    {
+        return $this->operationsClient;
+    }
+
+    /**
+     * Resume an existing long running operation that was previously started
+     * by a long running API method. If $methodName is not provided, or does
+     * not match a long running API method, then the operation can still be
+     * resumed, but the OperationResponse object will not deserialize the
+     * final response.
+     *
+     * @param string $operationName The name of the long running operation
+     * @param string $methodName The name of the method used to start the operation
+     *
+     * @return \Google\GAX\OperationResponse
+     */
+    public function resumeOperation($operationName, $methodName = null)
+    {
+        $lroDescriptors = LibraryServiceClient::getLongRunningDescriptors();
+        if (!is_null($methodName) && array_key_exists($methodName, $lroDescriptors)) {
+            $options = $lroDescriptors[$methodName];
+        } else {
+            $options = [];
+        }
+        $operation = new OperationResponse($operationName, $this->getOperationsClient(), $options);
+        $operation->reload();
+        return $operation;
+    }
+
     // TODO(garrettjones): add channel (when supported in gRPC)
     /**
      * Constructor.
@@ -283,10 +385,10 @@ class LibraryServiceApi
      *     @type string $serviceAddress The domain name of the API remote host.
      *                                  Default 'library-example.googleapis.com'.
      *     @type mixed $port The port on which to connect to the remote host. Default 443.
-     *     @type Grpc\ChannelCredentials $sslCreds
+     *     @type \Grpc\ChannelCredentials $sslCreds
      *           A `ChannelCredentials` for use with an SSL-enabled channel.
      *           Default: a credentials object returned from
-     *           Grpc\ChannelCredentials::createSsl()
+     *           \Grpc\ChannelCredentials::createSsl()
      *     @type array $scopes A string array of scopes to use when acquiring credentials.
      *                         Default the scopes for the Google Example Library API.
      *     @type array $retryingOverride
@@ -301,35 +403,42 @@ class LibraryServiceApi
      *     @type string $appName The codename of the calling service. Default 'gax'.
      *     @type string $appVersion The version of the calling service.
      *                              Default: the current version of GAX.
-     *     @type Google\Auth\CredentialsLoader $credentialsLoader
+     *     @type \Google\Auth\CredentialsLoader $credentialsLoader
      *                              A CredentialsLoader object created using the
      *                              Google\Auth library.
      * }
      */
     public function __construct($options = [])
     {
-        $defaultScopes = [
-            'https://www.googleapis.com/auth/cloud-platform',
-            'https://www.googleapis.com/auth/library',
-        ];
         $defaultOptions = [
             'serviceAddress' => self::SERVICE_ADDRESS,
             'port' => self::DEFAULT_SERVICE_PORT,
-            'scopes' => $defaultScopes,
+            'scopes' => [
+                'https://www.googleapis.com/auth/cloud-platform',
+                'https://www.googleapis.com/auth/library',
+            ],
             'retryingOverride' => null,
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'appName' => 'gax',
-            'appVersion' => self::_GAX_VERSION,
-            'credentialsLoader' => null,
+            'appVersion' => AgentHeaderDescriptor::getGaxVersion(),
         ];
         $options = array_merge($defaultOptions, $options);
+
+        if (array_key_exists('operationsClient', $options)) {
+            $this->operationsClient = $options['operationsClient'];
+        } else {
+            $this->operationsClient = new OperationsClient([
+                'serviceAddress' => $options['serviceAddress'],
+                'scopes' => $options['scopes'],
+            ]);
+        }
 
         $headerDescriptor = new AgentHeaderDescriptor([
             'clientName' => $options['appName'],
             'clientVersion' => $options['appVersion'],
-            'codeGenName' => self::_CODEGEN_NAME,
-            'codeGenVersion' => self::_CODEGEN_VERSION,
-            'gaxVersion' => self::_GAX_VERSION,
+            'codeGenName' => self::CODEGEN_NAME,
+            'codeGenVersion' => self::CODEGEN_VERSION,
+            'gaxVersion' => AgentHeaderDescriptor::getGaxVersion(),
             'phpVersion' => phpversion(),
         ]);
 
@@ -350,15 +459,29 @@ class LibraryServiceApi
             'listStrings' => $defaultDescriptors,
             'addComments' => $defaultDescriptors,
             'getBookFromArchive' => $defaultDescriptors,
+            'getBookFromAnywhere' => $defaultDescriptors,
             'updateBookIndex' => $defaultDescriptors,
+            'streamShelves' => $defaultDescriptors,
+            'streamBooks' => $defaultDescriptors,
+            'discussBook' => $defaultDescriptors,
+            'monologAboutBook' => $defaultDescriptors,
             'findRelatedBooks' => $defaultDescriptors,
             'addTag' => $defaultDescriptors,
             'addLabel' => $defaultDescriptors,
             'getBigBook' => $defaultDescriptors,
+            'getBigNothing' => $defaultDescriptors,
         ];
         $pageStreamingDescriptors = self::getPageStreamingDescriptors();
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
             $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
+        }
+        $longRunningDescriptors = self::getLongRunningDescriptors();
+        foreach ($longRunningDescriptors as $method => $longRunningDescriptor) {
+            $this->descriptors[$method]['longRunningDescriptor'] = $longRunningDescriptor + ['operationsClient' => $this->operationsClient];
+        }
+        $grpcStreamingDescriptors = self::getGrpcStreamingDescriptors();
+        foreach ($grpcStreamingDescriptors as $method => $grpcStreamingDescriptor) {
+            $this->descriptors[$method]['grpcStreamingDescriptor'] = $grpcStreamingDescriptor;
         }
 
         $clientConfigJsonString = file_get_contents(__DIR__ . '/resources/library_service_client_config.json');
@@ -373,23 +496,29 @@ class LibraryServiceApi
         $this->scopes = $options['scopes'];
 
         $createStubOptions = [];
-        if (!empty($options['sslCreds'])) {
+        if (array_key_exists('sslCreds', $options)) {
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
         $grpcCredentialsHelperOptions = array_diff_key($options, $defaultOptions);
         $this->grpcCredentialsHelper = new GrpcCredentialsHelper($this->scopes, $grpcCredentialsHelperOptions);
 
         $createLibraryServiceStubFunction = function ($hostname, $opts) {
-            return new LibraryServiceClient($hostname, $opts);
+            return new LibraryServiceGrpcClient($hostname, $opts);
         };
+        if (array_key_exists('createLibraryServiceStubFunction', $options)) {
+            $createLibraryServiceStubFunction = $options['createLibraryServiceStubFunction'];
+        }
         $this->libraryServiceStub = $this->grpcCredentialsHelper->createStub(
             $createLibraryServiceStubFunction,
             $options['serviceAddress'],
             $options['port'],
             $createStubOptions);
         $createLabelerStubFunction = function ($hostname, $opts) {
-            return new LabelerClient($hostname, $opts);
+            return new LabelerGrpcClient($hostname, $opts);
         };
+        if (array_key_exists('createLabelerStubFunction', $options)) {
+            $createLabelerStubFunction = $options['createLabelerStubFunction'];
+        }
         $this->labelerStub = $this->grpcCredentialsHelper->createStub(
             $createLabelerStubFunction,
             $options['serviceAddress'],
@@ -403,20 +532,18 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
-     *     $response = $libraryServiceApi->createShelf($shelf);
+     *     $response = $libraryServiceClient->createShelf($shelf);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
      * @param Shelf $shelf The shelf to create.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -424,9 +551,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Shelf
+     * @return \google\example\library\v1\Shelf
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function createShelf($shelf, $optionalArgs = [])
     {
@@ -450,14 +577,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
      *     $options = "";
-     *     $response = $libraryServiceApi->getShelf($formattedName, $options);
+     *     $response = $libraryServiceClient->getShelf($formattedName, $options);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -468,7 +593,7 @@ class LibraryServiceApi
      *     @type SomeMessage $message
      *          Field to verify that message-type query parameter gets flattened.
      *     @type StringBuilder $stringBuilder
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -476,9 +601,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Shelf
+     * @return \google\example\library\v1\Shelf
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function getShelf($name, $options, $optionalArgs = [])
     {
@@ -509,15 +634,23 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *
-     *     foreach ($libraryServiceApi->listShelves() as $element) {
-     *         // doThingsWith(element);
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listShelves();
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
+     *         // doSomethingWith($element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->listShelves(['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doSomethingWith($element);
+     *         }
      *     }
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -528,7 +661,7 @@ class LibraryServiceApi
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -536,9 +669,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return Google\GAX\PagedListResponse
+     * @return \Google\GAX\PagedListResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function listShelves($optionalArgs = [])
     {
@@ -564,20 +697,18 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     $libraryServiceApi->deleteShelf($formattedName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $libraryServiceClient->deleteShelf($formattedName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
      * @param string $name The name of the shelf to delete.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -585,7 +716,7 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function deleteShelf($name, $optionalArgs = [])
     {
@@ -611,14 +742,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     $formattedOtherShelfName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     $response = $libraryServiceApi->mergeShelves($formattedName, $formattedOtherShelfName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $response = $libraryServiceClient->mergeShelves($formattedName, $formattedOtherShelfName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -626,7 +755,7 @@ class LibraryServiceApi
      * @param string $otherShelfName The name of the shelf we're removing books from and deleting.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -634,9 +763,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Shelf
+     * @return \google\example\library\v1\Shelf
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function mergeShelves($name, $otherShelfName, $optionalArgs = [])
     {
@@ -661,14 +790,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
      *     $book = new Book();
-     *     $response = $libraryServiceApi->createBook($formattedName, $book);
+     *     $response = $libraryServiceClient->createBook($formattedName, $book);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -676,7 +803,7 @@ class LibraryServiceApi
      * @param Book $book The book to create.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -684,9 +811,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return \google\example\library\v1\Book
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function createBook($name, $book, $optionalArgs = [])
     {
@@ -711,14 +838,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
      *     $books = [];
-     *     $response = $libraryServiceApi->publishSeries($shelf, $books);
+     *     $response = $libraryServiceClient->publishSeries($shelf, $books);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -730,7 +855,9 @@ class LibraryServiceApi
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type string $seriesUuid
+     *          Uniquely identifies the series to the publishing house.
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -738,9 +865,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\PublishSeriesResponse
+     * @return \google\example\library\v1\PublishSeriesResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function publishSeries($shelf, $books, $optionalArgs = [])
     {
@@ -754,6 +881,9 @@ class LibraryServiceApi
         }
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
+        }
+        if (isset($optionalArgs['seriesUuid'])) {
+            $request->setSeriesUuid($optionalArgs['seriesUuid']);
         }
 
         $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(
@@ -773,20 +903,18 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $response = $libraryServiceApi->getBook($formattedName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -794,9 +922,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return \google\example\library\v1\Book
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function getBook($name, $optionalArgs = [])
     {
@@ -820,15 +948,23 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     foreach ($libraryServiceApi->listBooks($formattedName) as $element) {
-     *         // doThingsWith(element);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
+     *         // doSomethingWith($element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doSomethingWith($element);
+     *         }
      *     }
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -846,7 +982,7 @@ class LibraryServiceApi
      *          been generated by a previous call to the API.
      *     @type string $filter
      *          To test python built-in wrapping.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -854,9 +990,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return Google\GAX\PagedListResponse
+     * @return \Google\GAX\PagedListResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function listBooks($name, $optionalArgs = [])
     {
@@ -889,20 +1025,18 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $libraryServiceApi->deleteBook($formattedName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
      * @param string $name The name of the book to delete.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -910,7 +1044,7 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function deleteBook($name, $optionalArgs = [])
     {
@@ -934,14 +1068,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $book = new Book();
-     *     $response = $libraryServiceApi->updateBook($formattedName, $book);
+     *     $response = $libraryServiceClient->updateBook($formattedName, $book);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -951,9 +1083,9 @@ class LibraryServiceApi
      *     Optional.
      *     @type FieldMask $updateMask
      *          A field mask to apply, rendered as an HTTP parameter.
-     *     @type google\example\library\v1\FieldMask $physicalMask
+     *     @type \google\example\library\v1\FieldMask $physicalMask
      *          To test Python import clash resolution.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -961,9 +1093,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return \google\example\library\v1\Book
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function updateBook($name, $book, $optionalArgs = [])
     {
@@ -994,14 +1126,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedOtherShelfName = LibraryServiceApi::formatShelfName("[SHELF_ID]");
-     *     $response = $libraryServiceApi->moveBook($formattedName, $formattedOtherShelfName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1009,7 +1139,7 @@ class LibraryServiceApi
      * @param string $otherShelfName The name of the destination shelf.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -1017,9 +1147,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return \google\example\library\v1\Book
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function moveBook($name, $otherShelfName, $optionalArgs = [])
     {
@@ -1044,15 +1174,23 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *
-     *     foreach ($libraryServiceApi->listStrings() as $element) {
-     *         // doThingsWith(element);
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->listStrings();
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
+     *         // doSomethingWith($element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->listStrings(['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doSomethingWith($element);
+     *         }
      *     }
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1068,7 +1206,7 @@ class LibraryServiceApi
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -1076,9 +1214,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return Google\GAX\PagedListResponse
+     * @return \Google\GAX\PagedListResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function listStrings($optionalArgs = [])
     {
@@ -1110,8 +1248,8 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $comment = "";
      *     $stage = Stage::UNSET;
      *     $alignment = Alignment::CHAR;
@@ -1120,11 +1258,9 @@ class LibraryServiceApi
      *     $commentsElement->setStage($stage);
      *     $commentsElement->setAlignment($alignment);
      *     $comments = [$commentsElement];
-     *     $libraryServiceApi->addComments($formattedName, $comments);
+     *     $libraryServiceClient->addComments($formattedName, $comments);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1132,7 +1268,7 @@ class LibraryServiceApi
      * @param Comment[] $comments
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -1140,7 +1276,7 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function addComments($name, $comments, $optionalArgs = [])
     {
@@ -1167,20 +1303,18 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
-     *     $response = $libraryServiceApi->getBookFromArchive($formattedName);
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+     *     $response = $libraryServiceClient->getBookFromArchive($formattedName);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -1188,9 +1322,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\example\library\v1\Book
+     * @return \google\example\library\v1\BookFromArchive
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function getBookFromArchive($name, $optionalArgs = [])
     {
@@ -1209,21 +1343,68 @@ class LibraryServiceApi
     }
 
     /**
+     * Gets a book from a shelf or archive.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName);
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param string $name The name of the book to retrieve.
+     * @param string $altBookName An alternate book name, used to test restricting flattened field to a
+     * single resource name type in a oneof.
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeoutMillis is ignored.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return \google\example\library\v1\BookFromAnywhere
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     */
+    public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
+    {
+        $request = new GetBookFromAnywhereRequest();
+        $request->setName($name);
+        $request->setAltBookName($altBookName);
+
+        $mergedSettings = $this->defaultCallSettings['getBookFromAnywhere']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'GetBookFromAnywhere', $mergedSettings, $this->descriptors['getBookFromAnywhere']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
      * Updates the index of a book.
      *
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $indexName = "default index";
      *     $indexMapItem = "";
      *     $indexMap = ["default_key" => $indexMapItem,];
-     *     $libraryServiceApi->updateBookIndex($formattedName, $indexName, $indexMap);
+     *     $libraryServiceClient->updateBookIndex($formattedName, $indexName, $indexMap);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1232,7 +1413,7 @@ class LibraryServiceApi
      * @param array $indexMap The index to update the book with
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -1240,7 +1421,7 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [])
     {
@@ -1263,22 +1444,238 @@ class LibraryServiceApi
     }
 
     /**
+     * Test server streaming
+     * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *
+     *     // Read all responses until the stream is complete
+     *     $stream = $libraryServiceClient->streamShelves();
+     *     foreach ($stream->readAll() as $element) {
+     *         // doSomethingWith($element);
+     *     }
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call.
+     * }
+     *
+     * @return \Google\GAX\ServerStreamingResponse
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     */
+    public function streamShelves($optionalArgs = [])
+    {
+        $request = new StreamShelvesRequest();
+
+        $mergedSettings = $this->defaultCallSettings['streamShelves']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'StreamShelves', $mergedSettings, $this->descriptors['streamShelves']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Test server streaming, non-paged responses.
+     * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $name = "";
+     *     // Read all responses until the stream is complete
+     *     $stream = $libraryServiceClient->streamBooks($name);
+     *     foreach ($stream->readAll() as $element) {
+     *         // doSomethingWith($element);
+     *     }
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param string $name The name of the shelf whose books we'd like to list.
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call.
+     * }
+     *
+     * @return \Google\GAX\ServerStreamingResponse
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     */
+    public function streamBooks($name, $optionalArgs = [])
+    {
+        $request = new StreamBooksRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['streamBooks']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'StreamBooks', $mergedSettings, $this->descriptors['streamBooks']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Test bidi-streaming.
+     * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $name = "";
+     *     $request = new DiscussBookRequest();
+     *     $request->setName($name);
+     *     $requests = [$request];
+     *
+     *     // Write all requests to the server, then read all responses until the
+     *     // stream is complete
+     *     $stream = $libraryServiceClient->discussBook();
+     *     $stream->writeAll($requests);
+     *     foreach ($stream->closeWriteAndReadAll() as $element) {
+     *         // doSomethingWith($element);
+     *     }
+     *
+     *     // OR write requests individually, making read() calls if
+     *     // required. Call closeWrite() once writes are complete, and read the
+     *     // remaining responses from the server.
+     *     $stream = $libraryServiceClient->discussBook();
+     *     foreach ($requests as $request) {
+     *         $stream->write($request);
+     *         // if required, read a single response from the stream
+     *         $element = $stream->read();
+     *         // doSomethingWith($element)
+     *     }
+     *     $stream->closeWrite();
+     *     $element = $stream->read();
+     *     while (!is_null($element)) {
+     *         // doSomethingWith($element)
+     *         $element = $stream->read();
+     *     }
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call.
+     * }
+     *
+     * @return \Google\GAX\BidiStreamingResponse
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     */
+    public function discussBook($optionalArgs = [])
+    {
+        $mergedSettings = $this->defaultCallSettings['discussBook']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'DiscussBook', $mergedSettings, $this->descriptors['discussBook']);
+
+        return $callable(
+            null,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Test client streaming.
+     * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $name = "";
+     *     $request = new DiscussBookRequest();
+     *     $request->setName($name);
+     *     $requests = [$request];
+     *
+     *     // Write data to server and wait for a response
+     *     $stream = $libraryServiceClient->monologAboutBook();
+     *     $result = $stream->writeAllAndReadResponse($requests);
+     *     // doSomethingWith($result)
+     *
+     *     // OR write data as it becomes available, then wait for a response
+     *     $stream = $libraryServiceClient->monologAboutBook();
+     *     foreach ($requests as $request) {
+     *         $stream->write($request);
+     *     }
+     *     $result = $stream->readResponse();
+     *     // doSomethingWith($result)
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call.
+     * }
+     *
+     * @return \Google\GAX\ClientStreamingResponse
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     */
+    public function monologAboutBook($optionalArgs = [])
+    {
+        $mergedSettings = $this->defaultCallSettings['monologAboutBook']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'MonologAboutBook', $mergedSettings, $this->descriptors['monologAboutBook']);
+
+        return $callable(
+            null,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
      *
      *
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $libraryServiceClient = new LibraryServiceClient();
      *     $namesElement = "";
      *     $names = [$namesElement];
      *     $shelves = [];
-     *     foreach ($libraryServiceApi->findRelatedBooks($names, $shelves) as $element) {
-     *         // doThingsWith(element);
+     *     // Iterate through all elements
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves);
+     *     foreach ($pagedResponse->iterateAllElements() as $element) {
+     *         // doSomethingWith($element);
+     *     }
+     *
+     *     // OR iterate over pages of elements, with the maximum page size set to 5
+     *     $pagedResponse = $libraryServiceClient->findRelatedBooks($names, $shelves, ['pageSize' => 5]);
+     *     foreach ($pagedResponse->iteratePages() as $page) {
+     *         foreach ($page as $element) {
+     *             // doSomethingWith($element);
+     *         }
      *     }
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1295,7 +1692,7 @@ class LibraryServiceApi
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -1303,9 +1700,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return Google\GAX\PagedListResponse
+     * @return \Google\GAX\PagedListResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function findRelatedBooks($names, $shelves, $optionalArgs = [])
     {
@@ -1340,14 +1737,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedResource = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $tag = "";
-     *     $response = $libraryServiceApi->addTag($formattedResource, $tag);
+     *     $response = $libraryServiceClient->addTag($formattedResource, $tag);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1357,7 +1752,7 @@ class LibraryServiceApi
      * @param string $tag REQUIRED: The tag to add.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -1365,9 +1760,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\tagger\v1\AddTagResponse
+     * @return \google\tagger\v1\AddTagResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function addTag($resource, $tag, $optionalArgs = [])
     {
@@ -1392,14 +1787,12 @@ class LibraryServiceApi
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedResource = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
      *     $label = "";
-     *     $response = $libraryServiceApi->addLabel($formattedResource, $label);
+     *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
-     *     }
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
@@ -1409,7 +1802,7 @@ class LibraryServiceApi
      * @param string $label REQUIRED: The label to add.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -1417,9 +1810,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\tagger\v1\AddLabelResponse
+     * @return \google\tagger\v1\AddLabelResponse
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function addLabel($resource, $label, $optionalArgs = [])
     {
@@ -1439,25 +1832,48 @@ class LibraryServiceApi
     }
 
     /**
-     *
+     * Test long-running operations
      *
      * Sample code:
      * ```
      * try {
-     *     $libraryServiceApi = new LibraryServiceApi();
-     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $response = $libraryServiceApi->getBigBook($formattedName);
-     * } finally {
-     *     if (isset($libraryServiceApi)) {
-     *         $libraryServiceApi->close();
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+     *     $operationResponse->pollUntilComplete();
+     *     if ($operationResponse->operationSucceeded()) {
+     *       $result = $operationResponse->getResult();
+     *       // doSomethingWith($result)
+     *     } else {
+     *       $error = $operationResponse->getError();
+     *       // handleError($error)
      *     }
+     *
+     *     // OR start the operation, keep the operation name, and resume later
+     *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
+     *     $operationName = $operationResponse->getName();
+     *     // ... do other work
+     *     $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigBook');
+     *     while (!$newOperationResponse->isDone()) {
+     *         // ... do other work
+     *         $newOperationResponse->reload();
+     *     }
+     *     if ($newOperationResponse->operationSucceeded()) {
+     *       $result = $newOperationResponse->getResult();
+     *       // doSomethingWith($result)
+     *     } else {
+     *       $error = $newOperationResponse->getError();
+     *       // handleError($error)
+     *     }
+     * } finally {
+     *     $libraryServiceClient->close();
      * }
      * ```
      *
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type Google\GAX\RetrySettings $retrySettings
+     *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
      *     @type int $timeoutMillis
@@ -1465,9 +1881,9 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return google\longrunning\Operation
+     * @return \google\longrunning\Operation
      *
-     * @throws Google\GAX\ApiException if the remote call fails
+     * @throws \Google\GAX\ApiException if the remote call fails
      */
     public function getBigBook($name, $optionalArgs = [])
     {
@@ -1478,6 +1894,74 @@ class LibraryServiceApi
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBigBook', $mergedSettings, $this->descriptors['getBigBook']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Test long-running operations with empty return type.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+     *     $operationResponse->pollUntilComplete();
+     *     if ($operationResponse->operationSucceeded()) {
+     *       // operation succeeded and returns no value
+     *     } else {
+     *       $error = $operationResponse->getError();
+     *       // handleError($error)
+     *     }
+     *
+     *     // OR start the operation, keep the operation name, and resume later
+     *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
+     *     $operationName = $operationResponse->getName();
+     *     // ... do other work
+     *     $newOperationResponse = $libraryServiceClient->resumeOperation($operationName, 'getBigNothing');
+     *     while (!$newOperationResponse->isDone()) {
+     *         // ... do other work
+     *         $newOperationResponse->reload();
+     *     }
+     *     if ($newOperationResponse->operationSucceeded()) {
+     *       // operation succeeded and returns no value
+     *     } else {
+     *       $error = $newOperationResponse->getError();
+     *       // handleError($error)
+     *     }
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param string $name The name of the book to retrieve.
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeoutMillis is ignored.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return \google\longrunning\Operation
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     */
+    public function getBigNothing($name, $optionalArgs = [])
+    {
+        $request = new GetBookRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['getBigNothing']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'GetBigNothing', $mergedSettings, $this->descriptors['getBigNothing']);
 
         return $callable(
             $request,

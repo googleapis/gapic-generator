@@ -20,6 +20,9 @@ import com.google.api.gax.grpc.CallContext;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseImpl;
 import com.google.api.gax.grpc.UnaryCallable;
+import com.google.api.resourcenames.ResourceName;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.FindRelatedBooksRequest;
@@ -31,6 +34,8 @@ import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
 import com.google.example.library.v1.ListStringsResponse;
 import com.google.example.library.v1.Shelf;
+import com.google.protobuf.ExperimentalApi;
+import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
@@ -38,7 +43,8 @@ import com.google.example.library.v1.Shelf;
  * Each static class inside this wrapper class is used as the return type of
  * one of an API method that implements the page streaming pattern.
  */
-@javax.annotation.Generated("by GAPIC")
+@Generated("by GAPIC")
+@ExperimentalApi
 public class PagedResponseWrappers {
 
   public static class ListShelvesPagedResponse extends PagedListResponseImpl<ListShelvesRequest, ListShelvesResponse, Shelf> {
@@ -76,7 +82,15 @@ public class PagedResponseWrappers {
         CallContext context) {
       super(callable, pageDescriptor, request, context);
     }
-
+    public Iterable<ResourceName> iterateAllAsResourceName() {
+      return Iterables.transform(iterateAllElements(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 

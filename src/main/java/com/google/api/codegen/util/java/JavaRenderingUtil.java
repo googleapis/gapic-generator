@@ -29,7 +29,8 @@ public class JavaRenderingUtil {
           .addEscape('&', "&amp;")
           .addEscape('<', "&lt;")
           .addEscape('>', "&gt;")
-          .addEscape('*', "&ast;")
+          .addEscape('*', "&#42;")
+          .addEscape('@', "{@literal @}")
           .build();
 
   /**

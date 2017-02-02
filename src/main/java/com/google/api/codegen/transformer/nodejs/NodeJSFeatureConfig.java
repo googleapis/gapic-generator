@@ -16,4 +16,9 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.transformer.FeatureConfig;
 
-public class NodeJSFeatureConfig extends FeatureConfig {}
+public class NodeJSFeatureConfig extends FeatureConfig {
+  @Override
+  public boolean enableGrpcStreaming() {
+    return true;
+  }
+}

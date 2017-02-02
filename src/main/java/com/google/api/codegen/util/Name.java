@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.util;
 
-import com.google.api.client.util.Joiner;
 import com.google.api.codegen.util.CommonAcronyms.NamePieceCasingType;
 import com.google.api.codegen.util.CommonAcronyms.SubNamePiece;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -206,6 +206,20 @@ public class Name {
     return toCamel(CaseFormat.UPPER_CAMEL);
   }
 
+  public String toUpperCamelAndDigits() {
+    char[] upper = toUpperCamel().toCharArray();
+    boolean digit = false;
+    for (int i = 0; i < upper.length; i++) {
+      if (Character.isDigit(upper[i])) {
+        digit = true;
+      } else if (digit) {
+        upper[i] = Character.toUpperCase(upper[i]);
+        digit = false;
+      }
+    }
+    return new String(upper);
+  }
+
   private String toCamel(CaseFormat caseFormat) {
     StringBuffer buffer = new StringBuffer();
     boolean firstPiece = true;
@@ -227,6 +241,11 @@ public class Name {
   /** Returns the name in human readable form, useful in comments. */
   public String toPhrase() {
     return toLowerUnderscore().replace('_', ' ');
+  }
+
+  /** Returns the name in lower case, with a custom separator between components. */
+  public String toSeparatedString(String separator) {
+    return toLowerUnderscore().replace("_", separator);
   }
 
   /**

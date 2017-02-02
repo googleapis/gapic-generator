@@ -44,7 +44,7 @@ public class ViewModelProvider implements DiscoveryProvider {
   private final ApiaryConfig apiaryConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final SampleMethodToViewTransformer methodToViewTransformer;
-  private final JsonNode sampleConfigOverrides;
+  private final List<JsonNode> sampleConfigOverrides;
   private final TypeNameGenerator typeNameGenerator;
   private final String outputRoot;
 
@@ -53,7 +53,7 @@ public class ViewModelProvider implements DiscoveryProvider {
       ApiaryConfig apiaryConfig,
       CommonSnippetSetRunner snippetSetRunner,
       SampleMethodToViewTransformer methodToViewTransformer,
-      JsonNode sampleConfigOverrides,
+      List<JsonNode> sampleConfigOverrides,
       TypeNameGenerator typeNameGenerator,
       String outputRoot) {
     this.methods = methods;
@@ -89,23 +89,26 @@ public class ViewModelProvider implements DiscoveryProvider {
    *
    * <p>If sampleConfigOverrides is null, sampleConfig is returned as is.
    */
-  private static SampleConfig override(SampleConfig sampleConfig, JsonNode sampleConfigOverrides) {
+  private static SampleConfig override(
+      SampleConfig sampleConfig, List<JsonNode> sampleConfigOverrides) {
+    if (sampleConfigOverrides.isEmpty()) {
+      return sampleConfig;
+    }
     // We use JSON merging to facilitate this override mechanism:
     // 1. Convert the SampleConfig into a JSON tree.
-    // 2. Convert the overrides file into a JSON tree with arbitrary schema.
+    // 2. Convert the overrides into JSON trees with arbitrary schema.
     // 3. Overwrite object fields of the SampleConfig tree where field names match.
     // 4. Convert the modified SampleConfig tree back into a SampleConfig.
-    if (sampleConfigOverrides != null) {
-      ObjectMapper mapper = new ObjectMapper().registerModule(new GuavaModule());
-      JsonNode tree = mapper.valueToTree(sampleConfig);
-      merge((ObjectNode) tree, (ObjectNode) sampleConfigOverrides);
-      try {
-        return mapper.treeToValue(tree, SampleConfig.class);
-      } catch (Exception e) {
-        throw new RuntimeException("failed to parse config to node: " + e.getMessage());
-      }
+    ObjectMapper mapper = new ObjectMapper().registerModule(new GuavaModule());
+    JsonNode tree = mapper.valueToTree(sampleConfig);
+    for (JsonNode override : sampleConfigOverrides) {
+      merge((ObjectNode) tree, (ObjectNode) override);
     }
-    return sampleConfig;
+    try {
+      return mapper.treeToValue(tree, SampleConfig.class);
+    } catch (Exception e) {
+      throw new RuntimeException("failed to parse config to node: " + e.getMessage());
+    }
   }
 
   /**
@@ -123,23 +126,23 @@ public class ViewModelProvider implements DiscoveryProvider {
     Iterator<String> fieldNames = overrideTree.fieldNames();
     while (fieldNames.hasNext()) {
       String fieldName = fieldNames.next();
-      JsonNode primaryValue = tree.get(fieldName);
-      JsonNode backupValue = overrideTree.get(fieldName);
-      if (primaryValue == null) {
+      JsonNode defaultValue = tree.get(fieldName);
+      JsonNode overrideValue = overrideTree.get(fieldName);
+      if (defaultValue == null) {
         // If backupValue isn't null, then we add it to tree. This can happen if
         // extra fields/properties are specified.
-        if (backupValue != null) {
-          tree.set(fieldName, backupValue);
+        if (overrideValue != null) {
+          tree.set(fieldName, overrideValue);
         }
         // Otherwise, skip null nodes.
-      } else if (backupValue.isNull()) {
+      } else if (overrideValue.isNull()) {
         // If a node is overridden as null, we pretend it was never specified
         // altogether. We provide this functionality so nodes from an object can
         // be deleted from both trees.
         // TODO(saicheems): Verify that this is the best approach for this issue.
         tree.remove(fieldName);
-      } else if (primaryValue.isObject() && backupValue.isObject()) {
-        merge((ObjectNode) primaryValue, (ObjectNode) backupValue.deepCopy());
+      } else if (defaultValue.isObject() && overrideValue.isObject()) {
+        merge((ObjectNode) defaultValue, (ObjectNode) overrideValue.deepCopy());
       } else {
         tree.set(fieldName, overrideTree.get(fieldName));
       }
@@ -155,7 +158,7 @@ public class ViewModelProvider implements DiscoveryProvider {
     private ApiaryConfig apiaryConfig;
     private CommonSnippetSetRunner snippetSetRunner;
     private SampleMethodToViewTransformer methodToViewTransformer;
-    private JsonNode sampleConfigOverrides;
+    private List<JsonNode> sampleConfigOverrides;
     private TypeNameGenerator typeNameGenerator;
     private String outputRoot;
 
@@ -182,7 +185,7 @@ public class ViewModelProvider implements DiscoveryProvider {
       return this;
     }
 
-    public Builder setOverrides(JsonNode overrides) {
+    public Builder setOverrides(List<JsonNode> overrides) {
       this.sampleConfigOverrides = overrides;
       return this;
     }

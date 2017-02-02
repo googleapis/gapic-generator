@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel.testing;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.testing.MockServiceView.Builder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -31,7 +30,9 @@ public abstract class SmokeTestClassView implements ViewModel {
 
   public abstract String apiSettingsClassName();
 
-  public abstract TestMethodView method();
+  public abstract TestCaseView method();
+
+  public abstract boolean requireProjectId();
 
   @Override
   public String resourceRoot() {
@@ -45,7 +46,7 @@ public abstract class SmokeTestClassView implements ViewModel {
   public abstract String outputPath();
 
   public static Builder newBuilder() {
-    return new AutoValue_SmokeTestClassView.Builder();
+    return new AutoValue_SmokeTestClassView.Builder().requireProjectId(false);
   }
 
   @AutoValue.Builder
@@ -63,7 +64,9 @@ public abstract class SmokeTestClassView implements ViewModel {
 
     public abstract Builder templateFileName(String val);
 
-    public abstract Builder method(TestMethodView val);
+    public abstract Builder method(TestCaseView val);
+
+    public abstract Builder requireProjectId(boolean val);
 
     public abstract SmokeTestClassView build();
   }

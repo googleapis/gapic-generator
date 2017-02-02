@@ -14,19 +14,22 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Status;
 import java.util.List;
@@ -49,18 +52,26 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
+  public String getPathTemplateName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(
         getReducedServiceName(service)
-            .join(collectionConfig.getEntityName())
+            .join(resourceNameConfig.getEntityName())
             .join("path")
             .join("template"));
   }
 
   @Override
-  public String getPathTemplateNameGetter(Interface service, CollectionConfig collectionConfig) {
+  public String getPathTemplateNameGetter(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return getFormatFunctionName(service, resourceNameConfig);
+  }
+
+  @Override
+  public String getFormatFunctionName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
-        getReducedServiceName(service).join(collectionConfig.getEntityName()).join("path"));
+        getReducedServiceName(service).join(resourceNameConfig.getEntityName()).join("path"));
   }
 
   @Override
@@ -75,17 +86,6 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return super.getDocLines(getApiMethodName(method, methodConfig.getVisibility()) + " " + text);
   }
 
-  @Override
-  public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, Field resourcesField) {
-    String typeName = converter.getTypeNameForElementType(resourcesField.getType()).getNickname();
-    int dotIndex = typeName.indexOf('.');
-    if (dotIndex >= 0) {
-      typeName = typeName.substring(dotIndex + 1);
-    }
-    return className(Name.anyCamel(typeName).join("iterator"));
-  }
-
   private static String lowerFirstLetter(String s) {
     if (s.length() > 0) {
       s = Character.toLowerCase(s.charAt(0)) + s.substring(1);
@@ -94,13 +94,66 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getAndSavePagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+    String typeName =
+        converter
+            .getTypeNameForElementType(resourcesFieldConfig.getField().getType())
+            .getNickname();
+    int dotIndex = typeName.indexOf('.');
+    if (dotIndex >= 0) {
+      typeName = typeName.substring(dotIndex + 1);
+    }
+    return publicClassName(Name.anyCamel(typeName).join("iterator"));
+  }
+
+  @Override
+  public String getAndSaveOperationResponseTypeName(
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+    String typeName =
+        converter
+            .getTypeNameForElementType(methodConfig.getLongRunningConfig().getReturnType())
+            .getNickname();
+    typeName = unqualifyTypeName(typeName);
+    return publicClassName(Name.anyCamel(typeName).join("operation"));
+  }
+
+  @Override
+  public String valueType(String type) {
+    for (int i = 0; i < type.length(); i++) {
+      if (type.charAt(i) != '*') {
+        return type.substring(i);
+      }
+    }
+    return "";
+  }
+
+  private String unqualifyTypeName(String typeName) {
+    int dotIndex = typeName.indexOf('.');
+    if (dotIndex >= 0) {
+      typeName = typeName.substring(dotIndex + 1);
+    }
+    return typeName;
+  }
+
+  @Override
+  public String getGrpcServerTypeName(Interface service) {
+    return converter.getTypeName(service).getNickname() + "Server";
+  }
+
+  @Override
   public String getGrpcClientTypeName(Interface service) {
     return converter.getTypeName(service).getNickname() + "Client";
   }
 
   @Override
+  public String getServerRegisterFunctionName(Interface service) {
+    return converter.getTypeName(service).getNickname().replace(".", ".Register") + "Server";
+  }
+
+  @Override
   public String getCallSettingsTypeName(Interface service) {
-    return className(clientNamePrefix(service).join("call").join("options"));
+    return publicClassName(clientNamePrefix(service).join("call").join("options"));
   }
 
   @Override
@@ -122,7 +175,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassName(Interface service) {
-    return className(clientNamePrefix(service).join("client"));
+    return publicClassName(clientNamePrefix(service).join("client"));
   }
 
   @Override
@@ -139,6 +192,16 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiMethodExampleName(Interface service, Method method) {
     return exampleFunction(service, getApiMethodName(method, VisibilityConfig.PUBLIC));
+  }
+
+  @Override
+  public String getGrpcStreamingApiMethodExampleName(Interface service, Method method) {
+    return exampleFunction(service, getApiMethodName(method, VisibilityConfig.PUBLIC));
+  }
+
+  @Override
+  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+    return getApiMethodName(method, visibility);
   }
 
   @Override
@@ -205,12 +268,21 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangStreamingReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStreamingServerName(Method method) {
+    // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesServer",
+    // neither camel or underscore.
+    return converter.getTypeName(method.getParent()).getNickname()
+        + "_"
+        + publicClassName(Name.upperCamel(method.getSimpleName()).join("server"));
+  }
+
+  @Override
+  public String getGrpcStreamingApiReturnTypeName(Method method, ModelTypeTable typeTable) {
     // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
     // neither camel or underscore.
     return converter.getTypeName(method.getParent()).getNickname()
         + "_"
-        + className(Name.upperCamel(method.getSimpleName()).join("client"));
+        + publicClassName(Name.upperCamel(method.getSimpleName()).join("client"));
   }
 
   @Override
@@ -237,5 +309,37 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return publicMethodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
         + "_"
         + functionName;
+  }
+
+  @Override
+  public String getMockGrpcServiceImplName(Interface service) {
+    return privateClassName(Name.from("mock").join(getReducedServiceName(service)).join("server"));
+  }
+
+  @Override
+  public String getMockServiceVarName(Interface service) {
+    return localVarName(Name.from("mock").join(getReducedServiceName(service)));
+  }
+
+  @Override
+  public String getTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName =
+        symbolTable.getNewSymbol(
+            Name.upperCamel("Test", method.getParent().getSimpleName(), method.getSimpleName()));
+    return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String getExceptionTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName =
+        symbolTable.getNewSymbol(
+            Name.upperCamel(
+                "Test", method.getParent().getSimpleName(), method.getSimpleName(), "Error"));
+    return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return publicMethodName(identifier);
   }
 }

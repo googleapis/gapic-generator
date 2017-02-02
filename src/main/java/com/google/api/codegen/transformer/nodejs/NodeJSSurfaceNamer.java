@@ -15,14 +15,17 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.nodejs.NodeJSNameFormatter;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.js.JSNameFormatter;
+import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -34,28 +37,42 @@ import java.util.List;
 public class NodeJSSurfaceNamer extends SurfaceNamer {
   public NodeJSSurfaceNamer(String packageName) {
     super(
-        new NodeJSNameFormatter(),
+        new JSNameFormatter(),
         new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter(packageName)),
-        new NodeJSTypeTable(packageName),
+        new JSTypeTable(packageName),
         packageName);
   }
 
   /**
    * NodeJS uses a special format for ApiWrapperModuleName.
    *
-   * <p>The name for the module for this vkit module. This assumes that the service's full name will
-   * be in the format of 'google.some.apiname.version.ServiceName', and extracts the 'apiname' and
-   * 'version' part and combine them to lower-camelcased style (like pubsubV1).
+   * <p>The name for the module for this vkit module. This assumes that the package_name in the API
+   * config will be in the format of 'apiname.version', and extracts the 'apiname' and 'version'
+   * part and combine them to lower-camelcased style (like pubsubV1).
    *
    * <p>Based on {@link com.google.api.codegen.nodejs.NodeJSGapicContext#getModuleName}.
    */
-  public String getApiWrapperModuleName(Interface interfaze) {
-    List<String> names = Splitter.on(".").splitToList(interfaze.getFullName());
-    if (names.size() < 3) {
-      throw new IllegalArgumentException(interfaze.getFullName());
+  @Override
+  public String getApiWrapperModuleName() {
+    List<String> names = Splitter.on(".").splitToList(getPackageName());
+    if (names.size() < 2) {
+      return getPackageName();
     }
+    return names.get(0) + Name.from(names.get(1)).toUpperCamel();
+  }
 
-    return names.get(names.size() - 3) + Name.from(names.get(names.size() - 2)).toUpperCamel();
+  @Override
+  public String getApiWrapperModuleVersion() {
+    List<String> names = Splitter.on(".").splitToList(getPackageName());
+    if (names.size() < 2) {
+      return null;
+    }
+    return names.get(names.size() - 1);
+  }
+
+  @Override
+  public String getApiWrapperClassConstructorName(Interface interfaze) {
+    return publicFieldName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
   }
 
   @Override
@@ -68,13 +85,15 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
-    return inittedConstantName(Name.from(collectionConfig.getEntityName(), "name", "template"));
+  public String getPathTemplateName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
   }
 
   @Override
-  public String getFormatFunctionName(CollectionConfig collectionConfig) {
-    return staticFunctionName(Name.from(collectionConfig.getEntityName(), "path"));
+  public String getFormatFunctionName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
   @Override
@@ -82,6 +101,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return "./resources/"
         + Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
+  }
+
+  public String getClientFileName(Interface service) {
+    return Name.upperCamel(service.getSimpleName()).join("client").toLowerUnderscore();
   }
 
   @Override
@@ -111,5 +134,21 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcClientImportName(Interface service) {
     return "grpc-" + NamePath.dotted(service.getFile().getFullName()).toDashed();
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    Field field = fieldConfig.getField();
+    return Name.from(field.getSimpleName()).toLowerCamel();
+  }
+
+  @Override
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return identifier.toLowerCamel();
+  }
+
+  @Override
+  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+    return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 }

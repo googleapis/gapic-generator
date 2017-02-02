@@ -8,7 +8,63 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.model.GoogleServiceAccount;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class StoragetransferExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    Storagetransfer storagetransferService = createStoragetransferService();
+    Storagetransfer.V1.GetGoogleServiceAccount request = storagetransferService.v1().getGoogleServiceAccount();
+
+    GoogleServiceAccount response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Storagetransfer createStoragetransferService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-StoragetransferSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Storage Transfer API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/storagetransfer
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -51,7 +107,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -64,63 +120,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
- * 3. Install the Java client library on Maven or Gradle. Check installation
- *    instructions at https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/storagetransfer/v1/java
- */
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.storagetransfer.v1.Storagetransfer;
-import com.google.api.services.storagetransfer.v1.model.GoogleServiceAccount;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
-
-public class StoragetransferExample {
-  public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The ID of the Google Developers Console project that the Google service account is associated with.
-    // Required.
-    String projectId = "";  // TODO: Update placeholder value.
-
-    Storagetransfer storagetransferService = createStoragetransferService();
-    Storagetransfer.GoogleServiceAccounts.Get request = storagetransferService.googleServiceAccounts().get(projectId);
-
-    GoogleServiceAccount response = request.execute();
-
-    // TODO: Change code below to process the `response` object:
-    System.out.println(response);
-  }
-
-  public static Storagetransfer createStoragetransferService() throws IOException, GeneralSecurityException {
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential =
-          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
-        .build();
-  }
-}
-/*
- * BEFORE RUNNING:
- * ---------------
- * 1. If not already done, enable the Google Storage Transfer API
- *    and check the quota for your project at
- *    https://console.developers.google.com/apis/api/storagetransfer
- * 2. This sample uses Application Default Credentials for authentication.
- *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -162,7 +164,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -175,7 +177,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -217,7 +221,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -230,7 +234,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -278,7 +284,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -291,7 +297,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -338,7 +346,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -351,7 +359,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -389,7 +399,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -402,7 +412,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -440,7 +452,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -453,7 +465,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -495,7 +509,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -508,7 +522,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -559,7 +575,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -572,7 +588,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -614,7 +632,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }
@@ -627,7 +645,9 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk and run
- *    `gcloud beta auth application-default login`
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
  * 3. Install the Java client library on Maven or Gradle. Check installation
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
@@ -669,7 +689,7 @@ public class StoragetransferExample {
     }
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("Google Cloud Platform Sample")
+        .setApplicationName("Google-StoragetransferSample/0.1")
         .build();
   }
 }

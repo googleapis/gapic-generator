@@ -7,31 +7,30 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# Required. The resource name of the log to delete:
+# "projects/[PROJECT_ID]/logs/[LOG_ID]"
+# "organizations/[ORGANIZATION_ID]/logs/[LOG_ID]"
+# [LOG_ID] must be URL-encoded. For example, "projects/my-project-id/logs/syslog",
+# "organizations/1234567890/logs/cloudresourcemanager.googleapis.com%2Factivity". For more
+# information about log names, see LogEntry.
+log_name = ''  # TODO: Update placeholder value.
 
-# TODO: Change placeholder below to desired parameter value for the `delete` method:
-
-# Required. The resource name of the log to delete.  Example:
-# `"projects/my-project/logs/syslog"`.
-logName = 'billingAccounts/{MY-BILLINGACCOUNT}/logs/{MY-LOG}'
-
-
-request = service.billingAccounts().logs().delete(logName=logName)
+request = service.billingAccounts().logs().delete(logName=log_name)
 request.execute()
 """
 BEFORE RUNNING:
@@ -41,8 +40,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -51,22 +52,53 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# Required. The resource name that owns the logs:
+# "projects/[PROJECT_ID]"
+# "organizations/[ORGANIZATION_ID]"
+parent = ''  # TODO: Update placeholder value.
+
+request = service.billingAccounts().logs().list(parent=parent)
+while request is not None:
+    response = request.execute()
+
+    for item in response['logNames']:
+        # TODO: Change code below to process each `item` resource:
+        pprint(item)
+
+    request = service.billingAccounts().logs().list_next(previous_request=request, previous_response=response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Stackdriver Logging API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/logging
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 list_log_entries_request_body = {
-    # TODO: Add desired entries of the request body.
+    # TODO: Add desired entries to the request body.
 }
 
-
-entries = service.entries()
-request = entries.list(body=list_log_entries_request_body)
+request = service.entries().list(body=list_log_entries_request_body)
 while request is not None:
     response = request.execute()
 
@@ -83,8 +115,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -93,19 +127,13 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
-
 write_log_entries_request_body = {
-    # TODO: Add desired entries of the request body.
+    # TODO: Add desired entries to the request body.
 }
-
 
 request = service.entries().write(body=write_log_entries_request_body)
 response = request.execute()
@@ -120,8 +148,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -130,17 +160,11 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
-
-monitoredResourceDescriptors = service.monitoredResourceDescriptors()
-request = monitoredResourceDescriptors.list()
+request = service.monitoredResourceDescriptors().list()
 while request is not None:
     response = request.execute()
 
@@ -148,7 +172,7 @@ while request is not None:
         # TODO: Change code below to process each `monitored_resource_descriptor` resource:
         pprint(monitored_resource_descriptor)
 
-    request = monitoredResourceDescriptors.list_next(previous_request=request, previous_response=response)
+    request = service.monitoredResourceDescriptors().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -157,31 +181,30 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# Required. The resource name of the log to delete:
+# "projects/[PROJECT_ID]/logs/[LOG_ID]"
+# "organizations/[ORGANIZATION_ID]/logs/[LOG_ID]"
+# [LOG_ID] must be URL-encoded. For example, "projects/my-project-id/logs/syslog",
+# "organizations/1234567890/logs/cloudresourcemanager.googleapis.com%2Factivity". For more
+# information about log names, see LogEntry.
+log_name = ''  # TODO: Update placeholder value.
 
-# TODO: Change placeholder below to desired parameter value for the `delete` method:
-
-# Required. The resource name of the log to delete.  Example:
-# `"projects/my-project/logs/syslog"`.
-logName = 'organizations/{MY-ORGANIZATION}/logs/{MY-LOG}'
-
-
-request = service.organizations().logs().delete(logName=logName)
+request = service.organizations().logs().delete(logName=log_name)
 request.execute()
 """
 BEFORE RUNNING:
@@ -191,42 +214,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
-3. Install the Python client library for Google APIs by running
-   `pip install --upgrade google-api-python-client`
-"""
-from googleapiclient import discovery
-from oauth2client.client import GoogleCredentials
-
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
-credentials = GoogleCredentials.get_application_default()
-
-service = discovery.build('logging', 'v2beta1', credentials=credentials)
-
-
-# TODO: Change placeholder below to desired parameter value for the `delete` method:
-
-# Required. The resource name of the log to delete.  Example:
-# `"projects/my-project/logs/syslog"`.
-logName = 'projects/{MY-PROJECT}/logs/{MY-LOG}'
-
-
-request = service.projects().logs().delete(logName=logName)
-request.execute()
-"""
-BEFORE RUNNING:
----------------
-1. If not already done, enable the Stackdriver Logging API
-   and check the quota for your project at
-   https://console.developers.google.com/apis/api/logging
-2. This sample uses Application Default Credentials for authentication.
-   If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -235,27 +226,127 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# Required. The resource name that owns the logs:
+# "projects/[PROJECT_ID]"
+# "organizations/[ORGANIZATION_ID]"
+parent = ''  # TODO: Update placeholder value.
 
-# TODO: Change placeholder below to desired parameter value for the `create` method:
+request = service.organizations().logs().list(parent=parent)
+while request is not None:
+    response = request.execute()
 
-# The resource name of the project in which to create the metric.
-# Example: `"projects/my-project-id"`.
+    for item in response['logNames']:
+        # TODO: Change code below to process each `item` resource:
+        pprint(item)
+
+    request = service.organizations().logs().list_next(previous_request=request, previous_response=response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Stackdriver Logging API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/logging
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('logging', 'v2beta1', credentials=credentials)
+
+# Required. The resource name of the log to delete:
+# "projects/[PROJECT_ID]/logs/[LOG_ID]"
+# "organizations/[ORGANIZATION_ID]/logs/[LOG_ID]"
+# [LOG_ID] must be URL-encoded. For example, "projects/my-project-id/logs/syslog",
+# "organizations/1234567890/logs/cloudresourcemanager.googleapis.com%2Factivity". For more
+# information about log names, see LogEntry.
+log_name = ''  # TODO: Update placeholder value.
+
+request = service.projects().logs().delete(logName=log_name)
+request.execute()
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Stackdriver Logging API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/logging
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('logging', 'v2beta1', credentials=credentials)
+
+# Required. The resource name that owns the logs:
+# "projects/[PROJECT_ID]"
+# "organizations/[ORGANIZATION_ID]"
+parent = ''  # TODO: Update placeholder value.
+
+request = service.projects().logs().list(parent=parent)
+while request is not None:
+    response = request.execute()
+
+    for item in response['logNames']:
+        # TODO: Change code below to process each `item` resource:
+        pprint(item)
+
+    request = service.projects().logs().list_next(previous_request=request, previous_response=response)
+"""
+BEFORE RUNNING:
+---------------
+1. If not already done, enable the Stackdriver Logging API
+   and check the quota for your project at
+   https://console.developers.google.com/apis/api/logging
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
+3. Install the Python client library for Google APIs by running
+   `pip install --upgrade google-api-python-client`
+"""
+from pprint import pprint
+
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+credentials = GoogleCredentials.get_application_default()
+
+service = discovery.build('logging', 'v2beta1', credentials=credentials)
+
+# The resource name of the project in which to create the metric:
+# "projects/[PROJECT_ID]"
 # The new metric must be provided in the request.
-parent = 'projects/{MY-PROJECT}'
-
+parent = ''  # TODO: Update placeholder value.
 
 log_metric_body = {
-    # TODO: Add desired entries of the request body.
+    # TODO: Add desired entries to the request body.
 }
-
 
 request = service.projects().metrics().create(parent=parent, body=log_metric_body)
 response = request.execute()
@@ -270,31 +361,26 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# The resource name of the metric to delete:
+# "projects/[PROJECT_ID]/metrics/[METRIC_ID]"
+metric_name = ''  # TODO: Update placeholder value.
 
-# TODO: Change placeholder below to desired parameter value for the `delete` method:
-
-# The resource name of the metric to delete.
-# Example: `"projects/my-project-id/metrics/my-metric-id"`.
-metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
-
-
-request = service.projects().metrics().delete(metricName=metricName)
+request = service.projects().metrics().delete(metricName=metric_name)
 request.execute()
 """
 BEFORE RUNNING:
@@ -304,8 +390,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -314,23 +402,15 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# The resource name of the desired metric:
+# "projects/[PROJECT_ID]/metrics/[METRIC_ID]"
+metric_name = ''  # TODO: Update placeholder value.
 
-# TODO: Change placeholder below to desired parameter value for the `get` method:
-
-# The resource name of the desired metric.
-# Example: `"projects/my-project-id/metrics/my-metric-id"`.
-metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
-
-
-request = service.projects().metrics().get(metricName=metricName)
+request = service.projects().metrics().get(metricName=metric_name)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -343,8 +423,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -353,24 +435,15 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# Required. The name of the project containing the metrics:
+# "projects/[PROJECT_ID]"
+parent = ''  # TODO: Update placeholder value.
 
-# TODO: Change placeholder below to desired parameter value for the `list` method:
-
-# Required. The resource name containing the metrics.
-# Example: `"projects/my-project-id"`.
-parent = 'projects/{MY-PROJECT}'
-
-
-metrics = service.projects().metrics()
-request = metrics.list(parent=parent)
+request = service.projects().metrics().list(parent=parent)
 while request is not None:
     response = request.execute()
 
@@ -378,7 +451,7 @@ while request is not None:
         # TODO: Change code below to process each `log_metric` resource:
         pprint(log_metric)
 
-    request = metrics.list_next(previous_request=request, previous_response=response)
+    request = service.projects().metrics().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -387,8 +460,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -397,31 +472,22 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `update` method:
-
-# The resource name of the metric to update.
-# Example: `"projects/my-project-id/metrics/my-metric-id"`.
-# The updated metric must be provided in the request and have the
-# same identifier that is specified in `metricName`.
-# If the metric does not exist, it is created.
-metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
-
+# The resource name of the metric to update:
+# "projects/[PROJECT_ID]/metrics/[METRIC_ID]"
+# The updated metric must be provided in the request and it's name field must be the same as
+# [METRIC_ID] If the metric does not exist in [PROJECT_ID], then a new metric is created.
+metric_name = ''  # TODO: Update placeholder value.
 
 log_metric_body = {
-    # TODO: Add desired entries of the request body.
+    # TODO: Add desired entries to the request body. All existing entries
+    # will be replaced.
 }
 
-
-request = service.projects().metrics().update(metricName=metricName, body=log_metric_body)
+request = service.projects().metrics().update(metricName=metric_name, body=log_metric_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -434,8 +500,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -444,27 +512,19 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `create` method:
-
-# Required. The resource in which to create the sink.
-# Example: `"projects/my-project-id"`.
-# The new sink must be provided in the request.
-parent = 'projects/{MY-PROJECT}'
-
+# Required. The resource in which to create the sink:
+# "projects/[PROJECT_ID]"
+# "organizations/[ORGANIZATION_ID]"
+# Examples: "projects/my-logging-project", "organizations/123456789".
+parent = ''  # TODO: Update placeholder value.
 
 log_sink_body = {
-    # TODO: Add desired entries of the request body.
+    # TODO: Add desired entries to the request body.
 }
-
 
 request = service.projects().sinks().create(parent=parent, body=log_sink_body)
 response = request.execute()
@@ -479,33 +539,30 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
+
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# Required. The full resource name of the sink to delete, including the parent resource and the sink
+# identifier:
+# "projects/[PROJECT_ID]/sinks/[SINK_ID]"
+# "organizations/[ORGANIZATION_ID]/sinks/[SINK_ID]"
+# It is an error if the sink does not exist. Example: "projects/my-project-id/sinks/my-sink-id". It
+# is an error if the sink does not exist.
+sink_name = ''  # TODO: Update placeholder value.
 
-# TODO: Change placeholder below to desired parameter value for the `delete` method:
-
-# Required. The resource name of the sink to delete, including the parent
-# resource and the sink identifier.  Example:
-# `"projects/my-project-id/sinks/my-sink-id"`.  It is an error if the sink
-# does not exist.
-sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
-
-
-request = service.projects().sinks().delete(sinkName=sinkName)
+request = service.projects().sinks().delete(sinkName=sink_name)
 request.execute()
 """
 BEFORE RUNNING:
@@ -515,8 +572,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -525,23 +584,17 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# Required. The parent resource name of the sink:
+# "projects/[PROJECT_ID]/sinks/[SINK_ID]"
+# "organizations/[ORGANIZATION_ID]/sinks/[SINK_ID]"
+# Example: "projects/my-project-id/sinks/my-sink-id".
+sink_name = ''  # TODO: Update placeholder value.
 
-# TODO: Change placeholder below to desired parameter value for the `get` method:
-
-# Required. The resource name of the sink to return.
-# Example: `"projects/my-project-id/sinks/my-sink-id"`.
-sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
-
-
-request = service.projects().sinks().get(sinkName=sinkName)
+request = service.projects().sinks().get(sinkName=sink_name)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:
@@ -554,8 +607,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -564,24 +619,15 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
+# Required. The parent resource whose sinks are to be listed. Examples:
+# "projects/my-logging-project", "organizations/123456789".
+parent = ''  # TODO: Update placeholder value.
 
-# TODO: Change placeholder below to desired parameter value for the `list` method:
-
-# Required. The cloud resource containing the sinks.
-# Example: `"projects/my-logging-project"`.
-parent = 'projects/{MY-PROJECT}'
-
-
-sinks = service.projects().sinks()
-request = sinks.list(parent=parent)
+request = service.projects().sinks().list(parent=parent)
 while request is not None:
     response = request.execute()
 
@@ -589,7 +635,7 @@ while request is not None:
         # TODO: Change code below to process each `log_sink` resource:
         pprint(log_sink)
 
-    request = sinks.list_next(previous_request=request, previous_response=response)
+    request = service.projects().sinks().list_next(previous_request=request, previous_response=response)
 """
 BEFORE RUNNING:
 ---------------
@@ -598,8 +644,10 @@ BEFORE RUNNING:
    https://console.developers.google.com/apis/api/logging
 2. This sample uses Application Default Credentials for authentication.
    If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run
-   `gcloud beta auth application-default login`
+   https://cloud.google.com/sdk and run
+   `gcloud beta auth application-default login`.
+   For more information, see
+   https://developers.google.com/identity/protocols/application-default-credentials
 3. Install the Python client library for Google APIs by running
    `pip install --upgrade google-api-python-client`
 """
@@ -608,29 +656,23 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-
-# Use Application Default Credentials for authentication when running locally.
-# For more information, see:
-# https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
-
-# TODO: Change placeholder below to desired parameter value for the `update` method:
-
-# Required. The resource name of the sink to update, including the parent
-# resource and the sink identifier.  If the sink does not exist, this method
-# creates the sink.  Example: `"projects/my-project-id/sinks/my-sink-id"`.
-sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
-
+# Required. The full resource name of the sink to update, including the parent resource and the sink
+# identifier:
+# "projects/[PROJECT_ID]/sinks/[SINK_ID]"
+# "organizations/[ORGANIZATION_ID]/sinks/[SINK_ID]"
+# Example: "projects/my-project-id/sinks/my-sink-id".
+sink_name = ''  # TODO: Update placeholder value.
 
 log_sink_body = {
-    # TODO: Add desired entries of the request body.
+    # TODO: Add desired entries to the request body. All existing entries
+    # will be replaced.
 }
 
-
-request = service.projects().sinks().update(sinkName=sinkName, body=log_sink_body)
+request = service.projects().sinks().update(sinkName=sink_name, body=log_sink_body)
 response = request.execute()
 
 # TODO: Change code below to process the `response` dict:

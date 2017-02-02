@@ -7,12 +7,14 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var cloudtrace = google.cloudtrace('v1');
+var cloudTrace = google.cloudtrace('v1');
 
 authorize(function(authClient) {
   var request = {
@@ -20,14 +22,14 @@ authorize(function(authClient) {
     projectId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body. Only added properties
+      // TODO: Add desired properties to the request body. Only these properties
       // will be changed.
     },
 
     auth: authClient
   };
 
-  cloudtrace.projects.patchTraces(request, function(err) {
+  cloudTrace.projects.patchTraces(request, function(err) {
     if (err) {
       console.log(err);
       return;
@@ -56,12 +58,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var cloudtrace = google.cloudtrace('v1');
+var cloudTrace = google.cloudtrace('v1');
 
 authorize(function(authClient) {
   var request = {
@@ -74,7 +78,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  cloudtrace.projects.traces.get(request, function(err, response) {
+  cloudTrace.projects.traces.get(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -106,12 +110,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var cloudtrace = google.cloudtrace('v1');
+var cloudTrace = google.cloudtrace('v1');
 
 authorize(function(authClient) {
   var request = {
@@ -138,11 +144,11 @@ authorize(function(authClient) {
 
     if (response.nextPageToken) {
       request.pageToken = response.nextPageToken;
-      cloudtrace.projects.traces.list(request, handlePage);
+      cloudTrace.projects.traces.list(request, handlePage);
     }
   };
 
-  cloudtrace.projects.traces.list(request, handlePage);
+  cloudTrace.projects.traces.list(request, handlePage);
 });
 
 function authorize(callback) {

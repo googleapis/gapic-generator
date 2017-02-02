@@ -35,6 +35,11 @@
   var configData = require('./{@context.upperCamelToLowerUnderscore(service.getSimpleName)}_client_config');
   var extend = require('extend');
   var gax = require('google-gax');
+  @switch context.getStubs(service).size.toString
+  @case "1"
+  @default
+    var merge = require('lodash.merge');
+  @end
 @end
 
 @private serviceClass(service)
@@ -71,40 +76,54 @@
         @end
 
 
-        var grpcClients = {
-        @join stub : stubs on ",".add(BREAK)
-          {@""}  {@stub.grpcClientVariableName}: {@stub.grpcClientVariableName}
+        @switch stubs.size.toString
+        @case "1"
+        @default
+          var grpcClients = merge(
+            {},
+            @join stub : stubs on ", ".add(BREAK)
+              {@stub.grpcClientVariableName}
+            @end
+          );
         @end
-        };
-      @end
 
-      /**
-       * Build a new instance of {@@link {@apiName}}.
-       *
-       * @@param {Object=} opts - The optional parameters.
-       * @@param {String=} opts.servicePath
-       *   The domain name of the API remote host.
-       * @@param {number=} opts.port
-       *   The port on which to connect to the remote host.
-       * @@param {grpc.ClientCredentials=} opts.sslCreds
-       *   A ClientCredentials for use with an SSL-enabled channel.
-       * @@param {Object=} opts.clientConfig
-       *   The customized config to build the call settings. See
-       *   {@@link gax.constructSettings} for the format.
-       * @@param {number=} opts.appName
-       *   The codename of the calling service.
-       * @@param {String=} opts.appVersion
-       *   The version of the calling service.
-       */
-      this.{@context.upperCamelToLowerCamel(apiName)} = function(opts) {
-        return new {@apiName}(gaxGrpc, grpcClients, opts);
-      };
-      extend(this.{@context.upperCamelToLowerCamel(apiName)}, {@apiName});
-    }
+        /**
+         * Build a new instance of {@@link {@apiName}}.
+         *
+         * @@param {Object=} opts - The optional parameters.
+         * @@param {String=} opts.servicePath
+         *   The domain name of the API remote host.
+         * @@param {number=} opts.port
+         *   The port on which to connect to the remote host.
+         * @@param {grpc.ClientCredentials=} opts.sslCreds
+         *   A ClientCredentials for use with an SSL-enabled channel.
+         * @@param {Object=} opts.clientConfig
+         *   The customized config to build the call settings. See
+         *   {@@link gax.constructSettings} for the format.
+         * @@param {number=} opts.appName
+         *   The codename of the calling service.
+         * @@param {String=} opts.appVersion
+         *   The version of the calling service.
+         */
+        this.{@context.upperCamelToLowerCamel(apiName)} = function(opts) {
+          return new {@apiName}(gaxGrpc, {@clientsParamName(stubs)}, opts);
+        };
+        extend(this.{@context.upperCamelToLowerCamel(apiName)}, {@apiName});
+      }
+    @end
     module.exports = {@apiName}Builder;
     module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
     module.exports.ALL_SCOPES = ALL_SCOPES;
   @end
+@end
+
+@private clientsParamName(stubs)
+  @switch stubs.size.toString
+    @case "1"
+      {@stubs.iterator.next.grpcClientVariableName}
+    @default
+      grpcClients
+    @end
 @end
 
 @private constantSection(service)
@@ -114,20 +133,27 @@
     var DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
 
     var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
-
     @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
 
       var PAGE_DESCRIPTORS = {
         @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
           @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
-               requestToken = context.propertyName(pageStreaming.getRequestTokenField()), \
-               responseToken = context.propertyName(pageStreaming.getResponseTokenField()), \
-               resources = context.propertyName(pageStreaming.getResourcesField())
+                requestToken = context.propertyName(pageStreaming.getRequestTokenField()), \
+                responseToken = context.propertyName(pageStreaming.getResponseTokenField()), \
+                resources = context.propertyName(pageStreaming.getResourcesField())
               {@methodName(method)}: new gax.PageDescriptor(
                   '{@requestToken}',
                   '{@responseToken}',
                   '{@resources}')
           @end
+        @end
+      };
+    @end
+    @if context.filterStreamingMethods(service)
+
+      var STREAM_DESCRIPTORS = {
+        @join method : context.filterStreamingMethods(service) on {@", "}.add(BREAK)
+          {@methodName(method)}: new gax.StreamDescriptor({@streamType(method)})
         @end
       };
     @end
@@ -144,22 +170,24 @@
   @end
 @end
 
+@private streamType(method)
+  @if method.getRequestStreaming()
+    @if method.getResponseStreaming()
+      gax.StreamType.BIDI_STREAMING
+    @else
+      gax.StreamType.CLIENT_STREAMING
+    @end
+  @else
+    gax.StreamType.SERVER_STREAMING
+  @end
+@end
+
 @private constructDefaults(service)
   @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
     var defaults = gaxGrpc.constructSettings(
         '{@service.getFullName}',
         configData,
         clientConfig,
-        @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
-          PAGE_DESCRIPTORS,
-        @else
-          null,
-        @end
-        @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
-          bundleDescriptors,
-        @else
-          null,
-        @end
         {'x-goog-api-client': googleApiClient});
   @end
 @end
@@ -184,18 +212,19 @@
      * @@see {@@link {@context.upperCamelToLowerCamel(serviceName)}}
      *
      * @@example
-     @let moduleName = context.getModuleName(service)
-       @if context.isGcloud
-       * var {@moduleName} = require('{@context.getApiConfig().getPackageName()}').{@context.getApiVersion(service)}({
-       *   // optional auth parameters.
-       * });
+     @let moduleName = context.getModuleName(), \
+          apiVersion = context.getApiVersion()
+       @if apiVersion
+         * var {@moduleName} = require('{@context.getRequirePackageName()}').{@context.getApiVersion()}({
+         *   // optional auth parameters.
+         * });
        @else
-       * var {@moduleName} = require('{@context.getApiConfig().getPackageName()}')({
-       *   // optional auth parameters.
-       * });
+         * var {@moduleName} = require('{@context.getRequirePackageName()}')({
+         *   // optional auth parameters.
+         * });
        @end
 
-       * var api = {@moduleName}.{@context.upperCamelToLowerCamel(serviceName)}();
+       * var client = {@moduleName}.{@context.upperCamelToLowerCamel(serviceName)}();
      @end
      *
      * @@class
@@ -214,13 +243,15 @@
         CODE_GEN_NAME_VERSION,
         'gax/' + gax.version,
         'nodejs/' + process.version].join(' ');
+      @let methods = context.getSupportedMethods(service), \
+           bundlingMethods = context.messages.filterBundlingMethods(ifaceConfig, methods), \
+           longrunningMethods = context.messages.filterLongrunningMethods(ifaceConfig, methods)
+        @if bundlingMethods
 
-      @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
-
-        var bundleDescriptors = {
-          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
-            @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
-              {@methodName(method)}: new gax.BundleDescriptor(
+          var bundleDescriptors = {
+            @join method : bundlingMethods on {@", "}.add(BREAK)
+              @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
+                {@methodName(method)}: new gax.BundleDescriptor(
                   '{@bundling.getBundledField().getSimpleName()}',
                   [
                     @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
@@ -233,17 +264,47 @@
                     null,
                   @end
                   {@context.getByteLengthFunction(service, method, bundling.getBundledField().getType())})
+              @end
             @end
-          @end
-        };
+          };
+        @end
+
+        @if longrunningMethods
+
+          this.operationsClient = new gax.lro({
+            auth: gaxGrpc.auth,
+            grpc: gaxGrpc.grpc
+          }).operationsClient({
+            servicePath: servicePath,
+            port: port,
+            sslCreds: sslCreds,
+            clientConfig: clientConfig,
+            appName: appName,
+            appVersion: appVersion
+          });
+          
+          this.longrunningDescriptors = {
+            @join method : longrunningMethods on {@", "}.add(BREAK)
+              @let longrunningConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method).getLongRunningConfig;
+                {@methodName(method)}: new gax.LongrunningDescriptor(
+                  this.operationsClient,
+                  grpcClients.{@longrunningConfig.getReturnType}.decode,
+                  grpcClients.{@longrunningConfig.getMetadataType}.decode)
+              @end
+            @end
+          };
+        @end
       @end
+
       {@constructDefaults(service)}
 
+      var self = this;
+      
       @join stub : stubs on BREAK.add(BREAK)
         var {@stub.name} = gaxGrpc.createStub(
             servicePath,
             port,
-            grpcClients.{@stub.grpcClientVariableName}.{@stub.fullyQualifiedType},
+            grpcClients.{@stub.fullyQualifiedType},
             {sslCreds: sslCreds});
         var {@stub.stubMethodsArrayName} = [
           @join method : {@stub.methodNames} on {@","}.add(BREAK)
@@ -251,14 +312,28 @@
           @end
         ];
         {@stub.stubMethodsArrayName}.forEach(function(methodName) {
-          this['_' + methodName] = gax.createApiCall(
+          self['_' + methodName] = gax.createApiCall(
             {@stub.name}.then(function({@stub.name}) {
-              return {@stub.name}[methodName].bind({@stub.name});
+              return function() {
+                var args = Array.prototype.slice.call(arguments, 0);
+                return {@stub.name}[methodName].apply({@stub.name}, args);
+              };
             }),
-            defaults[methodName]);
-        }.bind(this));
+            defaults[methodName],
+            {@getDescriptors(service)});
+        });
       @end
     }
+  @end
+@end
+
+@private getDescriptors(service)
+  @if context.validDescriptorsNames(service)
+    @join descriptor : context.validDescriptorsNames(service) on {@" || "}
+      {@descriptor}[methodName]
+    @end
+  @else
+    null
   @end
 @end
 
@@ -267,14 +342,14 @@
 @end
 
 @private pathTemplateSection(service)
-  @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+  @if context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
 
       var {@pathTemplateName(collectionConfig)} = new gax.PathTemplate(
           '{@collectionConfig.getNamePattern}');
     @end
 
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
 
       {@createResourceFunction(service, collectionConfig)}
 
@@ -328,13 +403,13 @@
 
 @private createResourceFunctionParams(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@context.lowerUnderscoreToLowerCamel(param)}
+    {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
   @end
 @end
 
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    {@param}: {@context.lowerUnderscoreToLowerCamel(param)}
+    {@param}: {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
   @end
 @end
 
@@ -361,55 +436,119 @@
 
 @private flattenedMethod(service, method)
   @let serviceName = context.getApiWrapperName(service), \
-       documentation = comments(context.methodComments(service, method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
        apiMethodView = context.getApiMethodView(service, method)
-    @if documentation
-      /**
-       {@documentation}
+    /**
+     @if context.defaultComments(method)
+       {@comments(context.defaultComments(method))}
        *
-       * @@example
-       *
-       @join sampleLine : util.getDocLines({@decorateSampleCodeSegment(apiMethodView)})
-         {@""}* {@sampleLine}
-       @end
-       */
-    @end
-
-    {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options, callback) {
-      if (options instanceof Function && callback === undefined) {
-        callback = options;
-        options = {};
-      }
+     @end
+     {@comments(util.getDocLines(context.paramComments(service, method)))}
+     {@comments(util.getDocLines(context.returnTypeComment(method, methodConfig)))}
+     *
+     * @@example
+     *
+     {@comments(util.getDocLines(decorateSampleCodeSegment(apiMethodView)))}
+     */
+    {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options{@callbackParams(apiMethodView)}) {
+      @switch apiMethodView.grpcStreamingType.toString
+      @case "ClientStreaming"
+        {@handleCallback()}
+      @case "NonStreaming"
+        {@handleCallback()}
+      @default
+      @end
       if (options === undefined) {
         options = {};
       }
-      return this._{@methodName(method)}({@requestObject(apiMethodView)}, options, callback);
+      {@maybeHandleRequest(apiMethodView)}
+      return this._{@methodName(method)}({@requestObject(apiMethodView)}options{@callbackParams(apiMethodView)});
     };
+    @switch apiMethodView.type.toString
+    @case "PagedOptionalArrayMethod"
+
+      /**
+       * Equivalent to {@@link {@methodName(method)}}, but returns a NodeJS Stream object.
+       *
+       * This fetches the paged responses for {@@link {@methodName(method)}} continuously
+       * and invokes the callback registered for 'data' event for each element in the
+       * responses.
+       *
+       * The returned object has 'end' method when no more elements are required.
+       *
+       * autoPaginate option will be ignored.
+       *
+       * @@see {@@link https://nodejs.org/api/stream.html}
+       *
+       {@comments(util.getDocLines(context.paramComments(service, method)))}
+       * @@return {Stream}
+       *   An object stream which emits {@context.typeDocument(methodConfig.getPageStreaming.getResourcesField.getType)} on 'data' event.
+       *
+       * @@example
+       *
+       {@comments(util.getDocLines(decorateSampleCode(apiMethodView, sampleCodePageStreaming(apiMethodView))))}
+       */
+      {@serviceName}.prototype.{@methodName(method)}Stream = function({@methodRequestParameters(apiMethodView)}options) {
+        if (options === undefined) {
+          options = {};
+        }
+        {@maybeHandleRequest(apiMethodView)}
+        return PAGE_DESCRIPTORS.{@methodName(method)}.createStream(this._{@methodName(method)}, {@requestObject(apiMethodView)}options);
+      };
+    @default
+    @end
+  @end
+@end
+
+@private handleCallback()
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+@end
+
+@private maybeHandleRequest(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ClientStreaming"
+  @case "BidiStreaming"
+  @default
+    @if and(apiMethodView.requiredRequestObjectParams.isEmpty, \
+            apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty)
+      if (request === undefined) {
+        request = {};
+      }
+    @end
+  @end
+@end
+
+@private callbackParams(apiMethodView)
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ClientStreaming"
+    , callback
+  @case "NonStreaming"
+    , callback
+  @default
   @end
 @end
 
 @private requestObject(apiMethodView)
-  @if apiMethodView.requiredRequestObjectParams.isEmpty
-    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
-      {}
-    @else
-      request
-    @end
-  @else
-    request
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ServerStreaming"
+    request, {@""}
+  @case "NonStreaming"
+    request, {@""}
+  @default
   @end
 @end
 
 @private methodRequestParameters(apiMethodView)
-  @if apiMethodView.requiredRequestObjectParams.isEmpty
-    @if apiMethodView.optionalRequestObjectParamsNoPageToken.isEmpty
-    @else
-      request, {@""}
-    @end
-  @else
+  @switch apiMethodView.grpcStreamingType.toString
+  @case "ServerStreaming"
     request, {@""}
+  @case "NonStreaming"
+    request, {@""}
+  @default
   @end
 @end

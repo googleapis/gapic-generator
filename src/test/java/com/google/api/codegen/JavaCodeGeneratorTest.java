@@ -26,9 +26,13 @@ import org.junit.runners.Parameterized.Parameters;
 public class JavaCodeGeneratorTest extends GapicTestBase {
 
   public JavaCodeGeneratorTest(
-      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-    super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.java.JavaContextCommon.class, "");
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String packageConfigFileName,
+      String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
+    getTestDataLocator().addTestDataSource(getClass(), "java");
   }
 
   /**

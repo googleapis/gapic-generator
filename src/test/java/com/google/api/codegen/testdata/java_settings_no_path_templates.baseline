@@ -16,15 +16,16 @@
  */
 package com.google.gcloud.example;
 
-import com.google.api.gax.core.ConnectionSettings;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.RetrySettings;
-import com.google.api.gax.grpc.CallContext;
-import com.google.api.gax.grpc.PagedListDescriptor;
-import com.google.api.gax.grpc.PagedListResponseFactory;
-import com.google.api.gax.grpc.ServiceApiSettings;
+import com.google.api.gax.grpc.ChannelProvider;
+import com.google.api.gax.grpc.ClientSettings;
+import com.google.api.gax.grpc.ExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingChannelProvider;
+import com.google.api.gax.grpc.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.SimpleCallSettings;
 import com.google.api.gax.grpc.UnaryCallSettings;
-import com.google.api.gax.grpc.UnaryCallable;
 import com.google.auth.Credentials;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -34,19 +35,22 @@ import com.google.common.collect.Sets;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.example.noPathTemplates.v1.NoTemplatesAPIServiceGrpc;
 import com.google.protobuf.Empty;
+import com.google.protobuf.ExperimentalApi;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
 import org.joda.time.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
- * Settings class to configure an instance of {@link NoTemplatesApiServiceApi}.
+ * Settings class to configure an instance of {@link NoTemplatesApiServiceClient}.
  */
-@javax.annotation.Generated("by GAPIC")
-public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
+@Generated("by GAPIC")
+@ExperimentalApi
+public class NoTemplatesApiServiceSettings extends ClientSettings {
 
   /**
    * The default port of the service.
@@ -63,11 +67,37 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
     return incrementSettings;
   }
 
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return InstantiatingExecutorProvider.newBuilder();
+  }
+
   /**
    * Returns the default service port.
    */
   public static int getDefaultServicePort() {
     return DEFAULT_SERVICE_PORT;
+  }
+
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        ;
+  }
+
+  /**
+   * Returns a builder for the default ChannelProvider for this service.
+   */
+  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
+    return InstantiatingChannelProvider.newBuilder()
+        .setPort(DEFAULT_SERVICE_PORT)
+        .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }
 
   /**
@@ -92,12 +122,8 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
   }
 
   private NoTemplatesApiServiceSettings(Builder settingsBuilder) throws IOException {
-    super(settingsBuilder.getChannelProvider(),
-          settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getGeneratorName(),
-          settingsBuilder.getGeneratorVersion(),
-          settingsBuilder.getClientLibName(),
-          settingsBuilder.getClientLibVersion());
+    super(settingsBuilder.getExecutorProvider(),
+          settingsBuilder.getChannelProvider());
 
     incrementSettings = settingsBuilder.incrementSettings().build();
   }
@@ -108,7 +134,7 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
   /**
    * Builder for NoTemplatesApiServiceSettings.
    */
-  public static class Builder extends ServiceApiSettings.Builder {
+  public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
     private final SimpleCallSettings.Builder<IncrementRequest, Empty> incrementSettings;
@@ -129,6 +155,7 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
     }
 
     private Builder() {
+      super((InstantiatingChannelProvider) null);
 
       incrementSettings = SimpleCallSettings.newBuilder(NoTemplatesAPIServiceGrpc.METHOD_INCREMENT);
 
@@ -157,48 +184,15 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
       );
     }
 
-    private static ConnectionSettings.Builder s_getDefaultConnectionSettingsBuilder() {
-      return ConnectionSettings.newBuilder()
-        .setPort(DEFAULT_SERVICE_PORT)
-        ;
-    }
     @Override
-    protected ConnectionSettings.Builder getDefaultConnectionSettingsBuilder() {
-      return s_getDefaultConnectionSettingsBuilder();
-    }
-    @Override
-    public Builder provideExecutorWith(ScheduledExecutorService executor, boolean shouldAutoClose) {
-      super.provideExecutorWith(executor, shouldAutoClose);
+    public Builder setExecutorProvider(ExecutorProvider executorProvider) {
+      super.setExecutorProvider(executorProvider);
       return this;
     }
+
     @Override
-    public Builder provideChannelWith(ManagedChannel channel, boolean shouldAutoClose) {
-      super.provideChannelWith(channel, shouldAutoClose);
-      return this;
-    }
-    @Override
-    public Builder provideChannelWith(ConnectionSettings settings) {
-      super.provideChannelWith(settings);
-      return this;
-    }
-    @Override
-    public Builder provideChannelWith(Credentials credentials) {
-      super.provideChannelWith(credentials);
-      return this;
-    }
-    @Override
-    public Builder provideChannelWith(List<String> scopes) {
-      super.provideChannelWith(scopes);
-      return this;
-    }
-    @Override
-    public Builder setGeneratorHeader(String name, String version) {
-      super.setGeneratorHeader(name, version);
-      return this;
-    }
-    @Override
-    public Builder setClientLibHeader(String name, String version) {
-      super.setClientLibHeader(name, version);
+    public Builder setChannelProvider(ChannelProvider channelProvider) {
+      super.setChannelProvider(channelProvider);
       return this;
     }
 
@@ -209,8 +203,8 @@ public class NoTemplatesApiServiceSettings extends ServiceApiSettings {
      *
      * Note: This method does not support applying settings to streaming methods.
      */
-    public Builder applyToAllApiMethods(UnaryCallSettings.Builder apiCallSettings) throws Exception {
-      super.applyToAllApiMethods(unaryMethodSettingsBuilders, apiCallSettings);
+    public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
+      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
       return this;
     }
 

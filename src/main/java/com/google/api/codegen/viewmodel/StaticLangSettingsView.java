@@ -15,8 +15,8 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class StaticLangSettingsView {
@@ -33,8 +33,25 @@ public abstract class StaticLangSettingsView {
 
   public abstract List<ApiCallSettingsView> callSettings();
 
-  @Nullable
-  public abstract List<ApiCallSettingsView> unaryCallSettings();
+  public List<ApiCallSettingsView> unaryCallSettings() {
+    ArrayList<ApiCallSettingsView> unaryCallSettings = new ArrayList<>();
+    for (ApiCallSettingsView settingsView : callSettings()) {
+      if (settingsView.type().serviceMethodType() == ServiceMethodType.UnaryMethod) {
+        unaryCallSettings.add(settingsView);
+      }
+    }
+    return unaryCallSettings;
+  }
+
+  public List<ApiCallSettingsView> longRunningCallSettings() {
+    ArrayList<ApiCallSettingsView> unaryCallSettings = new ArrayList<>();
+    for (ApiCallSettingsView settingsView : callSettings()) {
+      if (settingsView.type().serviceMethodType() == ServiceMethodType.LongRunningMethod) {
+        unaryCallSettings.add(settingsView);
+      }
+    }
+    return unaryCallSettings;
+  }
 
   public abstract List<PageStreamingDescriptorClassView> pageStreamingDescriptors();
 
@@ -70,8 +87,6 @@ public abstract class StaticLangSettingsView {
     public abstract Builder authScopes(Iterable<String> val);
 
     public abstract Builder callSettings(List<ApiCallSettingsView> callSettings);
-
-    public abstract Builder unaryCallSettings(List<ApiCallSettingsView> callSettings);
 
     public abstract Builder pageStreamingDescriptors(
         List<PageStreamingDescriptorClassView> generateDescriptorClasses);

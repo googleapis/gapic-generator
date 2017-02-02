@@ -9,7 +9,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -19,16 +21,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/datastore/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -40,14 +38,13 @@ func main() {
   }
 
   // The ID of the project against which to make the request.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := datastore.AllocateIdsRequest{
+  rb := &datastore.AllocateIdsRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := datastoreService.Projects.AllocateIds(projectId, &rb).Context(ctx).Do()
+  resp, err := datastoreService.Projects.AllocateIds(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -65,7 +62,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -75,16 +74,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/datastore/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -96,14 +91,13 @@ func main() {
   }
 
   // The ID of the project against which to make the request.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := datastore.BeginTransactionRequest{
+  rb := &datastore.BeginTransactionRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := datastoreService.Projects.BeginTransaction(projectId, &rb).Context(ctx).Do()
+  resp, err := datastoreService.Projects.BeginTransaction(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -121,7 +115,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -131,16 +127,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/datastore/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -152,14 +144,13 @@ func main() {
   }
 
   // The ID of the project against which to make the request.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := datastore.CommitRequest{
+  rb := &datastore.CommitRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := datastoreService.Projects.Commit(projectId, &rb).Context(ctx).Do()
+  resp, err := datastoreService.Projects.Commit(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -177,7 +168,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -187,16 +180,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/datastore/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -208,14 +197,13 @@ func main() {
   }
 
   // The ID of the project against which to make the request.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := datastore.LookupRequest{
+  rb := &datastore.LookupRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := datastoreService.Projects.Lookup(projectId, &rb).Context(ctx).Do()
+  resp, err := datastoreService.Projects.Lookup(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -233,7 +221,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -243,16 +233,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/datastore/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -264,14 +250,13 @@ func main() {
   }
 
   // The ID of the project against which to make the request.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := datastore.RollbackRequest{
+  rb := &datastore.RollbackRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := datastoreService.Projects.Rollback(projectId, &rb).Context(ctx).Do()
+  resp, err := datastoreService.Projects.Rollback(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -289,7 +274,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -299,16 +286,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/datastore/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -320,14 +303,13 @@ func main() {
   }
 
   // The ID of the project against which to make the request.
-  projectId := "{MY-PROJECT-ID}"
-  // TODO: Change placeholder value above.
+  projectId := ""  // TODO: Update placeholder value.
 
-  rb := datastore.RunQueryRequest{
+  rb := &datastore.RunQueryRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := datastoreService.Projects.RunQuery(projectId, &rb).Context(ctx).Do()
+  resp, err := datastoreService.Projects.RunQuery(projectId, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

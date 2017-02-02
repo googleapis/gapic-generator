@@ -90,8 +90,6 @@ public class BundlingTransformer {
     desc.subresponseSetFunction(
         namer.getFieldSetFunctionName(subresponseType, subresponseTypeName));
 
-    namer.addBundlingDescriptorImports(typeTable);
-
     return desc.build();
   }
 

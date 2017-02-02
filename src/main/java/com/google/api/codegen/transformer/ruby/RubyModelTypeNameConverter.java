@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
@@ -135,8 +136,7 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), "%s.new");
     }
     if (type.isEnum()) {
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s::" + enumValue.getSimpleName());
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(new TypeName(""), "nil");
   }
@@ -166,8 +166,20 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName) {
+      FieldConfig fieldConfig, String typedResourceShortName) {
     throw new UnsupportedOperationException(
         "getTypeNameForTypedResourceName not supported by Ruby");
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    throw new UnsupportedOperationException(
+        "getTypeNameForResourceNameElementType not supported by Ruby");
+  }
+
+  @Override
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    return TypedValue.create(getTypeName(type), "%s::" + value.getSimpleName());
   }
 }

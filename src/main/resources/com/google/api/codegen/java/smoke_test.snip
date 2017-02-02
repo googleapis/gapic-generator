@@ -1,5 +1,6 @@
 @extends "java/common.snip"
 @extends "java/initcode.snip"
+@extends "java/method_sample.snip"
 
 
 @snippet generate(smokeTest)
@@ -10,22 +11,56 @@
     public static void main(String args[]) {
       Logger.getLogger("").setLevel(Level.WARNING);
       try {
-        executeNoCatch(args);
-        System.out.println("ok");
+        {@testBody(smokeTest)}
+        System.out.println("OK");
       } catch (Exception e) {
         System.err.println("Failed with exception:");
         e.printStackTrace(System.err);
         System.exit(1);
       }
     }
-
-    {@executeNoCatch(smokeTest)}
+    @if smokeTest.requireProjectId
+      {@executeWithProjectID(smokeTest)}
+    @else
+      {@executeWithNoProjectID(smokeTest)}
+    @end
   }
 @end
 
-@private executeNoCatch(smokeTest)
-  public static void executeNoCatch(String args[]) throws Exception {
-    try ({@smokeTest.apiClassName} api = {@smokeTest.apiClassName}.create()) {
+@private testBody(smokeTest)
+  @if smokeTest.requireProjectId
+    Options options = new Options();
+    options.addOption("h", "help", false, "show usage");
+    options.addOption(
+        Option.builder()
+            .longOpt("project_id")
+            .desc("Project id")
+            .hasArg()
+            .argName("PROJECT-ID")
+            .required(true)
+            .build());
+    CommandLine cl = (new DefaultParser()).parse(options, args);
+    if (cl.hasOption("help")) {
+      HelpFormatter formater = new HelpFormatter();
+      formater.printHelp("{@smokeTest.name}", options);
+    }
+    executeNoCatch(cl.getOptionValue("project_id"));
+  @else
+    executeNoCatch();
+  @end
+@end
+
+@private executeWithProjectID(smokeTest)
+  public static void executeNoCatch(String projectId) throws Exception {
+    try ({@smokeTest.apiClassName} client = {@smokeTest.apiClassName}.create()) {
+      {@methodCall(smokeTest.method)}
+    }
+  }
+@end
+
+@private executeWithNoProjectID(smokeTest)
+  public static void executeNoCatch() throws Exception {
+    try ({@smokeTest.apiClassName} client = {@smokeTest.apiClassName}.create()) {
       {@methodCall(smokeTest.method)}
     }
   }
@@ -34,19 +69,19 @@
 @private methodCall(method)
   {@initCode(method.initCode)}
 
-  @switch method.type
+  @switch method.clientMethodType
   @case "PagedFlattenedMethod"
-    PageAccessor<{@method.responseTypeName}> pageAccessor =
-        api.{@method.name}(\
+    {@method.responseTypeName} pagedResponse =
+        client.{@method.clientMethodName}(\
           {@sampleMethodCallArgList(method.initCode.fieldSettings)});
-    System.out.println(ReflectionToStringBuilder.toString(pageAccessor));
+    System.out.println(ReflectionToStringBuilder.toString(pagedResponse));
   @case "FlattenedMethod"
     @if method.hasReturnValue
       {@method.responseTypeName} response = \
-        api.{@method.name}({@args(method.initCode.fieldSettings)});
+        client.{@method.clientMethodName}({@args(method.initCode.fieldSettings)});
       System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
     @else
-      api.{@method.name}(\
+      client.{@method.clientMethodName}(\
         {@sampleMethodCallArgList(method.initCode.fieldSettings)});
     @end
   @end

@@ -83,6 +83,15 @@ message ConfigProto {
   // A list of API interface configurations.
   repeated InterfaceConfigProto interfaces = 10;
 
+  // A list of resource name collection configs. This must be consistent with
+  // collections defined in the interfaces.
+  repeated CollectionConfigProto collections = 15;
+
+  // A list of resource name oneof configs.
+  repeated CollectionOneofProto collection_oneofs = 16;
+
+  repeated FixedResourceNameValueProto fixed_resource_name_values = 17;
+
   // A list of message resource name configurations.
   repeated ResourceNameMessageConfigProto resource_name_generation = 20;
 }
@@ -94,6 +103,20 @@ message LanguageSettingsProto {
   // Location of the domain layer, if any, that the user should use
   // instead of the generated client.
   string domain_layer_location = 2;
+
+  ReleaseLevel release_level = 3;
+}
+
+// ReleaseLevel indicates the stage of development of a piece of code and
+// relatedly what the promises are on quality.
+// ALPHA: Not feature complete, expect breaking changes
+// BETA: Feature complete, minimal breaking changes
+// GA: General availability, no breaking changes without major version bump
+enum ReleaseLevel {
+  UNSET_RELEASE_LEVEL = 0;
+  ALPHA = 1;
+  BETA = 2;
+  GA = 3;
 }
 
 message LicenseHeaderProto {
@@ -118,8 +141,11 @@ message InterfaceConfigProto {
   // The fully qualified name of the API interface.
   string name = 1;
 
+  // Language specific documentation. Injected after proto docs.
+  map<string, string> lang_doc = 2;
+
   // Configuration of smoke test.
-  SmokeTestConfigProto smoke_test = 2;
+  SmokeTestConfigProto smoke_test = 5;
 
   // A list of resource collection configurations.
   repeated CollectionConfigProto collections = 10;
@@ -161,8 +187,25 @@ message CollectionConfigProto {
   // empty, no name methods are generated.
   string name_pattern = 1;
 
-  // Name to be used as a basis for generated methods.
+  // Name to be used as a basis for generated methods and classes.
   string entity_name = 2;
+}
+
+message CollectionOneofProto {
+  // Name to be used as a basis for generated methods and classes.
+  string oneof_name = 1;
+
+  // A list of the entity names of the CollectionConfigs to be included in the
+  // oneof collection.
+  repeated string collection_names = 2;
+}
+
+message FixedResourceNameValueProto {
+  // Name to be used as a basis for generated methods and classes.
+  string entity_name = 1;
+
+  // The fixed, unformatted string value accepted by this configuration.
+  string fixed_value = 2;
 }
 
 // `MethodConfigProto` describes the generator configuration for a method.
@@ -220,6 +263,9 @@ message MethodConfigProto {
 
   // Set the resource name treatment for fields
   ResourceNameTreatment resource_name_treatment = 15;
+
+  // Long-running settings.
+  LongRunningConfigProto long_running = 30;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
@@ -250,14 +296,17 @@ message FlatteningGroupProto {
 
 // The ResourceNameTreatment enum can be used to specify how to treat the
 // resource name formats defined in the field_name_patterns
-// and response_field_name_patterns fields. NONE: the collection configs will
-// not be used by the generated code. VALIDATE: string fields will be
-// validated by the client against the specified resource name formats.
+// and response_field_name_patterns fields.
+// UNSET: default value
+// NONE: the collection configs will not be used by the generated code.
+// VALIDATE: string fields will be validated by the client against the
+// specified resource name formats.
 // STATIC_TYPES: the client will use generated types for resource names.
 enum ResourceNameTreatment {
-  NONE = 0;
-  VALIDATE = 1;
-  STATIC_TYPES = 2;
+  UNSET_TREATMENT = 0;
+  NONE = 1;
+  VALIDATE = 2;
+  STATIC_TYPES = 3;
 }
 
 // `PageStreamingConfigProto` describes information for generating a method which
@@ -411,6 +460,24 @@ message SurfaceTreatmentProto {
 enum VisibilityProto {
   UNSET = 0;
   PUBLIC = 1;
-  PRIVATE = 2;
-  DISABLED = 3;
+  PACKAGE = 2;
+  PRIVATE = 3;
+  DISABLED = 4;
+}
+
+// LongRunningProto describes settings to use when generating API methods
+// that use the long-running operation pattern.
+message LongRunningConfigProto {
+  // The fully-qualified type that is returned from an Operation when it is
+  // complete.
+  string return_type = 1;
+
+  // The fully-qualified type of the metadata of an Operation.
+  string metadata_type = 2;
+
+  // Whether or not the server implements delete.
+  bool implements_delete = 3;
+
+  // Whether or not the server implements cancel.
+  bool implements_cancel = 4;
 }

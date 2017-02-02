@@ -1,0 +1,314 @@
+@extends "go/header.snip"
+@extends "go/initcode.snip"
+
+@snippet generate(view)
+    {@headerComment(view.fileHeader)}
+
+    package {@view.fileHeader.localPackageName}
+
+    import (
+        {@imports(view.fileHeader.imports)}
+    )
+
+    import (
+        "flag"
+        "io"
+        "log"
+        "net"
+        "os"
+        "testing"
+
+        "github.com/golang/protobuf/proto"
+        "github.com/golang/protobuf/ptypes"
+        "golang.org/x/net/context"
+        "google.golang.org/api/option"
+        status "google.golang.org/genproto/googleapis/rpc/status"
+        "google.golang.org/grpc"
+        "google.golang.org/grpc/codes"
+    )
+
+    var _ = io.EOF
+    var _ = ptypes.MarshalAny
+    var _ status.Status
+
+    @join impl : view.serviceImpls
+        type {@impl.name} struct {
+            // Embed for forward compatibility.
+            // Tests will keep working if more methods are added
+            // in the future.
+            {@impl.grpcClassName}
+
+            reqs []proto.Message
+
+            // If set, all calls return this error.
+            err error
+
+            // responses to return if err == nil
+            resps []proto.Message
+        }
+
+        @join method : impl.grpcMethods
+            @switch method.grpcStreamingType
+            @case "BidiStreaming"
+                {@bidiMethod(impl, method)}
+            @case "ClientStreaming"
+                {@clientStreamMethod(impl, method)}
+            @case "ServerStreaming"
+                {@serverStreamMethod(impl, method)}
+            @case "NonStreaming"
+                {@simpleMethod(impl, method)}
+            @end
+
+
+        @end
+    @end
+
+    // clientOpt is the option tests should use to connect to the test server.
+    // It is initialized by TestMain.
+    var clientOpt option.ClientOption
+
+    var (
+        @join service : view.mockServices
+            {@service.varName} {@service.implName}
+        @end
+    )
+
+    func TestMain(m *testing.M) {
+        flag.Parse()
+
+        serv := grpc.NewServer()
+        @join service : view.mockServices
+            {@service.registerFunctionName}(serv, &{@service.varName})
+        @end
+
+        lis, err := net.Listen("tcp", "localhost:0")
+        if err != nil {
+            log.Fatal(err)
+        }
+        go serv.Serve(lis)
+
+        conn, err := grpc.Dial(lis.Addr().String(), grpc.WithInsecure())
+        if err != nil {
+            log.Fatal(err)
+        }
+        clientOpt = option.WithGRPCConn(conn)
+
+        os.Exit(m.Run())
+    }
+
+    @join testClass : view.testClasses
+        @join testCase : testClass.testCases
+            {@testFunctions(testCase)}
+        @end
+    @end
+@end
+
+@private simpleMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(_ context.Context, req {@method.requestTypeName}) ({@method.responseTypeName}, error) {
+        s.reqs = append(s.reqs, req)
+        if s.err != nil {
+            return nil, s.err
+        }
+        return s.resps[0].({@method.responseTypeName}), nil
+    }
+@end
+
+@private serverStreamMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(req {@method.requestTypeName}, stream {@method.streamHandleTypeName}) error {
+        s.reqs = append(s.reqs, req)
+        if s.err != nil {
+            return s.err
+        }
+        for _, v := range s.resps {
+            if err := stream.Send(v.({@method.responseTypeName})); err != nil {
+                return err
+            }
+        }
+        return nil
+    }
+@end
+
+@private clientStreamMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandleTypeName}) error {
+        for {
+            if req, err := stream.Recv(); err == io.EOF {
+                break
+            } else if err != nil {
+                return err
+            } else {
+                s.reqs = append(s.reqs, req)
+            }
+        }
+        if s.err != nil {
+            return s.err
+        }
+        return stream.SendAndClose(s.resps[0].({@method.responseTypeName}))
+    }
+@end
+
+@private bidiMethod(impl, method)
+    func (s *{@impl.name}) {@method.name}(stream {@method.streamHandleTypeName}) error {
+        for {
+            if req, err := stream.Recv(); err == io.EOF {
+                break
+            } else if err != nil {
+                return err
+            } else {
+                s.reqs = append(s.reqs, req)
+            }
+        }
+        if s.err != nil {
+            return s.err
+        }
+        for _, v := range s.resps {
+            if err := stream.Send(v.({@method.responseTypeName})); err != nil {
+                return err
+            }
+        }
+        return nil
+    }
+@end
+
+@private testFunctions(test)
+    func {@test.name}(t *testing.T) {
+        {@initCode(test.mockResponse.initCode)}
+
+        {@test.mockServiceVarName}.err = nil
+        {@test.mockServiceVarName}.reqs = nil
+
+        @if test.clientMethodType == "OperationRequestObjectMethod"
+            any, err := ptypes.MarshalAny(expectedResponse)
+            if err != nil {
+                t.Fatal(err)
+            }
+            {@test.mockServiceVarName}.resps = append({@test.mockServiceVarName}.resps[:0], &longrunningpb.Operation{
+                Name: "longrunning-test",
+                Done: true,
+                Result: &longrunningpb.Operation_Response{ Response: any },
+            })
+        @else
+            {@test.mockServiceVarName}.resps = append({@test.mockServiceVarName}.resps[:0], expectedResponse)
+        @end
+
+        {@initCode(test.initCode)}
+
+        {@callMock(test)}
+
+        if err != nil {
+            t.Fatal(err)
+        }
+
+        if want, got := request, {@test.mockServiceVarName}.reqs[0]; !proto.Equal(want, got) {
+            t.Errorf("wrong request %q, want %q", got, want)
+        }
+
+        @if test.clientMethodType == "PagedRequestObjectMethod"
+            @join pageStreamingResponseView : test.pageStreamingResponseViews
+                want := (interface{})(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}[0])
+                got := (interface{})(resp)
+                var ok bool
+
+                switch want := (want).(type) {
+                case proto.Message:
+                    ok = proto.Equal(want, got.(proto.Message))
+                default:
+                    ok = want == got
+                }
+                if !ok {
+                    t.Errorf("wrong response %q, want %q)", got, want)
+                }
+            @end
+        @else
+            @if test.hasReturnValue
+                if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+                    t.Errorf("wrong response %q, want %q)", got, want)
+                }
+            @end
+        @end
+    }
+
+    func {@test.nameWithException}(t *testing.T) {
+        errCode := codes.Internal
+        @if test.clientMethodType == "OperationRequestObjectMethod"
+            {@test.mockServiceVarName}.err = nil
+            {@test.mockServiceVarName}.resps = append({@test.mockServiceVarName}.resps[:0], &longrunningpb.Operation{
+                Name: "longrunning-test",
+                Done: true,
+                Result: &longrunningpb.Operation_Error{
+                    Error: &status.Status{
+                        Code: int32(errCode),
+                        Message: "test error",
+                    },
+                },
+            })
+        @else
+            {@test.mockServiceVarName}.err = grpc.Errorf(errCode, "test error")
+        @end
+
+        {@initCode(test.initCode)}
+
+        {@callMock(test)}
+
+        if c := grpc.Code(err); c != errCode {
+            t.Errorf("got error code %q, want %q", c, errCode)
+        }
+        @if test.hasReturnValue
+            _ = resp
+        @end
+    }
+@end
+
+@private callMock(test)
+    c, err := {@test.serviceConstructorName}(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    @switch test.grpcStreamingType
+    @case "BidiStreaming"
+        stream, err := c.{@test.clientMethodName}(context.Background())
+        if err != nil {
+            t.Fatal(err)
+        }
+        if err := stream.Send(request); err != nil {
+            t.Fatal(err)
+        }
+        if err := stream.CloseSend(); err != nil {
+            t.Fatal(err)
+        }
+        resp, err := stream.Recv()
+    @case "ServerStreaming"
+        stream, err := c.{@test.clientMethodName}(context.Background(), request)
+        if err != nil {
+            t.Fatal(err)
+        }
+        resp, err := stream.Recv()
+    @case "ClientStreaming"
+        stream, err := c.{@test.clientMethodName}(context.Background())
+        if err != nil {
+            t.Fatal(err)
+        }
+        resp, err := stream.CloseAndRecv()
+    @case "NonStreaming"
+        @switch test.clientMethodType
+        @case "PagedRequestObjectMethod"
+            resp, err := c.{@test.clientMethodName}(context.Background(), request).Next()
+        @case "OperationRequestObjectMethod"
+            respLRO, err := c.{@test.clientMethodName}(context.Background(), request)
+            if err != nil {
+                t.Fatal(err)
+            }
+            @if test.hasReturnValue
+                resp, err := respLRO.Wait(context.Background())
+            @else
+                err = respLRO.Wait(context.Background())
+            @end
+        @case "RequestObjectMethod"
+            @if test.hasReturnValue
+                resp, err := c.{@test.clientMethodName}(context.Background(), request)
+            @else
+                err = c.{@test.clientMethodName}(context.Background(), request)
+            @end
+        @end
+    @end
+@end

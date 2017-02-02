@@ -1,14 +1,12 @@
 @extends "go/header.snip"
 
 @snippet generate(view)
-    {@headerComment()}
+    {@headerComment(view.fileHeader)}
 
-    package {@view.localPackageName}
+    package {@view.fileHeader.localPackageName}
 
     import (
-        @join imp : view.imports
-            {@imp}
-        @end
+        {@imports(view.fileHeader.imports)}
     )
 
     @if view.pathTemplates
@@ -81,8 +79,9 @@
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
     //
-    @join line : view.serviceDoc
-        {@line}
+    // {@view.serviceDoc.firstLine}
+    @join line : view.serviceDoc.remainingLines
+        // {@line}
     @end
     func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientTypeName}, error) {
         conn, err := transport.DialGRPC(ctx, append({@view.defaultClientOptionFunctionName}(), opts...)...)
@@ -116,7 +115,8 @@
     // the `x-goog-api-client` header passed on each request. Intended for
     // use by Google-written clients.
     func (c *{@view.clientTypeName}) SetGoogleClientInfo(name, version string) {
-        v := fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())
+        goVersion := strings.Replace(runtime.Version(), " ", "_", -1)
+        v := fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, goVersion)
         c.metadata = metadata.Pairs("x-goog-api-client", v)
     }
 
@@ -159,13 +159,11 @@
             @switch method.type
             @case "PagedRequestObjectMethod"
                 {@pageStreamingMethod(view, method)}
+            @case "OperationRequestObjectMethod"
+                {@lroMethod(view, method)}
             @case "RequestObjectMethod"
                 @if method.hasReturnValue
-                    @if method.isLongRunning
-                        {@lroMethod(view, method)}
-                    @else
-                        {@simpleMethod(view, method)}
-                    @end
+                    {@simpleMethod(view, method)}
                 @else
                     {@emptyReturnMethod(view, method)}
                 @end
@@ -175,14 +173,18 @@
     @end
 
     @join iter : view.pageStreamingDescriptorClasses
-        {@iterator(iter)}
+        {@iterator(view, iter)}
+    @end
+
+    @join lro : view.lroDetailViews
+        {@lroWrapper(view, lro)}
     @end
 @end
 
 @private simpleMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) ({@method.responseTypeName}, error) {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) ({@method.responseTypeName}, error) {
         {@mergeMetadata()}
-        var resp {@method.responseTypeName}
+        var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
@@ -196,9 +198,9 @@
 @end
 
 @private lroMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) (*longrunning.Operation, error) {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) (*{@method.operationMethod.clientReturnTypeName}, error) {
         {@mergeMetadata()}
-        var resp {@method.responseTypeName}
+        var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
@@ -207,7 +209,9 @@
         if err != nil {
             return nil, err
         }
-        return longrunning.InternalNewOperation(c.Connection(), resp), nil
+        return &{@method.operationMethod.clientReturnTypeName}{
+            lro: longrunning.InternalNewOperation(c.Connection(), resp),
+        }, nil
     }
 @end
 
@@ -216,7 +220,7 @@
 @private noRequestStreamMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context) ({@method.responseTypeName}, error) {
         {@mergeMetadata()}
-        var resp {@method.responseTypeName}
+        var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.name}(ctx)
@@ -230,7 +234,7 @@
 @end
 
 @private emptyReturnMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) error {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) error {
         {@mergeMetadata()}
         err := gax.Invoke(ctx, func(ctx context.Context) error {
             var err error
@@ -242,12 +246,11 @@
 @end
 
 @private pageStreamingMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.apiRequestTypeName}) *{@method.responseTypeName} {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) *{@method.responseTypeName} {
         {@mergeMetadata()}
         it := &{@method.responseTypeName}{}
-
-        fetch := func(pageSize int, pageToken string) (string, error) {
-            var resp {@method.listMethod.responseObjectTypeName}
+        it.InternalFetch = func(pageSize int, pageToken string) ([]{@method.listMethod.resourceTypeName}, string, error) {
+            var resp {@method.serviceResponseTypeName}
             req.PageToken = pageToken
             if pageSize > math.MaxInt32 {
                 req.PageSize = math.MaxInt32
@@ -260,29 +263,37 @@
                 return err
             }, c.CallOptions.{@method.settingsGetterName}...)
             if err != nil {
+                return nil, "", err
+            }
+            return resp.{@method.listMethod.resourceFieldName}, resp.NextPageToken, nil
+        }
+        fetch := func(pageSize int, pageToken string) (string, error) {
+            items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
+            if err != nil {
                 return "", err
             }
-            it.items = append(it.items, resp.{@method.listMethod.resourceFieldName}...)
-            return resp.NextPageToken, nil
+            it.items = append(it.items, items...)
+            return nextPageToken, nil
         }
-        bufLen := func() int { return len(it.items) }
-        takeBuf := func() interface{} {
-            b := it.items
-            it.items = nil
-            return b
-        }
-
-        it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, bufLen, takeBuf)
+        it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
         return it
     }
 @end
 
-@private iterator(iter)
+@private iterator(view, iter)
     // {@iter.typeName} manages a stream of {@iter.resourceTypeName}.
     type {@iter.typeName} struct {
         items    []{@iter.resourceTypeName}
         pageInfo *iterator.PageInfo
         nextFunc func() error
+
+        // InternalFetch is for use by the Google Cloud Libraries only.
+        // It is not part of the stable interface of this package.
+        //
+        // InternalFetch returns results from a single call to the underlying RPC.
+        // The number of results is no greater than pageSize.
+        // If there are no more results, nextPageToken is empty and err is nil.
+        InternalFetch func(pageSize int, pageToken string) (results []{@iter.resourceTypeName}, nextPageToken string, err error)
     }
 
     // PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
@@ -293,14 +304,141 @@
     // Next returns the next result. Its second return value is iterator.Done if there are no more
     // results. Once Next returns Done, all subsequent calls will return Done.
     func (it *{@iter.typeName}) Next() ({@iter.resourceTypeName}, error) {
+        var item {@iter.resourceTypeName}
         if err := it.nextFunc(); err != nil {
-            return {@iter.resourceZeroValue}, err
+            return item, err
         }
-        item := it.items[0]
+        item = it.items[0]
         it.items = it.items[1:]
         return item, nil
     }
 
+    func (it *{@iter.typeName}) bufLen() int {
+        return len(it.items)
+    }
+
+    func (it *{@iter.typeName}) takeBuf() interface{} {
+        b := it.items
+        it.items = nil
+        return b
+    }
+
+@end
+
+@private lroWrapper(view, lro)
+    @if lro.isEmptyOperation
+        // {@lro.clientReturnTypeName} manages a long-running operation with no result.
+    @else
+        // {@lro.clientReturnTypeName} manages a long-running operation yielding {@lro.operationPayloadTypeName}.
+    @end
+
+    type {@lro.clientReturnTypeName} struct {
+        lro *longrunning.Operation
+    }
+
+    // {@lro.constructorName} returns a new {@lro.clientReturnTypeName} from a given name.
+    // The name must be that of a previously created {@lro.clientReturnTypeName}, possibly from a different process.
+    func (c *{@view.clientTypeName}) {@lro.constructorName}(name string) *{@lro.clientReturnTypeName} {
+        return &{@lro.clientReturnTypeName}{
+            lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+        }
+    }
+
+    @if lro.isEmptyOperation
+        // Wait blocks until the long-running operation is completed, returning any error encountered.
+        //
+        // See documentation of Poll for error-handling information.
+        func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context) error {
+            return op.lro.Wait(ctx, nil)
+        }
+
+        // Poll fetches the latest state of the long-running operation.
+        //
+        // Poll also fetches the latest metadata, which can be retrieved by Metadata.
+        //
+        // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+        // the operation has completed with failure, the error is returned and op.Done will return true.
+        // If Poll succeeds and the operation has completed successfully, op.Done will return true.
+        func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context) error {
+            return op.lro.Poll(ctx, nil)
+        }
+    @else
+        // Wait blocks until the long-running operation is completed, returning the response and any errors encountered.
+        //
+        // See documentation of Poll for error-handling information.
+        func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
+            var resp {@lro.operationPayloadTypeName}
+            if err := op.lro.Wait(ctx, &resp); err != nil {
+                return nil, err
+            }
+            return &resp, nil
+        }
+
+        // Poll fetches the latest state of the long-running operation.
+        //
+        // Poll also fetches the latest metadata, which can be retrieved by Metadata.
+        //
+        // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+        // the operation has completed with failure, the error is returned and op.Done will return true.
+        // If Poll succeeds and the operation has completed successfully,
+        // op.Done will return true, and the response of the operation is returned.
+        // If Poll succeeds and the operation has not completed, the returned response and error are both nil.
+        func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
+            var resp {@lro.operationPayloadTypeName}
+            if err := op.lro.Poll(ctx, &resp); err != nil {
+                return nil, err
+            }
+            if !op.Done() {
+                return nil, nil
+            }
+            return &resp, nil
+        }
+    @end
+
+    // Metadata returns metadata associated with the long-running operation.
+    // Metadata itself does not contact the server, but Poll does.
+    // To get the latest metadata, call this method after a successful call to Poll.
+    // If the metadata is not available, the returned metadata and error are both nil.
+    func (op *{@lro.clientReturnTypeName}) Metadata() (*{@lro.metadataTypeName}, error) {
+        var meta {@lro.metadataTypeName}
+        if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+            return nil, nil
+        } else if err != nil {
+            return nil, err
+        }
+        return &meta, nil
+    }
+
+    // Done reports whether the long-running operation has completed.
+    func (op *{@lro.clientReturnTypeName}) Done() bool {
+        return op.lro.Done()
+    }
+
+    // Name returns the name of the long-running operation.
+    // The name is assigned by the server and is unique within the service from which the operation is created.
+    func (op *{@lro.clientReturnTypeName}) Name() string {
+        return op.lro.Name()
+    }
+
+    @if lro.implementsCancel
+        // Cancel starts asynchronous cancellation on a long-running operation.
+        // The server makes a best effort to cancel the operation, but success is not guaranteed.
+        // Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
+        // completed despite cancellation. On successful cancellation, the operation is not deleted;
+        // instead, op.Poll returns an error with code Canceled.
+        func (op *{@lro.clientReturnTypeName}) Cancel(ctx context.Context) error {
+            return op.lro.Cancel(ctx)
+        }
+    @end
+
+    @if lro.implementsDelete
+        // Delete deletes a long-running operation.
+        // This method indicates that the client is no longer interested in the operation result.
+        // It does not cancel the operation.
+        func (op *{@lro.clientReturnTypeName}) Delete(ctx context.Context) error {
+            return op.lro.Delete(ctx)
+        }
+    @end
 @end
 
 @private pathTemplateParams(args)

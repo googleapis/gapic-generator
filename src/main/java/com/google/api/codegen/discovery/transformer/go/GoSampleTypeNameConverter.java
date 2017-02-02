@@ -26,6 +26,7 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
   /** A map from primitive types in proto to Go counterparts. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
+          .put(Field.Kind.TYPE_UNKNOWN, "interface")
           .put(Field.Kind.TYPE_BOOL, "bool")
           .put(Field.Kind.TYPE_INT32, "int32")
           .put(Field.Kind.TYPE_INT64, "int64")
@@ -40,6 +41,7 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
   /** A map from primitive types in proto to zero value in Go. */
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Field.Kind, String>builder()
+          .put(Field.Kind.TYPE_UNKNOWN, "interface{}")
           .put(Field.Kind.TYPE_BOOL, "false")
           .put(Field.Kind.TYPE_INT32, "int64(0)")
           .put(Field.Kind.TYPE_INT64, "int64(0)")
@@ -70,13 +72,9 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeInfo typeInfo) {
-    if (typeInfo.isMessage()) {
-      String localName = GoSampleNamer.getServicePackageName(packagePrefix);
-      return new TypeName(packagePrefix + ";;;", localName + "." + typeInfo.message().typeName());
-    }
     if (typeInfo.isMap()) {
-      TypeName keyTypeName = getTypeNameForElementType(typeInfo.mapKey());
-      TypeName valueTypeName = getTypeNameForElementType(typeInfo.mapValue());
+      TypeName keyTypeName = getTypeName(typeInfo.mapKey());
+      TypeName valueTypeName = getTypeName(typeInfo.mapValue());
       return new TypeName("", "", "map[%s]%s", keyTypeName, valueTypeName);
     }
     if (typeInfo.isArray()) {
@@ -88,6 +86,9 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForElementType(TypeInfo typeInfo) {
+    if (typeInfo.isMessage()) {
+      return getTypeNameForMessage(typeInfo, true);
+    }
     String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(typeInfo.kind());
     if (primitiveTypeName != null) {
       return new TypeName(primitiveTypeName);
@@ -95,11 +96,22 @@ public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
     throw new IllegalArgumentException("unsupported type kind: " + typeInfo.kind());
   }
 
+  private TypeName getTypeNameForMessage(TypeInfo typeInfo, boolean pointer) {
+    String localName = GoSampleNamer.getServicePackageName(packagePrefix);
+    if (pointer) {
+      localName = "*" + localName;
+    }
+    return new TypeName(localName + "." + typeInfo.message().typeName());
+  }
+
   @Override
   public TypedValue getZeroValue(TypeInfo typeInfo) {
     // Don't call getTypeName; we don't need to import these.
     if (typeInfo.isMap() || typeInfo.isArray()) {
       return TypedValue.create(getTypeName(typeInfo), "%s{}");
+    }
+    if (typeInfo.isMessage()) {
+      return TypedValue.create(getTypeNameForMessage(typeInfo, false), "&%s{}");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(typeInfo.kind())) {
       return TypedValue.create(

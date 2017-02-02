@@ -15,18 +15,28 @@
 package com.google.api.codegen.discovery.config.go;
 
 import com.google.api.codegen.DiscoveryImporter;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.util.Name;
-import com.google.common.base.Strings;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GoTypeNameGenerator implements TypeNameGenerator {
+public class GoTypeNameGenerator extends TypeNameGenerator {
 
   // Pattern used to rename some Go package versions.
   private static final Pattern SUB_VERSION = Pattern.compile("^(.+)_(v[0-9.]+)$");
+
+  @Override
+  public List<String> getMethodNameComponents(List<String> nameComponents) {
+    LinkedList<String> copy = new LinkedList<String>(nameComponents);
+    // Don't edit the original object.
+    copy.removeFirst();
+    for (int i = 0; i < copy.size(); i++) {
+      copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
+    }
+    return copy;
+  }
 
   @Override
   public String getApiVersion(String apiVersion) {
@@ -41,21 +51,17 @@ public class GoTypeNameGenerator implements TypeNameGenerator {
   }
 
   @Override
-  public String getPackagePrefix(String apiName, String apiVersion) {
+  public String getPackagePrefix(String apiName, String apiCanonicalName, String apiVersion) {
     return "google.golang.org/api/" + apiName + "/" + apiVersion;
   }
 
   @Override
-  public String getApiTypeName(String apiName) {
-    // N/A
-    return "";
-  }
-
-  @Override
   public String getRequestTypeName(List<String> methodNameComponents) {
-    String copy[] = methodNameComponents.toArray(new String[methodNameComponents.size() + 1]);
-    copy[copy.length - 1] = "call";
-    return Name.lowerCamel(copy).toUpperCamel();
+    LinkedList<String> copy = new LinkedList<String>(methodNameComponents);
+    copy.removeFirst();
+    String arr[] = copy.toArray(new String[copy.size() + 1]);
+    arr[arr.length - 1] = "call";
+    return Name.lowerCamel(arr).toUpperCamel();
   }
 
   @Override
@@ -77,22 +83,7 @@ public class GoTypeNameGenerator implements TypeNameGenerator {
   }
 
   @Override
-  public String getSubpackage(boolean isRequest) {
-    // N/A
-    return "";
-  }
-
-  @Override
   public String getStringFormatExample(String format) {
     return "";
-  }
-
-  @Override
-  public String getFieldPatternExample(String pattern) {
-    String def = DefaultString.getNonTrivialPlaceholder(pattern);
-    if (Strings.isNullOrEmpty(def)) {
-      return "";
-    }
-    return String.format("\"%s\"", def);
   }
 }

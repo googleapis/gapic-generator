@@ -26,8 +26,12 @@ import org.junit.runners.Parameterized.Parameters;
 public class CSharpCodeGeneratorTest extends GapicTestBase {
 
   public CSharpCodeGeneratorTest(
-      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-    super(name, idForFactory, gapicConfigFileNames, snippetName);
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String packageConfigFileName,
+      String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
     getTestDataLocator()
         .addTestDataSource(com.google.api.codegen.csharp.CSharpContextCommon.class, "");
   }

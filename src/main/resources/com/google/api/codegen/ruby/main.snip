@@ -45,6 +45,11 @@
   require "pathname"
 
   require "google/gax"
+  @if context.hasLongrunningMethod(service)
+    require "google/gax/operation"
+    require "google/longrunning/operations_client"
+
+  @end
   @join import : {@context.getProtoImports(service)}
     require "{@import.fullName}"
   @end
@@ -233,6 +238,20 @@
         require "{@import.fullName}"
       @end
 
+      @if context.hasLongrunningMethod(service)
+        @@operations_client = Google::Longrunning::OperationsApi.new(
+          service_path: service_path,
+          port: port,
+          channel: channel,
+          chan_creds: chan_creds,
+          scopes: scopes,
+          client_config: client_config,
+          timeout: timeout,
+          app_name: app_name,
+          app_version: app_version
+        )
+      @end
+
       google_api_client = "#{app_name}/#{app_version} " @\
         "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " @\
         "ruby/#{RUBY_VERSION}".freeze
@@ -291,8 +310,8 @@
 @end
 
 @private pathTemplateSection(service)
-  @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+  @if context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
 
       {@pathTemplateName(collectionConfig)} = Google::Gax::PathTemplate.new(
         "{@collectionConfig.getNamePattern}"
@@ -301,11 +320,11 @@
       private_constant :{@pathTemplateName(collectionConfig)}
     @end
 
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
 
       {@createResourceFunction(collectionConfig)}
     @end
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
 
         {@createMatchFunctions(collectionConfig)}
     @end
@@ -315,7 +334,7 @@
 @private createResourceFunction(collectionConfig)
   @# Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
   @join param : collectionConfig.getNameTemplate.vars()
-    @# @@param {@param} [String]
+    @# @@param {@context.wrapIfKeywordOrBuiltIn(param)} [String]
   @end
   @# @@return [String]
   def self.{@collectionConfig.getEntityName}_path {@createResourceFunctionParams(collectionConfig)}
@@ -327,13 +346,13 @@
 
 @private createResourceFunctionParams(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@param}
+    {@context.wrapIfKeywordOrBuiltIn(param)}
   @end
 @end
 
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    :"{@param}" => {@param}
+    :"{@param}" => {@context.wrapIfKeywordOrBuiltIn(param)}
   @end
 @end
 
@@ -368,7 +387,7 @@
 @end
 
 @private flattenedMethod(service, method)
-  @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
+  @let methodName = {@getMethodName(method)}, \
        inputTypeName = context.rubyTypeName(method.getInputType()), \
        documentation = comments(context.methodComments(service, method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
@@ -378,41 +397,89 @@
        sample = comments(util.getDocLines(sampleCode(methodView)))
     @if documentation
       {@documentation}
+      @if method.getRequestStreaming()
+        @#
+        @# @@note
+        @#   EXPERIMENTAL:
+        @#     Streaming requests are still undergoing review.
+        @#     This method interface might change in the future.
+        @#
+      @end
     @end
 
     @if sample
       {@sample}
     @end
 
-    @if or(requiredParams, optionalParams)
-      def {@methodName} @\
-          @if requiredParams
-            @if optionalParams
-              {@requiredParameterNames(requiredParams)},
-              {@optionalParameterValues(optionalParams)},
-            @else
-              {@requiredParameterNames(requiredParams)},
-            @end
-          @else
-            {@optionalParameterValues(optionalParams)},
-          @end
-          options: nil
-        req = {@inputTypeName}.new({
-            @if requiredParams
-              {@namedParameters(requiredParams)}
-            @end
-            @if optionalParams
-              {@namedParameters(optionalParams)}
-            @end
-        }.delete_if { |_, v| v.nil? })
-        @@{@methodName}.call(req, options)
+    @if method.getRequestStreaming()
+      def {@methodName} reqs, options: nil
+        {@makeApiCall(methodConfig)}
       end
     @else
-      def {@methodName} options: nil
-        req = {@inputTypeName}.new
-        @@{@methodName}.call(req, options)
-      end
+      @if or(requiredParams, optionalParams)
+        def {@methodName} @\
+            @if requiredParams
+              {@requiredParameterNames(requiredParams)},
+            @end
+            @if optionalParams
+              {@optionalParameterValues(optionalParams)},
+            @end
+            options: nil
+          req = {@inputTypeName}.new({
+            @if requiredParams
+              @if optionalParams
+                {@namedParameters(requiredParams)},
+                {@namedParameters(optionalParams)}
+              @else
+                {@namedParameters(requiredParams)}
+              @end
+            @else
+              {@namedParameters(optionalParams)}
+            @end
+          }.delete_if { |_, v| v.nil? })
+          {@makeApiCall(methodConfig)}
+        end
+      @else
+        def {@methodName} options: nil
+          req = {@inputTypeName}.new
+          {@makeApiCall(methodConfig)}
+        end
+      @end
     @end
+  @end
+@end
+
+@private getMethodName(method)
+  {@context.upperCamelToLowerUnderscore(method.getSimpleName())}
+@end
+
+@private makeApiCall(methodConfig)
+  @let request = requestParameterName(methodConfig), \
+       method = methodConfig.getMethod
+    @if methodConfig.isLongRunningOperation
+      operation = Google::Gax::Operation.new(
+        @@{@getMethodName(method)}.call({@request}, options),
+        @@operations_client,
+        {@context.rubyTypeName(methodConfig.getLongRunningConfig.getReturnType)},
+        {@context.rubyTypeName(methodConfig.getLongRunningConfig.getMetadataType)},
+        call_options: options
+      )
+      operation.on_done { |operation| yield(operation) } if block_given?
+      operation
+    @else
+      @@{@getMethodName(method)}.call({@request}, options)
+      @if methodConfig.isReturnEmptyMessageMethod(method)
+        nil
+      @end
+    @end
+  @end
+@end
+
+@private requestParameterName(methodConfig)
+  @if methodConfig.getMethod.getRequestStreaming
+    reqs
+  @else
+    req
   @end
 @end
 

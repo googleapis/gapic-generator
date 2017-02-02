@@ -9,7 +9,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -18,16 +20,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -39,12 +37,10 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the Operations resource to delete.
-  operation := "{MY-OPERATION}"
-  // TODO: Change placeholder value above.
+  operation := ""  // TODO: Update placeholder value.
 
   if err := clouduseraccountsService.GlobalAccountsOperations.Delete(project, operation).Context(ctx).Do(); err != nil {
     log.Fatal(err)
@@ -60,7 +56,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -70,16 +68,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -91,12 +85,10 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the Operations resource to return.
-  operation := "{MY-OPERATION}"
-  // TODO: Change placeholder value above.
+  operation := ""  // TODO: Update placeholder value.
 
   resp, err := clouduseraccountsService.GlobalAccountsOperations.Get(project, operation).Context(ctx).Do()
   if err != nil {
@@ -116,7 +108,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -126,16 +120,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -147,8 +137,7 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := clouduseraccountsService.GlobalAccountsOperations.List(project)
   if err := req.Pages(ctx, func(page *clouduseraccounts.OperationList) error {
@@ -171,7 +160,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -181,16 +172,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -202,18 +189,16 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the group for this request.
-  groupName := "{MY-GROUP-NAME}"
-  // TODO: Change placeholder value above.
+  groupName := ""  // TODO: Update placeholder value.
 
-  rb := clouduseraccounts.GroupsAddMemberRequest{
+  rb := &clouduseraccounts.GroupsAddMemberRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := clouduseraccountsService.Groups.AddMember(project, groupName, &rb).Context(ctx).Do()
+  resp, err := clouduseraccountsService.Groups.AddMember(project, groupName, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -231,7 +216,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -241,16 +228,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -262,12 +245,10 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the Group resource to delete.
-  groupName := "{MY-GROUP-NAME}"
-  // TODO: Change placeholder value above.
+  groupName := ""  // TODO: Update placeholder value.
 
   resp, err := clouduseraccountsService.Groups.Delete(project, groupName).Context(ctx).Do()
   if err != nil {
@@ -287,7 +268,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -297,16 +280,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -318,12 +297,10 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the Group resource to return.
-  groupName := "{MY-GROUP-NAME}"
-  // TODO: Change placeholder value above.
+  groupName := ""  // TODO: Update placeholder value.
 
   resp, err := clouduseraccountsService.Groups.Get(project, groupName).Context(ctx).Do()
   if err != nil {
@@ -343,7 +320,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -353,16 +332,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -374,14 +349,13 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
-  rb := clouduseraccounts.Group{
+  rb := &clouduseraccounts.Group{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := clouduseraccountsService.Groups.Insert(project, &rb).Context(ctx).Do()
+  resp, err := clouduseraccountsService.Groups.Insert(project, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -399,7 +373,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -409,16 +385,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -430,8 +402,7 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := clouduseraccountsService.Groups.List(project)
   if err := req.Pages(ctx, func(page *clouduseraccounts.GroupList) error {
@@ -454,7 +425,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -464,16 +437,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -485,18 +454,16 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the group for this request.
-  groupName := "{MY-GROUP-NAME}"
-  // TODO: Change placeholder value above.
+  groupName := ""  // TODO: Update placeholder value.
 
-  rb := clouduseraccounts.GroupsRemoveMemberRequest{
+  rb := &clouduseraccounts.GroupsRemoveMemberRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := clouduseraccountsService.Groups.RemoveMember(project, groupName, &rb).Context(ctx).Do()
+  resp, err := clouduseraccountsService.Groups.RemoveMember(project, groupName, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -514,7 +481,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -524,16 +493,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -545,20 +510,16 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the zone for this request.
-  zone := "{MY-ZONE}"  // ex: "us-central1-f"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The user account for which you want to get a list of authorized public keys.
-  user := "{MY-USER}"
-  // TODO: Change placeholder value above.
+  user := ""  // TODO: Update placeholder value.
 
   // The fully-qualified URL of the virtual machine requesting the view.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := clouduseraccountsService.Linux.GetAuthorizedKeysView(project, zone, user, instance).Context(ctx).Do()
   if err != nil {
@@ -578,7 +539,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -588,16 +551,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -609,16 +568,13 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the zone for this request.
-  zone := "{MY-ZONE}"  // ex: "us-central1-f"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The fully-qualified URL of the virtual machine requesting the views.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := clouduseraccountsService.Linux.GetLinuxAccountViews(project, zone, instance).Context(ctx).Do()
   if err != nil {
@@ -638,7 +594,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -648,16 +606,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -669,18 +623,16 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the user for this request.
-  user := "{MY-USER}"
-  // TODO: Change placeholder value above.
+  user := ""  // TODO: Update placeholder value.
 
-  rb := clouduseraccounts.PublicKey{
+  rb := &clouduseraccounts.PublicKey{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := clouduseraccountsService.Users.AddPublicKey(project, user, &rb).Context(ctx).Do()
+  resp, err := clouduseraccountsService.Users.AddPublicKey(project, user, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -698,7 +650,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -708,16 +662,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -729,12 +679,10 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the user resource to delete.
-  user := "{MY-USER}"
-  // TODO: Change placeholder value above.
+  user := ""  // TODO: Update placeholder value.
 
   resp, err := clouduseraccountsService.Users.Delete(project, user).Context(ctx).Do()
   if err != nil {
@@ -754,7 +702,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -764,16 +714,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -785,12 +731,10 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the user resource to return.
-  user := "{MY-USER}"
-  // TODO: Change placeholder value above.
+  user := ""  // TODO: Update placeholder value.
 
   resp, err := clouduseraccountsService.Users.Get(project, user).Context(ctx).Do()
   if err != nil {
@@ -810,7 +754,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -820,16 +766,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -841,14 +783,13 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
-  rb := clouduseraccounts.User{
+  rb := &clouduseraccounts.User{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := clouduseraccountsService.Users.Insert(project, &rb).Context(ctx).Do()
+  resp, err := clouduseraccountsService.Users.Insert(project, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -866,7 +807,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -876,16 +819,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -897,8 +836,7 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := clouduseraccountsService.Users.List(project)
   if err := req.Pages(ctx, func(page *clouduseraccounts.UserList) error {
@@ -921,7 +859,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -931,16 +871,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/clouduseraccounts/v0.beta"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -952,17 +888,14 @@ func main() {
   }
 
   // Project ID for this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the user for this request.
-  user := "{MY-USER}"
-  // TODO: Change placeholder value above.
+  user := ""  // TODO: Update placeholder value.
 
   // The fingerprint of the public key to delete. Public keys are identified by their fingerprint, which
   // is defined by RFC4716 to be the MD5 digest of the public key.
-  fingerprint := "{MY-FINGERPRINT}"
-  // TODO: Change placeholder value above.
+  fingerprint := ""  // TODO: Update placeholder value.
 
   resp, err := clouduseraccountsService.Users.RemovePublicKey(project, user, fingerprint).Context(ctx).Do()
   if err != nil {

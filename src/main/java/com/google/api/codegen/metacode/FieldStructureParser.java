@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
@@ -30,9 +31,6 @@ public class FieldStructureParser {
   private static Pattern fieldStructurePattern = Pattern.compile("(.+)[.]([^.\\{\\[]+)");
   private static Pattern fieldListPattern = Pattern.compile("(.+)\\[([^\\]]+)\\]");
   private static Pattern fieldMapPattern = Pattern.compile("(.+)\\{([^\\}]+)\\}");
-
-  private static Pattern singleQuoteStringPattern = Pattern.compile("'([^\\\']*)'");
-  private static Pattern doubleQuoteStringPattern = Pattern.compile("\"([^\\\"]*)\"");
 
   @VisibleForTesting
   static Pattern getFieldStructurePattern() {
@@ -76,7 +74,11 @@ public class FieldStructureParser {
               .get(fieldConfig.fieldPath())
               .withInitialCollectionValue(fieldConfig.entityName(), fieldConfig.value());
     } else if (fieldConfig.hasSimpleInitValue()) {
-      valueConfig = InitValueConfig.createWithValue(stripQuotes(fieldConfig.value()));
+      InitValue initValue = fieldConfig.value();
+      valueConfig =
+          InitValueConfig.createWithValue(
+              InitValue.create(
+                  CommonRenderingUtil.stripQuotes(initValue.getValue()), initValue.getType()));
     } else if (initValueConfigMap.containsKey(fieldConfig.fieldPath())) {
       valueConfig = initValueConfigMap.get(fieldConfig.fieldPath());
     }
@@ -103,7 +105,7 @@ public class FieldStructureParser {
       nextType = InitCodeLineType.ListInitLine;
       partialDottedPath = listMatcher.group(1);
     } else if (mapMatcher.matches()) {
-      key = stripQuotes(mapMatcher.group(2));
+      key = CommonRenderingUtil.stripQuotes(mapMatcher.group(2));
       nextType = InitCodeLineType.MapInitLine;
       partialDottedPath = mapMatcher.group(1);
     } else {
@@ -129,16 +131,5 @@ public class FieldStructureParser {
       return item;
     }
     return parsePartialDottedPathToInitCodeNode(partialDottedPath, nextType, null, item);
-  }
-
-  private static String stripQuotes(String value) {
-    Matcher singleQuoteMatcher = singleQuoteStringPattern.matcher(value);
-    Matcher doubleQuoteMatcher = doubleQuoteStringPattern.matcher(value);
-    if (singleQuoteMatcher.matches()) {
-      value = singleQuoteMatcher.group(1);
-    } else if (doubleQuoteMatcher.matches()) {
-      value = doubleQuoteMatcher.group(1);
-    }
-    return value;
   }
 }

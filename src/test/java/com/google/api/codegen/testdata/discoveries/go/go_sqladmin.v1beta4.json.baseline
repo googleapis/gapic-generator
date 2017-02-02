@@ -9,7 +9,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -19,16 +21,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -40,16 +38,13 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
-  id := int64(0)
-  // TODO: Change placeholder value above.
+  id := int64(0)  // TODO: Update placeholder value.
 
   resp, err := sqladminService.BackupRuns.Delete(project, instance, id).Context(ctx).Do()
   if err != nil {
@@ -69,7 +64,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -79,16 +76,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -100,16 +93,13 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // The ID of this Backup Run.
-  id := int64(0)
-  // TODO: Change placeholder value above.
+  id := int64(0)  // TODO: Update placeholder value.
 
   resp, err := sqladminService.BackupRuns.Get(project, instance, id).Context(ctx).Do()
   if err != nil {
@@ -129,7 +119,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -139,16 +131,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -160,18 +148,16 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.BackupRun{
+  rb := &sqladmin.BackupRun{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.BackupRuns.Insert(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.BackupRuns.Insert(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -189,7 +175,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -199,16 +187,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -220,12 +204,10 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   req := sqladminService.BackupRuns.List(project, instance)
   if err := req.Pages(ctx, func(page *sqladmin.BackupRunsListResponse) error {
@@ -248,7 +230,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -258,16 +242,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -279,16 +259,13 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // Name of the database to be deleted in the instance.
-  database := "{MY-DATABASE}"
-  // TODO: Change placeholder value above.
+  database := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Databases.Delete(project, instance, database).Context(ctx).Do()
   if err != nil {
@@ -308,7 +285,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -318,16 +297,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -339,16 +314,13 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // Name of the database in the instance.
-  database := "{MY-DATABASE}"
-  // TODO: Change placeholder value above.
+  database := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Databases.Get(project, instance, database).Context(ctx).Do()
   if err != nil {
@@ -368,7 +340,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -378,16 +352,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -399,18 +369,16 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.Database{
+  rb := &sqladmin.Database{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.Databases.Insert(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Databases.Insert(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -428,7 +396,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -438,16 +408,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -459,12 +425,10 @@ func main() {
   }
 
   // Project ID of the project for which to list Cloud SQL instances.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Databases.List(project, instance).Context(ctx).Do()
   if err != nil {
@@ -484,7 +448,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -494,16 +460,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -515,22 +477,20 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // Name of the database to be updated in the instance.
-  database := "{MY-DATABASE}"
-  // TODO: Change placeholder value above.
+  database := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.Database{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &sqladmin.Database{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
   }
 
-  resp, err := sqladminService.Databases.Patch(project, instance, database, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Databases.Patch(project, instance, database, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -548,7 +508,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -558,16 +520,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -579,22 +537,20 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // Name of the database to be updated in the instance.
-  database := "{MY-DATABASE}"
-  // TODO: Change placeholder value above.
+  database := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.Database{
-    // TODO: Add desired fields of the request body.
+  rb := &sqladmin.Database{
+    // TODO: Add desired fields of the request body. All existing fields
+    // will be replaced.
   }
 
-  resp, err := sqladminService.Databases.Update(project, instance, database, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Databases.Update(project, instance, database, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -612,7 +568,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -622,16 +580,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -641,7 +595,6 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-
 
   resp, err := sqladminService.Flags.List().Context(ctx).Do()
   if err != nil {
@@ -661,7 +614,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -671,16 +626,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -692,18 +643,16 @@ func main() {
   }
 
   // Project ID of the source as well as the clone Cloud SQL instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.InstancesCloneRequest{
+  rb := &sqladmin.InstancesCloneRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.Instances.Clone(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Instances.Clone(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -721,7 +670,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -731,16 +682,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -752,12 +699,10 @@ func main() {
   }
 
   // Project ID of the project that contains the instance to be deleted.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Instances.Delete(project, instance).Context(ctx).Do()
   if err != nil {
@@ -777,7 +722,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -787,16 +734,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -808,18 +751,16 @@ func main() {
   }
 
   // Project ID of the project that contains the instance to be exported.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.InstancesExportRequest{
+  rb := &sqladmin.InstancesExportRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.Instances.Export(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Instances.Export(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -837,7 +778,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -847,16 +790,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -868,18 +807,16 @@ func main() {
   }
 
   // ID of the project that contains the read replica.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.InstancesFailoverRequest{
+  rb := &sqladmin.InstancesFailoverRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.Instances.Failover(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Instances.Failover(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -897,7 +834,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -907,16 +846,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -928,12 +863,10 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Instances.Get(project, instance).Context(ctx).Do()
   if err != nil {
@@ -953,7 +886,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -963,16 +898,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -984,18 +915,16 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.InstancesImportRequest{
+  rb := &sqladmin.InstancesImportRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.Instances.Import(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Instances.Import(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -1013,7 +942,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1023,16 +954,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1044,14 +971,13 @@ func main() {
   }
 
   // Project ID of the project to which the newly created Cloud SQL instances should belong.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.DatabaseInstance{
+  rb := &sqladmin.DatabaseInstance{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.Instances.Insert(project, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Instances.Insert(project, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -1069,7 +995,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1079,16 +1007,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1100,8 +1024,7 @@ func main() {
   }
 
   // Project ID of the project for which to list Cloud SQL instances.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := sqladminService.Instances.List(project)
   if err := req.Pages(ctx, func(page *sqladmin.InstancesListResponse) error {
@@ -1124,7 +1047,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1134,16 +1059,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1155,18 +1076,17 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.DatabaseInstance{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &sqladmin.DatabaseInstance{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
   }
 
-  resp, err := sqladminService.Instances.Patch(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Instances.Patch(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -1184,7 +1104,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1194,16 +1116,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1215,12 +1133,10 @@ func main() {
   }
 
   // ID of the project that contains the read replica.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL read replica instance name.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Instances.PromoteReplica(project, instance).Context(ctx).Do()
   if err != nil {
@@ -1240,7 +1156,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1250,16 +1168,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1271,12 +1185,10 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Instances.ResetSslConfig(project, instance).Context(ctx).Do()
   if err != nil {
@@ -1296,7 +1208,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1306,16 +1220,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1327,12 +1237,10 @@ func main() {
   }
 
   // Project ID of the project that contains the instance to be restarted.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Instances.Restart(project, instance).Context(ctx).Do()
   if err != nil {
@@ -1352,7 +1260,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1362,16 +1272,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1383,18 +1289,16 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.InstancesRestoreBackupRequest{
+  rb := &sqladmin.InstancesRestoreBackupRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.Instances.RestoreBackup(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Instances.RestoreBackup(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -1412,7 +1316,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1422,16 +1328,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1443,12 +1345,10 @@ func main() {
   }
 
   // ID of the project that contains the read replica.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL read replica instance name.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Instances.StartReplica(project, instance).Context(ctx).Do()
   if err != nil {
@@ -1468,7 +1368,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1478,16 +1380,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1499,12 +1397,10 @@ func main() {
   }
 
   // ID of the project that contains the read replica.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL read replica instance name.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Instances.StopReplica(project, instance).Context(ctx).Do()
   if err != nil {
@@ -1524,7 +1420,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1534,16 +1432,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1554,19 +1448,17 @@ func main() {
     log.Fatal(err)
   }
 
-  // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  // Project ID of the Cloud SQL project.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.DatabaseInstance{
+  rb := &sqladmin.InstancesTruncateLogRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.Instances.Update(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Instances.TruncateLog(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -1584,7 +1476,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1594,16 +1488,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1615,12 +1505,67 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
+
+  // Cloud SQL instance ID. This does not include the project ID.
+  instance := ""  // TODO: Update placeholder value.
+
+  rb := &sqladmin.DatabaseInstance{
+    // TODO: Add desired fields of the request body. All existing fields
+    // will be replaced.
+  }
+
+  resp, err := sqladminService.Instances.Update(project, instance, rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/sqladmin/v1beta4"
+)
+
+func main() {
+  ctx := context.Background()
+
+  c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  sqladminService, err := sqladmin.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Project ID of the project that contains the instance.
+  project := ""  // TODO: Update placeholder value.
 
   // Instance operation ID.
-  operation := "{MY-OPERATION}"
-  // TODO: Change placeholder value above.
+  operation := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Operations.Get(project, operation).Context(ctx).Do()
   if err != nil {
@@ -1640,7 +1585,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1650,16 +1597,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1671,12 +1614,10 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   req := sqladminService.Operations.List(project, instance)
   if err := req.Pages(ctx, func(page *sqladmin.OperationsListResponse) error {
@@ -1699,7 +1640,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1709,16 +1652,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1730,18 +1669,16 @@ func main() {
   }
 
   // Project ID of the Cloud SQL project.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.SslCertsCreateEphemeralRequest{
+  rb := &sqladmin.SslCertsCreateEphemeralRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.SslCerts.CreateEphemeral(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.SslCerts.CreateEphemeral(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -1759,7 +1696,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1769,16 +1708,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1790,16 +1725,13 @@ func main() {
   }
 
   // Project ID of the project that contains the instance to be deleted.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // Sha1 FingerPrint.
-  sha1Fingerprint := "{MY-SHA1-FINGERPRINT}"
-  // TODO: Change placeholder value above.
+  sha1Fingerprint := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.SslCerts.Delete(project, instance, sha1Fingerprint).Context(ctx).Do()
   if err != nil {
@@ -1819,7 +1751,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1829,16 +1763,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1850,16 +1780,13 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // Sha1 FingerPrint.
-  sha1Fingerprint := "{MY-SHA1-FINGERPRINT}"
-  // TODO: Change placeholder value above.
+  sha1Fingerprint := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.SslCerts.Get(project, instance, sha1Fingerprint).Context(ctx).Do()
   if err != nil {
@@ -1879,7 +1806,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1889,16 +1818,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1910,18 +1835,16 @@ func main() {
   }
 
   // Project ID of the project to which the newly created Cloud SQL instances should belong.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.SslCertsInsertRequest{
+  rb := &sqladmin.SslCertsInsertRequest{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.SslCerts.Insert(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.SslCerts.Insert(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -1939,7 +1862,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -1949,16 +1874,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -1970,12 +1891,10 @@ func main() {
   }
 
   // Project ID of the project for which to list Cloud SQL instances.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Cloud SQL instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.SslCerts.List(project, instance).Context(ctx).Do()
   if err != nil {
@@ -1995,7 +1914,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -2005,16 +1926,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -2026,8 +1943,7 @@ func main() {
   }
 
   // Project ID of the project for which to list tiers.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Tiers.List(project).Context(ctx).Do()
   if err != nil {
@@ -2047,7 +1963,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -2057,16 +1975,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -2078,20 +1992,16 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // Host of the user in the instance.
-  host := "{MY-HOST}"
-  // TODO: Change placeholder value above.
+  host := ""  // TODO: Update placeholder value.
 
   // Name of the user in the instance.
-  name := "{MY-NAME}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Users.Delete(project, instance, host, name).Context(ctx).Do()
   if err != nil {
@@ -2111,7 +2021,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -2121,16 +2033,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -2142,18 +2050,16 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.User{
+  rb := &sqladmin.User{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := sqladminService.Users.Insert(project, instance, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Users.Insert(project, instance, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -2171,7 +2077,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -2181,16 +2089,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -2202,12 +2106,10 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   resp, err := sqladminService.Users.List(project, instance).Context(ctx).Do()
   if err != nil {
@@ -2227,7 +2129,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -2237,16 +2141,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/sqladmin/v1beta4"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, sqladmin.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -2258,26 +2158,23 @@ func main() {
   }
 
   // Project ID of the project that contains the instance.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Database instance ID. This does not include the project ID.
-  instance := "{MY-INSTANCE}"
-  // TODO: Change placeholder value above.
+  instance := ""  // TODO: Update placeholder value.
 
   // Host of the user in the instance.
-  host := "{MY-HOST}"
-  // TODO: Change placeholder value above.
+  host := ""  // TODO: Update placeholder value.
 
   // Name of the user in the instance.
-  name := "{MY-NAME}"
-  // TODO: Change placeholder value above.
+  name := ""  // TODO: Update placeholder value.
 
-  rb := sqladmin.User{
-    // TODO: Add desired fields of the request body.
+  rb := &sqladmin.User{
+    // TODO: Add desired fields of the request body. All existing fields
+    // will be replaced.
   }
 
-  resp, err := sqladminService.Users.Update(project, instance, host, name, &rb).Context(ctx).Do()
+  resp, err := sqladminService.Users.Update(project, instance, host, name, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

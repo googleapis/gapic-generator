@@ -15,12 +15,17 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
+import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.ImportTypeTransformer;
+import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -31,10 +36,13 @@ import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
+import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
+import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +55,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private PageStreamingTransformer pageStreamingTransformer;
   private ApiMethodTransformer apiMethodTransformer;
   private GrpcStubTransformer grpcStubTransformer;
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new PhpImportTypeTransformer());
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
@@ -90,11 +100,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     List<ViewModel> surfaceData = new ArrayList<>();
 
-    addXApiImports(context);
+    addApiImports(context);
 
     List<ApiMethodView> methods = generateApiMethods(context);
-
-    ImportTypeTransformer importTypeTransformer = new ImportTypeTransformer();
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
@@ -102,7 +110,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    xapiClass.packageName(context.getApiConfig().getPackageName());
     String name = namer.getApiWrapperClassName(context.getInterface());
     xapiClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
@@ -119,19 +126,28 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.pathTemplateGetterFunctions(
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
+    xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
+    xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
+    xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
+    xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
 
     xapiClass.methodKeys(generateMethodKeys(context));
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
     xapiClass.interfaceKey(context.getInterface().getFullName());
-    String grpcClientTypeName = namer.getGrpcClientTypeName(context.getInterface());
-    xapiClass.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
+    String grpcClientTypeName =
+        namer.getAndSaveNicknameForGrpcClientTypeName(
+            context.getTypeTable(), context.getInterface());
+    xapiClass.grpcClientTypeName(grpcClientTypeName);
 
     xapiClass.apiMethods(methods);
 
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
+    xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
+    xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
+
     // must be done as the last step to catch all imports
-    xapiClass.imports(importTypeTransformer.generateImports(context.getTypeTable().getImports()));
+    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     xapiClass.outputPath(outputPath + "/" + name + ".php");
 
@@ -140,14 +156,72 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     return surfaceData;
   }
 
-  private void addXApiImports(SurfaceTransformerContext context) {
+  private List<LongRunningOperationDetailView> createLongRunningDescriptors(
+      SurfaceTransformerContext context) {
+    List<LongRunningOperationDetailView> result = new ArrayList<>();
+
+    for (Method method : context.getLongRunningMethods()) {
+      MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
+      LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
+      TypeRef returnType = lroConfig.getReturnType();
+      TypeRef metadataType = lroConfig.getMetadataType();
+      result.add(
+          LongRunningOperationDetailView.newBuilder()
+              .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
+              .constructorName("")
+              .clientReturnTypeName("")
+              .operationPayloadTypeName(context.getTypeTable().getFullNameFor(returnType))
+              .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
+              .metadataTypeName(context.getTypeTable().getFullNameFor(metadataType))
+              .implementsCancel(true)
+              .implementsDelete(true)
+              .build());
+    }
+
+    return result;
+  }
+
+  private List<GrpcStreamingDetailView> createGrpcStreamingDescriptors(
+      SurfaceTransformerContext context) {
+    List<GrpcStreamingDetailView> result = new ArrayList<>();
+
+    for (Method method : context.getGrpcStreamingMethods()) {
+      GrpcStreamingConfig grpcStreamingConfig =
+          context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
+      String resourcesFieldGetFunction = null;
+      if (grpcStreamingConfig.hasResourceField()) {
+        resourcesFieldGetFunction =
+            context.getNamer().getFieldGetFunctionName(grpcStreamingConfig.getResourcesField());
+      }
+      result.add(
+          GrpcStreamingDetailView.newBuilder()
+              .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
+              .grpcStreamingType(grpcStreamingConfig.getType())
+              .grpcResourcesField(resourcesFieldGetFunction)
+              .build());
+    }
+
+    return result;
+  }
+
+  private void addApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("Google\\GAX\\AgentHeaderDescriptor");
-    typeTable.saveNicknameFor("Google\\GAX\\ApiCallable");
-    typeTable.saveNicknameFor("Google\\GAX\\CallSettings");
-    typeTable.saveNicknameFor("Google\\GAX\\GrpcConstants");
-    typeTable.saveNicknameFor("Google\\GAX\\GrpcCredentialsHelper");
-    typeTable.saveNicknameFor("Google\\GAX\\PathTemplate");
+    typeTable.saveNicknameFor("\\Google\\GAX\\AgentHeaderDescriptor");
+    typeTable.saveNicknameFor("\\Google\\GAX\\ApiCallable");
+    typeTable.saveNicknameFor("\\Google\\GAX\\CallSettings");
+    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcConstants");
+    typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
+    typeTable.saveNicknameFor("\\Google\\GAX\\PathTemplate");
+    typeTable.saveNicknameFor("\\Google\\GAX\\ValidationException");
+
+    if (context.getInterfaceConfig().hasPageStreamingMethods()) {
+      typeTable.saveNicknameFor("\\Google\\GAX\\PageStreamingDescriptor");
+    }
+
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      typeTable.saveNicknameFor("\\Google\\GAX\\LongRunning\\OperationsClient");
+      typeTable.saveNicknameFor("\\Google\\GAX\\OperationResponse");
+    }
   }
 
   private List<String> generateMethodKeys(SurfaceTransformerContext context) {

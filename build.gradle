@@ -1,6 +1,18 @@
 // Build Script
 // ============
 
+if (System.env.TRAVIS == 'true') {
+  allprojects {
+    tasks.withType(GroovyCompile) {
+      groovyOptions.fork = false
+    }
+    tasks.withType(Test) {
+      maxParallelForks = 1
+      maxHeapSize = '512m'
+    }
+  }
+}
+
 import groovy.io.FileType
 
 buildscript {
@@ -33,7 +45,7 @@ apply plugin: "signing"
 sourceCompatibility = 1.7
 
 group = "com.google.api"
-version = "0.0.5-SNAPSHOT"
+version = "0.0.5"
 
 def protoVersion = "3.0.0-beta-3"
 
@@ -46,7 +58,7 @@ ext {
     // General
     guava: 'com.google.guava:guava:19.0',
     jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
-    autovalue: 'com.google.auto.value:auto-value:1.1',
+    autovalue: 'com.google.auto.value:auto-value:1.3',
     cglib: 'cglib:cglib:3.1',
     guice: 'com.google.inject:guice:4.0',
     commonsLang: 'org.apache.commons:commons-lang3:3.4',
@@ -55,7 +67,7 @@ ext {
     gax: 'com.google.api:gax:0.0.8',
 
     // Gapi
-    toolsFx: 'com.google.api:api-compiler:0.0.6',
+    toolsFx: 'com.google.api:api-compiler:0.0.7',
 
     // Testing
     junit: 'junit:junit:4.11',
@@ -408,6 +420,19 @@ task runConfigGen(type: JavaExec) {
   }
 }
 
+// Task to run GrpcMetadataGeneratorTool
+// =============================
+//
+// Command line args can be passed to the tool as a comma-separated list:
+//   ./gradlew runGrpcMetadataGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+task runGrpcMetadataGen(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.grpcmetadatagen.GrpcMetadataGeneratorTool'
+  if (project.hasProperty('clargs')) {
+    args = clargs.split(',').toList()
+  }
+}
+
 // Task to run DiscoveryFragmentGeneratorTool
 // =================================================================
 task runDiscoGen(type: JavaExec) {
@@ -431,12 +456,13 @@ task verifyLicense << {
   def srcFiles = []
   sourceSets
       .collectMany{it.allJava.getSrcDirs()}
-      .each{it.eachFileRecurse(FileType.FILES, {srcFiles << it})}
+      .each{it.eachFileRecurse(FileType.FILES, {srcFiles << new Tuple(it, it.text)})}
   srcFiles = srcFiles
-      .findAll{!it.path.contains("/generated/") && it.path.endsWith(".java")}
-      .findAll{!it.text.startsWith(licenseText)}
+      .findAll{!it.get(0).path.contains("/generated/") && it.get(0).path.endsWith(".java")}
+      .collect{new Tuple(it.get(0), it.get(1).replaceAll("Copyright 20[0-9]{2}", "Copyright 20xx"))}
+      .findAll{!it.get(1).startsWith(licenseText)}
   if (srcFiles.asList().size() > 0) {
-    srcFiles.each({println 'missing license: ' + it})
+    srcFiles.each({println 'missing license: ' + it.get(0)})
     throw new IllegalStateException("Above files do not have licenses")
   }
 }

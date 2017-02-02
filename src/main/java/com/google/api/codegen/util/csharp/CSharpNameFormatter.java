@@ -17,12 +17,18 @@ package com.google.api.codegen.util.csharp;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
+import com.google.common.collect.ImmutableSet;
 
 public class CSharpNameFormatter implements NameFormatter {
 
   @Override
-  public String className(Name name) {
+  public String publicClassName(Name name) {
     return name.toUpperCamel();
+  }
+
+  @Override
+  public String privateClassName(Name name) {
+    return publicClassName(name);
   }
 
   @Override
@@ -82,6 +88,91 @@ public class CSharpNameFormatter implements NameFormatter {
 
   @Override
   public String classFileNameBase(Name name) {
-    return className(name);
+    return publicClassName(name);
   }
+
+  /**
+   * A set of C# reserved identifiers. See https://msdn.microsoft.com/en-us/library/x53a06bb.aspx
+   */
+  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
+      ImmutableSet.<String>builder()
+          .add(
+              "abstract",
+              "as",
+              "base",
+              "bool",
+              "break",
+              "byte",
+              "case",
+              "catch",
+              "char",
+              "checked",
+              "class",
+              "const",
+              "continue",
+              "decimal",
+              "default",
+              "delegate",
+              "do",
+              "double",
+              "else",
+              "enum",
+              "event",
+              "explicit",
+              "extern",
+              "false",
+              "finally",
+              "fixed",
+              "float",
+              "for",
+              "foreach",
+              "goto",
+              "if",
+              "implicit",
+              "in",
+              "int",
+              "interface",
+              "internal",
+              "is",
+              "lock",
+              "long",
+              "namespace",
+              "new",
+              "null",
+              "object",
+              "operator",
+              "out",
+              "override",
+              "params",
+              "private",
+              "protected",
+              "public",
+              "readonly",
+              "ref",
+              "return",
+              "sbyte",
+              "sealed",
+              "short",
+              "sizeof",
+              "stackalloc",
+              "static",
+              "string",
+              "struct",
+              "switch",
+              "this",
+              "throw",
+              "true",
+              "try",
+              "typeof",
+              "uint",
+              "ulong",
+              "unchecked",
+              "unsafe",
+              "ushort",
+              "using",
+              "virtual",
+              "void",
+              "volatile",
+              "while")
+          .build();
 }

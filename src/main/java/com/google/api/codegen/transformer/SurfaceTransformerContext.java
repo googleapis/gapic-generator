@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -27,10 +26,10 @@ import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** The context for transforming a model into a view model for a surface. */
 @AutoValue
@@ -83,6 +82,7 @@ public abstract class SurfaceTransformerContext {
   public abstract FeatureConfig getFeatureConfig();
 
   /** A map which maps the reroute grpc interface to its original interface */
+  @Nullable
   public abstract Map<Interface, Interface> getGrpcRerouteMap();
 
   public SurfaceTransformerContext withNewTypeTable() {
@@ -115,14 +115,6 @@ public abstract class SurfaceTransformerContext {
       throw new IllegalArgumentException(
           "Interface config does not exist for method: " + method.getSimpleName());
     }
-  }
-
-  public Collection<CollectionConfig> getCollectionConfigs() {
-    return getInterfaceConfig().getCollectionConfigs();
-  }
-
-  public CollectionConfig getCollectionConfig(String entityName) {
-    return getInterfaceConfig().getCollectionConfig(entityName);
   }
 
   public MethodTransformerContext asFlattenedMethodContext(
@@ -206,6 +198,26 @@ public abstract class SurfaceTransformerContext {
     List<Method> methods = new ArrayList<>();
     for (Method method : getSupportedMethods()) {
       if (getMethodConfig(method).isPageStreaming()) {
+        methods.add(method);
+      }
+    }
+    return methods;
+  }
+
+  public Iterable<Method> getLongRunningMethods() {
+    List<Method> methods = new ArrayList<>();
+    for (Method method : getSupportedMethods()) {
+      if (getMethodConfig(method).isLongRunningOperation()) {
+        methods.add(method);
+      }
+    }
+    return methods;
+  }
+
+  public Iterable<Method> getGrpcStreamingMethods() {
+    List<Method> methods = new ArrayList<>();
+    for (Method method : getSupportedMethods()) {
+      if (getMethodConfig(method).isGrpcStreaming()) {
         methods.add(method);
       }
     }

@@ -6,8 +6,10 @@
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -20,34 +22,20 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
             // The name of the operation resource.
-            string name = "{MY-NAME}";
-
+            string name = "";  // TODO: Update placeholder value.
 
             OperationsResource.GetRequest request = cloudResourceManagerService.Operations.Get(name);
 
@@ -58,6 +46,16 @@ namespace CloudResourceManagerSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -67,8 +65,10 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -81,34 +81,20 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
             // The resource name of the Organization to fetch, e.g. "organizations/1234".
-            string name = "organizations/{MY-ORGANIZATION}";
-
+            string name = "";  // TODO: Update placeholder value.
 
             OrganizationsResource.GetRequest request = cloudResourceManagerService.Organizations.Get(name);
 
@@ -119,71 +105,15 @@ namespace CloudResourceManagerSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudResourceManager.v1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.CloudResourceManager.v1.Data;
-
-
-namespace CloudResourceManagerSample
-{
-    public class CloudResourceManagerServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `GetIamPolicy` method:
-
-            // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-            // path. For example, a Project resource is specified as `projects/{project}`.
-            string resource = "organizations/{MY-ORGANIZATION}";
-
-
-            Data.GetIamPolicyRequest requestBody = new Data.GetIamPolicyRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
-
-            OrganizationsResource.GetIamPolicyRequest request = cloudResourceManagerService.Organizations.GetIamPolicy(requestBody, resource);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Policy response = request.Execute();
-            // Data.Policy response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -194,8 +124,10 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -208,31 +140,84 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
+            });
+
+            // REQUIRED: The resource for which the policy is being requested.
+            // `resource` is usually specified as a path. For example, a Project
+            // resource is specified as `projects/{project}`.
+            string resource = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.GetIamPolicyRequest requestBody = new Data.GetIamPolicyRequest();
+
+            OrganizationsResource.GetIamPolicyRequest request = cloudResourceManagerService.Organizations.GetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudResourceManager.v1.Data;
+
+namespace CloudResourceManagerSample
+{
+    public class CloudResourceManagerExample
+    {
+        public static void Main(string[] args)
+        {
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.SearchOrganizationsRequest requestBody = new Data.SearchOrganizationsRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             OrganizationsResource.SearchRequest request = cloudResourceManagerService.Organizations.Search(requestBody);
 
@@ -255,6 +240,16 @@ namespace CloudResourceManagerSample
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -264,8 +259,10 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -278,39 +275,25 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
+            // REQUIRED: The resource for which the policy is being specified.
+            // `resource` is usually specified as a path. For example, a Project
+            // resource is specified as `projects/{project}`.
+            string resource = "";  // TODO: Update placeholder value.
 
-            // TODO: Change placeholder below to desired parameter value for the `SetIamPolicy` method:
-
-            // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-            // path. For example, a Project resource is specified as `projects/{project}`.
-            string resource = "organizations/{MY-ORGANIZATION}";
-
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             OrganizationsResource.SetIamPolicyRequest request = cloudResourceManagerService.Organizations.SetIamPolicy(requestBody, resource);
 
@@ -321,6 +304,16 @@ namespace CloudResourceManagerSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -330,8 +323,10 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -344,39 +339,25 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
+            // REQUIRED: The resource for which the policy detail is being requested.
+            // `resource` is usually specified as a path. For example, a Project
+            // resource is specified as `projects/{project}`.
+            string resource = "";  // TODO: Update placeholder value.
 
-            // TODO: Change placeholder below to desired parameter value for the `TestIamPermissions` method:
-
-            // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-            // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-            string resource = "organizations/{MY-ORGANIZATION}";
-
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             OrganizationsResource.TestIamPermissionsRequest request = cloudResourceManagerService.Organizations.TestIamPermissions(requestBody, resource);
 
@@ -387,6 +368,16 @@ namespace CloudResourceManagerSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -396,8 +387,10 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -410,31 +403,20 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.Project requestBody = new Data.Project();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.CreateRequest request = cloudResourceManagerService.Projects.Create(requestBody);
 
@@ -445,66 +427,15 @@ namespace CloudResourceManagerSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudResourceManager.v1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.CloudResourceManager.v1.Data;
-
-
-namespace CloudResourceManagerSample
-{
-    public class CloudResourceManagerServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
-
-            // The Project ID (for example, `foo-bar-123`). Required.
-            string projectId = "{MY-PROJECT-ID}";
-
-
-            ProjectsResource.DeleteRequest request = cloudResourceManagerService.Projects.Delete(projectId);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -515,8 +446,64 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace CloudResourceManagerSample
+{
+    public class CloudResourceManagerExample
+    {
+        public static void Main(string[] args)
+        {
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
+            });
+
+            // The Project ID (for example, `foo-bar-123`).
+            // Required.
+            string projectId = "";  // TODO: Update placeholder value.
+
+            ProjectsResource.DeleteRequest request = cloudResourceManagerService.Projects.Delete(projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -529,34 +516,21 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
-            // The Project ID (for example, `my-project-123`). Required.
-            string projectId = "{MY-PROJECT-ID}";
-
+            // The Project ID (for example, `my-project-123`).
+            // Required.
+            string projectId = "";  // TODO: Update placeholder value.
 
             ProjectsResource.GetRequest request = cloudResourceManagerService.Projects.Get(projectId);
 
@@ -567,71 +541,15 @@ namespace CloudResourceManagerSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudResourceManager.v1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.CloudResourceManager.v1.Data;
-
-
-namespace CloudResourceManagerSample
-{
-    public class CloudResourceManagerServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `GetIamPolicy` method:
-
-            // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
-            // path. For example, a Project resource is specified as `projects/{project}`.
-            string resource = "{MY-RESOURCE}";
-
-
-            Data.GetIamPolicyRequest requestBody = new Data.GetIamPolicyRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
-
-            ProjectsResource.GetIamPolicyRequest request = cloudResourceManagerService.Projects.GetIamPolicy(requestBody, resource);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Policy response = request.Execute();
-            // Data.Policy response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -642,8 +560,10 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -656,26 +576,143 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
+            });
+
+            // The Project ID (for example, `my-project-123`).
+            // Required.
+            string projectId = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.GetAncestryRequest requestBody = new Data.GetAncestryRequest();
+
+            ProjectsResource.GetAncestryRequest request = cloudResourceManagerService.Projects.GetAncestry(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.GetAncestryResponse response = request.Execute();
+            // Data.GetAncestryResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudResourceManager.v1.Data;
+
+namespace CloudResourceManagerSample
+{
+    public class CloudResourceManagerExample
+    {
+        public static void Main(string[] args)
+        {
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
+            });
+
+            // REQUIRED: The resource for which the policy is being requested.
+            // `resource` is usually specified as a path. For example, a Project
+            // resource is specified as `projects/{project}`.
+            string resource = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.GetIamPolicyRequest requestBody = new Data.GetIamPolicyRequest();
+
+            ProjectsResource.GetIamPolicyRequest request = cloudResourceManagerService.Projects.GetIamPolicy(requestBody, resource);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Policy response = request.Execute();
+            // Data.Policy response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudResourceManager.v1.Data;
+
+namespace CloudResourceManagerSample
+{
+    public class CloudResourceManagerExample
+    {
+        public static void Main(string[] args)
+        {
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
             ProjectsResource.ListRequest request = cloudResourceManagerService.Projects.List();
@@ -699,6 +736,16 @@ namespace CloudResourceManagerSample
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -708,8 +755,10 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -722,39 +771,25 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
+            // REQUIRED: The resource for which the policy is being specified.
+            // `resource` is usually specified as a path. For example, a Project
+            // resource is specified as `projects/{project}`.
+            string resource = "";  // TODO: Update placeholder value.
 
-            // TODO: Change placeholder below to desired parameter value for the `SetIamPolicy` method:
-
-            // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
-            // path. For example, a Project resource is specified as `projects/{project}`.
-            string resource = "{MY-RESOURCE}";
-
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.SetIamPolicyRequest request = cloudResourceManagerService.Projects.SetIamPolicy(requestBody, resource);
 
@@ -765,6 +800,16 @@ namespace CloudResourceManagerSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -774,8 +819,10 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -788,39 +835,25 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
+            // REQUIRED: The resource for which the policy detail is being requested.
+            // `resource` is usually specified as a path. For example, a Project
+            // resource is specified as `projects/{project}`.
+            string resource = "";  // TODO: Update placeholder value.
 
-            // TODO: Change placeholder below to desired parameter value for the `TestIamPermissions` method:
-
-            // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
-            // specified as a path. For example, a Project resource is specified as `projects/{project}`.
-            string resource = "{MY-RESOURCE}";
-
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.TestIamPermissionsRequest request = cloudResourceManagerService.Projects.TestIamPermissions(requestBody, resource);
 
@@ -831,70 +864,15 @@ namespace CloudResourceManagerSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudResourceManager.v1;
-using Google.Apis.Services;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.CloudResourceManager.v1.Data;
-
-
-namespace CloudResourceManagerSample
-{
-    public class CloudResourceManagerServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Undelete` method:
-
-            // The project ID (for example, `foo-bar-123`). Required.
-            string projectId = "{MY-PROJECT-ID}";
-
-
-            Data.UndeleteProjectRequest requestBody = new Data.UndeleteProjectRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
-
-            ProjectsResource.UndeleteRequest request = cloudResourceManagerService.Projects.Undelete(requestBody, projectId);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Empty response = request.Execute();
-            // Data.Empty response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -905,8 +883,69 @@ namespace CloudResourceManagerSample
 //    https://console.developers.google.com/apis/api/cloudresourcemanager
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudResourceManager.v1.Data;
+
+namespace CloudResourceManagerSample
+{
+    public class CloudResourceManagerExample
+    {
+        public static void Main(string[] args)
+        {
+            CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
+            });
+
+            // The project ID (for example, `foo-bar-123`).
+            // Required.
+            string projectId = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.UndeleteProjectRequest requestBody = new Data.UndeleteProjectRequest();
+
+            ProjectsResource.UndeleteRequest request = cloudResourceManagerService.Projects.Undelete(requestBody, projectId);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -919,38 +958,25 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudResourceManager.v1.Data;
 
-
 namespace CloudResourceManagerSample
 {
-    public class CloudResourceManagerServiceExample
+    public class CloudResourceManagerExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             CloudResourceManagerService cloudResourceManagerService = new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-CloudResourceManagerSample/0.1",
             });
 
+            // The project ID (for example, `my-project-123`).
+            // Required.
+            string projectId = "";  // TODO: Update placeholder value.
 
-            // TODO: Change placeholder below to desired parameter value for the `Update` method:
-
-            // The project ID (for example, `my-project-123`). Required.
-            string projectId = "{MY-PROJECT-ID}";
-
-
+            // TODO: Assign values to desired properties of `requestBody`. All existing
+            // properties will be replaced:
             Data.Project requestBody = new Data.Project();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ProjectsResource.UpdateRequest request = cloudResourceManagerService.Projects.Update(requestBody, projectId);
 
@@ -960,6 +986,16 @@ namespace CloudResourceManagerSample
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }

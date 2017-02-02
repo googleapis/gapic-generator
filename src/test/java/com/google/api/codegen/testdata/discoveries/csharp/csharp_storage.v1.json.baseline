@@ -6,8 +6,10 @@
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -17,44 +19,40 @@ using Google.Apis.Services;
 using Google.Apis.Storage.v1;
 using System.Threading.Tasks;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
-
+            string entity = "";  // TODO: Update placeholder value.
 
             BucketAccessControlsResource.DeleteRequest request = storageService.BucketAccessControls.Delete(bucket, entity);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -65,8 +63,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -79,38 +79,24 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Get` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
-
+            string entity = "";  // TODO: Update placeholder value.
 
             BucketAccessControlsResource.GetRequest request = storageService.BucketAccessControls.Get(bucket, entity);
 
@@ -121,6 +107,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -130,8 +126,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -144,38 +142,23 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Insert` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.BucketAccessControl requestBody = new Data.BucketAccessControl();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             BucketAccessControlsResource.InsertRequest request = storageService.BucketAccessControls.Insert(requestBody, bucket);
 
@@ -186,6 +169,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -195,8 +188,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -209,34 +204,20 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
-
+            string bucket = "";  // TODO: Update placeholder value.
 
             BucketAccessControlsResource.ListRequest request = storageService.BucketAccessControls.List(bucket);
 
@@ -247,6 +228,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -256,8 +247,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -270,42 +263,28 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
+            string entity = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`. Only assigned
+            // properties will be changed:
             Data.BucketAccessControl requestBody = new Data.BucketAccessControl();
-            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
 
             BucketAccessControlsResource.PatchRequest request = storageService.BucketAccessControls.Patch(requestBody, bucket, entity);
 
@@ -316,6 +295,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -325,8 +314,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -339,42 +330,28 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Update` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
+            string entity = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`. All existing
+            // properties will be replaced:
             Data.BucketAccessControl requestBody = new Data.BucketAccessControl();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             BucketAccessControlsResource.UpdateRequest request = storageService.BucketAccessControls.Update(requestBody, bucket, entity);
 
@@ -385,60 +362,15 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Storage.v1;
-using System.Threading.Tasks;
-
-
-namespace StorageSample
-{
-    public class StorageServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            StorageService storageService = new StorageService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Delete` method:
-
-            // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
-
-
-            BucketsResource.DeleteRequest request = storageService.Buckets.Delete(bucket);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            request.Execute();
-            // await request.ExecuteAsync();
+           return credential;
         }
     }
 }
@@ -449,8 +381,63 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Storage.v1;
+using System.Threading.Tasks;
+
+namespace StorageSample
+{
+    public class StorageExample
+    {
+        public static void Main(string[] args)
+        {
+            StorageService storageService = new StorageService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
+            });
+
+            // Name of a bucket.
+            string bucket = "";  // TODO: Update placeholder value.
+
+            BucketsResource.DeleteRequest request = storageService.Buckets.Delete(bucket);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            request.Execute();
+            // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -463,34 +450,20 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Get` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
-
+            string bucket = "";  // TODO: Update placeholder value.
 
             BucketsResource.GetRequest request = storageService.Buckets.Get(bucket);
 
@@ -501,70 +474,15 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Storage.v1;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Storage.v1.Data;
-
-
-namespace StorageSample
-{
-    public class StorageServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            StorageService storageService = new StorageService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholder below to desired parameter value for the `Insert` method:
-
-            // A valid API project identifier.
-            string project = "{MY-PROJECT}";
-
-
-            Data.Bucket requestBody = new Data.Bucket();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
-
-            BucketsResource.InsertRequest request = storageService.Buckets.Insert(requestBody, project);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Bucket response = request.Execute();
-            // Data.Bucket response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -575,8 +493,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -589,34 +509,82 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
+            StorageService storageService = new StorageService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
+            });
+
+            // A valid API project identifier.
+            string project = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.Bucket requestBody = new Data.Bucket();
+
+            BucketsResource.InsertRequest request = storageService.Buckets.Insert(requestBody, project);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Bucket response = request.Execute();
+            // Data.Bucket response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Storage.v1;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
+
+namespace StorageSample
+{
+    public class StorageExample
+    {
+        public static void Main(string[] args)
+        {
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
-
             // A valid API project identifier.
-            string project = "{MY-PROJECT}";
-
+            string project = "";  // TODO: Update placeholder value.
 
             BucketsResource.ListRequest request = storageService.Buckets.List(project);
 
@@ -639,6 +607,16 @@ namespace StorageSample
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -648,8 +626,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -662,38 +642,24 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Patch` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`. Only assigned
+            // properties will be changed:
             Data.Bucket requestBody = new Data.Bucket();
-            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
 
             BucketsResource.PatchRequest request = storageService.Buckets.Patch(requestBody, bucket);
 
@@ -704,6 +670,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -713,8 +689,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -727,38 +705,24 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Update` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`. All existing
+            // properties will be replaced:
             Data.Bucket requestBody = new Data.Bucket();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             BucketsResource.UpdateRequest request = storageService.Buckets.Update(requestBody, bucket);
 
@@ -769,6 +733,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -778,8 +752,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -791,37 +767,36 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.Channel requestBody = new Data.Channel();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ChannelsResource.StopRequest request = storageService.Channels.Stop(requestBody);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -832,8 +807,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -843,44 +820,40 @@ using Google.Apis.Services;
 using Google.Apis.Storage.v1;
 using System.Threading.Tasks;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
-
+            string entity = "";  // TODO: Update placeholder value.
 
             DefaultObjectAccessControlsResource.DeleteRequest request = storageService.DefaultObjectAccessControls.Delete(bucket, entity);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -891,8 +864,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -905,38 +880,24 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Get` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
-
+            string entity = "";  // TODO: Update placeholder value.
 
             DefaultObjectAccessControlsResource.GetRequest request = storageService.DefaultObjectAccessControls.Get(bucket, entity);
 
@@ -947,6 +908,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -956,8 +927,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -970,38 +943,23 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `Insert` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             DefaultObjectAccessControlsResource.InsertRequest request = storageService.DefaultObjectAccessControls.Insert(requestBody, bucket);
 
@@ -1012,6 +970,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -1021,8 +989,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1035,34 +1005,20 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
-
+            string bucket = "";  // TODO: Update placeholder value.
 
             DefaultObjectAccessControlsResource.ListRequest request = storageService.DefaultObjectAccessControls.List(bucket);
 
@@ -1073,6 +1029,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -1082,8 +1048,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1096,42 +1064,28 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
+            string entity = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`. Only assigned
+            // properties will be changed:
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
-            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
 
             DefaultObjectAccessControlsResource.PatchRequest request = storageService.DefaultObjectAccessControls.Patch(requestBody, bucket, entity);
 
@@ -1142,6 +1096,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -1151,8 +1115,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1165,42 +1131,28 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Update` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
+            string entity = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`. All existing
+            // properties will be replaced:
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             DefaultObjectAccessControlsResource.UpdateRequest request = storageService.DefaultObjectAccessControls.Update(requestBody, bucket, entity);
 
@@ -1211,6 +1163,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -1220,8 +1182,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1231,49 +1195,45 @@ using Google.Apis.Services;
 using Google.Apis.Storage.v1;
 using System.Threading.Tasks;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
+            string object2 = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
+            string entity = "";  // TODO: Update placeholder value.
 
-
-            ObjectAccessControlsResource.DeleteRequest request = storageService.ObjectAccessControls.Delete(bucket, object_, entity);
+            ObjectAccessControlsResource.DeleteRequest request = storageService.ObjectAccessControls.Delete(bucket, object2, entity);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -1283,8 +1243,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1297,44 +1259,30 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Get` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
+            string object2 = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
+            string entity = "";  // TODO: Update placeholder value.
 
-
-            ObjectAccessControlsResource.GetRequest request = storageService.ObjectAccessControls.Get(bucket, object_, entity);
+            ObjectAccessControlsResource.GetRequest request = storageService.ObjectAccessControls.Get(bucket, object2, entity);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
@@ -1342,6 +1290,16 @@ namespace StorageSample
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -1352,8 +1310,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1366,44 +1326,29 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
+            string object2 = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
-            // TODO: Assign values to desired properties of the `requestBody` object.
 
-
-            ObjectAccessControlsResource.InsertRequest request = storageService.ObjectAccessControls.Insert(requestBody, bucket, object_);
+            ObjectAccessControlsResource.InsertRequest request = storageService.ObjectAccessControls.Insert(requestBody, bucket, object2);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
@@ -1411,6 +1356,16 @@ namespace StorageSample
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -1421,8 +1376,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1435,40 +1392,26 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `List` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
+            string object2 = "";  // TODO: Update placeholder value.
 
-
-            ObjectAccessControlsResource.ListRequest request = storageService.ObjectAccessControls.List(bucket, object_);
+            ObjectAccessControlsResource.ListRequest request = storageService.ObjectAccessControls.List(bucket, object2);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControls response = request.Execute();
@@ -1477,78 +1420,15 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Storage.v1;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Storage.v1.Data;
-
-
-namespace StorageSample
-{
-    public class StorageServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            StorageService storageService = new StorageService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
-
-            // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
-
-            // Name of the object. For information about how to URL encode object names to be path safe, see
-            // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
-
-            // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-            // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
-
-
-            Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
-            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
-
-
-            ObjectAccessControlsResource.PatchRequest request = storageService.ObjectAccessControls.Patch(requestBody, bucket, object_, entity);
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.ObjectAccessControl response = request.Execute();
-            // Data.ObjectAccessControl response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -1559,8 +1439,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1573,48 +1455,34 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Update` method:
-
             // Name of a bucket.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
+            string object2 = "";  // TODO: Update placeholder value.
 
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
-            string entity = "{MY-ENTITY}";
+            string entity = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`. Only assigned
+            // properties will be changed:
             Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
-            // TODO: Assign values to desired properties of the `requestBody` object.
 
-
-            ObjectAccessControlsResource.UpdateRequest request = storageService.ObjectAccessControls.Update(requestBody, bucket, object_, entity);
+            ObjectAccessControlsResource.PatchRequest request = storageService.ObjectAccessControls.Patch(requestBody, bucket, object2, entity);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ObjectAccessControl response = request.Execute();
@@ -1622,6 +1490,16 @@ namespace StorageSample
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -1632,8 +1510,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1646,48 +1526,103 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
+            StorageService storageService = new StorageService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
+            });
+
+            // Name of a bucket.
+            string bucket = "";  // TODO: Update placeholder value.
+
+            // Name of the object. For information about how to URL encode object names to be path safe, see
+            // Encoding URI Path Parts.
+            string object2 = "";  // TODO: Update placeholder value.
+
+            // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+            // group-emailAddress, allUsers, or allAuthenticatedUsers.
+            string entity = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`. All existing
+            // properties will be replaced:
+            Data.ObjectAccessControl requestBody = new Data.ObjectAccessControl();
+
+            ObjectAccessControlsResource.UpdateRequest request = storageService.ObjectAccessControls.Update(requestBody, bucket, object2, entity);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.ObjectAccessControl response = request.Execute();
+            // Data.ObjectAccessControl response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Storage.v1;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
+
+namespace StorageSample
+{
+    public class StorageExample
+    {
+        public static void Main(string[] args)
+        {
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
-
-
-            // TODO: Change placeholders below to desired parameter values for the `Compose` method:
 
             // Name of the bucket in which to store the new object.
-            string destinationBucket = "{MY-DESTINATION-BUCKET}";
+            string destinationBucket = "";  // TODO: Update placeholder value.
 
             // Name of the new object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string destinationObject = "{MY-DESTINATION-OBJECT}";
+            string destinationObject = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.ComposeRequest requestBody = new Data.ComposeRequest();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ObjectsResource.ComposeRequest request = storageService.Objects.Compose(requestBody, destinationBucket, destinationObject);
 
-            // TODO: Download media content if desired. For more information, see:
+            // TODO: Download media content if desired. See
             // https://developers.google.com/api-client-library/dotnet/guide/media_download
-
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Object response = request.Execute();
@@ -1695,6 +1630,16 @@ namespace StorageSample
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -1705,8 +1650,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1719,57 +1666,41 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Copy` method:
-
             // Name of the bucket in which to find the source object.
-            string sourceBucket = "{MY-SOURCE-BUCKET}";
+            string sourceBucket = "";  // TODO: Update placeholder value.
 
-            // Name of the source object. For information about how to URL encode object names to be path safe, see
+            // Name of the source object. For information about how to URL encode object names to be path safe,
+            // see Encoding URI Path Parts.
+            string sourceObject = "";  // TODO: Update placeholder value.
+
+            // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+            // bucket value, if any.For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string sourceObject = "{MY-SOURCE-OBJECT}";
-
-            // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
-            // value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
-            // Path Parts.
-            string destinationBucket = "{MY-DESTINATION-BUCKET}";
+            string destinationBucket = "";  // TODO: Update placeholder value.
 
             // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
             // object metadata's name value, if any.
-            string destinationObject = "{MY-DESTINATION-OBJECT}";
+            string destinationObject = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.Object requestBody = new Data.Object();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ObjectsResource.CopyRequest request = storageService.Objects.Copy(requestBody, sourceBucket, sourceObject, destinationBucket, destinationObject);
 
-            // TODO: Download media content if desired. For more information, see:
+            // TODO: Download media content if desired. See
             // https://developers.google.com/api-client-library/dotnet/guide/media_download
-
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Object response = request.Execute();
@@ -1777,6 +1708,16 @@ namespace StorageSample
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -1787,8 +1728,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1798,113 +1741,40 @@ using Google.Apis.Services;
 using Google.Apis.Storage.v1;
 using System.Threading.Tasks;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
-
             // Name of the bucket in which the object resides.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
+            string object2 = "";  // TODO: Update placeholder value.
 
-
-            ObjectsResource.DeleteRequest request = storageService.Objects.Delete(bucket, object_);
+            ObjectsResource.DeleteRequest request = storageService.Objects.Delete(bucket, object2);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Storage.v1;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Storage.v1.Data;
-
-
-namespace StorageSample
-{
-    public class StorageServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            StorageService storageService = new StorageService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholders below to desired parameter values for the `Get` method:
-
-            // Name of the bucket in which the object resides.
-            string bucket = "{MY-BUCKET}";
-
-            // Name of the object. For information about how to URL encode object names to be path safe, see
-            // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
-
-
-            ObjectsResource.GetRequest request = storageService.Objects.Get(bucket, object_);
-
-            // TODO: Download media content if desired. For more information, see:
-            // https://developers.google.com/api-client-library/dotnet/guide/media_download
-
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Object response = request.Execute();
-            // Data.Object response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -1915,8 +1785,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1929,43 +1801,93 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
+            StorageService storageService = new StorageService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
+            });
+
+            // Name of the bucket in which the object resides.
+            string bucket = "";  // TODO: Update placeholder value.
+
+            // Name of the object. For information about how to URL encode object names to be path safe, see
+            // Encoding URI Path Parts.
+            string object2 = "";  // TODO: Update placeholder value.
+
+            ObjectsResource.GetRequest request = storageService.Objects.Get(bucket, object2);
+
+            // TODO: Download media content if desired. See
+            // https://developers.google.com/api-client-library/dotnet/guide/media_download
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Object response = request.Execute();
+            // Data.Object response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Storage.v1;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
+
+namespace StorageSample
+{
+    public class StorageExample
+    {
+        public static void Main(string[] args)
+        {
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
+            // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+            // bucket value, if any.
+            string bucket = "";  // TODO: Update placeholder value.
 
-            // TODO: Change placeholder below to desired parameter value for the `Insert` method:
-
-            // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
-            // value, if any.
-            string bucket = "{MY-BUCKET}";
-
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.Object requestBody = new Data.Object();
-            // TODO: Assign values to desired properties of the `requestBody` object.
 
-
-            // TODO: Add desired media content for upload. For more information, see:
+            // TODO: Add desired media content for upload. See
             // https://developers.google.com/api-client-library/dotnet/guide/media_upload
-
 
             ObjectsResource.InsertRequest request = storageService.Objects.Insert(requestBody, bucket);
 
@@ -1976,6 +1898,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -1985,8 +1917,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -1999,34 +1933,20 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `List` method:
-
             // Name of the bucket in which to look for objects.
-            string bucket = "{MY-BUCKET}";
-
+            string bucket = "";  // TODO: Update placeholder value.
 
             ObjectsResource.ListRequest request = storageService.Objects.List(bucket);
 
@@ -2041,13 +1961,23 @@ namespace StorageSample
                 {
                     continue;
                 }
-                foreach (Data.Object object_ in response.Items)
+                foreach (Data.Object object2 in response.Items)
                 {
-                    // TODO: Change code below to process each `object_` resource:
-                    Console.WriteLine(object_);
+                    // TODO: Change code below to process each `object2` resource:
+                    Console.WriteLine(object2);
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }
@@ -2058,8 +1988,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -2072,44 +2004,30 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
-
             // Name of the bucket in which the object resides.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
+            string object2 = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`. Only assigned
+            // properties will be changed:
             Data.Object requestBody = new Data.Object();
-            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-
-            ObjectsResource.PatchRequest request = storageService.Objects.Patch(requestBody, bucket, object_);
+            ObjectsResource.PatchRequest request = storageService.Objects.Patch(requestBody, bucket, object2);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Object response = request.Execute();
@@ -2118,6 +2036,16 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
     }
 }
 // BEFORE RUNNING:
@@ -2127,8 +2055,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -2141,51 +2071,36 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-            if (credential.IsCreateScopedRequired)
-            {
-                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
-            }
-
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholders below to desired parameter values for the `Rewrite` method:
-
             // Name of the bucket in which to find the source object.
-            string sourceBucket = "{MY-SOURCE-BUCKET}";
+            string sourceBucket = "";  // TODO: Update placeholder value.
 
-            // Name of the source object. For information about how to URL encode object names to be path safe, see
-            // Encoding URI Path Parts.
-            string sourceObject = "{MY-SOURCE-OBJECT}";
+            // Name of the source object. For information about how to URL encode object names to be path safe,
+            // see Encoding URI Path Parts.
+            string sourceObject = "";  // TODO: Update placeholder value.
 
-            // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
-            // value, if any.
-            string destinationBucket = "{MY-DESTINATION-BUCKET}";
+            // Name of the bucket in which to store the new object. Overrides the provided object metadata's
+            // bucket value, if any.
+            string destinationBucket = "";  // TODO: Update placeholder value.
 
             // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
             // object metadata's name value, if any. For information about how to URL encode object names to be
             // path safe, see Encoding URI Path Parts.
-            string destinationObject = "{MY-DESTINATION-OBJECT}";
+            string destinationObject = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.Object requestBody = new Data.Object();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ObjectsResource.RewriteRequest request = storageService.Objects.Rewrite(requestBody, sourceBucket, sourceObject, destinationBucket, destinationObject);
 
@@ -2196,78 +2111,15 @@ namespace StorageSample
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
         }
-    }
-}
-// BEFORE RUNNING:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage
-// 2. This sample uses Application Default Credentials for authentication.
-//    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
-// 3. Install the C# client library by adding a dependency on the relevant NuGet
-//    package. Libraries published by Google are owned by google-apis-packages:
-//    https://www.nuget.org/profiles/google-apis-packages
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Storage.v1;
-using System;
-using System.Threading.Tasks;
-
-using Data = Google.Apis.Storage.v1.Data;
-
-
-namespace StorageSample
-{
-    public class StorageServiceExample
-    {
-        public static void Main(string[] args)
+        public static GoogleCredential GetCredential()
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
-
-            StorageService storageService = new StorageService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
-            });
-
-
-            // TODO: Change placeholders below to desired parameter values for the `Update` method:
-
-            // Name of the bucket in which the object resides.
-            string bucket = "{MY-BUCKET}";
-
-            // Name of the object. For information about how to URL encode object names to be path safe, see
-            // Encoding URI Path Parts.
-            string object_ = "{MY-OBJECT}";
-
-
-            Data.Object requestBody = new Data.Object();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
-
-            ObjectsResource.UpdateRequest request = storageService.Objects.Update(requestBody, bucket, object_);
-
-            // TODO: Download media content if desired. For more information, see:
-            // https://developers.google.com/api-client-library/dotnet/guide/media_download
-
-
-            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Object response = request.Execute();
-            // Data.Object response = await request.ExecuteAsync();
-
-            // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+           return credential;
         }
     }
 }
@@ -2278,8 +2130,10 @@ namespace StorageSample
 //    https://console.developers.google.com/apis/api/storage
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the C# client library by adding a dependency on the relevant NuGet
 //    package. Libraries published by Google are owned by google-apis-packages:
 //    https://www.nuget.org/profiles/google-apis-packages
@@ -2292,38 +2146,93 @@ using System.Threading.Tasks;
 
 using Data = Google.Apis.Storage.v1.Data;
 
-
 namespace StorageSample
 {
-    public class StorageServiceExample
+    public class StorageExample
     {
         public static void Main(string[] args)
         {
-            // Use Application Default Credentials for authentication when running locally.
-            // For more information, see:
-            // https://developers.google.com/identity/protocols/application-default-credentials
+            StorageService storageService = new StorageService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
+            });
+
+            // Name of the bucket in which the object resides.
+            string bucket = "";  // TODO: Update placeholder value.
+
+            // Name of the object. For information about how to URL encode object names to be path safe, see
+            // Encoding URI Path Parts.
+            string object2 = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`. All existing
+            // properties will be replaced:
+            Data.Object requestBody = new Data.Object();
+
+            ObjectsResource.UpdateRequest request = storageService.Objects.Update(requestBody, bucket, object2);
+
+            // TODO: Download media content if desired. See
+            // https://developers.google.com/api-client-library/dotnet/guide/media_download
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Object response = request.Execute();
+            // Data.Object response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
             GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
             }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Storage.v1;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
+
+namespace StorageSample
+{
+    public class StorageExample
+    {
+        public static void Main(string[] args)
+        {
             StorageService storageService = new StorageService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential,
-                ApplicationName = "Google Cloud Platform Sample",
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-StorageSample/0.1",
             });
 
-
-            // TODO: Change placeholder below to desired parameter value for the `WatchAll` method:
-
             // Name of the bucket in which to look for objects.
-            string bucket = "{MY-BUCKET}";
+            string bucket = "";  // TODO: Update placeholder value.
 
-
+            // TODO: Assign values to desired properties of `requestBody`:
             Data.Channel requestBody = new Data.Channel();
-            // TODO: Assign values to desired properties of the `requestBody` object.
-
 
             ObjectsResource.WatchAllRequest request = storageService.Objects.WatchAll(requestBody, bucket);
 
@@ -2333,6 +2242,16 @@ namespace StorageSample
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
         }
     }
 }

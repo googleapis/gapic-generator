@@ -15,6 +15,9 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -110,6 +113,11 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    return TypedValue.create(getTypeName(type), "%s." + value.getSimpleName());
+  }
+
+  @Override
   public TypeName getTypeNameForElementType(TypeRef type) {
     return getTypeNameForElementType(type, true);
   }
@@ -193,8 +201,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), "%s.newBuilder().build()");
     }
     if (type.isEnum()) {
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(getTypeName(type), "null");
   }
@@ -208,13 +215,12 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     return new TypeName(longName, shortName);
   }
 
-  @Override
-  public TypeName getTypeNameForTypedResourceName(
-      ProtoElement elem, TypeRef type, String resourceName) {
-    String packageName = getProtoElementPackage(elem);
-    String longName = packageName + "." + resourceName;
+  private TypeName getTypeNameForTypedResourceName(
+      ResourceNameConfig resourceNameConfig, TypeRef type, String typedResourceShortName) {
+    String packageName = getResourceNamePackage(resourceNameConfig);
+    String longName = packageName + "." + typedResourceShortName;
 
-    TypeName simpleTypeName = new TypeName(longName, resourceName);
+    TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
 
     if (type.isMap()) {
       throw new IllegalArgumentException("Map type not supported for typed resource name");
@@ -225,6 +231,39 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     } else {
       return simpleTypeName;
     }
+  }
+
+  private static String getResourceNamePackage(ResourceNameConfig resourceNameConfig) {
+    ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    switch (resourceNameType) {
+      case ANY:
+        return "com.google.api.resourcenames";
+      case FIXED:
+      case SINGLE:
+      case ONEOF:
+        return getJavaPackage(resourceNameConfig.getAssignedProtoFile());
+      case NONE:
+      default:
+        throw new IllegalArgumentException("Unexpected ResourceNameType: " + resourceNameType);
+    }
+  }
+
+  @Override
+  public TypeName getTypeNameForTypedResourceName(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    return getTypeNameForTypedResourceName(
+        fieldConfig.getResourceNameConfig(),
+        fieldConfig.getField().getType(),
+        typedResourceShortName);
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    return getTypeNameForTypedResourceName(
+        fieldConfig.getResourceNameConfig(),
+        fieldConfig.getField().getType().makeOptional(),
+        typedResourceShortName);
   }
 
   private static String getShortName(ProtoElement elem) {
@@ -243,7 +282,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     return name;
   }
 
-  private static String getJavaPackage(ProtoFile file) {
+  public static String getJavaPackage(ProtoFile file) {
     String packageName = file.getProto().getOptions().getJavaPackage();
     if (Strings.isNullOrEmpty(packageName)) {
       return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.getFullName();

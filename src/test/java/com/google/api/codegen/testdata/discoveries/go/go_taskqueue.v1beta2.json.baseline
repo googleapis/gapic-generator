@@ -16,7 +16,6 @@ import (
   "net/http"
 
   "golang.org/x/net/context"
-
   "google.golang.org/api/taskqueue/v1beta2"
 )
 
@@ -34,12 +33,10 @@ func main() {
   }
 
   // The project under which the queue lies.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The id of the taskqueue to get the properties of.
-  taskqueue2 := "{MY-TASKQUEUE}"
-  // TODO: Change placeholder value above.
+  taskqueue2 := ""  // TODO: Update placeholder value.
 
   resp, err := taskqueueService.Taskqueues.Get(project, taskqueue2).Context(ctx).Do()
   if err != nil {
@@ -51,13 +48,13 @@ func main() {
 }
 
 func getClient(ctx context.Context) (*http.Client, error) {
-  // TODO: Change placeholder below to get authentication credentials.
-  // See: https://foo.com/bar
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
   //
-  // To use the `Get` method, authorize using one of the following scopes:
-  //   https://www.googleapis.com/auth/taskqueue
-  //   https://www.googleapis.com/auth/taskqueue.consumer
-  return nil, errors.New("Not implemented")
+  // Authorize using the following scopes:
+  //     taskqueue.TaskqueueScope
+  //     taskqueue.TaskqueueConsumerScope
+  return nil, errors.New("not implemented")
 }
 package main
 
@@ -75,7 +72,6 @@ import (
   "net/http"
 
   "golang.org/x/net/context"
-
   "google.golang.org/api/taskqueue/v1beta2"
 )
 
@@ -93,16 +89,13 @@ func main() {
   }
 
   // The project under which the queue lies.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The taskqueue to delete a task from.
-  taskqueue2 := "{MY-TASKQUEUE}"
-  // TODO: Change placeholder value above.
+  taskqueue2 := ""  // TODO: Update placeholder value.
 
   // The id of the task to delete.
-  task := "{MY-TASK}"
-  // TODO: Change placeholder value above.
+  task := ""  // TODO: Update placeholder value.
 
   if err := taskqueueService.Tasks.Delete(project, taskqueue2, task).Context(ctx).Do(); err != nil {
     log.Fatal(err)
@@ -110,13 +103,13 @@ func main() {
 }
 
 func getClient(ctx context.Context) (*http.Client, error) {
-  // TODO: Change placeholder below to get authentication credentials.
-  // See: https://foo.com/bar
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
   //
-  // To use the `Delete` method, authorize using one of the following scopes:
-  //   https://www.googleapis.com/auth/taskqueue
-  //   https://www.googleapis.com/auth/taskqueue.consumer
-  return nil, errors.New("Not implemented")
+  // Authorize using the following scopes:
+  //     taskqueue.TaskqueueScope
+  //     taskqueue.TaskqueueConsumerScope
+  return nil, errors.New("not implemented")
 }
 package main
 
@@ -135,7 +128,6 @@ import (
   "net/http"
 
   "golang.org/x/net/context"
-
   "google.golang.org/api/taskqueue/v1beta2"
 )
 
@@ -153,16 +145,13 @@ func main() {
   }
 
   // The project under which the queue lies.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The taskqueue in which the task belongs.
-  taskqueue2 := "{MY-TASKQUEUE}"
-  // TODO: Change placeholder value above.
+  taskqueue2 := ""  // TODO: Update placeholder value.
 
   // The task to get properties of.
-  task := "{MY-TASK}"
-  // TODO: Change placeholder value above.
+  task := ""  // TODO: Update placeholder value.
 
   resp, err := taskqueueService.Tasks.Get(project, taskqueue2, task).Context(ctx).Do()
   if err != nil {
@@ -174,13 +163,13 @@ func main() {
 }
 
 func getClient(ctx context.Context) (*http.Client, error) {
-  // TODO: Change placeholder below to get authentication credentials.
-  // See: https://foo.com/bar
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
   //
-  // To use the `Get` method, authorize using one of the following scopes:
-  //   https://www.googleapis.com/auth/taskqueue
-  //   https://www.googleapis.com/auth/taskqueue.consumer
-  return nil, errors.New("Not implemented")
+  // Authorize using the following scopes:
+  //     taskqueue.TaskqueueScope
+  //     taskqueue.TaskqueueConsumerScope
+  return nil, errors.New("not implemented")
 }
 package main
 
@@ -199,7 +188,6 @@ import (
   "net/http"
 
   "golang.org/x/net/context"
-
   "google.golang.org/api/taskqueue/v1beta2"
 )
 
@@ -217,18 +205,16 @@ func main() {
   }
 
   // The project under which the queue lies
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The taskqueue to insert the task into
-  taskqueue2 := "{MY-TASKQUEUE}"
-  // TODO: Change placeholder value above.
+  taskqueue2 := ""  // TODO: Update placeholder value.
 
-  rb := taskqueue.Task{
+  rb := &taskqueue.Task{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := taskqueueService.Tasks.Insert(project, taskqueue2, &rb).Context(ctx).Do()
+  resp, err := taskqueueService.Tasks.Insert(project, taskqueue2, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -238,13 +224,13 @@ func main() {
 }
 
 func getClient(ctx context.Context) (*http.Client, error) {
-  // TODO: Change placeholder below to get authentication credentials.
-  // See: https://foo.com/bar
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
   //
-  // To use the `Insert` method, authorize using one of the following scopes:
-  //   https://www.googleapis.com/auth/taskqueue
-  //   https://www.googleapis.com/auth/taskqueue.consumer
-  return nil, errors.New("Not implemented")
+  // Authorize using the following scopes:
+  //     taskqueue.TaskqueueScope
+  //     taskqueue.TaskqueueConsumerScope
+  return nil, errors.New("not implemented")
 }
 package main
 
@@ -263,7 +249,6 @@ import (
   "net/http"
 
   "golang.org/x/net/context"
-
   "google.golang.org/api/taskqueue/v1beta2"
 )
 
@@ -281,20 +266,16 @@ func main() {
   }
 
   // The project under which the queue lies.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The taskqueue to lease a task from.
-  taskqueue2 := "{MY-TASKQUEUE}"
-  // TODO: Change placeholder value above.
+  taskqueue2 := ""  // TODO: Update placeholder value.
 
   // The number of tasks to lease.
-  numTasks := int64(0)
-  // TODO: Change placeholder value above.
+  numTasks := int64(0)  // TODO: Update placeholder value.
 
   // The lease in seconds.
-  leaseSecs := int64(0)
-  // TODO: Change placeholder value above.
+  leaseSecs := int64(0)  // TODO: Update placeholder value.
 
   resp, err := taskqueueService.Tasks.Lease(project, taskqueue2, numTasks, leaseSecs).Context(ctx).Do()
   if err != nil {
@@ -306,13 +287,13 @@ func main() {
 }
 
 func getClient(ctx context.Context) (*http.Client, error) {
-  // TODO: Change placeholder below to get authentication credentials.
-  // See: https://foo.com/bar
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
   //
-  // To use the `Lease` method, authorize using one of the following scopes:
-  //   https://www.googleapis.com/auth/taskqueue
-  //   https://www.googleapis.com/auth/taskqueue.consumer
-  return nil, errors.New("Not implemented")
+  // Authorize using the following scopes:
+  //     taskqueue.TaskqueueScope
+  //     taskqueue.TaskqueueConsumerScope
+  return nil, errors.New("not implemented")
 }
 package main
 
@@ -331,7 +312,6 @@ import (
   "net/http"
 
   "golang.org/x/net/context"
-
   "google.golang.org/api/taskqueue/v1beta2"
 )
 
@@ -349,12 +329,10 @@ func main() {
   }
 
   // The project under which the queue lies.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The id of the taskqueue to list tasks from.
-  taskqueue2 := "{MY-TASKQUEUE}"
-  // TODO: Change placeholder value above.
+  taskqueue2 := ""  // TODO: Update placeholder value.
 
   resp, err := taskqueueService.Tasks.List(project, taskqueue2).Context(ctx).Do()
   if err != nil {
@@ -366,13 +344,13 @@ func main() {
 }
 
 func getClient(ctx context.Context) (*http.Client, error) {
-  // TODO: Change placeholder below to get authentication credentials.
-  // See: https://foo.com/bar
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
   //
-  // To use the `List` method, authorize using one of the following scopes:
-  //   https://www.googleapis.com/auth/taskqueue
-  //   https://www.googleapis.com/auth/taskqueue.consumer
-  return nil, errors.New("Not implemented")
+  // Authorize using the following scopes:
+  //     taskqueue.TaskqueueScope
+  //     taskqueue.TaskqueueConsumerScope
+  return nil, errors.New("not implemented")
 }
 package main
 
@@ -391,7 +369,6 @@ import (
   "net/http"
 
   "golang.org/x/net/context"
-
   "google.golang.org/api/taskqueue/v1beta2"
 )
 
@@ -409,26 +386,21 @@ func main() {
   }
 
   // The project under which the queue lies.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
-  // taskqueue
-  taskqueue2 := "{MY-TASKQUEUE}"
-  // TODO: Change placeholder value above.
+  taskqueue2 := ""  // TODO: Update placeholder value.
 
-  // task
-  task := "{MY-TASK}"
-  // TODO: Change placeholder value above.
+  task := ""  // TODO: Update placeholder value.
 
   // The new lease in seconds.
-  newLeaseSeconds := int64(0)
-  // TODO: Change placeholder value above.
+  newLeaseSeconds := int64(0)  // TODO: Update placeholder value.
 
-  rb := taskqueue.Task{
-    // TODO: Add desired fields of the request body to be changed.
+  rb := &taskqueue.Task{
+    // TODO: Add desired fields of the request body. Only assigned fields
+    // will be changed.
   }
 
-  resp, err := taskqueueService.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, &rb).Context(ctx).Do()
+  resp, err := taskqueueService.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -438,13 +410,13 @@ func main() {
 }
 
 func getClient(ctx context.Context) (*http.Client, error) {
-  // TODO: Change placeholder below to get authentication credentials.
-  // See: https://foo.com/bar
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
   //
-  // To use the `Patch` method, authorize using one of the following scopes:
-  //   https://www.googleapis.com/auth/taskqueue
-  //   https://www.googleapis.com/auth/taskqueue.consumer
-  return nil, errors.New("Not implemented")
+  // Authorize using the following scopes:
+  //     taskqueue.TaskqueueScope
+  //     taskqueue.TaskqueueConsumerScope
+  return nil, errors.New("not implemented")
 }
 package main
 
@@ -463,7 +435,6 @@ import (
   "net/http"
 
   "golang.org/x/net/context"
-
   "google.golang.org/api/taskqueue/v1beta2"
 )
 
@@ -481,26 +452,20 @@ func main() {
   }
 
   // The project under which the queue lies.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
-  // taskqueue
-  taskqueue2 := "{MY-TASKQUEUE}"
-  // TODO: Change placeholder value above.
+  taskqueue2 := ""  // TODO: Update placeholder value.
 
-  // task
-  task := "{MY-TASK}"
-  // TODO: Change placeholder value above.
+  task := ""  // TODO: Update placeholder value.
 
   // The new lease in seconds.
-  newLeaseSeconds := int64(0)
-  // TODO: Change placeholder value above.
+  newLeaseSeconds := int64(0)  // TODO: Update placeholder value.
 
-  rb := taskqueue.Task{
+  rb := &taskqueue.Task{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := taskqueueService.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, &rb).Context(ctx).Do()
+  resp, err := taskqueueService.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -510,11 +475,11 @@ func main() {
 }
 
 func getClient(ctx context.Context) (*http.Client, error) {
-  // TODO: Change placeholder below to get authentication credentials.
-  // See: https://foo.com/bar
+  // TODO: Change placeholder below to get authentication credentials. See
+  // https://foo.com/bar
   //
-  // To use the `Update` method, authorize using one of the following scopes:
-  //   https://www.googleapis.com/auth/taskqueue
-  //   https://www.googleapis.com/auth/taskqueue.consumer
-  return nil, errors.New("Not implemented")
+  // Authorize using the following scopes:
+  //     taskqueue.TaskqueueScope
+  //     taskqueue.TaskqueueConsumerScope
+  return nil, errors.New("not implemented")
 }

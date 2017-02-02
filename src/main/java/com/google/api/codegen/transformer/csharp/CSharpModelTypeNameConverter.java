@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -26,8 +27,10 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.List;
 
 public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
@@ -125,20 +128,24 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   public TypeName getTypeName(ProtoElement elem) {
     // Handle nested types, construct the required type prefix
     ProtoElement parentEl = elem.getParent();
-    String prefix = "";
+    String shortNamePrefix = "";
     while (parentEl != null && parentEl instanceof MessageType) {
-      prefix = parentEl.getSimpleName() + ".Types." + prefix;
+      shortNamePrefix = parentEl.getSimpleName() + "+Types+" + shortNamePrefix;
       parentEl = parentEl.getParent();
     }
+    String prefix = "";
     if (parentEl instanceof ProtoFile) {
-      String filePrefix = "";
-      for (String name : Splitter.on('.').split(parentEl.getFullName())) {
-        filePrefix += Name.from(name).toUpperCamel() + ".";
+      ProtoFile protoFile = (ProtoFile) parentEl;
+      String namespace = protoFile.getProto().getOptions().getCsharpNamespace();
+      if (Strings.isNullOrEmpty(namespace)) {
+        for (String name : Splitter.on('.').split(parentEl.getFullName())) {
+          prefix += Name.from(name).toUpperCamelAndDigits() + ".";
+        }
+      } else {
+        prefix = namespace + ".";
       }
-      prefix = filePrefix + prefix;
     }
-
-    String shortName = elem.getSimpleName();
+    String shortName = shortNamePrefix + elem.getSimpleName();
     return new TypeName(prefix + shortName, shortName);
   }
 
@@ -166,11 +173,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     } else if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {
-      TypeName enumTypeName = getTypeName(type);
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      String enumValueName =
-          enumNamer.getEnumValueName(enumTypeName.getNickname(), enumValue.getSimpleName());
-      return TypedValue.create(enumTypeName, "%s." + enumValueName);
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     } else {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
@@ -206,7 +209,39 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName) {
-    throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by C#");
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType(), typedResourceShortName);
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    return getTypeNameForTypedResourceName(
+        fieldConfig, fieldConfig.getField().getType().makeOptional(), typedResourceShortName);
+  }
+
+  private TypeName getTypeNameForTypedResourceName(
+      FieldConfig fieldConfig, TypeRef type, String typedResourceShortName) {
+    TypeName simpleTypeName = new TypeName(typedResourceShortName);
+    if (type.isMap()) {
+      throw new IllegalArgumentException("Map type not supported for typed resource name");
+    } else if (type.isRepeated()) {
+      TypeName listTypeName =
+          typeNameConverter.getTypeName("System.Collections.Generic.IEnumerable");
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
+    } else {
+      return simpleTypeName;
+    }
+  }
+
+  @Override
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    TypeName enumTypeName = getTypeName(type);
+    List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
+    String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
+    String enumValueName = enumNamer.getEnumValueName(enumShortTypeName, value.getSimpleName());
+    return TypedValue.create(enumTypeName, "%s." + enumValueName);
   }
 }

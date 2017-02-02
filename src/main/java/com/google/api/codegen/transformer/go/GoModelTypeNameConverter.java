@@ -14,17 +14,21 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -104,11 +108,31 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
    */
   @Override
   public TypeName getTypeName(ProtoElement elem) {
+    return getTypeName(elem, elem instanceof MessageType);
+  }
+
+  private TypeName getTypeName(ProtoElement elem, boolean isPointer) {
     String importPath = elem.getFile().getProto().getOptions().getGoPackage();
     String protoPackage = elem.getFile().getProto().getPackage();
-    String elemName = elem.getSimpleName();
-    boolean isPointer = elem instanceof MessageType;
+    String elemName = getElemName(elem);
     return getTypeName(importPath, protoPackage, elemName, isPointer);
+  }
+
+  private String getElemName(ProtoElement elem) {
+    // Fast path if we have a top-level message
+    if (elem.getParent() instanceof ProtoFile) {
+      return elem.getSimpleName();
+    }
+
+    // The number of components in the same with the layers of nesting.
+    // Init the list to something a little more than sensible.
+    List<String> nameComponents = new ArrayList<>(5);
+    while (!(elem instanceof ProtoFile)) {
+      nameComponents.add(elem.getSimpleName());
+      elem = elem.getParent();
+    }
+    Collections.reverse(nameComponents);
+    return Joiner.on("_").join(nameComponents);
   }
 
   @VisibleForTesting
@@ -137,7 +161,7 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
     String localName = null;
     if (importPath.lastIndexOf(';') >= 0) {
       int semicolonPos = importPath.lastIndexOf(';');
-      localName = importPath.substring(semicolonPos + 1);
+      localName = importPath.substring(semicolonPos + 1) + "pb";
       importPath = importPath.substring(0, semicolonPos);
     } else {
       // The import path might be versioned:
@@ -209,8 +233,11 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   private String getZeroValueStr(TypeRef type) {
-    if (type.isRepeated() || type.isMap() || type.isMessage()) {
+    if (type.isRepeated() || type.isMap()) {
       return "nil";
+    }
+    if (type.isMessage()) {
+      return "&" + getTypeName(type.getMessageType(), false).getNickname() + "{}";
     }
     switch (type.getKind()) {
       case TYPE_BOOL:
@@ -230,7 +257,20 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName) {
+      FieldConfig fieldConfig, String typedResourceShortName) {
     throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by Go");
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    throw new UnsupportedOperationException(
+        "getTypeNameForResourceNameElementType not supported by Go");
+  }
+
+  @Override
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    return TypedValue.create(
+        getTypeName(type.getEnumType().getParent()), "%s_" + value.getSimpleName());
   }
 }

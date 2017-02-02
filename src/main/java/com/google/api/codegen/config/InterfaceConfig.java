@@ -37,7 +37,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import io.grpc.Status;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -60,8 +59,6 @@ public abstract class InterfaceConfig {
   @Nullable
   public abstract SmokeTestConfig getSmokeTestConfig();
 
-  abstract ImmutableMap<String, CollectionConfig> collectionConfigs();
-
   abstract ImmutableMap<String, MethodConfig> getMethodConfigMap();
 
   public abstract ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition();
@@ -71,6 +68,10 @@ public abstract class InterfaceConfig {
   public abstract ImmutableList<Field> getIamResources();
 
   public abstract ImmutableList<String> getRequiredConstructorParams();
+
+  public abstract ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
+
+  public abstract String getManualDoc();
 
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up method configurations
@@ -83,9 +84,8 @@ public abstract class InterfaceConfig {
       String language,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
-      ResourceNameMessageConfigs messageConfigs) {
-    ImmutableMap<String, CollectionConfig> collectionConfigs =
-        createCollectionConfigs(diagCollector, interfaceConfigProto);
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
         createRetryCodesDefinition(diagCollector, interfaceConfigProto);
@@ -102,6 +102,7 @@ public abstract class InterfaceConfig {
               interfaceConfigProto,
               iface,
               messageConfigs,
+              resourceNameConfigs,
               retryCodesDefinition.keySet(),
               retrySettingsDefinition.keySet());
       methodConfigs = createMethodConfigs(methodConfigMap, interfaceConfigProto);
@@ -123,18 +124,38 @@ public abstract class InterfaceConfig {
       }
     }
 
+    ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
+    for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
+      String entityName = collectionConfigProto.getEntityName();
+      ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
+      if (resourceName == null || !(resourceName instanceof SingleResourceNameConfig)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Inconsistent configuration - single resource name %s specified for interface, "
+                    + " but was not found in ApiConfig configuration.",
+                entityName));
+        return null;
+      }
+      resourcesBuilder.add((SingleResourceNameConfig) resourceName);
+    }
+    ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
+
+    String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
+
     if (diagCollector.hasErrors()) {
       return null;
     } else {
       return new AutoValue_InterfaceConfig(
           methodConfigs,
           smokeTestConfig,
-          collectionConfigs,
           methodConfigMap,
           retryCodesDefinition,
           retrySettingsDefinition,
           iamResources,
-          requiredConstructorParams);
+          requiredConstructorParams,
+          singleResourceNames,
+          manualDoc);
     }
   }
 
@@ -145,27 +166,6 @@ public abstract class InterfaceConfig {
           iface, interfaceConfigProto.getSmokeTest(), diagCollector);
     } else {
       return null;
-    }
-  }
-
-  private static ImmutableMap<String, CollectionConfig> createCollectionConfigs(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, CollectionConfig> collectionConfigsBuilder =
-        ImmutableMap.builder();
-
-    for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
-      CollectionConfig collectionConfig =
-          CollectionConfig.createCollection(diagCollector, collectionConfigProto);
-      if (collectionConfig == null) {
-        continue;
-      }
-      collectionConfigsBuilder.put(collectionConfig.getEntityName(), collectionConfig);
-    }
-
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    } else {
-      return collectionConfigsBuilder.build();
     }
   }
 
@@ -233,6 +233,7 @@ public abstract class InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
       ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, MethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
@@ -254,6 +255,7 @@ public abstract class InterfaceConfig {
               methodConfigProto,
               method,
               messageConfigs,
+              resourceNameConfigs,
               retryCodesConfigNames,
               retryParamsConfigNames);
       if (methodConfig == null) {
@@ -277,15 +279,6 @@ public abstract class InterfaceConfig {
       methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
     }
     return methodConfigs;
-  }
-
-  public CollectionConfig getCollectionConfig(String entityName) {
-    return collectionConfigs().get(entityName);
-  }
-
-  /** Returns the list of CollectionConfigs. */
-  public Collection<CollectionConfig> getCollectionConfigs() {
-    return collectionConfigs().values();
   }
 
   /** Returns the MethodConfig for the given method. */
@@ -349,5 +342,41 @@ public abstract class InterfaceConfig {
       fields.add(field);
     }
     return fields.build();
+  }
+
+  public boolean hasPageStreamingMethods() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isPageStreaming()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasBundlingMethods() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isBundling()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasGrpcStreamingMethods() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isGrpcStreaming()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasLongRunningOperations() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isLongRunningOperation()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

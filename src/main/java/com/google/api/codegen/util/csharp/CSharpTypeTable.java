@@ -89,14 +89,18 @@ public class CSharpTypeTable implements TypeTable {
     return new CSharpTypeTable(implicitPackageName);
   }
 
+  private String resolveInner(String name) {
+    return name.replace('+', '.');
+  }
+
   @Override
   public String getAndSaveNicknameFor(String fullName) {
-    return getAndSaveNicknameFor(getTypeName(fullName));
+    return resolveInner(getAndSaveNicknameFor(getTypeName(fullName)));
   }
 
   @Override
   public String getAndSaveNicknameFor(TypeName typeName) {
-    return typeName.getAndSaveNicknameIn(this);
+    return resolveInner(typeName.getAndSaveNicknameIn(this));
   }
 
   @Override
@@ -121,7 +125,9 @@ public class CSharpTypeTable implements TypeTable {
       int index = fullName.lastIndexOf('.');
       if (index >= 0) {
         String using = fullName.substring(0, index);
-        result.put(using, TypeAlias.create(using)); // Value isn't used
+        if (!implicitPackageName.equals(using)) {
+          result.put(using, TypeAlias.create(using)); // Value isn't used
+        }
       }
     }
     return result;

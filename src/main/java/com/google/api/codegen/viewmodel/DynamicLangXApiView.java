@@ -22,7 +22,7 @@ import java.util.List;
 public abstract class DynamicLangXApiView implements ViewModel {
   public abstract String templateFileName();
 
-  public abstract String packageName();
+  public abstract FileHeaderView fileHeader();
 
   public abstract String protoFilename();
 
@@ -48,6 +48,10 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
+  public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
+
+  public abstract List<GrpcStreamingDetailView> grpcStreamingDescriptors();
+
   public abstract List<String> methodKeys();
 
   public abstract String clientConfigPath();
@@ -58,11 +62,33 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<GrpcStubView> stubs();
 
-  public abstract List<ImportTypeView> imports();
-
   public abstract String outputPath();
 
   public abstract List<ApiMethodView> apiMethods();
+
+  public abstract boolean hasPageStreamingMethods();
+
+  public abstract boolean hasLongRunningOperations();
+
+  public boolean hasGrpcStreamingMethods() {
+    return grpcStreamingDescriptors().size() > 0;
+  }
+
+  public abstract boolean hasDefaultServiceAddress();
+
+  public abstract boolean hasDefaultServiceScopes();
+
+  public boolean missingDefaultServiceAddress() {
+    return !hasDefaultServiceAddress();
+  }
+
+  public boolean missingDefaultServiceScopes() {
+    return !hasDefaultServiceScopes();
+  }
+
+  public boolean hasMissingDefaultOptions() {
+    return missingDefaultServiceAddress() || missingDefaultServiceScopes();
+  }
 
   @Override
   public String resourceRoot() {
@@ -77,7 +103,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract static class Builder {
     public abstract Builder templateFileName(String val);
 
-    public abstract Builder packageName(String val);
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder protoFilename(String simpleName);
 
@@ -103,6 +129,10 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder pageStreamingDescriptors(List<PageStreamingDescriptorView> val);
 
+    public abstract Builder longRunningDescriptors(List<LongRunningOperationDetailView> val);
+
+    public abstract Builder grpcStreamingDescriptors(List<GrpcStreamingDetailView> val);
+
     public abstract Builder methodKeys(List<String> val);
 
     public abstract Builder clientConfigPath(String val);
@@ -113,11 +143,17 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder stubs(List<GrpcStubView> val);
 
-    public abstract Builder imports(List<ImportTypeView> val);
-
     public abstract Builder outputPath(String val);
 
     public abstract Builder apiMethods(List<ApiMethodView> val);
+
+    public abstract Builder hasPageStreamingMethods(boolean val);
+
+    public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder hasDefaultServiceAddress(boolean val);
+
+    public abstract Builder hasDefaultServiceScopes(boolean val);
 
     public abstract DynamicLangXApiView build();
   }

@@ -17,6 +17,7 @@ package com.google.api.codegen.discovery.config;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
+import com.google.protobuf.Field.Cardinality;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_FieldInfo.Builder.class)
@@ -34,6 +35,10 @@ public abstract class FieldInfo {
   @JsonProperty("type")
   public abstract TypeInfo type();
 
+  /** Returns the field's cardinality. */
+  @JsonProperty("cardinality")
+  public abstract Cardinality cardinality();
+
   /** Returns the example value of the field, or empty string if none. */
   @JsonProperty("example")
   public abstract String example();
@@ -41,6 +46,10 @@ public abstract class FieldInfo {
   /** Returns the description of the field. */
   @JsonProperty("description")
   public abstract String description();
+
+  /** Whether or not the field is required. */
+  @JsonProperty("required")
+  public abstract Boolean required();
 
   public static Builder newBuilder() {
     return new AutoValue_FieldInfo.Builder();
@@ -55,11 +64,17 @@ public abstract class FieldInfo {
     @JsonProperty("type")
     public abstract Builder type(TypeInfo val);
 
+    @JsonProperty("cardinality")
+    public abstract Builder cardinality(Cardinality cardinality);
+
     @JsonProperty("example")
     public abstract Builder example(String val);
 
     @JsonProperty("description")
     public abstract Builder description(String val);
+
+    @JsonProperty("required")
+    public abstract Builder required(Boolean val);
 
     public abstract FieldInfo build();
   }

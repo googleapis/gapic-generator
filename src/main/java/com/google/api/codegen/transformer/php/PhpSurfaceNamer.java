@@ -15,18 +15,23 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.CollectionConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.php.PhpNameFormatter;
+import com.google.api.codegen.util.php.PhpPackageUtil;
+import com.google.api.codegen.util.php.PhpRenderingUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import java.util.ArrayList;
+import java.util.List;
 
 /** The SurfaceNamer for PHP. */
 public class PhpSurfaceNamer extends SurfaceNamer {
@@ -39,22 +44,24 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+    return getApiMethodName(method, visibility);
+  }
+
+  @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
-    if (type.isMap() || type.isRepeated()) {
-      return publicMethodName(Name.from("add").join(identifier));
-    } else {
-      return publicMethodName(Name.from("set").join(identifier));
-    }
+    return publicMethodName(Name.from("set").join(identifier));
   }
 
   @Override
-  public String getPathTemplateName(Interface service, CollectionConfig collectionConfig) {
-    return inittedConstantName(Name.from(collectionConfig.getEntityName(), "name", "template"));
+  public String getFieldAddFunctionName(TypeRef type, Name identifier) {
+    return publicMethodName(Name.from("add").join(identifier));
   }
 
   @Override
-  public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("Google\\GAX\\PageStreamingDescriptor");
+  public String getPathTemplateName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
   }
 
   @Override
@@ -70,8 +77,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public List<String> getDocLines(String text) {
+    return PhpRenderingUtil.getDocLines(text);
+  }
+
+  @Override
   public String getRetrySettingsTypeName() {
-    return "Google\\GAX\\RetrySettings";
+    return "\\Google\\GAX\\RetrySettings";
   }
 
   @Override
@@ -85,13 +97,78 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
-      return "Google\\GAX\\PagedListResponse";
+      return "\\Google\\GAX\\PagedListResponse";
     }
-    return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+    switch (methodConfig.getGrpcStreamingType()) {
+      case NonStreaming:
+        return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+      case BidiStreaming:
+        return "\\Google\\GAX\\BidiStreamingResponse";
+      case ClientStreaming:
+        return "\\Google\\GAX\\ClientStreamingResponse";
+      case ServerStreaming:
+        return "\\Google\\GAX\\ServerStreamingResponse";
+      default:
+        return getNotImplementedString(
+            "SurfaceNamer.getDynamicReturnTypeName grpcStreamingType:"
+                + methodConfig.getGrpcStreamingType().toString());
+    }
   }
 
   @Override
   public String getFullyQualifiedApiWrapperClassName(Interface service) {
     return getPackageName() + "\\" + getApiWrapperClassName(service);
+  }
+
+  @Override
+  public String getGrpcClientTypeName(Interface service) {
+    return qualifiedName(getGrpcClientTypeName(service, "GrpcClient"));
+  }
+
+  private NamePath getGrpcClientTypeName(Interface service, String suffix) {
+    NamePath namePath =
+        getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
+    String publicClassName =
+        publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), suffix));
+    return namePath.withHead(publicClassName);
+  }
+
+  @Override
+  public String getGrpcStubCallString(Interface service, Method method) {
+    return '/' + service.getFullName() + '/' + getGrpcMethodName(method);
+  }
+
+  @Override
+  public String getTestPackageName() {
+    return getTestPackageName(getPackageName());
+  }
+
+  /** Insert "Tests" into the package name after "Google\Cloud" standard prefix */
+  private static String getTestPackageName(String packageName) {
+    final String[] PACKAGE_PREFIX = PhpPackageUtil.getStandardPackagePrefix();
+
+    ArrayList<String> packageComponents = new ArrayList<>();
+    String[] packageSplit = PhpPackageUtil.splitPackageName(packageName);
+    int packageStartIndex = 0;
+    for (int i = 0; i < PACKAGE_PREFIX.length && i < packageSplit.length; i++) {
+      if (packageSplit[i].equals(PACKAGE_PREFIX[i])) {
+        packageStartIndex++;
+      } else {
+        break;
+      }
+    }
+    for (int i = 0; i < packageStartIndex; i++) {
+      packageComponents.add(packageSplit[i]);
+    }
+    packageComponents.add("Tests");
+    for (int i = packageStartIndex; i < packageSplit.length; i++) {
+      packageComponents.add(packageSplit[i]);
+    }
+    return PhpPackageUtil.buildPackageName(packageComponents);
+  }
+
+  @Override
+  public boolean methodHasRetrySettings(MethodConfig methodConfig) {
+    return !methodConfig.isGrpcStreaming();
   }
 }

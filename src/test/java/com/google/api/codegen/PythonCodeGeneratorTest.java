@@ -28,8 +28,12 @@ public class PythonCodeGeneratorTest {
   public static class PythonLibraryBaseline extends GapicTestBase {
 
     public PythonLibraryBaseline(
-        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, snippetName);
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator()
           .addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
     }
@@ -42,7 +46,8 @@ public class PythonCodeGeneratorTest {
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
           MainGapicProviderFactory.PYTHON,
-          new String[] {"python_gapic.yaml", "library_gapic.yaml"});
+          new String[] {"python_gapic.yaml", "library_gapic.yaml"},
+          "library_pkg.yaml");
     }
 
     // Tests
@@ -58,8 +63,12 @@ public class PythonCodeGeneratorTest {
   public static class PythonLibraryDocBaseline extends GapicTestBase {
 
     public PythonLibraryDocBaseline(
-        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, snippetName);
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator()
           .addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
     }
@@ -72,7 +81,8 @@ public class PythonCodeGeneratorTest {
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
           MainGapicProviderFactory.PYTHON_DOC,
-          new String[] {"python_gapic.yaml", "library_gapic.yaml"});
+          new String[] {"python_gapic.yaml", "library_gapic.yaml"},
+          "library_pkg.yaml");
     }
 
     // Tests
@@ -88,8 +98,12 @@ public class PythonCodeGeneratorTest {
   public static class PythonNoPathTemplatesBaseline extends GapicTestBase {
 
     public PythonNoPathTemplatesBaseline(
-        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, snippetName);
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator()
           .addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
     }
@@ -101,7 +115,9 @@ public class PythonCodeGeneratorTest {
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
-          "python", new String[] {"python_gapic.yaml", "no_path_templates_gapic.yaml"});
+          "python",
+          new String[] {"python_gapic.yaml", "no_path_templates_gapic.yaml"},
+          "library_pkg.yaml");
     }
 
     // Tests

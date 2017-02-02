@@ -67,7 +67,7 @@ public class PythonGapicContext extends GapicContext {
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\'\'")
-          .put(Type.TYPE_BYTES, "\'\'")
+          .put(Type.TYPE_BYTES, "b\'\'")
           .build();
 
   /** A map from primitive types to their names in Python. */
@@ -109,8 +109,10 @@ public class PythonGapicContext extends GapicContext {
   // Snippet Helpers
   // ===============
 
-  public String filePath(ProtoFile file) {
-    return file.getSimpleName().replace(".proto", "_pb2.py");
+  public String filePath(ProtoFile file, PythonImportHandler importHandler) {
+    return importHandler
+        .protoPackageToPythonPackage(file.getSimpleName(), "/")
+        .replace(".proto", "_pb2.py");
   }
 
   /** Return comments lines for a given proto element, extracted directly from the proto doc */
@@ -224,12 +226,11 @@ public class PythonGapicContext extends GapicContext {
   @Nullable
   private String returnTypeComment(
       Method method, MethodConfig config, PythonImportHandler importHandler) {
-    MessageType returnMessageType = method.getOutputMessage();
-    if (PythonProtoElements.isEmptyMessage(returnMessageType)) {
+    if (MethodConfig.isReturnEmptyMessageMethod(method)) {
       return null;
     }
 
-    String path = importHandler.elementPath(returnMessageType, true);
+    String path = returnTypeCommentPath(method, config, importHandler);
     String classInfo = ":class:`" + path + "`";
 
     if (method.getResponseStreaming()) {
@@ -247,6 +248,16 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
+  private String returnTypeCommentPath(
+      Method method, MethodConfig config, PythonImportHandler importHandler) {
+    if (config.isLongRunningOperation()) {
+      return "google.gax._OperationFuture";
+    }
+
+    MessageType returnMessageType = method.getOutputMessage();
+    return importHandler.elementPath(returnMessageType, true);
+  }
+
   public PythonDocConfig.Builder newDocConfigBuilder() {
     return PythonDocConfig.newBuilder();
   }
@@ -258,7 +269,12 @@ public class PythonGapicContext extends GapicContext {
   private String getTrimmedDocs(ProtoElement elt) {
     String description = "";
     if (elt.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      description = getSphinxifiedScopedDescription(elt).replaceAll("\\s*\\n\\s*", "\n");
+      // TODO (geigerj): "trimming" the docs means we don't support code blocks. Investigate
+      // supporting code blocks here.
+      description =
+          getSphinxifiedScopedDescription(elt)
+              .replaceAll("\\s*\\n\\s*", "\n")
+              .replaceAll("::\n", "");
     }
     return description;
   }
@@ -390,6 +406,24 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
+  /** Returns the name of Python class for the given type. */
+  public String pythonTypeName(TypeRef type, PythonImportHandler importHandler) {
+    switch (type.getKind()) {
+      case TYPE_MESSAGE:
+        return importHandler.elementPath(type.getMessageType(), false);
+      case TYPE_ENUM:
+        return enumClassName(type.getEnumType());
+      default:
+        {
+          String name = PRIMITIVE_TYPE_NAMES.get(type.getKind());
+          if (!Strings.isNullOrEmpty(name)) {
+            return name;
+          }
+          throw new IllegalArgumentException("unknown type kind: " + type.getKind());
+        }
+    }
+  }
+
   /** Return whether the given field's default value is mutable in python. */
   public boolean isDefaultValueMutable(Field field) {
     TypeRef type = field.getType();
@@ -456,5 +490,21 @@ public class PythonGapicContext extends GapicContext {
     String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
     Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
     return stubName(target);
+  }
+
+  public boolean isLongrunning(Method method, Interface service) {
+    return getApiConfig()
+        .getInterfaceConfig(service)
+        .getMethodConfig(method)
+        .isLongRunningOperation();
+  }
+
+  public boolean hasLongrunningMethod(Interface service) {
+    for (Method method : getSupportedMethodsV2(service)) {
+      if (isLongrunning(method, service)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

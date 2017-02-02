@@ -26,10 +26,14 @@ import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
+import com.google.api.codegen.transformer.go.GoImportTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +42,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
   private static final String TEMPLATE_FILENAME = "go/sample.snip";
 
-  public GoSampleMethodToViewTransformer() {}
+  private final GoImportTransformer goImportTransformer = new GoImportTransformer();
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
@@ -57,7 +61,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(GoTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(GoNameFormatter.RESERVED_IDENTIFIER_SET);
     addStaticImports(context, symbolTable);
 
     SampleView.Builder builder = SampleView.newBuilder();
@@ -68,10 +72,6 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     // isn't Go specific logic in the transformer.
     String servicePackageName = GoSampleNamer.getServicePackageName(config.packagePrefix());
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(servicePackageName));
-    List<String> methodNameComponents = new ArrayList<String>();
-    for (String nameComponent : methodInfo.nameComponents()) {
-      methodNameComponents.add(namer.publicFieldName(Name.lowerCamel(nameComponent)));
-    }
     String requestVarName = symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("req")));
     // For this and other type name assignments, we don't use TypeTable logic to
     // add to the import list. The main issue is that the TypeTable returns
@@ -80,23 +80,36 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     // addStaticImports, skipping the TypeTable can't result in missing imports.
     String requestTypeName = methodInfo.requestType().message().typeName();
 
-    List<SampleFieldView> fields = new ArrayList<>();
-    List<String> fieldVarNames = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
+    List<String> methodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      SampleFieldView sampleFieldView = createSampleFieldView(field, typeTable, symbolTable);
-      fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+      SampleFieldView sampleFieldView = createSampleFieldView(field, context, symbolTable);
+      if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
+        methodCallFieldVarNames.add(sampleFieldView.name());
+      } else {
+        optionalFields.add(sampleFieldView);
+      }
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(methodInfo.requestBodyType().message().typeName());
-      fieldVarNames.add(requestBodyVarName);
+      methodCallFieldVarNames.add(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable));
+      }
     }
 
-    if (methodInfo.isPageStreaming()) {
+    // The Go client only considers methods whose verb is "GET" to be page
+    // streaming calls. This excludes "search" methods, for example.
+    boolean isPageStreaming = methodInfo.isPageStreaming() && methodInfo.verb().equals("GET");
+    if (isPageStreaming) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
@@ -112,8 +125,8 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     }
 
     // Imports must be collected last.
-    List<String> imports = new ArrayList<>();
-    imports.addAll(GoTypeTable.formatImports(typeTable.getImports()));
+    List<ImportTypeView> imports =
+        new ArrayList<>(goImportTransformer.generateImports(typeTable.getImports()));
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
@@ -125,14 +138,16 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .auth(createSampleAuthView(context))
         .serviceVarName(serviceVarName)
         .methodVerb(methodInfo.verb())
-        .methodNameComponents(methodNameComponents)
+        .methodNameComponents(methodInfo.nameComponents())
         .requestVarName(requestVarName)
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
-        .fields(fields)
-        .fieldVarNames(fieldVarNames)
-        .isPageStreaming(methodInfo.isPageStreaming())
+        .requiredFields(requiredFields)
+        .optionalFields(optionalFields)
+        .methodCallFieldVarNames(methodCallFieldVarNames)
+        .isPageStreaming(isPageStreaming)
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
         .servicePackageName(servicePackageName)
@@ -169,9 +184,6 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     MethodInfo methodInfo = context.getSampleConfig().methods().get(context.getMethodName());
     FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
     SampleNamer namer = context.getSampleNamer();
-    if (fieldInfo == null) {
-      throw new IllegalArgumentException("pageStreamingResourceField cannot be null");
-    }
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
@@ -192,18 +204,24 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
               fieldInfo.type().isMessage() ? fieldInfo.type().message().typeName() : "");
       builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
     }
+    builder.isResourceRepeated(fieldInfo.cardinality() == Cardinality.CARDINALITY_REPEATED);
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("page"))));
     return builder.build();
   }
 
   private SampleFieldView createSampleFieldView(
-      FieldInfo field, SampleTypeTable typeTable, SymbolTable symbolTable) {
+      FieldInfo field, SampleTransformerContext context, SymbolTable symbolTable) {
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
         .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
         .example(field.example())
         .description(field.description())
+        .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
+        .required(field.required())
+        .isArray(field.type().isArray())
         .build();
   }
 

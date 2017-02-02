@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.php;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -21,7 +22,6 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -119,7 +119,10 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    return typeNameConverter.getTypeName(elem.getFullName().replaceAll("\\.", "\\\\"));
+    if (elem.getFullName().equals("google.protobuf.Empty")) {
+      return typeNameConverter.getTypeName("\\google\\protobuf\\EmptyC");
+    }
+    return typeNameConverter.getTypeName("\\" + elem.getFullName().replaceAll("\\.", "\\\\"));
   }
 
   /**
@@ -141,8 +144,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), "new %s()");
     }
     if (type.isEnum()) {
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s::" + enumValue.getSimpleName());
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(new TypeName(""), "null");
   }
@@ -170,14 +172,21 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
     }
   }
 
-  /** Gets the PHP package for the given proto file. */
-  private static String getPhpPackage(ProtoFile file) {
-    return file.getProto().getPackage().replaceAll("\\.", "\\\\");
+  @Override
+  public TypeName getTypeNameForTypedResourceName(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by PHP");
   }
 
   @Override
-  public TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName) {
-    throw new UnsupportedOperationException("getTypeNameForTypedResourceName not supported by PHP");
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    throw new UnsupportedOperationException(
+        "getTypeNameForResourceNameElementType not supported by PHP");
+  }
+
+  @Override
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    return TypedValue.create(getTypeName(type), "%s::" + value.getSimpleName());
   }
 }

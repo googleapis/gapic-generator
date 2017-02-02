@@ -27,9 +27,14 @@ import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
+import com.google.api.codegen.transformer.StandardImportTypeTransformer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +47,16 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
   private static final String TEMPLATE_FILENAME = "java/sample.snip";
 
-  public JavaSampleMethodToViewTransformer() {}
+  private final StandardImportTypeTransformer importTypeTransformer =
+      new StandardImportTypeTransformer();
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
-            new JavaTypeTable(""), new JavaSampleTypeNameConverter(sampleConfig.packagePrefix()));
+            new JavaTypeTable(""),
+            new JavaSampleTypeNameConverter(
+                sampleConfig.apiName(), sampleConfig.apiVersion(), sampleConfig.versionModule()));
     JavaSampleNamer javaSampleNamer = new JavaSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(
@@ -62,7 +70,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    SymbolTable symbolTable = SymbolTable.fromSeed(JavaTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
@@ -77,20 +85,30 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     String requestTypeName =
         typeTable.getRequestTypeName(config.apiTypeName(), methodInfo.requestType()).getNickname();
 
-    List<SampleFieldView> fields = new ArrayList<>();
-    List<String> fieldVarNames = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
+    List<String> methodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      SampleFieldView sampleFieldView = createSampleFieldView(field, typeTable, symbolTable);
-      fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+      SampleFieldView sampleFieldView = createSampleFieldView(field, context, symbolTable);
+      if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
+        methodCallFieldVarNames.add(sampleFieldView.name());
+      } else {
+        optionalFields.add(sampleFieldView);
+      }
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(typeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
-      fieldVarNames.add(requestBodyVarName);
+      methodCallFieldVarNames.add(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable));
+      }
     }
 
     if (methodInfo.isPageStreaming()) {
@@ -104,8 +122,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     }
 
     // Imports must be collected last.
-    List<String> imports = new ArrayList<String>();
-    imports.addAll(typeTable.getImports().keySet());
+    List<ImportTypeView> imports =
+        new ArrayList<>(importTypeTransformer.generateImports(typeTable.getImports()));
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
@@ -113,6 +131,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
+        .appName(namer.getSampleApplicationName(config.apiCanonicalName()))
         .className(namer.getSampleClassName(config.apiTypeName()))
         .imports(imports)
         .auth(createSampleAuthView(context))
@@ -123,9 +142,11 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .requestVarName(requestVarName)
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
-        .fields(fields)
-        .fieldVarNames(fieldVarNames)
+        .requiredFields(requiredFields)
+        .optionalFields(optionalFields)
+        .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
@@ -151,9 +172,6 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     FieldInfo fieldInfo = methodInfo.pageStreamingResourceField();
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    if (fieldInfo == null) {
-      throw new IllegalArgumentException("pageStreamingResourceField cannot be null");
-    }
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
@@ -163,22 +181,30 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     String resourceVarName =
         namer.getResourceVarName(fieldInfo.type().isMessage() ? resourceTypeName : "");
     builder.resourceVarName(symbolTable.getNewSymbol(resourceVarName));
+    builder.isResourceRepeated(fieldInfo.cardinality() == Cardinality.CARDINALITY_REPEATED);
     builder.isResourceMap(fieldInfo.type().isMap());
 
     builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
+    builder.pageTokenName(Name.lowerCamel(methodInfo.requestPageTokenName()).toUpperCamel());
+    builder.nextPageTokenName(Name.lowerCamel(methodInfo.responsePageTokenName()).toUpperCamel());
     return builder.build();
   }
 
   private SampleFieldView createSampleFieldView(
-      FieldInfo field, SampleTypeTable sampleTypeTable, SymbolTable symbolTable) {
+      FieldInfo field, SampleTransformerContext context, SymbolTable symbolTable) {
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
+
     TypeInfo typeInfo = field.type();
-    String defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
-        .typeName(sampleTypeTable.getAndSaveNicknameFor(typeInfo))
+        .typeName(typeTable.getAndSaveNicknameFor(typeInfo))
         .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
+        .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
+        .required(field.required())
         .build();
   }
 

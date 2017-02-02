@@ -7,7 +7,9 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -54,7 +56,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -104,7 +108,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -117,7 +123,7 @@ authorize(function(authClient) {
     projectId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
@@ -155,7 +161,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -215,7 +223,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -231,7 +241,7 @@ authorize(function(authClient) {
     datasetId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body. Only added properties
+      // TODO: Add desired properties to the request body. Only these properties
       // will be changed.
     },
 
@@ -270,7 +280,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -286,7 +298,8 @@ authorize(function(authClient) {
     datasetId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body. All existing properties
+      // will be replaced.
     },
 
     auth: authClient
@@ -324,7 +337,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -374,7 +389,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -424,7 +441,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -442,15 +461,28 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  bigquery.jobs.getQueryResults(request, function(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
 
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response, null, 2));
-  });
+    var errorsPage = response['errors'];
+    if (!errorsPage) {
+      return;
+    }
+    for (var i = 0; i < errorsPage.length; i++) {
+      // TODO: Change code below to process each resource in `errorsPage`:
+      console.log(JSON.stringify(errorsPage[i], null, 2));
+    }
+
+    if (response.pageToken) {
+      request.pageToken = response.pageToken;
+      bigquery.jobs.getQueryResults(request, handlePage);
+    }
+  };
+
+  bigquery.jobs.getQueryResults(request, handlePage);
 });
 
 function authorize(callback) {
@@ -474,7 +506,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -487,11 +521,11 @@ authorize(function(authClient) {
     projectId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     media: {
-      // TODO: Add desired media content for upload. See:
+      // TODO: Add desired media content for upload. See
       // https://github.com/google/google-api-nodejs-client#media-uploads
       mimeType: '',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
       body: {}
@@ -532,7 +566,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -592,7 +628,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -605,7 +643,7 @@ authorize(function(authClient) {
     projectId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
@@ -643,7 +681,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -700,7 +740,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -719,7 +761,7 @@ authorize(function(authClient) {
     tableId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
@@ -757,7 +799,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -778,15 +822,28 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  bigquery.tabledata.list(request, function(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
 
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response, null, 2));
-  });
+    var rowsPage = response['rows'];
+    if (!rowsPage) {
+      return;
+    }
+    for (var i = 0; i < rowsPage.length; i++) {
+      // TODO: Change code below to process each resource in `rowsPage`:
+      console.log(JSON.stringify(rowsPage[i], null, 2));
+    }
+
+    if (response.pageToken) {
+      request.pageToken = response.pageToken;
+      bigquery.tabledata.list(request, handlePage);
+    }
+  };
+
+  bigquery.tabledata.list(request, handlePage);
 });
 
 function authorize(callback) {
@@ -810,7 +867,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -860,7 +919,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -913,7 +974,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -929,7 +992,7 @@ authorize(function(authClient) {
     datasetId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
@@ -967,7 +1030,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -1030,7 +1095,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -1049,7 +1116,7 @@ authorize(function(authClient) {
     tableId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body. Only added properties
+      // TODO: Add desired properties to the request body. Only these properties
       // will be changed.
     },
 
@@ -1088,7 +1155,9 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
@@ -1107,7 +1176,8 @@ authorize(function(authClient) {
     tableId: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body. All existing properties
+      // will be replaced.
     },
 
     auth: authClient

@@ -15,9 +15,11 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.Lists;
@@ -191,17 +193,17 @@ public class InitCodeNode {
 
   private static InitValueConfig mergeInitValueConfig(
       InitValueConfig oldConfig, InitValueConfig newConfig) {
-    HashMap<String, String> collectionValues = new HashMap<>();
+    HashMap<String, InitValue> collectionValues = new HashMap<>();
     if (oldConfig.hasSimpleInitialValue()
         && newConfig.hasSimpleInitialValue()
         && !oldConfig.getInitialValue().equals(newConfig.getInitialValue())) {
       throw new IllegalArgumentException("Inconsistent init values");
     }
     if (oldConfig.hasFormattingConfigInitialValues()) {
-      collectionValues.putAll(oldConfig.getCollectionValues());
+      collectionValues.putAll(oldConfig.getResourceNameBindingValues());
     }
     if (newConfig.hasFormattingConfigInitialValues()) {
-      collectionValues.putAll(newConfig.getCollectionValues());
+      collectionValues.putAll(newConfig.getResourceNameBindingValues());
     }
     return oldConfig.withInitialCollectionValues(collectionValues);
   }
@@ -238,6 +240,8 @@ public class InitCodeNode {
         }
       }
       subTrees = newSubTrees;
+    } else if (context.outputType() == InitCodeOutputType.FieldList) {
+      throw new IllegalArgumentException("Init field array is not set for flattened method.");
     }
     if (context.additionalInitCodeNodes() != null) {
       subTrees.addAll(Lists.newArrayList(context.additionalInitCodeNodes()));
@@ -271,13 +275,13 @@ public class InitCodeNode {
 
       // Validate initValueConfig, or generate random value
       if (initValueConfig.hasSimpleInitialValue()) {
-        validateValue(type, initValueConfig.getInitialValue());
+        validateValue(type, initValueConfig.getInitialValue().getValue());
       } else if (initValueConfig.isEmpty()
           && type.isPrimitive()
           && !type.isRepeated()
           && valueGenerator != null) {
         String newValue = valueGenerator.getAndStoreValue(type, identifier);
-        initValueConfig = InitValueConfig.createWithValue(newValue);
+        initValueConfig = InitValueConfig.createWithValue(InitValue.createLiteral(newValue));
       }
     }
   }
@@ -461,6 +465,13 @@ public class InitCodeNode {
   private static void validateValue(TypeRef type, String value) {
     Type descType = type.getKind();
     switch (descType) {
+      case TYPE_ENUM:
+        for (EnumValue enumValue : type.getEnumType().getValues()) {
+          if (enumValue.getSimpleName().equals(value)) {
+            return;
+          }
+        }
+        break;
       case TYPE_BOOL:
         String lowerCaseValue = value.toLowerCase();
         if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {

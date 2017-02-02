@@ -9,7 +9,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -19,16 +21,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -40,16 +38,13 @@ func main() {
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}"
-  // TODO: Change placeholder value above.
+  rollingUpdate := ""  // TODO: Update placeholder value.
 
   resp, err := replicapoolupdaterService.RollingUpdates.Cancel(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
@@ -69,7 +64,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -79,16 +76,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -100,16 +93,13 @@ func main() {
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}"
-  // TODO: Change placeholder value above.
+  rollingUpdate := ""  // TODO: Update placeholder value.
 
   resp, err := replicapoolupdaterService.RollingUpdates.Get(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
@@ -129,7 +119,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -139,16 +131,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -160,18 +148,16 @@ func main() {
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
-  rb := replicapoolupdater.RollingUpdate{
+  rb := &replicapoolupdater.RollingUpdate{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := replicapoolupdaterService.RollingUpdates.Insert(project, zone, &rb).Context(ctx).Do()
+  resp, err := replicapoolupdaterService.RollingUpdates.Insert(project, zone, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -189,7 +175,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -199,16 +187,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -220,12 +204,10 @@ func main() {
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   req := replicapoolupdaterService.RollingUpdates.List(project, zone)
   if err := req.Pages(ctx, func(page *replicapoolupdater.RollingUpdateList) error {
@@ -248,7 +230,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -258,16 +242,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -279,16 +259,13 @@ func main() {
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}"
-  // TODO: Change placeholder value above.
+  rollingUpdate := ""  // TODO: Update placeholder value.
 
   req := replicapoolupdaterService.RollingUpdates.ListInstanceUpdates(project, zone, rollingUpdate)
   if err := req.Pages(ctx, func(page *replicapoolupdater.InstanceUpdateList) error {
@@ -311,7 +288,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -321,16 +300,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -342,16 +317,13 @@ func main() {
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}"
-  // TODO: Change placeholder value above.
+  rollingUpdate := ""  // TODO: Update placeholder value.
 
   resp, err := replicapoolupdaterService.RollingUpdates.Pause(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
@@ -371,7 +343,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -381,16 +355,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -402,16 +372,13 @@ func main() {
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}"
-  // TODO: Change placeholder value above.
+  rollingUpdate := ""  // TODO: Update placeholder value.
 
   resp, err := replicapoolupdaterService.RollingUpdates.Resume(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
@@ -431,7 +398,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -441,16 +410,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -462,16 +427,13 @@ func main() {
   }
 
   // The Google Developers Console project name.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // The name of the zone in which the update's target resides.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // The name of the update.
-  rollingUpdate := "{MY-ROLLING-UPDATE}"
-  // TODO: Change placeholder value above.
+  rollingUpdate := ""  // TODO: Update placeholder value.
 
   resp, err := replicapoolupdaterService.RollingUpdates.Rollback(project, zone, rollingUpdate).Context(ctx).Do()
   if err != nil {
@@ -491,7 +453,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -501,16 +465,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -522,16 +482,13 @@ func main() {
   }
 
   // Name of the project scoping this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the zone scoping this request.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   // Name of the operation resource to return.
-  operation := "{MY-OPERATION}"
-  // TODO: Change placeholder value above.
+  operation := ""  // TODO: Update placeholder value.
 
   resp, err := replicapoolupdaterService.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
   if err != nil {
@@ -551,7 +508,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -561,16 +520,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/replicapoolupdater/v1beta1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -582,12 +537,10 @@ func main() {
   }
 
   // Name of the project scoping this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Name of the zone scoping this request.
-  zone := "{MY-ZONE}"
-  // TODO: Change placeholder value above.
+  zone := ""  // TODO: Update placeholder value.
 
   req := replicapoolupdaterService.ZoneOperations.List(project, zone)
   if err := req.Pages(ctx, func(page *replicapoolupdater.OperationList) error {

@@ -14,11 +14,12 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -70,7 +71,7 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
   private TypeNameConverter typeNameConverter;
 
   public NodeJSModelTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter = new NodeJSTypeTable(implicitPackageName);
+    this.typeNameConverter = new JSTypeTable(implicitPackageName);
   }
 
   @Override
@@ -134,8 +135,7 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), "{}");
     }
     if (type.isEnum()) {
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(new TypeName(""), "null");
   }
@@ -165,8 +165,20 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeNameForTypedResourceName(
-      ProtoElement field, TypeRef type, String typedResourceShortName) {
+      FieldConfig fieldConfig, String typedResourceShortName) {
     throw new UnsupportedOperationException(
         "getTypeNameForTypedResourceName not supported by NodeJS");
+  }
+
+  @Override
+  public TypeName getTypeNameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    throw new UnsupportedOperationException(
+        "getTypeNameForResourceNameElementType not supported by NodeJS");
+  }
+
+  @Override
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    return TypedValue.create(getTypeName(type), "%s." + value.getSimpleName());
   }
 }

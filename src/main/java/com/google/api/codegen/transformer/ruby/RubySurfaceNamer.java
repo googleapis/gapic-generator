@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.config.CollectionConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -38,6 +38,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
         packageName);
   }
 
+  @Override
+  /** The name of the class that implements snippets for a particular proto interface. */
+  public String getApiSnippetsClassName(Interface interfaze) {
+    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
+  }
+
   /** The function name to set a field having the given type and name. */
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
@@ -46,8 +52,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The function name to format the entity for the given collection. */
   @Override
-  public String getFormatFunctionName(CollectionConfig collectionConfig) {
-    return staticFunctionName(Name.from(collectionConfig.getEntityName(), "path"));
+  public String getFormatFunctionName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
   /**

@@ -15,6 +15,7 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.GapicProviderFactory;
@@ -29,6 +30,7 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -37,6 +39,9 @@ import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +61,10 @@ public class CodeGeneratorApi extends ToolDriverBase {
           "config_files",
           "The list of YAML configuration files for the code generator.",
           ImmutableList.<String>of());
+
+  public static final Option<String> PACKAGE_CONFIG_FILE =
+      ToolOptions.createOption(
+          String.class, "package_config", "The package metadata configuration.", "");
 
   public static final Option<List<String>> ENABLED_ARTIFACTS =
       ToolOptions.createOption(
@@ -98,8 +107,17 @@ public class CodeGeneratorApi extends ToolDriverBase {
       return;
     }
 
+    PackageMetadataConfig packageConfig = null;
+    if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG_FILE))) {
+      String contents =
+          new String(
+              Files.readAllBytes(Paths.get(options.get(PACKAGE_CONFIG_FILE))),
+              StandardCharsets.UTF_8);
+      packageConfig = PackageMetadataConfig.createFromString(contents);
+    }
     GeneratorProto generator = configProto.getGenerator();
     ApiConfig apiConfig = ApiConfig.createApiConfig(model, configProto);
+
     if (apiConfig == null) {
       return;
     }
@@ -116,7 +134,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
               .build();
 
       List<GapicProvider<? extends Object>> providers =
-          providerFactory.create(model, apiConfig, generatorConfig);
+          providerFactory.create(model, apiConfig, generatorConfig, packageConfig);
       String outputFile = options.get(OUTPUT_FILE);
       Map<String, Doc> outputFiles = Maps.newHashMap();
       for (GapicProvider<? extends Object> provider : providers) {

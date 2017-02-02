@@ -48,6 +48,8 @@ class Any(object):
 
     Example 1: Pack and unpack a message in C++.
 
+    ::
+
         Foo foo = ...;
         Any any;
         any.PackFrom(foo);
@@ -58,12 +60,26 @@ class Any(object):
 
     Example 2: Pack and unpack a message in Java.
 
+    ::
+
         Foo foo = ...;
         Any any = Any.pack(foo);
         ...
         if (any.is(Foo.class)) {
           foo = any.unpack(Foo.class);
         }
+
+     Example 3: Pack and unpack a message in Python.
+
+    ::
+
+        foo = Foo(...)
+        any = Any()
+        any.Pack(foo)
+        ...
+        if any.Is(Foo.DESCRIPTOR):
+          any.Unpack(foo)
+          ...
 
     The pack methods provided by protobuf library will by default use
     'type.googleapis.com/full.type.name' as the type URL and the unpack
@@ -77,6 +93,8 @@ class Any(object):
     The JSON representation of an ``Any`` value uses the regular
     representation of the deserialized, embedded message, with an
     additional field ``@type`` which contains the type URL. Example:
+
+    ::
 
         package google.profile;
         message Person {
@@ -95,6 +113,8 @@ class Any(object):
     ``value`` which holds the custom JSON in addition to the ``@type``
     field. Example (for message ``google.protobuf.Duration``):
 
+    ::
+
         {
           \"@type\": \"type.googleapis.com/google.protobuf.Duration\",
           \"value\": \"1.212s\"
@@ -104,10 +124,10 @@ class Any(object):
       type_url (string): A URL/resource name whose content describes the type of the
         serialized protocol buffer message.
 
-        For URLs which use the schema ``http``, ``https``, or no schema, the
+        For URLs which use the scheme ``http``, ``https``, or no scheme, the
         following restrictions and interpretations apply:
 
-        * If no schema is provided, ``https`` is assumed.
+        * If no scheme is provided, ``https`` is assumed.
         * The last segment of the URL's path must represent the fully
           qualified name of the type (as in ``path/google.protobuf.Duration``).
           The name should be in a canonical form (e.g., leading \".\" is
@@ -120,7 +140,7 @@ class Any(object):
           on changes to types. (Use versioned type names to manage
           breaking changes.)
 
-        Schemas other than ``http``, ``https`` (or the empty schema) might be
+        Schemes other than ``http``, ``https`` (or the empty scheme) might be
         used with implementation specific semantics.
       value (bytes): Must be a valid serialized protocol buffer of the above specified type.
 
@@ -154,6 +174,8 @@ class Duration(object):
 
     Example 1: Compute Duration from two Timestamps in pseudo code.
 
+    ::
+
         Timestamp start = ...;
         Timestamp end = ...;
         Duration duration = ...;
@@ -170,6 +192,8 @@ class Duration(object):
         }
 
     Example 2: Compute Timestamp from Timestamp + Duration in pseudo code.
+
+    ::
 
         Timestamp start = ...;
         Duration duration = ...;
@@ -219,6 +243,8 @@ class FieldMask(object):
     """
     ``FieldMask`` represents a set of symbolic field paths, for example:
 
+    ::
+
         paths: \"f.a\"
         paths: \"f.b.d\"
 
@@ -237,6 +263,8 @@ class FieldMask(object):
     specified in the mask. For example, if the mask in the previous
     example is applied to a response message as follows:
 
+    ::
+
         f {
           a : 22
           b {
@@ -251,6 +279,8 @@ class FieldMask(object):
     (their value will be set to the default, and omitted in proto text
     output):
 
+
+    ::
 
         f {
           a : 22
@@ -285,6 +315,66 @@ class FieldMask(object):
     describe the updated values, the API ignores the values of all
     fields not covered by the mask.
 
+    If a repeated field is specified for an update operation, the existing
+    repeated values in the target resource will be overwritten by the new values.
+    Note that a repeated field is only allowed in the last position of a field
+    mask.
+
+    If a sub-message is specified in the last position of the field mask for an
+    update operation, then the existing sub-message in the target resource is
+    overwritten. Given the target message:
+
+    ::
+
+        f {
+          b {
+            d : 1
+            x : 2
+          }
+          c : 1
+        }
+
+    And an update message:
+
+    ::
+
+        f {
+          b {
+            d : 10
+          }
+        }
+
+    then if the field mask is:
+
+     paths: \"f.b\"
+
+    then the result will be:
+
+    ::
+
+        f {
+          b {
+            d : 10
+          }
+          c : 1
+        }
+
+    However, if the update mask was:
+
+     paths: \"f.b.d\"
+
+    then the result would be:
+
+    ::
+
+        f {
+          b {
+            d : 10
+            x : 2
+          }
+          c : 1
+        }
+
     In order to reset a field's value to the default, the field must
     be in the mask and set to the default value in the provided resource.
     Hence, in order to reset all fields of a resource, provide a default
@@ -318,6 +408,8 @@ class FieldMask(object):
 
     As an example, consider the following message declarations:
 
+    ::
+
         message Profile {
           User user = 1;
           Photo photo = 2;
@@ -329,12 +421,16 @@ class FieldMask(object):
 
     In proto a field mask for ``Profile`` may look as such:
 
+    ::
+
         mask {
           paths: \"user.display_name\"
           paths: \"photo\"
         }
 
     In JSON, the same mask is represented as below:
+
+    ::
 
         {
           mask: \"user.displayName,photo\"
@@ -345,6 +441,8 @@ class FieldMask(object):
     Field masks treat fields in oneofs just as regular fields. Consider the
     following message:
 
+    ::
+
         message SampleMessage {
           oneof test_oneof {
             string name = 4;
@@ -354,11 +452,15 @@ class FieldMask(object):
 
     The field mask can be:
 
+    ::
+
         mask {
           paths: \"name\"
         }
 
     Or:
+
+    ::
 
         mask {
           paths: \"sub_message\"
@@ -369,6 +471,73 @@ class FieldMask(object):
 
     Attributes:
       paths (list[string]): The set of field mask paths.
+
+    """
+    pass
+
+============== file: google/protobuf/struct_pb2.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+class Struct(object):
+    """
+    ``Struct`` represents a structured data value, consisting of fields
+    which map to dynamically typed values. In some languages, ``Struct``
+    might be supported by a native representation. For example, in
+    scripting languages like JS a struct is represented as an
+    object. The details of that representation are described together
+    with the proto support for the language.
+
+    The JSON representation for ``Struct`` is JSON object.
+
+    Attributes:
+      fields (dict[string -> :class:`google.protobuf.struct_pb2.Struct.FieldsEntry`]): Unordered map of dynamically typed values.
+
+    """
+    pass
+
+
+class Value(object):
+    """
+    ``Value`` represents a dynamically typed value which can be either
+    null, a number, a string, a boolean, a recursive struct value, or a
+    list of values. A producer of value is expected to set one of that
+    variants, absence of any variant indicates an error.
+
+    The JSON representation for ``Value`` is JSON value.
+
+    Attributes:
+      null_value (enum :class:`google.cloud.gapic.example.library.v1.enums.NullValue`): Represents a null value.
+      number_value (float): Represents a double value.
+      string_value (string): Represents a string value.
+      bool_value (bool): Represents a boolean value.
+      struct_value (:class:`google.protobuf.struct_pb2.Struct`): Represents a structured value.
+      list_value (:class:`google.protobuf.struct_pb2.ListValue`): Represents a repeated ``Value``.
+
+    """
+    pass
+
+
+class ListValue(object):
+    """
+    ``ListValue`` is a wrapper around a repeated field of values.
+
+    The JSON representation for ``ListValue`` is JSON array.
+
+    Attributes:
+      values (list[:class:`google.protobuf.struct_pb2.Value`]): Repeated field of dynamically typed values.
 
     """
     pass
@@ -405,11 +574,15 @@ class Timestamp(object):
 
     Example 1: Compute Timestamp from POSIX ``time()``.
 
+    ::
+
         Timestamp timestamp;
         timestamp.set_seconds(time(NULL));
         timestamp.set_nanos(0);
 
     Example 2: Compute Timestamp from POSIX ``gettimeofday()``.
+
+    ::
 
         struct timeval tv;
         gettimeofday(&tv, NULL);
@@ -419,6 +592,8 @@ class Timestamp(object):
         timestamp.set_nanos(tv.tv_usec * 1000);
 
     Example 3: Compute Timestamp from Win32 ``GetSystemTimeAsFileTime()``.
+
+    ::
 
         FILETIME ft;
         GetSystemTimeAsFileTime(&ft);
@@ -432,6 +607,8 @@ class Timestamp(object):
 
     Example 4: Compute Timestamp from Java ``System.currentTimeMillis()``.
 
+    ::
+
         long millis = System.currentTimeMillis();
 
         Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
@@ -439,6 +616,8 @@ class Timestamp(object):
 
 
     Example 5: Compute Timestamp from current time in Python.
+
+    ::
 
         now = time.time()
         seconds = int(now)
@@ -589,6 +768,100 @@ class BytesValue(object):
     """
     pass
 
+============== file: google/rpc/status_pb2.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from google.protobuf import any_pb2
+
+
+class Status(object):
+    """
+    The ``Status`` type defines a logical error model that is suitable for different
+    programming environments, including REST APIs and RPC APIs. It is used by
+    `gRPC <https://github.com/grpc>`_. The error model is designed to be:
+
+    - Simple to use and understand for most users
+    - Flexible enough to meet unexpected needs
+
+    # Overview
+
+    The ``Status`` message contains three pieces of data: error code, error message,
+    and error details. The error code should be an enum value of
+    ``google.rpc.Code``, but it may accept additional error codes if needed.  The
+    error message should be a developer-facing English message that helps
+    developers *understand* and *resolve* the error. If a localized user-facing
+    error message is needed, put the localized message in the error details or
+    localize it in the client. The optional error details may contain arbitrary
+    information about the error. There is a predefined set of error detail types
+    in the package ``google.rpc`` which can be used for common error conditions.
+
+    # Language mapping
+
+    The ``Status`` message is the logical representation of the error model, but it
+    is not necessarily the actual wire format. When the ``Status`` message is
+    exposed in different client libraries and different wire protocols, it can be
+    mapped differently. For example, it will likely be mapped to some exceptions
+    in Java, but more likely mapped to some error codes in C.
+
+    # Other uses
+
+    The error model and the ``Status`` message can be used in a variety of
+    environments, either with or without APIs, to provide a
+    consistent developer experience across different environments.
+
+    Example uses of this error model include:
+
+    - Partial errors. If a service needs to return partial errors to the client,
+    ::
+
+        it may embed the `Status` in the normal response to indicate the partial
+        errors.
+
+    - Workflow errors. A typical workflow has multiple steps. Each step may
+    ::
+
+        have a `Status` message for error reporting purpose.
+
+    - Batch operations. If a client uses batch request and batch response, the
+    ::
+
+        `Status` message should be used directly inside batch response, one for
+        each error sub-response.
+
+    - Asynchronous operations. If an API call embeds asynchronous operation
+    ::
+
+        results in its response, the status of those operations should be
+        represented directly using the `Status` message.
+
+    - Logging. If some API errors are stored in logs, the message ``Status`` could
+    ::
+
+        be used directly after any stripping needed for security/privacy reasons.
+
+    Attributes:
+      code (int): The status code, which should be an enum value of ``google.rpc.Code``.
+      message (string): A developer-facing error message, which should be in English. Any
+        user-facing error message should be localized and sent in the
+        ``google.rpc.Status.details`` field, or localized by the client.
+      details (list[:class:`google.protobuf.any_pb2.Any`]): A list of messages that carry the error details.  There will be a
+        common set of message types for APIs to use.
+
+    """
+    pass
+
 ============== file: library_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
@@ -604,7 +877,8 @@ class BytesValue(object):
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
+from google.cloud.proto.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
+from google.cloud.proto.test.shared.data import shared_type_pb2
 from google.protobuf import any_pb2
 from google.protobuf import duration_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
@@ -628,7 +902,7 @@ class Book(object):
       struct_value (:class:`google.protobuf.struct_pb2.Struct`)
       value_value (:class:`google.protobuf.struct_pb2.Value`)
       list_value_value (:class:`google.protobuf.struct_pb2.ListValue`)
-      map_list_value_value (dict[string -> :class:`google.example.library.v1.library_pb2.Book.MapListValueValueEntry`])
+      map_list_value_value (dict[string -> :class:`google.cloud.proto.example.library.v1.library_pb2.Book.MapListValueValueEntry`])
       time_value (:class:`google.protobuf.timestamp_pb2.Timestamp`)
       duration_value (:class:`google.protobuf.duration_pb2.Duration`)
       field_mask_value (:class:`google.protobuf.field_mask_pb2.FieldMask`)
@@ -641,8 +915,25 @@ class Book(object):
       string_value (:class:`google.protobuf.wrappers_pb2.StringValue`)
       bool_value (:class:`google.protobuf.wrappers_pb2.BoolValue`)
       bytes_value (:class:`google.protobuf.wrappers_pb2.BytesValue`)
-      map_string_value (dict[int -> :class:`google.example.library.v1.library_pb2.Book.MapStringValueEntry`])
-      map_message_value (dict[string -> :class:`google.example.library.v1.library_pb2.Book.MapMessageValueEntry`])
+      map_string_value (dict[int -> :class:`google.cloud.proto.example.library.v1.library_pb2.Book.MapStringValueEntry`])
+      map_message_value (dict[string -> :class:`google.cloud.proto.example.library.v1.library_pb2.Book.MapMessageValueEntry`])
+      resource (:class:`google.cloud.proto.test.shared.data.shared_type_pb2.Used`): Tests Python doc generation: should generate a dummy file for shared_type
+        resource, but *not* its import, other_shared_type
+
+    """
+    pass
+
+
+class BookFromArchive(object):
+    """
+    A single book in the archives.
+
+    Attributes:
+      name (string): The resource name of the book.
+        Book names have the form ``archives/{archive_id}/books/{book_id}``.
+      author (string): The name of the book author.
+      title (string): The title of the book.
+      read (bool): Value indicating whether the book has been read.
 
     """
     pass
@@ -652,7 +943,7 @@ class SomeMessage(object):
     """
     Attributes:
       field (int)
-      field2 (:class:`google.example.library.v1.library_pb2.SomeMessage2`)
+      field2 (:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage2`)
       alignment (enum :class:`google.cloud.gapic.example.library.v1.enums.SomeMessage.Alignment`)
 
     """
@@ -688,7 +979,7 @@ class CreateShelfRequest(object):
     Request message for LibraryService.CreateShelf.
 
     Attributes:
-      shelf (:class:`google.example.library.v1.library_pb2.Shelf`): The shelf to create.
+      shelf (:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`): The shelf to create.
 
     """
     pass
@@ -700,8 +991,8 @@ class GetShelfRequest(object):
 
     Attributes:
       name (string): The name of the shelf to retrieve.
-      message (:class:`google.example.library.v1.library_pb2.SomeMessage`): Field to verify that message-type query parameter gets flattened.
-      string_builder (:class:`google.example.library.v1.library_pb2.StringBuilder`)
+      message (:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage`): Field to verify that message-type query parameter gets flattened.
+      string_builder (:class:`google.cloud.proto.example.library.v1.library_pb2.StringBuilder`)
       options (string): To test 'options' parameter name conflict.
 
     """
@@ -738,7 +1029,7 @@ class ListShelvesResponse(object):
     Response message for LibraryService.ListShelves.
 
     Attributes:
-      shelves (list[:class:`google.example.library.v1.library_pb2.Shelf`]): The list of shelves.
+      shelves (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The list of shelves.
       next_page_token (string): A token to retrieve next page of results.
         Pass this value in the
         ``ListShelvesRequest.page_token``
@@ -764,7 +1055,7 @@ class StreamShelvesResponse(object):
     Response message for LibraryService.StreamShelves.
 
     Attributes:
-      shelves (list[:class:`google.example.library.v1.library_pb2.Shelf`]): The list of shelves.
+      shelves (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The list of shelves.
 
     """
     pass
@@ -800,7 +1091,7 @@ class CreateBookRequest(object):
 
     Attributes:
       name (string): The name of the shelf in which the book is created.
-      book (:class:`google.example.library.v1.library_pb2.Book`): The book to create.
+      book (:class:`google.cloud.proto.example.library.v1.library_pb2.Book`): The book to create.
 
     """
     pass
@@ -811,10 +1102,11 @@ class PublishSeriesRequest(object):
     Request message for LibraryService.PublishSeries.
 
     Attributes:
-      shelf (:class:`google.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
-      books (list[:class:`google.example.library.v1.library_pb2.Book`]): The books to publish in the series.
+      shelf (:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
+      books (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The books to publish in the series.
       edition (int): The edition of the series
       review_copy (bool): If the book is in a pre-publish state
+      series_uuid (bytes): Uniquely identifies the series to the publishing house.
 
     """
     pass
@@ -865,7 +1157,7 @@ class ListBooksResponse(object):
     Response message for LibraryService.ListBooks.
 
     Attributes:
-      books (list[:class:`google.example.library.v1.library_pb2.Book`]): The list of books.
+      books (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The list of books.
       next_page_token (string): A token to retrieve next page of results.
         Pass this value in the
         ``ListBooksRequest.page_token``
@@ -893,9 +1185,9 @@ class UpdateBookRequest(object):
 
     Attributes:
       name (string): The name of the book to update.
-      book (:class:`google.example.library.v1.library_pb2.Book`): The book to update with.
+      book (:class:`google.cloud.proto.example.library.v1.library_pb2.Book`): The book to update with.
       update_mask (:class:`google.protobuf.field_mask_pb2.FieldMask`): A field mask to apply, rendered as an HTTP parameter.
-      physical_mask (:class:`google.example.library.v1.field_mask_pb2.FieldMask`): To test Python import clash resolution.
+      physical_mask (:class:`google.cloud.proto.example.library.v1.field_mask_pb2.FieldMask`): To test Python import clash resolution.
 
     """
     pass
@@ -950,7 +1242,7 @@ class AddCommentsRequest(object):
     """
     Attributes:
       name (string)
-      comments (list[:class:`google.example.library.v1.library_pb2.Comment`])
+      comments (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`])
 
     """
     pass
@@ -979,6 +1271,19 @@ class GetBookFromArchiveRequest(object):
     pass
 
 
+class GetBookFromAnywhereRequest(object):
+    """
+    Request message for LibraryService.GetBookFromAnywhere.
+
+    Attributes:
+      name (string): The name of the book to retrieve.
+      alt_book_name (string): An alternate book name, used to test restricting flattened field to a
+        single resource name type in a oneof.
+
+    """
+    pass
+
+
 class UpdateBookIndexRequest(object):
     """
     Request message for LibraryService.UpdateBookIndex.
@@ -986,7 +1291,7 @@ class UpdateBookIndexRequest(object):
     Attributes:
       name (string): The name of the book to update.
       index_name (string): The name of the index for the book
-      index_map (dict[string -> :class:`google.example.library.v1.library_pb2.UpdateBookIndexRequest.IndexMapEntry`]): The index to update the book with
+      index_map (dict[string -> :class:`google.cloud.proto.example.library.v1.library_pb2.UpdateBookIndexRequest.IndexMapEntry`]): The index to update the book with
 
     """
     pass
@@ -998,7 +1303,7 @@ class DiscussBookRequest(object):
       name (string): The name of the book to be discussed. If this is in the middle
         of the stream and this is not specified, the name in the previous
         message will be reused.
-      comment (:class:`google.example.library.v1.library_pb2.Comment`): The new comment.
+      comment (:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`): The new comment.
 
     """
     pass
@@ -1025,6 +1330,56 @@ class FindRelatedBooksResponse(object):
     Attributes:
       names (list[string])
       next_page_token (string)
+
+    """
+    pass
+
+
+class GetBigBookMetadata(object):
+    """
+    Metadata for a longrunning operation.
+
+    Attributes:
+      progress_percent (int): Approximate percentage of the book processed thus far.
+
+    """
+    pass
+
+============== file: shared_type_pb2.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+class Used(object):
+    """
+    This message is used by the library service and does not reference
+    other_shared_type.proto.
+
+    Attributes:
+      times_used (int)
+
+    """
+    pass
+
+
+class Unused(object):
+    """
+    This message is not used by the library service but does reference
+    other_shared_type.proto.
+
+    Attributes:
+      other (:class:`google.cloud.proto.test.shared.data.other_shared_type_pb2.OtherType`)
 
     """
     pass

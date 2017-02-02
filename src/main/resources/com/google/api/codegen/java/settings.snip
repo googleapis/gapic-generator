@@ -4,8 +4,9 @@
   {@renderFileHeader(settingsFile.fileHeader)}
 
   {@settingsDoc(settingsFile.settings.doc)}
-  @@javax.annotation.Generated("by GAPIC")
-  public class {@settingsFile.settings.name} extends ServiceApiSettings {
+  @@Generated("by GAPIC")
+  @@ExperimentalApi
+  public class {@settingsFile.settings.name} extends ClientSettings {
     {@constants(settingsFile.settings)}
     {@members(settingsFile.settings)}
     {@constructors(settingsFile.settings)}
@@ -77,6 +78,14 @@
 @private members(xsettingsClass)
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return InstantiatingExecutorProvider.newBuilder();
+  }
+
   @if xsettingsClass.hasDefaultServiceAddress
     /**
      * Returns the default service address.
@@ -102,6 +111,30 @@
     }
 
   @end
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        @if xsettingsClass.hasDefaultServiceScopes
+            .setScopesToApply(DEFAULT_SERVICE_SCOPES)
+        @end
+        ;
+  }
+
+  /**
+   * Returns a builder for the default ChannelProvider for this service.
+   */
+  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
+    return InstantiatingChannelProvider.newBuilder()
+        @if xsettingsClass.hasDefaultServiceAddress
+            .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+        @end
+        .setPort(DEFAULT_SERVICE_PORT)
+        .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+  }
+
   /**
    * Returns a builder for this class with recommended defaults.
    */
@@ -127,7 +160,7 @@
 
 @private methodMembers(xsettingsClass)
   @join settings : xsettingsClass.callSettings
-    @switch settings.type.toString
+    @switch settings.type
     @case "SimpleApiCallable"
       private final SimpleCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
@@ -141,8 +174,11 @@
     @case "StreamingApiCallable"
       private final StreamingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
+    @case "OperationApiCallable"
+      private final OperationCallSettings<{@settings.requestTypeName}, \
+          {@settings.operationResultTypeName}> {@settings.memberName};
     @default
-      $unhandledCase: {@settings.type.toString}$
+      $unhandledCase: {@settings.type}$
     @end
   @end
   {@BREAK}
@@ -153,7 +189,7 @@
     /**
      * Returns the object with the settings used for calls to {@settings.methodName}.
      */
-    @switch settings.type.toString
+    @switch settings.type
     @case "SimpleApiCallable"
         public SimpleCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
@@ -175,8 +211,13 @@
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
+    @case "OperationApiCallable"
+      public OperationCallSettings<{@settings.requestTypeName}, \
+            {@settings.operationResultTypeName}> {@settings.settingsGetFunction}() {
+        return {@settings.memberName};
+      }
     @default
-      $unhandledCase: {@settings.type.toString}$
+      $unhandledCase: {@settings.type}$
     @end
     {@""}
   @end
@@ -184,12 +225,8 @@
 
 @private constructors(xsettingsClass)
   private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
-    super(settingsBuilder.getChannelProvider(),
-          settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getGeneratorName(),
-          settingsBuilder.getGeneratorVersion(),
-          settingsBuilder.getClientLibName(),
-          settingsBuilder.getClientLibVersion());
+    super(settingsBuilder.getExecutorProvider(),
+          settingsBuilder.getChannelProvider());
 
     @join settings : xsettingsClass.callSettings
       {@settings.memberName} = settingsBuilder.{@settings.settingsGetFunction}().build();
@@ -351,7 +388,7 @@
   /**
    * Builder for {@xsettingsClass.name}.
    */
-  public static class Builder extends ServiceApiSettings.Builder {
+  public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
     {@builderMembers(xsettingsClass)}
@@ -380,6 +417,9 @@
     @case "StreamingApiCallable"
       private final StreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
+    @case "OperationApiCallable"
+          private final OperationCallSettings.Builder<{@settings.requestTypeName}, \
+              {@settings.operationResultTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type.toString}$
     @end
@@ -428,7 +468,9 @@
 @private builderConstructors(xsettingsClass)
   private Builder() {
     @if xsettingsClass.hasDefaultInstance
-      super(s_getDefaultConnectionSettingsBuilder().build());
+      super(defaultChannelProviderBuilder().build());
+    @else
+      super((InstantiatingChannelProvider) null);
     @end
 
     @join settings : xsettingsClass.callSettings
@@ -446,6 +488,11 @@
                 .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
       @case "StreamingApiCallable"
         {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcTypeName}.{@settings.grpcMethodConstant});
+      @case "OperationApiCallable"
+        {@settings.memberName} = OperationCallSettings.newBuilder(
+            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
+            {@settings.operationResultTypeName}.class);
+
       @default
         $unhandledCase: {@settings.type.toString}$
       @end
@@ -462,21 +509,22 @@
     Builder builder = new Builder();
     @join settings : xsettingsClass.unaryCallSettings
       {@""}
+      # bundling settings
       @switch settings.type
-      @case "SimpleApiCallable"
-      @case "PagedApiCallable"
       @case "BundlingApiCallable"
         builder.{@settings.settingsGetFunction}().getBundlingSettingsBuilder()
             .setElementCountThreshold({@settings.bundlingConfig.elementCountThreshold})
-            .setElementCountLimit({@settings.bundlingConfig.elementCountLimit})
             .setRequestByteThreshold({@settings.bundlingConfig.requestByteThreshold})
-            .setRequestByteLimit({@settings.bundlingConfig.requestByteLimit})
-            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}))
-            .setBlockingCallCountThreshold(1);
+            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}));
       @default
-        $unhandledCase: {@settings.type.toString}$
       @end
+      # retry settings
       builder.{@settings.settingsGetFunction}()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@settings.retryCodesName}"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@settings.retryParamsName}"));
+    @end
+    @join settings : xsettingsClass.longRunningCallSettings
+      builder.{@settings.settingsGetFunction}().getInitialCallSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@settings.retryCodesName}"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@settings.retryParamsName}"));
     @end
@@ -500,54 +548,15 @@
 @end
 
 @private builderMethods(xsettingsClass)
-  private static ConnectionSettings.Builder s_getDefaultConnectionSettingsBuilder() {
-    return ConnectionSettings.newBuilder()
-      @if xsettingsClass.hasDefaultServiceAddress
-        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-      @end
-      .setPort(DEFAULT_SERVICE_PORT)
-      @if xsettingsClass.hasDefaultServiceScopes
-        .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
-      @end
-      ;
-  }
   @@Override
-  protected ConnectionSettings.Builder getDefaultConnectionSettingsBuilder() {
-    return s_getDefaultConnectionSettingsBuilder();
-  }
-  @@Override
-  public Builder provideExecutorWith(ScheduledExecutorService executor, boolean shouldAutoClose) {
-    super.provideExecutorWith(executor, shouldAutoClose);
+  public Builder setExecutorProvider(ExecutorProvider executorProvider) {
+    super.setExecutorProvider(executorProvider);
     return this;
   }
+
   @@Override
-  public Builder provideChannelWith(ManagedChannel channel, boolean shouldAutoClose) {
-    super.provideChannelWith(channel, shouldAutoClose);
-    return this;
-  }
-  @@Override
-  public Builder provideChannelWith(ConnectionSettings settings) {
-    super.provideChannelWith(settings);
-    return this;
-  }
-  @@Override
-  public Builder provideChannelWith(Credentials credentials) {
-    super.provideChannelWith(credentials);
-    return this;
-  }
-  @@Override
-  public Builder provideChannelWith(List<String> scopes) {
-    super.provideChannelWith(scopes);
-    return this;
-  }
-  @@Override
-  public Builder setGeneratorHeader(String name, String version) {
-    super.setGeneratorHeader(name, version);
-    return this;
-  }
-  @@Override
-  public Builder setClientLibHeader(String name, String version) {
-    super.setClientLibHeader(name, version);
+  public Builder setChannelProvider(ChannelProvider channelProvider) {
+    super.setChannelProvider(channelProvider);
     return this;
   }
 
@@ -558,8 +567,8 @@
    *
    * Note: This method does not support applying settings to streaming methods.
    */
-  public Builder applyToAllApiMethods(UnaryCallSettings.Builder apiCallSettings) throws Exception {
-    super.applyToAllApiMethods(unaryMethodSettingsBuilders, apiCallSettings);
+  public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
+    super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
     return this;
   }
 
@@ -567,7 +576,7 @@
     /**
      * Returns the builder for the settings used for calls to {@settings.methodName}.
      */
-    @switch settings.type.toString
+    @switch settings.type
     @case "SimpleApiCallable"
       public SimpleCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
@@ -588,8 +597,13 @@
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
+    @case "OperationApiCallable"
+      public OperationCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.operationResultTypeName}> {@settings.settingsGetFunction}() {
+        return {@settings.memberName};
+      }
     @default
-      $unhandledCase: {@settings.type.toString}$
+      $unhandledCase: {@settings.type}$
     @end
     {@""}
   @end

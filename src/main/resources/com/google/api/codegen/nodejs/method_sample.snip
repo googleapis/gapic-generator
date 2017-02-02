@@ -1,113 +1,209 @@
 @extends "nodejs/common.snip"
 
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
-    var api = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName}();
-    {@initCode(apiMethod.initCode)}
+    var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName}();
     {@coreSampleCode}
 @end
 
 @snippet sampleCode(apiMethod)
-    @if initializeRequestObject(apiMethod)
-        {@initializeRequestObject(apiMethod)}
-
-    @end
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
         {@optionalArrayMethodSampleCode(apiMethod)}
     @case "PagedOptionalArrayMethod"
+        {@initCode(apiMethod)}
         {@pagedOptionalArrayMethodSampleCode(apiMethod)}
     @default
         $unhandledCase: {@apiMethod.type.toString}$
     @end
 @end
 
+@snippet sampleCodePageStreaming(apiMethod)
+    {@initCode(apiMethod)}
+    client.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)}).on('data', function(element) {
+        // doThingsWith(element)
+    }).on('error', function(err) {
+        console.error(err);
+    });
+@end
+
+@private clientStreamingSampleCode(apiMethod)
+    var stream = client.{@apiMethod.name}(function(err, response) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        // doThingsWith(response)
+    });
+    {@initCode(apiMethod)}
+    {@sampleWriteStreamingRequest(apiMethod)}
+@end
+
+@private bidiStreamingSampleCode(apiMethod)
+    var stream = client.{@apiMethod.name}().on('data', function(response) {
+        // doThingsWith(response);
+    });
+    {@initCode(apiMethod)}
+    {@sampleWriteStreamingRequest(apiMethod)}
+@end
+
+@private sampleWriteStreamingRequest(apiMethod)
+    // Write request objects.
+    stream.write(request);
+@end
+
 @private optionalArrayMethodSampleCode(apiMethod)
-    @if apiMethod.hasReturnValue
-        {@methodCallSampleCodeWithReturnValue(apiMethod)};
-    @else
-        {@methodCallSampleCodeWithoutReturnValue(apiMethod)};
+    @switch apiMethod.grpcStreamingType.toString
+    @case "ServerStreaming"
+        {@initCode(apiMethod)}
+        {@methodCallSampleCode(apiMethod)}.on('data', function(response) {
+            // doThingsWith(response)
+        });
+    @case "ClientStreaming"
+        {@clientStreamingSampleCode(apiMethod)}
+    @case "BidiStreaming"
+        {@bidiStreamingSampleCode(apiMethod)}
+    @case "NonStreaming"
+        {@initCode(apiMethod)}
+        @if apiMethod.hasReturnValue
+            {@methodCallSampleCodeWithReturnValue(apiMethod)};
+        @else
+            {@methodCallSampleCodeWithoutReturnValue(apiMethod)};
+        @end
     @end
 @end
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod)
     // Iterate over all elements.
-    {@methodCallSampleCode(apiMethod)}.on('data', function(element) {
-        // doThingsWith(element)
+    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+        var resources = responses[0];
+        for (var i = 0; i < resources.length; ++i) {
+            // doThingsWith(resources[i])
+        }
+    }).catch(function(err) {
+        console.error(err);
     });
 
-    // Or obtain the paged response through the callback.
+    // Or obtain the paged response.
     {@methodCallSampleCodeForPagedResponse(apiMethod)}
 @end
 
 @private methodCallSampleCode(apiMethod)
-    api.{@apiMethod.name}(\
+    client.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod)})
 @end
 
-@private methodCallSampleCodeForPagedResponse(apiMethod)
+@private sampleMethodCallArgListAndComma(apiMethod)
     @if sampleMethodCallArgList(apiMethod)
-        function callback(err, response, nextPageToken) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            // doThingsWith(response)
-            if (nextPageToken) {
-                // fetch the next page.
-                api.{@apiMethod.name}(\
-                    {@sampleMethodCallArgList(apiMethod)}, {pageToken: nextPageToken}, callback);
-            }
-        }
-        api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod)}, {flattenPages: false}, callback);
+        {@sampleMethodCallArgList(apiMethod)}, {@""}
     @else
-        function callback(err, response, nextPageToken) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            // doThingsWith(response)
-            if (nextPageToken) {
-                // fetch the next page.
-                api.{@apiMethod.name}({pageToken: nextPageToken}, callback);
-            }
+    @end
+@end
+
+@private methodCallSampleCodeForPagedResponse(apiMethod)
+    var options = {autoPaginate: false};
+    function callback(responses) {
+        // The actual resources in a response.
+        var resources = responses[0];
+        // The next request if the response shows there's more responses.
+        var nextRequest = responses[1];
+        // The actual response object, if necessary.
+        // var rawResponse = responses[2];
+        for (var i = 0; i < resources.length; ++i) {
+            // doThingsWith(resources[i]);
         }
-        api.{@apiMethod.name}({flattenPages: false}, callback);
+        if (nextRequest) {
+            // Fetch the next page.
+            return client.{@apiMethod.name}(nextRequest, options).then(callback);
+        }
+    }
+    client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
+        .then(callback)
+        .catch(function(err) {
+            console.error(err);
+        });
+@end
+
+@private methodCallSampleCodePrefix(apiMethod)
+    @if sampleMethodCallArgList(apiMethod)
+        client.{@apiMethod.name}(\
+            {@sampleMethodCallArgList(apiMethod)})
+    @else
+        client.{@apiMethod.name}()
     @end
 @end
 
 @private methodCallSampleCodeWithReturnValue(apiMethod)
-    @if sampleMethodCallArgList(apiMethod)
-        api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod)}).then(function(response) {
-            // doThingsWith(response)
+    @if apiMethod.isLongRunningOperation
+
+        // Handle the operation using the promise pattern.
+        {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+            var operation = responses[0];
+            var initialApiResponse = responses[1];
+
+            // Operation@#promise starts polling for the completion of the LRO.
+            return operation.promise();
+        }).then(function(responses) {
+            // The final result of the operation.
+            var result = responses[0];
+
+            // The metadata value of the completed operation.
+            var metadata = responses[1];
+
+            // The response of the api call returning the complete operation.
+            var finalApiResponse = responses[2];
+        }).catch(function(err) {
+            console.error(err);
+        });
+
+        // Handle the operation using the event emitter pattern.
+        {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+            var operation = responses[0];
+            var initialApiResponse = responses[1];
+
+            // Adding a listener for the "complete" event starts polling for the
+            // completion of the operation.
+            operation.on('complete', function(result, metadata, finalApiResponse) {
+              // doSomethingWith(result);
+            });
+
+            // Adding a listener for the "progress" event causes the callback to be
+            // called on any change in metadata when the operation is polled.
+            operation.on('progress', function(metadata, apiResponse) {
+              // doSomethingWith(metadata)
+            })
+
+            // Adding a listener for the "error" event handles any errors found during polling.
+            operation.on('error', function(err) {
+              // throw(err);
+            })
         }).catch(function(err) {
             console.error(err);
         })
     @else
-        api.{@apiMethod.name}().then(function(response) {
-            // doThingsWith(response)
-        }).catch(function(err) {
-            console.error(err);
-        })
+      {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+          var response = responses[0];
+          // doThingsWith(response)
+      }).catch(function(err) {
+          console.error(err);
+      })
     @end
 @end
 
 @private methodCallSampleCodeWithoutReturnValue(apiMethod)
-    @if sampleMethodCallArgList(apiMethod)
-        api.{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod)}).catch(function(err) {
-            console.error(err);
-        })
-    @else
-        api.{@apiMethod.name}().catch(function(err) {
-            console.error(err);
-        })
+    {@methodCallSampleCodePrefix(apiMethod)}.catch(function(err) {
+        console.error(err);
+    })
+@end
+
+@private initCode(apiMethod)
+    {@initCodeLines(apiMethod.initCode)}
+    @if initializeRequestObject(apiMethod)
+        {@initializeRequestObject(apiMethod)}
     @end
 @end
 
-@private initCode(initCodeSpec)
-    @join line : initCodeSpec.lines
+@snippet initCodeLines(initCode)
+    @join line : initCode.lines
         @switch line.lineType.toString
         @case "StructureInitLine"
             {@initLineStructure(line)}
@@ -126,7 +222,7 @@
 @private initLineStructure(line)
     var {@line.identifier} = {
         @join fieldSetting : line.fieldSettings on ",".add(BREAK)
-            {@fieldSetting.identifier} : {@fieldSetting.identifier}
+            {@fieldSetting.fieldName} : {@fieldSetting.identifier}
         @end
     };
 @end
@@ -160,7 +256,7 @@
     @case "SimpleInitValueView"
         {@initValue.initialValue}
     @case "FormattedInitValueView"
-        api.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+        client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
     @default
         $unhandledCase: {@initValue.type}$
     @end
@@ -169,13 +265,10 @@
 @private sampleMethodCallArgList(apiMethod)
     @switch apiMethod.requiredRequestObjectParams.size.toString
     @case "0"
-        @if apiMethod.optionalRequestObjectParamsNoPageToken.isEmpty
-        @else
-            {}
-        @end
+        {}
     @case "1"
         @let field = apiMethod.initCode.fieldSettings.get(0)
-            {{@field.requestFieldName}: {@field.identifier}}
+            {{@field.fieldName}: {@field.identifier}}
         @end
     @default
         request
@@ -189,7 +282,7 @@
     @default
         var request = {
         @join fieldSetting : apiMethod.initCode.fieldSettings on ", ".add(BREAK)
-            {@""}    {@fieldSetting.requestFieldName}: {@fieldSetting.identifier}
+            {@""}    {@fieldSetting.fieldName}: {@fieldSetting.identifier}
         @end
         };
     @end

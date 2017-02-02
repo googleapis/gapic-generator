@@ -1,19 +1,17 @@
 @extends "go/header.snip"
 
 @snippet generate(view)
-    {@headerComment()}
+    {@headerComment(view.fileHeader)}
 
-    package {@view.localExamplePackageName}
+    package {@view.fileHeader.localExamplePackageName}
 
     import (
-        @join imp : view.imports
-            {@imp}
-        @end
+        {@imports(view.fileHeader.imports)}
     )
 
     func {@view.clientConstructorExampleName}() {
         ctx := context.Background()
-        c, err := {@view.localLibPackageName}.{@view.clientConstructorName}(ctx)
+        c, err := {@view.fileHeader.localPackageName}.{@view.clientConstructorName}(ctx)
         if err != nil {
             // TODO: Handle error.
         }
@@ -24,7 +22,7 @@
     @join resource : view.iamResources
         func {@resource.exampleName}() {
             ctx := context.Background()
-            c, err := {@view.localLibPackageName}.{@view.clientConstructorName}(ctx)
+            c, err := {@view.fileHeader.localPackageName}.{@view.clientConstructorName}(ctx)
             if err != nil {
                 // TODO: Handle error.
             }
@@ -53,13 +51,11 @@
             @switch method.type
             @case "PagedRequestObjectMethod"
                 {@pageStreamingMethod(view, method)}
+            @case "OperationRequestObjectMethod"
+                {@lroMethod(view, method)}
             @case "RequestObjectMethod"
                 @if method.hasReturnValue
-                    @if method.isLongRunning
-                        {@lroMethod(view, method)}
-                    @else
-                        {@simpleMethod(view, method)}
-                    @end
+                    {@simpleMethod(view, method)}
                 @else
                     {@emptyReturnMethod(view, method)}
                 @end
@@ -79,7 +75,7 @@
             // TODO: Handle error.
         }
         go func() {
-            reqs := []{@method.apiRequestTypeName}{
+            reqs := []{@method.serviceRequestTypeName}{
                 // TODO: Create requests.
             }
             for _, req := range reqs {
@@ -110,7 +106,7 @@
         if err != nil {
             // TODO: Handle error.
         }
-        reqs := []{@method.apiRequestTypeName}{
+        reqs := []{@method.serviceRequestTypeName}{
             // TODO: Create requests.
         }
         for _, req := range reqs {
@@ -174,11 +170,17 @@
             // TODO: Handle error.
         }
 
-        var resp ptypes.DynamicAny // resp can also be concrete protobuf-generated types.
-        if err := op.Wait(ctx, &resp); err != nil {
+        @if method.hasReturnValue
+            resp, err := op.Wait(ctx)
+            if err != nil {
+                // TODO: Handle error.
+            }
+            // TODO: Use resp.
+            _ = resp
+        @else
+            err = op.Wait(ctx)
             // TODO: Handle error.
-        }
-        // TODO: Use resp.
+        @end
     }
 @end
 
@@ -214,14 +216,14 @@
 
 @private methodInit(view, method)
     ctx := context.Background()
-    c, err := {@view.localLibPackageName}.{@view.clientConstructorName}(ctx)
+    c, err := {@view.fileHeader.localPackageName}.{@view.clientConstructorName}(ctx)
     if err != nil {
         // TODO: Handle error.
     }
 @end
 
 @private requestInit(view, method)
-    req := {@method.apiRequestTypeConstructor}{
+    req := {@method.serviceRequestTypeConstructor}{
         // TODO: Fill request struct fields.
     }
 @end

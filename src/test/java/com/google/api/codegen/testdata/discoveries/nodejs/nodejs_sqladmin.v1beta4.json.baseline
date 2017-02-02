@@ -7,12 +7,14 @@
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -23,12 +25,12 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
-    id: '',  // TODO: Update placeholder value.
+    id: '0',  // TODO: Update placeholder value.
 
     auth: authClient
   };
 
-  sqladmin.backupRuns.delete(request, function(err, response) {
+  sqlAdmin.backupRuns.delete(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -60,12 +62,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -76,12 +80,12 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     // The ID of this Backup Run.
-    id: '',  // TODO: Update placeholder value.
+    id: '0',  // TODO: Update placeholder value.
 
     auth: authClient
   };
 
-  sqladmin.backupRuns.get(request, function(err, response) {
+  sqlAdmin.backupRuns.get(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -113,12 +117,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -129,13 +135,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.backupRuns.insert(request, function(err, response) {
+  sqlAdmin.backupRuns.insert(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -167,12 +173,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -202,11 +210,11 @@ authorize(function(authClient) {
 
     if (response.nextPageToken) {
       request.pageToken = response.nextPageToken;
-      sqladmin.backupRuns.list(request, handlePage);
+      sqlAdmin.backupRuns.list(request, handlePage);
     }
   };
 
-  sqladmin.backupRuns.list(request, handlePage);
+  sqlAdmin.backupRuns.list(request, handlePage);
 });
 
 function authorize(callback) {
@@ -230,12 +238,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -251,7 +261,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.databases.delete(request, function(err, response) {
+  sqlAdmin.databases.delete(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -283,12 +293,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -304,7 +316,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.databases.get(request, function(err, response) {
+  sqlAdmin.databases.get(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -336,12 +348,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -352,13 +366,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.databases.insert(request, function(err, response) {
+  sqlAdmin.databases.insert(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -390,12 +404,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -408,7 +424,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.databases.list(request, function(err, response) {
+  sqlAdmin.databases.list(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -440,12 +456,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -459,14 +477,14 @@ authorize(function(authClient) {
     database: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body. Only added properties
+      // TODO: Add desired properties to the request body. Only these properties
       // will be changed.
     },
 
     auth: authClient
   };
 
-  sqladmin.databases.patch(request, function(err, response) {
+  sqlAdmin.databases.patch(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -498,12 +516,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -517,13 +537,14 @@ authorize(function(authClient) {
     database: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body. All existing properties
+      // will be replaced.
     },
 
     auth: authClient
   };
 
-  sqladmin.databases.update(request, function(err, response) {
+  sqlAdmin.databases.update(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -555,19 +576,21 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
     auth: authClient
   };
 
-  sqladmin.flags.list(request, function(err, response) {
+  sqlAdmin.flags.list(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -599,12 +622,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -615,13 +640,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.instances.clone(request, function(err, response) {
+  sqlAdmin.instances.clone(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -653,12 +678,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -671,7 +698,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.instances.delete(request, function(err, response) {
+  sqlAdmin.instances.delete(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -703,12 +730,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -719,13 +748,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.instances.export(request, function(err, response) {
+  sqlAdmin.instances.export(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -757,12 +786,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -773,13 +804,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.instances.failover(request, function(err, response) {
+  sqlAdmin.instances.failover(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -811,12 +842,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -829,7 +862,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.instances.get(request, function(err, response) {
+  sqlAdmin.instances.get(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -861,12 +894,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -877,13 +912,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.instances.import(request, function(err, response) {
+  sqlAdmin.instances.import(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -915,12 +950,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -928,13 +965,13 @@ authorize(function(authClient) {
     project: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.instances.insert(request, function(err, response) {
+  sqlAdmin.instances.insert(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -966,12 +1003,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -998,11 +1037,11 @@ authorize(function(authClient) {
 
     if (response.nextPageToken) {
       request.pageToken = response.nextPageToken;
-      sqladmin.instances.list(request, handlePage);
+      sqlAdmin.instances.list(request, handlePage);
     }
   };
 
-  sqladmin.instances.list(request, handlePage);
+  sqlAdmin.instances.list(request, handlePage);
 });
 
 function authorize(callback) {
@@ -1026,12 +1065,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1042,14 +1083,14 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body. Only added properties
+      // TODO: Add desired properties to the request body. Only these properties
       // will be changed.
     },
 
     auth: authClient
   };
 
-  sqladmin.instances.patch(request, function(err, response) {
+  sqlAdmin.instances.patch(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1081,12 +1122,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1099,7 +1142,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.instances.promoteReplica(request, function(err, response) {
+  sqlAdmin.instances.promoteReplica(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1131,12 +1174,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1149,7 +1194,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.instances.resetSslConfig(request, function(err, response) {
+  sqlAdmin.instances.resetSslConfig(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1181,12 +1226,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1199,7 +1246,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.instances.restart(request, function(err, response) {
+  sqlAdmin.instances.restart(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1231,12 +1278,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1247,13 +1296,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.instances.restoreBackup(request, function(err, response) {
+  sqlAdmin.instances.restoreBackup(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1285,12 +1334,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1303,7 +1354,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.instances.startReplica(request, function(err, response) {
+  sqlAdmin.instances.startReplica(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1335,12 +1386,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1353,7 +1406,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.instances.stopReplica(request, function(err, response) {
+  sqlAdmin.instances.stopReplica(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1385,12 +1438,70 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
+
+authorize(function(authClient) {
+  var request = {
+    // Project ID of the Cloud SQL project.
+    project: '',  // TODO: Update placeholder value.
+
+    // Cloud SQL instance ID. This does not include the project ID.
+    instance: '',  // TODO: Update placeholder value.
+
+    resource: {
+      // TODO: Add desired properties to the request body.
+    },
+
+    auth: authClient
+  };
+
+  sqlAdmin.instances.truncateLog(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+
+function authorize(callback) {
+  google.auth.getApplicationDefault(function(err, authClient)) {
+    if (err) {
+      console.log('authentication failed: ', err);
+      return;
+    }
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+    callback(authClient);
+  });
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the Node.js client library by running
+//    `npm install googleapis --save`
+
+var google = require('googleapis');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1401,13 +1512,14 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body. All existing properties
+      // will be replaced.
     },
 
     auth: authClient
   };
 
-  sqladmin.instances.update(request, function(err, response) {
+  sqlAdmin.instances.update(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1439,12 +1551,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1457,7 +1571,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.operations.get(request, function(err, response) {
+  sqlAdmin.operations.get(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1489,12 +1603,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1524,11 +1640,11 @@ authorize(function(authClient) {
 
     if (response.nextPageToken) {
       request.pageToken = response.nextPageToken;
-      sqladmin.operations.list(request, handlePage);
+      sqlAdmin.operations.list(request, handlePage);
     }
   };
 
-  sqladmin.operations.list(request, handlePage);
+  sqlAdmin.operations.list(request, handlePage);
 });
 
 function authorize(callback) {
@@ -1552,12 +1668,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1568,13 +1686,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.sslCerts.createEphemeral(request, function(err, response) {
+  sqlAdmin.sslCerts.createEphemeral(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1606,12 +1724,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1627,7 +1747,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.sslCerts.delete(request, function(err, response) {
+  sqlAdmin.sslCerts.delete(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1659,12 +1779,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1680,7 +1802,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.sslCerts.get(request, function(err, response) {
+  sqlAdmin.sslCerts.get(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1712,12 +1834,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1728,13 +1852,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.sslCerts.insert(request, function(err, response) {
+  sqlAdmin.sslCerts.insert(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1766,12 +1890,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1784,7 +1910,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.sslCerts.list(request, function(err, response) {
+  sqlAdmin.sslCerts.list(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1816,12 +1942,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1831,7 +1959,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.tiers.list(request, function(err, response) {
+  sqlAdmin.tiers.list(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1863,12 +1991,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1887,7 +2017,7 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  sqladmin.users.delete(request, function(err, response) {
+  sqlAdmin.users.delete(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1919,12 +2049,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1935,13 +2067,13 @@ authorize(function(authClient) {
     instance: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body.
     },
 
     auth: authClient
   };
 
-  sqladmin.users.insert(request, function(err, response) {
+  sqlAdmin.users.insert(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -1973,12 +2105,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -1991,28 +2125,15 @@ authorize(function(authClient) {
     auth: authClient
   };
 
-  var handlePage = function(err, response) {
+  sqlAdmin.users.list(request, function(err, response) {
     if (err) {
       console.log(err);
       return;
     }
 
-    var itemsPage = response['items'];
-    if (!itemsPage) {
-      return;
-    }
-    for (var i = 0; i < itemsPage.length; i++) {
-      // TODO: Change code below to process each resource in `itemsPage`:
-      console.log(JSON.stringify(itemsPage[i], null, 2));
-    }
-
-    if (response.nextPageToken) {
-      request.pageToken = response.nextPageToken;
-      sqladmin.users.list(request, handlePage);
-    }
-  };
-
-  sqladmin.users.list(request, handlePage);
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
 });
 
 function authorize(callback) {
@@ -2036,12 +2157,14 @@ function authorize(callback) {
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install the Node.js client library by running
 //    `npm install googleapis --save`
 
 var google = require('googleapis');
-var sqladmin = google.sqladmin('v1beta4');
+var sqlAdmin = google.sqladmin('v1beta4');
 
 authorize(function(authClient) {
   var request = {
@@ -2058,13 +2181,14 @@ authorize(function(authClient) {
     name: '',  // TODO: Update placeholder value.
 
     resource: {
-      // TODO: Add desired properties of the request body.
+      // TODO: Add desired properties to the request body. All existing properties
+      // will be replaced.
     },
 
     auth: authClient
   };
 
-  sqladmin.users.update(request, function(err, response) {
+  sqlAdmin.users.update(request, function(err, response) {
     if (err) {
       console.log(err);
       return;

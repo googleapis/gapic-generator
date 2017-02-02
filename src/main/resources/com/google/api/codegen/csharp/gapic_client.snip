@@ -1,5 +1,6 @@
 @extends "csharp/common.snip"
 
+# common: StaticLangApiAndSettingsFileView
 @snippet generate(common)
     {@renderFileHeader(common.fileHeader)}
 
@@ -16,6 +17,7 @@
 
 @end
 
+# api: StaticLangApiView, settings: StaticLangSettingsView
 @private settings(api, settings)
     /// <summary>
     /// Settings for a <see cref="{@api.name}"/>.
@@ -38,8 +40,20 @@
         private {@settings.name}({@settings.name} existing) : base(existing)
         {
             GaxPreconditions.CheckNotNull(existing, nameof(existing));
+            # call: ApiCallSettingsView
             @join call : settings.callSettings
-                {@call.memberName} = existing.{@call.memberName};
+                @switch call.grpcStreamingType.toString
+                @case "NonStreaming"
+                    {@call.memberName} = existing.{@call.memberName};
+                @case "BidiStreaming"
+                    {@call.memberName} = existing.{@call.memberName};
+                    {@call.methodName}StreamingSettings = existing.{@call.methodName}StreamingSettings;
+                @default
+                    *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
+                @end
+            @end
+            @if api.hasLongRunningOperations
+                LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
             @end
         }
         
@@ -106,41 +120,74 @@
             );
 
         @end
+        # call: ApiCallSettingsView
         @join call : settings.callSettings
-            /// <summary>
-            /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
-            /// <c>{@api.name}.{@call.methodName}</c> and <c>{@api.name}.{@call.asyncMethodName}</c>.
-            /// </summary>
-            /// <remarks>
-            /// The default <c>{@api.name}.{@call.methodName}</c> and
-            /// <c>{@api.name}.{@call.asyncMethodName}</c> <see cref="RetrySettings"/> are:
-            /// <list type="bullet">
-            /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.getMillis} milliseconds</description></item>
-            /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
-            /// <item><description>Retry maximum delay: {@call.retryParamsView.maxRetryDelay.getMillis} milliseconds</description></item>
-            /// <item><description>Initial timeout: {@call.retryParamsView.initialRpcTimeout.getMillis} milliseconds</description></item>
-            /// <item><description>Timeout multiplier: {@call.retryParamsView.rpcTimeoutMultiplier}</description></item>
-            /// <item><description>Timeout maximum delay: {@call.retryParamsView.maxRpcTimeout.getMillis} milliseconds</description></item>
-            /// </list>
-            /// Retry will be attempted on the following response status codes:
-            /// <list>
-            @if call.retryCodesView.codeNames
-                @join code : call.retryCodesView.codeNames
-                    /// <item><description><see cref="StatusCode.{@code}"/></description></item>
+            @switch call.grpcStreamingType.toString
+            @case "NonStreaming"
+                /// <summary>
+                /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+                /// <c>{@api.name}.{@call.methodName}</c> and <c>{@api.name}.{@call.asyncMethodName}</c>.
+                /// </summary>
+                /// <remarks>
+                /// The default <c>{@api.name}.{@call.methodName}</c> and
+                /// <c>{@api.name}.{@call.asyncMethodName}</c> <see cref="RetrySettings"/> are:
+                /// <list type="bullet">
+                /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.getMillis} milliseconds</description></item>
+                /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
+                /// <item><description>Retry maximum delay: {@call.retryParamsView.maxRetryDelay.getMillis} milliseconds</description></item>
+                /// <item><description>Initial timeout: {@call.retryParamsView.initialRpcTimeout.getMillis} milliseconds</description></item>
+                /// <item><description>Timeout multiplier: {@call.retryParamsView.rpcTimeoutMultiplier}</description></item>
+                /// <item><description>Timeout maximum delay: {@call.retryParamsView.maxRpcTimeout.getMillis} milliseconds</description></item>
+                /// </list>
+                /// Retry will be attempted on the following response status codes:
+                /// <list>
+                @if call.retryCodesView.codeNames
+                    @join code : call.retryCodesView.codeNames
+                        /// <item><description><see cref="StatusCode.{@code}"/></description></item>
+                    @end
+                @else
+                    /// <item><description>No status codes</description></item>
                 @end
-            @else
-                /// <item><description>No status codes</description></item>
+                /// </list>
+                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
+                /// </remarks>
+                public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
+                    CallTiming.FromRetry(new RetrySettings(
+                        retryBackoff: {@call.retryParamsView.retryBackoffMethodName}(),
+                        timeoutBackoff: {@call.retryParamsView.timeoutBackoffMethodName}(),
+                        totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
+                        retryFilter: {@call.retryCodesView.retryFilterMethodName}
+                    )));
+            @case "BidiStreaming"
+                /// <summary>
+                /// <see cref="CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
+                /// </summary>
+                /// <remarks>
+                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
+                /// </remarks>
+                public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
+                    CallTiming.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})));
+
+                /// <summary>
+                /// <see cref="BidirectionalStreamingSettings"/> for calls to
+                /// <c>{@api.name}.{@call.methodName}</c>.
+                /// </summary>
+                /// <remarks>
+                /// The default local send queue size is 100.
+                /// </remarks>
+                public BidirectionalStreamingSettings {@call.methodName}StreamingSettings { get; set; } =
+                    new BidirectionalStreamingSettings(100);
+            @default
+                *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
             @end
-            /// </list>
-            /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
-            /// </remarks>
-            public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
-                CallTiming.FromRetry(new RetrySettings(
-                    retryBackoff: {@call.retryParamsView.retryBackoffMethodName}(),
-                    timeoutBackoff: {@call.retryParamsView.timeoutBackoffMethodName}(),
-                    totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
-                    retryFilter: {@call.retryCodesView.retryFilterMethodName}
-                )));
+
+
+        @end
+        @if api.hasLongRunningOperations
+            /// <summary>
+            /// Settings used for long running operations.
+            /// </summary>
+            public OperationsSettings LongRunningOperationsSettings { get; set; }
 
         @end
         /// <summary>
@@ -151,6 +198,7 @@
     }
 @end
 
+# api: StaticLangApiView, settings: StaticLangSettingsView
 @private abstractClient(api, settings)
     /// <summary>
     /// {@api.grpcServiceName} client wrapper, for convenient use.
@@ -181,29 +229,6 @@
 
         private static readonly ChannelPool s_channelPool = new ChannelPool(DefaultScopes);
 
-        @join format : api.formatResourceFunctions
-            /// <summary>
-            /// Path template for a {@format.entityName} resource. Parameters:
-            /// <list type="bullet">
-            @join param : format.resourceIdParams
-                /// <item><description>{@param.docName}</description></item>
-            @end
-            /// </list>
-            /// </summary>
-            public static PathTemplate {@format.pathTemplateName} { get; } = new PathTemplate("{@format.pattern}");
-        
-            /// <summary>
-            /// Creates a {@format.entityName} resource name from its component IDs.
-            /// </summary>
-            @join param : format.resourceIdParams
-                /// <param name="{@param.name}">The {@param.docName} ID.</param>
-            @end
-            /// <returns>
-            /// The full {@format.entityName} resource name.
-            /// </returns>
-            public static string {@format.name}({@formatResourceParams(format.resourceIdParams)}) => {@format.pathTemplateName}.Expand({@formatResourceArgs(format.resourceIdParams)});
-
-        @end
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
         // Pros:
@@ -271,14 +296,25 @@
             get { throw new NotImplementedException(); }
         }
 
+        @if api.hasLongRunningOperations
+            /// <summary>
+            /// The client for long-running operations.
+            /// </summary>
+            public virtual OperationsClient LongRunningOperationsClient
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+        @end
         @join method : api.apiMethods
             {@xmlDoc(method.doc)}
-            {@method(method, FALSE)}
+            {@method(api, method, FALSE)}
 
         @end
     }
 @end
 
+# api: StaticLangApiView, settings: StaticLangSettingsView
 @private implClient(api, settings)
     /// <summary>
     /// {@api.grpcServiceName} client wrapper implementation, for convenient use.
@@ -287,7 +323,14 @@
     {
         private readonly ClientHelper _clientHelper;
         @join call : api.apiCallableMembers
-            private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+            @switch call.grpcStreamingType.toString
+            @case "NonStreaming"
+                private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+            @case "BidiStreaming"
+                private readonly ApiBidirectionalStreamingCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
+            @default
+                *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
+            @end
         @end
 
         /// <summary>
@@ -299,13 +342,25 @@
         {
             this.GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
+            @if api.hasLongRunningOperations
+                LongRunningOperationsClient = new OperationsClientImpl(
+                    grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
+            @end
             _clientHelper = new ClientHelper(effectiveSettings);
             @join rerouted : api.reroutedGrpcClients
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
             @end
             @join call : api.apiCallableMembers
-                {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
-                    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
+                @switch call.grpcStreamingType.toString
+                @case "NonStreaming"
+                    {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
+                        {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
+                @case "BidiStreaming"
+                    {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
+                        {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName}, effectiveSettings.{@call.methodName}StreamingSettings);
+                @default
+                    *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
+                @end
             @end
         }
 
@@ -313,16 +368,38 @@
         /// The underlying gRPC {@api.grpcServiceName} client.
         /// </summary>
         public override {@api.grpcTypeName} GrpcClient { get; }
+
+        @if api.hasLongRunningOperations
+            /// <summary>
+            /// The client for long-running operations.
+            /// </summary>
+            public override OperationsClient LongRunningOperationsClient { get; }
+
+        @end
+        // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
+        # method: ModifyMethodView
+        @join method : api.modifyMethods
+            @switch method.grpcStreamingType.toString
+            @case "NonStreaming"
+                partial void {@method.name}(ref {@method.requestTypeName} request, ref CallSettings settings);
+            @case "BidiStreaming"
+                partial void {@method.name}CallSettings(ref CallSettings settings);
+                partial void {@method.name}Request(ref {@method.requestTypeName} request);
+            @default
+                *** ERROR: Cannot handle grpc streaming type '{@method.grpcStreamingType.toString}' ***
+            @end
+        @end
         
         @join method : api.apiMethodsImpl
             {@xmlDoc(method.doc)}
-            {@method(method, TRUE)}
+            {@method(api, method, TRUE)}
 
         @end
     }
 @end
 
-@private method(method, isImpl)
+# api: StaticLangApiView, method: StaticLangApiMethodView, isImpl: boolean
+@private method(api, method, isImpl)
     @switch method.type.toString
     @case "FlattenedMethod"
         {@flattenedMethodSync(method, isImpl)}
@@ -332,52 +409,80 @@
         {@flattenedMethodAsyncCancellationToken(method, isImpl)}
     @case "PagedFlattenedMethod"
         {@pagedFlattenedMethodSync(method, isImpl)}
-    @case "PagedFlattenedAsyncMethod" 
+    @case "PagedFlattenedAsyncMethod"
         {@pagedFlattenedMethodAsync(method, isImpl)}
+    @case "RequestObjectMethod"
+        @if method.isStreaming
+            {@streamingRequestObjectMethod(api, method, isImpl)}
+        @else
+            {@requestObjectMethodSync(method, isImpl)}
+        @end
+    @case "AsyncRequestObjectMethod"
+        {@requestObjectMethodAsync(method, isImpl)}
+    @case "PagedRequestObjectMethod"
+        {@pagedRequestObjectMethodSync(method, isImpl)}
+    @case "AsyncPagedRequestObjectMethod"
+        {@pagedRequestObjectMethodAsync(method, isImpl)}
+    @case "OperationRequestObjectMethod"
+        {@operationRequestObjectMethodSync(method, isImpl)}
+        @if isImpl
+        @else
+
+            {@operationRequestObjectPollOnceMethodSync(method)}
+        @end
+    @case "AsyncOperationRequestObjectMethod"
+        {@operationRequestObjectMethodAsync(method, isImpl)}
+        @if isImpl
+        @else
+
+            {@operationRequestObjectPollOnceMethodAsync(method)}
+        @end
+    @case "AsyncOperationFlattenedCallSettingsMethod"
+        {@operationFlattenedMethodAsyncCallSettings(method, isImpl)}
+    @case "AsyncOperationFlattenedCancellationMethod"
+        {@operationFlattenedMethodAsyncCancellation(method, isImpl)}
+    @case "OperationFlattenedMethod"
+        {@operationFlattenedMethodSync(method, isImpl)}
     @default
         *** ERROR: Cannot handle method type '{@method.type.toString}' ***
     @end
 @end
 
+# method: StaticLangApiMethodView, isImpl: boolean
 @private flattenedMethodSync(method, isImpl)
     @if isImpl
-        public override {@method.responseTypeName} {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.callableName}.Sync(
-                new {@method.apiRequestTypeName}
+        *** ERROR: unexpected flattenedMethodSync implementation ***
+    @else
+        public virtual {@method.responseTypeName} {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
                 {
                     {@requestProperties(method.forwardingMethodParams)}
                 },
                 callSettings);
-    @else
-        public virtual {@method.responseTypeName} {@method.name}(
-            {@objectParams(method.methodParams)})
-        {
-            throw new NotImplementedException();
-        }
     @end
 @end
 
+# method: StaticLangApiMethodView, isImpl: boolean
 @private flattenedMethodAsyncCallSettings(method, isImpl)
     @if isImpl
-        public override {@method.responseTypeName} {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.callableName}.Async(
-                new {@method.apiRequestTypeName}
+        *** ERROR: unexpected flattenedMethodAsyncCallSettings implementation ***
+        }
+    @else
+        public virtual {@method.responseTypeName} {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
                 {
                     {@requestProperties(method.forwardingMethodParams)}
                 },
                 callSettings);
-    @else
-        public virtual {@method.responseTypeName} {@method.name}(
-            {@objectParams(method.methodParams)})
-        {
-            throw new NotImplementedException();
-        }
     @end
 @end
 
+# method: StaticLangApiMethodView, isImpl: boolean
 @private flattenedMethodAsyncCancellationToken(method, isImpl)
     @if isImpl
-        *** ERROR: Should never get here ***
+        *** ERROR: unexpected flattenedMethodAsyncCancellationToken implementation ***
     @else
         public virtual {@method.responseTypeName} {@method.name}(
             {@objectParams(method.methodParams)}) => {@method.name}(
@@ -386,62 +491,374 @@
     @end
 @end
 
+# method: StaticLangApiMethodView, isImp: boolean
+@private requestObjectMethodSync(method, isImpl)
+    @if isImpl
+        public override {@method.responseTypeName} {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            @if method.hasReturnValue
+                return {@method.callableName}.Sync(request, callSettings);
+            @else
+                {@method.callableName}.Sync(request, callSettings);
+            @end
+        }
+    @else
+        public virtual {@method.responseTypeName} {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+    @end
+@end
+
+# api: StaticLangApiView, method: StaticLangApiMethodView, isImp: boolean
+@private streamingRequestObjectMethod(api, method, isImpl)
+    @switch method.grpcStreamingType
+    @case "BidiStreaming"
+        {@streamingRequestObjectMethodBidirectional(api, method, isImpl)}
+    @default
+        *** ERROR: Cannot handle streaming type '{@method.grpcStreamingType.toString}' ***
+    @end
+@end
+
+# api: StaticLangApiView, method: StaticLangApiMethodView, isImp: boolean
+@private streamingRequestObjectMethodBidirectional(api, method, isImpl)
+    @if isImpl
+        public override {@method.name}Stream {@method.name}(
+            CallSettings callSettings = null,
+            BidirectionalStreamingSettings streamingSettings = null)
+        {
+            {@method.modifyMethodName}CallSettings(ref callSettings);
+            BidirectionalStreamingSettings effectiveStreamingSettings =
+                streamingSettings ?? {@method.callableName}.StreamingSettings;
+            {@method.responseTypeName} call =
+                {@method.callableName}.Call(callSettings);
+            BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer =
+                new BufferedClientStreamWriter<{@method.serviceRequestTypeName}>(
+                    call.RequestStream, effectiveStreamingSettings.BufferedClientWriterCapacity);
+            return new {@method.name}StreamImpl(this, call, writeBuffer);
+        }
+        
+        /// <summary>
+        /// Bidirectional streaming methods for <c>{@method.name}</c>.
+        /// </summary>
+        public sealed class {@method.name}StreamImpl : {@method.name}Stream
+        {
+            /// <summary>
+            /// Construct the bidirectional streaming method for <c>{@method.name}</c>.
+            /// </summary>
+            /// <param name="service">The service containing this streaming method.</param>
+            /// <param name="call">The underlying gRPC duplex streaming call.</param>
+            /// <param name="writeBuffer">The <see cref="BufferedClientStreamWriter{{@method.serviceRequestTypeName}}"/>
+            /// instance associated with this streaming call.</param>
+            public {@method.name}StreamImpl(
+                {@api.implName} service,
+                {@method.responseTypeName} call,
+                BufferedClientStreamWriter<{@method.serviceRequestTypeName}> writeBuffer)
+            {
+                _service = service;
+                GrpcCall = call;
+                _writeBuffer = writeBuffer;
+            }
+
+            private {@api.implName} _service;
+            private BufferedClientStreamWriter<{@method.serviceRequestTypeName}> _writeBuffer;
+
+            private {@method.serviceRequestTypeName} ModifyRequest({@method.serviceRequestTypeName} request)
+            {
+                _service.Modify_{@method.serviceRequestTypeName}Request(ref request);
+                return request;
+            }
+
+            /// <inheritdoc/>
+            public override {@method.responseTypeName} GrpcCall { get; }
+
+            /// <inheritdoc/>
+            public override Task TryWriteAsync({@method.serviceRequestTypeName} message) =>
+                _writeBuffer.TryWriteAsync(ModifyRequest(message));
+
+            /// <inheritdoc/>
+            public override Task WriteAsync({@method.serviceRequestTypeName} message) =>
+                _writeBuffer.WriteAsync(ModifyRequest(message));
+
+            /// <inheritdoc/>
+            public override Task TryWriteAsync({@method.serviceRequestTypeName} message, WriteOptions options) =>
+                _writeBuffer.TryWriteAsync(ModifyRequest(message), options);
+
+            /// <inheritdoc/>
+            public override Task WriteAsync({@method.serviceRequestTypeName} message, WriteOptions options) =>
+                _writeBuffer.WriteAsync(ModifyRequest(message), options);
+
+            /// <inheritdoc/>
+            public override Task TryWriteCompleteAsync() =>
+                _writeBuffer.TryWriteCompleteAsync();
+
+            /// <inheritdoc/>
+            public override Task WriteCompleteAsync() =>
+                _writeBuffer.WriteCompleteAsync();
+
+            /// <inheritdoc/>
+            public override IAsyncEnumerator<{@method.serviceResponseTypeName}> ResponseStream =>
+                GrpcCall.ResponseStream;
+        }
+    @else
+        public virtual {@method.name}Stream {@method.name}(
+            CallSettings callSettings = null,
+            BidirectionalStreamingSettings streamingSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Bidirectional streaming methods for <c>{@method.name}</c>.
+        /// </summary>
+        public abstract class {@method.name}Stream : BidirectionalStreamingBase<{@method.serviceRequestTypeName}, {@method.serviceResponseTypeName}>
+        {
+        }
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImp: boolean
+@private requestObjectMethodAsync(method, isImpl)
+    @if isImpl
+        public override {@method.responseTypeName} {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return {@method.callableName}.Async(request, callSettings);
+        }
+    @else
+        public virtual {@method.responseTypeName} {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
 @private pagedFlattenedMethodSync(method, isImpl)
     @if isImpl
-        public override IPagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-            {@objectParams(method.methodParams)}) => new PagedEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>(
-                {@method.callableName},
-                new {@method.apiRequestTypeName}
+        *** ERROR: unexpected pagedFlattenedMethodSync implementation ***
+    @else
+        public virtual PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
                 {
                     {@requestProperties(method.forwardingMethodParams)}
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
                 callSettings);
-    @else
-        public virtual IPagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-            {@objectParams(method.methodParams)})
-        {
-            throw new NotImplementedException();
-        }
     @end
 @end
 
+# method: StaticLangApiMethodView, isImp: boolean
 @private pagedFlattenedMethodAsync(method, isImpl)
     @if isImpl
-        public override IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-            {@objectParams(method.methodParams)}) => new PagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>(
-                {@method.callableName},
-                new {@method.apiRequestTypeName}
+        *** ERROR: unexpected pagedFlattenedMethodAsync implementation ***
+    @else
+        public virtual PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
                 {
                     {@requestProperties(method.forwardingMethodParams)}
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
                 callSettings);
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private pagedRequestObjectMethodSync(method, isImpl)
+    @if isImpl
+        public override PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return new GrpcPagedEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
+        }
     @else
-        public virtual IPagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-            {@objectParams(method.methodParams)})
+        public virtual PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
         {
             throw new NotImplementedException();
         }
     @end
 @end
 
+# method: StaticLangApiMethodView, isImpl: boolean
+@private pagedRequestObjectMethodAsync(method, isImpl)
+    @if isImpl
+        public override PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return new GrpcPagedAsyncEnumerable<{@method.listMethod.requestTypeName}, {@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}>({@method.callableName}, request, callSettings);
+        }
+    @else
+        public virtual PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationRequestObjectMethodSync(method, isImpl)
+    @if isImpl
+        public override {@method.operationMethod.clientReturnTypeName} {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return new {@method.operationMethod.clientReturnTypeName}(
+                {@method.callableName}.Sync(request, callSettings), LongRunningOperationsClient);
+        }
+    @else
+        public virtual {@method.operationMethod.clientReturnTypeName} {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+    @end
+@end
+
+# method: StaticLangApiMethodView
+@private operationRequestObjectPollOnceMethodSync(method)
+    /// <summary>
+    /// Poll an operation once, using an <c>operationName</c> from a previous invocation of <c>{@method.name}</c>.
+    /// </summary>
+    /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
+    /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+    /// <returns>The result of polling the operation.</returns>
+    public virtual {@method.operationMethod.clientReturnTypeName} PollOnce{@method.name}(
+        string operationName,
+        CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromName(
+            GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+            LongRunningOperationsClient,
+            callSettings);
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationRequestObjectMethodAsync(method, isImpl)
+    @if isImpl
+        public override async Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            {@method.modifyMethodName}(ref request, ref callSettings);
+            return new {@method.operationMethod.clientReturnTypeName}(
+                await {@method.callableName}.Async(request, callSettings), LongRunningOperationsClient);
+        }
+    @else
+        public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+            {@method.serviceRequestTypeName} request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+    @end
+@end
+
+# method: StaticLangApiMethodView
+@private operationRequestObjectPollOnceMethodAsync(method)
+    /// <summary>
+    /// Asynchronously poll an operation once, using an <c>operationName</c> from a previous invocation of <c>{@method.name}</c>.
+    /// </summary>
+    /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
+    /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+    /// <returns>A task representing the result of polling the operation.</returns>
+    public virtual Task<{@method.operationMethod.clientReturnTypeName}> PollOnce{@method.name}(
+        string operationName,
+        CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromNameAsync(
+            GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
+            LongRunningOperationsClient,
+            callSettings);
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationFlattenedMethodAsyncCallSettings(method, isImpl)
+    @if isImpl
+        *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
+    @else
+        public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
+                {
+                    {@requestProperties(method.forwardingMethodParams)}
+                },
+                callSettings);
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationFlattenedMethodAsyncCancellation(method, isImpl)
+    @if isImpl
+        *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
+    @else
+        public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
+                {
+                    {@requestProperties(method.forwardingMethodParams)}
+                },
+                CallSettings.FromCancellationToken(cancellationToken));
+    @end
+@end
+
+# method: StaticLangApiMethodView, isImpl: boolean
+@private operationFlattenedMethodSync(method, isImpl)
+    @if isImpl
+        *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
+    @else
+        public virtual {@method.operationMethod.clientReturnTypeName} {@method.name}(
+            {@objectParams(method.methodParams)}) => {@method.name}(
+                new {@method.serviceRequestTypeName}
+                {
+                    {@requestProperties(method.forwardingMethodParams)}
+                },
+                callSettings);
+    @end
+@end
+
+# params: List[RequestObjectParamView]
 @private requestProperties(params)
     @join param : params
-        @if param.isArray
-            {@param.nameAsMethodName} = { {@param.name} },
+        @if param.hasTransformParamFunction
+            @if param.isCollection
+                {@param.nameAsMethodName} = { {@param.name}.Select(x => {@param.transformParamFunctionName}(x) },
+            @else
+                {@param.nameAsMethodName} = {@param.transformParamFunctionName}({@param.name}),
+            @end
         @else
-            {@param.nameAsMethodName} = {@param.name},
+            @if param.isCollection
+                {@param.nameAsMethodName} = { {@param.name} },
+            @else
+                {@param.nameAsMethodName} = {@param.name},
+            @end
         @end
     @end
 @end
 
+# api: StaticLangApiView, settings: StaticLangSettingsView
 @private partialPageStreaming(api, settings)
     // Partial classes to enable page-streaming
 
-    @join method : api.apiMethods if method.type.toString == "PagedFlattenedMethod"
+    @join method : api.apiMethods if method.type.toString == "PagedRequestObjectMethod"
         public partial class {@method.listMethod.requestTypeName} : IPageRequest { }
         public partial class {@method.listMethod.responseTypeName} : IPageResponse<{@method.listMethod.resourceTypeName}>
         {

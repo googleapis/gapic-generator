@@ -68,4 +68,17 @@ public class ServiceMessages {
 
     return Iterables.filter(methods, isBundling);
   }
+
+  public Iterable<Method> filterLongrunningMethods(
+      final InterfaceConfig config, List<Method> methods) {
+    Predicate<Method> isLongRunning =
+        new Predicate<Method>() {
+          @Override
+          public boolean apply(Method method) {
+            return config.getMethodConfig(method).isLongRunningOperation();
+          }
+        };
+
+    return Iterables.filter(methods, isLongRunning);
+  }
 }

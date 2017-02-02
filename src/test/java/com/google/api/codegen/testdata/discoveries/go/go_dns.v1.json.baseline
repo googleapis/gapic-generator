@@ -9,7 +9,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -19,16 +21,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dns/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -40,18 +38,16 @@ func main() {
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}"
-  // TODO: Change placeholder value above.
+  managedZone := ""  // TODO: Update placeholder value.
 
-  rb := dns.Change{
+  rb := &dns.Change{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dnsService.Changes.Create(project, managedZone, &rb).Context(ctx).Do()
+  resp, err := dnsService.Changes.Create(project, managedZone, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -69,7 +65,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -79,16 +77,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dns/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -100,16 +94,13 @@ func main() {
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}"
-  // TODO: Change placeholder value above.
+  managedZone := ""  // TODO: Update placeholder value.
 
   // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-  changeId := "{MY-CHANGE-ID}"
-  // TODO: Change placeholder value above.
+  changeId := ""  // TODO: Update placeholder value.
 
   resp, err := dnsService.Changes.Get(project, managedZone, changeId).Context(ctx).Do()
   if err != nil {
@@ -129,7 +120,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -139,16 +132,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dns/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -160,12 +149,10 @@ func main() {
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}"
-  // TODO: Change placeholder value above.
+  managedZone := ""  // TODO: Update placeholder value.
 
   req := dnsService.Changes.List(project, managedZone)
   if err := req.Pages(ctx, func(page *dns.ChangesListResponse) error {
@@ -188,7 +175,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -198,16 +187,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dns/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -219,14 +204,13 @@ func main() {
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
-  rb := dns.ManagedZone{
+  rb := &dns.ManagedZone{
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dnsService.ManagedZones.Create(project, &rb).Context(ctx).Do()
+  resp, err := dnsService.ManagedZones.Create(project, rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
@@ -244,7 +228,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -253,16 +239,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dns/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -274,12 +256,10 @@ func main() {
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}"
-  // TODO: Change placeholder value above.
+  managedZone := ""  // TODO: Update placeholder value.
 
   if err := dnsService.ManagedZones.Delete(project, managedZone).Context(ctx).Do(); err != nil {
     log.Fatal(err)
@@ -295,7 +275,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -305,16 +287,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dns/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -326,12 +304,10 @@ func main() {
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}"
-  // TODO: Change placeholder value above.
+  managedZone := ""  // TODO: Update placeholder value.
 
   resp, err := dnsService.ManagedZones.Get(project, managedZone).Context(ctx).Do()
   if err != nil {
@@ -351,7 +327,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -361,16 +339,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dns/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -382,8 +356,7 @@ func main() {
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   req := dnsService.ManagedZones.List(project)
   if err := req.Pages(ctx, func(page *dns.ManagedZonesListResponse) error {
@@ -406,7 +379,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -416,16 +391,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dns/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -437,8 +408,7 @@ func main() {
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   resp, err := dnsService.Projects.Get(project).Context(ctx).Do()
   if err != nil {
@@ -458,7 +428,9 @@ package main
 // 2. This sample uses Application Default Credentials for authentication.
 //    If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run
-//    `gcloud beta auth application-default login`
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
 // 3. Install and update the Go dependencies by running `go get -u` in the
 //    project directory.
 
@@ -468,16 +440,12 @@ import (
 
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
-
   "google.golang.org/api/dns/v1"
 )
 
 func main() {
   ctx := context.Background()
 
-  // Use Application Default Credentials for authentication when running locally.
-  // For more information, see:
-  // https://developers.google.com/identity/protocols/application-default-credentials
   c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
@@ -489,12 +457,10 @@ func main() {
   }
 
   // Identifies the project addressed by this request.
-  project := "{MY-PROJECT}"
-  // TODO: Change placeholder value above.
+  project := ""  // TODO: Update placeholder value.
 
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  managedZone := "{MY-MANAGED-ZONE}"
-  // TODO: Change placeholder value above.
+  managedZone := ""  // TODO: Update placeholder value.
 
   req := dnsService.ResourceRecordSets.List(project, managedZone)
   if err := req.Pages(ctx, func(page *dns.ResourceRecordSetsListResponse) error {

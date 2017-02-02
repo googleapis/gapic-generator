@@ -14,13 +14,15 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class OptionalArrayMethodView implements ApiMethodView {
 
-  public abstract ApiMethodType type();
+  public abstract ClientMethodType type();
 
   public abstract String apiClassName();
 
@@ -40,6 +42,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String grpcMethodName();
 
+  public abstract GrpcStreamingType grpcStreamingType();
+
   public abstract List<DynamicLangDefaultableParamView> methodParams();
 
   public abstract List<RequestObjectParamView> requiredRequestObjectParams();
@@ -48,9 +52,20 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract List<RequestObjectParamView> optionalRequestObjectParamsNoPageToken();
 
+  public abstract boolean hasRequestParameters();
+
   public abstract boolean hasReturnValue();
 
   public abstract String stubName();
+
+  @Nullable
+  public abstract LongRunningOperationDetailView longRunningView();
+
+  public boolean isLongRunningOperation() {
+    return longRunningView() != null;
+  }
+
+  public abstract boolean isSingularRequestMethod();
 
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
@@ -58,7 +73,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder type(ApiMethodType val);
+    public abstract Builder type(ClientMethodType val);
 
     public abstract Builder apiClassName(String val);
 
@@ -78,6 +93,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder grpcMethodName(String val);
 
+    public abstract Builder grpcStreamingType(GrpcStreamingType val);
+
     public abstract Builder methodParams(List<DynamicLangDefaultableParamView> val);
 
     public abstract Builder requiredRequestObjectParams(List<RequestObjectParamView> val);
@@ -87,9 +104,15 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder optionalRequestObjectParamsNoPageToken(
         List<RequestObjectParamView> val);
 
+    public abstract Builder hasRequestParameters(boolean val);
+
     public abstract Builder hasReturnValue(boolean val);
 
     public abstract Builder stubName(String val);
+
+    public abstract Builder longRunningView(LongRunningOperationDetailView val);
+
+    public abstract Builder isSingularRequestMethod(boolean val);
 
     public abstract OptionalArrayMethodView build();
   }
