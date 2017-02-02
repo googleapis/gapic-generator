@@ -25,7 +25,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /** The SurfaceNamer for Ruby. */
@@ -76,13 +75,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The file name for an API service. */
   @Override
   public String getServiceFileName(Interface service) {
-    String[] names = getPackageName().split("::");
-    List<String> newNames = new ArrayList<>();
-    for (String name : names) {
-      newNames.add(packageFilePathPiece(Name.upperCamel(name)));
-    }
-    newNames.add(classFileNameBase(Name.upperCamel(getApiWrapperClassName(service))));
-    return Joiner.on("/").join(newNames.toArray());
+    return getPackageFilePath()
+        + "/"
+        + classFileNameBase(Name.upperCamel(getApiWrapperClassName(service)));
   }
 
   @Override
@@ -100,17 +95,20 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return service.getFile().getSimpleName().replace(".proto", "_pb");
   }
 
+  public String getIndexFileImportName() {
+    return getPackageFilePath();
+  }
+
   @Override
-  public String getIndexOutputFilePath(Interface service) {
-    String indexOutputPath = "";
-    List<String> fileNameParts =
-        new ArrayList<>(Arrays.asList(getServiceFileName(service).split("/")));
-    if (fileNameParts.size() > 1) {
-      fileNameParts.remove(fileNameParts.size() - 1);
-      indexOutputPath = "lib/" + Joiner.on("/").join(fileNameParts) + ".rb";
-    } else {
-      indexOutputPath = "lib/" + getApiWrapperModuleVersion() + ".rb";
+  public String getIndexFileName() {
+    return "lib/" + getPackageFilePath() + ".rb";
+  }
+
+  private String getPackageFilePath() {
+    List<String> newNames = new ArrayList<>();
+    for (String name : getPackageName().split("::")) {
+      newNames.add(packageFilePathPiece(Name.upperCamel(name)));
     }
-    return indexOutputPath;
+    return Joiner.on("/").join(newNames.toArray());
   }
 }

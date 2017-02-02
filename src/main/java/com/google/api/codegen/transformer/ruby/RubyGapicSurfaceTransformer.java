@@ -87,7 +87,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     IndexView.Builder versionIndexViewBuilder =
         IndexView.newBuilder()
             .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
-            .outputPath(namer.getIndexOutputFilePath(services.iterator().next()))
+            .outputPath(namer.getIndexFileName())
             .requireViews(requireViewsBuilder.build())
             .protoRequireViews(protoRequireViewsBuilder.build());
     versionIndexViewBuilder.apiVersion(namer.getApiWrapperModuleVersion());

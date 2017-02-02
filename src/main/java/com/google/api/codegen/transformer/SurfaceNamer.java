@@ -945,6 +945,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getGrpcClientImportName");
   }
 
+  public String getIndexFileImportName() {
+    return getNotImplementedString("SurfaceNamer.getIndexFileImportName");
+  }
+
   /////////////////////////////////// Docs & Annotations //////////////////////////////////////////
 
   /** The documentation name of a parameter for the given lower-case field name. */
@@ -993,7 +997,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getSourceFilePath");
   }
 
-  public String getIndexOutputFilePath(Interface service) {
+  public String getIndexFileName() {
     return getNotImplementedString("SurfaceNamer.getIndexOutputFilePath");
   }
 

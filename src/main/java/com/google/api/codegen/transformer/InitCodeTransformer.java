@@ -184,7 +184,7 @@ public class InitCodeTransformer {
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(getFieldSettings(context, argItems))
         .imports(importTypeTransformer.generateImports(typeTable.getImports()))
-        .apiFileName(namer.getServiceFileName(context.getInterface()))
+        .apiFileName(namer.getIndexFileImportName())
         .build();
   }
 
