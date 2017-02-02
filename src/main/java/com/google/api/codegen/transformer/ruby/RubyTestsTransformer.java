@@ -22,7 +22,6 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
-import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -107,20 +106,7 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
       public List<Object> testCases() {
         List<Object> cases = new ArrayList<>();
         for (final Method method : util.getSupportedMethodsV2(service)) {
-          cases.add(
-              new Object() {
-                public OptionalArrayMethodView methodView() {
-                  return util.getMethodView(service, method);
-                }
-
-                public String requestTypeName() {
-                  return typeTable.getAndSaveNicknameFor(method.getInputType());
-                }
-
-                public String responseTypeName() {
-                  return typeTable.getAndSaveNicknameFor(method.getOutputType());
-                }
-              });
+          cases.add(new UnitTestCaseViewModel(service, method, typeTable, util));
         }
         return cases;
       }
