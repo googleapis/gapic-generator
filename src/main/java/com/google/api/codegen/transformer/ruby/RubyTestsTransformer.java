@@ -103,8 +103,8 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
         };
       }
 
-      public List<Object> testCases() {
-        List<Object> cases = new ArrayList<>();
+      public List<UnitTestCaseViewModel> testCases() {
+        List<UnitTestCaseViewModel> cases = new ArrayList<>();
         for (final Method method : util.getSupportedMethodsV2(service)) {
           cases.add(new UnitTestCaseViewModel(service, method, typeTable, util));
         }
