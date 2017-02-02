@@ -87,7 +87,7 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
       public Object libraryUnderTest() {
         return new Object() {
           public String namespace() {
-            return namer.getNamespace(service);
+            return namer.getPackageName();
           }
 
           public String outputFile() {
@@ -99,8 +99,7 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
           }
 
           public String grpcClientTypeName() {
-            return typeTable.getAndSaveNicknameFor(
-                namer.getGrpcClientTypeName(service));
+            return typeTable.getAndSaveNicknameFor(namer.getGrpcClientTypeName(service));
           }
         };
       }
