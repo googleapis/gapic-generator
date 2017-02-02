@@ -93,64 +93,6 @@ describe LibraryServiceApi do
     end
   end
 
-  describe "#get_shelf" do
-    it "forwards calls to LibraryService::Stub" do
-      stub_grpc_client do |mock_client|
-        LibraryServiceApi = Library::V1::LibraryServiceApi
-
-        expected_request = GetShelfRequest.new(
-          formatted_name: LibraryServiceApi.shelf_path("[SHELF_ID]"),
-          options: '',
-        )
-
-        mocked_response = Shelf.new
-
-        mock_client.expect(
-          :get_shelf,
-          mocked_response,
-          [expected_request, Hash],
-        )
-
-        library_service_api = LibraryServiceApi.new
-        formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
-        options = ''
-        response = library_service_api.get_shelf(formatted_name, options)
-
-        # Verification:
-        response.must_equal mocked_response
-      end
-    end
-  end
-
-  describe "#get_shelf" do
-    it "forwards calls to LibraryService::Stub" do
-      stub_grpc_client do |mock_client|
-        LibraryServiceApi = Library::V1::LibraryServiceApi
-
-        expected_request = GetShelfRequest.new(
-          formatted_name: LibraryServiceApi.shelf_path("[SHELF_ID]"),
-          options: '',
-        )
-
-        mocked_response = Shelf.new
-
-        mock_client.expect(
-          :get_shelf,
-          mocked_response,
-          [expected_request, Hash],
-        )
-
-        library_service_api = LibraryServiceApi.new
-        formatted_name = LibraryServiceApi.shelf_path("[SHELF_ID]")
-        options = ''
-        response = library_service_api.get_shelf(formatted_name, options)
-
-        # Verification:
-        response.must_equal mocked_response
-      end
-    end
-  end
-
   describe "#list_shelves" do
     it "forwards calls to LibraryService::Stub" do
       stub_grpc_client do |mock_client|
@@ -391,36 +333,6 @@ describe LibraryServiceApi do
         library_service_api = LibraryServiceApi.new
         formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
         library_service_api.delete_book(formatted_name)
-
-        # Verification:
-        response.must_equal mocked_response
-      end
-    end
-  end
-
-  describe "#update_book" do
-    it "forwards calls to LibraryService::Stub" do
-      stub_grpc_client do |mock_client|
-        Book = Google::Example::Library::V1::Book
-        LibraryServiceApi = Library::V1::LibraryServiceApi
-
-        expected_request = UpdateBookRequest.new(
-          formatted_name: LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]"),
-          book: Book.new,
-        )
-
-        mocked_response = Book.new
-
-        mock_client.expect(
-          :update_book,
-          mocked_response,
-          [expected_request, Hash],
-        )
-
-        library_service_api = LibraryServiceApi.new
-        formatted_name = LibraryServiceApi.book_path("[SHELF_ID]", "[BOOK_ID]")
-        book = Book.new
-        response = library_service_api.update_book(formatted_name, book)
 
         # Verification:
         response.must_equal mocked_response
@@ -759,4 +671,5 @@ describe LibraryServiceApi do
       end
     end
   end
+
 end
