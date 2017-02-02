@@ -318,6 +318,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return Splitter.on("::").splitToList(getApiConfig().getPackageName());
   }
 
+  // TODO(jcanizales): Nothing Ruby-specific about this and other methods of this class. Move them
+  // to a common place.
   public OptionalArrayMethodView getMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
@@ -325,6 +327,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return methodTransformer.generateDynamicLangApiMethod(methodContext);
   }
 
+  // TODO(jcanizales): Return just the one stub for that service.
   public List<GrpcStubView> getStubs(Interface service) {
     GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
