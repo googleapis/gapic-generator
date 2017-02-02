@@ -31,7 +31,7 @@ public abstract class InitCodeView {
   /**
    * The file name of the client library generated. This is used for import statements in samples.
    */
-  public abstract String apiFileName();
+  public abstract String indexFileImportName();
 
   public static Builder newBuilder() {
     return new AutoValue_InitCodeView.Builder();
@@ -47,7 +47,7 @@ public abstract class InitCodeView {
 
     public abstract Builder imports(List<ImportTypeView> aliasingTypesMap);
 
-    public abstract Builder apiFileName(String apiFileName);
+    public abstract Builder indexFileImportName(String indexFileImportName);
 
     public abstract InitCodeView build();
   }
