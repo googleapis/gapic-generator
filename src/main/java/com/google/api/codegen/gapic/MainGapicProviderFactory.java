@@ -377,10 +377,10 @@ public class MainGapicProviderFactory
       }
 
     } else if (id.equals(RUBY) || id.equals(RUBY_DOC)) {
-      if (generatorConfig.enableSurfaceGenerator()) {
-        // Object with utility methods for the main and test snippets.
-        GapicContext snippetContext = new RubyGapicContext(model, apiConfig);
+      // Object with utility methods for the main and test snippets.
+      GapicContext snippetContext = new RubyGapicContext(model, apiConfig);
 
+      if (generatorConfig.enableSurfaceGenerator()) {
         GapicCodePathMapper rubyPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("lib")
@@ -425,16 +425,17 @@ public class MainGapicProviderFactory
                   .setCodePathMapper(rubyPathMapper)
                   .build();
           providers.add(messageProvider);
-        } else {
-          GapicProvider<?> testsProvider =
-              ViewModelGapicProvider.newBuilder()
-                  .setModel(model)
-                  .setApiConfig(apiConfig)
-                  .setSnippetSetRunner(new CommonSnippetSetRunner(snippetContext))
-                  .setModelToViewTransformer(new RubyTestsTransformer())
-                  .build();
-          providers.add(testsProvider);
         }
+      }
+      if (generatorConfig.enableTestGenerator() && id.equals(RUBY)) {
+        GapicProvider<?> testsProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(snippetContext))
+                .setModelToViewTransformer(new RubyTestsTransformer())
+                .build();
+        providers.add(testsProvider);
       }
 
     } else {
