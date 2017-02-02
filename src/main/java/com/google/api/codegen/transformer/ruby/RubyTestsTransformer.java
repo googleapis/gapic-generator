@@ -83,24 +83,8 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
         return "tests/" + namer.getServiceFileName(service) + "_test.rb";
       }
 
-      public Object libraryUnderTest() {
-        return new Object() {
-          public String namespace() {
-            return namer.getPackageName();
-          }
-
-          public String outputFile() {
-            return namer.getServiceFileName(service);
-          }
-
-          public String apiClassName() {
-            return namer.getApiWrapperClassName(service);
-          }
-
-          public String grpcClientTypeName() {
-            return typeTable.getAndSaveNicknameFor(namer.getGrpcClientTypeName(service));
-          }
-        };
+      public GeneratedLibraryViewModel libraryUnderTest() {
+        return new GeneratedLibraryViewModel(service, namer, typeTable);
       }
 
       public List<UnitTestCaseViewModel> testCases() {
