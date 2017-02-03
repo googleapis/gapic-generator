@@ -99,7 +99,8 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     }
 
     String optParamsVarName = "";
-    if (methodInfo.isPageStreaming() || methodInfo.hasMediaDownload()) {
+    if (methodInfo.isPageStreaming() && !methodInfo.isPageStreamingResourceSetterInRequestBody()
+        || methodInfo.hasMediaDownload()) {
       optParamsVarName = namer.localVarName(Name.lowerCamel("optParams"));
       methodCallFieldVarNames.add(optParamsVarName);
     }
