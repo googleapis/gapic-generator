@@ -19,7 +19,7 @@ import com.google.auto.value.AutoValue;
 
 /** Represents a dependency of the package being generated. */
 @AutoValue
-public abstract class PackageDependencyView {
+public abstract class PackageDependencyView implements Comparable<PackageDependencyView> {
 
   /** The name of the dependency package */
   public abstract String name();
@@ -29,5 +29,10 @@ public abstract class PackageDependencyView {
 
   public static PackageDependencyView create(String name, VersionBound versionBound) {
     return new AutoValue_PackageDependencyView(name, versionBound);
+  }
+
+  @Override
+  public int compareTo(PackageDependencyView other) {
+    return this.name().compareTo(other.name());
   }
 }

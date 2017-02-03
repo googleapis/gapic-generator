@@ -21,6 +21,7 @@ import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,6 +64,8 @@ public class PackageMetadataTransformer {
               PackageDependencyView.create(entry.getKey(), entry.getValue()));
         }
       }
+      // Ensures deterministic test results.
+      Collections.sort(protoPackageDependencies);
     }
 
     return PackageMetadataView.newBuilder()
