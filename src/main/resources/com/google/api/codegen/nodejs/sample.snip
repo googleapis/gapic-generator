@@ -123,7 +123,7 @@
       @end
 
       if ({@class.responseVarName}.{@class.pageStreaming.nextPageTokenName}) {
-        {@class.requestVarName}.{@class.pageStreaming.pageTokenName} = {@class.responseVarName}.{@class.pageStreaming.nextPageTokenName};
+        {@pageToken(class)} = {@class.responseVarName}.{@class.pageStreaming.nextPageTokenName};
         {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, {@class.pageStreaming.handlePageVarName});
       }
     };
@@ -148,6 +148,14 @@
         }
       });
     @end
+  @end
+@end
+
+@private pageToken(class)
+  @if class.pageStreaming.isResourceSetterInRequestBody
+    {@class.requestVarName}.resource.{@class.pageStreaming.pageTokenName}
+  @else
+    {@class.requestVarName}.{@class.pageStreaming.pageTokenName}
   @end
 @end
 
