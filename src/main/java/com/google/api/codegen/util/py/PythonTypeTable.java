@@ -94,6 +94,8 @@ public class PythonTypeTable implements TypeTable {
    * A set of Python reserved keywords. See
    * https://docs.python.org/2/reference/lexical_analysis.html#keywords
    * https://docs.python.org/2/library/functions.html
+   * https://docs.python.org/2/library/functions.html#non-essential-built-in-funcs
+   * https://docs.python.org/2/library/constants.html#constants-added-by-the-site-module
    */
   public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
