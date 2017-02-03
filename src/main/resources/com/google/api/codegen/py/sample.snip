@@ -56,21 +56,22 @@
     @end
 
     @join field : class.requiredFields if class.requiredFields
-        @if field.description
-            @join line : util.getDocLines(field.description, 100)
-                @# {@line}
-            @end
+        {@field(field, FALSE)}
 
-
-        @end
-        {@field.name} = {@field.defaultValue}  @# TODO: Update placeholder value.
-        @if field.example
-            @# {@field.example}
-        @end
+    @end
+    @join field : class.optionalFields if class.optionalFields
+        {@field(field, FALSE)}
 
     @end
     @if class.hasRequestBody
         {@class.requestBodyVarName} = {
+            @if class.requestBodyFields
+                @join field : class.requestBodyFields
+                    {@field(field, TRUE)}
+
+                @end
+
+            @end
             @switch class.methodVerb
             @case "PATCH"
                 @# TODO: Add desired entries to the request body. Only assigned entries
@@ -129,6 +130,25 @@
         @else
             {@class.requestVarName}.execute()
         @end
+    @end
+@end
+
+@private field(field, isRequestBodyField)
+    @if field.description
+        @join line : util.getDocLines(field.description, 100)
+            @# {@line}
+        @end
+
+
+    @end
+    @if isRequestBodyField
+        '{@field.name}': {@field.defaultValue},  @# TODO: Update placeholder value.
+    @else
+        {@field.name} = {@field.defaultValue}  @# TODO: Update placeholder value.
+    @end
+
+    @if field.example
+        @# {@field.example}
     @end
 @end
 
