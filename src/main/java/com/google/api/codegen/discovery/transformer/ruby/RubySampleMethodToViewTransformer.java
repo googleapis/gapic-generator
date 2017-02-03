@@ -30,7 +30,6 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -39,12 +38,6 @@ import java.util.List;
 public class RubySampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
   private static final String TEMPLATE_FILENAME = "ruby/sample.snip";
-
-  // Map of rename rules for fields.
-  // Could be done through overrides, but this is a rule implemented in the Ruby
-  // client library generator.
-  private static final ImmutableMap<String, String> FIELD_RENAMES =
-      ImmutableMap.of("objectId", "object_id_");
 
   public RubySampleMethodToViewTransformer() {}
 
@@ -80,31 +73,37 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
     List<String> methodCallFieldVarNames = new ArrayList<>();
+    List<String> optionalMethodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      String name = namer.localVarName(Name.lowerCamel(field.name()));
-      if (FIELD_RENAMES.containsKey(field.name())) {
-        name = FIELD_RENAMES.get(field.name());
+      SampleFieldView sampleFieldView = createSampleFieldView(field, context, symbolTable);
+      if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
+        methodCallFieldVarNames.add(sampleFieldView.name());
+      } else {
+        optionalFields.add(sampleFieldView);
+        optionalMethodCallFieldVarNames.add(
+            namer.getFieldVarName(field.name()) + ": " + sampleFieldView.name());
       }
-      SampleFieldView sampleFieldView =
-          SampleFieldView.newBuilder()
-              .name(name)
-              .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
-              .example(field.example())
-              .description(field.description())
-              .build();
-      requiredFields.add(sampleFieldView);
-      methodCallFieldVarNames.add(sampleFieldView.name());
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(
           typeTable.getTypeName(methodInfo.requestBodyType()).getNickname());
       methodCallFieldVarNames.add(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable));
+      }
     }
+
+    // Ensure that optional method parameters appear last.
+    methodCallFieldVarNames.addAll(optionalMethodCallFieldVarNames);
 
     boolean hasResponse = methodInfo.responseType() != null;
     if (hasResponse) {
@@ -123,8 +122,10 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
         .methodVerb(methodInfo.verb())
         .methodNameComponents(methodInfo.nameComponents())
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
         .requiredFields(requiredFields)
+        .optionalFields(optionalFields)
         .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
@@ -177,5 +178,20 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name()))));
     builder.pageTokenName(Name.lowerCamel(methodInfo.requestPageTokenName()).toLowerUnderscore());
     return builder.build();
+  }
+
+  private SampleFieldView createSampleFieldView(
+      FieldInfo field, SampleTransformerContext context, SymbolTable symbolTable) {
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
+    String name = namer.getFieldVarName(field.name());
+    return SampleFieldView.newBuilder()
+        .name(symbolTable.getNewSymbol(name))
+        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .example(field.example())
+        .description(field.description())
+        .setterFuncName(name)
+        .required(field.required())
+        .build();
   }
 }

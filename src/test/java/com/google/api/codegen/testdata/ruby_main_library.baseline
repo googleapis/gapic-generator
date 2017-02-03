@@ -28,7 +28,7 @@ require "pathname"
 
 require "google/gax"
 require "google/gax/operation"
-require "google/longrunning/operations_api"
+require "google/longrunning/operations_client"
 
 require "library_pb"
 require "tagger_pb"
@@ -234,7 +234,7 @@ module Library
         require "library_services_pb"
         require "tagger_services_pb"
 
-        @operations_client = Google::Longrunning::OperationsApi.new(
+        @operations_client = Google::Longrunning::OperationsClient.new(
           service_path: service_path,
           port: port,
           channel: channel,

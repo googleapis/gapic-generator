@@ -47,7 +47,7 @@
   require "google/gax"
   @if context.hasLongrunningMethod(service)
     require "google/gax/operation"
-    require "google/longrunning/operations_api"
+    require "google/longrunning/operations_client"
 
   @end
   @join import : {@context.getProtoImports(service)}
@@ -239,7 +239,7 @@
       @end
 
       @if context.hasLongrunningMethod(service)
-        @@operations_client = Google::Longrunning::OperationsApi.new(
+        @@operations_client = Google::Longrunning::OperationsClient.new(
           service_path: service_path,
           port: port,
           channel: channel,
