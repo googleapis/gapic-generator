@@ -28,6 +28,11 @@ import java.util.Set;
 
 /** Constructs a partial ViewModel for producing package metadata related views */
 public class PackageMetadataTransformer {
+
+  /**
+   * Construct a partial ViewModel, represented by its Builder, using all of the proto package
+   * dependencies specified in the package config.
+   */
   public PackageMetadataView.Builder generateMetadataView(
       PackageMetadataConfig packageConfig,
       Model model,
@@ -37,6 +42,10 @@ public class PackageMetadataTransformer {
     return generateMetadataView(packageConfig, model, template, outputPath, language, null);
   }
 
+  /**
+   * Construct a partial ViewModel, represented by its Builder, from the config. Proto package
+   * dependencies are included only if whitelisted.
+   */
   public PackageMetadataView.Builder generateMetadataView(
       PackageMetadataConfig packageConfig,
       Model model,

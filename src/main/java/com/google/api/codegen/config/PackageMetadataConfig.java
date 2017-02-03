@@ -205,14 +205,14 @@ public abstract class PackageMetadataConfig {
   private static Map<TargetLanguage, Map<String, VersionBound>> createProtoPackageDependencies(
       Map<String, Object> configMap) {
     Map<TargetLanguage, Map<String, VersionBound>> packageDependencies = new HashMap<>();
-    List<String> packages = (List<String>) configMap.get("proto_gen_pkg_deps");
+    List<String> packages = (List<String>) configMap.get("proto_deps");
 
     for (String packageName : packages) {
       Map<String, Map<String, String>> config =
           (Map<String, Map<String, String>>) configMap.get(packageName + "_version");
       if (config == null) {
         throw new IllegalArgumentException(
-            "'" + packageName + "' in proto_gen_pkg_deps was " + "not found in dependency list.");
+            "'" + packageName + "' in proto_deps was not found in dependency list.");
       }
 
       Map<TargetLanguage, Map<String, String>> versionMap = buildMapWithDefault(config);
