@@ -53,13 +53,15 @@ public class PackageMetadataTransformer {
     }
 
     List<PackageDependencyView> protoPackageDependencies = new ArrayList<>();
-    for (Map.Entry<String, VersionBound> entry :
-        packageConfig.protoPackageDependencies(language).entrySet()) {
-      if (entry.getValue() != null
-          && (whitelistedDependencies == null
-              || whitelistedDependencies.contains(entry.getKey()))) {
-        protoPackageDependencies.add(
-            PackageDependencyView.create(entry.getKey(), entry.getValue()));
+    if (packageConfig.protoPackageDependencies(language) != null) {
+      for (Map.Entry<String, VersionBound> entry :
+          packageConfig.protoPackageDependencies(language).entrySet()) {
+        if (entry.getValue() != null
+            && (whitelistedDependencies == null
+                || whitelistedDependencies.contains(entry.getKey()))) {
+          protoPackageDependencies.add(
+              PackageDependencyView.create(entry.getKey(), entry.getValue()));
+        }
       }
     }
 
