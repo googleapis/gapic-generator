@@ -169,7 +169,14 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name()))));
-    builder.pageTokenName(methodInfo.requestPageTokenName());
+    boolean isResourceSetterInRequestBody = methodInfo.isPageStreamingResourceSetterInRequestBody();
+    builder.isResourceSetterInRequestBody(isResourceSetterInRequestBody);
+    // Use upper camel case for getter/setter function names in templates.
+    if (isResourceSetterInRequestBody) {
+      builder.pageTokenName(Name.lowerCamel(methodInfo.requestPageTokenName()).toUpperCamel());
+    } else {
+      builder.pageTokenName(methodInfo.requestPageTokenName());
+    }
     builder.nextPageTokenName(Name.lowerCamel(methodInfo.responsePageTokenName()).toUpperCamel());
     return builder.build();
   }
