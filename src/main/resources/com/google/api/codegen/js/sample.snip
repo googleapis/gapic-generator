@@ -17,17 +17,7 @@
           @if class.requiredFields
             var {@class.paramsVarName} = {
               @join field : class.requiredFields if class.requiredFields on BREAK.add(BREAK)
-                @if field.description
-                  @join line : util.getDocLines(field.description, 100)
-                    // {@line}
-                  @end
-
-
-                @end
-                {@field.name}: {@field.defaultValue},  // TODO: Update placeholder value.
-                @if field.example
-                  // {@field.example}
-                @end
+                {@field(field)}
               @end
             };
           @else
@@ -38,6 +28,13 @@
         @end
         @if class.hasRequestBody
           var {@class.requestBodyVarName} = {
+            @if class.requestBodyFields
+              @join field : class.requestBodyFields
+                {@field(field)}
+
+              @end
+
+            @end
             @switch class.methodVerb
             @case "PATCH"
               // TODO: Add desired properties to the request body. Only these properties
@@ -168,6 +165,20 @@
       @end
     </body>
   </html>
+@end
+
+@private field(field)
+  @if field.description
+    @join line : util.getDocLines(field.description, 100)
+      // {@line}
+    @end
+
+
+  @end
+  {@field.name}: {@field.defaultValue},  // TODO: Update placeholder value.
+  @if field.example
+    // {@field.example}
+  @end
 @end
 
 # If `needParams` is false and `hasRequestBody` is true, then the function will
