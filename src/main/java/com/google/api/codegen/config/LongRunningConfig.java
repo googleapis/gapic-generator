@@ -22,6 +22,7 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
+import org.joda.time.Duration;
 
 /** LongRunningConfig represents the long-running operation configuration for a method. */
 @AutoValue
@@ -38,6 +39,10 @@ public abstract class LongRunningConfig {
 
   /** Reports whether or not the service implements cancel. */
   public abstract boolean implementsCancel();
+
+  /** Returns the polling interval of the operation. */
+  @Nullable
+  public abstract Duration getPollingInterval();
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
@@ -82,6 +87,11 @@ public abstract class LongRunningConfig {
       error = true;
     }
 
+    Duration pollingInterval = null;
+    if (longRunningConfigProto.getPollingIntervalMillis() > 0) {
+      pollingInterval = Duration.millis(longRunningConfigProto.getPollingIntervalMillis());
+    }
+
     if (error) {
       return null;
     } else {
@@ -89,7 +99,8 @@ public abstract class LongRunningConfig {
           returnType,
           metadataType,
           longRunningConfigProto.getImplementsDelete(),
-          longRunningConfigProto.getImplementsCancel());
+          longRunningConfigProto.getImplementsCancel(),
+          pollingInterval);
     }
   }
 }

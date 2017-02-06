@@ -30,12 +30,14 @@ import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * ToolDriver for PackageMetadataGenerator; creates and sets the ToolOptions and builds the Model
@@ -56,6 +58,11 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
   private static final Map<TargetLanguage, GrpcPackageCopier> COPIERS =
       new ImmutableMap.Builder<TargetLanguage, GrpcPackageCopier>()
           .put(TargetLanguage.PYTHON, new PythonPackageCopier())
+          .build();
+
+  private static final Map<TargetLanguage, Set<String>> PROTO_PACKAGE_DEPENDENCY_WHITELIST =
+      new ImmutableMap.Builder<TargetLanguage, Set<String>>()
+          .put(TargetLanguage.PYTHON, Sets.newHashSet("googleapis-common-protos"))
           .build();
 
   public static final Option<String> OUTPUT_DIR =
@@ -100,7 +107,12 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
       PackageMetadataView view =
           transformer
               .generateMetadataView(
-                  config, model, snippetFilename, outputPath(snippetFilename), language)
+                  config,
+                  model,
+                  snippetFilename,
+                  outputPath(snippetFilename),
+                  language,
+                  PROTO_PACKAGE_DEPENDENCY_WHITELIST.get(language))
               // Set language-specific GrpcCopierResults here.
               .namespacePackages(copierResults.namespacePackages())
               .build();

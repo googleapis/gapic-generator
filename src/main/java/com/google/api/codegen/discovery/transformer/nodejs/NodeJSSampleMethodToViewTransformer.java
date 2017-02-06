@@ -178,6 +178,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("handlePage"))));
     builder.pageVarName(
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name(), "page"))));
+    builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
     builder.pageTokenName(methodInfo.requestPageTokenName());
     builder.nextPageTokenName(methodInfo.responsePageTokenName());
     return builder.build();
