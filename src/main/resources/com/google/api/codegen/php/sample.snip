@@ -111,7 +111,7 @@
         echo '<pre>', var_export(${@class.responseVarName}['{@class.pageStreaming.resourceFieldName}'], true), '</pre>', "\n";
       @end
 
-      {@updatePageToken(class)}
+      {@updatePageToken(class)};
     } while ({@currentPageToken(class)});
   @else
     @if class.hasResponse
@@ -136,9 +136,9 @@
 
 @private updatePageToken(class)
   @if class.pageStreaming.isResourceSetterInRequestBody
-    ${@class.requestBodyVarName}->set{@class.pageStreaming.pageTokenName}({@nextPageToken(class)});
+    ${@class.requestBodyVarName}->set{@class.pageStreaming.pageTokenName}({@nextPageToken(class)})
   @else
-    ${@class.optParamsVarName()}['{@class.pageStreaming.pageTokenName}'] = {@nextPageToken(class)};
+    ${@class.optParamsVarName()}['{@class.pageStreaming.pageTokenName}'] = {@nextPageToken(class)}
   @end
 @end
 
