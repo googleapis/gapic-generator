@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.joda.time.Duration;
 
 public class ApiCallableTransformer {
   private final BundlingTransformer bundlingTransformer;
@@ -255,6 +256,10 @@ public class ApiCallableTransformer {
       TypeRef operationResultType = methodConfig.getLongRunningConfig().getReturnType();
       settings.operationResultTypeName(
           typeTable.getAndSaveNicknameForElementType(operationResultType));
+      Duration pollingInterval = methodConfig.getLongRunningConfig().getPollingInterval();
+      if (pollingInterval != null) {
+        settings.operationPollingIntervalMillis(Long.toString(pollingInterval.getMillis()));
+      }
     } else {
       settings.type(ApiCallableImplType.SimpleApiCallable);
     }

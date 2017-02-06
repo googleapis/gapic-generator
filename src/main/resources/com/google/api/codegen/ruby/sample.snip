@@ -49,20 +49,22 @@
   @end
 
   @join field : class.requiredFields if class.requiredFields
-    @if field.description
-      @join line : util.getDocLines(field.description, 100)
-        @# {@line}
+    {@field(field)}
+
+  @end
+  @join field : class.optionalFields if class.optionalFields
+    {@field(field)}
+
+  @end
+  @if class.hasRequestBody
+    @if class.requestBodyFields
+      @join field : class.requestBodyFields
+        {@field(field)}
+
       @end
 
 
     @end
-    {@field.name} = {@field.defaultValue}  @# TODO: Update placeholder value.
-    @if field.example
-      @# {@field.example}
-    @end
-
-  @end
-  @if class.hasRequestBody
     @switch class.methodVerb
     @case "PATCH"
       @# TODO: Assign values to desired members of `{@class.requestBodyVarName}`. Only assigned
@@ -75,6 +77,9 @@
     @end
 
     {@class.requestBodyVarName} = {@class.serviceTypeNamespace}::{@class.requestBodyTypeName}.new
+    @join field : class.requestBodyFields if class.requestBodyFields
+      {@class.requestBodyVarName}.{@field.setterFuncName} = {@field.name};
+    @end
 
   @end
   @if class.hasMediaUpload
@@ -120,6 +125,20 @@
     @else
       {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)})
     @end
+  @end
+@end
+
+@private field(field)
+  @if field.description
+    @join line : util.getDocLines(field.description, 100)
+      @# {@line}
+    @end
+
+
+  @end
+  {@field.name} = {@field.defaultValue}  @# TODO: Update placeholder value.
+  @if field.example
+    @# {@field.example}
   @end
 @end
 

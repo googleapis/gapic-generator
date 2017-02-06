@@ -492,6 +492,9 @@
         {@settings.memberName} = OperationCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
             {@settings.operationResultTypeName}.class);
+        @if settings.hasPollingInterval
+          {@settings.memberName}.setPollingInterval(Duration.millis({@settings.operationPollingIntervalMillis}));
+        @end
 
       @default
         $unhandledCase: {@settings.type.toString}$

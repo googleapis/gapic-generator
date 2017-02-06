@@ -94,6 +94,8 @@ public class PythonTypeTable implements TypeTable {
    * A set of Python reserved keywords. See
    * https://docs.python.org/2/reference/lexical_analysis.html#keywords
    * https://docs.python.org/2/library/functions.html
+   * https://docs.python.org/2/library/functions.html#non-essential-built-in-funcs
+   * https://docs.python.org/2/library/constants.html#constants-added-by-the-site-module
    */
   public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
@@ -133,16 +135,22 @@ public class PythonTypeTable implements TypeTable {
               "abs",
               "all",
               "any",
+              "apply",
               "basestring",
               "bin",
               "bool",
+              "buffer",
               "bytearray",
+              "bytes",
               "callable",
               "chr",
               "classmethod",
               "cmp",
+              "coerce",
               "compile",
               "complex",
+              "copyright",
+              "credits",
               "delattr",
               "dict",
               "dir",
@@ -150,6 +158,7 @@ public class PythonTypeTable implements TypeTable {
               "enumerate",
               "eval",
               "execfile",
+              "exit",
               "file",
               "filter",
               "float",
@@ -164,10 +173,12 @@ public class PythonTypeTable implements TypeTable {
               "id",
               "input",
               "int",
+              "intern",
               "isinstance",
               "issubclass",
               "iter",
               "len",
+              "license",
               "list",
               "locals",
               "long",
@@ -183,6 +194,7 @@ public class PythonTypeTable implements TypeTable {
               "pow",
               "print",
               "property",
+              "quit",
               "range",
               "raw_input",
               "reduce",
@@ -204,7 +216,6 @@ public class PythonTypeTable implements TypeTable {
               "unicode",
               "vars",
               "xrange",
-              "zip",
-              "__import__")
+              "zip")
           .build();
 }
