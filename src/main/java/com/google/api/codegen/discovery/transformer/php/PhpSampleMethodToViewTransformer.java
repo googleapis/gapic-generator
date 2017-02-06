@@ -106,7 +106,7 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     }
 
     String optParamsVarName = "";
-    if (methodInfo.isPageStreaming()
+    if (methodInfo.isPageStreaming() && !methodInfo.isPageStreamingResourceSetterInRequestBody()
         || methodInfo.hasMediaDownload()
         || !optionalFields.isEmpty()) {
       optParamsVarName = namer.localVarName(Name.lowerCamel("optParams"));
@@ -180,7 +180,14 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name()))));
-    builder.pageTokenName(methodInfo.requestPageTokenName());
+    boolean isResourceSetterInRequestBody = methodInfo.isPageStreamingResourceSetterInRequestBody();
+    builder.isResourceSetterInRequestBody(isResourceSetterInRequestBody);
+    // Use upper camel case for getter/setter function names in templates.
+    if (isResourceSetterInRequestBody) {
+      builder.pageTokenName(Name.lowerCamel(methodInfo.requestPageTokenName()).toUpperCamel());
+    } else {
+      builder.pageTokenName(methodInfo.requestPageTokenName());
+    }
     builder.nextPageTokenName(Name.lowerCamel(methodInfo.responsePageTokenName()).toUpperCamel());
     return builder.build();
   }

@@ -108,21 +108,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Logging($client);
 
-$optParams = [];
-
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Logging_ListLogEntriesRequest();
 
 do {
-  $response = $service->entries->listEntries($requestBody, $optParams);
+  $response = $service->entries->listEntries($requestBody);
 
   foreach ($response['entries'] as $logEntry) {
     // TODO: Change code below to process each `logEntry` resource:
     echo '<pre>', var_export($logEntry, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
