@@ -29,6 +29,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
 
+// NOTE: This class is a placeholder for when NodeJS migrates to MVVM. Its implmentation has not
+// been tested.
 public class NodeJSParamDocTransformer implements ParamDocTransformer {
 
   @Override
