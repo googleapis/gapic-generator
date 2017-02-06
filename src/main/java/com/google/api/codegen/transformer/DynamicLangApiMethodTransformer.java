@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,6 +75,7 @@ public class DynamicLangApiMethodTransformer {
 
     apiMethod.name(
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
+    apiMethod.requestObjectName(namer.getRequestObjectName(context.getMethod()));
     apiMethod.requestTypeName(
         namer.getRequestTypeName(context.getTypeTable(), context.getMethod().getInputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));

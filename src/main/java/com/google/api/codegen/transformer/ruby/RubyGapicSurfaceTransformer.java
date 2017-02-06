@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -63,6 +64,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+    SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
+    FeatureConfig featureConfig = new RubyFeatureConfig();
     List<ViewModel> surfaceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       ModelTypeTable modelTypeTable =
@@ -71,17 +74,13 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
               new RubyModelTypeNameConverter(apiConfig.getPackageName()));
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service,
-              apiConfig,
-              modelTypeTable,
-              new RubySurfaceNamer(apiConfig.getPackageName()),
-              new RubyFeatureConfig());
-      surfaceDocs.add(createView(context));
+              service, apiConfig, modelTypeTable, namer, featureConfig);
+      surfaceDocs.add(generateApiClass(context));
     }
     return surfaceDocs;
   }
 
-  private ViewModel createView(SurfaceTransformerContext context) {
+  private ViewModel generateApiClass(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     String serviceFilename = namer.getServiceFileName(context.getInterface());
     List<ApiMethodView> methods = generateApiMethods(context);

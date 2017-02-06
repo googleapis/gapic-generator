@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen.util;
 
-public interface CommentFixer {
-  /** Fixes the given documentation to match a language comment format */
-  String fix(String documentation);
+public class PassThroughCommentReformatter implements CommentReformatter {
+  @Override
+  public String reformat(String documentation) {
+    return documentation;
+  }
 }

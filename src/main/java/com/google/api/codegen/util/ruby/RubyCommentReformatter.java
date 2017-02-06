@@ -15,23 +15,23 @@
 package com.google.api.codegen.util.ruby;
 
 import com.google.api.codegen.CommentPatterns;
-import com.google.api.codegen.util.CommentFixer;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.base.Splitter;
 import java.util.regex.Matcher;
 
-public class RubyCommentFixer implements CommentFixer {
+public class RubyCommentReformatter implements CommentReformatter {
   @Override
-  public String fix(String documentation) {
+  public String reformat(String documentation) {
     documentation = CommentPatterns.BACK_QUOTE_PATTERN.matcher(documentation).replaceAll("+");
-    documentation = fixProtoMarkdownLinks(documentation);
-    documentation = fixCloudMarkdownLinks(documentation);
-    documentation = fixAbsoluteMarkdownLinks(documentation);
-    documentation = fixHeadline(documentation);
+    documentation = reformatProtoMarkdownLinks(documentation);
+    documentation = reformatCloudMarkdownLinks(documentation);
+    documentation = reformatAbsoluteMarkdownLinks(documentation);
+    documentation = reformatHeadline(documentation);
     return documentation.trim();
   }
 
   /** Returns a string with all proto markdown links formatted to RDoc style. */
-  private String fixProtoMarkdownLinks(String documentation) {
+  private String reformatProtoMarkdownLinks(String documentation) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(documentation);
     if (!m.find()) {
@@ -69,7 +69,7 @@ public class RubyCommentFixer implements CommentFixer {
   }
 
   /** Returns a string with all cloud markdown links formatted to RDoc style. */
-  private String fixCloudMarkdownLinks(String documentation) {
+  private String reformatCloudMarkdownLinks(String documentation) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(documentation);
     if (!m.find()) {
@@ -85,7 +85,7 @@ public class RubyCommentFixer implements CommentFixer {
   }
 
   /** Returns a string with all absolute markdown links formatted to RDoc style. */
-  private String fixAbsoluteMarkdownLinks(String documentation) {
+  private String reformatAbsoluteMarkdownLinks(String documentation) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.ABSOLUTE_LINK_PATTERN.matcher(documentation);
     if (!m.find()) {
@@ -100,7 +100,7 @@ public class RubyCommentFixer implements CommentFixer {
     return sb.toString();
   }
 
-  private String fixHeadline(String documentation) {
+  private String reformatHeadline(String documentation) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.HEADLINE_PATTERN.matcher(documentation);
     if (!m.find()) {

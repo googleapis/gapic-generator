@@ -23,7 +23,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.php.PhpCommentFixer;
+import com.google.api.codegen.util.php.PhpCommentReformatter;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
@@ -41,7 +41,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         new PhpNameFormatter(),
         new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(packageName)),
         new PhpTypeTable(packageName),
-        new PhpCommentFixer(),
+        new PhpCommentReformatter(),
         packageName);
   }
 

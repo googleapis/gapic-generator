@@ -14,27 +14,24 @@
 @end
 
 @private documentMessage(doc)
-  @let messageComments = toComments(doc.lines), \
-    propertyComments = createPropertyComments(doc.properties)
-    @if messageComments
-      {@messageComments}
-      @if propertyComments
-        {@propertyComments}
-      @end
-
-    @else
-      @if propertyComments
-        {@propertyComments}
-
-      @end
+  @if doc.lines
+    {@toComments(doc.lines)}
+    @if doc.properties
+      {@createPropertyComments(doc.properties)}
     @end
-    @if doc.children
-      class {@doc.name}
-        {@documentChildren(doc)}
-      end
-    @else
-      class {@doc.name}; end
+
+  @else
+    @if doc.properties
+      {@createPropertyComments(doc.properties)}
+
     @end
+  @end
+  @if doc.elementDocs
+    class {@doc.name}
+      {@documentChildren(doc)}
+    end
+  @else
+    class {@doc.name}; end
   @end
 @end
 
@@ -69,7 +66,7 @@
 @end
 
 @private documentChildren(doc)
-  @join child : doc.children on BREAK.add(BREAK)
+  @join child : doc.elementDocs on BREAK.add(BREAK)
     {@documentElement(child)}
   @end
 @end

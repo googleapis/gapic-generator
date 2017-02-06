@@ -26,7 +26,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.PassThroughCommentFixer;
+import com.google.api.codegen.util.PassThroughCommentReformatter;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.Interface;
@@ -129,7 +129,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
         new CSharpNameFormatter(),
         new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName)),
         new CSharpTypeTable(packageName),
-        new PassThroughCommentFixer(),
+        new PassThroughCommentReformatter(),
         packageName);
   }
 

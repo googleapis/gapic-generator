@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.nodejs;
 
-import com.google.api.codegen.util.nodejs.NodeJSCommentFixer;
+import com.google.api.codegen.util.nodejs.NodeJSCommentReformatter;
 
 /** Utility class for formatting source comments to follow JSDoc style. */
 public class JSDocCommentFixer {
 
   /** Returns a JSDoc-formatted comment string. */
   public static String jsdocify(String comment) {
-    return new NodeJSCommentFixer().fix(comment);
+    return new NodeJSCommentReformatter().reformat(comment);
   }
 }

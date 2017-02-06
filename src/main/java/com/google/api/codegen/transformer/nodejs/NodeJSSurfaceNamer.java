@@ -28,7 +28,7 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
-import com.google.api.codegen.util.nodejs.NodeJSCommentFixer;
+import com.google.api.codegen.util.nodejs.NodeJSCommentReformatter;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -43,7 +43,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         new JSNameFormatter(),
         new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter(packageName)),
         new JSTypeTable(packageName),
-        new NodeJSCommentFixer(),
+        new NodeJSCommentReformatter(),
         packageName);
   }
 

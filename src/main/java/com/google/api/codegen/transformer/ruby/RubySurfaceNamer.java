@@ -25,7 +25,7 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
-import com.google.api.codegen.util.ruby.RubyCommentFixer;
+import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
@@ -43,7 +43,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
         new RubyNameFormatter(),
         new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(packageName)),
         new RubyTypeTable(packageName),
-        new RubyCommentFixer(),
+        new RubyCommentReformatter(),
         packageName);
   }
 
@@ -118,6 +118,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
     }
 
     return ImmutableList.<String>of();
+  }
+
+  @Override
+  public String getRequestObjectName(Method method) {
+    return method.getRequestStreaming() ? "reqs" : "req";
   }
 
   @Override

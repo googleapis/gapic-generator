@@ -15,9 +15,9 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.py.PythonSphinxCommentFixer;
-import com.google.api.codegen.util.CommentFixer;
-import com.google.api.codegen.util.nodejs.NodeJSCommentFixer;
-import com.google.api.codegen.util.ruby.RubyCommentFixer;
+import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.nodejs.NodeJSCommentReformatter;
+import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.common.truth.Truth;
 import java.util.regex.Matcher;
 import org.junit.Test;
@@ -48,21 +48,23 @@ public class ProtoDocumentLinkTest {
   }
 
   @Test
-  public void testRubyCommentFixer() {
-    CommentFixer fixer = new RubyCommentFixer();
-    Truth.assertThat(fixer.fix("[Shelf][google.example.library.v1.Shelf]")).isEqualTo("Shelf");
-    Truth.assertThat(fixer.fix("[$Shelf][google.example.library.v1.Shelf]")).isEqualTo("$Shelf");
+  public void testRubyCommentReformatter() {
+    CommentReformatter commentReformatter = new RubyCommentReformatter();
+    Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
+        .isEqualTo("Shelf");
+    Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
+        .isEqualTo("$Shelf");
 
     // Cloud link may contain special character '$'
-    Truth.assertThat(fixer.fix("[cloud docs!](/library/example/link)"))
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))
         .isEqualTo("{cloud docs!}[https://cloud.google.com/library/example/link]");
-    Truth.assertThat(fixer.fix("[cloud docs!](/library/example/link$)"))
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link$)"))
         .isEqualTo("{cloud docs!}[https://cloud.google.com/library/example/link$]");
 
     // Absolute link may contain special character '$'
-    Truth.assertThat(fixer.fix("[not a cloud link](http://www.google.com)"))
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com)"))
         .isEqualTo("{not a cloud link}[http://www.google.com]");
-    Truth.assertThat(fixer.fix("[not a cloud link](http://www.google.com$)"))
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com$)"))
         .isEqualTo("{not a cloud link}[http://www.google.com$]");
   }
 
@@ -91,22 +93,22 @@ public class ProtoDocumentLinkTest {
 
   @Test
   public void testNodeJSCommentFixer() {
-    CommentFixer fixer = new NodeJSCommentFixer();
-    Truth.assertThat(fixer.fix("[Shelf][google.example.library.v1.Shelf]"))
+    CommentReformatter commentReformatter = new NodeJSCommentReformatter();
+    Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
         .isEqualTo("{@link Shelf}");
-    Truth.assertThat(fixer.fix("[$Shelf][google.example.library.v1.Shelf]"))
+    Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
         .isEqualTo("{@link $Shelf}");
 
     // Cloud link may contain special character '$'
-    Truth.assertThat(fixer.fix("[cloud docs!](/library/example/link)"))
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))
         .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link)");
-    Truth.assertThat(fixer.fix("[cloud docs!](/library/example/link$)"))
+    Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link$)"))
         .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link$)");
 
     // Absolute link may contain special character '$'
-    Truth.assertThat(fixer.fix("[not a cloud link](http://www.google.com)"))
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com)"))
         .isEqualTo("[not a cloud link](http://www.google.com)");
-    Truth.assertThat(fixer.fix("[not a cloud link](http://www.google.com$)"))
+    Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com$)"))
         .isEqualTo("[not a cloud link](http://www.google.com$)");
   }
 }

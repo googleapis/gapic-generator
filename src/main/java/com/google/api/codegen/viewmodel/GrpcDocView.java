@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public abstract class GrpcDocView implements ViewModel {
 
   public abstract FileHeaderView fileHeader();
 
-  public abstract List<GrpcElementDocView> children();
+  public abstract List<GrpcElementDocView> elementDocs();
 
   public static Builder newBuilder() {
     return new AutoValue_GrpcDocView.Builder();
@@ -45,7 +45,7 @@ public abstract class GrpcDocView implements ViewModel {
 
     public abstract Builder fileHeader(FileHeaderView val);
 
-    public abstract Builder children(List<GrpcElementDocView> val);
+    public abstract Builder elementDocs(List<GrpcElementDocView> val);
 
     public abstract GrpcDocView build();
   }

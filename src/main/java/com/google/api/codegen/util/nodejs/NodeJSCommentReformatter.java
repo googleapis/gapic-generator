@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,19 @@
 package com.google.api.codegen.util.nodejs;
 
 import com.google.api.codegen.CommentPatterns;
-import com.google.api.codegen.util.CommentFixer;
+import com.google.api.codegen.util.CommentReformatter;
 import java.util.regex.Matcher;
 
-public class NodeJSCommentFixer implements CommentFixer {
+public class NodeJSCommentReformatter implements CommentReformatter {
   @Override
-  public String fix(String documentation) {
-    documentation = fixProtoMarkdownLinks(documentation);
-    documentation = fixCloudMarkdownLinks(documentation);
+  public String reformat(String documentation) {
+    documentation = reformatProtoMarkdownLinks(documentation);
+    documentation = reformatCloudMarkdownLinks(documentation);
     return documentation.trim();
   }
 
   /** Returns a string with all proto markdown links formatted to JSDoc style. */
-  private String fixProtoMarkdownLinks(String documentation) {
+  private String reformatProtoMarkdownLinks(String documentation) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(documentation);
     if (!m.find()) {
@@ -42,7 +42,7 @@ public class NodeJSCommentFixer implements CommentFixer {
   }
 
   /** Returns a string with all cloud markdown links formatted to JSDoc style. */
-  private String fixCloudMarkdownLinks(String documentation) {
+  private String reformatCloudMarkdownLinks(String documentation) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(documentation);
     if (!m.find()) {

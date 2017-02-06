@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,17 @@
  */
 package com.google.api.codegen.util.php;
 
-import com.google.api.codegen.util.CommentFixer;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 
-public class PhpCommentFixer implements CommentFixer {
+public class PhpCommentReformatter implements CommentReformatter {
   /** Escaper for formatting PHP doc strings. */
   private static final Escaper PHP_ESCAPER =
       Escapers.builder().addEscape('*', "&#42;").addEscape('@', "&#64;").build();
 
   @Override
-  public String fix(String documentation) {
+  public String reformat(String documentation) {
     return PHP_ESCAPER.escape(documentation).trim();
   }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class GrpcElementDocTransformer {
       doc.name(typeTable.getNicknameFor(TypeRef.of(message)));
       doc.lines(namer.getDocLines(message));
       doc.properties(generateMessagePropertyDocs(typeTable, namer, message.getFields()));
-      doc.children(generateElementDocs(typeTable, namer, message));
+      doc.elementDocs(generateElementDocs(typeTable, namer, message));
       messageDocs.add(doc.build());
     }
     return messageDocs.build();

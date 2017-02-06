@@ -21,7 +21,7 @@ import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
-import com.google.api.codegen.util.CommentFixer;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
@@ -54,19 +54,19 @@ import java.util.List;
 public class SurfaceNamer extends NameFormatterDelegator {
   private final ModelTypeFormatter modelTypeFormatter;
   private final TypeNameConverter typeNameConverter;
-  private final CommentFixer fixer;
+  private final CommentReformatter commentReformatter;
   private final String packageName;
 
   public SurfaceNamer(
       NameFormatter languageNamer,
       ModelTypeFormatter modelTypeFormatter,
       TypeNameConverter typeNameConverter,
-      CommentFixer fixer,
+      CommentReformatter commentReformatter,
       String packageName) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
     this.typeNameConverter = typeNameConverter;
-    this.fixer = fixer;
+    this.commentReformatter = commentReformatter;
     this.packageName = packageName;
   }
 
@@ -518,6 +518,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The page streaming factory name for the given method. */
   public String getPagedListResponseFactoryName(Method method) {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedListResponseFactory"));
+  }
+
+  public String getRequestObjectName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getRequestObjectName");
   }
 
   /////////////////////////////////////// Type names /////////////////////////////////////////////
@@ -981,7 +985,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Converts the given text to doc lines in the format of the current language. */
   public List<String> getDocLines(String text) {
-    return CommonRenderingUtil.getDocLines(fixer.fix(text));
+    return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text));
   }
 
   /** Provides the doc lines for the given proto element in the current language. */

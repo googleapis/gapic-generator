@@ -41,23 +41,21 @@
 @end
 
 @private serviceClassBody(xapiClass)
-  @let path_templates = {@pathTemplateSection(xapiClass)}
-    {@comments(xapiClass.doc.lines)}
-    @#
-    {@stubComments(xapiClass.stubs)}
-    class {@xapiClass.name}
-      attr_reader {@listStubNames(xapiClass.stubs)}
+  {@comments(xapiClass.doc.lines)}
+  @#
+  {@stubComments(xapiClass.stubs)}
+  class {@xapiClass.name}
+    attr_reader {@listStubNames(xapiClass.stubs)}
 
-      {@constantSection(xapiClass)}
-      @if path_templates
-        {@path_templates}
-      @end
+    {@constantSection(xapiClass)}
+    @if xapiClass.pathTemplates
+      {@pathTemplateSection(xapiClass)}
+    @end
 
-      {@initMethodSection(xapiClass)}
+    {@initMethodSection(xapiClass)}
 
-      {@serviceMethodsSection(xapiClass)}
-    end
-  @end
+    {@serviceMethodsSection(xapiClass)}
+  end
 @end
 
 @private stubComments(stubs)
@@ -307,8 +305,7 @@
 @end
 
 @private flattenedMethod(apiMethod)
-  @let documentation = methodComments(apiMethod.doc), \
-       sample = util.getDocLines(sampleCode(apiMethod))
+  @let documentation = methodComments(apiMethod.doc)
     @if documentation
       {@documentation}
       @if apiMethod.hasRequestStreaming
@@ -321,62 +318,68 @@
       @end
     @end
 
-    @if sample
-      {@comments(sample)}
-    @end
+    {@comments(util.getDocLines(sampleCode(apiMethod)))}
 
     @if apiMethod.hasRequestStreaming
-      def {@apiMethod.name} reqs, options: nil
-        {@makeApiCall(apiMethod)}
-      end
+      {@hasRequestStreamingMethod(apiMethod)}
     @else
       @if apiMethod.hasRequestParameters
-        def {@apiMethod.name} @\
-            @if apiMethod.requiredRequestObjectParams
-              {@requiredParameterNames(apiMethod.requiredRequestObjectParams)},
-            @end
-            @if apiMethod.optionalRequestObjectParamsNoPageToken
-              {@optionalParameterValues(apiMethod.optionalRequestObjectParamsNoPageToken)},
-            @end
-            options: nil
-          req = {@apiMethod.requestTypeName}.new({
-            @if apiMethod.requiredRequestObjectParams
-              @if apiMethod.optionalRequestObjectParamsNoPageToken
-                {@namedParameters(apiMethod.requiredRequestObjectParams)},
-                {@namedParameters(apiMethod.optionalRequestObjectParamsNoPageToken)}
-              @else
-                {@namedParameters(apiMethod.requiredRequestObjectParams)}
-              @end
-            @else
-              {@namedParameters(apiMethod.optionalRequestObjectParamsNoPageToken)}
-            @end
-          }.delete_if { |_, v| v.nil? })
-          {@makeApiCall(apiMethod)}
-        end
+        {@hasRequestParametersMethod(apiMethod)}
       @else
-        def {@apiMethod.name} options: nil
-          req = {@apiMethod.requestTypeName}.new
-          {@makeApiCall(apiMethod)}
-        end
+        {@noRequestStreamingOrRequestParametersMethod(apiMethod)}
       @end
     @end
   @end
 @end
 
+@private hasRequestStreamingMethod(apiMethod)
+  def {@apiMethod.name} reqs, options: nil
+    {@makeApiCall(apiMethod)}
+  end
+@end
+
+@private hasRequestParametersMethod(apiMethod)
+  def {@apiMethod.name} @\
+      @if apiMethod.requiredRequestObjectParams
+        {@requiredParameterNames(apiMethod.requiredRequestObjectParams)},
+      @end
+      @if apiMethod.optionalRequestObjectParamsNoPageToken
+        {@optionalParameterValues(apiMethod.optionalRequestObjectParamsNoPageToken)},
+      @end
+      options: nil
+    req = {@apiMethod.requestTypeName}.new({
+      @if apiMethod.requiredRequestObjectParams
+        @if apiMethod.optionalRequestObjectParamsNoPageToken
+          {@namedParameters(apiMethod.requiredRequestObjectParams)},
+          {@namedParameters(apiMethod.optionalRequestObjectParamsNoPageToken)}
+        @else
+          {@namedParameters(apiMethod.requiredRequestObjectParams)}
+        @end
+      @else
+        {@namedParameters(apiMethod.optionalRequestObjectParamsNoPageToken)}
+      @end
+    }.delete_if { |_, v| v.nil? })
+    {@makeApiCall(apiMethod)}
+  end
+@end
+
+@private noRequestStreamingOrRequestParametersMethod(apiMethod)
+  def {@apiMethod.name} options: nil
+    req = {@apiMethod.requestTypeName}.new
+    {@makeApiCall(apiMethod)}
+  end
+@end
+
 @private methodComments(apiMethodDoc)
-  @let mainComment = comments(apiMethodDoc.mainDocLines), \
-    paramTypesComment = createParamTypesComment(apiMethodDoc.paramDocs), \
-    returnTypeComment = createReturnTypeComment(apiMethodDoc)
-    @if mainComment
-      {@mainComment}
-      @#{@BREAK}
-    @end
-    {@paramTypesComment}
-    @if returnTypeComment
-      {@returnTypeComment}
-    @end
-    {@comments(apiMethodDoc.throwsDocLines)}
+  @if apiMethodDoc.mainDocLines
+    {@comments(apiMethodDoc.mainDocLines)}
+    @#{@BREAK}
   @end
+  {@createParamTypesComment(apiMethodDoc.paramDocs)}
+  @if apiMethodDoc.returnTypeName
+    {@createReturnTypeComment(apiMethodDoc.returnTypeName, apiMethodDoc.returnsDocLines)}
+  @end
+  {@comments(apiMethodDoc.throwsDocLines)}
 @end
 
 @private createParamTypesComment(paramDocs)
@@ -392,41 +395,29 @@
   @end
 @end
 
-@private createReturnTypeComment(apiMethodDoc)
-  @if apiMethodDoc.returnTypeName
-    @# @@return [{@apiMethodDoc.returnTypeName}]
-    @join line : apiMethodDoc.returnsDocLines
-      @#   {@line}
-    @end
+@private createReturnTypeComment(typeName, lines)
+  @# @@return [{@typeName}]
+  @join line : lines
+    @#   {@line}
   @end
 @end
 
 @private makeApiCall(apiMethod)
-  @let request = requestParameterName(apiMethod)
-    @if apiMethod.isLongRunningOperation
-      operation = Google::Gax::Operation.new(
-        @@{@apiMethod.name}.call({@request}, options),
-        @@operations_client,
-        {@apiMethod.longRunningView.operationPayloadTypeName},
-        {@apiMethod.longRunningView.metadataTypeName},
-        call_options: options
-      )
-      operation.on_done { |operation| yield(operation) } if block_given?
-      operation
-    @else
-      @@{@apiMethod.name}.call({@request}, options)
-      @if apiMethod.isReturnEmpty
-        nil
-      @end
-    @end
-  @end
-@end
-
-@private requestParameterName(apiMethod)
-  @if apiMethod.hasRequestStreaming
-    reqs
+  @if apiMethod.isLongRunningOperation
+    operation = Google::Gax::Operation.new(
+      @@{@apiMethod.name}.call({@apiMethod.requestObjectName}, options),
+      @@operations_client,
+      {@apiMethod.longRunningView.operationPayloadTypeName},
+      {@apiMethod.longRunningView.metadataTypeName},
+      call_options: options
+    )
+    operation.on_done { |operation| yield(operation) } if block_given?
+    operation
   @else
-    req
+    @@{@apiMethod.name}.call({@apiMethod.requestObjectName}, options)
+    @if apiMethod.isReturnEmpty
+      nil
+    @end
   @end
 @end
 

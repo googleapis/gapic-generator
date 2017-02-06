@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ public abstract class GrpcMessageDocView implements GrpcElementDocView {
 
   public abstract List<ParamDocView> properties();
 
-  public abstract List<GrpcElementDocView> children();
+  public abstract List<GrpcElementDocView> elementDocs();
 
   public static Builder newBuilder() {
     return new AutoValue_GrpcMessageDocView.Builder();
@@ -43,7 +43,7 @@ public abstract class GrpcMessageDocView implements GrpcElementDocView {
 
     public abstract Builder properties(List<ParamDocView> val);
 
-    public abstract Builder children(List<GrpcElementDocView> val);
+    public abstract Builder elementDocs(List<GrpcElementDocView> val);
 
     public abstract GrpcMessageDocView build();
   }

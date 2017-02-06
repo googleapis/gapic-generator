@@ -25,9 +25,7 @@ public class JavaRenderingUtil {
    * Performs escaping of certain html characters.
    */
   public static List<String> getDocLines(String text) {
-    // TODO: convert markdown to javadoc
-    // https://github.com/googleapis/toolkit/issues/331
-    return CommonRenderingUtil.getDocLines(new JavaCommentFixer().fix(text));
+    return CommonRenderingUtil.getDocLines(new JavaCommentReformatter().reformat(text));
   }
 
   public List<String> getMultilineHeading(String heading) {

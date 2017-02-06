@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,12 +51,12 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     ImmutableList.Builder<ViewModel> surfaceDocs = ImmutableList.builder();
     for (ProtoFile file : new ProtoFileView().getElementIterable(model)) {
-      surfaceDocs.add(createView(file, apiConfig));
+      surfaceDocs.add(generateDoc(file, apiConfig));
     }
     return surfaceDocs.build();
   }
 
-  private ViewModel createView(ProtoFile file, ApiConfig apiConfig) {
+  private ViewModel generateDoc(ProtoFile file, ApiConfig apiConfig) {
     String subPath = pathMapper.getOutputPath(file, apiConfig);
     String baseFilename = file.getSimpleName().replace(".proto", "");
     ModelTypeTable typeTable =
@@ -70,7 +70,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
     doc.fileHeader(
         fileHeaderTransformer.generateFileHeader(
             apiConfig, ImportSectionView.newBuilder().build(), namer));
-    doc.children(elementDocTransformer.generateElementDocs(typeTable, namer, file));
+    doc.elementDocs(elementDocTransformer.generateElementDocs(typeTable, namer, file));
     return doc.build();
   }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.util.java;
 
-import com.google.api.codegen.util.CommentFixer;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 
-public class JavaCommentFixer implements CommentFixer {
+public class JavaCommentReformatter implements CommentReformatter {
   /** Escaper for formatting javadoc strings. */
   private static final Escaper JAVADOC_ESCAPER =
       Escapers.builder()
@@ -30,7 +30,9 @@ public class JavaCommentFixer implements CommentFixer {
           .build();
 
   @Override
-  public String fix(String documentation) {
+  public String reformat(String documentation) {
+    // TODO: convert markdown to javadoc
+    // https://github.com/googleapis/toolkit/issues/331
     return JAVADOC_ESCAPER.escape(documentation).trim();
   }
 }

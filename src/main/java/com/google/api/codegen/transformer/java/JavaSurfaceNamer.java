@@ -25,7 +25,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.java.JavaCommentFixer;
+import com.google.api.codegen.util.java.JavaCommentReformatter;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
@@ -47,7 +47,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         new JavaNameFormatter(),
         new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(packageName)),
         new JavaTypeTable(packageName),
-        new JavaCommentFixer(),
+        new JavaCommentReformatter(),
         packageName);
   }
 

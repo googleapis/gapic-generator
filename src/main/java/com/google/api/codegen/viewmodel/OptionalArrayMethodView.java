@@ -36,6 +36,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String name();
 
+  public abstract String requestObjectName();
+
   public abstract String requestTypeName();
 
   public abstract String key();
@@ -96,6 +98,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder doc(ApiMethodDocView val);
 
     public abstract Builder name(String val);
+
+    public abstract Builder requestObjectName(String val);
 
     public abstract Builder requestTypeName(String val);
 
