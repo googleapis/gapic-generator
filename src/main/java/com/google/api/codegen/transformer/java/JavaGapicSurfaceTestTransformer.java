@@ -16,16 +16,12 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
-import com.google.api.codegen.metacode.InitCodeLineType;
-import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -33,24 +29,16 @@ import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.util.testing.JavaValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ClientMethodType;
-import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FileHeaderView;
-import com.google.api.codegen.viewmodel.FormattedInitValueView;
-import com.google.api.codegen.viewmodel.InitCodeLineView;
-import com.google.api.codegen.viewmodel.InitCodeView;
-import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
-import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
-import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
-import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
@@ -62,7 +50,6 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,109 +117,32 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =
-        getFlatteningGroup(
+        testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
     MethodTransformerContext methodContext =
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
-    TestCaseView testCaseView = createSmokeTestCaseView(methodContext);
+    // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
+    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
     testClass.apiClassName(namer.getApiWrapperClassName(service));
     testClass.name(name);
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
+    // TODO: Java needs to be refactored to use ApiMethodView instead
+    testClass.apiMethod(
+        new StaticLangApiMethodTransformer().generateFlattenedMethod(methodContext));
     testClass.method(testCaseView);
-    testClass.requireProjectId(requireProjectId(testCaseView.initCode(), context.getNamer()));
+    testClass.requireProjectId(
+        testCaseTransformer.requireProjectId(testCaseView.initCode(), context.getNamer()));
 
     // Imports must be done as the last step to catch all imports.
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     testClass.fileHeader(fileHeader);
 
     return testClass.build();
-  }
-
-  private TestCaseView createSmokeTestCaseView(MethodTransformerContext context) {
-    ClientMethodType methodType = ClientMethodType.FlattenedMethod;
-    if (context.getMethodConfig().isPageStreaming()) {
-      methodType = ClientMethodType.PagedFlattenedMethod;
-    }
-
-    return testCaseTransformer.createTestCaseView(
-        context, new SymbolTable(), createSmokeTestInitContext(context), methodType);
-  }
-
-  private boolean requireProjectId(InitCodeView initCodeView, SurfaceNamer namer) {
-    for (FieldSettingView settingsView : initCodeView.fieldSettings()) {
-      InitCodeLineView line = settingsView.initCodeLine();
-      if (line.lineType() == InitCodeLineType.SimpleInitLine) {
-        SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
-        String projectVarName =
-            namer.localVarName(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
-        if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
-          ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
-          return initValue.formatArgs().contains(projectVarName);
-        } else if (simpleLine.initValue() instanceof ResourceNameOneofInitValueView) {
-          ResourceNameOneofInitValueView initValue =
-              (ResourceNameOneofInitValueView) simpleLine.initValue();
-          ResourceNameInitValueView subValue = initValue.specificResourceNameView();
-          return subValue.formatArgs().contains(projectVarName);
-        } else if (simpleLine.initValue() instanceof SimpleInitValueView) {
-          SimpleInitValueView initValue = (SimpleInitValueView) simpleLine.initValue();
-          return initValue.initialValue().equals(projectVarName);
-        } else if (simpleLine.initValue() instanceof FormattedInitValueView) {
-          FormattedInitValueView initValue = (FormattedInitValueView) simpleLine.initValue();
-          return initValue.formatArgs().contains(projectVarName);
-        }
-      }
-    }
-    return false;
-  }
-
-  private InitCodeContext createSmokeTestInitContext(MethodTransformerContext context) {
-    SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
-    InitCodeOutputType outputType;
-    ImmutableMap<String, FieldConfig> fieldConfigMap;
-    if (context.getMethodConfig().isFlattening()) {
-      outputType = InitCodeOutputType.FieldList;
-      fieldConfigMap =
-          FieldConfig.toFieldConfigMap(
-              context.getFlatteningConfig().getFlattenedFieldConfigs().values());
-    } else {
-      outputType = InitCodeOutputType.SingleObject;
-      fieldConfigMap = null;
-    }
-
-    // Store project ID variable name into the symbol table since it is used by the execute method
-    // as a parameter. For more information please see smoke_test.snip.
-    SymbolTable table = new SymbolTable();
-    table.getNewSymbol(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
-
-    InitCodeContext.Builder contextBuilder =
-        InitCodeContext.newBuilder()
-            .initObjectType(testConfig.getMethod().getInputType())
-            .suggestedName(Name.from("request"))
-            .outputType(outputType)
-            .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-            .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
-            .symbolTable(table)
-            .fieldConfigMap(fieldConfigMap);
-    if (context.getMethodConfig().isFlattening()) {
-      contextBuilder.initFields(context.getFlatteningConfig().getFlattenedFields());
-    }
-    return contextBuilder.build();
-  }
-
-  private FlatteningConfig getFlatteningGroup(
-      MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
-    for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-      if (flatteningGroup.getFlatteningName().equals(smokeTestConfig.getFlatteningName())) {
-        return flatteningGroup;
-      }
-    }
-    throw new IllegalArgumentException(
-        "Flattening name in smoke test config did not correspond to any flattened method.");
   }
 
   ///////////////////////////////////// Unit Test /////////////////////////////////////////
