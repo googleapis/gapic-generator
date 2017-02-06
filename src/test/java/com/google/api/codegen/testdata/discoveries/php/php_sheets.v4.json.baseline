@@ -20,8 +20,12 @@ $service = new Google_Service_Sheets($client);
 // The spreadsheet to apply the updates to.
 $spreadsheetId = '';  // TODO: Update placeholder value.
 
+// A list of updates to apply to the spreadsheet.
+$requests = [];  // TODO: Update placeholder value.
+
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest();
+$requestBody->setRequests($requests);
 
 $response = $service->spreadsheets->batchUpdate($spreadsheetId, $requestBody);
 
@@ -95,7 +99,16 @@ $service = new Google_Service_Sheets($client);
 // The spreadsheet to request.
 $spreadsheetId = '';  // TODO: Update placeholder value.
 
-$response = $service->spreadsheets->get($spreadsheetId);
+$optParams = [];
+
+// The ranges to retrieve from the spreadsheet.
+$optParams['ranges'] = [];  // TODO: Update placeholder value.
+
+// True if grid data should be returned.
+// This parameter is ignored if a field mask was set in the request.
+$optParams['includeGridData'] = false;  // TODO: Update placeholder value.
+
+$response = $service->spreadsheets->get($spreadsheetId, $optParams);
 
 // TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
@@ -136,8 +149,12 @@ $spreadsheetId = '';  // TODO: Update placeholder value.
 // The ID of the sheet to copy.
 $sheetId = 0;  // TODO: Update placeholder value.
 
+// The ID of the spreadsheet to copy the sheet to.
+$destinationSpreadsheetId = '';  // TODO: Update placeholder value.
+
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Sheets_CopySheetToAnotherSpreadsheetRequest();
+$requestBody->setDestinationSpreadsheetId($destinationSpreadsheetId);
 
 $response = $service->spreadsheets_sheets->copyTo($spreadsheetId, $sheetId, $requestBody);
 
@@ -179,10 +196,18 @@ $spreadsheetId = '';  // TODO: Update placeholder value.
 // Values will be appended after the last row of the table.
 $range = '';  // TODO: Update placeholder value.
 
+$optParams = [];
+
+// How the input data should be interpreted.
+$optParams['valueInputOption'] = '';  // TODO: Update placeholder value.
+
+// How the input data should be inserted.
+$optParams['insertDataOption'] = '';  // TODO: Update placeholder value.
+
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Sheets_ValueRange();
 
-$response = $service->spreadsheets_values->append($spreadsheetId, $range, $requestBody);
+$response = $service->spreadsheets_values->append($spreadsheetId, $range, $requestBody, $optParams);
 
 // TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
@@ -218,8 +243,12 @@ $service = new Google_Service_Sheets($client);
 // The ID of the spreadsheet to update.
 $spreadsheetId = '';  // TODO: Update placeholder value.
 
+// The ranges to clear, in A1 notation.
+$ranges = [];  // TODO: Update placeholder value.
+
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Sheets_BatchClearValuesRequest();
+$requestBody->setRanges($ranges);
 
 $response = $service->spreadsheets_values->batchClear($spreadsheetId, $requestBody);
 
@@ -257,7 +286,22 @@ $service = new Google_Service_Sheets($client);
 // The ID of the spreadsheet to retrieve data from.
 $spreadsheetId = '';  // TODO: Update placeholder value.
 
-$response = $service->spreadsheets_values->batchGet($spreadsheetId);
+$optParams = [];
+
+// The A1 notation of the values to retrieve.
+$optParams['ranges'] = [];  // TODO: Update placeholder value.
+
+// How values should be represented in the output.
+// The default render option is ValueRenderOption.FORMATTED_VALUE.
+$optParams['valueRenderOption'] = '';  // TODO: Update placeholder value.
+
+// How dates, times, and durations should be represented in the output.
+// This is ignored if value_render_option is
+// FORMATTED_VALUE.
+// The default dateTime render option is [DateTimeRenderOption.SERIAL_NUMBER].
+$optParams['dateTimeRenderOption'] = '';  // TODO: Update placeholder value.
+
+$response = $service->spreadsheets_values->batchGet($spreadsheetId, $optParams);
 
 // TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
@@ -295,8 +339,16 @@ $service = new Google_Service_Sheets($client);
 // The ID of the spreadsheet to update.
 $spreadsheetId = '';  // TODO: Update placeholder value.
 
+// How the input data should be interpreted.
+$valueInputOption = '';  // TODO: Update placeholder value.
+
+// The new values to apply to the spreadsheet.
+$data = [];  // TODO: Update placeholder value.
+
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Sheets_BatchUpdateValuesRequest();
+$requestBody->setValueInputOption($valueInputOption);
+$requestBody->setData($data);
 
 $response = $service->spreadsheets_values->batchUpdate($spreadsheetId, $requestBody);
 
@@ -379,7 +431,19 @@ $spreadsheetId = '';  // TODO: Update placeholder value.
 // The A1 notation of the values to retrieve.
 $range = '';  // TODO: Update placeholder value.
 
-$response = $service->spreadsheets_values->get($spreadsheetId, $range);
+$optParams = [];
+
+// How values should be represented in the output.
+// The default render option is ValueRenderOption.FORMATTED_VALUE.
+$optParams['valueRenderOption'] = '';  // TODO: Update placeholder value.
+
+// How dates, times, and durations should be represented in the output.
+// This is ignored if value_render_option is
+// FORMATTED_VALUE.
+// The default dateTime render option is [DateTimeRenderOption.SERIAL_NUMBER].
+$optParams['dateTimeRenderOption'] = '';  // TODO: Update placeholder value.
+
+$response = $service->spreadsheets_values->get($spreadsheetId, $range, $optParams);
 
 // TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
@@ -420,11 +484,16 @@ $spreadsheetId = '';  // TODO: Update placeholder value.
 // The A1 notation of the values to update.
 $range = '';  // TODO: Update placeholder value.
 
+$optParams = [];
+
+// How the input data should be interpreted.
+$optParams['valueInputOption'] = '';  // TODO: Update placeholder value.
+
 // TODO: Assign values to desired properties of `requestBody`. All existing
 // properties will be replaced:
 $requestBody = new Google_Service_Sheets_ValueRange();
 
-$response = $service->spreadsheets_values->update($spreadsheetId, $range, $requestBody);
+$response = $service->spreadsheets_values->update($spreadsheetId, $range, $requestBody, $optParams);
 
 // TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";

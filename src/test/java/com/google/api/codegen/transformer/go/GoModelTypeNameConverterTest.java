@@ -14,10 +14,18 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import com.google.api.codegen.transformer.ModelTypeNameConverterTestUtil;
+import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.tools.framework.model.EnumValue;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.truth.Truth;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class GoModelTypeNameConverterTest {
+
+  @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
 
   private static final GoModelTypeNameConverter converter = new GoModelTypeNameConverter();
 
@@ -66,5 +74,14 @@ public class GoModelTypeNameConverterTest {
                     "google.golang.org/genproto/zip/zap;smack", "foo.bar", "Baz", isPointerFalse)
                 .getNickname())
         .isEqualTo("smackpb.Baz");
+  }
+
+  @Test
+  public void testGetEnumValue() {
+    TypeRef type = ModelTypeNameConverterTestUtil.getTestEnumType(tempDir);
+    EnumValue value = type.getEnumType().getValues().get(0);
+    Truth.assertThat(
+            converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(new GoTypeTable()))
+        .isEqualTo("*librarypb.Book_GOOD");
   }
 }
