@@ -92,7 +92,7 @@ public class ProtoDocumentLinkTest {
   }
 
   @Test
-  public void testNodeJSCommentFixer() {
+  public void testNodeJSCommentReformatter() {
     CommentReformatter commentReformatter = new NodeJSCommentReformatter();
     Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
         .isEqualTo("{@link Shelf}");
