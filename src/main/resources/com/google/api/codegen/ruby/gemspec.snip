@@ -1,30 +1,30 @@
 @snippet generate(metadata)
-# -*- ruby -*-
-# encoding: utf-8
+  # -*- ruby -*-
+  # encoding: utf-8
 
-Gem::Specification.new do |s|
-  s.name          = '{@metadata.identifier}'
-  s.version       = '{@metadata.packageVersionBound.lower}'
+  Gem::Specification.new do |s|
+    s.name          = "{@metadata.identifier}"
+    s.version       = "{@metadata.packageVersionBound.lower}"
 
-  s.authors       = ['{@metadata.author}']
-  s.description   = '{@metadata.fullName} client for Ruby.'
-  s.email         = '{@metadata.email}'
-  s.files         = Dir.glob(File.join('lib', '**', '*.rb'))
-  s.homepage      = '{@metadata.homepage}'
-  s.license       = '{@metadata.licenseName}'
-  s.platform      = Gem::Platform::RUBY
-  s.require_paths = ['lib']
-  s.required_ruby_version = '>= 2.0.0'
-  s.requirements << 'libgrpc ~> 1.0 needs to be installed'
-  s.summary       = 'GRPC library for service {{{api.name}}}'
+    s.authors       = ["{@metadata.author}"]
+    s.description   = "{@metadata.fullName} client for Ruby."
+    s.email         = "{@metadata.email}"
+    s.files         = Dir.glob(File.join("lib", "**", "*.rb"))
+    s.homepage      = "{@metadata.homepage}"
+    s.license       = "{@metadata.licenseName}"
+    s.platform      = Gem::Platform::RUBY
+    s.require_paths = ["lib"]
+    s.required_ruby_version = ">= 2.0.0"
+    s.requirements << "libgrpc ~> 1.0 needs to be installed"
+    s.summary       = "GRPC library for service {{{api.name}}}"
 
-  s.add_dependency 'grpc', '~> {@metadata.grpcVersionBound.lower}'
-  s.add_dependency 'googleauth', '~> {@metadata.authVersionBound.lower}'
-  @join packageDep : metadata.protoPackageDependencies
-    s.add_dependency '{@packageDep.name}', '~> {@packageDep.versionBound.lower}'
-  @end
+    s.add_dependency "grpc", "~> {@metadata.grpcVersionBound.lower}"
+    s.add_dependency "googleauth", "~> {@metadata.authVersionBound.lower}"
+    @join packageDep : metadata.protoPackageDependencies
+      s.add_dependency "{@packageDep.name}", "~> {@packageDep.versionBound.lower}"
+    @end
 
-  s.add_development_dependency 'bundler', '~> 1.9'
-  s.add_development_dependency 'rake', '~> 10.4'
-end
+    s.add_development_dependency "bundler", "~> 1.9"
+    s.add_development_dependency "rake", "~> 10.4"
+  end
 @end

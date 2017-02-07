@@ -16,35 +16,34 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.util.Name;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 /** A RubyPackageMetadataNamer provides ruby specific names for metadata views. */
 public class RubyPackageMetadataNamer extends PackageMetadataNamer {
-  private Name serviceName;
+  private String packageName;
 
   public RubyPackageMetadataNamer(String packageName) {
-    // Get the service name from the package name by removing the version suffix (if any).
-    List<String> names = Splitter.on("::").splitToList(packageName);
-    if (names.size() < 2) {
-      this.serviceName = Name.upperCamel(packageName);
-    } else {
-      this.serviceName = Name.upperCamel(names.get(0));
-    }
-  }
-
-  @Override
-  public String getMetadataName() {
-    return serviceName.toUpperCamel();
+    this.packageName = packageName;
   }
 
   @Override
   public String getMetadataIdentifier() {
-    return serviceName.toLowerCamel();
+    List<String> names = Splitter.on("::").splitToList(packageName);
+    if (names.size() > 1) {
+      names = names.subList(0, names.size() - 1);
+    }
+    ImmutableList.Builder<String> lowerNames = ImmutableList.builder();
+    for (String name : names) {
+      lowerNames.add(Name.upperCamel(name).toLowerCamel());
+    }
+    return Joiner.on('-').join(lowerNames.build());
   }
 
   @Override
   public String getOutputFileName() {
-    return serviceName.toLowerCamel() + ".gemspec";
+    return getMetadataIdentifier() + ".gemspec";
   }
 }
