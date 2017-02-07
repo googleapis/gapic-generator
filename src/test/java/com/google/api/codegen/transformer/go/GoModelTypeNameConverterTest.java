@@ -82,6 +82,6 @@ public class GoModelTypeNameConverterTest {
     EnumValue value = type.getEnumType().getValues().get(0);
     Truth.assertThat(
             converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(new GoTypeTable()))
-        .isEqualTo("*librarypb.Book_GOOD");
+        .isEqualTo("librarypb.Book_GOOD");
   }
 }
