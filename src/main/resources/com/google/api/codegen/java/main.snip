@@ -45,11 +45,15 @@
 @private renderServiceDoc(xapiClassDoc, exampleMethodSampleCode)
   // AUTO-GENERATED DOCUMENTATION AND SERVICE
   /**
-   * Service Description: {@xapiClassDoc.firstLine}
-  @if xapiClassDoc.remainingLines
-    @join commentLine : xapiClassDoc.remainingLines
-      {@""} * {@commentLine}
+  @if xapiClassDoc.lines
+    {@""} * Service Description: {@xapiClassDoc.firstLine}
+    @if xapiClassDoc.remainingLines
+      @join commentLine : xapiClassDoc.remainingLines
+        {@""} * {@commentLine}
+      @end
     @end
+  @else
+    {@""} * Service Description:
   @end
    *
    * <p>This class provides the ability to make remote calls to the backing service through method
@@ -473,8 +477,12 @@
 @private methodDoc(apiMethodDoc, methodSampleCode)
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-  @join commentLine : apiMethodDoc.mainDocLines
-    {@""} * {@commentLine}
+  @if apiMethodDoc.mainDocLines
+    @join commentLine : apiMethodDoc.mainDocLines
+      {@""} * {@commentLine}
+    @end
+  @else
+    {@""} *
   @end
    *
    * Sample code:
@@ -508,11 +516,15 @@
 @end
 
 @private simpleParamDoc(doc)
-  {@""} * @@param {@doc.paramName} {@doc.firstLine}
-  @if doc.remainingLines
-    @join commentLine : doc.remainingLines
-      {@""} * {@commentLine}
+  @if doc.lines
+    {@""} * @@param {@doc.paramName} {@doc.firstLine}
+    @if doc.remainingLines
+      @join commentLine : doc.remainingLines
+        {@""} * {@commentLine}
+      @end
     @end
+  @else
+    {@""} * @@param {@doc.paramName}
   @end
 @end
 

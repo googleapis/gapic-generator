@@ -12,30 +12,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.ruby;
+package com.google.api.codegen.util.ruby;
 
 import com.google.api.codegen.CommentPatterns;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.base.Splitter;
 import java.util.regex.Matcher;
 
-/** Utility class for formatting source comments to follow RDoc style. */
-public class RDocCommentFixer {
-
-  /** Returns a RDoc-formatted comment string. */
-  public static String rdocify(String comment) {
-    comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("+");
-    comment = rdocifyProtoMarkdownLinks(comment);
-    comment = rdocifyCloudMarkdownLinks(comment);
-    comment = rdocifyAbsoluteMarkdownLinks(comment);
-    comment = rdocifyHeadline(comment);
-    return cleanupTrailingWhitespaces(comment);
+public class RubyCommentReformatter implements CommentReformatter {
+  @Override
+  public String reformat(String documentation) {
+    documentation = CommentPatterns.BACK_QUOTE_PATTERN.matcher(documentation).replaceAll("+");
+    documentation = reformatProtoMarkdownLinks(documentation);
+    documentation = reformatCloudMarkdownLinks(documentation);
+    documentation = reformatAbsoluteMarkdownLinks(documentation);
+    documentation = reformatHeadline(documentation);
+    return documentation.trim();
   }
 
-  private static String protoToRubyDoc(String comment) {
+  /** Returns a string with all proto markdown links formatted to RDoc style. */
+  private String reformatProtoMarkdownLinks(String documentation) {
+    StringBuffer sb = new StringBuffer();
+    Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(documentation);
+    if (!m.find()) {
+      return documentation;
+    }
+    do {
+      // proto display name may contain '$' which needs to be escaped using Matcher.quoteReplacement
+      m.appendReplacement(
+          sb, Matcher.quoteReplacement(String.format("%s", protoToRubyDoc(m.group(1)))));
+    } while (m.find());
+    m.appendTail(sb);
+    return sb.toString();
+  }
+
+  private String protoToRubyDoc(String documentation) {
     boolean messageFound = false;
     boolean isFirstSegment = true;
     String result = "";
-    for (String name : Splitter.on(".").splitToList(comment)) {
+    for (String name : Splitter.on(".").splitToList(documentation)) {
       char firstChar = name.charAt(0);
       if (Character.isUpperCase(firstChar)) {
         messageFound = true;
@@ -53,28 +68,12 @@ public class RDocCommentFixer {
     return result;
   }
 
-  /** Returns a string with all proto markdown links formatted to RDoc style. */
-  private static String rdocifyProtoMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      // proto display name may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(
-          sb, Matcher.quoteReplacement(String.format("%s", protoToRubyDoc(m.group(1)))));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
-  }
-
   /** Returns a string with all cloud markdown links formatted to RDoc style. */
-  private static String rdocifyCloudMarkdownLinks(String comment) {
+  private String reformatCloudMarkdownLinks(String documentation) {
     StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);
+    Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(documentation);
     if (!m.find()) {
-      return comment;
+      return documentation;
     }
     do {
       String url = "https://cloud.google.com" + m.group(2);
@@ -86,11 +85,11 @@ public class RDocCommentFixer {
   }
 
   /** Returns a string with all absolute markdown links formatted to RDoc style. */
-  private static String rdocifyAbsoluteMarkdownLinks(String comment) {
+  private String reformatAbsoluteMarkdownLinks(String documentation) {
     StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.ABSOLUTE_LINK_PATTERN.matcher(comment);
+    Matcher m = CommentPatterns.ABSOLUTE_LINK_PATTERN.matcher(documentation);
     if (!m.find()) {
-      return comment;
+      return documentation;
     }
     do {
       // absolute markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
@@ -101,20 +100,16 @@ public class RDocCommentFixer {
     return sb.toString();
   }
 
-  private static String rdocifyHeadline(String comment) {
+  private String reformatHeadline(String documentation) {
     StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.HEADLINE_PATTERN.matcher(comment);
+    Matcher m = CommentPatterns.HEADLINE_PATTERN.matcher(documentation);
     if (!m.find()) {
-      return comment;
+      return documentation;
     }
     do {
       m.appendReplacement(sb, m.group().replace("#", "="));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
-  }
-
-  private static String cleanupTrailingWhitespaces(String comment) {
-    return comment.trim();
   }
 }

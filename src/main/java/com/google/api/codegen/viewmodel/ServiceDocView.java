@@ -20,10 +20,7 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ServiceDocView {
-
-  public abstract String firstLine();
-
-  public abstract List<String> remainingLines();
+  public abstract List<String> lines();
 
   @Nullable
   public abstract ApiMethodView exampleApiMethod();
@@ -42,11 +39,17 @@ public abstract class ServiceDocView {
     return new AutoValue_ServiceDocView.Builder();
   }
 
+  public String firstLine() {
+    return lines().get(0);
+  }
+
+  public List<String> remainingLines() {
+    return lines().subList(1, lines().size());
+  }
+
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder firstLine(String val);
-
-    public abstract Builder remainingLines(List<String> val);
+    public abstract Builder lines(List<String> val);
 
     public abstract Builder exampleApiMethod(ApiMethodView val);
 

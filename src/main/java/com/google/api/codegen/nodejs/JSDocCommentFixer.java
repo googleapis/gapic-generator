@@ -14,47 +14,13 @@
  */
 package com.google.api.codegen.nodejs;
 
-import com.google.api.codegen.CommentPatterns;
-import java.util.regex.Matcher;
+import com.google.api.codegen.util.nodejs.NodeJSCommentReformatter;
 
 /** Utility class for formatting source comments to follow JSDoc style. */
 public class JSDocCommentFixer {
 
   /** Returns a JSDoc-formatted comment string. */
   public static String jsdocify(String comment) {
-    comment = jsdocifyProtoMarkdownLinks(comment);
-    comment = jsdocifyCloudMarkdownLinks(comment);
-    return comment.trim();
-  }
-
-  /** Returns a string with all proto markdown links formatted to JSDoc style. */
-  private static String jsdocifyProtoMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      // proto display name may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("{@link %s}", m.group(1))));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
-  }
-
-  /** Returns a string with all cloud markdown links formatted to JSDoc style. */
-  private static String jsdocifyCloudMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      String url = "https://cloud.google.com" + m.group(2);
-      // cloud markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("[%s](%s)", m.group(1), url)));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
+    return new NodeJSCommentReformatter().reformat(comment);
   }
 }

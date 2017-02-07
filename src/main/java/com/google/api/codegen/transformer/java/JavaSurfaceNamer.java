@@ -25,8 +25,8 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.java.JavaCommentReformatter;
 import com.google.api.codegen.util.java.JavaNameFormatter;
-import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.Field;
@@ -47,6 +47,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         new JavaNameFormatter(),
         new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(packageName)),
         new JavaTypeTable(packageName),
+        new JavaCommentReformatter(),
         packageName);
   }
 
@@ -67,11 +68,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     } else {
       return true;
     }
-  }
-
-  @Override
-  public List<String> getDocLines(String text) {
-    return JavaRenderingUtil.getDocLines(text);
   }
 
   @Override

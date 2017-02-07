@@ -23,9 +23,7 @@ public abstract class MapParamDocView implements ParamDocView {
 
   public abstract String typeName();
 
-  public abstract String firstLine();
-
-  public abstract List<String> remainingLines();
+  public abstract List<String> lines();
 
   public abstract List<ParamDocView> arrayKeyDocs();
 
@@ -37,15 +35,21 @@ public abstract class MapParamDocView implements ParamDocView {
     return new AutoValue_MapParamDocView.Builder();
   }
 
+  public String firstLine() {
+    return lines().get(0);
+  }
+
+  public List<String> remainingLines() {
+    return lines().subList(1, lines().size());
+  }
+
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder paramName(String val);
 
     public abstract Builder typeName(String val);
 
-    public abstract Builder firstLine(String val);
-
-    public abstract Builder remainingLines(List<String> val);
+    public abstract Builder lines(List<String> val);
 
     public abstract Builder arrayKeyDocs(List<ParamDocView> val);
 

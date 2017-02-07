@@ -22,7 +22,7 @@ import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -33,8 +33,10 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.TypeImportSectionTransformer;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.BundlingDescriptorView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
@@ -43,6 +45,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,10 +56,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private ServiceTransformer serviceTransformer;
   private PathTemplateTransformer pathTemplateTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
-  private ApiMethodTransformer apiMethodTransformer;
+  private DynamicLangApiMethodTransformer apiMethodTransformer;
   private GrpcStubTransformer grpcStubTransformer;
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new PhpImportTypeTransformer());
+      new FileHeaderTransformer(new TypeImportSectionTransformer(new PhpImportTypeTransformer()));
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
@@ -65,7 +68,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
-    this.apiMethodTransformer = new ApiMethodTransformer();
+    this.apiMethodTransformer = new DynamicLangApiMethodTransformer(new PhpParamDocTransformer());
     this.grpcStubTransformer = new GrpcStubTransformer();
   }
 
@@ -127,6 +130,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
     xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
+    xapiClass.bundlingDescriptors(ImmutableList.<BundlingDescriptorView>of());
+    xapiClass.hasBundlingMethods(context.getInterfaceConfig().hasBundlingMethods());
     xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
     xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
@@ -239,8 +244,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     for (Method method : context.getSupportedMethods()) {
       apiMethods.add(
-          apiMethodTransformer.generateDynamicLangApiMethod(
-              context.asDynamicMethodContext(method)));
+          apiMethodTransformer.generateApiMethod(context.asDynamicMethodContext(method)));
     }
 
     return apiMethods;

@@ -67,6 +67,7 @@ public abstract class ParamWithSimpleDoc {
   public RequestObjectParamView asRequestObjectParamView() {
     return RequestObjectParamView.newBuilder()
         .name(name())
+        .keyName(name())
         .nameAsMethodName(nameAsMethodName())
         .elementTypeName(elementTypeName())
         .typeName(typeName())
