@@ -9,9 +9,9 @@
 @end
 
 @private renderFileHeader(protoFilename, fileHeader)
-  {@comments(fileHeader.copyrightLines)}
+  {@toComments(fileHeader.copyrightLines)}
   @#
-  {@comments(fileHeader.licenseLines)}
+  {@toComments(fileHeader.licenseLines)}
   @#
   @# EDITING INSTRUCTIONS
   @# This file was generated from the file
@@ -41,7 +41,7 @@
 @end
 
 @private serviceClassBody(xapiClass)
-  {@comments(xapiClass.doc.lines)}
+  {@toComments(xapiClass.doc.lines)}
   @#
   {@stubComments(xapiClass.stubs)}
   class {@xapiClass.name}
@@ -284,12 +284,6 @@
   end
 @end
 
-@private comments(commentLines)
-  @join comment : commentLines
-    @# {@comment}
-  @end
-@end
-
 @private importGroup(group)
   @join import : group
     require "{@import.attributeName}"
@@ -318,7 +312,7 @@
       @end
     @end
 
-    {@comments(util.getDocLines(sampleCode(apiMethod)))}
+    {@toComments(util.getDocLines(sampleCode(apiMethod)))}
 
     @if apiMethod.hasRequestStreaming
       {@hasRequestStreamingMethod(apiMethod)}
@@ -372,14 +366,14 @@
 
 @private methodComments(apiMethodDoc)
   @if apiMethodDoc.mainDocLines
-    {@comments(apiMethodDoc.mainDocLines)}
+    {@toComments(apiMethodDoc.mainDocLines)}
     @#{@BREAK}
   @end
   {@createParamTypesComment(apiMethodDoc.paramDocs)}
   @if apiMethodDoc.returnTypeName
     {@createReturnTypeComment(apiMethodDoc.returnTypeName, apiMethodDoc.returnsDocLines)}
   @end
-  {@comments(apiMethodDoc.throwsDocLines)}
+  {@toComments(apiMethodDoc.throwsDocLines)}
 @end
 
 @private createParamTypesComment(paramDocs)

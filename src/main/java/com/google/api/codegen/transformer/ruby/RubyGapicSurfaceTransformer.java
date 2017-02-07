@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -47,6 +48,7 @@ import java.util.List;
 public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String XAPI_TEMPLATE_FILENAME = "ruby/main.snip";
 
+  private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
@@ -57,6 +59,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
 
+  public RubyGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
+    this.pathMapper = pathMapper;
+  }
+
   @Override
   public List<String> getTemplateFileNames() {
     return ImmutableList.of(XAPI_TEMPLATE_FILENAME);
@@ -66,7 +72,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
     FeatureConfig featureConfig = new RubyFeatureConfig();
-    List<ViewModel> surfaceDocs = new ArrayList<>();
+    List<ViewModel> serviceSurfaces = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       ModelTypeTable modelTypeTable =
           new ModelTypeTable(
@@ -75,20 +81,22 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
               service, apiConfig, modelTypeTable, namer, featureConfig);
-      surfaceDocs.add(generateApiClass(context));
+      serviceSurfaces.add(generateApiClass(context));
     }
-    return surfaceDocs;
+    return serviceSurfaces;
   }
 
   private ViewModel generateApiClass(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
+    String subPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     String serviceFilename = namer.getServiceFileName(context.getInterface());
     List<ApiMethodView> methods = generateApiMethods(context);
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.outputPath("lib/" + serviceFilename + ".rb");
+    xapiClass.outputPath(
+        subPath + serviceFilename.substring(serviceFilename.lastIndexOf("/")) + ".rb");
 
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
