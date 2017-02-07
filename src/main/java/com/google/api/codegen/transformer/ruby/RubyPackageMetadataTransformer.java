@@ -22,13 +22,13 @@ import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
-import java.util.Arrays;
 import java.util.List;
 
 /** Responsible for producing package metadata related views for Ruby */
 public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
-  private static final String PACKAGE_FILE = "ruby/gemspec.snip";
-
+  private static final String GEMSPEC_FILE = "ruby/gemspec.snip";
+  private static final List<String> TOP_LEVEL_FILES =
+      ImmutableList.of("ruby/Gemfile.snip", "ruby/Rakefile.snip", "ruby/README.snip");
   PackageMetadataConfig packageConfig;
   PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
 
@@ -38,19 +38,41 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(PACKAGE_FILE);
+    return ImmutableList.<String>builder().add(GEMSPEC_FILE).addAll(TOP_LEVEL_FILES).build();
   }
 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(apiConfig.getPackageName());
-    return ImmutableList.<ViewModel>builder().add(generateMetadataView(model, namer)).build();
+    return ImmutableList.<ViewModel>builder()
+        .add(generateGemspecView(model, namer))
+        .addAll(generateMetadataViews(model, namer))
+        .build();
   }
 
-  private ViewModel generateMetadataView(Model model, RubyPackageMetadataNamer namer) {
+  private ViewModel generateGemspecView(Model model, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
-            packageConfig, model, PACKAGE_FILE, namer.getOutputFileName(), TargetLanguage.RUBY)
+            packageConfig, model, GEMSPEC_FILE, namer.getOutputFileName(), TargetLanguage.RUBY)
+        .identifier(namer.getMetadataIdentifier())
+        .build();
+  }
+
+  private List<ViewModel> generateMetadataViews(Model model, RubyPackageMetadataNamer namer) {
+    ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
+    for (String template : TOP_LEVEL_FILES) {
+      views.add(generateMetadataView(model, template, namer));
+    }
+    return views.build();
+  }
+
+  private ViewModel generateMetadataView(
+      Model model, String template, RubyPackageMetadataNamer namer) {
+    String noLeadingRubyDir = template.startsWith("ruby/") ? template.substring(5) : template;
+    int extensionIndex = noLeadingRubyDir.lastIndexOf(".");
+    String outputPath = noLeadingRubyDir.substring(0, extensionIndex);
+    return metadataTransformer
+        .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .build();
   }
