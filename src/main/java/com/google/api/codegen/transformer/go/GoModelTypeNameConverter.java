@@ -229,6 +229,9 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getZeroValue(TypeRef type) {
+    if (type.isEnum()) {
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
+    }
     return TypedValue.create(getTypeName(type), getZeroValueStr(type));
   }
 
