@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.BooleanProto;
 import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.FlatteningGroupProto;
@@ -83,6 +84,8 @@ public abstract class MethodConfig {
   public abstract String getRerouteToGrpcInterface();
 
   public abstract VisibilityConfig getVisibility();
+
+  public abstract boolean isDeprecated();
 
   @Nullable
   public abstract LongRunningConfig getLongRunningConfig();
@@ -228,6 +231,16 @@ public abstract class MethodConfig {
       }
     }
 
+    boolean deprecated = false;
+    for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
+      if (!treatment.getIncludeLanguagesList().contains(language)) {
+        continue;
+      }
+      if (treatment.getDeprecated() != BooleanProto.UNSET_BOOLEANPROTO) {
+        deprecated = treatment.getDeprecated() == BooleanProto.TRUE;
+      }
+    }
+
     LongRunningConfig longRunningConfig = null;
     if (!LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
       longRunningConfig =
@@ -258,6 +271,7 @@ public abstract class MethodConfig {
           sampleCodeInitFields,
           rerouteToGrpcInterface,
           visibility,
+          deprecated,
           longRunningConfig);
     }
   }
