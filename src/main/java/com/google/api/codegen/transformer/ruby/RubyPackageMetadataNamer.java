@@ -37,7 +37,7 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
     }
     ImmutableList.Builder<String> lowerNames = ImmutableList.builder();
     for (String name : names) {
-      lowerNames.add(Name.upperCamel(name).toLowerCamel());
+      lowerNames.add(Name.upperCamel(name).toLowerUnderscore());
     }
     return Joiner.on('-').join(lowerNames.build());
   }

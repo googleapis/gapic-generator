@@ -28,9 +28,11 @@ import java.util.List;
 public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String GEMSPEC_FILE = "ruby/gemspec.snip";
   private static final List<String> TOP_LEVEL_FILES =
-      ImmutableList.of("ruby/Gemfile.snip", "ruby/Rakefile.snip", "ruby/README.snip");
+      ImmutableList.of("ruby/Gemfile.snip", "ruby/Rakefile.snip", "ruby/README.md.snip");
   PackageMetadataConfig packageConfig;
   PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
+
+  private static final String RUBY_PREFIX = "ruby/";
 
   public RubyPackageMetadataTransformer(PackageMetadataConfig packageConfig) {
     this.packageConfig = packageConfig;
@@ -68,7 +70,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
   private ViewModel generateMetadataView(
       Model model, String template, RubyPackageMetadataNamer namer) {
-    String noLeadingRubyDir = template.startsWith("ruby/") ? template.substring(5) : template;
+    String noLeadingRubyDir =
+        template.startsWith(RUBY_PREFIX) ? template.substring(RUBY_PREFIX.length()) : template;
     int extensionIndex = noLeadingRubyDir.lastIndexOf(".");
     String outputPath = noLeadingRubyDir.substring(0, extensionIndex);
     return metadataTransformer
