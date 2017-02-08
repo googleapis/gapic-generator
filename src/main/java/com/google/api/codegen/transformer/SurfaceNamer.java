@@ -932,12 +932,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return true;
   }
 
-  public String getServiceFileImportFromService(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getServiceFileImportFromService");
+  public String getServiceFileImportName(String filename) {
+    return getNotImplementedString("SurfaceNamer.getServiceFileImportName");
   }
 
-  public String getProtoFileImportFromService(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getProtoFileImportFromService");
+  public String getProtoFileImportName(String filename) {
+    return getNotImplementedString("SurfaceNamer.getProtoFileImportName");
   }
 
   /** The name of the import for a specific grpcClient */

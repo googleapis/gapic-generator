@@ -6,7 +6,11 @@
     package {@view.fileHeader.localExamplePackageName}
 
     import (
-        {@imports(view.fileHeader.imports)}
+        @if view.fileHeader.importSection.standardImports
+            {@imports(view.fileHeader.importSection.standardImports)}
+
+        @end
+        {@imports(view.fileHeader.importSection.externalImports)}
     )
 
     func {@view.clientConstructorExampleName}() {

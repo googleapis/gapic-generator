@@ -32,6 +32,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.GoValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
@@ -50,8 +51,10 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "go/mock.snip";
 
   private final GoValueProducer valueProducer = new GoValueProducer();
+  private final GoImportSectionTransformer importSectionTransformer =
+      new GoImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new GoImportTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
@@ -106,13 +109,14 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .build());
     }
 
+    ImportSectionView importSection =
+        importSectionTransformer.generateImportSection(typeTable.getImports());
     return MockCombinedView.newBuilder()
         .outputPath(apiConfig.getPackageName() + File.separator + "mock_test.go")
         .serviceImpls(impls)
         .testClasses(testClasses)
         .templateFileName(MOCK_SERVICE_TEMPLATE_FILE)
-        .fileHeader(
-            fileHeaderTransformer.generateFileHeader(apiConfig, typeTable.getImports(), namer))
+        .fileHeader(fileHeaderTransformer.generateFileHeader(apiConfig, importSection, namer))
         .mockServices(mockServiceTransformer.createMockServices(namer, model, apiConfig))
         .build();
   }
