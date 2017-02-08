@@ -35,18 +35,18 @@ public class UnitTestsViewModel implements ViewModel {
   private final Interface service;
   private final SurfaceNamer namer;
   private final ModelTypeTable typeTable;
-  private final RubyGapicContext util;
+  private final RubyGapicContext context;
 
   public UnitTestsViewModel(
       Interface service,
       SurfaceNamer namer,
       ModelTypeTable typeTable,
-      RubyGapicContext util,
+      RubyGapicContext context,
       String templateFile) {
     this.service = Preconditions.checkNotNull(service);
     this.namer = Preconditions.checkNotNull(namer);
     this.typeTable = Preconditions.checkNotNull(typeTable);
-    this.util = Preconditions.checkNotNull(util);
+    this.context = Preconditions.checkNotNull(context);
     this.templateFile = Preconditions.checkNotNull(templateFile);
   }
 
@@ -75,8 +75,8 @@ public class UnitTestsViewModel implements ViewModel {
 
   public List<UnitTestCaseViewModel> testCases() {
     List<UnitTestCaseViewModel> cases = new ArrayList<>();
-    for (final Method method : util.getSupportedMethodsV2(service)) {
-      cases.add(new UnitTestCaseViewModel(service, method, typeTable, util));
+    for (final Method method : context.getSupportedMethodsV2(service)) {
+      cases.add(new UnitTestCaseViewModel(service, method, typeTable, context));
     }
     return cases;
   }

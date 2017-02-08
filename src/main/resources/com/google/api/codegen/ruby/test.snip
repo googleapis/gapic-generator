@@ -17,12 +17,9 @@
   @# limitations under the License.
 
   require "minitest/autorun"
-  # require "google/cloud/language/v1beta1/language_service_api"
   require "{@testViewModel.libraryUnderTest.outputFile}"
-  # include Google::Cloud::Language::V1beta1
   include {@testViewModel.libraryUnderTest.namespace}
 
-  # describe LanguageServiceApi do
   describe {@testViewModel.libraryUnderTest.apiClassName} do
 
     @let gRPCClass = testViewModel.libraryUnderTest.grpcClientTypeName
@@ -43,14 +40,12 @@
         # TODO(jcanizales): Instead of mock_client, pass a block that verifies
         # the host string and that the 2nd argument isn't
         # :this_channel_is_insecure.
-        # LanguageService::Stub.stub(:new, mock_client) { yield(mock_client) }
         {@gRPCClass}::Stub.stub(:new, mock_client) { yield(mock_client) }
       end
 
       @join testCase : testViewModel.testCases
         @let methodView = testCase.methodView, \
              methodName = methodView.name
-          # describe "#annotate_text" do
           describe "#{@methodName}" do
             it "forwards calls to {@gRPCClass}::Stub" do
               stub_grpc_client do |mock_client|
@@ -61,12 +56,10 @@
                 # include Google::Cloud::Language::V1beta1 in the sample.
                 {@sampleCodeAliases(methodView)}
 
-                # expected_request = AnnotateTextRequest.new(            
                 expected_request = {@testCase.requestTypeName}.new(
                   {@initRequest(methodView.initCode)}
                 )
 
-                # mocked_response = AnnotateTextResponse.new
                 mocked_response = {@testCase.responseTypeName}.new
                 # TODO(jcanizales): testCase.mockResponse.initCode
 

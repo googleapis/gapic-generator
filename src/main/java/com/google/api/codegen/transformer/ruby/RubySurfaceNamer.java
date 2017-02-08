@@ -24,7 +24,6 @@ import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,12 +97,5 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getProtoFileImportFromService(Interface service) {
     return service.getFile().getSimpleName().replace(".proto", "_pb");
-  }
-
-  // For some reason this is only being called for tests.
-  @Override
-  public String getSourceFilePath(String path, String className) {
-    // Class name is some Java thing like LanguageServiceTest
-    return path + File.separator + className + "_test.jorge.rb";
   }
 }

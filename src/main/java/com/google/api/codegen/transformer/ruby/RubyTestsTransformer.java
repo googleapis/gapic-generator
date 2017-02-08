@@ -24,26 +24,23 @@ import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
 /** A subclass of ModelToViewTransformer which translates model into API tests in Ruby. */
 public class RubyTestsTransformer implements ModelToViewTransformer {
-  // Template files
   private static String UNIT_TEST_TEMPLATE_FILE = "ruby/test.snip";
 
   @Override
   public List<String> getTemplateFileNames() {
-    List<String> fileNames = new ArrayList<>();
-    fileNames.add(UNIT_TEST_TEMPLATE_FILE);
-    return fileNames;
+    return ImmutableList.of(UNIT_TEST_TEMPLATE_FILE);
   }
 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
-
     SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
-    RubyGapicContext util = new RubyGapicContext(model, apiConfig);
+    RubyGapicContext context = new RubyGapicContext(model, apiConfig);
     ModelTypeTable typeTable =
         new ModelTypeTable(
             new RubyTypeTable(apiConfig.getPackageName()),
@@ -51,7 +48,8 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
 
     List<ViewModel> views = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
-      views.add(new UnitTestsViewModel(service, namer, typeTable, util, UNIT_TEST_TEMPLATE_FILE));
+      views.add(
+          new UnitTestsViewModel(service, namer, typeTable, context, UNIT_TEST_TEMPLATE_FILE));
     }
     return views;
   }
