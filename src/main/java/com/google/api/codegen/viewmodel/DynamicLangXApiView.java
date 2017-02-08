@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class DynamicLangXApiView implements ViewModel {
@@ -48,6 +49,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
+  @Nullable
   public abstract List<BundlingDescriptorView> bundlingDescriptors();
 
   public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
