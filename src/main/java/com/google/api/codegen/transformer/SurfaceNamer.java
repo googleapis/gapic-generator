@@ -631,6 +631,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withHead(publicClassName));
   }
 
+  /** The type name for the method param */
+  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getParamTypeName");
+  }
+
   /** The type name for retry settings. */
   public String getRetrySettingsTypeName() {
     return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
