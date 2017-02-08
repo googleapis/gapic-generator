@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.nodejs;
+package com.google.api.codegen.util.php;
 
-import com.google.api.codegen.util.js.JSCommentReformatter;
+import com.google.api.codegen.util.CommentReformatter;
+import com.google.common.escape.Escaper;
+import com.google.common.escape.Escapers;
 
-/** Utility class for formatting source comments to follow JSDoc style. */
-public class JSDocCommentFixer {
+public class PhpCommentReformatter implements CommentReformatter {
+  /** Escaper for formatting PHP doc strings. */
+  private static final Escaper PHP_ESCAPER =
+      Escapers.builder().addEscape('*', "&#42;").addEscape('@', "&#64;").build();
 
-  /** Returns a JSDoc-formatted comment string. */
-  public static String jsdocify(String comment) {
-    return new JSCommentReformatter().reformat(comment);
+  @Override
+  public String reformat(String comment) {
+    return PHP_ESCAPER.escape(comment).trim();
   }
 }
