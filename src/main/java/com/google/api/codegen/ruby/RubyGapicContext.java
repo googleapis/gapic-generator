@@ -18,6 +18,7 @@ import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -27,6 +28,7 @@ import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
 import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
 import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
+import com.google.api.codegen.viewmodel.BundlingDescriptorView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
@@ -362,6 +364,12 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return importTypeTransformer.generateProtoFileImports(context);
+  }
+
+  public List<BundlingDescriptorView> getBundlingDescriptors(Interface service) {
+    BundlingTransformer bundlingTransformer = new BundlingTransformer();
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return bundlingTransformer.generateDescriptors(context);
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
