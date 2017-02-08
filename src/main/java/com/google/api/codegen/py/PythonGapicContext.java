@@ -15,9 +15,11 @@
 package com.google.api.codegen.py;
 
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.EnumType;
@@ -92,8 +94,11 @@ public class PythonGapicContext extends GapicContext {
 
   private PythonContextCommon pythonCommon;
 
-  public PythonGapicContext(Model model, ApiConfig apiConfig) {
+  private PackageMetadataConfig packageConfig;
+
+  public PythonGapicContext(Model model, ApiConfig apiConfig, PackageMetadataConfig packageConfig) {
     super(model, apiConfig);
+    this.packageConfig = packageConfig;
     this.pythonCommon = new PythonContextCommon();
   }
 
@@ -113,6 +118,11 @@ public class PythonGapicContext extends GapicContext {
     return importHandler
         .protoPackageToPythonPackage(file.getSimpleName(), "/")
         .replace(".proto", "_pb2.py");
+  }
+
+  /** Return the package name for the GAPIC package. * */
+  public String gapicPackageName() {
+    return "gapic-" + packageConfig.packageName(TargetLanguage.PYTHON);
   }
 
   /** Return comments lines for a given proto element, extracted directly from the proto doc */

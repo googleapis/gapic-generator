@@ -310,7 +310,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new PythonGapicContext(model, apiConfig))
+                .setContext(new PythonGapicContext(model, apiConfig, packageConfig))
                 .setSnippetSetRunner(
                     new PythonSnippetSetRunner<>(
                         new PythonInterfaceInitializer(apiConfig),
@@ -323,7 +323,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new PythonGapicContext(model, apiConfig))
+                .setContext(new PythonGapicContext(model, apiConfig, packageConfig))
                 .setSnippetSetRunner(
                     new PythonSnippetSetRunner<Interface>(
                         new PythonInterfaceInitializer(apiConfig),
@@ -351,7 +351,7 @@ public class MainGapicProviderFactory
               CommonGapicProvider.<ProtoFile>newBuilder()
                   .setModel(model)
                   .setView(new ProtoFileView())
-                  .setContext(new PythonGapicContext(model, apiConfig))
+                  .setContext(new PythonGapicContext(model, apiConfig, packageConfig))
                   .setSnippetSetRunner(
                       new PythonSnippetSetRunner<>(
                           new PythonProtoFileInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))

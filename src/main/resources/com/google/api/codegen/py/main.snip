@@ -100,8 +100,6 @@
         DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()}
         """The default port of the service."""
 
-        _CODE_GEN_NAME_VERSION = 'gapic/0.1.0'
-
         _GAX_VERSION = pkg_resources.get_distribution('google-gax').version
         @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
 
@@ -157,7 +155,7 @@
                 default_client_config,
                 client_config,
                 config.STATUS_CODE_NAMES,
-                kwargs={'metadata': metadata},
+                metrics_headers=metrics_headers,
                 @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
                     @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
                         bundle_descriptors=self._BUNDLE_DESCRIPTORS,
@@ -174,15 +172,15 @@
                 default_client_config,
                 client_config,
                 config.STATUS_CODE_NAMES,
-                kwargs={'metadata': metadata})
+                metrics_headers=metrics_headers,
+            )
         @end
     @end
 @end
 
 @private initMethodSection(service)
     @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        def __init__(
-                self,
+        def __init__(self,
                 service_path=SERVICE_ADDRESS,
                 port=DEFAULT_SERVICE_PORT,
                 channel=None,
@@ -190,8 +188,11 @@
                 ssl_credentials=None,
                 scopes=None,
                 client_config=None,
-                app_name='gax',
-                app_version=_GAX_VERSION):
+                app_name=None,
+                app_version='0.0',
+                lib_name=None,
+                lib_version='0.0',
+                metrics_headers=None):
             """Constructor.
 
             Args:
@@ -211,24 +212,52 @@
                 :func:`google.gax.construct_settings` for the structure of
                 this data. Falls back to the default config if not specified
                 or the specified config is missing data points.
-              app_name (string): The codename of the calling service.
-              app_version (string): The version of the calling service.
+              app_name (string): The name of the application calling
+                the service. Recommended for analytics purposes.
+              app_version (string): The version of the application calling
+                the service. Recommended for analytics purposes.
+              lib_name (string): The API library software used for calling
+                the service. (Unless you are writing an API client itself,
+                leave this as default.)
+              lib_version (string): The API library software version used
+                for calling the service. (Unless you are writing an API client
+                itself, leave this as default.)
+              metrics_headers (dict): A dictionary of values for tracking
+                client library metrics. Ultimately serializes to a string
+                (e.g. 'foo/1.2.3 bar/3.14.1').
 
             Returns:
               A {@context.getApiWrapperName(service)} object.
             """
+            @# Unless the calling application specifically requested
+            @# OAuth scopes, request everything.
             if scopes is None:
                 scopes = self._ALL_SCOPES
+
+            @# Initialize an empty client config, if none is set.
             if client_config is None:
                 client_config = {}
-            goog_api_client = '{}/{} {} gax/{} python/{}'.format(
-                app_name,
-                app_version,
-                self._CODE_GEN_NAME_VERSION,
-                self._GAX_VERSION,
-                platform.python_version()
-            )
-            metadata = [('x-goog-api-client', goog_api_client)]
+
+            @# Initialize the internal header dictionary if one is not passed.
+            if metrics_headers is None:
+                metrics_headers = {}
+
+            @# Populate the Google headers dictionary with the information
+            @# that we want to track.
+            metrics_headers.update({
+                'gapic': pkg_resources.get_distribution(
+                    '{@context.gapicPackageName}',
+                ).version,
+                'gl-python': platform.python_version(),
+            })
+
+            @# The library may or may not be set, depending on what is
+            @# calling this client. Newer client libraries set the library name
+            @# and version.
+            if lib_name:
+                metrics_headers[lib_name] = lib_version
+
+            @# Load the configuration defaults.
             {@constructDefaults(service)}
             @join stubInterface : context.getStubInterfaces(service)
                 @let stubName = context.stubName(stubInterface), \
