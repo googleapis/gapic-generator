@@ -24,6 +24,7 @@
 
 """Accesses the google.cloud.example.v1 NoTemplatesAPIService API."""
 
+import collections
 import json
 import os
 import pkg_resources
@@ -61,7 +62,7 @@ class NoTemplatesAPIServiceClient(object):
             app_version='0.0',
             lib_name=None,
             lib_version='0.0',
-            metrics_headers=None):
+            metrics_headers=()):
         """Constructor.
 
         Args:
@@ -93,7 +94,8 @@ class NoTemplatesAPIServiceClient(object):
             itself, leave this as default.)
           metrics_headers (dict): A dictionary of values for tracking
             client library metrics. Ultimately serializes to a string
-            (e.g. 'foo/1.2.3 bar/3.14.1').
+            (e.g. 'foo/1.2.3 bar/3.14.1'). This argument should be
+            considered private.
 
         Returns:
           A NoTemplatesAPIServiceClient object.
@@ -107,24 +109,21 @@ class NoTemplatesAPIServiceClient(object):
         if client_config is None:
             client_config = {}
 
-        # Initialize the internal header dictionary if one is not passed.
-        if metrics_headers is None:
-            metrics_headers = {}
-
-        # Populate the Google headers dictionary with the information
-        # that we want to track.
-        metrics_headers.update({
-            'gapic': pkg_resources.get_distribution(
-                'gapic-google-cloud-library-v1',
-            ).version,
-            'gl-python': platform.python_version(),
-        })
+        # Initialize metrics_headers as an ordered dictionary
+        # (cuts down on cardinality of the resulting string slightly).
+        metrics_headers = collections.OrderedDict(metrics_headers)
+        metrics_headers['gl-python'] = platform.python_version()
 
         # The library may or may not be set, depending on what is
         # calling this client. Newer client libraries set the library name
         # and version.
         if lib_name:
             metrics_headers[lib_name] = lib_version
+
+        # Finally, track the GAPIC package version.
+        metrics_headers['gapic'] = pkg_resources.get_distribution(
+            'gapic-google-cloud-library-v1',
+        ).version
 
         # Load the configuration defaults.
         default_client_config = json.loads(pkg_resources.resource_string(
