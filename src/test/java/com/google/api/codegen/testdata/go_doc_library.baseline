@@ -23,4 +23,19 @@
 // Use the client at cloud.google.com/go/library in preference to this.
 package library // import "cloud.google.com/go/library/apiv1"
 
-const gapicNameVersion = "gapic/20170208"
+import (
+    "golang.org/x/net/context"
+    "google.golang.org/grpc/metadata"
+)
+
+const (
+    gapicName = "gapic"
+    gapicVersion = "20170208"
+)
+
+func insertXGoog(ctx context.Context, val string) context.Context {
+    md, _ := metadata.FromContext(ctx)
+    md = md.Copy()
+    md["x-goog-api-client"] = []string{val}
+    return metadata.NewContext(ctx, md)
+}
