@@ -37,8 +37,8 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
@@ -82,7 +82,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
       new StaticLangApiMethodTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new GoImportTransformer());
+      new FileHeaderTransformer(new GoImportSectionTransformer());
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
@@ -241,7 +241,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
-            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer));
+            apiConfig, ImportSectionView.newBuilder().build(), namer));
 
     return packageInfo.build();
   }
