@@ -132,14 +132,9 @@
     @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
 
       BUNDLE_DESCRIPTORS = {
-        @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
-            @let bundling = ifaceConfig.getMethodConfig(method).getBundling(), \
-                 methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-              "{@methodName}" => Google::Gax::BundleDescriptor.new(
-                {@bundleDescriptorBody(bundling, method)})
-            @end
-          @end
+        @join descriptor : context.getBundlingDescriptors(service) on {@", "}.add(BREAK)
+          "{@descriptor.methodName}" => Google::Gax::BundleDescriptor.new(
+            {@bundleDescriptorBody(descriptor)})
         @end
       }.freeze
 
@@ -283,25 +278,17 @@
   @end
 @end
 
-@private bundleDescriptorBody(bundling, method)
-  @let bundledField = bundling.getBundledField().getSimpleName(), \
-       discriminatorFields = bundling.getDiscriminatorFields()
-    @if {@bundling.hasSubresponseField}
-      "{@bundledField}",
-      [
-        @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          "{@fieldSelector.getParamName}"
-        @end
-      ],
-      subresponse_field: "{@bundling.getSubresponseField().getSimpleName()}"
-    @else
-      "{@bundledField}",
-      [
-        @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          "{@fieldSelector.getParamName}"
-        @end
-      ]
+@private bundleDescriptorBody(descriptor)
+  "{@descriptor.bundledFieldName}",
+  [
+    @join name : descriptor.discriminatorFieldNames on {@","}.add(BREAK)
+      "{@name}"
     @end
+  @if {@descriptor.hasSubresponseField}
+    ],
+    subresponse_field: "{@descriptor.subresponseFieldName}"
+  @else
+    ]
   @end
 @end
 
