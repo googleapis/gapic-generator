@@ -170,7 +170,8 @@ public class InitCodeTransformer {
       MethodTransformerContext context,
       Iterable<InitCodeNode> orderedItems,
       Iterable<InitCodeNode> argItems) {
-    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
+    StandardImportSectionTransformer importSectionTransformer =
+        new StandardImportSectionTransformer();
     ModelTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 
@@ -183,7 +184,7 @@ public class InitCodeTransformer {
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(getFieldSettings(context, argItems))
-        .imports(importTypeTransformer.generateImports(typeTable.getImports()))
+        .importSection(importSectionTransformer.generateImportSection(typeTable.getImports()))
         .apiFileName(namer.getServiceFileName(context.getInterface()))
         .build();
   }

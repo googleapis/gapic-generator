@@ -22,6 +22,7 @@ import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.PassThroughCommentReformatter;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
@@ -47,6 +48,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
         new GoNameFormatter(),
         new ModelTypeFormatterImpl(converter),
         new GoTypeTable(),
+        new PassThroughCommentReformatter(),
         packageName);
     this.converter = converter;
   }

@@ -19,6 +19,7 @@ import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
@@ -34,6 +35,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
         new RubyNameFormatter(),
         new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(packageName)),
         new RubyTypeTable(packageName),
+        new RubyCommentReformatter(),
         packageName);
   }
 
@@ -90,12 +92,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getServiceFileImportFromService(Interface service) {
-    return service.getFile().getSimpleName().replace(".proto", "_services_pb");
+  public String getServiceFileImportName(String filename) {
+    return filename.replace(".proto", "_services_pb");
   }
 
   @Override
-  public String getProtoFileImportFromService(Interface service) {
-    return service.getFile().getSimpleName().replace(".proto", "_pb");
+  public String getProtoFileImportName(String filename) {
+    return filename.replace(".proto", "_pb");
   }
 }

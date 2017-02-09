@@ -363,16 +363,6 @@ task runCodeGen(type: JavaExec) {
   }
 }
 
-// old task being retained for backwards-friendliness
-// TODO delete after 1 Oct 2016 (or before if all artman users are using runCodeGen)
-task runVGen(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.CodeGeneratorTool'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
 // Task to run SynchronizerTool
 // =============================
 //
@@ -473,14 +463,10 @@ tasks.googleJavaFormat {
   exclude '.apt_generated/**'
   exclude 'bin/**'
   exclude 'build/**'
-  exclude 'vgen/build/**'
-  exclude 'vgen/.apt_generated/**'
 }
 tasks.verifyGoogleJavaFormat {
   exclude '.apt_generated/**'
   exclude 'bin/**'
   exclude 'build/**'
-  exclude 'vgen/build/**'
-  exclude 'vgen/.apt_generated/**'
 }
 test.dependsOn verifyGoogleJavaFormat
