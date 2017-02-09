@@ -34,7 +34,7 @@ import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
+import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -73,7 +73,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new StandardImportTypeTransformer());
+      new FileHeaderTransformer(new StandardImportSectionTransformer());
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =

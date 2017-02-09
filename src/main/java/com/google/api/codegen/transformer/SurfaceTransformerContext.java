@@ -204,6 +204,16 @@ public abstract class SurfaceTransformerContext {
     return methods;
   }
 
+  public List<Method> getBundlingMethods() {
+    List<Method> methods = new ArrayList<>();
+    for (Method method : getSupportedMethods()) {
+      if (getMethodConfig(method).isBundling()) {
+        methods.add(method);
+      }
+    }
+    return methods;
+  }
+
   public Iterable<Method> getLongRunningMethods() {
     List<Method> methods = new ArrayList<>();
     for (Method method : getSupportedMethods()) {

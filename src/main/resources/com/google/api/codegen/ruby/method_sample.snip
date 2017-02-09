@@ -12,8 +12,10 @@
 @snippet sampleCode_(apiMethod)
   require "{@apiMethod.initCode.apiFileName}"
 
-  @join alias : apiMethod.initCode.imports
-    {@alias.nickname} = {@alias.fullName}
+  @join fileImport : apiMethod.initCode.importSection.appImports
+    @join alias : fileImport.types
+      {@alias.nickname} = {@alias.fullName}
+    @end
   @end
 
   {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new

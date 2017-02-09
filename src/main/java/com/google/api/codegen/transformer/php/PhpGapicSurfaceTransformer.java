@@ -56,7 +56,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private ApiMethodTransformer apiMethodTransformer;
   private GrpcStubTransformer grpcStubTransformer;
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new PhpImportTypeTransformer());
+      new FileHeaderTransformer(new PhpImportSectionTransformer());
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
@@ -127,6 +127,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
     xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
+    xapiClass.hasBundlingMethods(context.getInterfaceConfig().hasBundlingMethods());
     xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
     xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));

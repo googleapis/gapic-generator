@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.nodejs;
+package com.google.api.codegen.util;
 
-import com.google.api.codegen.util.js.JSCommentReformatter;
-
-/** Utility class for formatting source comments to follow JSDoc style. */
-public class JSDocCommentFixer {
-
-  /** Returns a JSDoc-formatted comment string. */
-  public static String jsdocify(String comment) {
-    return new JSCommentReformatter().reformat(comment);
+public class PassThroughCommentReformatter implements CommentReformatter {
+  @Override
+  public String reformat(String comment) {
+    return comment;
   }
 }
