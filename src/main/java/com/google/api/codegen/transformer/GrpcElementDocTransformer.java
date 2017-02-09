@@ -61,7 +61,7 @@ public class GrpcElementDocTransformer {
     ImmutableList.Builder<ParamDocView> propertyDocs = ImmutableList.builder();
     for (Field field : fields) {
       SimpleParamDocView.Builder doc = SimpleParamDocView.newBuilder();
-      doc.paramName(namer.getFieldName(field));
+      doc.paramName(field.getSimpleName());
       doc.typeName(namer.getParamTypeName(typeTable, field.getType()));
       doc.lines(namer.getDocLines(field));
       propertyDocs.add(doc.build());

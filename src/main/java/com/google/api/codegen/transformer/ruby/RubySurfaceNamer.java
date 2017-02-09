@@ -16,15 +16,19 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +72,33 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+    if (type.isMap()) {
+      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
+      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());
+      return new TypeName(
+              typeTable.getFullNameFor(type),
+              typeTable.getNicknameFor(type),
+              "%s{%i => %i}",
+              new TypeName(keyTypeName),
+              new TypeName(valueTypeName))
+          .getFullName();
+    }
+
+    if (type.isRepeated()) {
+      String elementTypeName = typeTable.getFullNameForElementType(type);
+      return new TypeName(
+              typeTable.getFullNameFor(type),
+              typeTable.getNicknameFor(type),
+              "%s<%i>",
+              new TypeName(elementTypeName))
+          .getFullName();
+    }
+
+    return typeTable.getFullNameForElementType(type);
+  }
+
+  @Override
   public String getFullyQualifiedStubType(Interface service) {
     NamePath namePath =
         getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
@@ -89,6 +120,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(Interface service) {
     return getPackageName() + "::" + getApiWrapperClassName(service);
+  }
+
+  @Override
+  public ImmutableList<String> getApiModules() {
+    return ImmutableList.copyOf(Splitter.on("::").split(getPackageName()));
   }
 
   @Override
