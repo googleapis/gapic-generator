@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.BooleanProto;
 import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
@@ -85,7 +85,7 @@ public abstract class MethodConfig {
 
   public abstract VisibilityConfig getVisibility();
 
-  public abstract boolean isDeprecated();
+  public abstract ReleaseLevel getReleaseLevel();
 
   @Nullable
   public abstract LongRunningConfig getLongRunningConfig();
@@ -222,22 +222,16 @@ public abstract class MethodConfig {
         Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
+    ReleaseLevel releaseLevel = ReleaseLevel.GA;
     for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
       if (!treatment.getIncludeLanguagesList().contains(language)) {
         continue;
       }
-      if (treatment.getVisibility() != VisibilityProto.UNSET) {
+      if (treatment.getVisibility() != VisibilityProto.UNSET_VISIBILITY) {
         visibility = VisibilityConfig.fromProto(treatment.getVisibility());
       }
-    }
-
-    boolean deprecated = false;
-    for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
-      if (!treatment.getIncludeLanguagesList().contains(language)) {
-        continue;
-      }
-      if (treatment.getDeprecated() != BooleanProto.UNSET_BOOLEANPROTO) {
-        deprecated = treatment.getDeprecated() == BooleanProto.TRUE;
+      if (treatment.getReleaseLevel() != ReleaseLevel.UNSET_RELEASE_LEVEL) {
+        releaseLevel = treatment.getReleaseLevel();
       }
     }
 
@@ -271,7 +265,7 @@ public abstract class MethodConfig {
           sampleCodeInitFields,
           rerouteToGrpcInterface,
           visibility,
-          deprecated,
+          releaseLevel,
           longRunningConfig);
     }
   }

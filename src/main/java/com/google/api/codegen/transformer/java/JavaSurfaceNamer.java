@@ -178,14 +178,14 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
-    String annotation = "";
     switch (releaseLevel) {
       case UNSET_RELEASE_LEVEL:
       case ALPHA:
-        annotation = "@ExperimentalApi";
-        break;
+        return "@ExperimentalApi";
+      case DEPRECATED:
+        return "@Deprecated";
       default:
+        return "";
     }
-    return annotation;
   }
 }

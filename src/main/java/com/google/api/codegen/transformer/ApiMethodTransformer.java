@@ -482,7 +482,8 @@ public class ApiMethodTransformer {
     methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
     methodViewBuilder.visibility(
         namer.getVisiblityKeyword(context.getMethodConfig().getVisibility()));
-    methodViewBuilder.deprecated(context.getMethodConfig().isDeprecated());
+    methodViewBuilder.releaseAnnotation(
+        namer.getReleaseAnnotation(context.getMethodConfig().getReleaseLevel()));
 
     ServiceMessages messages = new ServiceMessages();
     if (context.getMethodConfig().isLongRunningOperation()) {
