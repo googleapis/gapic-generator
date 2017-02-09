@@ -477,7 +477,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
     methodViewBuilder.visibility(
         namer.getVisiblityKeyword(context.getMethodConfig().getVisibility()));
-    methodViewBuilder.releaseAnnotation(
+    methodViewBuilder.releaseLevelAnnotation(
         namer.getReleaseAnnotation(context.getMethodConfig().getReleaseLevel()));
 
     ServiceMessages messages = new ServiceMessages();

@@ -89,7 +89,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
   @Nullable
   public abstract LongRunningOperationDetailView operationMethod();
 
-  public abstract String releaseAnnotation();
+  public abstract String releaseLevelAnnotation();
 
   public abstract Builder toBuilder();
 
@@ -153,7 +153,7 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
-    public abstract Builder releaseAnnotation(String value);
+    public abstract Builder releaseLevelAnnotation(String value);
 
     public abstract StaticLangApiMethodView build();
   }
