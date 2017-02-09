@@ -17,18 +17,20 @@ package com.google.api.codegen.ruby;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.BundlingTransformer;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
+import com.google.api.codegen.transformer.ruby.RubyImportSectionTransformer;
 import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
 import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
+import com.google.api.codegen.viewmodel.BundlingDescriptorView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
-import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
@@ -344,8 +346,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   public OptionalArrayMethodView getMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
-    ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
-    return methodTransformer.generateDynamicLangApiMethod(methodContext);
+    DynamicLangApiMethodTransformer methodTransformer = new DynamicLangApiMethodTransformer();
+    return methodTransformer.generateMethod(methodContext);
   }
 
   // TODO(jcanizales): Return just the one stub for that service.
@@ -355,16 +357,22 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return grpcStubTransformer.generateGrpcStubs(context);
   }
 
-  public List<ImportTypeView> getServiceImports(Interface service) {
-    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
+  public List<ImportFileView> getServiceImports(Interface service) {
+    RubyImportSectionTransformer importSectionTransformer = new RubyImportSectionTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    return importTypeTransformer.generateServiceFileImports(context);
+    return importSectionTransformer.generateImportSection(context).serviceImports();
   }
 
-  public List<ImportTypeView> getProtoImports(Interface service) {
-    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
+  public List<ImportFileView> getProtoImports(Interface service) {
+    RubyImportSectionTransformer importSectionTransformer = new RubyImportSectionTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    return importTypeTransformer.generateProtoFileImports(context);
+    return importSectionTransformer.generateImportSection(context).appImports();
+  }
+
+  public List<BundlingDescriptorView> getBundlingDescriptors(Interface service) {
+    BundlingTransformer bundlingTransformer = new BundlingTransformer();
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return bundlingTransformer.generateDescriptors(context);
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {

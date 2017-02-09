@@ -51,7 +51,7 @@
 
   @end
   @join import : {@context.getProtoImports(service)}
-    require "{@import.fullName}"
+    require "{@import.moduleName}"
   @end
 @end
 
@@ -132,14 +132,9 @@
     @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
 
       BUNDLE_DESCRIPTORS = {
-        @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
-            @let bundling = ifaceConfig.getMethodConfig(method).getBundling(), \
-                 methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-              "{@methodName}" => Google::Gax::BundleDescriptor.new(
-                {@bundleDescriptorBody(bundling, method)})
-            @end
-          @end
+        @join descriptor : context.getBundlingDescriptors(service) on {@", "}.add(BREAK)
+          "{@descriptor.methodName}" => Google::Gax::BundleDescriptor.new(
+            {@bundleDescriptorBody(descriptor)})
         @end
       }.freeze
 
@@ -233,13 +228,12 @@
       @# These require statements are intentionally placed here to initialize
       @# the gRPC module only when it's required.
       @# See https://github.com/googleapis/toolkit/issues/446
-      require "google/gax/grpc"
       @join import : {@context.getServiceImports(service)}
-        require "{@import.fullName}"
+        require "{@import.moduleName}"
       @end
 
       @if context.hasLongrunningMethod(service)
-        @@operations_client = Google::Longrunning::OperationsApi.new(
+        @@operations_client = Google::Longrunning::OperationsClient.new(
           service_path: service_path,
           port: port,
           channel: channel,
@@ -283,25 +277,17 @@
   @end
 @end
 
-@private bundleDescriptorBody(bundling, method)
-  @let bundledField = bundling.getBundledField().getSimpleName(), \
-       discriminatorFields = bundling.getDiscriminatorFields()
-    @if {@bundling.hasSubresponseField}
-      "{@bundledField}",
-      [
-        @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          "{@fieldSelector.getParamName}"
-        @end
-      ],
-      subresponse_field: "{@bundling.getSubresponseField().getSimpleName()}"
-    @else
-      "{@bundledField}",
-      [
-        @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          "{@fieldSelector.getParamName}"
-        @end
-      ]
+@private bundleDescriptorBody(descriptor)
+  "{@descriptor.bundledFieldName}",
+  [
+    @join name : descriptor.discriminatorFieldNames on {@","}.add(BREAK)
+      "{@name}"
     @end
+  @if {@descriptor.hasSubresponseField}
+    ],
+    subresponse_field: "{@descriptor.subresponseFieldName}"
+  @else
+    ]
   @end
 @end
 

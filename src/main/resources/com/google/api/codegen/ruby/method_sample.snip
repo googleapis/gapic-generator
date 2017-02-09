@@ -18,8 +18,10 @@
 @end
 
 @snippet sampleCodeAliases(apiMethod)
-  @join alias : apiMethod.initCode.imports
-    {@alias.nickname} = {@alias.fullName}
+  @join fileImport : apiMethod.initCode.importSection.appImports
+    @join alias : fileImport.types
+      {@alias.nickname} = {@alias.fullName}
+    @end
   @end
 @end
 

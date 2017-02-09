@@ -69,6 +69,7 @@ $service = new Google_Service_Logging($client);
 $parent = '';  // TODO: Update placeholder value.
 
 $optParams = [];
+
 do {
   $response = $service->billingAccounts_logs->listBillingAccountsLogs($parent, $optParams);
 
@@ -110,17 +111,16 @@ $service = new Google_Service_Logging($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Logging_ListLogEntriesRequest();
 
-$optParams = [];
 do {
-  $response = $service->entries->listEntries($requestBody, $optParams);
+  $response = $service->entries->listEntries($requestBody);
 
   foreach ($response['entries'] as $logEntry) {
     // TODO: Change code below to process each `logEntry` resource:
     echo '<pre>', var_export($logEntry, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -185,6 +185,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_Logging($client);
 
 $optParams = [];
+
 do {
   $response = $service->monitoredResourceDescriptors->listMonitoredResourceDescriptors($optParams);
 
@@ -266,6 +267,7 @@ $service = new Google_Service_Logging($client);
 $parent = '';  // TODO: Update placeholder value.
 
 $optParams = [];
+
 do {
   $response = $service->organizations_logs->listOrganizationsLogs($parent, $optParams);
 
@@ -347,6 +349,7 @@ $service = new Google_Service_Logging($client);
 $parent = '';  // TODO: Update placeholder value.
 
 $optParams = [];
+
 do {
   $response = $service->projects_logs->listProjectsLogs($parent, $optParams);
 
@@ -499,6 +502,7 @@ $service = new Google_Service_Logging($client);
 $parent = '';  // TODO: Update placeholder value.
 
 $optParams = [];
+
 do {
   $response = $service->projects_metrics->listProjectsMetrics($parent, $optParams);
 
@@ -700,6 +704,7 @@ $service = new Google_Service_Logging($client);
 $parent = '';  // TODO: Update placeholder value.
 
 $optParams = [];
+
 do {
   $response = $service->projects_sinks->listProjectsSinks($parent, $optParams);
 

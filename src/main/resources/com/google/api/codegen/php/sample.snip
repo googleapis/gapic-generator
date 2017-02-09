@@ -42,20 +42,26 @@
   ${@class.serviceVarName} = new {@class.serviceTypeName}(${@class.clientVarName});
 
   @join field : class.requiredFields if class.requiredFields
-    @if field.description
-      @join line : util.getDocLines(field.description, 100)
-        // {@line}
+    {@field(field, "")}
+
+  @end
+  @if class.optParamsVarName
+    ${@class.optParamsVarName} = [];
+
+  @end
+  @join field : class.optionalFields if class.optionalFields
+    {@field(field, class.optParamsVarName)}
+
+  @end
+  @if class.hasRequestBody
+    @if class.requestBodyFields
+      @join field : class.requestBodyFields
+        {@field(field, "")}
+
       @end
 
 
     @end
-    ${@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
-    @if field.example
-      // {@field.example}
-    @end
-
-  @end
-  @if class.hasRequestBody
     @switch class.methodVerb
     @case "PATCH"
       // TODO: Assign values to desired properties of `{@class.requestBodyVarName}`. Only assigned
@@ -68,6 +74,9 @@
     @end
 
     ${@class.requestBodyVarName} = new {@class.requestBodyTypeName}();
+    @join field : class.requestBodyFields if class.requestBodyFields
+      ${@class.requestBodyVarName}->{@field.setterFuncName}(${@field.name});
+    @end
 
   @end
   @if class.hasMediaUpload
@@ -75,11 +84,7 @@
     // https://developers.google.com/api-client-library/php/guide/media_upload
 
   @end
-  @if class.optParamsVarName
-    ${@class.optParamsVarName} = [];
-  @end
   @if class.hasMediaDownload
-
     // TODO: To download media content, use:
     //
     // ${@class.optParamsVarName}['alt'] = 'media';
@@ -106,8 +111,8 @@
         echo '<pre>', var_export(${@class.responseVarName}['{@class.pageStreaming.resourceFieldName}'], true), '</pre>', "\n";
       @end
 
-      ${@class.optParamsVarName()}['{@class.pageStreaming.pageTokenName}'] = ${@class.responseVarName}->get{@class.pageStreaming.nextPageTokenName}();
-    } while (${@class.optParamsVarName}['{@class.pageStreaming.pageTokenName}']);
+      {@updatePageToken(class)};
+    } while ({@currentPageToken(class)});
   @else
     @if class.hasResponse
       ${@class.responseVarName} = ${@class.serviceVarName}->{@callChain(class.methodNameComponents)}({@paramList(class.methodCallFieldVarNames)});
@@ -125,6 +130,26 @@
   ?>
 @end
 
+@private nextPageToken(class)
+  ${@class.responseVarName}->get{@class.pageStreaming.nextPageTokenName}()
+@end
+
+@private updatePageToken(class)
+  @if class.pageStreaming.isResourceSetterInRequestBody
+    ${@class.requestBodyVarName}->set{@class.pageStreaming.pageTokenName}({@nextPageToken(class)})
+  @else
+    ${@class.optParamsVarName()}['{@class.pageStreaming.pageTokenName}'] = {@nextPageToken(class)}
+  @end
+@end
+
+@private currentPageToken(class)
+  @if class.pageStreaming.isResourceSetterInRequestBody
+    ${@class.requestBodyVarName}->get{@class.pageStreaming.pageTokenName}()
+  @else
+    ${@class.optParamsVarName}['{@class.pageStreaming.pageTokenName}']
+  @end
+@end
+
 @private getClientFunc(class)
   function getClient() {
     // TODO: Change placeholder below to generate authentication credentials. See
@@ -140,6 +165,25 @@
     @end
     return null;
   }
+@end
+
+@private field(field, optParamsVarName)
+  @if field.description
+    @join line : util.getDocLines(field.description, 100)
+      // {@line}
+    @end
+
+
+  @end
+  @if optParamsVarName
+    ${@optParamsVarName}['{@field.name}'] = {@field.defaultValue};  // TODO: Update placeholder value.
+  @else
+    ${@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
+  @end
+
+  @if field.example
+    // {@field.example}
+  @end
 @end
 
 @private callChain(methodNameComponents)

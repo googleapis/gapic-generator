@@ -10,7 +10,9 @@
       "src"
     ],
     "dependencies": {
-      "google-proto-files": "^{@metadata.commonProtosVersionBound.lower}",
+      @join packageDep : metadata.protoPackageDependencies
+        "{@packageDep.name}": "^{@packageDep.versionBound.lower}",
+      @end
       "google-gax": "^{@metadata.gaxVersionBound.lower}",
       @if metadata.hasMultipleServices
         "lodash.union": "^4.6.0",
