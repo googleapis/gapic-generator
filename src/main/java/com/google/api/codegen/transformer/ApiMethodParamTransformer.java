@@ -19,7 +19,7 @@ import com.google.api.codegen.viewmodel.ParamDocView;
 import java.util.List;
 
 public interface ApiMethodParamTransformer {
-  /** Creates the views for the parameters in the API method definition.  */
+  /** Creates the views for the parameters in the API method definition. */
   List<DynamicLangDefaultableParamView> generateMethodParams(MethodTransformerContext context);
 
   /** Creates the views for the documentation of the API method parameters. */
