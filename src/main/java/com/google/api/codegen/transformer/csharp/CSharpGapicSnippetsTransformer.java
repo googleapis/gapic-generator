@@ -21,13 +21,13 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -53,7 +53,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
-  private final ApiMethodTransformer apiMethodTransformer = new CSharpApiMethodTransformer();
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new CSharpApiMethodTransformer();
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
 
   public CSharpGapicSnippetsTransformer(GapicCodePathMapper pathMapper) {

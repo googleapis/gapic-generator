@@ -22,7 +22,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
@@ -33,6 +32,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -78,7 +78,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final int COMMENT_LINE_LENGTH = 75;
 
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
-  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new GoImportSectionTransformer());
