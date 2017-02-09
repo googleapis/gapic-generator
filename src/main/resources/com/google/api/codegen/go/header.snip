@@ -11,7 +11,16 @@
     // AUTO-GENERATED CODE. DO NOT EDIT.
 @end
 
-@snippet imports(fileImports)
+@snippet renderImportSection(importSection)
+    @if importSection.standardImports
+        {@imports(importSection.standardImports)}
+
+
+    @end
+    {@imports(importSection.externalImports)}
+@end
+
+@private imports(fileImports)
     @join fileImport : fileImports
         @join import : fileImport.types
             @if import.nickname
