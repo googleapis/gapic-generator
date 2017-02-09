@@ -23,7 +23,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -35,6 +34,7 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StandardImportTypeTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -68,7 +68,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private static final String RESOURCENAMES_TEMPLATE_FILENAME = "csharp/gapic_resourcenames.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final ApiMethodTransformer apiMethodTransformer = new CSharpApiMethodTransformer();
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new CSharpApiMethodTransformer();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();

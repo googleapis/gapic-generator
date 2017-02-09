@@ -22,7 +22,7 @@ import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -53,7 +53,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private ServiceTransformer serviceTransformer;
   private PathTemplateTransformer pathTemplateTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
-  private ApiMethodTransformer apiMethodTransformer;
+  private DynamicLangApiMethodTransformer apiMethodTransformer;
   private GrpcStubTransformer grpcStubTransformer;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new PhpImportTypeTransformer());
@@ -65,7 +65,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
-    this.apiMethodTransformer = new ApiMethodTransformer();
+    this.apiMethodTransformer = new DynamicLangApiMethodTransformer();
     this.grpcStubTransformer = new GrpcStubTransformer();
   }
 
@@ -238,9 +238,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     List<ApiMethodView> apiMethods = new ArrayList<>(context.getInterface().getMethods().size());
 
     for (Method method : context.getSupportedMethods()) {
-      apiMethods.add(
-          apiMethodTransformer.generateDynamicLangApiMethod(
-              context.asDynamicMethodContext(method)));
+      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
     }
 
     return apiMethods;
