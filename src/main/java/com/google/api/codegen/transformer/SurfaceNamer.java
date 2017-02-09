@@ -21,6 +21,7 @@ import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
@@ -53,16 +54,19 @@ import java.util.List;
 public class SurfaceNamer extends NameFormatterDelegator {
   private final ModelTypeFormatter modelTypeFormatter;
   private final TypeNameConverter typeNameConverter;
+  private final CommentReformatter commentReformatter;
   private final String packageName;
 
   public SurfaceNamer(
       NameFormatter languageNamer,
       ModelTypeFormatter modelTypeFormatter,
       TypeNameConverter typeNameConverter,
+      CommentReformatter commentReformatter,
       String packageName) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
     this.typeNameConverter = typeNameConverter;
+    this.commentReformatter = commentReformatter;
     this.packageName = packageName;
   }
 
@@ -932,12 +936,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return true;
   }
 
-  public String getServiceFileImportFromService(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getServiceFileImportFromService");
+  public String getServiceFileImportName(String filename) {
+    return getNotImplementedString("SurfaceNamer.getServiceFileImportName");
   }
 
-  public String getProtoFileImportFromService(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getProtoFileImportFromService");
+  public String getProtoFileImportName(String filename) {
+    return getNotImplementedString("SurfaceNamer.getProtoFileImportName");
   }
 
   /** The name of the import for a specific grpcClient */
@@ -954,12 +958,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Converts the given text to doc lines in the format of the current language. */
   public List<String> getDocLines(String text) {
-    return CommonRenderingUtil.getDocLines(text);
+    return CommonRenderingUtil.getDocLines(commentReformatter.reformat(text));
   }
 
   /** Provides the doc lines for the given proto element in the current language. */
   public List<String> getDocLines(ProtoElement element) {
-    return getDocLines(DocumentationUtil.getDescription(element));
+    return getDocLines(DocumentationUtil.getScopedDescription(element));
   }
 
   /** Provides the doc lines for the given method element in the current language. */

@@ -27,12 +27,12 @@ import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
+import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -47,8 +47,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
   private static final String TEMPLATE_FILENAME = "java/sample.snip";
 
-  private final StandardImportTypeTransformer importTypeTransformer =
-      new StandardImportTypeTransformer();
+  private final StandardImportSectionTransformer importSectionTransformer =
+      new StandardImportSectionTransformer();
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
@@ -122,8 +122,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     }
 
     // Imports must be collected last.
-    List<ImportTypeView> imports =
-        new ArrayList<>(importTypeTransformer.generateImports(typeTable.getImports()));
+    ImportSectionView importSection =
+        importSectionTransformer.generateImportSection(typeTable.getImports());
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
@@ -133,7 +133,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
         .apiVersion(config.apiVersion())
         .appName(namer.getSampleApplicationName(config.apiCanonicalName()))
         .className(namer.getSampleClassName(config.apiTypeName()))
-        .imports(imports)
+        .importSection(importSection)
         .auth(createSampleAuthView(context))
         .serviceVarName(serviceVarName)
         .serviceTypeName(serviceTypeName)
