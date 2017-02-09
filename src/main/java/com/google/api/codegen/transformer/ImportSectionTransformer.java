@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.viewmodel.ImportTypeView;
-import java.util.List;
-import java.util.Map;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 
-public interface ImportTypeTransformer {
-  List<ImportTypeView> generateImports(Map<String, TypeAlias> imports);
+public interface ImportSectionTransformer {
+  ImportSectionView generateImportSection(SurfaceTransformerContext context);
 }

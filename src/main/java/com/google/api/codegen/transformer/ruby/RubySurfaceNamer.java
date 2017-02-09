@@ -92,12 +92,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getServiceFileImportFromService(Interface service) {
-    return service.getFile().getSimpleName().replace(".proto", "_services_pb");
+  public String getServiceFileImportName(String filename) {
+    return filename.replace(".proto", "_services_pb");
   }
 
   @Override
-  public String getProtoFileImportFromService(Interface service) {
-    return service.getFile().getSimpleName().replace(".proto", "_pb");
+  public String getProtoFileImportName(String filename) {
+    return filename.replace(".proto", "_pb");
   }
 }

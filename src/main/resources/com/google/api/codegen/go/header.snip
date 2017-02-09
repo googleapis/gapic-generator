@@ -11,12 +11,23 @@
     // AUTO-GENERATED CODE. DO NOT EDIT.
 @end
 
-@snippet imports(imps)
-    @join imp : imps
-        @if imp.nickname
-            {@imp.nickname} {@imp.fullName}
-        @else
-            {@imp.fullName}
+@snippet renderImportSection(importSection)
+    @if importSection.standardImports
+        {@imports(importSection.standardImports)}
+
+
+    @end
+    {@imports(importSection.externalImports)}
+@end
+
+@private imports(fileImports)
+    @join fileImport : fileImports
+        @join import : fileImport.types
+            @if import.nickname
+                {@import.nickname} {@import.fullName}
+            @else
+                {@import.fullName}
+            @end
         @end
     @end
 @end

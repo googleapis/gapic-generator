@@ -22,15 +22,15 @@ import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.ruby.RubyFeatureConfig;
+import com.google.api.codegen.transformer.ruby.RubyImportSectionTransformer;
 import com.google.api.codegen.transformer.ruby.RubyModelTypeNameConverter;
 import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.BundlingDescriptorView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
-import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
@@ -354,16 +354,16 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     return grpcStubTransformer.generateGrpcStubs(context);
   }
 
-  public List<ImportTypeView> getServiceImports(Interface service) {
-    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
+  public List<ImportFileView> getServiceImports(Interface service) {
+    RubyImportSectionTransformer importSectionTransformer = new RubyImportSectionTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    return importTypeTransformer.generateServiceFileImports(context);
+    return importSectionTransformer.generateImportSection(context).serviceImports();
   }
 
-  public List<ImportTypeView> getProtoImports(Interface service) {
-    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
+  public List<ImportFileView> getProtoImports(Interface service) {
+    RubyImportSectionTransformer importSectionTransformer = new RubyImportSectionTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    return importTypeTransformer.generateProtoFileImports(context);
+    return importSectionTransformer.generateImportSection(context).appImports();
   }
 
   public List<BundlingDescriptorView> getBundlingDescriptors(Interface service) {

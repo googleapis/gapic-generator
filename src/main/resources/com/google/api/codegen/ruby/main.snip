@@ -51,7 +51,7 @@
 
   @end
   @join import : {@context.getProtoImports(service)}
-    require "{@import.fullName}"
+    require "{@import.moduleName}"
   @end
 @end
 
@@ -228,9 +228,8 @@
       @# These require statements are intentionally placed here to initialize
       @# the gRPC module only when it's required.
       @# See https://github.com/googleapis/toolkit/issues/446
-      require "google/gax/grpc"
       @join import : {@context.getServiceImports(service)}
-        require "{@import.fullName}"
+        require "{@import.moduleName}"
       @end
 
       @if context.hasLongrunningMethod(service)
