@@ -157,6 +157,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
 
   var self = this;
 
+  this.auth = gaxGrpc.auth;
   var libraryServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
@@ -330,6 +331,15 @@ LibraryServiceClient.prototype.matchBookFromReturnName = function(returnName) {
  */
 LibraryServiceClient.prototype.matchReturnFromReturnName = function(returnName) {
   return RETURN_PATH_TEMPLATE.match(returnName).return;
+};
+
+/**
+ * Get the project ID used by this class.
+ * @aram {function(Error, string)} callback - the callback to be called with
+ *   the current project Id.
+ */
+LibraryServiceClient.prototype.getProjectId = function(callback) {
+  return this.auth.getProjectId(callback);
 };
 
 // Service calls
