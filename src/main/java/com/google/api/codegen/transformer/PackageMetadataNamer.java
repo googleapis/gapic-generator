@@ -27,6 +27,10 @@ public class PackageMetadataNamer {
     return getNotImplementedString("PackageMetadataNamer.getMetadataIdentifier");
   }
 
+  public String getOutputFileName() {
+    return getNotImplementedString("PackageMetadataNamer.getOutputFileName");
+  }
+
   /** Returns the unimplemented string message */
   public String getNotImplementedString(String feature) {
     return "$ NOT IMPLEMENTED: " + feature + " $";
