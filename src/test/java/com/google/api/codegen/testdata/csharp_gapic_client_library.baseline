@@ -3742,7 +3742,6 @@ namespace Google.Example.Library.V1
     /// </summary>
     public sealed partial class LibraryServiceClientImpl : LibraryServiceClient
     {
-        private readonly ClientHelper _clientHelper;
         private readonly ApiCall<CreateShelfRequest, Shelf> _callCreateShelf;
         private readonly ApiCall<GetShelfRequest, Shelf> _callGetShelf;
         private readonly ApiCall<ListShelvesRequest, ListShelvesResponse> _callListShelves;
@@ -3778,53 +3777,53 @@ namespace Google.Example.Library.V1
             LibraryServiceSettings effectiveSettings = settings ?? LibraryServiceSettings.GetDefault();
             LongRunningOperationsClient = new OperationsClientImpl(
                 grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
-            _clientHelper = new ClientHelper(effectiveSettings);
+            ClientHelper clientHelper = new ClientHelper(effectiveSettings);
             var grpcLabelerClient = grpcClient.CreateLabelerClient();
-            _callCreateShelf = _clientHelper.BuildApiCall<CreateShelfRequest, Shelf>(
+            _callCreateShelf = clientHelper.BuildApiCall<CreateShelfRequest, Shelf>(
                 GrpcClient.CreateShelfAsync, GrpcClient.CreateShelf, effectiveSettings.CreateShelfSettings);
-            _callGetShelf = _clientHelper.BuildApiCall<GetShelfRequest, Shelf>(
+            _callGetShelf = clientHelper.BuildApiCall<GetShelfRequest, Shelf>(
                 GrpcClient.GetShelfAsync, GrpcClient.GetShelf, effectiveSettings.GetShelfSettings);
-            _callListShelves = _clientHelper.BuildApiCall<ListShelvesRequest, ListShelvesResponse>(
+            _callListShelves = clientHelper.BuildApiCall<ListShelvesRequest, ListShelvesResponse>(
                 GrpcClient.ListShelvesAsync, GrpcClient.ListShelves, effectiveSettings.ListShelvesSettings);
-            _callDeleteShelf = _clientHelper.BuildApiCall<DeleteShelfRequest, Empty>(
+            _callDeleteShelf = clientHelper.BuildApiCall<DeleteShelfRequest, Empty>(
                 GrpcClient.DeleteShelfAsync, GrpcClient.DeleteShelf, effectiveSettings.DeleteShelfSettings);
-            _callMergeShelves = _clientHelper.BuildApiCall<MergeShelvesRequest, Shelf>(
+            _callMergeShelves = clientHelper.BuildApiCall<MergeShelvesRequest, Shelf>(
                 GrpcClient.MergeShelvesAsync, GrpcClient.MergeShelves, effectiveSettings.MergeShelvesSettings);
-            _callCreateBook = _clientHelper.BuildApiCall<CreateBookRequest, Book>(
+            _callCreateBook = clientHelper.BuildApiCall<CreateBookRequest, Book>(
                 GrpcClient.CreateBookAsync, GrpcClient.CreateBook, effectiveSettings.CreateBookSettings);
-            _callPublishSeries = _clientHelper.BuildApiCall<PublishSeriesRequest, PublishSeriesResponse>(
+            _callPublishSeries = clientHelper.BuildApiCall<PublishSeriesRequest, PublishSeriesResponse>(
                 GrpcClient.PublishSeriesAsync, GrpcClient.PublishSeries, effectiveSettings.PublishSeriesSettings);
-            _callGetBook = _clientHelper.BuildApiCall<GetBookRequest, Book>(
+            _callGetBook = clientHelper.BuildApiCall<GetBookRequest, Book>(
                 GrpcClient.GetBookAsync, GrpcClient.GetBook, effectiveSettings.GetBookSettings);
-            _callListBooks = _clientHelper.BuildApiCall<ListBooksRequest, ListBooksResponse>(
+            _callListBooks = clientHelper.BuildApiCall<ListBooksRequest, ListBooksResponse>(
                 GrpcClient.ListBooksAsync, GrpcClient.ListBooks, effectiveSettings.ListBooksSettings);
-            _callDeleteBook = _clientHelper.BuildApiCall<DeleteBookRequest, Empty>(
+            _callDeleteBook = clientHelper.BuildApiCall<DeleteBookRequest, Empty>(
                 GrpcClient.DeleteBookAsync, GrpcClient.DeleteBook, effectiveSettings.DeleteBookSettings);
-            _callUpdateBook = _clientHelper.BuildApiCall<UpdateBookRequest, Book>(
+            _callUpdateBook = clientHelper.BuildApiCall<UpdateBookRequest, Book>(
                 GrpcClient.UpdateBookAsync, GrpcClient.UpdateBook, effectiveSettings.UpdateBookSettings);
-            _callMoveBook = _clientHelper.BuildApiCall<MoveBookRequest, Book>(
+            _callMoveBook = clientHelper.BuildApiCall<MoveBookRequest, Book>(
                 GrpcClient.MoveBookAsync, GrpcClient.MoveBook, effectiveSettings.MoveBookSettings);
-            _callListStrings = _clientHelper.BuildApiCall<ListStringsRequest, ListStringsResponse>(
+            _callListStrings = clientHelper.BuildApiCall<ListStringsRequest, ListStringsResponse>(
                 GrpcClient.ListStringsAsync, GrpcClient.ListStrings, effectiveSettings.ListStringsSettings);
-            _callAddComments = _clientHelper.BuildApiCall<AddCommentsRequest, Empty>(
+            _callAddComments = clientHelper.BuildApiCall<AddCommentsRequest, Empty>(
                 GrpcClient.AddCommentsAsync, GrpcClient.AddComments, effectiveSettings.AddCommentsSettings);
-            _callGetBookFromArchive = _clientHelper.BuildApiCall<GetBookFromArchiveRequest, BookFromArchive>(
+            _callGetBookFromArchive = clientHelper.BuildApiCall<GetBookFromArchiveRequest, BookFromArchive>(
                 GrpcClient.GetBookFromArchiveAsync, GrpcClient.GetBookFromArchive, effectiveSettings.GetBookFromArchiveSettings);
-            _callGetBookFromAnywhere = _clientHelper.BuildApiCall<GetBookFromAnywhereRequest, BookFromAnywhere>(
+            _callGetBookFromAnywhere = clientHelper.BuildApiCall<GetBookFromAnywhereRequest, BookFromAnywhere>(
                 GrpcClient.GetBookFromAnywhereAsync, GrpcClient.GetBookFromAnywhere, effectiveSettings.GetBookFromAnywhereSettings);
-            _callUpdateBookIndex = _clientHelper.BuildApiCall<UpdateBookIndexRequest, Empty>(
+            _callUpdateBookIndex = clientHelper.BuildApiCall<UpdateBookIndexRequest, Empty>(
                 GrpcClient.UpdateBookIndexAsync, GrpcClient.UpdateBookIndex, effectiveSettings.UpdateBookIndexSettings);
-            _callDiscussBook = _clientHelper.BuildApiCall<DiscussBookRequest, Comment>(
+            _callDiscussBook = clientHelper.BuildApiCall<DiscussBookRequest, Comment>(
                 GrpcClient.DiscussBook, effectiveSettings.DiscussBookSettings, effectiveSettings.DiscussBookStreamingSettings);
-            _callFindRelatedBooks = _clientHelper.BuildApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse>(
+            _callFindRelatedBooks = clientHelper.BuildApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse>(
                 GrpcClient.FindRelatedBooksAsync, GrpcClient.FindRelatedBooks, effectiveSettings.FindRelatedBooksSettings);
-            _callAddTag = _clientHelper.BuildApiCall<AddTagRequest, AddTagResponse>(
+            _callAddTag = clientHelper.BuildApiCall<AddTagRequest, AddTagResponse>(
                 GrpcClient.AddTagAsync, GrpcClient.AddTag, effectiveSettings.AddTagSettings);
-            _callAddLabel = _clientHelper.BuildApiCall<AddLabelRequest, AddLabelResponse>(
+            _callAddLabel = clientHelper.BuildApiCall<AddLabelRequest, AddLabelResponse>(
                 grpcLabelerClient.AddLabelAsync, grpcLabelerClient.AddLabel, effectiveSettings.AddLabelSettings);
-            _callGetBigBook = _clientHelper.BuildApiCall<GetBookRequest, Operation>(
+            _callGetBigBook = clientHelper.BuildApiCall<GetBookRequest, Operation>(
                 GrpcClient.GetBigBookAsync, GrpcClient.GetBigBook, effectiveSettings.GetBigBookSettings);
-            _callGetBigNothing = _clientHelper.BuildApiCall<GetBookRequest, Operation>(
+            _callGetBigNothing = clientHelper.BuildApiCall<GetBookRequest, Operation>(
                 GrpcClient.GetBigNothingAsync, GrpcClient.GetBigNothing, effectiveSettings.GetBigNothingSettings);
         }
 
