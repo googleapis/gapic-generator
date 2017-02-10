@@ -20,11 +20,10 @@ package library
 import (
     "fmt"
     "math"
-    "runtime"
-    "strings"
     "time"
 
     "cloud.google.com/go/iam"
+    "cloud.google.com/go/internal/version"
     "cloud.google.com/go/longrunning"
     gax "github.com/googleapis/gax-go"
     "golang.org/x/net/context"
@@ -171,7 +170,7 @@ func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error
         client: librarypb.NewLibraryServiceClient(conn),
         labelerClient: taggerpb.NewLabelerClient(conn),
     }
-    c.SetGoogleClientInfo(gapicName, gapicVersion)
+    c.SetGoogleClientInfo("gapic", version.Repo)
     return c, nil
 }
 
@@ -189,9 +188,8 @@ func (c *Client) Close() error {
 // SetGoogleClientInfo sets the name and version of the application in
 // the `x-goog-api-client` header passed on each request. Intended for
 // use by Google-written clients.
-func (c *Client) SetGoogleClientInfo(name, version string) {
-    goVersion := strings.Replace(runtime.Version(), " ", "_", -1)
-    c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gax/%s", goVersion, name, version, gax.Version)
+func (c *Client) SetGoogleClientInfo(clientName, clientVersion string) {
+    c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gax/%s grpc/UNKNOWN", version.Go(), clientName, clientVersion, gax.Version)
 }
 
 // LibraryShelfPath returns the path for the shelf resource.
