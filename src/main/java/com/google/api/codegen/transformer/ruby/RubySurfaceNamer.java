@@ -121,7 +121,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
     for (String token : split) {
       if (token.length() > 0) {
         if (token.equals(InitFieldConfig.RANDOM_TOKEN)) {
-          stringParts.add("Time.new.to_i");
+          stringParts.add("Time.new.to_i.to_s");
         } else {
           stringParts.add("\"" + token + "\"");
         }
