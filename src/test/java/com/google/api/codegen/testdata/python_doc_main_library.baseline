@@ -629,6 +629,7 @@ class LibraryServiceClient(object):
             series_uuid,
             edition=None,
             review_copy=None,
+            series_uuid=None,
             options=None):
         """
         Creates a series of books.
@@ -659,6 +660,8 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
+        if series_uuid is None:
+            series_uuid = library_pb2.SeriesUuid()
         request = library_pb2.PublishSeriesRequest(
             shelf=shelf,
             books=books,
