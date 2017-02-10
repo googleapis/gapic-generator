@@ -109,10 +109,6 @@
          * @@param {Object=} opts.clientConfig
          *   The customized config to build the call settings. See
          *   {@@link gax.constructSettings} for the format.
-         * @@param {number=} opts.appName
-         *   The codename of the calling service.
-         * @@param {String=} opts.appVersion
-         *   The version of the calling service.
          */
         this.{@context.upperCamelToLowerCamel(apiName)} = function(opts) {
           return new {@apiName}(gaxGrpc, {@clientsParamName(stubs)}, opts);
@@ -244,14 +240,17 @@
       var port = opts.port || DEFAULT_SERVICE_PORT;
       var sslCreds = opts.sslCreds || null;
       var clientConfig = opts.clientConfig || {};
-      var appName = opts.appName || 'gax';
-      var appVersion = opts.appVersion || gax.version;
 
       var googleApiClient = [
-        appName + '/' + appVersion,
+        'gl-node/' + process.versions.node,
+        @if context.isGcloud
+          # TODO: might need to allow customizing the path to the package.json.
+          'gccl/' + require('../../package.json').version,
+        @end
         CODE_GEN_NAME_VERSION,
         'gax/' + gax.version,
-        'nodejs/' + process.version].join(' ');
+        'grpc/' + gaxGrpc.grpcVersion
+      ].join(' ');
       @let methods = context.getSupportedMethods(service), \
            bundlingMethods = context.messages.filterBundlingMethods(ifaceConfig, methods), \
            longrunningMethods = context.messages.filterLongrunningMethods(ifaceConfig, methods)
@@ -287,9 +286,7 @@
             servicePath: servicePath,
             port: port,
             sslCreds: sslCreds,
-            clientConfig: clientConfig,
-            appName: appName,
-            appVersion: appVersion
+            clientConfig: clientConfig
           });
           
           this.longrunningDescriptors = {
