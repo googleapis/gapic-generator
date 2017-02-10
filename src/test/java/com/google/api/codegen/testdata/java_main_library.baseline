@@ -852,9 +852,14 @@ public class LibraryServiceClient implements AutoCloseable {
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   String seriesString = "foobar";
+   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+   *     .setSeriesString(seriesString)
+   *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
    *     .setShelf(shelf)
    *     .addAllBooks(books)
+   *     .setSeriesUuid(seriesUuid)
    *     .build();
    *   PublishSeriesResponse response = libraryServiceClient.publishSeries(request);
    * }
@@ -876,9 +881,14 @@ public class LibraryServiceClient implements AutoCloseable {
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   String seriesString = "foobar";
+   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+   *     .setSeriesString(seriesString)
+   *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
    *     .setShelf(shelf)
    *     .addAllBooks(books)
+   *     .setSeriesUuid(seriesUuid)
    *     .build();
    *   RpcFuture&lt;PublishSeriesResponse&gt; future = libraryServiceClient.publishSeriesCallable().futureCall(request);
    *   // Do something

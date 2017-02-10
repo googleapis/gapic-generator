@@ -198,6 +198,7 @@ interfaces:
     required_fields:
       - shelf
       - books
+      - series_uuid
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 7000
@@ -216,6 +217,8 @@ interfaces:
         subresponse_field: book_names
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
+    sample_code_init_fields:
+    - series_uuid.series_string=foobar
   - name: GetBook
     flattening:
       groups:
