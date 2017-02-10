@@ -218,8 +218,10 @@ public class TestCaseTransformer {
     if (context.getMethodConfig().isBundling()) {
       // Initialize one bundling element if it is bundling.
       BundlingConfig config = context.getMethodConfig().getBundling();
-      String subResponseFieldName = config.getSubresponseField().getSimpleName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
+      if (config.getSubresponseField() != null) {
+        String subResponseFieldName = config.getSubresponseField().getSimpleName();
+        additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
+      }
     }
     return additionalSubTrees;
   }

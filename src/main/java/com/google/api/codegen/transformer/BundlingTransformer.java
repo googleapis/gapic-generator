@@ -98,8 +98,6 @@ public class BundlingTransformer {
     Name bundledTypeName = Name.from(bundledField.getSimpleName());
 
     Field subresponseField = bundling.getSubresponseField();
-    TypeRef subresponseType = subresponseField.getType();
-    Name subresponseTypeName = Name.from(subresponseField.getSimpleName());
 
     BundlingDescriptorClassView.Builder desc = BundlingDescriptorClassView.newBuilder();
 
@@ -107,7 +105,6 @@ public class BundlingTransformer {
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     desc.bundledFieldTypeName(typeTable.getAndSaveNicknameFor(bundledType));
-    desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseType));
 
     desc.partitionKeys(generatePartitionKeys(context));
     desc.discriminatorFieldCopies(generateDiscriminatorFieldCopies(context));
@@ -115,9 +112,15 @@ public class BundlingTransformer {
     desc.bundledFieldGetFunction(namer.getFieldGetFunctionName(bundledType, bundledTypeName));
     desc.bundledFieldSetFunction(namer.getFieldSetFunctionName(bundledType, bundledTypeName));
     desc.bundledFieldCountGetFunction(namer.getFieldCountGetFunctionName(bundledField));
-    desc.subresponseByIndexGetFunction(namer.getByIndexGetFunctionName(subresponseField));
-    desc.subresponseSetFunction(
-        namer.getFieldSetFunctionName(subresponseType, subresponseTypeName));
+
+    if (subresponseField != null) {
+      TypeRef subresponseType = subresponseField.getType();
+      Name subresponseTypeName = Name.from(subresponseField.getSimpleName());
+      desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseType));
+      desc.subresponseByIndexGetFunction(namer.getByIndexGetFunctionName(subresponseField));
+      desc.subresponseSetFunction(
+          namer.getFieldSetFunctionName(subresponseType, subresponseTypeName));
+    }
 
     return desc.build();
   }
