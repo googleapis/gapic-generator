@@ -234,7 +234,7 @@ public class TestCaseTransformer {
         context, new SymbolTable(), createSmokeTestInitContext(context), methodType);
   }
 
-  public boolean requireProjectId(InitCodeView initCodeView, SurfaceNamer namer) {
+  public boolean requireProjectIdInSmokeTest(InitCodeView initCodeView, SurfaceNamer namer) {
     for (FieldSettingView settingsView : initCodeView.fieldSettings()) {
       InitCodeLineView line = settingsView.initCodeLine();
       if (line.lineType() == InitCodeLineType.SimpleInitLine) {
@@ -275,8 +275,8 @@ public class TestCaseTransformer {
       fieldConfigMap = null;
     }
 
-    // Store project ID variable name into the symbol table since it is used by the execute method
-    // as a parameter. For more information please see smoke_test.snip.
+    // Store project ID variable name into the symbol table since it is used
+    // by the execute method as a parameter.
     SymbolTable table = new SymbolTable();
     table.getNewSymbol(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
 

@@ -55,7 +55,6 @@ import java.util.List;
 
 /** A subclass of ModelToViewTransformer which translates model into API tests in Java. */
 public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
-  // Template files
   private static String UNIT_TEST_TEMPLATE_FILE = "java/test.snip";
   private static String SMOKE_TEST_TEMPLATE_FILE = "java/smoke_test.snip";
   private static String MOCK_SERVICE_FILE = "java/mock_service.snip";
@@ -136,7 +135,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         new StaticLangApiMethodTransformer().generateFlattenedMethod(methodContext));
     testClass.method(testCaseView);
     testClass.requireProjectId(
-        testCaseTransformer.requireProjectId(testCaseView.initCode(), context.getNamer()));
+        testCaseTransformer.requireProjectIdInSmokeTest(
+            testCaseView.initCode(), context.getNamer()));
 
     // Imports must be done as the last step to catch all imports.
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);

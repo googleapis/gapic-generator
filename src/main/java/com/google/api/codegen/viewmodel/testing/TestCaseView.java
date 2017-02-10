@@ -22,6 +22,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class TestCaseView {
+
   public abstract String clientMethodName();
 
   public abstract InitCodeView initCode();
@@ -64,6 +65,7 @@ public abstract class TestCaseView {
 
   @AutoValue.Builder
   public abstract static class Builder {
+
     public abstract Builder clientMethodName(String val);
 
     public abstract Builder name(String val);

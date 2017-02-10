@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ import java.util.List;
 
 /** A subclass of ModelToViewTransformer which translates model into API smoke tests in Ruby. */
 public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
-  // Template files
   private static String SMOKE_TEST_TEMPLATE_FILE = "ruby/smoke_test.snip";
 
   private final GapicCodePathMapper pathMapper;
@@ -106,7 +105,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.apiMethod(apiMethodView);
     testClass.method(testCaseView);
     testClass.requireProjectId(
-        testCaseTransformer.requireProjectId(apiMethodView.initCode(), context.getNamer()));
+        testCaseTransformer.requireProjectIdInSmokeTest(
+            apiMethodView.initCode(), context.getNamer()));
 
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     testClass.fileHeader(fileHeader);
@@ -116,30 +116,10 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(
       MethodTransformerContext context) {
-    OptionalArrayMethodView initApiMethodView =
+    OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer().generateMethod(context);
 
-    OptionalArrayMethodView.Builder apiMethodView = OptionalArrayMethodView.newBuilder();
-    apiMethodView.type(initApiMethodView.type());
-    apiMethodView.apiClassName(initApiMethodView.apiClassName());
-    apiMethodView.apiModuleName(initApiMethodView.apiModuleName());
-    apiMethodView.apiVariableName(initApiMethodView.apiVariableName());
-    apiMethodView.doc(initApiMethodView.doc());
-    apiMethodView.name(initApiMethodView.name());
-    apiMethodView.requestTypeName(initApiMethodView.requestTypeName());
-    apiMethodView.key(initApiMethodView.key());
-    apiMethodView.grpcMethodName(initApiMethodView.grpcMethodName());
-    apiMethodView.grpcStreamingType(initApiMethodView.grpcStreamingType());
-    apiMethodView.methodParams(initApiMethodView.methodParams());
-    apiMethodView.requiredRequestObjectParams(initApiMethodView.requiredRequestObjectParams());
-    apiMethodView.optionalRequestObjectParams(initApiMethodView.optionalRequestObjectParams());
-    apiMethodView.optionalRequestObjectParamsNoPageToken(
-        initApiMethodView.optionalRequestObjectParamsNoPageToken());
-    apiMethodView.hasRequestParameters(initApiMethodView.hasRequestParameters());
-    apiMethodView.hasReturnValue(initApiMethodView.hasReturnValue());
-    apiMethodView.stubName(initApiMethodView.stubName());
-    apiMethodView.longRunningView(initApiMethodView.longRunningView());
-    apiMethodView.isSingularRequestMethod(initApiMethodView.isSingularRequestMethod());
+    OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =
