@@ -125,7 +125,8 @@ service.authorization = \
 request_body = Google::Apis::CloudresourcemanagerV1::SearchOrganizationsRequest.new
 
 organizations = service.fetch_all(items: :organizations) do |token|
-  service.search_organizations(request_body, page_token: token)
+  request_body.page_token = token
+  service.search_organizations(request_body)
 end
 
 organizations.each do |organization|
