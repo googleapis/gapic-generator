@@ -603,7 +603,7 @@ class LibraryServiceClient(object):
             books,
             edition=None,
             review_copy=None,
-            series_uuid=b'',
+            series_uuid=None,
             options=None):
         """
         Creates a series of books.
@@ -621,7 +621,7 @@ class LibraryServiceClient(object):
           books (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The books to publish in the series.
           edition (int): The edition of the series
           review_copy (bool): If the book is in a pre-publish state
-          series_uuid (bytes): Uniquely identifies the series to the publishing house.
+          series_uuid (:class:`google.cloud.proto.example.library.v1.library_pb2.SeriesUuid`): Uniquely identifies the series to the publishing house.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -632,6 +632,8 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
+        if series_uuid is None:
+            series_uuid = library_pb2.SeriesUuid()
         request = library_pb2.PublishSeriesRequest(
             shelf=shelf,
             books=books,
