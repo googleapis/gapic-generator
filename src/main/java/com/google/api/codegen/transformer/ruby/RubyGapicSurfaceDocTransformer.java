@@ -61,6 +61,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
         new ModelTypeTable(
             new RubyTypeTable(apiConfig.getPackageName()),
             new RubyModelTypeNameConverter(apiConfig.getPackageName()));
+    // Use file path for package name to get file-specific package instead of package for the API.
     SurfaceNamer namer = new RubySurfaceNamer(typeTable.getFullNameFor(file));
     String subPath = pathMapper.getOutputPath(file, apiConfig);
     String baseFilename = namer.getProtoFileName(file);
