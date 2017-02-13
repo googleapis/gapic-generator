@@ -111,7 +111,7 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
     return getTypeName(elem, elem instanceof MessageType);
   }
 
-  private TypeName getTypeName(ProtoElement elem, boolean isPointer) {
+  TypeName getTypeName(ProtoElement elem, boolean isPointer) {
     String importPath = elem.getFile().getProto().getOptions().getGoPackage();
     String protoPackage = elem.getFile().getProto().getPackage();
     String elemName = getElemName(elem);

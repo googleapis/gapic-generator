@@ -34,6 +34,7 @@ import com.google.api.codegen.viewmodel.InitValueView;
 import com.google.api.codegen.viewmodel.ListInitCodeLineView;
 import com.google.api.codegen.viewmodel.MapEntryView;
 import com.google.api.codegen.viewmodel.MapInitCodeLineView;
+import com.google.api.codegen.viewmodel.OneofConfigView;
 import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
@@ -484,6 +485,13 @@ public class InitCodeTransformer {
       fieldSetting.isMap(item.getType().isMap());
       fieldSetting.isArray(!item.getType().isMap() && item.getType().isRepeated());
       fieldSetting.elementTypeName(context.getTypeTable().getFullNameFor(item.getType()));
+      if (item.getOneofConfig() != null) {
+        fieldSetting.oneofConfig(
+            OneofConfigView.newBuilder()
+                .groupName(namer.publicFieldName(item.getOneofConfig().groupName()))
+                .variantType(namer.getOneofVariantTypeName(item.getOneofConfig()))
+                .build());
+      }
 
       allSettings.add(fieldSetting.build());
     }

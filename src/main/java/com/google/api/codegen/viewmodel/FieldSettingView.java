@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class FieldSettingView {
@@ -32,6 +33,13 @@ public abstract class FieldSettingView {
   public abstract boolean isMap();
 
   public abstract boolean isArray();
+
+  @Nullable
+  public abstract OneofConfigView oneofConfig();
+
+  public boolean isOneof() {
+    return oneofConfig() != null;
+  }
 
   public abstract String elementTypeName();
 
@@ -54,6 +62,8 @@ public abstract class FieldSettingView {
     public abstract Builder isMap(boolean val);
 
     public abstract Builder isArray(boolean val);
+
+    public abstract Builder oneofConfig(OneofConfigView val);
 
     public abstract Builder elementTypeName(String val);
 

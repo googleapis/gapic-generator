@@ -734,7 +734,9 @@ func TestLibraryServicePublishSeries(t *testing.T) {
     var books []*librarypb.Book = nil
     var seriesString string = "foobar"
     var seriesUuid = &librarypb.SeriesUuid{
-        SeriesString: seriesString,
+        Source: &librarypb.SeriesUuid_SeriesString{
+            SeriesString: seriesString,
+        },
     }
     var request = &librarypb.PublishSeriesRequest{
         Shelf: shelf,
@@ -770,7 +772,9 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
     var books []*librarypb.Book = nil
     var seriesString string = "foobar"
     var seriesUuid = &librarypb.SeriesUuid{
-        SeriesString: seriesString,
+        Source: &librarypb.SeriesUuid_SeriesString{
+            SeriesString: seriesString,
+        },
     }
     var request = &librarypb.PublishSeriesRequest{
         Shelf: shelf,
