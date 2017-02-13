@@ -42,6 +42,7 @@ public class GrpcElementDocTransformer {
       ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
     ImmutableList.Builder<GrpcElementDocView> messageDocs = ImmutableList.builder();
     for (MessageType message : containerElement.getMessages()) {
+      // Doesn't have to document map entries because a dictionary is used.
       if (message.isMapEntry()) {
         continue;
       }

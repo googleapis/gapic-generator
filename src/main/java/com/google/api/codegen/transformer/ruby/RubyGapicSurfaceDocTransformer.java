@@ -57,15 +57,13 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   }
 
   private ViewModel generateDoc(ProtoFile file, ApiConfig apiConfig) {
-    String subPath = pathMapper.getOutputPath(file, apiConfig);
-    String protoFilename = file.getSimpleName();
-    String baseFilename =
-        protoFilename.substring(0, protoFilename.length() - "proto".length()) + "rb";
     ModelTypeTable typeTable =
         new ModelTypeTable(
             new RubyTypeTable(apiConfig.getPackageName()),
             new RubyModelTypeNameConverter(apiConfig.getPackageName()));
     SurfaceNamer namer = new RubySurfaceNamer(typeTable.getFullNameFor(file));
+    String subPath = pathMapper.getOutputPath(file, apiConfig);
+    String baseFilename = namer.getProtoFileName(file);
     GrpcDocView.Builder doc = GrpcDocView.newBuilder();
     doc.templateFileName(DOC_TEMPLATE_FILENAME);
     doc.outputPath(subPath + "/doc/" + baseFilename);
