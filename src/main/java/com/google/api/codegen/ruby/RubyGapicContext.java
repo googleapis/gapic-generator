@@ -17,8 +17,8 @@ package com.google.api.codegen.ruby;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -344,8 +344,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   public OptionalArrayMethodView getMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
-    ApiMethodTransformer methodTransformer = new ApiMethodTransformer();
-    return methodTransformer.generateDynamicLangApiMethod(methodContext);
+    DynamicLangApiMethodTransformer methodTransformer = new DynamicLangApiMethodTransformer();
+    return methodTransformer.generateMethod(methodContext);
   }
 
   public List<GrpcStubView> getStubs(Interface service) {

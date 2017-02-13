@@ -1,6 +1,6 @@
 ============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryServiceClient.java ==============
 /*
- * Copyright 2016, Google Inc. All rights reserved.
+ * Copyright 2017, Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1763,8 +1763,8 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   StreamObserver&lt;StreamShelvesResponse&gt; responseObserver =
-   *       new StreamObserver&lt;StreamShelvesResponse&gt;() {
+   *   RpcStreamObserver&lt;StreamShelvesResponse&gt; responseObserver =
+   *       new RpcStreamObserver&lt;StreamShelvesResponse&gt;() {
    *         {@literal @}Override
    *         public void onNext(StreamShelvesResponse response) {
    *           // Do something when receive a response
@@ -1799,8 +1799,8 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   StreamObserver&lt;Book&gt; responseObserver =
-   *       new StreamObserver&lt;Book&gt;() {
+   *   RpcStreamObserver&lt;Book&gt; responseObserver =
+   *       new RpcStreamObserver&lt;Book&gt;() {
    *         {@literal @}Override
    *         public void onNext(Book response) {
    *           // Do something when receive a response
@@ -1838,8 +1838,8 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   StreamObserver&lt;Comment&gt; responseObserver =
-   *       new StreamObserver&lt;Comment&gt;() {
+   *   RpcStreamObserver&lt;Comment&gt; responseObserver =
+   *       new RpcStreamObserver&lt;Comment&gt;() {
    *         {@literal @}Override
    *         public void onNext(Comment response) {
    *           // Do something when receive a response
@@ -1855,7 +1855,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *           // Do something when complete.
    *         }
    *       };
-   *   StreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
+   *   RpcStreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
    *       libraryServiceClient.discussBookCallable().bidiStreamingCall(responseObserver)});
    *
    *   String name = "";
@@ -1878,8 +1878,8 @@ public class LibraryServiceClient implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   StreamObserver&lt;Comment&gt; responseObserver =
-   *       new StreamObserver&lt;Comment&gt;() {
+   *   RpcStreamObserver&lt;Comment&gt; responseObserver =
+   *       new RpcStreamObserver&lt;Comment&gt;() {
    *         {@literal @}Override
    *         public void onNext(Comment response) {
    *           // Do something when receive a response
@@ -1895,7 +1895,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *           // Do something when complete.
    *         }
    *       };
-   *   StreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
+   *   RpcStreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
    *       libraryServiceClient.monologAboutBookCallable().clientStreamingCall(responseObserver)});
    *
    *   String name = "";
@@ -2121,6 +2121,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * @param label REQUIRED: The label to add.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
+  @Deprecated
   /* package-private */ final AddLabelResponse addLabel(String resource, String label) {
 
     AddLabelRequest request =
@@ -2151,6 +2152,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
+  @Deprecated
   public final AddLabelResponse addLabel(AddLabelRequest request) {
     return addLabelCallable().call(request);
   }
@@ -2174,6 +2176,7 @@ public class LibraryServiceClient implements AutoCloseable {
    * }
    * </code></pre>
    */
+  @Deprecated
   /* package-private */ final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable() {
     return addLabelCallable;
   }

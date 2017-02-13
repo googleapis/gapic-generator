@@ -1,6 +1,6 @@
 ============== file: src/test/java/com/google/gcloud/pubsub/spi/LibraryServiceClientTest.java ==============
 /*
- * Copyright 2016, Google Inc. All rights reserved.
+ * Copyright 2017, Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.core.PagedListResponse;
+import com.google.api.gax.core.RpcStreamObserver;
 import com.google.api.gax.grpc.ApiException;
 import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.testing.MockGrpcService;
@@ -79,7 +80,6 @@ import com.google.tagger.v1.AddTagRequest;
 import com.google.tagger.v1.AddTagResponse;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1178,7 +1178,7 @@ public class LibraryServiceClientTest {
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
-    StreamObserver<DiscussBookRequest> requestObserver =
+    RpcStreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
 
     requestObserver.onNext(request);
@@ -1203,7 +1203,7 @@ public class LibraryServiceClientTest {
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
-    StreamObserver<DiscussBookRequest> requestObserver =
+    RpcStreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
 
     requestObserver.onNext(request);

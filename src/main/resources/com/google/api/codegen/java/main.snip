@@ -342,6 +342,10 @@
   @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
     @join pathTemplateCheck : apiMethod.pathTemplateChecks
       {@pathTemplateCheckLine(pathTemplateCheck)}
@@ -357,6 +361,10 @@
 @private pagedRequestObjectMethod(apiMethod)
   @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
@@ -383,6 +391,10 @@
   @let coreSampleCode = syncMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}(\
        {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
@@ -397,6 +409,10 @@
 @private requestObjectMethod(apiMethod)
   @let coreSampleCode = syncMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
@@ -416,6 +432,10 @@
 @end
 
 @private callableMethodImpl(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.visibility} final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
@@ -426,6 +446,10 @@
   @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.visibility} final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
@@ -435,6 +459,10 @@
 @private asyncOperationFlattenedMethod(apiMethod)
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}> {@apiMethod.name}(\
        {@paramList(apiMethod.methodParams)}) {
@@ -447,6 +475,10 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<{@apiMethod.responseTypeName}> \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
     return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
@@ -456,6 +488,10 @@
 @private operationCallableMethod(apiMethod)
   @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {

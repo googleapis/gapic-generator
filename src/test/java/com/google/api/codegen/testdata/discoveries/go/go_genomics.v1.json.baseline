@@ -239,13 +239,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := genomicsService.Annotations.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := genomicsService.Annotations.Search(rb)
+  if err := req.Pages(ctx, func(page *genomics.SearchAnnotationsResponse) error {
+    for _, annotation := range page.Annotations {
+      // TODO: Change code below to process each `annotation` resource:
+      fmt.Printf("%#v\n", annotation)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -491,13 +494,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := genomicsService.Annotationsets.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := genomicsService.Annotationsets.Search(rb)
+  if err := req.Pages(ctx, func(page *genomics.SearchAnnotationSetsResponse) error {
+    for _, annotationSet := range page.AnnotationSets {
+      // TODO: Change code below to process each `annotationSet` resource:
+      fmt.Printf("%#v\n", annotationSet)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -797,13 +803,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := genomicsService.Callsets.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := genomicsService.Callsets.Search(rb)
+  if err := req.Pages(ctx, func(page *genomics.SearchCallSetsResponse) error {
+    for _, callSet := range page.CallSets {
+      // TODO: Change code below to process each `callSet` resource:
+      fmt.Printf("%#v\n", callSet)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1774,13 +1783,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := genomicsService.Readgroupsets.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := genomicsService.Readgroupsets.Search(rb)
+  if err := req.Pages(ctx, func(page *genomics.SearchReadGroupSetsResponse) error {
+    for _, readGroupSet := range page.ReadGroupSets {
+      // TODO: Change code below to process each `readGroupSet` resource:
+      fmt.Printf("%#v\n", readGroupSet)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1824,13 +1836,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := genomicsService.Reads.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := genomicsService.Reads.Search(rb)
+  if err := req.Pages(ctx, func(page *genomics.SearchReadsResponse) error {
+    for _, read := range page.Alignments {
+      // TODO: Change code below to process each `read` resource:
+      fmt.Printf("%#v\n", read)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -2024,13 +2039,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := genomicsService.References.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := genomicsService.References.Search(rb)
+  if err := req.Pages(ctx, func(page *genomics.SearchReferencesResponse) error {
+    for _, reference := range page.References {
+      // TODO: Change code below to process each `reference` resource:
+      fmt.Printf("%#v\n", reference)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -2123,13 +2141,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := genomicsService.Referencesets.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := genomicsService.Referencesets.Search(rb)
+  if err := req.Pages(ctx, func(page *genomics.SearchReferenceSetsResponse) error {
+    for _, referenceSet := range page.ReferenceSets {
+      // TODO: Change code below to process each `referenceSet` resource:
+      fmt.Printf("%#v\n", referenceSet)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -2475,13 +2496,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := genomicsService.Variants.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := genomicsService.Variants.Search(rb)
+  if err := req.Pages(ctx, func(page *genomics.SearchVariantsResponse) error {
+    for _, variant := range page.Variants {
+      // TODO: Change code below to process each `variant` resource:
+      fmt.Printf("%#v\n", variant)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -2831,11 +2855,14 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := genomicsService.Variantsets.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := genomicsService.Variantsets.Search(rb)
+  if err := req.Pages(ctx, func(page *genomics.SearchVariantSetsResponse) error {
+    for _, variantSet := range page.VariantSets {
+      // TODO: Change code below to process each `variantSet` resource:
+      fmt.Printf("%#v\n", variantSet)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }

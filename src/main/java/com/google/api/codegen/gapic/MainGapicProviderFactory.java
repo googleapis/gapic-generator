@@ -46,6 +46,7 @@ import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
+import com.google.api.codegen.transformer.ruby.RubyPackageMetadataTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
@@ -311,7 +312,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new PythonGapicContext(model, apiConfig))
+                .setContext(new PythonGapicContext(model, apiConfig, packageConfig))
                 .setSnippetSetRunner(
                     new PythonSnippetSetRunner<>(
                         new PythonInterfaceInitializer(apiConfig),
@@ -324,7 +325,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new PythonGapicContext(model, apiConfig))
+                .setContext(new PythonGapicContext(model, apiConfig, packageConfig))
                 .setSnippetSetRunner(
                     new PythonSnippetSetRunner<Interface>(
                         new PythonInterfaceInitializer(apiConfig),
@@ -352,7 +353,7 @@ public class MainGapicProviderFactory
               CommonGapicProvider.<ProtoFile>newBuilder()
                   .setModel(model)
                   .setView(new ProtoFileView())
-                  .setContext(new PythonGapicContext(model, apiConfig))
+                  .setContext(new PythonGapicContext(model, apiConfig, packageConfig))
                   .setSnippetSetRunner(
                       new PythonSnippetSetRunner<>(
                           new PythonProtoFileInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
@@ -404,9 +405,17 @@ public class MainGapicProviderFactory
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(rubyPathMapper)
                 .build();
+        GapicProvider<? extends Object> metadataProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new RubyPackageMetadataTransformer(packageConfig))
+                .build();
 
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
+        providers.add(metadataProvider);
 
         if (id.equals(RUBY_DOC)) {
           GapicProvider<? extends Object> messageProvider =
