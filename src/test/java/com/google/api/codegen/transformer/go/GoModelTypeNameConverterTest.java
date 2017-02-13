@@ -83,5 +83,11 @@ public class GoModelTypeNameConverterTest {
     Truth.assertThat(
             converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(new GoTypeTable()))
         .isEqualTo("librarypb.Book_GOOD");
+
+    type = ModelTypeNameConverterTestUtil.getTestType(tempDir, "TopLevelEnum");
+    value = type.getEnumType().getValues().get(0);
+    Truth.assertThat(
+            converter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(new GoTypeTable()))
+        .isEqualTo("librarypb.TopLevelEnum_FOO");
   }
 }

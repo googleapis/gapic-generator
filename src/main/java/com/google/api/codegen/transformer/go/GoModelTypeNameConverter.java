@@ -273,7 +273,16 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, EnumValue value) {
-    return TypedValue.create(
-        getTypeName(type.getEnumType().getParent(), false), "%s_" + value.getSimpleName());
+    // Go names enums in two different ways.
+    // If the enum is nested in a message, the format is <message type>_<enum value>,
+    // respecting the C++ scoping rule used by protobuf,
+    // where enum values are scoped at the same level as the enum type, not as its children.
+    // On the other hand, if the enum is at top-level, there is no parent message,
+    // and the format is <enum type>_<enum value>
+    ProtoElement parent = type.getEnumType().getParent();
+    if (parent instanceof ProtoFile) {
+      parent = type.getEnumType();
+    }
+    return TypedValue.create(getTypeName(parent, false), "%s_" + value.getSimpleName());
   }
 }
