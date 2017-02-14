@@ -20,10 +20,10 @@ require "library/v1/library_service_client"
 
 describe "LibraryServiceSmokeTest" do
   it "runs one smoke test with update_book" do
-    if ARGV.empty?
-      fail "Usage: #{$0} <project_id>"
+    unless ENV["SMOKE_TEST_PROJECT"]
+      fail "Usage: SMOKE_TEST_PROJECT=<project_id> ruby #{$0}"
     end
-    project_id = ARGV[0].freeze
+    project_id = ENV["SMOKE_TEST_PROJECT"].freeze
 
     Book = Google::Example::Library::V1::Book
     FieldMask = Google::Protobuf::FieldMask
