@@ -603,7 +603,7 @@ module Library
       #   The edition of the series
       # @param review_copy [true, false]
       #   If the book is in a pre-publish state
-      # @param series_uuid [String]
+      # @param series_uuid [Google::Example::Library::V1::SeriesUuid]
       #   Uniquely identifies the series to the publishing house.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
@@ -614,26 +614,30 @@ module Library
       #   require "library/v1/library_service_client"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
+      #   SeriesUuid = Google::Example::Library::V1::SeriesUuid
       #   Shelf = Google::Example::Library::V1::Shelf
       #
       #   library_service_client = LibraryServiceClient.new
       #   shelf = Shelf.new
       #   books = []
-      #   response = library_service_client.publish_series(shelf, books)
+      #   series_string = "foobar"
+      #   series_uuid = SeriesUuid.new
+      #   series_uuid.series_string = series_string
+      #   response = library_service_client.publish_series(shelf, books, series_uuid)
 
       def publish_series \
           shelf,
           books,
+          series_uuid,
           edition: nil,
           review_copy: nil,
-          series_uuid: nil,
           options: nil
         req = Google::Example::Library::V1::PublishSeriesRequest.new({
           shelf: shelf,
           books: books,
+          series_uuid: series_uuid,
           edition: edition,
-          review_copy: review_copy,
-          series_uuid: series_uuid
+          review_copy: review_copy
         }.delete_if { |_, v| v.nil? })
         @publish_series.call(req, options)
       end

@@ -55,6 +55,7 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
@@ -483,9 +484,13 @@ public class LibraryServiceClientTest {
     Shelf shelf = Shelf.newBuilder().build();
     List<Book> books = new ArrayList<>();
     int edition = -1887963714;
+    String seriesString = "foobar";
+    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+      .setSeriesString(seriesString)
+      .build();
 
     PublishSeriesResponse actualResponse =
-        client.publishSeries(shelf, books, edition);
+        client.publishSeries(shelf, books, edition, seriesUuid);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
@@ -495,6 +500,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(shelf, actualRequest.getShelf());
     Assert.assertEquals(books, actualRequest.getBooksList());
     Assert.assertEquals(edition, actualRequest.getEdition());
+    Assert.assertEquals(seriesUuid, actualRequest.getSeriesUuid());
   }
 
   @Test
@@ -507,8 +513,12 @@ public class LibraryServiceClientTest {
       Shelf shelf = Shelf.newBuilder().build();
       List<Book> books = new ArrayList<>();
       int edition = -1887963714;
+      String seriesString = "foobar";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
 
-      client.publishSeries(shelf, books, edition);
+      client.publishSeries(shelf, books, edition, seriesUuid);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());

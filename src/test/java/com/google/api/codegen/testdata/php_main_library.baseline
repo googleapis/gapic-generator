@@ -60,6 +60,7 @@ use google\example\library\v1\ListStringsRequest;
 use google\example\library\v1\MergeShelvesRequest;
 use google\example\library\v1\MoveBookRequest;
 use google\example\library\v1\PublishSeriesRequest;
+use google\example\library\v1\SeriesUuid;
 use google\example\library\v1\Shelf;
 use google\example\library\v1\SomeMessage;
 use google\example\library\v1\StreamBooksRequest;
@@ -841,7 +842,10 @@ class LibraryServiceClient
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
      *     $books = [];
-     *     $response = $libraryServiceClient->publishSeries($shelf, $books);
+     *     $seriesString = "foobar";
+     *     $seriesUuid = new SeriesUuid();
+     *     $seriesUuid->setSeriesString($seriesString);
+     *     $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -849,14 +853,13 @@ class LibraryServiceClient
      *
      * @param Shelf $shelf The shelf in which the series is created.
      * @param Book[] $books The books to publish in the series.
+     * @param SeriesUuid $seriesUuid Uniquely identifies the series to the publishing house.
      * @param array $optionalArgs {
      *     Optional.
      *     @type int $edition
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
-     *     @type string $seriesUuid
-     *          Uniquely identifies the series to the publishing house.
      *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
@@ -869,21 +872,19 @@ class LibraryServiceClient
      *
      * @throws \Google\GAX\ApiException if the remote call fails
      */
-    public function publishSeries($shelf, $books, $optionalArgs = [])
+    public function publishSeries($shelf, $books, $seriesUuid, $optionalArgs = [])
     {
         $request = new PublishSeriesRequest();
         $request->setShelf($shelf);
         foreach ($books as $elem) {
             $request->addBooks($elem);
         }
+        $request->setSeriesUuid($seriesUuid);
         if (isset($optionalArgs['edition'])) {
             $request->setEdition($optionalArgs['edition']);
         }
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
-        }
-        if (isset($optionalArgs['seriesUuid'])) {
-            $request->setSeriesUuid($optionalArgs['seriesUuid']);
         }
 
         $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(

@@ -1728,6 +1728,9 @@ namespace Google.Example.Library.V1
         /// <param name="edition">
         /// The edition of the series
         /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -1738,12 +1741,14 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
+            SeriesUuid seriesUuid,
             CallSettings callSettings = null) => PublishSeriesAsync(
                 new PublishSeriesRequest
                 {
                     Shelf = shelf,
                     Books = { books },
                     Edition = edition,
+                    SeriesUuid = seriesUuid,
                 },
                 callSettings);
 
@@ -1759,6 +1764,9 @@ namespace Google.Example.Library.V1
         /// <param name="edition">
         /// The edition of the series
         /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to use for this RPC.
         /// </param>
@@ -1769,10 +1777,12 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
+            SeriesUuid seriesUuid,
             CancellationToken cancellationToken) => PublishSeriesAsync(
                 shelf,
                 books,
                 edition,
+                seriesUuid,
                 CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -1787,6 +1797,9 @@ namespace Google.Example.Library.V1
         /// <param name="edition">
         /// The edition of the series
         /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -1797,12 +1810,14 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
+            SeriesUuid seriesUuid,
             CallSettings callSettings = null) => PublishSeries(
                 new PublishSeriesRequest
                 {
                     Shelf = shelf,
                     Books = { books },
                     Edition = edition,
+                    SeriesUuid = seriesUuid,
                 },
                 callSettings);
 
