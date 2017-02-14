@@ -58,9 +58,11 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Java. */
 public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
@@ -381,10 +383,15 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private static String getGeneratorVersion() {
-    // TODO: Read version information from static file.
-    String version = JavaGapicSurfaceTransformer.class.getPackage().getImplementationVersion();
-    if (version == null) {
-      version = DEFAULT_VERSION;
+    String version = DEFAULT_VERSION;
+    Properties properties = new Properties();
+    try {
+      properties.load(
+          JavaGapicSurfaceTransformer.class
+              .getResourceAsStream("/com/google/api/codegen/codegen.properties"));
+      version = properties.getProperty("version");
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
     return version;
   }
