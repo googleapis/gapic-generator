@@ -85,6 +85,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
 
+  private static final String DEFAULT_VERSION = "UNKNOWN";
+
   public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
   }
@@ -373,8 +375,18 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
+    xsettingsClass.generatorVersion(getGeneratorVersion());
 
     return xsettingsClass.build();
+  }
+
+  private static String getGeneratorVersion() {
+    // TODO: Read version information from static file.
+    String version = JavaGapicSurfaceTransformer.class.getPackage().getImplementationVersion();
+    if (version == null) {
+      version = DEFAULT_VERSION;
+    }
+    return version;
   }
 
   private PackageInfoView generatePackageInfo(

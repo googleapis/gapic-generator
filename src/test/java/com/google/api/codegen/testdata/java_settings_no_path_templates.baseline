@@ -58,6 +58,9 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   private static final int DEFAULT_SERVICE_PORT = 443;
 
 
+  private static final String DEFAULT_GENERATOR_NAME = "gapic";
+  private static final String DEFAULT_GENERATOR_VERSION = "UNKNOWN";
+
   private final SimpleCallSettings<IncrementRequest, Empty> incrementSettings;
 
   /**
@@ -97,6 +100,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
         .setPort(DEFAULT_SERVICE_PORT)
+        .setGeneratorHeader(DEFAULT_GENERATOR_NAME, DEFAULT_GENERATOR_VERSION)
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }
 
