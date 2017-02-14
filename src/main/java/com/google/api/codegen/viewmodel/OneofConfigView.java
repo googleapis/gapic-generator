@@ -18,18 +18,10 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class OneofConfigView {
-  // For illustration, assume we have this proto definition:
-  // message MyMessage {
-  //   oneof oneof_group {
-  //     string foo = 0;
-  //     int32 bar = 1;
-  //   }
-  // }
-
-  // The "oneof_group" in the example.
+  /** The name of the oneof group. */
   public abstract String groupName();
 
-  // Used in Go, the variantType reports the oneof variant that's being used.
+  /** Used in Go, the variantType reports the oneof variant that's being used. */
   public abstract String variantType();
 
   public static Builder newBuilder() {
