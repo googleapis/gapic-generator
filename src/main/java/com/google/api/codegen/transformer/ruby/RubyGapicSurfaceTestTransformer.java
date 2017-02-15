@@ -117,7 +117,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(
       MethodTransformerContext context) {
     OptionalArrayMethodView initialApiMethodView =
-        new DynamicLangApiMethodTransformer().generateMethod(context);
+        new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer())
+            .generateMethod(context);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 
