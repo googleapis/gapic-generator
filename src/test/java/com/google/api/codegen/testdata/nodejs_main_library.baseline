@@ -707,12 +707,14 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  *   The books to publish in the series.
  *
  *   This object should have the same structure as [Book]{@link Book}
+ * @param {Object} request.seriesUuid
+ *   Uniquely identifies the series to the publishing house.
+ *
+ *   This object should have the same structure as [SeriesUuid]{@link SeriesUuid}
  * @param {number=} request.edition
  *   The edition of the series
  * @param {boolean=} request.reviewCopy
  *   If the book is in a pre-publish state
- * @param {string=} request.seriesUuid
- *   Uniquely identifies the series to the publishing house.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -729,9 +731,14 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  * var client = libraryV1.libraryServiceClient();
  * var shelf = {};
  * var books = [];
+ * var seriesString = 'foobar';
+ * var seriesUuid = {
+ *     seriesString : seriesString
+ * };
  * var request = {
  *     shelf: shelf,
- *     books: books
+ *     books: books,
+ *     seriesUuid: seriesUuid
  * };
  * client.publishSeries(request).then(function(responses) {
  *     var response = responses[0];

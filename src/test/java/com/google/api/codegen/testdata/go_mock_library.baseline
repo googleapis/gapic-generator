@@ -732,9 +732,16 @@ func TestLibraryServicePublishSeries(t *testing.T) {
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
+    var seriesString string = "foobar"
+    var seriesUuid = &librarypb.SeriesUuid{
+        Source: &librarypb.SeriesUuid_SeriesString{
+            SeriesString: seriesString,
+        },
+    }
     var request = &librarypb.PublishSeriesRequest{
         Shelf: shelf,
         Books: books,
+        SeriesUuid: seriesUuid,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -763,9 +770,16 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
+    var seriesString string = "foobar"
+    var seriesUuid = &librarypb.SeriesUuid{
+        Source: &librarypb.SeriesUuid_SeriesString{
+            SeriesString: seriesString,
+        },
+    }
     var request = &librarypb.PublishSeriesRequest{
         Shelf: shelf,
         Books: books,
+        SeriesUuid: seriesUuid,
     }
 
     c, err := NewClient(context.Background(), clientOpt)

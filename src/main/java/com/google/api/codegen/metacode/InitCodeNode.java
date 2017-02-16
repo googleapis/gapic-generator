@@ -15,6 +15,7 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -46,6 +47,7 @@ public class InitCodeNode {
   private TypeRef typeRef;
   private FieldConfig nodeFieldConfig;
   private Name identifier;
+  private OneofConfig oneofConfig;
 
   // TODO(michaelbausor): delete this field once DocConfig is no longer used (when python converts
   // to MVVM)
@@ -109,6 +111,10 @@ public class InitCodeNode {
    */
   public Name getIdentifier() {
     return identifier;
+  }
+
+  public OneofConfig getOneofConfig() {
+    return oneofConfig;
   }
 
   /*
@@ -259,6 +265,9 @@ public class InitCodeNode {
           getChildType(type, child.key),
           getChildSuggestedName(suggestedName, lineType, child),
           getChildFieldConfig(context.fieldConfigMap(), fieldConfig, type, child.key));
+      if (type.isMessage()) {
+        child.oneofConfig = OneofConfig.of(type.getMessageType(), child.key);
+      }
     }
 
     SymbolTable table = context.symbolTable();

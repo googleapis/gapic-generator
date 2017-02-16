@@ -391,7 +391,14 @@ message PublishSeriesRequest {
   }
 
   // Uniquely identifies the series to the publishing house.
-  bytes series_uuid = 5;
+  SeriesUuid series_uuid = 5;
+}
+
+message SeriesUuid {
+  oneof source {
+    bytes series_bytes = 1;
+    string series_string = 2;
+  }
 }
 
 // Response message for LibraryService.PublishSeries.
@@ -569,4 +576,9 @@ message FindRelatedBooksResponse {
 message GetBigBookMetadata {
     // Approximate percentage of the book processed thus far.
     int32 progress_percent = 1;
+}
+
+enum TopLevelEnum {
+  FOO = 0;
+  BAR = 1;
 }

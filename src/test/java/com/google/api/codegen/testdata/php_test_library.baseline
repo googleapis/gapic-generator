@@ -56,6 +56,7 @@ use \google\example\library\v1\MergeShelvesRequest;
 use \google\example\library\v1\MoveBookRequest;
 use \google\example\library\v1\PublishSeriesRequest;
 use \google\example\library\v1\PublishSeriesResponse;
+use \google\example\library\v1\SeriesUuid;
 use \google\example\library\v1\Shelf;
 use \google\example\library\v1\SomeMessage2\SomeMessage3\Alignment;
 use \google\example\library\v1\UpdateBookIndexRequest;
@@ -347,8 +348,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         // Mock request
         $shelf = new Shelf();
         $books = [];
+        $seriesString = "foobar";
+        $seriesUuid = new SeriesUuid();
+        $seriesUuid->setSeriesString($seriesString);
 
-        $response = $client->publishSeries($shelf, $books);
+        $response = $client->publishSeries($shelf, $books, $seriesUuid);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $grpcStub->getReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -358,6 +362,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($shelf, $actualRequestObject->getShelf());
         $this->assertEquals($books, $actualRequestObject->getBooksList());
+        $this->assertEquals($seriesUuid, $actualRequestObject->getSeriesUuid());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
