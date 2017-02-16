@@ -109,11 +109,15 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
 
   var googleApiClient = [
     'gl-node/' + process.versions.node,
-    'gccl/' + require('../../package.json').version,
-    CODE_GEN_NAME_VERSION,
+    CODE_GEN_NAME_VERSION
+  ];
+  if (opts.libName && opts.libVersion) {
+    googleApiClient.push(opts.libName + '/' + opts.libVersion);
+  }
+  googleApiClient.push(
     'gax/' + gax.version,
     'grpc/' + gaxGrpc.grpcVersion
-  ].join(' ');
+  );
 
   var bundleDescriptors = {
     publishSeries: new gax.BundleDescriptor(
@@ -133,7 +137,9 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     servicePath: servicePath,
     port: port,
     sslCreds: sslCreds,
-    clientConfig: clientConfig
+    clientConfig: clientConfig,
+    libName: opts.libName,
+    libVersion: opts.libVersion
   });
 
   this.longrunningDescriptors = {
@@ -151,7 +157,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
       'google.example.library.v1.LibraryService',
       configData,
       clientConfig,
-      {'x-goog-api-client': googleApiClient});
+      {'x-goog-api-client': googleApiClient.join(' ')});
 
   var self = this;
 

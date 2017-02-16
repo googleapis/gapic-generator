@@ -193,7 +193,7 @@
         '{@service.getFullName}',
         configData,
         clientConfig,
-        {'x-goog-api-client': googleApiClient});
+        {'x-goog-api-client': googleApiClient.join(' ')});
   @end
 @end
 
@@ -243,14 +243,15 @@
 
       var googleApiClient = [
         'gl-node/' + process.versions.node,
-        @if context.isGcloud
-          # TODO: might need to allow customizing the path to the package.json.
-          'gccl/' + require('../../package.json').version,
-        @end
-        CODE_GEN_NAME_VERSION,
+        CODE_GEN_NAME_VERSION
+      ];
+      if (opts.libName && opts.libVersion) {
+        googleApiClient.push(opts.libName + '/' + opts.libVersion);
+      }
+      googleApiClient.push(
         'gax/' + gax.version,
         'grpc/' + gaxGrpc.grpcVersion
-      ].join(' ');
+      );
       @let methods = context.getSupportedMethods(service), \
            bundlingMethods = context.messages.filterBundlingMethods(ifaceConfig, methods), \
            longrunningMethods = context.messages.filterLongrunningMethods(ifaceConfig, methods)
@@ -286,7 +287,9 @@
             servicePath: servicePath,
             port: port,
             sslCreds: sslCreds,
-            clientConfig: clientConfig
+            clientConfig: clientConfig,
+            libName: opts.libName,
+            libVersion: opts.libVersion
           });
           
           this.longrunningDescriptors = {

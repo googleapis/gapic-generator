@@ -67,16 +67,21 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
 
   var googleApiClient = [
     'gl-node/' + process.versions.node,
-    CODE_GEN_NAME_VERSION,
+    CODE_GEN_NAME_VERSION
+  ];
+  if (opts.libName && opts.libVersion) {
+    googleApiClient.push(opts.libName + '/' + opts.libVersion);
+  }
+  googleApiClient.push(
     'gax/' + gax.version,
     'grpc/' + gaxGrpc.grpcVersion
-  ].join(' ');
+  );
 
   var defaults = gaxGrpc.constructSettings(
       'google.cloud.example.v1.NoTemplatesAPIService',
       configData,
       clientConfig,
-      {'x-goog-api-client': googleApiClient});
+      {'x-goog-api-client': googleApiClient.join(' ')});
 
   var self = this;
 
