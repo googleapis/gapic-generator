@@ -106,7 +106,6 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   opts = opts || {};
   var servicePath = opts.servicePath || SERVICE_ADDRESS;
   var port = opts.port || DEFAULT_SERVICE_PORT;
-  var sslCreds = opts.sslCreds || null;
   var clientConfig = opts.clientConfig || {};
 
   var googleApiClient = [
@@ -132,17 +131,17 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
       gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book))
   };
 
+  var lroOpts = {};
+  Object.keys(opts).forEach(function(key) {
+    lroOpts[key] = opts[key];
+  });
+  lroOpts.servicePath = servicePath;
+  lroOpts.port = port;
+  lroOpts.clientConfig = clientConfig;
   this.operationsClient = new gax.lro({
     auth: gaxGrpc.auth,
     grpc: gaxGrpc.grpc
-  }).operationsClient({
-    servicePath: servicePath,
-    port: port,
-    sslCreds: sslCreds,
-    clientConfig: clientConfig,
-    libName: opts.libName,
-    libVersion: opts.libVersion
-  });
+  }).operationsClient(lroOpts);
 
   this.longrunningDescriptors = {
     getBigBook: new gax.LongrunningDescriptor(
@@ -168,7 +167,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
       servicePath,
       port,
       grpcClients.google.example.library.v1.LibraryService,
-      {sslCreds: sslCreds});
+      opts);
   var libraryServiceStubMethods = [
     'createShelf',
     'getShelf',
@@ -212,7 +211,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
       servicePath,
       port,
       grpcClients.google.tagger.v1.Labeler,
-      {sslCreds: sslCreds});
+      opts);
   var labelerStubMethods = [
     'addLabel'
   ];

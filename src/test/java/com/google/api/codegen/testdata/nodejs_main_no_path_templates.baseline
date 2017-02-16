@@ -62,7 +62,6 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
   opts = opts || {};
   var servicePath = opts.servicePath || SERVICE_ADDRESS;
   var port = opts.port || DEFAULT_SERVICE_PORT;
-  var sslCreds = opts.sslCreds || null;
   var clientConfig = opts.clientConfig || {};
 
   var googleApiClient = [
@@ -90,7 +89,7 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
       servicePath,
       port,
       grpcClients.google.cloud.example.v1.NoTemplatesAPIService,
-      {sslCreds: sslCreds});
+      opts);
   var noTemplatesApiServiceStubMethods = [
     'increment'
   ];
