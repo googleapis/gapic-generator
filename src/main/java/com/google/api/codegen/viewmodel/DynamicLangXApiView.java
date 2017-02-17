@@ -96,6 +96,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     return missingDefaultServiceAddress() || missingDefaultServiceScopes();
   }
 
+  public abstract String codeGenVersion();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -164,6 +166,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder hasDefaultServiceAddress(boolean val);
 
     public abstract Builder hasDefaultServiceScopes(boolean val);
+
+    public abstract Builder codeGenVersion(String val);
 
     public abstract DynamicLangXApiView build();
   }

@@ -25,6 +25,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GeneratorVersion;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -58,11 +59,9 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Java. */
 public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
@@ -86,8 +85,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
-
-  private static final String DEFAULT_VERSION = "";
 
   public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
@@ -377,23 +374,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
-    xsettingsClass.generatorVersion(getGeneratorVersion());
+    xsettingsClass.generatorVersion(GeneratorVersion.getGeneratorVersion());
 
     return xsettingsClass.build();
-  }
-
-  private static String getGeneratorVersion() {
-    String version = DEFAULT_VERSION;
-    Properties properties = new Properties();
-    try {
-      properties.load(
-          JavaGapicSurfaceTransformer.class
-              .getResourceAsStream("/com/google/api/codegen/codegen.properties"));
-      version = properties.getProperty("version");
-    } catch (IOException e) {
-      e.printStackTrace(System.err);
-    }
-    return version;
   }
 
   private PackageInfoView generatePackageInfo(

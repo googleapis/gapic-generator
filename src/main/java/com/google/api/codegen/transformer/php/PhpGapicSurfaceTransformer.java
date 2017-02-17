@@ -24,6 +24,7 @@ import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GeneratorVersion;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -147,6 +148,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
+
+    xapiClass.codeGenVersion(GeneratorVersion.getGeneratorVersion());
 
     // must be done as the last step to catch all imports
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));

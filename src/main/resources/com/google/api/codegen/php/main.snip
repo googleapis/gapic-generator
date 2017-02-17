@@ -94,7 +94,7 @@
     /**
      * The code generator version, to be included in the agent header.
      */
-    const CODEGEN_VERSION = '0.1.0';
+    const CODEGEN_VERSION = '{@xapiClass.codeGenVersion}';    
     {@""}
 @end
 
@@ -370,8 +370,8 @@
             @end
             'retryingOverride' => null,
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
-            'appName' => 'gax',
-            'appVersion' => AgentHeaderDescriptor::getGaxVersion(),
+            'appName' => null,
+            'appVersion' => null,
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -391,8 +391,6 @@
             'clientVersion' => $options['appVersion'],
             'codeGenName' => self::CODEGEN_NAME,
             'codeGenVersion' => self::CODEGEN_VERSION,
-            'gaxVersion' => AgentHeaderDescriptor::getGaxVersion(),
-            'phpVersion' => phpversion(),
         ]);
 
         $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
