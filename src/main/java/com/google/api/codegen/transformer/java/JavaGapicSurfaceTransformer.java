@@ -87,7 +87,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
 
-  private static final String DEFAULT_VERSION = "UNKNOWN";
+  private static final String DEFAULT_VERSION = "";
 
   public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
