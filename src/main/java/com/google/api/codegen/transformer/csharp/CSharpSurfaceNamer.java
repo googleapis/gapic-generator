@@ -350,19 +350,34 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()));
   }
 
+  private Name AddId(Name name) {
+    if (name.toUpperCamel().endsWith("Id")) {
+      return name;
+    } else {
+      return name.join("id");
+    }
+  }
+
   @Override
   public String getParamName(String var) {
-    return localVarName(Name.from(var).join("id"));
+    return localVarName(AddId(Name.from(var)));
   }
 
   @Override
   public String getPropertyName(String var) {
-    return publicMethodName(Name.from(var).join("id"));
+    return publicMethodName(AddId(Name.from(var)));
   }
 
   @Override
   public String getParamDocName(String var) {
-    return super.localVarName(Name.from(var));
+    // 'super' to prevent '@' being prefixed to keywords
+    String name = super.localVarName(Name.from(var));
+    // Remove "id" suffix if present, as the C# code template always adds an ID suffix.
+    if (name.toLowerCase().endsWith("id")) {
+      return name.substring(0, name.length() - 2);
+    } else {
+      return name;
+    }
   }
 
   @Override

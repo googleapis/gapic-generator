@@ -82,11 +82,13 @@
         /// Constructs a new instance of the <see cref="{@resource.typeName}"/> resource name class
         /// from its component parts.
         /// </summary>
+        # param: ResourceNameParamView
         @join param : resource.params
             /// <param name="{@param.nameAsParam}">The {@param.docName} ID. Must not be <c>null</c>.</param>
         @end
         public {@resource.typeName}({@formatParams(resource.params)})
         {
+            # param: ResourceNameParamView
             @join param : resource.params
                 {@param.nameAsProperty} = GaxPreconditions.CheckNotNull({@param.nameAsParam}, nameof({@param.nameAsParam}));
             @end
