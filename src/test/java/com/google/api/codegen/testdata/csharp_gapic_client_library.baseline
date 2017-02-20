@@ -76,7 +76,10 @@ namespace Google.Example.Library.V1
             GetBigBookSettings = existing.GetBigBookSettings;
             GetBigNothingSettings = existing.GetBigNothingSettings;
             LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
+            OnCopy(existing);
         }
+
+        partial void OnCopy(LibraryServiceSettings existing);
 
         /// <summary>
         /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
@@ -3840,7 +3843,10 @@ namespace Google.Example.Library.V1
                 GrpcClient.GetBigBookAsync, GrpcClient.GetBigBook, effectiveSettings.GetBigBookSettings);
             _callGetBigNothing = clientHelper.BuildApiCall<GetBookRequest, Operation>(
                 GrpcClient.GetBigNothingAsync, GrpcClient.GetBigNothing, effectiveSettings.GetBigNothingSettings);
+            OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
+
+        partial void OnConstruction(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings effectiveSettings, ClientHelper clientHelper);
 
         /// <summary>
         /// The underlying gRPC LibraryService client.

@@ -55,8 +55,11 @@
             @if api.hasLongRunningOperations
                 LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
             @end
+            OnCopy(existing);
         }
-        
+
+        partial void OnCopy({@settings.name} existing);
+
         @join retry : settings.retryCodesDefinitions
             /// <summary>
             /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
@@ -361,7 +364,10 @@
                     *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
                 @end
             @end
+            OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
+
+        partial void OnConstruction({@api.grpcTypeName} grpcClient, {@settings.name} effectiveSettings, ClientHelper clientHelper);
 
         /// <summary>
         /// The underlying gRPC {@api.grpcServiceName} client.
