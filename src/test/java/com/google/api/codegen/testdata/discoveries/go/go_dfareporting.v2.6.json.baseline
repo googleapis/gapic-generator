@@ -4327,13 +4327,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := dfareportingService.DimensionValues.Query(profileId, rb).Context(ctx).Do()
-  if err != nil {
+  req := dfareportingService.DimensionValues.Query(profileId, rb)
+  if err := req.Pages(ctx, func(page *dfareporting.DimensionValueList) error {
+    for _, dimensionValue := range page.Items {
+      // TODO: Change code below to process each `dimensionValue` resource:
+      fmt.Printf("%#v\n", dimensionValue)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 
 func getClient(ctx context.Context) (*http.Client, error) {

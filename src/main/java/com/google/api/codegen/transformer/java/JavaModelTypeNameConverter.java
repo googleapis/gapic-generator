@@ -113,13 +113,8 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getEnumValue(TypeRef type, String value) {
-    for (EnumValue enumValue : type.getEnumType().getValues()) {
-      if (enumValue.getSimpleName().equals(value)) {
-        return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
-      }
-    }
-    throw new IllegalArgumentException("Unrecognized enum value: " + value);
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    return TypedValue.create(getTypeName(type), "%s." + value.getSimpleName());
   }
 
   @Override
@@ -206,8 +201,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), "%s.newBuilder().build()");
     }
     if (type.isEnum()) {
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      return TypedValue.create(getTypeName(type), "%s." + enumValue.getSimpleName());
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(getTypeName(type), "null");
   }

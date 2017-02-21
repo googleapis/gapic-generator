@@ -18,8 +18,15 @@ import com.google.api.codegen.discovery.transformer.SampleNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
 
 public class RubySampleNamer extends SampleNamer {
+
+  // Map of rename rules for fields.
+  // Could be done through overrides, but this is a rule implemented in the Ruby
+  // client library generator.
+  private static final ImmutableMap<String, String> FIELD_RENAMES =
+      ImmutableMap.of("objectId", "object_id_");
 
   public RubySampleNamer() {
     super(new RubyNameFormatter());
@@ -40,5 +47,18 @@ public class RubySampleNamer extends SampleNamer {
   @Override
   public String getServiceVarName(String apiTypeName) {
     return localVarName(Name.from("service"));
+  }
+
+  @Override
+  public String getFieldVarName(String fieldName) {
+    if (FIELD_RENAMES.containsKey(fieldName)) {
+      return FIELD_RENAMES.get(fieldName);
+    }
+    return localVarName(Name.lowerCamel(fieldName));
+  }
+
+  @Override
+  public String getRequestBodyFieldSetterName(String fieldName) {
+    return publicMethodName(Name.lowerCamel(fieldName));
   }
 }

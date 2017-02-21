@@ -164,7 +164,6 @@ public class DiscoveryImporter {
       importer.config.setServiceCanonicalName(lowerCamelToUpperCamel(apiName));
     }
     importer.config.setServiceVersion(apiVersion);
-
     return importer;
   }
 

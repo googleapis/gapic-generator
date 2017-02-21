@@ -306,7 +306,7 @@ project_id = ''  # TODO: Update placeholder value.
 # [Required] Job ID of the query job
 job_id = ''  # TODO: Update placeholder value.
 
-errors = service.fetch_all(items: :errors) do |token|
+errors = service.fetch_all(items: :errors, response_page_token: :page_token) do |token|
   service.get_job_query_results(project_id, job_id, page_token: token)
 end
 
@@ -526,7 +526,7 @@ dataset_id = ''  # TODO: Update placeholder value.
 # Table ID of the table to read
 table_id = ''  # TODO: Update placeholder value.
 
-rows = service.fetch_all(items: :rows) do |token|
+rows = service.fetch_all(items: :rows, response_page_token: :page_token) do |token|
   service.list_table_data(project_id, dataset_id, table_id, page_token: token)
 end
 

@@ -19,16 +19,37 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.BundlingConfigView;
 import com.google.api.codegen.viewmodel.BundlingDescriptorClassView;
+import com.google.api.codegen.viewmodel.BundlingDescriptorView;
 import com.google.api.codegen.viewmodel.BundlingPartitionKeyView;
 import com.google.api.codegen.viewmodel.FieldCopyView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BundlingTransformer {
+
+  public List<BundlingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ImmutableList.Builder<BundlingDescriptorView> descriptors = ImmutableList.builder();
+    for (Method method : context.getBundlingMethods()) {
+      BundlingConfig bundling = context.getMethodConfig(method).getBundling();
+      BundlingDescriptorView.Builder descriptor = BundlingDescriptorView.newBuilder();
+      descriptor.methodName(namer.getMethodKey(method));
+      descriptor.bundledFieldName(namer.getFieldName(bundling.getBundledField()));
+      descriptor.discriminatorFieldNames(generateDiscriminatorFieldNames(bundling));
+
+      if (bundling.hasSubresponseField()) {
+        descriptor.subresponseFieldName(namer.getFieldName(bundling.getSubresponseField()));
+      }
+
+      descriptors.add(descriptor.build());
+    }
+    return descriptors.build();
+  }
 
   public List<BundlingDescriptorClassView> generateDescriptorClasses(
       SurfaceTransformerContext context) {
@@ -58,6 +79,14 @@ public class BundlingTransformer {
     return bundlingConfigView.build();
   }
 
+  private List<String> generateDiscriminatorFieldNames(BundlingConfig bundling) {
+    ImmutableList.Builder<String> fieldNames = ImmutableList.builder();
+    for (FieldSelector fieldSelector : bundling.getDiscriminatorFields()) {
+      fieldNames.add(fieldSelector.getParamName());
+    }
+    return fieldNames.build();
+  }
+
   private BundlingDescriptorClassView generateDescriptorClass(MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
@@ -69,8 +98,6 @@ public class BundlingTransformer {
     Name bundledTypeName = Name.from(bundledField.getSimpleName());
 
     Field subresponseField = bundling.getSubresponseField();
-    TypeRef subresponseType = subresponseField.getType();
-    Name subresponseTypeName = Name.from(subresponseField.getSimpleName());
 
     BundlingDescriptorClassView.Builder desc = BundlingDescriptorClassView.newBuilder();
 
@@ -78,7 +105,6 @@ public class BundlingTransformer {
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     desc.bundledFieldTypeName(typeTable.getAndSaveNicknameFor(bundledType));
-    desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseType));
 
     desc.partitionKeys(generatePartitionKeys(context));
     desc.discriminatorFieldCopies(generateDiscriminatorFieldCopies(context));
@@ -86,9 +112,15 @@ public class BundlingTransformer {
     desc.bundledFieldGetFunction(namer.getFieldGetFunctionName(bundledType, bundledTypeName));
     desc.bundledFieldSetFunction(namer.getFieldSetFunctionName(bundledType, bundledTypeName));
     desc.bundledFieldCountGetFunction(namer.getFieldCountGetFunctionName(bundledField));
-    desc.subresponseByIndexGetFunction(namer.getByIndexGetFunctionName(subresponseField));
-    desc.subresponseSetFunction(
-        namer.getFieldSetFunctionName(subresponseType, subresponseTypeName));
+
+    if (subresponseField != null) {
+      TypeRef subresponseType = subresponseField.getType();
+      Name subresponseTypeName = Name.from(subresponseField.getSimpleName());
+      desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseType));
+      desc.subresponseByIndexGetFunction(namer.getByIndexGetFunctionName(subresponseField));
+      desc.subresponseSetFunction(
+          namer.getFieldSetFunctionName(subresponseType, subresponseTypeName));
+    }
 
     return desc.build();
   }

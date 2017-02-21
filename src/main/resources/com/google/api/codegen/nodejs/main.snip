@@ -54,6 +54,15 @@
       {@path_templates}
     @end
 
+    /**
+     * Get the project ID used by this class.
+     * @param {function(Error, string)} callback - the callback to be called with
+     *   the current project Id.
+     */
+    {@context.getApiWrapperName(service)}.prototype.getProjectId = function(callback) {
+      return this.auth.getProjectId(callback);
+    };
+
     {@serviceMethodsSection(service)}
 
     function {@apiName}Builder(gaxGrpc) {
@@ -299,7 +308,8 @@
       {@constructDefaults(service)}
 
       var self = this;
-      
+
+      this.auth = gaxGrpc.auth;
       @join stub : stubs on BREAK.add(BREAK)
         var {@stub.name} = gaxGrpc.createStub(
             servicePath,

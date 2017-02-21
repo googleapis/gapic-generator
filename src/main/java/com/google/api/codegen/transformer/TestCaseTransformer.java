@@ -15,20 +15,21 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.BundlingConfig;
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.metacode.InitCodeContext;
-import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.metacode.InitValue;
-import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.config.*;
+import com.google.api.codegen.metacode.*;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.FieldSettingView;
+import com.google.api.codegen.viewmodel.FormattedInitValueView;
+import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
+import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
+import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
+import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
@@ -217,9 +218,93 @@ public class TestCaseTransformer {
     if (context.getMethodConfig().isBundling()) {
       // Initialize one bundling element if it is bundling.
       BundlingConfig config = context.getMethodConfig().getBundling();
-      String subResponseFieldName = config.getSubresponseField().getSimpleName();
-      additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
+      if (config.getSubresponseField() != null) {
+        String subResponseFieldName = config.getSubresponseField().getSimpleName();
+        additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
+      }
     }
     return additionalSubTrees;
+  }
+
+  public TestCaseView createSmokeTestCaseView(MethodTransformerContext context) {
+    ClientMethodType methodType = ClientMethodType.FlattenedMethod;
+    if (context.getMethodConfig().isPageStreaming()) {
+      methodType = ClientMethodType.PagedFlattenedMethod;
+    }
+
+    return createTestCaseView(
+        context, new SymbolTable(), createSmokeTestInitContext(context), methodType);
+  }
+
+  public boolean requireProjectIdInSmokeTest(InitCodeView initCodeView, SurfaceNamer namer) {
+    for (FieldSettingView settingsView : initCodeView.fieldSettings()) {
+      InitCodeLineView line = settingsView.initCodeLine();
+      if (line.lineType() == InitCodeLineType.SimpleInitLine) {
+        SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
+        String projectVarName =
+            namer.localVarName(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
+        if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
+          ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
+          return initValue.formatArgs().contains(projectVarName);
+        } else if (simpleLine.initValue() instanceof ResourceNameOneofInitValueView) {
+          ResourceNameOneofInitValueView initValue =
+              (ResourceNameOneofInitValueView) simpleLine.initValue();
+          ResourceNameInitValueView subValue = initValue.specificResourceNameView();
+          return subValue.formatArgs().contains(projectVarName);
+        } else if (simpleLine.initValue() instanceof SimpleInitValueView) {
+          SimpleInitValueView initValue = (SimpleInitValueView) simpleLine.initValue();
+          return initValue.initialValue().equals(projectVarName);
+        } else if (simpleLine.initValue() instanceof FormattedInitValueView) {
+          FormattedInitValueView initValue = (FormattedInitValueView) simpleLine.initValue();
+          return initValue.formatArgs().contains(projectVarName);
+        }
+      }
+    }
+    return false;
+  }
+
+  public InitCodeContext createSmokeTestInitContext(MethodTransformerContext context) {
+    SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
+    InitCodeContext.InitCodeOutputType outputType;
+    ImmutableMap<String, FieldConfig> fieldConfigMap;
+    if (context.getMethodConfig().isFlattening()) {
+      outputType = InitCodeContext.InitCodeOutputType.FieldList;
+      fieldConfigMap =
+          FieldConfig.toFieldConfigMap(
+              context.getFlatteningConfig().getFlattenedFieldConfigs().values());
+    } else {
+      outputType = InitCodeContext.InitCodeOutputType.SingleObject;
+      fieldConfigMap = null;
+    }
+
+    // Store project ID variable name into the symbol table since it is used
+    // by the execute method as a parameter.
+    SymbolTable table = new SymbolTable();
+    table.getNewSymbol(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
+
+    InitCodeContext.Builder contextBuilder =
+        InitCodeContext.newBuilder()
+            .initObjectType(testConfig.getMethod().getInputType())
+            .suggestedName(Name.from("request"))
+            .outputType(outputType)
+            .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
+            .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
+            .symbolTable(table)
+            .fieldConfigMap(fieldConfigMap);
+    if (context.getMethodConfig().isFlattening()) {
+      contextBuilder.initFields(context.getFlatteningConfig().getFlattenedFields());
+    }
+    return contextBuilder.build();
+  }
+
+  public FlatteningConfig getSmokeTestFlatteningGroup(
+      MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
+    for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+      if (flatteningGroup.getFlatteningName().equals(smokeTestConfig.getFlatteningName())) {
+        return flatteningGroup;
+      }
+    }
+    throw new IllegalArgumentException(
+        "Flattening name in smoke test config did not correspond to any flattened method.");
   }
 }

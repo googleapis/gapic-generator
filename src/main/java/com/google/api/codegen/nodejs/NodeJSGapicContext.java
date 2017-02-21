@@ -18,15 +18,16 @@ import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.nodejs.NodeJSApiMethodParamTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
 import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
-import com.google.api.codegen.util.nodejs.NodeJSTypeTable;
+import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -82,9 +83,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   public ApiMethodView getApiMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
-    ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+    DynamicLangApiMethodTransformer apiMethodTransformer =
+        new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer());
 
-    return apiMethodTransformer.generateDynamicLangApiMethod(methodContext);
+    return apiMethodTransformer.generateMethod(methodContext);
   }
 
   /**
@@ -101,7 +103,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
-            new NodeJSTypeTable(getApiConfig().getPackageName()),
+            new JSTypeTable(getApiConfig().getPackageName()),
             new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
     return SurfaceTransformerContext.create(
         service, getApiConfig(), modelTypeTable, namer, new NodeJSFeatureConfig());

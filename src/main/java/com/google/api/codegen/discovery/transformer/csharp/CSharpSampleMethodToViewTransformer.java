@@ -27,7 +27,7 @@ import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
+import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypedValue;
@@ -49,15 +49,17 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
 
   private static final String TEMPLATE_FILENAME = "csharp/sample.snip";
 
-  private final StandardImportTypeTransformer importTypeTransformer =
-      new StandardImportTypeTransformer();
+  private final StandardImportSectionTransformer importSectionTransformer =
+      new StandardImportSectionTransformer();
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
     SampleTypeTable sampleTypeTable =
         new SampleTypeTable(
             new CSharpTypeTable(""),
-            new CSharpSampleTypeNameConverter(sampleConfig.packagePrefix()));
+            new CSharpSampleTypeNameConverter(
+                sampleConfig.packagePrefix(),
+                sampleConfig.methods().get(method.getName()).nameComponents()));
     CSharpSampleNamer csharpSampleNamer = new CSharpSampleNamer();
     SampleTransformerContext context =
         SampleTransformerContext.create(
@@ -81,21 +83,31 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     String requestTypeName =
         typeTable.getAndSaveNicknameForRequestType(config.apiTypeName(), methodInfo.requestType());
 
-    List<String> fieldVarNames = new ArrayList<>();
+    List<String> methodCallFieldVarNames = new ArrayList<>();
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(typeTable.getAndSaveNicknameFor(methodInfo.requestBodyType()));
-      fieldVarNames.add(requestBodyVarName);
+      methodCallFieldVarNames.add(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(methodInfo, fieldInfo, context, symbolTable));
+      }
     }
 
-    List<SampleFieldView> fields = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       SampleFieldView sampleFieldView =
-          createSampleFieldView(methodInfo, field, typeTable, symbolTable);
-      fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+          createSampleFieldView(methodInfo, field, context, symbolTable);
+      if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
+        methodCallFieldVarNames.add(sampleFieldView.name());
+      } else {
+        optionalFields.add(sampleFieldView);
+      }
     }
 
     if (methodInfo.isPageStreaming()) {
@@ -130,15 +142,17 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .requestVarName(requestVarName)
         .requestTypeName(requestTypeName)
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
-        .fields(fields)
-        .fieldVarNames(fieldVarNames)
+        .requiredFields(requiredFields)
+        .optionalFields(optionalFields)
+        .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
         .dataNamespace(dataNamespace)
         .namespaceName(CSharpSampleNamer.getNamespaceName(config.apiCanonicalName()))
-        .imports(importTypeTransformer.generateImports(typeTable.getImports()))
+        .importSection(importSectionTransformer.generateImportSection(typeTable.getImports()))
         .build();
   }
 
@@ -188,8 +202,10 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
   private SampleFieldView createSampleFieldView(
       MethodInfo methodInfo,
       FieldInfo field,
-      SampleTypeTable sampleTypeTable,
+      SampleTransformerContext context,
       SymbolTable symbolTable) {
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
     TypeInfo typeInfo = field.type();
 
     String defaultValue = "";
@@ -199,12 +215,13 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     if (typeInfo.kind() == Field.Kind.TYPE_ENUM) {
       TypedValue typedValue =
           CSharpSampleTypeNameConverter.getEnumZeroValue(
-              methodInfo.requestType().message().typeName(), field.name());
+              typeTable.getAndSaveNicknameForRequestType("", methodInfo.requestType()),
+              field.name());
       typeName = typedValue.getTypeName().getNickname();
       defaultValue = String.format(typedValue.getValuePattern(), typeName);
     } else {
-      defaultValue = sampleTypeTable.getZeroValueAndSaveNicknameFor(typeInfo);
-      typeName = sampleTypeTable.getAndSaveNicknameFor(typeInfo);
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+      typeName = typeTable.getAndSaveNicknameFor(typeInfo);
     }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
@@ -212,6 +229,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
+        .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
+        .required(field.required())
         .build();
   }
 

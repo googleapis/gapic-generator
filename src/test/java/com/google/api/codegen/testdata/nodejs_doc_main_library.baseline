@@ -88,6 +88,8 @@ var ALL_SCOPES = [
  * Check out [cloud docs!](https://cloud.google.com/library/example/link).
  * This is [not a cloud link](http://www.google.com).
  *
+ * Service comment may include special characters: <>&"`'@.
+ *
  * This will be created through a builder function which can be obtained by the module.
  * See the following example of how to initialize the module and how to access to the builder.
  * @see {@link libraryServiceClient}
@@ -157,6 +159,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
 
   var self = this;
 
+  this.auth = gaxGrpc.auth;
   var libraryServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
@@ -332,10 +335,20 @@ LibraryServiceClient.prototype.matchReturnFromReturnName = function(returnName) 
   return RETURN_PATH_TEMPLATE.match(returnName).return;
 };
 
+/**
+ * Get the project ID used by this class.
+ * @aram {function(Error, string)} callback - the callback to be called with
+ *   the current project Id.
+ */
+LibraryServiceClient.prototype.getProjectId = function(callback) {
+  return this.auth.getProjectId(callback);
+};
+
 // Service calls
 
 /**
  * Creates a shelf, and returns the new Shelf.
+ * RPC method comment may include special characters: <>&"`'@.
  *
  * @param {Object} request
  *   The request object that will be sent.
@@ -699,12 +712,14 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  *   The books to publish in the series.
  *
  *   This object should have the same structure as [Book]{@link Book}
+ * @param {Object} request.seriesUuid
+ *   Uniquely identifies the series to the publishing house.
+ *
+ *   This object should have the same structure as [SeriesUuid]{@link SeriesUuid}
  * @param {number=} request.edition
  *   The edition of the series
  * @param {boolean=} request.reviewCopy
  *   If the book is in a pre-publish state
- * @param {string=} request.seriesUuid
- *   Uniquely identifies the series to the publishing house.
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
@@ -721,9 +736,14 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  * var client = libraryV1.libraryServiceClient();
  * var shelf = {};
  * var books = [];
+ * var seriesString = 'foobar';
+ * var seriesUuid = {
+ *     seriesString : seriesString
+ * };
  * var request = {
  *     shelf: shelf,
- *     books: books
+ *     books: books,
+ *     seriesUuid: seriesUuid
  * };
  * client.publishSeries(request).then(function(responses) {
  *     var response = responses[0];

@@ -1,5 +1,5 @@
 ============== file: Google/Example/Library/V1/LibraryServiceClient.cs ==============
-// Copyright 2016, Google Inc. All rights reserved.
+// Copyright 2017, Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -68,12 +68,18 @@ namespace Google.Example.Library.V1
             GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings;
             GetBookFromAnywhereSettings = existing.GetBookFromAnywhereSettings;
             UpdateBookIndexSettings = existing.UpdateBookIndexSettings;
+            DiscussBookSettings = existing.DiscussBookSettings;
+            DiscussBookStreamingSettings = existing.DiscussBookStreamingSettings;
             FindRelatedBooksSettings = existing.FindRelatedBooksSettings;
             AddTagSettings = existing.AddTagSettings;
             AddLabelSettings = existing.AddLabelSettings;
             GetBigBookSettings = existing.GetBigBookSettings;
             GetBigNothingSettings = existing.GetBigNothingSettings;
+            LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
+            OnCopy(existing);
         }
+
+        partial void OnCopy(LibraryServiceSettings existing);
 
         /// <summary>
         /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
@@ -644,6 +650,25 @@ namespace Google.Example.Library.V1
             )));
 
         /// <summary>
+        /// <see cref="CallSettings"/> for calls to <c>LibraryServiceClient.DiscussBook</c>.
+        /// </summary>
+        /// <remarks>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings DiscussBookSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromTimeout(TimeSpan.FromMilliseconds(30000)));
+
+        /// <summary>
+        /// <see cref="BidirectionalStreamingSettings"/> for calls to
+        /// <c>LibraryServiceClient.DiscussBook</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default local send queue size is 100.
+        /// </remarks>
+        public BidirectionalStreamingSettings DiscussBookStreamingSettings { get; set; } =
+            new BidirectionalStreamingSettings(100);
+
+        /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <c>LibraryServiceClient.FindRelatedBooks</c> and <c>LibraryServiceClient.FindRelatedBooksAsync</c>.
         /// </summary>
@@ -905,6 +930,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="shelf">
         /// The shelf to create.
@@ -926,6 +952,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="shelf">
         /// The shelf to create.
@@ -944,6 +971,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="shelf">
         /// The shelf to create.
@@ -965,6 +993,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
@@ -984,6 +1013,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
@@ -1706,6 +1736,9 @@ namespace Google.Example.Library.V1
         /// <param name="edition">
         /// The edition of the series
         /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -1716,12 +1749,14 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
+            SeriesUuid seriesUuid,
             CallSettings callSettings = null) => PublishSeriesAsync(
                 new PublishSeriesRequest
                 {
                     Shelf = shelf,
                     Books = { books },
                     Edition = edition,
+                    SeriesUuid = seriesUuid,
                 },
                 callSettings);
 
@@ -1737,6 +1772,9 @@ namespace Google.Example.Library.V1
         /// <param name="edition">
         /// The edition of the series
         /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to use for this RPC.
         /// </param>
@@ -1747,10 +1785,12 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
+            SeriesUuid seriesUuid,
             CancellationToken cancellationToken) => PublishSeriesAsync(
                 shelf,
                 books,
                 edition,
+                seriesUuid,
                 CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -1765,6 +1805,9 @@ namespace Google.Example.Library.V1
         /// <param name="edition">
         /// The edition of the series
         /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -1775,12 +1818,14 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
+            SeriesUuid seriesUuid,
             CallSettings callSettings = null) => PublishSeries(
                 new PublishSeriesRequest
                 {
                     Shelf = shelf,
                     Books = { books },
                     Edition = edition,
+                    SeriesUuid = seriesUuid,
                 },
                 callSettings);
 
@@ -3081,6 +3126,33 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Test bidi-streaming.
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <param name="streamingSettings">
+        /// If not null, applies streaming overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The client-server stream.
+        /// </returns>
+        public virtual DiscussBookStream DiscussBook(
+            CallSettings callSettings = null,
+            BidirectionalStreamingSettings streamingSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Bidirectional streaming methods for <c>DiscussBook</c>.
+        /// </summary>
+        public abstract class DiscussBookStream : BidirectionalStreamingBase<DiscussBookRequest, Comment>
+        {
+        }
+
+        /// <summary>
         ///
         /// </summary>
         /// <param name="names">
@@ -3693,7 +3765,6 @@ namespace Google.Example.Library.V1
     /// </summary>
     public sealed partial class LibraryServiceClientImpl : LibraryServiceClient
     {
-        private readonly ClientHelper _clientHelper;
         private readonly ApiCall<CreateShelfRequest, Shelf> _callCreateShelf;
         private readonly ApiCall<GetShelfRequest, Shelf> _callGetShelf;
         private readonly ApiCall<ListShelvesRequest, ListShelvesResponse> _callListShelves;
@@ -3711,6 +3782,7 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<GetBookFromArchiveRequest, BookFromArchive> _callGetBookFromArchive;
         private readonly ApiCall<GetBookFromAnywhereRequest, BookFromAnywhere> _callGetBookFromAnywhere;
         private readonly ApiCall<UpdateBookIndexRequest, Empty> _callUpdateBookIndex;
+        private readonly ApiBidirectionalStreamingCall<DiscussBookRequest, Comment> _callDiscussBook;
         private readonly ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> _callFindRelatedBooks;
         private readonly ApiCall<AddTagRequest, AddTagResponse> _callAddTag;
         private readonly ApiCall<AddLabelRequest, AddLabelResponse> _callAddLabel;
@@ -3728,53 +3800,58 @@ namespace Google.Example.Library.V1
             LibraryServiceSettings effectiveSettings = settings ?? LibraryServiceSettings.GetDefault();
             LongRunningOperationsClient = new OperationsClientImpl(
                 grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
-            _clientHelper = new ClientHelper(effectiveSettings);
+            ClientHelper clientHelper = new ClientHelper(effectiveSettings);
             var grpcLabelerClient = grpcClient.CreateLabelerClient();
-            _callCreateShelf = _clientHelper.BuildApiCall<CreateShelfRequest, Shelf>(
+            _callCreateShelf = clientHelper.BuildApiCall<CreateShelfRequest, Shelf>(
                 GrpcClient.CreateShelfAsync, GrpcClient.CreateShelf, effectiveSettings.CreateShelfSettings);
-            _callGetShelf = _clientHelper.BuildApiCall<GetShelfRequest, Shelf>(
+            _callGetShelf = clientHelper.BuildApiCall<GetShelfRequest, Shelf>(
                 GrpcClient.GetShelfAsync, GrpcClient.GetShelf, effectiveSettings.GetShelfSettings);
-            _callListShelves = _clientHelper.BuildApiCall<ListShelvesRequest, ListShelvesResponse>(
+            _callListShelves = clientHelper.BuildApiCall<ListShelvesRequest, ListShelvesResponse>(
                 GrpcClient.ListShelvesAsync, GrpcClient.ListShelves, effectiveSettings.ListShelvesSettings);
-            _callDeleteShelf = _clientHelper.BuildApiCall<DeleteShelfRequest, Empty>(
+            _callDeleteShelf = clientHelper.BuildApiCall<DeleteShelfRequest, Empty>(
                 GrpcClient.DeleteShelfAsync, GrpcClient.DeleteShelf, effectiveSettings.DeleteShelfSettings);
-            _callMergeShelves = _clientHelper.BuildApiCall<MergeShelvesRequest, Shelf>(
+            _callMergeShelves = clientHelper.BuildApiCall<MergeShelvesRequest, Shelf>(
                 GrpcClient.MergeShelvesAsync, GrpcClient.MergeShelves, effectiveSettings.MergeShelvesSettings);
-            _callCreateBook = _clientHelper.BuildApiCall<CreateBookRequest, Book>(
+            _callCreateBook = clientHelper.BuildApiCall<CreateBookRequest, Book>(
                 GrpcClient.CreateBookAsync, GrpcClient.CreateBook, effectiveSettings.CreateBookSettings);
-            _callPublishSeries = _clientHelper.BuildApiCall<PublishSeriesRequest, PublishSeriesResponse>(
+            _callPublishSeries = clientHelper.BuildApiCall<PublishSeriesRequest, PublishSeriesResponse>(
                 GrpcClient.PublishSeriesAsync, GrpcClient.PublishSeries, effectiveSettings.PublishSeriesSettings);
-            _callGetBook = _clientHelper.BuildApiCall<GetBookRequest, Book>(
+            _callGetBook = clientHelper.BuildApiCall<GetBookRequest, Book>(
                 GrpcClient.GetBookAsync, GrpcClient.GetBook, effectiveSettings.GetBookSettings);
-            _callListBooks = _clientHelper.BuildApiCall<ListBooksRequest, ListBooksResponse>(
+            _callListBooks = clientHelper.BuildApiCall<ListBooksRequest, ListBooksResponse>(
                 GrpcClient.ListBooksAsync, GrpcClient.ListBooks, effectiveSettings.ListBooksSettings);
-            _callDeleteBook = _clientHelper.BuildApiCall<DeleteBookRequest, Empty>(
+            _callDeleteBook = clientHelper.BuildApiCall<DeleteBookRequest, Empty>(
                 GrpcClient.DeleteBookAsync, GrpcClient.DeleteBook, effectiveSettings.DeleteBookSettings);
-            _callUpdateBook = _clientHelper.BuildApiCall<UpdateBookRequest, Book>(
+            _callUpdateBook = clientHelper.BuildApiCall<UpdateBookRequest, Book>(
                 GrpcClient.UpdateBookAsync, GrpcClient.UpdateBook, effectiveSettings.UpdateBookSettings);
-            _callMoveBook = _clientHelper.BuildApiCall<MoveBookRequest, Book>(
+            _callMoveBook = clientHelper.BuildApiCall<MoveBookRequest, Book>(
                 GrpcClient.MoveBookAsync, GrpcClient.MoveBook, effectiveSettings.MoveBookSettings);
-            _callListStrings = _clientHelper.BuildApiCall<ListStringsRequest, ListStringsResponse>(
+            _callListStrings = clientHelper.BuildApiCall<ListStringsRequest, ListStringsResponse>(
                 GrpcClient.ListStringsAsync, GrpcClient.ListStrings, effectiveSettings.ListStringsSettings);
-            _callAddComments = _clientHelper.BuildApiCall<AddCommentsRequest, Empty>(
+            _callAddComments = clientHelper.BuildApiCall<AddCommentsRequest, Empty>(
                 GrpcClient.AddCommentsAsync, GrpcClient.AddComments, effectiveSettings.AddCommentsSettings);
-            _callGetBookFromArchive = _clientHelper.BuildApiCall<GetBookFromArchiveRequest, BookFromArchive>(
+            _callGetBookFromArchive = clientHelper.BuildApiCall<GetBookFromArchiveRequest, BookFromArchive>(
                 GrpcClient.GetBookFromArchiveAsync, GrpcClient.GetBookFromArchive, effectiveSettings.GetBookFromArchiveSettings);
-            _callGetBookFromAnywhere = _clientHelper.BuildApiCall<GetBookFromAnywhereRequest, BookFromAnywhere>(
+            _callGetBookFromAnywhere = clientHelper.BuildApiCall<GetBookFromAnywhereRequest, BookFromAnywhere>(
                 GrpcClient.GetBookFromAnywhereAsync, GrpcClient.GetBookFromAnywhere, effectiveSettings.GetBookFromAnywhereSettings);
-            _callUpdateBookIndex = _clientHelper.BuildApiCall<UpdateBookIndexRequest, Empty>(
+            _callUpdateBookIndex = clientHelper.BuildApiCall<UpdateBookIndexRequest, Empty>(
                 GrpcClient.UpdateBookIndexAsync, GrpcClient.UpdateBookIndex, effectiveSettings.UpdateBookIndexSettings);
-            _callFindRelatedBooks = _clientHelper.BuildApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse>(
+            _callDiscussBook = clientHelper.BuildApiCall<DiscussBookRequest, Comment>(
+                GrpcClient.DiscussBook, effectiveSettings.DiscussBookSettings, effectiveSettings.DiscussBookStreamingSettings);
+            _callFindRelatedBooks = clientHelper.BuildApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse>(
                 GrpcClient.FindRelatedBooksAsync, GrpcClient.FindRelatedBooks, effectiveSettings.FindRelatedBooksSettings);
-            _callAddTag = _clientHelper.BuildApiCall<AddTagRequest, AddTagResponse>(
+            _callAddTag = clientHelper.BuildApiCall<AddTagRequest, AddTagResponse>(
                 GrpcClient.AddTagAsync, GrpcClient.AddTag, effectiveSettings.AddTagSettings);
-            _callAddLabel = _clientHelper.BuildApiCall<AddLabelRequest, AddLabelResponse>(
+            _callAddLabel = clientHelper.BuildApiCall<AddLabelRequest, AddLabelResponse>(
                 grpcLabelerClient.AddLabelAsync, grpcLabelerClient.AddLabel, effectiveSettings.AddLabelSettings);
-            _callGetBigBook = _clientHelper.BuildApiCall<GetBookRequest, Operation>(
+            _callGetBigBook = clientHelper.BuildApiCall<GetBookRequest, Operation>(
                 GrpcClient.GetBigBookAsync, GrpcClient.GetBigBook, effectiveSettings.GetBigBookSettings);
-            _callGetBigNothing = _clientHelper.BuildApiCall<GetBookRequest, Operation>(
+            _callGetBigNothing = clientHelper.BuildApiCall<GetBookRequest, Operation>(
                 GrpcClient.GetBigNothingAsync, GrpcClient.GetBigNothing, effectiveSettings.GetBigNothingSettings);
+            OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
+
+        partial void OnConstruction(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings effectiveSettings, ClientHelper clientHelper);
 
         /// <summary>
         /// The underlying gRPC LibraryService client.
@@ -3804,6 +3881,8 @@ namespace Google.Example.Library.V1
         partial void Modify_GetBookFromArchiveRequest(ref GetBookFromArchiveRequest request, ref CallSettings settings);
         partial void Modify_GetBookFromAnywhereRequest(ref GetBookFromAnywhereRequest request, ref CallSettings settings);
         partial void Modify_UpdateBookIndexRequest(ref UpdateBookIndexRequest request, ref CallSettings settings);
+        partial void Modify_DiscussBookRequestCallSettings(ref CallSettings settings);
+        partial void Modify_DiscussBookRequestRequest(ref DiscussBookRequest request);
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref CallSettings settings);
         partial void Modify_AddTagRequest(ref AddTagRequest request, ref CallSettings settings);
         partial void Modify_AddLabelRequest(ref AddLabelRequest request, ref CallSettings settings);
@@ -3812,6 +3891,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
@@ -3832,6 +3912,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
@@ -4492,6 +4573,97 @@ namespace Google.Example.Library.V1
         {
             Modify_UpdateBookIndexRequest(ref request, ref callSettings);
             _callUpdateBookIndex.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Test bidi-streaming.
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <param name="streamingSettings">
+        /// If not null, applies streaming overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The client-server stream.
+        /// </returns>
+        public override DiscussBookStream DiscussBook(
+            CallSettings callSettings = null,
+            BidirectionalStreamingSettings streamingSettings = null)
+        {
+            Modify_DiscussBookRequestCallSettings(ref callSettings);
+            BidirectionalStreamingSettings effectiveStreamingSettings =
+                streamingSettings ?? _callDiscussBook.StreamingSettings;
+            AsyncDuplexStreamingCall<DiscussBookRequest,Comment> call =
+                _callDiscussBook.Call(callSettings);
+            BufferedClientStreamWriter<DiscussBookRequest> writeBuffer =
+                new BufferedClientStreamWriter<DiscussBookRequest>(
+                    call.RequestStream, effectiveStreamingSettings.BufferedClientWriterCapacity);
+            return new DiscussBookStreamImpl(this, call, writeBuffer);
+        }
+
+        /// <summary>
+        /// Bidirectional streaming methods for <c>DiscussBook</c>.
+        /// </summary>
+        public sealed class DiscussBookStreamImpl : DiscussBookStream
+        {
+            /// <summary>
+            /// Construct the bidirectional streaming method for <c>DiscussBook</c>.
+            /// </summary>
+            /// <param name="service">The service containing this streaming method.</param>
+            /// <param name="call">The underlying gRPC duplex streaming call.</param>
+            /// <param name="writeBuffer">The <see cref="BufferedClientStreamWriter{DiscussBookRequest}"/>
+            /// instance associated with this streaming call.</param>
+            public DiscussBookStreamImpl(
+                LibraryServiceClientImpl service,
+                AsyncDuplexStreamingCall<DiscussBookRequest,Comment> call,
+                BufferedClientStreamWriter<DiscussBookRequest> writeBuffer)
+            {
+                _service = service;
+                GrpcCall = call;
+                _writeBuffer = writeBuffer;
+            }
+
+            private LibraryServiceClientImpl _service;
+            private BufferedClientStreamWriter<DiscussBookRequest> _writeBuffer;
+
+            private DiscussBookRequest ModifyRequest(DiscussBookRequest request)
+            {
+                _service.Modify_DiscussBookRequestRequest(ref request);
+                return request;
+            }
+
+            /// <inheritdoc/>
+            public override AsyncDuplexStreamingCall<DiscussBookRequest,Comment> GrpcCall { get; }
+
+            /// <inheritdoc/>
+            public override Task TryWriteAsync(DiscussBookRequest message) =>
+                _writeBuffer.TryWriteAsync(ModifyRequest(message));
+
+            /// <inheritdoc/>
+            public override Task WriteAsync(DiscussBookRequest message) =>
+                _writeBuffer.WriteAsync(ModifyRequest(message));
+
+            /// <inheritdoc/>
+            public override Task TryWriteAsync(DiscussBookRequest message, WriteOptions options) =>
+                _writeBuffer.TryWriteAsync(ModifyRequest(message), options);
+
+            /// <inheritdoc/>
+            public override Task WriteAsync(DiscussBookRequest message, WriteOptions options) =>
+                _writeBuffer.WriteAsync(ModifyRequest(message), options);
+
+            /// <inheritdoc/>
+            public override Task TryWriteCompleteAsync() =>
+                _writeBuffer.TryWriteCompleteAsync();
+
+            /// <inheritdoc/>
+            public override Task WriteCompleteAsync() =>
+                _writeBuffer.WriteCompleteAsync();
+
+            /// <inheritdoc/>
+            public override IAsyncEnumerator<Comment> ResponseStream =>
+                GrpcCall.ResponseStream;
         }
 
         /// <summary>

@@ -22,7 +22,7 @@
   var {@class.googleImportVarName} = require('googleapis');
   var {@class.serviceVarName} = {@class.googleImportVarName}.{@class.serviceTypeName}('{@class.apiVersion}');
 
-  @switch {@class.auth.type}
+  @switch class.auth.type
   @case "OAUTH_3L"
     {@mainFunc(class)}
 
@@ -46,22 +46,23 @@
 
 @private mainFuncBody(class)
   var {@class.requestVarName} = {
-    @join field : class.fields if class.fields
-      @if field.description
-        @join line : util.getDocLines(field.description, 100)
-          // {@line}
-        @end
+    @join field : class.requiredFields if class.requiredFields
+      {@field(field)}
 
-
-      @end
-      {@field.name}: {@field.defaultValue},  // TODO: Update placeholder value.
-      @if field.example
-        // {@field.example}
-      @end
+    @end
+    @join field : class.optionalFields if class.optionalFields
+      {@field(field)}
 
     @end
     @if class.hasRequestBody
       resource: {
+        @if class.requestBodyFields
+          @join field : class.requestBodyFields
+            {@field(field)}
+
+          @end
+
+        @end
         @switch class.methodVerb
         @case "PATCH"
           // TODO: Add desired properties to the request body. Only these properties
@@ -122,7 +123,7 @@
       @end
 
       if ({@class.responseVarName}.{@class.pageStreaming.nextPageTokenName}) {
-        {@class.requestVarName}.{@class.pageStreaming.pageTokenName} = {@class.responseVarName}.{@class.pageStreaming.nextPageTokenName};
+        {@pageToken(class)} = {@class.responseVarName}.{@class.pageStreaming.nextPageTokenName};
         {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, {@class.pageStreaming.handlePageVarName});
       }
     };
@@ -147,6 +148,14 @@
         }
       });
     @end
+  @end
+@end
+
+@private pageToken(class)
+  @if class.pageStreaming.isResourceSetterInRequestBody
+    {@class.requestVarName}.resource.{@class.pageStreaming.pageTokenName}
+  @else
+    {@class.requestVarName}.{@class.pageStreaming.pageTokenName}
   @end
 @end
 
@@ -187,6 +196,20 @@
     }
     callback(authClient);
   }
+@end
+
+@private field(field)
+  @if field.description
+    @join line : util.getDocLines(field.description, 100)
+      // {@line}
+    @end
+
+
+  @end
+  {@field.name}: {@field.defaultValue},  // TODO: Update placeholder value.
+  @if field.example
+    // {@field.example}
+  @end
 @end
 
 @private callChain(methodNameComponents)

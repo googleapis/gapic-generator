@@ -81,6 +81,7 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
 
   var self = this;
 
+  this.auth = gaxGrpc.auth;
   var noTemplatesApiServiceStub = gaxGrpc.createStub(
       servicePath,
       port,
@@ -101,6 +102,15 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
       null);
   });
 }
+
+/**
+ * Get the project ID used by this class.
+ * @aram {function(Error, string)} callback - the callback to be called with
+ *   the current project Id.
+ */
+NoTemplatesAPIServiceClient.prototype.getProjectId = function(callback) {
+  return this.auth.getProjectId(callback);
+};
 
 // Service calls
 

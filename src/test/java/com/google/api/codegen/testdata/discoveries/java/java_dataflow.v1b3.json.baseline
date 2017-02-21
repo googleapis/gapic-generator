@@ -29,7 +29,7 @@ import java.util.Arrays;
 
 public class DataflowExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The project which owns the job.
+    // The ID of the Cloud Platform project that the job belongs to.
     String projectId = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`:
@@ -217,10 +217,10 @@ import java.util.Arrays;
 
 public class DataflowExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The project which owns the job.
+    // The ID of the Cloud Platform project that the job belongs to.
     String projectId = "";  // TODO: Update placeholder value.
 
-    // Identifies a single job.
+    // The job ID.
     String jobId = "";  // TODO: Update placeholder value.
 
     Dataflow dataflowService = createDataflowService();
@@ -472,10 +472,10 @@ import java.util.Arrays;
 
 public class DataflowExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The project which owns the job.
+    // The ID of the Cloud Platform project that the job belongs to.
     String projectId = "";  // TODO: Update placeholder value.
 
-    // Identifies a single job.
+    // The job ID.
     String jobId = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`. All existing
@@ -657,6 +657,537 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.dataflow.Dataflow;
+import com.google.api.services.dataflow.model.Job;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class DataflowExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the Cloud Platform project that the job belongs to.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    // The location that contains this job.
+    String location = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    Job requestBody = new Job();
+
+    Dataflow dataflowService = createDataflowService();
+    Dataflow.Projects.Locations.Jobs.Create request = dataflowService.projects().locations().jobs().create(projectId, location, requestBody);
+
+    Job response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Dataflow createDataflowService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Dataflow.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-DataflowSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Dataflow API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/dataflow
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dataflow.Dataflow;
+import com.google.api.services.dataflow.model.Job;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class DataflowExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the Cloud Platform project that the job belongs to.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    // The location that contains this job.
+    String location = "";  // TODO: Update placeholder value.
+
+    // The job ID.
+    String jobId = "";  // TODO: Update placeholder value.
+
+    Dataflow dataflowService = createDataflowService();
+    Dataflow.Projects.Locations.Jobs.Get request = dataflowService.projects().locations().jobs().get(projectId, location, jobId);
+
+    Job response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Dataflow createDataflowService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Dataflow.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-DataflowSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Dataflow API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/dataflow
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dataflow.Dataflow;
+import com.google.api.services.dataflow.model.JobMetrics;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class DataflowExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // A project id.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    // The location which contains the job specified by job_id.
+    String location = "";  // TODO: Update placeholder value.
+
+    // The job to get messages for.
+    String jobId = "";  // TODO: Update placeholder value.
+
+    Dataflow dataflowService = createDataflowService();
+    Dataflow.Projects.Locations.Jobs.GetMetrics request = dataflowService.projects().locations().jobs().getMetrics(projectId, location, jobId);
+
+    JobMetrics response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Dataflow createDataflowService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Dataflow.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-DataflowSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Dataflow API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/dataflow
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dataflow.Dataflow;
+import com.google.api.services.dataflow.model.Job;
+import com.google.api.services.dataflow.model.ListJobsResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class DataflowExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The project which owns the jobs.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    // The location that contains this job.
+    String location = "";  // TODO: Update placeholder value.
+
+    Dataflow dataflowService = createDataflowService();
+    Dataflow.Projects.Locations.Jobs.List request = dataflowService.projects().locations().jobs().list(projectId, location);
+
+    ListJobsResponse response;
+    do {
+      response = request.execute();
+      if (response.getJobs() == null) {
+        continue;
+      }
+      for (Job job : response.getJobs()) {
+        // TODO: Change code below to process each `job` resource:
+        System.out.println(job);
+      }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+
+  public static Dataflow createDataflowService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Dataflow.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-DataflowSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Dataflow API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/dataflow
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dataflow.Dataflow;
+import com.google.api.services.dataflow.model.JobMessage;
+import com.google.api.services.dataflow.model.ListJobMessagesResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class DataflowExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // A project id.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    // The location which contains the job specified by job_id.
+    String location = "";  // TODO: Update placeholder value.
+
+    // The job to get messages about.
+    String jobId = "";  // TODO: Update placeholder value.
+
+    Dataflow dataflowService = createDataflowService();
+    Dataflow.Projects.Locations.Jobs.Messages.List request = dataflowService.projects().locations().jobs().messages().list(projectId, location, jobId);
+
+    ListJobMessagesResponse response;
+    do {
+      response = request.execute();
+      if (response.getJobMessages() == null) {
+        continue;
+      }
+      for (JobMessage jobMessage : response.getJobMessages()) {
+        // TODO: Change code below to process each `jobMessage` resource:
+        System.out.println(jobMessage);
+      }
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+
+  public static Dataflow createDataflowService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Dataflow.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-DataflowSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Dataflow API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/dataflow
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dataflow.Dataflow;
+import com.google.api.services.dataflow.model.Job;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class DataflowExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The ID of the Cloud Platform project that the job belongs to.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    // The location that contains this job.
+    String location = "";  // TODO: Update placeholder value.
+
+    // The job ID.
+    String jobId = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`. All existing
+    // fields will be replaced:
+    Job requestBody = new Job();
+
+    Dataflow dataflowService = createDataflowService();
+    Dataflow.Projects.Locations.Jobs.Update request = dataflowService.projects().locations().jobs().update(projectId, location, jobId, requestBody);
+
+    Job response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Dataflow createDataflowService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Dataflow.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-DataflowSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Dataflow API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/dataflow
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dataflow.Dataflow;
+import com.google.api.services.dataflow.model.LeaseWorkItemRequest;
+import com.google.api.services.dataflow.model.LeaseWorkItemResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class DataflowExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // Identifies the project this worker belongs to.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    // The location which contains the WorkItem's job.
+    String location = "";  // TODO: Update placeholder value.
+
+    // Identifies the workflow job this worker belongs to.
+    String jobId = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    LeaseWorkItemRequest requestBody = new LeaseWorkItemRequest();
+
+    Dataflow dataflowService = createDataflowService();
+    Dataflow.Projects.Locations.Jobs.WorkItems.Lease request = dataflowService.projects().locations().jobs().workItems().lease(projectId, location, jobId, requestBody);
+
+    LeaseWorkItemResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Dataflow createDataflowService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Dataflow.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-DataflowSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Dataflow API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/dataflow
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dataflow.Dataflow;
+import com.google.api.services.dataflow.model.ReportWorkItemStatusRequest;
+import com.google.api.services.dataflow.model.ReportWorkItemStatusResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+public class DataflowExample {
+  public static void main(String args[]) throws IOException, GeneralSecurityException {
+    // The project which owns the WorkItem's job.
+    String projectId = "";  // TODO: Update placeholder value.
+
+    // The location which contains the WorkItem's job.
+    String location = "";  // TODO: Update placeholder value.
+
+    // The job which the WorkItem is part of.
+    String jobId = "";  // TODO: Update placeholder value.
+
+    // TODO: Assign values to desired fields of `requestBody`:
+    ReportWorkItemStatusRequest requestBody = new ReportWorkItemStatusRequest();
+
+    Dataflow dataflowService = createDataflowService();
+    Dataflow.Projects.Locations.Jobs.WorkItems.ReportStatus request = dataflowService.projects().locations().jobs().workItems().reportStatus(projectId, location, jobId, requestBody);
+
+    ReportWorkItemStatusResponse response = request.execute();
+
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+  }
+
+  public static Dataflow createDataflowService() throws IOException, GeneralSecurityException {
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential =
+          credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    return new Dataflow.Builder(httpTransport, jsonFactory, credential)
+        .setApplicationName("Google-DataflowSample/0.1")
+        .build();
+  }
+}
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Dataflow API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/dataflow
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk and run
+ *    `gcloud beta auth application-default login`.
+ *    For more information, see
+ *    https://developers.google.com/identity/protocols/application-default-credentials
+ * 3. Install the Java client library on Maven or Gradle. Check installation
+ *    instructions at https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dataflow/v1b3/java
+ */
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dataflow.Dataflow;
 import com.google.api.services.dataflow.model.CreateJobFromTemplateRequest;
 import com.google.api.services.dataflow.model.Job;
 import java.io.IOException;
@@ -665,7 +1196,7 @@ import java.util.Arrays;
 
 public class DataflowExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    // The project which owns the job.
+    // Required. The ID of the Cloud Platform project that the job belongs to.
     String projectId = "";  // TODO: Update placeholder value.
 
     // TODO: Assign values to desired fields of `requestBody`:

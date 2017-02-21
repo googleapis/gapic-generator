@@ -70,27 +70,34 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
-    List<SampleFieldView> fields = new ArrayList<>();
-    List<String> fieldVarNames = new ArrayList<>();
+    List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
+    List<String> methodCallFieldVarNames = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
+      // Optional fields are excluded from the symbol table because the field
+      // names are the keys of a map.
       SampleFieldView sampleFieldView =
-          SampleFieldView.newBuilder()
-              .name(namer.localVarName(Name.lowerCamel(field.name())))
-              .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
-              .example(field.example())
-              .description(field.description())
-              .build();
-      fields.add(sampleFieldView);
-      fieldVarNames.add(sampleFieldView.name());
+          createSampleFieldView(field, context, symbolTable, field.required());
+      if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
+        methodCallFieldVarNames.add(sampleFieldView.name());
+      } else {
+        optionalFields.add(sampleFieldView);
+      }
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName = symbolTable.getNewSymbol(namer.getRequestBodyVarName());
       builder.requestBodyVarName(requestBodyVarName);
       builder.requestBodyTypeName(
           typeTable.getTypeName(methodInfo.requestBodyType()).getNickname());
-      fieldVarNames.add(requestBodyVarName);
+      methodCallFieldVarNames.add(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable, true));
+      }
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -99,9 +106,11 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     }
 
     String optParamsVarName = "";
-    if (methodInfo.isPageStreaming() || methodInfo.hasMediaDownload()) {
+    if (methodInfo.isPageStreaming() && !methodInfo.isPageStreamingResourceSetterInRequestBody()
+        || methodInfo.hasMediaDownload()
+        || !optionalFields.isEmpty()) {
       optParamsVarName = namer.localVarName(Name.lowerCamel("optParams"));
-      fieldVarNames.add(optParamsVarName);
+      methodCallFieldVarNames.add(optParamsVarName);
     }
 
     return builder
@@ -117,9 +126,11 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
         .methodVerb(methodInfo.verb())
         .methodNameComponents(methodInfo.nameComponents())
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
-        .fields(fields)
-        .fieldVarNames(fieldVarNames)
+        .requiredFields(requiredFields)
+        .optionalFields(optionalFields)
+        .methodCallFieldVarNames(methodCallFieldVarNames)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
@@ -169,8 +180,37 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name()))));
-    builder.pageTokenName(methodInfo.requestPageTokenName());
+    boolean isResourceSetterInRequestBody = methodInfo.isPageStreamingResourceSetterInRequestBody();
+    builder.isResourceSetterInRequestBody(isResourceSetterInRequestBody);
+    // Use upper camel case for getter/setter function names in templates.
+    if (isResourceSetterInRequestBody) {
+      builder.pageTokenName(Name.lowerCamel(methodInfo.requestPageTokenName()).toUpperCamel());
+    } else {
+      builder.pageTokenName(methodInfo.requestPageTokenName());
+    }
     builder.nextPageTokenName(Name.lowerCamel(methodInfo.responsePageTokenName()).toUpperCamel());
     return builder.build();
+  }
+
+  private SampleFieldView createSampleFieldView(
+      FieldInfo field,
+      SampleTransformerContext context,
+      SymbolTable symbolTable,
+      boolean disambiguateName) {
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
+    String name = field.name();
+    if (disambiguateName) {
+      name = symbolTable.getNewSymbol(name);
+    }
+    return SampleFieldView.newBuilder()
+        .name(name)
+        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .example(field.example())
+        .description(field.description())
+        .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
+        .required(field.required())
+        .isArray(field.type().isArray())
+        .build();
   }
 }

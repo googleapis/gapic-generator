@@ -26,7 +26,7 @@ import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
+import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
@@ -36,6 +36,7 @@ import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.util.testing.PhpValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
@@ -58,8 +59,10 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "php/mock_service.snip";
 
   private final PhpValueProducer valueProducer = new PhpValueProducer();
+  private final StandardImportSectionTransformer importSectionTransformer =
+      new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new StandardImportTypeTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
@@ -112,13 +115,15 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
       addUnitTestImports(typeTable);
 
+      ImportSectionView importSection =
+          importSectionTransformer.generateImportSection(typeTable.getImports());
       mockFiles.add(
           MockServiceImplFileView.newBuilder()
               .outputPath(outputPath + File.separator + name + ".php")
               .templateFileName(MOCK_SERVICE_TEMPLATE_FILE)
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
-                      apiConfig, typeTable.getImports(), testPackageNamer))
+                      apiConfig, importSection, testPackageNamer))
               .serviceImpl(mockImpl)
               .build());
     }
@@ -181,6 +186,8 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
       addUnitTestImports(typeTable);
 
       String outputPath = pathMapper.getOutputPath(context.getInterface(), apiConfig);
+      ImportSectionView importSection =
+          importSectionTransformer.generateImportSection(typeTable.getImports());
       testViews.add(
           ClientTestFileView.newBuilder()
               .outputPath(outputPath + File.separator + testClassName + ".php")
@@ -188,7 +195,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .templateFileName(TEST_TEMPLATE_FILE)
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
-                      apiConfig, typeTable.getImports(), testPackageNamer))
+                      apiConfig, importSection, testPackageNamer))
               .build());
     }
 

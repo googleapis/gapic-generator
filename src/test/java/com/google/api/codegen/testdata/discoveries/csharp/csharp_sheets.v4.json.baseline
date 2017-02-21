@@ -12,6 +12,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using System;
+using System.Collections.Generic;
 
 using Data = Google.Apis.Sheets.v4.Data;
 
@@ -30,8 +31,12 @@ namespace SheetsSample
             // The spreadsheet to apply the updates to.
             string spreadsheetId = "";  // TODO: Update placeholder value.
 
+            // A list of updates to apply to the spreadsheet.
+            List<Data.Request> requests = new List<Data.Request>();  // TODO: Update placeholder value.
+
             // TODO: Assign values to desired properties of `requestBody`:
             Data.BatchUpdateSpreadsheetRequest requestBody = new Data.BatchUpdateSpreadsheetRequest();
+            requestBody.Requests = requests;
 
             SpreadsheetsResource.BatchUpdateRequest request = sheetsService.Spreadsheets.BatchUpdate(requestBody, spreadsheetId);
 
@@ -121,6 +126,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using System;
+using System.Collections.Generic;
 
 using Data = Google.Apis.Sheets.v4.Data;
 
@@ -139,7 +145,16 @@ namespace SheetsSample
             // The spreadsheet to request.
             string spreadsheetId = "";  // TODO: Update placeholder value.
 
+            // The ranges to retrieve from the spreadsheet.
+            List<string> ranges = new List<string>();  // TODO: Update placeholder value.
+
+            // True if grid data should be returned.
+            // This parameter is ignored if a field mask was set in the request.
+            bool includeGridData = false;  // TODO: Update placeholder value.
+
             SpreadsheetsResource.GetRequest request = sheetsService.Spreadsheets.Get(spreadsheetId);
+            request.Ranges = ranges;
+            request.IncludeGridData = includeGridData;
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Spreadsheet response = request.Execute();
@@ -197,8 +212,12 @@ namespace SheetsSample
             // The ID of the sheet to copy.
             int sheetId = 0;  // TODO: Update placeholder value.
 
+            // The ID of the spreadsheet to copy the sheet to.
+            string destinationSpreadsheetId = "";  // TODO: Update placeholder value.
+
             // TODO: Assign values to desired properties of `requestBody`:
             Data.CopySheetToAnotherSpreadsheetRequest requestBody = new Data.CopySheetToAnotherSpreadsheetRequest();
+            requestBody.DestinationSpreadsheetId = destinationSpreadsheetId;
 
             SpreadsheetsResource.SheetsResource.CopyToRequest request = sheetsService.Spreadsheets.Sheets.CopyTo(requestBody, spreadsheetId, sheetId);
 
@@ -257,10 +276,18 @@ namespace SheetsSample
             // Values will be appended after the last row of the table.
             string range = "";  // TODO: Update placeholder value.
 
+            // How the input data should be interpreted.
+            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum valueInputOption = (SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum) 0;  // TODO: Update placeholder value.
+
+            // How the input data should be inserted.
+            SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum insertDataOption = (SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum) 0;  // TODO: Update placeholder value.
+
             // TODO: Assign values to desired properties of `requestBody`:
             Data.ValueRange requestBody = new Data.ValueRange();
 
             SpreadsheetsResource.ValuesResource.AppendRequest request = sheetsService.Spreadsheets.Values.Append(requestBody, spreadsheetId, range);
+            request.ValueInputOption = valueInputOption;
+            request.InsertDataOption = insertDataOption;
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.AppendValuesResponse response = request.Execute();
@@ -295,6 +322,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using System;
+using System.Collections.Generic;
 
 using Data = Google.Apis.Sheets.v4.Data;
 
@@ -313,8 +341,12 @@ namespace SheetsSample
             // The ID of the spreadsheet to update.
             string spreadsheetId = "";  // TODO: Update placeholder value.
 
+            // The ranges to clear, in A1 notation.
+            List<string> ranges = new List<string>();  // TODO: Update placeholder value.
+
             // TODO: Assign values to desired properties of `requestBody`:
             Data.BatchClearValuesRequest requestBody = new Data.BatchClearValuesRequest();
+            requestBody.Ranges = ranges;
 
             SpreadsheetsResource.ValuesResource.BatchClearRequest request = sheetsService.Spreadsheets.Values.BatchClear(requestBody, spreadsheetId);
 
@@ -351,6 +383,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using System;
+using System.Collections.Generic;
 
 using Data = Google.Apis.Sheets.v4.Data;
 
@@ -369,7 +402,23 @@ namespace SheetsSample
             // The ID of the spreadsheet to retrieve data from.
             string spreadsheetId = "";  // TODO: Update placeholder value.
 
+            // The A1 notation of the values to retrieve.
+            List<string> ranges = new List<string>();  // TODO: Update placeholder value.
+
+            // How values should be represented in the output.
+            // The default render option is ValueRenderOption.FORMATTED_VALUE.
+            SpreadsheetsResource.ValuesResource.BatchGetRequest.ValueRenderOptionEnum valueRenderOption = (SpreadsheetsResource.ValuesResource.BatchGetRequest.ValueRenderOptionEnum) 0;  // TODO: Update placeholder value.
+
+            // How dates, times, and durations should be represented in the output.
+            // This is ignored if value_render_option is
+            // FORMATTED_VALUE.
+            // The default dateTime render option is [DateTimeRenderOption.SERIAL_NUMBER].
+            SpreadsheetsResource.ValuesResource.BatchGetRequest.DateTimeRenderOptionEnum dateTimeRenderOption = (SpreadsheetsResource.ValuesResource.BatchGetRequest.DateTimeRenderOptionEnum) 0;  // TODO: Update placeholder value.
+
             SpreadsheetsResource.ValuesResource.BatchGetRequest request = sheetsService.Spreadsheets.Values.BatchGet(spreadsheetId);
+            request.Ranges = ranges;
+            request.ValueRenderOption = valueRenderOption;
+            request.DateTimeRenderOption = dateTimeRenderOption;
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BatchGetValuesResponse response = request.Execute();
@@ -406,6 +455,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using System;
+using System.Collections.Generic;
 
 using Data = Google.Apis.Sheets.v4.Data;
 
@@ -424,8 +474,16 @@ namespace SheetsSample
             // The ID of the spreadsheet to update.
             string spreadsheetId = "";  // TODO: Update placeholder value.
 
+            // How the input data should be interpreted.
+            string valueInputOption = "";  // TODO: Update placeholder value.
+
+            // The new values to apply to the spreadsheet.
+            List<Data.ValueRange> data = new List<Data.ValueRange>();  // TODO: Update placeholder value.
+
             // TODO: Assign values to desired properties of `requestBody`:
             Data.BatchUpdateValuesRequest requestBody = new Data.BatchUpdateValuesRequest();
+            requestBody.ValueInputOption = valueInputOption;
+            requestBody.Data = data;
 
             SpreadsheetsResource.ValuesResource.BatchUpdateRequest request = sheetsService.Spreadsheets.Values.BatchUpdate(requestBody, spreadsheetId);
 
@@ -542,7 +600,19 @@ namespace SheetsSample
             // The A1 notation of the values to retrieve.
             string range = "";  // TODO: Update placeholder value.
 
+            // How values should be represented in the output.
+            // The default render option is ValueRenderOption.FORMATTED_VALUE.
+            SpreadsheetsResource.ValuesResource.GetRequest.ValueRenderOptionEnum valueRenderOption = (SpreadsheetsResource.ValuesResource.GetRequest.ValueRenderOptionEnum) 0;  // TODO: Update placeholder value.
+
+            // How dates, times, and durations should be represented in the output.
+            // This is ignored if value_render_option is
+            // FORMATTED_VALUE.
+            // The default dateTime render option is [DateTimeRenderOption.SERIAL_NUMBER].
+            SpreadsheetsResource.ValuesResource.GetRequest.DateTimeRenderOptionEnum dateTimeRenderOption = (SpreadsheetsResource.ValuesResource.GetRequest.DateTimeRenderOptionEnum) 0;  // TODO: Update placeholder value.
+
             SpreadsheetsResource.ValuesResource.GetRequest request = sheetsService.Spreadsheets.Values.Get(spreadsheetId, range);
+            request.ValueRenderOption = valueRenderOption;
+            request.DateTimeRenderOption = dateTimeRenderOption;
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.ValueRange response = request.Execute();
@@ -600,11 +670,15 @@ namespace SheetsSample
             // The A1 notation of the values to update.
             string range = "";  // TODO: Update placeholder value.
 
+            // How the input data should be interpreted.
+            SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum valueInputOption = (SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum) 0;  // TODO: Update placeholder value.
+
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
             Data.ValueRange requestBody = new Data.ValueRange();
 
             SpreadsheetsResource.ValuesResource.UpdateRequest request = sheetsService.Spreadsheets.Values.Update(requestBody, spreadsheetId, range);
+            request.ValueInputOption = valueInputOption;
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.UpdateValuesResponse response = request.Execute();

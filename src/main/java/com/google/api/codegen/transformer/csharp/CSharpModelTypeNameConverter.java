@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.client.util.Strings;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.Name;
@@ -28,6 +27,7 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.List;
@@ -173,13 +173,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
     } else if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {
-      TypeName enumTypeName = getTypeName(type);
-      EnumValue enumValue = type.getEnumType().getValues().get(0);
-      List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
-      String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
-      String enumValueName =
-          enumNamer.getEnumValueName(enumShortTypeName, enumValue.getSimpleName());
-      return TypedValue.create(enumTypeName, "%s." + enumValueName);
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
     } else {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
@@ -243,7 +237,11 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getEnumValue(TypeRef type, String value) {
-    throw new UnsupportedOperationException("getEnumValue not supported by C#");
+  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+    TypeName enumTypeName = getTypeName(type);
+    List<String> enumTypeNameParts = Splitter.on('+').splitToList(enumTypeName.getNickname());
+    String enumShortTypeName = enumTypeNameParts.get(enumTypeNameParts.size() - 1);
+    String enumValueName = enumNamer.getEnumValueName(enumShortTypeName, value.getSimpleName());
+    return TypedValue.create(enumTypeName, "%s." + enumValueName);
   }
 }

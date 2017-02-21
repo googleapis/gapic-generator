@@ -835,6 +835,78 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Services;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Name of the project scoping this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            BackendServicesResource.AggregatedListRequest request = computeService.BackendServices.AggregatedList(project);
+
+            Data.BackendServiceAggregatedList response;
+            do
+            {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+                response = request.Execute();
+                // response = await request.ExecuteAsync();
+
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (KeyValuePair<string, Data.BackendServicesScopedList> item in response.Items)
+                {
+                    // TODO: Change code below to process each `item` element:
+                    Console.WriteLine("[" + item.Key + "] = " + item.Value);
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.Compute.v1.Data;
@@ -7909,6 +7981,74 @@ namespace ComputeSample
             // The name of the zone for this request.
             string zone = "";  // TODO: Update placeholder value.
 
+            // Name of the instance resource to start.
+            string instance = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.InstancesSetServiceAccountRequest requestBody = new Data.InstancesSetServiceAccountRequest();
+
+            InstancesResource.SetServiceAccountRequest request = computeService.Instances.SetServiceAccount(requestBody, project, zone, instance);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // The name of the zone for this request.
+            string zone = "";  // TODO: Update placeholder value.
+
             // Name of the instance scoping this request.
             string instance = "";  // TODO: Update placeholder value.
 
@@ -8702,6 +8842,68 @@ namespace ComputeSample
             // Project ID for this request.
             string project = "";  // TODO: Update placeholder value.
 
+            // Name of the network to be updated.
+            string network = "";  // TODO: Update placeholder value.
+
+            NetworksResource.SwitchToCustomModeRequest request = computeService.Networks.SwitchToCustomMode(project, network);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
             ProjectsResource.GetRequest request = computeService.Projects.Get(project);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
@@ -8951,6 +9153,1913 @@ namespace ComputeSample
             Data.UsageExportLocation requestBody = new Data.UsageExportLocation();
 
             ProjectsResource.SetUsageExportBucketRequest request = computeService.Projects.SetUsageExportBucket(requestBody, project);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the autoscaler to delete.
+            string autoscaler = "";  // TODO: Update placeholder value.
+
+            RegionAutoscalersResource.DeleteRequest request = computeService.RegionAutoscalers.Delete(project, region, autoscaler);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the autoscaler to return.
+            string autoscaler = "";  // TODO: Update placeholder value.
+
+            RegionAutoscalersResource.GetRequest request = computeService.RegionAutoscalers.Get(project, region, autoscaler);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Autoscaler response = request.Execute();
+            // Data.Autoscaler response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.Autoscaler requestBody = new Data.Autoscaler();
+
+            RegionAutoscalersResource.InsertRequest request = computeService.RegionAutoscalers.Insert(requestBody, project, region);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            RegionAutoscalersResource.ListRequest request = computeService.RegionAutoscalers.List(project, region);
+
+            Data.RegionAutoscalerList response;
+            do
+            {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+                response = request.Execute();
+                // response = await request.ExecuteAsync();
+
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Autoscaler autoscaler in response.Items)
+                {
+                    // TODO: Change code below to process each `autoscaler` resource:
+                    Console.WriteLine(autoscaler);
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the autoscaler to update.
+            string autoscaler = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`. Only assigned
+            // properties will be changed:
+            Data.Autoscaler requestBody = new Data.Autoscaler();
+
+            RegionAutoscalersResource.PatchRequest request = computeService.RegionAutoscalers.Patch(requestBody, project, region, autoscaler);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`. All existing
+            // properties will be replaced:
+            Data.Autoscaler requestBody = new Data.Autoscaler();
+
+            RegionAutoscalersResource.UpdateRequest request = computeService.RegionAutoscalers.Update(requestBody, project, region);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the BackendService resource to delete.
+            string backendService = "";  // TODO: Update placeholder value.
+
+            RegionBackendServicesResource.DeleteRequest request = computeService.RegionBackendServices.Delete(project, region, backendService);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the BackendService resource to return.
+            string backendService = "";  // TODO: Update placeholder value.
+
+            RegionBackendServicesResource.GetRequest request = computeService.RegionBackendServices.Get(project, region, backendService);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.BackendService response = request.Execute();
+            // Data.BackendService response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the BackendService resource to which the queried instance belongs.
+            string backendService = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.ResourceGroupReference requestBody = new Data.ResourceGroupReference();
+
+            RegionBackendServicesResource.GetHealthRequest request = computeService.RegionBackendServices.GetHealth(requestBody, project, region, backendService);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.BackendServiceGroupHealth response = request.Execute();
+            // Data.BackendServiceGroupHealth response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.BackendService requestBody = new Data.BackendService();
+
+            RegionBackendServicesResource.InsertRequest request = computeService.RegionBackendServices.Insert(requestBody, project, region);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            RegionBackendServicesResource.ListRequest request = computeService.RegionBackendServices.List(project, region);
+
+            Data.BackendServiceList response;
+            do
+            {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+                response = request.Execute();
+                // response = await request.ExecuteAsync();
+
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.BackendService backendService in response.Items)
+                {
+                    // TODO: Change code below to process each `backendService` resource:
+                    Console.WriteLine(backendService);
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the BackendService resource to update.
+            string backendService = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`. Only assigned
+            // properties will be changed:
+            Data.BackendService requestBody = new Data.BackendService();
+
+            RegionBackendServicesResource.PatchRequest request = computeService.RegionBackendServices.Patch(requestBody, project, region, backendService);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the BackendService resource to update.
+            string backendService = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`. All existing
+            // properties will be replaced:
+            Data.BackendService requestBody = new Data.BackendService();
+
+            RegionBackendServicesResource.UpdateRequest request = computeService.RegionBackendServices.Update(requestBody, project, region, backendService);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the managed instance group.
+            string instanceGroupManager = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.RegionInstanceGroupManagersAbandonInstancesRequest requestBody = new Data.RegionInstanceGroupManagersAbandonInstancesRequest();
+
+            RegionInstanceGroupManagersResource.AbandonInstancesRequest request = computeService.RegionInstanceGroupManagers.AbandonInstances(requestBody, project, region, instanceGroupManager);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the managed instance group to delete.
+            string instanceGroupManager = "";  // TODO: Update placeholder value.
+
+            RegionInstanceGroupManagersResource.DeleteRequest request = computeService.RegionInstanceGroupManagers.Delete(project, region, instanceGroupManager);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the managed instance group.
+            string instanceGroupManager = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.RegionInstanceGroupManagersDeleteInstancesRequest requestBody = new Data.RegionInstanceGroupManagersDeleteInstancesRequest();
+
+            RegionInstanceGroupManagersResource.DeleteInstancesRequest request = computeService.RegionInstanceGroupManagers.DeleteInstances(requestBody, project, region, instanceGroupManager);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the managed instance group to return.
+            string instanceGroupManager = "";  // TODO: Update placeholder value.
+
+            RegionInstanceGroupManagersResource.GetRequest request = computeService.RegionInstanceGroupManagers.Get(project, region, instanceGroupManager);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.InstanceGroupManager response = request.Execute();
+            // Data.InstanceGroupManager response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.InstanceGroupManager requestBody = new Data.InstanceGroupManager();
+
+            RegionInstanceGroupManagersResource.InsertRequest request = computeService.RegionInstanceGroupManagers.Insert(requestBody, project, region);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            RegionInstanceGroupManagersResource.ListRequest request = computeService.RegionInstanceGroupManagers.List(project, region);
+
+            Data.RegionInstanceGroupManagerList response;
+            do
+            {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+                response = request.Execute();
+                // response = await request.ExecuteAsync();
+
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.InstanceGroupManager instanceGroupManager in response.Items)
+                {
+                    // TODO: Change code below to process each `instanceGroupManager` resource:
+                    Console.WriteLine(instanceGroupManager);
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // The name of the managed instance group.
+            string instanceGroupManager = "";  // TODO: Update placeholder value.
+
+            RegionInstanceGroupManagersResource.ListManagedInstancesRequest request = computeService.RegionInstanceGroupManagers.ListManagedInstances(project, region, instanceGroupManager);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.RegionInstanceGroupManagersListInstancesResponse response = request.Execute();
+            // Data.RegionInstanceGroupManagersListInstancesResponse response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the managed instance group.
+            string instanceGroupManager = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.RegionInstanceGroupManagersRecreateRequest requestBody = new Data.RegionInstanceGroupManagersRecreateRequest();
+
+            RegionInstanceGroupManagersResource.RecreateInstancesRequest request = computeService.RegionInstanceGroupManagers.RecreateInstances(requestBody, project, region, instanceGroupManager);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the managed instance group.
+            string instanceGroupManager = "";  // TODO: Update placeholder value.
+
+            // Number of instances that should exist in this instance group manager.
+            int size = 0;  // TODO: Update placeholder value.
+
+            RegionInstanceGroupManagersResource.ResizeRequest request = computeService.RegionInstanceGroupManagers.Resize(project, region, instanceGroupManager, size);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // The name of the managed instance group.
+            string instanceGroupManager = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.RegionInstanceGroupManagersSetTemplateRequest requestBody = new Data.RegionInstanceGroupManagersSetTemplateRequest();
+
+            RegionInstanceGroupManagersResource.SetInstanceTemplateRequest request = computeService.RegionInstanceGroupManagers.SetInstanceTemplate(requestBody, project, region, instanceGroupManager);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the managed instance group.
+            string instanceGroupManager = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.RegionInstanceGroupManagersSetTargetPoolsRequest requestBody = new Data.RegionInstanceGroupManagersSetTargetPoolsRequest();
+
+            RegionInstanceGroupManagersResource.SetTargetPoolsRequest request = computeService.RegionInstanceGroupManagers.SetTargetPools(requestBody, project, region, instanceGroupManager);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the instance group resource to return.
+            string instanceGroup = "";  // TODO: Update placeholder value.
+
+            RegionInstanceGroupsResource.GetRequest request = computeService.RegionInstanceGroups.Get(project, region, instanceGroup);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.InstanceGroup response = request.Execute();
+            // Data.InstanceGroup response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            RegionInstanceGroupsResource.ListRequest request = computeService.RegionInstanceGroups.List(project, region);
+
+            Data.RegionInstanceGroupList response;
+            do
+            {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+                response = request.Execute();
+                // response = await request.ExecuteAsync();
+
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.InstanceGroup instanceGroup in response.Items)
+                {
+                    // TODO: Change code below to process each `instanceGroup` resource:
+                    Console.WriteLine(instanceGroup);
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the regional instance group for which we want to list the instances.
+            string instanceGroup = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.RegionInstanceGroupsListInstancesRequest requestBody = new Data.RegionInstanceGroupsListInstancesRequest();
+
+            RegionInstanceGroupsResource.ListInstancesRequest request = computeService.RegionInstanceGroups.ListInstances(requestBody, project, region, instanceGroup);
+
+            Data.RegionInstanceGroupsListInstances response;
+            do
+            {
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+                response = request.Execute();
+                // response = await request.ExecuteAsync();
+
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.InstanceWithNamedPorts instanceWithNamedPorts in response.Items)
+                {
+                    // TODO: Change code below to process each `instanceWithNamedPorts` resource:
+                    Console.WriteLine(instanceWithNamedPorts);
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // The name of the regional instance group where the named ports are updated.
+            string instanceGroup = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.RegionInstanceGroupsSetNamedPortsRequest requestBody = new Data.RegionInstanceGroupsSetNamedPortsRequest();
+
+            RegionInstanceGroupsResource.SetNamedPortsRequest request = computeService.RegionInstanceGroups.SetNamedPorts(requestBody, project, region, instanceGroup);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();
@@ -10740,6 +12849,74 @@ namespace ComputeSample
             string subnetwork = "";  // TODO: Update placeholder value.
 
             SubnetworksResource.DeleteRequest request = computeService.Subnetworks.Delete(project, region, subnetwork);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.Operation response = request.Execute();
+            // Data.Operation response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            Console.WriteLine(response);
+        }
+
+        public static GoogleCredential GetCredential()
+        {
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+           return credential;
+        }
+    }
+}
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Compute Engine API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/compute
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk and run
+//    `gcloud beta auth application-default login`.
+//    For more information, see
+//    https://developers.google.com/identity/protocols/application-default-credentials
+// 3. Install the C# client library by adding a dependency on the relevant NuGet
+//    package. Libraries published by Google are owned by google-apis-packages:
+//    https://www.nuget.org/profiles/google-apis-packages
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
+using System;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.Compute.v1.Data;
+
+namespace ComputeSample
+{
+    public class ComputeExample
+    {
+        public static void Main(string[] args)
+        {
+            ComputeService computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-ComputeSample/0.1",
+            });
+
+            // Project ID for this request.
+            string project = "";  // TODO: Update placeholder value.
+
+            // Name of the region scoping this request.
+            string region = "";  // TODO: Update placeholder value.
+
+            // Name of the Subnetwork resource to update.
+            string subnetwork = "";  // TODO: Update placeholder value.
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.SubnetworksExpandIpCidrRangeRequest requestBody = new Data.SubnetworksExpandIpCidrRangeRequest();
+
+            SubnetworksResource.ExpandIpCidrRangeRequest request = computeService.Subnetworks.ExpandIpCidrRange(requestBody, project, region, subnetwork);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Operation response = request.Execute();

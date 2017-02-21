@@ -91,12 +91,27 @@ public class ApiaryConfigToSampleConfigConverter {
     ImmutableMap.Builder<String, FieldInfo> fieldsBuilder = new ImmutableMap.Builder<>();
     TypeInfo requestBodyType = null;
     Type requestType = apiaryConfig.getType(method.getRequestTypeUrl());
+
+    boolean isPageStreamingResourceSetterInRequestBody = false;
+    String requestPageTokenName = "";
+
     for (String fieldName : apiaryConfig.getMethodParams(method.getName())) {
       Field field = apiaryConfig.getField(requestType, fieldName);
       // If one of the method arguments has the field name "request$", it's the
       // request body.
       if (fieldName.equals(DiscoveryImporter.REQUEST_FIELD_NAME)) {
         requestBodyType = createTypeInfo(field, method);
+
+        // Below is the request body specific portion of the page streaming logic.
+        for (Field field2 : apiaryConfig.getType(field.getTypeUrl()).getFieldsList()) {
+          for (String tokenName : PAGE_TOKEN_NAMES) {
+            if (field2.getName().equals(tokenName)) {
+              isPageStreamingResourceSetterInRequestBody = true;
+              requestPageTokenName = tokenName;
+              break;
+            }
+          }
+        }
         continue;
       }
       fieldsBuilder.put(field.getName(), createFieldInfo(field, requestType, method));
@@ -113,18 +128,6 @@ public class ApiaryConfigToSampleConfigConverter {
     // Heuristic implementation interprets method to be page streaming iff one of the names
     // "pageToken" or "nextPageToken" occurs among the fields of both the method's response type and
     // either the method's request (query parameters) or request body.
-    boolean isPageStreamingResourceSetterInRequestBody = false;
-    String requestPageTokenName = "";
-    if (requestBodyType != null) {
-      Map<String, FieldInfo> requestBodyFields = requestBodyType.message().fields();
-      for (String tokenName : PAGE_TOKEN_NAMES) {
-        if (requestBodyFields.containsKey(tokenName)) {
-          isPageStreamingResourceSetterInRequestBody = true;
-          requestPageTokenName = tokenName;
-          break;
-        }
-      }
-    }
     boolean hasResponsePageToken = false;
     String responsePageTokenName = "";
     Type responseType = apiaryConfig.getType(method.getResponseTypeUrl());
@@ -216,6 +219,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))
+        .required(true)
         .build();
   }
 
@@ -236,7 +240,7 @@ public class ApiaryConfigToSampleConfigConverter {
       mapValue = createTypeInfo(apiaryConfig.getField(type, VALUE_FIELD_NAME), method);
     } else if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
       isMessage = true;
-      messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig, true);
+      messageTypeInfo = createMessageTypeInfo(field, method, apiaryConfig);
     }
     return TypeInfo.newBuilder()
         .kind(field.getKind())
@@ -289,22 +293,15 @@ public class ApiaryConfigToSampleConfigConverter {
    * important.
    */
   private MessageTypeInfo createMessageTypeInfo(
-      Field field, Method method, ApiaryConfig apiaryConfig, boolean deep) {
-    Type type = apiaryConfig.getType(field.getTypeUrl());
+      Field field, Method method, ApiaryConfig apiaryConfig) {
     String typeName = typeNameGenerator.getMessageTypeName(field.getTypeUrl());
-    Map<String, FieldInfo> fields = new HashMap<>();
-    if (deep) {
-      for (Field field2 : type.getFieldsList()) {
-        // TODO(saicheems): We ignore messages as an easy way around cycles for the moment.
-        if (field2.getKind() != Kind.TYPE_MESSAGE) {
-          fields.put(field2.getName(), createFieldInfo(field2, type, method));
-        }
-      }
-    }
+    // Since request body fields aren't used at any point in the process, we
+    // don't fill them in here. Note that a recursive approach to exploring
+    // message fields must be able to handle cycles.
     return MessageTypeInfo.newBuilder()
         .typeName(typeName)
         .subpackage(typeNameGenerator.getSubpackage(false))
-        .fields(fields)
+        .fields(new HashMap<String, FieldInfo>())
         .build();
   }
 

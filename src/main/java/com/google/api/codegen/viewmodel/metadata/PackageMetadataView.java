@@ -47,7 +47,7 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract VersionBound protoVersionBound();
 
   @Nullable
-  public abstract VersionBound commonProtosVersionBound();
+  public abstract List<PackageDependencyView> protoPackageDependencies();
 
   @Nullable
   public abstract VersionBound authVersionBound();
@@ -58,6 +58,8 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String fullName();
 
   public abstract String shortName();
+
+  public abstract String discoveryApiName();
 
   public abstract String protoPackageName();
 
@@ -107,7 +109,7 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder protoVersionBound(VersionBound val);
 
-    public abstract Builder commonProtosVersionBound(VersionBound val);
+    public abstract Builder protoPackageDependencies(List<PackageDependencyView> val);
 
     public abstract Builder authVersionBound(VersionBound val);
 
@@ -118,6 +120,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** A single-word short name of the API. E.g., "logging". */
     public abstract Builder shortName(String val);
+
+    /** The API name used for generating the URL for the Discovery doc and APIs Explorer link. */
+    public abstract Builder discoveryApiName(String val);
 
     /** The base name of the proto client library package. E.g., "proto-google-cloud-logging-v1". */
     public abstract Builder protoPackageName(String val);

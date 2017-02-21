@@ -18,6 +18,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.Map;
@@ -69,7 +70,14 @@ public class ModelTypeTable implements ModelTypeFormatter {
 
   /** Returns the enum value string */
   public String getEnumValue(TypeRef type, String value) {
-    return typeNameConverter.getEnumValue(type, value).getValueAndSaveTypeNicknameIn(typeTable);
+    for (EnumValue enumValue : type.getEnumType().getValues()) {
+      if (enumValue.getSimpleName().equals(value)) {
+        return typeNameConverter
+            .getEnumValue(type, enumValue)
+            .getValueAndSaveTypeNicknameIn(typeTable);
+      }
+    }
+    throw new IllegalArgumentException("Unrecognized enum value: " + value);
   }
 
   /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */

@@ -25,6 +25,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.java.JavaCommentReformatter;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -47,6 +48,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         new JavaNameFormatter(),
         new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(packageName)),
         new JavaTypeTable(packageName),
+        new JavaCommentReformatter(),
         packageName);
   }
 
@@ -178,14 +180,14 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
-    String annotation = "";
     switch (releaseLevel) {
       case UNSET_RELEASE_LEVEL:
       case ALPHA:
-        annotation = "@ExperimentalApi";
-        break;
+        return "@ExperimentalApi";
+      case DEPRECATED:
+        return "@Deprecated";
       default:
+        return "";
     }
-    return annotation;
   }
 }

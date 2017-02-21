@@ -1,0 +1,538 @@
+
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Stackdriver Debugger API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/clouddebugger
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Identifies the debuggee.
+        debuggeeId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.clouddebugger.controller.debuggees.breakpoints.list(params);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud_debugger',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/clouddebugger/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Stackdriver Debugger API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/clouddebugger
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // Identifies the debuggee being debugged.
+        debuggeeId: '',  // TODO: Update placeholder value.
+
+        // Breakpoint identifier, unique in the scope of the debuggee.
+        id: '',  // TODO: Update placeholder value.
+      };
+
+      var updateActiveBreakpointRequestBody = {
+        // TODO: Add desired properties to the request body. All existing properties
+        // will be replaced.
+      };
+
+      var request = gapi.client.clouddebugger.controller.debuggees.breakpoints.update(params, updateActiveBreakpointRequestBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud_debugger',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/clouddebugger/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Stackdriver Debugger API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/clouddebugger
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var registerDebuggeeRequestBody = {
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.clouddebugger.controller.debuggees.register({}, registerDebuggeeRequestBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud_debugger',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/clouddebugger/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Stackdriver Debugger API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/clouddebugger
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // ID of the debuggee whose breakpoint to delete.
+        debuggeeId: '',  // TODO: Update placeholder value.
+
+        // ID of the breakpoint to delete.
+        breakpointId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.clouddebugger.debugger.debuggees.breakpoints.delete(params);
+      request.then(function() {}, function(reason) {
+        console.log('error: ' + reason.result.error.message');
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud_debugger',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/clouddebugger/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Stackdriver Debugger API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/clouddebugger
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // ID of the debuggee whose breakpoint to get.
+        debuggeeId: '',  // TODO: Update placeholder value.
+
+        // ID of the breakpoint to get.
+        breakpointId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.clouddebugger.debugger.debuggees.breakpoints.get(params);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud_debugger',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/clouddebugger/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Stackdriver Debugger API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/clouddebugger
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // ID of the debuggee whose breakpoints to list.
+        debuggeeId: '',  // TODO: Update placeholder value.
+      };
+
+      var request = gapi.client.clouddebugger.debugger.debuggees.breakpoints.list(params);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud_debugger',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/clouddebugger/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Stackdriver Debugger API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/clouddebugger
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var params = {
+        // ID of the debuggee where the breakpoint is to be set.
+        debuggeeId: '',  // TODO: Update placeholder value.
+      };
+
+      var breakpointBody = {
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.clouddebugger.debugger.debuggees.breakpoints.set(params, breakpointBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud_debugger',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/clouddebugger/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>
+<html>
+  <head></head>
+  <body>
+    <!--
+    BEFORE RUNNING:
+    ---------------
+    1. If not already done, enable the Stackdriver Debugger API
+       and check the quota for your project at
+       https://console.developers.google.com/apis/api/clouddebugger
+    2. Get access keys for your application. See
+       https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+    -->
+    <script>
+    function makeApiCall() {
+      var request = gapi.client.clouddebugger.debugger.debuggees.list();
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.log('error: ' + reason.result.error.message);
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': '',  // TODO: Update placeholder with desired API key.
+        'clientId': '',  // TODO: Update placeholder with desired client ID.
+        'scope': 'https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloud_debugger',
+        'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/clouddebugger/v2/rest'],
+      }).then(function() {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        makeApiCall();
+      }
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  </body>
+</html>

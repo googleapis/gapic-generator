@@ -72,6 +72,9 @@
         .build();
     {@""}
   @end
+
+  private static final String DEFAULT_GENERATOR_NAME = "gapic";
+  private static final String DEFAULT_GENERATOR_VERSION = "{@xsettingsClass.generatorVersion}";
   {@""}
 @end
 
@@ -132,6 +135,7 @@
             .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
         @end
         .setPort(DEFAULT_SERVICE_PORT)
+        .setGeneratorHeader(DEFAULT_GENERATOR_NAME, DEFAULT_GENERATOR_VERSION)
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }
 
@@ -334,17 +338,21 @@
           public void splitResponse(
               {@desc.responseTypeName} bundleResponse,
               Collection<? extends RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}>> bundle) {
-            # TODO(garrettjones) support case of no subresponse_field (e.g. Logging)
             int bundleMessageIndex = 0;
             for (RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}> responder : bundle) {
-              {@desc.subresponseTypeName} subresponseElements = new ArrayList<>();
-              int subresponseCount = responder.getRequest().{@desc.bundledFieldCountGetFunction}();
-              for (int i = 0; i < subresponseCount; i++) {
-                subresponseElements.add(bundleResponse.{@desc.subresponseByIndexGetFunction}(bundleMessageIndex));
-                bundleMessageIndex += 1;
-              }
-              {@desc.responseTypeName} response =
-                  {@desc.responseTypeName}.newBuilder().{@desc.subresponseSetFunction}(subresponseElements).build();
+              @if desc.hasSubresponse
+                {@desc.subresponseTypeName} subresponseElements = new ArrayList<>();
+                int subresponseCount = responder.getRequest().{@desc.bundledFieldCountGetFunction}();
+                for (int i = 0; i < subresponseCount; i++) {
+                  subresponseElements.add(bundleResponse.{@desc.subresponseByIndexGetFunction}(bundleMessageIndex));
+                  bundleMessageIndex += 1;
+                }
+                {@desc.responseTypeName} response =
+                    {@desc.responseTypeName}.newBuilder().{@desc.subresponseSetFunction}(subresponseElements).build();
+              @else
+                {@desc.responseTypeName} response =
+                    {@desc.responseTypeName}.newBuilder().build();
+              @end
               responder.setResponse(response);
             }
           }
@@ -492,6 +500,9 @@
         {@settings.memberName} = OperationCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
             {@settings.operationResultTypeName}.class);
+        @if settings.hasPollingInterval
+          {@settings.memberName}.setPollingInterval(Duration.millis({@settings.operationPollingIntervalMillis}));
+        @end
 
       @default
         $unhandledCase: {@settings.type.toString}$
@@ -514,11 +525,8 @@
       @case "BundlingApiCallable"
         builder.{@settings.settingsGetFunction}().getBundlingSettingsBuilder()
             .setElementCountThreshold({@settings.bundlingConfig.elementCountThreshold})
-            .setElementCountLimit({@settings.bundlingConfig.elementCountLimit})
             .setRequestByteThreshold({@settings.bundlingConfig.requestByteThreshold})
-            .setRequestByteLimit({@settings.bundlingConfig.requestByteLimit})
-            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}))
-            .setBlockingCallCountThreshold(1);
+            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}));
       @default
       @end
       # retry settings

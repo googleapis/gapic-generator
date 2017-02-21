@@ -16,12 +16,14 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.PassThroughCommentReformatter;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
@@ -47,6 +49,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
         new GoNameFormatter(),
         new ModelTypeFormatterImpl(converter),
         new GoTypeTable(),
+        new PassThroughCommentReformatter(),
         packageName);
     this.converter = converter;
   }
@@ -277,7 +280,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStreamingApiReturnTypeName(Method method) {
+  public String getGrpcStreamingApiReturnTypeName(Method method, ModelTypeTable typeTable) {
     // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
     // neither camel or underscore.
     return converter.getTypeName(method.getParent()).getNickname()
@@ -341,5 +344,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return publicMethodName(identifier);
+  }
+
+  @Override
+  public String getOneofVariantTypeName(OneofConfig oneof) {
+    return String.format(
+        "%s_%s",
+        converter.getTypeName(oneof.parentType(), false).getNickname(),
+        publicFieldName(Name.from(oneof.field().getSimpleName())));
   }
 }

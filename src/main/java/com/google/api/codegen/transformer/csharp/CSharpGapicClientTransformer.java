@@ -17,12 +17,12 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -33,7 +33,8 @@ import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
+import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
@@ -67,12 +68,13 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private static final String RESOURCENAMES_TEMPLATE_FILENAME = "csharp/gapic_resourcenames.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new CSharpApiMethodTransformer();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new StandardImportTypeTransformer());
+      new FileHeaderTransformer(new StandardImportSectionTransformer());
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
@@ -173,7 +175,9 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     for (ApiCallableView call : apiCallableTransformer.generateStaticLangApiCallables(context)) {
       if (call.type() == ApiCallableImplType.SimpleApiCallable
           || call.type() == ApiCallableImplType.BundlingApiCallable
-          || call.type() == ApiCallableImplType.InitialOperationApiCallable) {
+          || call.type() == ApiCallableImplType.InitialOperationApiCallable
+          || (call.type() == ApiCallableImplType.StreamingApiCallable
+              && call.grpcStreamingType() == GrpcStreamingType.BidiStreaming)) {
         callables.add(call);
       }
     }
@@ -242,12 +246,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
   public List<ApiCallSettingsView> generateCallSettings(SurfaceTransformerContext context) {
     // This method can be removed once mixins are supported in C#
-    boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
-    for (Method method : context.getSupportedMethods()) {
-      if (mixinsDisabled && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
-        continue;
-      }
+    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
       List<ApiCallSettingsView> calls =
           apiCallableTransformer.generateApiCallableSettings(
               context.asRequestMethodContext(method));
@@ -259,7 +259,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private List<ReroutedGrpcView> generateReroutedGrpcView(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     Set<ReroutedGrpcView> reroutedViews = new LinkedHashSet<>();
-    for (Method method : context.getSupportedMethods()) {
+    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       String reroute = methodConfig.getRerouteToGrpcInterface();
       if (reroute != null) {
@@ -279,10 +279,12 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     List<ModifyMethodView> modifyMethods = new ArrayList<>();
-    for (Method method : context.getSupportedMethods()) {
+    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
+      MethodConfig methodContext = context.asRequestMethodContext(method).getMethodConfig();
       ModifyMethodView.Builder builder = ModifyMethodView.builder();
       builder.name(namer.getModifyMethodName(method));
       builder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
+      builder.grpcStreamingType(methodContext.getGrpcStreamingType());
       modifyMethods.add(builder.build());
     }
     return modifyMethods;
@@ -294,16 +296,15 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
             .addAll(csharpCommonTransformer.pagedMethodAdditionalParams())
             .addAll(csharpCommonTransformer.callSettingsParam())
             .build();
-    boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
 
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
-    for (Method method : context.getSupportedMethods()) {
+    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       MethodTransformerContext requestMethodContext = context.asRequestMethodContext(method);
-      if (mixinsDisabled && methodConfig.getRerouteToGrpcInterface() != null) {
-        continue;
-      }
-      if (methodConfig.isLongRunningOperation()) {
+      if (methodConfig.isGrpcStreaming()) {
+        apiMethods.add(
+            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(requestMethodContext));
+      } else if (methodConfig.isLongRunningOperation()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodTransformerContext methodContext =

@@ -15,15 +15,19 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +38,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
         new RubyNameFormatter(),
         new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(packageName)),
         new RubyTypeTable(packageName),
+        new RubyCommentReformatter(),
         packageName);
   }
 
@@ -85,17 +90,43 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getSourceFilePath(String path, String publicClassName) {
+    return path + File.separator + Name.upperCamel(publicClassName).toLowerUnderscore() + ".rb";
+  }
+
+  @Override
   public String getFullyQualifiedApiWrapperClassName(Interface service) {
     return getPackageName() + "::" + getApiWrapperClassName(service);
   }
 
   @Override
-  public String getServiceFileImportFromService(Interface service) {
-    return service.getFile().getSimpleName().replace(".proto", "_services_pb");
+  public String getServiceFileImportName(String filename) {
+    return filename.replace(".proto", "_services_pb");
   }
 
   @Override
-  public String getProtoFileImportFromService(Interface service) {
-    return service.getFile().getSimpleName().replace(".proto", "_pb");
+  public String getProtoFileImportName(String filename) {
+    return filename.replace(".proto", "_pb");
+  }
+
+  @Override
+  public String injectRandomStringGeneratorCode(String randomString) {
+    String delimiter = ",";
+    String[] split =
+        CommonRenderingUtil.stripQuotes(randomString)
+            .replace(
+                InitFieldConfig.RANDOM_TOKEN, delimiter + InitFieldConfig.RANDOM_TOKEN + delimiter)
+            .split(delimiter);
+    ArrayList<String> stringParts = new ArrayList<>();
+    for (String token : split) {
+      if (token.length() > 0) {
+        if (token.equals(InitFieldConfig.RANDOM_TOKEN)) {
+          stringParts.add("Time.new.to_i.to_s");
+        } else {
+          stringParts.add("\"" + token + "\"");
+        }
+      }
+    }
+    return Joiner.on(" + ").join(stringParts);
   }
 }
