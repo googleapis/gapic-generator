@@ -31,6 +31,8 @@ public abstract class FileHeaderView {
 
   public abstract String localPackageName();
 
+  public abstract ImmutableList<String> modules();
+
   @Nullable
   public abstract String version();
 
@@ -57,6 +59,8 @@ public abstract class FileHeaderView {
     public abstract Builder examplePackageName(String val);
 
     public abstract Builder localPackageName(String val);
+
+    public abstract Builder modules(ImmutableList<String> val);
 
     public abstract Builder version(String val);
 

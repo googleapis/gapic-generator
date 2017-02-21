@@ -20,8 +20,12 @@
 # doc: ApiMethodDocView
 @snippet xmlDoc(doc)
     /// <summary>
-    @join line : doc.mainDocLines
-        /// {@line}
+    @if doc.mainDocLines
+        @join line : doc.mainDocLines
+            /// {@line}
+        @end
+    @else
+        ///
     @end
     /// </summary>
     # param: ParamDocView
@@ -29,8 +33,12 @@
         @switch param.type.toString
         @case "SimpleParamDocView"
             /// <param name="{@skipAtSign(param.paramName)}">
-            @join line : param.lines
-                /// {@line}
+            @if param.lines
+                @join line : param.lines
+                    /// {@line}
+                @end
+            @else
+                ///
             @end
             /// </param>
         @default

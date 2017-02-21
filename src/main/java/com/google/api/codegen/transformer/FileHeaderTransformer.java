@@ -45,6 +45,7 @@ public class FileHeaderTransformer {
     fileHeader.localExamplePackageName(namer.getLocalExamplePackageName());
     fileHeader.importSection(importSection);
     fileHeader.version(namer.getApiWrapperModuleVersion());
+    fileHeader.modules(namer.getApiModules());
 
     return fileHeader.build();
   }

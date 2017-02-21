@@ -45,6 +45,7 @@ import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
+import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.ruby.RubyPackageMetadataTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -419,14 +420,11 @@ public class MainGapicProviderFactory
 
         if (id.equals(RUBY_DOC)) {
           GapicProvider<? extends Object> messageProvider =
-              CommonGapicProvider.<ProtoFile>newBuilder()
+              ViewModelGapicProvider.newBuilder()
                   .setModel(model)
-                  .setView(new ProtoFileView())
-                  .setContext(new RubyGapicContext(model, apiConfig))
-                  .setSnippetSetRunner(
-                      new RubySnippetSetRunner<ProtoFile>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                  .setSnippetFileNames(Arrays.asList("ruby/message.snip"))
-                  .setCodePathMapper(rubyPathMapper)
+                  .setApiConfig(apiConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(new RubyGapicSurfaceDocTransformer(rubyPathMapper))
                   .build();
           providers.add(messageProvider);
         }
