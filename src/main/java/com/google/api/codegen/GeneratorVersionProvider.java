@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen;
 
 import java.io.IOException;
 import java.util.Properties;
 
-public class GeneratorVersion {
+public class GeneratorVersionProvider {
 
   private static final String DEFAULT_VERSION = "";
 
@@ -26,7 +26,8 @@ public class GeneratorVersion {
     Properties properties = new Properties();
     try {
       properties.load(
-          GeneratorVersion.class.getResourceAsStream("/com/google/api/codegen/codegen.properties"));
+          GeneratorVersionProvider.class
+              .getResourceAsStream("/com/google/api/codegen/codegen.properties"));
       version = properties.getProperty("version");
     } catch (IOException e) {
       e.printStackTrace(System.err);

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
@@ -25,7 +26,6 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GeneratorVersion;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -374,7 +374,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
-    xsettingsClass.generatorVersion(GeneratorVersion.getGeneratorVersion());
+    xsettingsClass.generatorVersion(GeneratorVersionProvider.getGeneratorVersion());
 
     return xsettingsClass.build();
   }
