@@ -14,11 +14,15 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
@@ -27,6 +31,7 @@ import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
@@ -47,10 +52,16 @@ public class RubySurfaceNamer extends SurfaceNamer {
         packageName);
   }
 
-  @Override
   /** The name of the class that implements snippets for a particular proto interface. */
+  @Override
   public String getApiSnippetsClassName(Interface interfaze) {
     return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
+  }
+
+  @Override
+  public String getPathTemplateName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return Name.from(resourceNameConfig.getEntityName(), "path", "template").toUpperUnderscore();
   }
 
   /** The function name to set a field having the given type and name. */
@@ -64,6 +75,23 @@ public class RubySurfaceNamer extends SurfaceNamer {
   public String getFormatFunctionName(
       Interface service, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
+  }
+
+  @Override
+  public String getParseFunctionName(String var, SingleResourceNameConfig resourceNameConfig) {
+    return staticFunctionName(
+        Name.from("match", var, "from", resourceNameConfig.getEntityName(), "name"));
+  }
+
+  @Override
+  public String getClientConfigPath(Interface service) {
+    return Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore()
+        + ".json";
+  }
+
+  @Override
+  public String getRequestObjectName(Method method) {
+    return method.getRequestStreaming() ? "reqs" : "req";
   }
 
   /**
@@ -103,10 +131,71 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
+    if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
+      return "";
+    }
+
+    String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
+    if (method.getResponseStreaming()) {
+      return "Enumerable<" + classInfo + ">";
+    }
+
+    if (methodConfig.isPageStreaming()) {
+      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+      String resourceTypeName = getModelTypeFormatter().getFullNameForElementType(resourceType);
+      return "Google::Gax::PagedEnumerable<" + resourceTypeName + ">";
+    }
+
+    if (methodConfig.isLongRunningOperation()) {
+      return "Google::Gax::Operation";
+    }
+
+    return classInfo;
+  }
+
+  @Override
   public String getFullyQualifiedStubType(Interface service) {
     NamePath namePath =
         getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
     return qualifiedName(namePath.append("Stub"));
+  }
+
+  @Override
+  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getFullNameFor(type);
+  }
+
+  @Override
+  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getFullNameFor(type);
+  }
+
+  @Override
+  public List<String> getThrowsDocLines() {
+    return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
+  }
+
+  @Override
+  public List<String> getReturnDocLines(
+      SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+    Method method = methodConfig.getMethod();
+    if (method.getResponseStreaming()) {
+      String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
+      return ImmutableList.of("An enumerable of " + classInfo + " instances.", "");
+    }
+
+    if (methodConfig.isPageStreaming()) {
+      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+      String resourceTypeName = getModelTypeFormatter().getFullNameForElementType(resourceType);
+      return ImmutableList.of(
+          "An enumerable of " + resourceTypeName + " instances.",
+          "See Google::Gax::PagedEnumerable documentation for other",
+          "operations such as per-page iteration or access to the response",
+          "object.");
+    }
+
+    return ImmutableList.<String>of();
   }
 
   /** The file name for an API service. */

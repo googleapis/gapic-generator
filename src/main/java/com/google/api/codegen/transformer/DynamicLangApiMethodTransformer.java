@@ -72,9 +72,9 @@ public class DynamicLangApiMethodTransformer {
 
     apiMethod.name(
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
+    apiMethod.requestObjectName(namer.getRequestObjectName(context.getMethod()));
     apiMethod.requestTypeName(
-        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType()));
-    apiMethod.hasRequestParameters(initCode.lines().size() > 0);
+        namer.getRequestTypeName(context.getTypeTable(), context.getMethod().getInputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
     apiMethod.key(namer.getMethodKey(context.getMethod()));
     apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethod()));
@@ -82,14 +82,20 @@ public class DynamicLangApiMethodTransformer {
 
     apiMethod.methodParams(apiMethodParamTransformer.generateMethodParams(context));
 
-    apiMethod.requiredRequestObjectParams(
-        generateRequestObjectParams(context, context.getMethodConfig().getRequiredFieldConfigs()));
-    apiMethod.optionalRequestObjectParams(
-        generateRequestObjectParams(context, context.getMethodConfig().getOptionalFieldConfigs()));
     Iterable<FieldConfig> filteredFieldConfigs =
         removePageTokenFieldConfig(context, context.getMethodConfig().getOptionalFieldConfigs());
-    apiMethod.optionalRequestObjectParamsNoPageToken(
-        generateRequestObjectParams(context, filteredFieldConfigs));
+    List<RequestObjectParamView> requiredParams =
+        generateRequestObjectParams(context, context.getMethodConfig().getRequiredFieldConfigs());
+    List<RequestObjectParamView> optionalParams =
+        generateRequestObjectParams(context, context.getMethodConfig().getOptionalFieldConfigs());
+    List<RequestObjectParamView> optionalParamsNoPageToken =
+        generateRequestObjectParams(context, filteredFieldConfigs);
+    apiMethod.requiredRequestObjectParams(requiredParams);
+    apiMethod.optionalRequestObjectParams(optionalParams);
+    apiMethod.optionalRequestObjectParamsNoPageToken(optionalParamsNoPageToken);
+    apiMethod.hasRequestParameters(
+        !requiredParams.isEmpty() || !optionalParamsNoPageToken.isEmpty());
+    apiMethod.hasRequiredParameters(!requiredParams.isEmpty());
 
     GrpcStreamingType grpcStreamingType = context.getMethodConfig().getGrpcStreamingType();
     apiMethod.grpcStreamingType(grpcStreamingType);
@@ -115,7 +121,14 @@ public class DynamicLangApiMethodTransformer {
         context
             .getNamer()
             .getDynamicLangReturnTypeName(context.getMethod(), context.getMethodConfig()));
-    docBuilder.throwsDocLines(new ArrayList<String>());
+    docBuilder.returnsDocLines(
+        context
+            .getNamer()
+            .getReturnDocLines(
+                context.getSurfaceTransformerContext(),
+                context.getMethodConfig(),
+                Synchronicity.Sync));
+    docBuilder.throwsDocLines(context.getNamer().getThrowsDocLines());
 
     return docBuilder.build();
   }
@@ -155,6 +168,7 @@ public class DynamicLangApiMethodTransformer {
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
+    param.keyName(namer.getFieldKey(field));
     param.nameAsMethodName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
     param.typeName(typeTable.getAndSaveNicknameFor(field.getType()));
     param.elementTypeName(typeTable.getAndSaveNicknameForElementType(field.getType()));
