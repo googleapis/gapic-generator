@@ -109,10 +109,6 @@
          * @@param {Object=} opts.clientConfig
          *   The customized config to build the call settings. See
          *   {@@link gax.constructSettings} for the format.
-         * @@param {number=} opts.appName
-         *   The codename of the calling service.
-         * @@param {String=} opts.appVersion
-         *   The version of the calling service.
          */
         this.{@context.upperCamelToLowerCamel(apiName)} = function(opts) {
           return new {@apiName}(gaxGrpc, {@clientsParamName(stubs)}, opts);
@@ -197,7 +193,7 @@
         '{@service.getFullName}',
         configData,
         clientConfig,
-        {'x-goog-api-client': googleApiClient});
+        {'x-goog-api-client': googleApiClient.join(' ')});
   @end
 @end
 
@@ -244,14 +240,18 @@
       var port = opts.port || DEFAULT_SERVICE_PORT;
       var sslCreds = opts.sslCreds || null;
       var clientConfig = opts.clientConfig || {};
-      var appName = opts.appName || 'gax';
-      var appVersion = opts.appVersion || gax.version;
 
       var googleApiClient = [
-        appName + '/' + appVersion,
-        CODE_GEN_NAME_VERSION,
+        'gl-node/' + process.versions.node,
+        CODE_GEN_NAME_VERSION
+      ];
+      if (opts.libName && opts.libVersion) {
+        googleApiClient.push(opts.libName + '/' + opts.libVersion);
+      }
+      googleApiClient.push(
         'gax/' + gax.version,
-        'nodejs/' + process.version].join(' ');
+        'grpc/' + gaxGrpc.grpcVersion
+      );
       @let methods = context.getSupportedMethods(service), \
            bundlingMethods = context.messages.filterBundlingMethods(ifaceConfig, methods), \
            longrunningMethods = context.messages.filterLongrunningMethods(ifaceConfig, methods)
@@ -288,8 +288,8 @@
             port: port,
             sslCreds: sslCreds,
             clientConfig: clientConfig,
-            appName: appName,
-            appVersion: appVersion
+            libName: opts.libName,
+            libVersion: opts.libVersion
           });
           
           this.longrunningDescriptors = {

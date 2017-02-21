@@ -64,20 +64,24 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
   var port = opts.port || DEFAULT_SERVICE_PORT;
   var sslCreds = opts.sslCreds || null;
   var clientConfig = opts.clientConfig || {};
-  var appName = opts.appName || 'gax';
-  var appVersion = opts.appVersion || gax.version;
 
   var googleApiClient = [
-    appName + '/' + appVersion,
-    CODE_GEN_NAME_VERSION,
+    'gl-node/' + process.versions.node,
+    CODE_GEN_NAME_VERSION
+  ];
+  if (opts.libName && opts.libVersion) {
+    googleApiClient.push(opts.libName + '/' + opts.libVersion);
+  }
+  googleApiClient.push(
     'gax/' + gax.version,
-    'nodejs/' + process.version].join(' ');
+    'grpc/' + gaxGrpc.grpcVersion
+  );
 
   var defaults = gaxGrpc.constructSettings(
       'google.cloud.example.v1.NoTemplatesAPIService',
       configData,
       clientConfig,
-      {'x-goog-api-client': googleApiClient});
+      {'x-goog-api-client': googleApiClient.join(' ')});
 
   var self = this;
 
@@ -176,10 +180,6 @@ function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
    * @param {Object=} opts.clientConfig
    *   The customized config to build the call settings. See
    *   {@link gax.constructSettings} for the format.
-   * @param {number=} opts.appName
-   *   The codename of the calling service.
-   * @param {String=} opts.appVersion
-   *   The version of the calling service.
    */
   this.noTemplatesApiServiceClient = function(opts) {
     return new NoTemplatesAPIServiceClient(gaxGrpc, noTemplatesApiServiceClient, opts);
