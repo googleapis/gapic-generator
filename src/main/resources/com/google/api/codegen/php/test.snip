@@ -76,7 +76,7 @@
         {@simpleExceptionTestCase(test)}
     @case "OperationOptionalArrayMethod"
         {@lroTestCase(test)}
-        {@simpleExceptionTestCase(test)}
+        {@lroExceptionTestCase(test)}
     @default
         $unhandled case: {@test.clientMethodType}$
     @end
@@ -202,24 +202,7 @@
         $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
-        $apiRequests = $grpcStub->getReceivedCalls();
-        $this->assertSame(1, count($apiRequests));
-        $operationsRequestsEmpty = $operationsStub->getReceivedCalls();
-        $this->assertSame(0, count($operationsRequestsEmpty));
-
-        $actualApiFuncCall = $apiRequests[0]->getFuncCall();
-        $actualApiRequestObject = $apiRequests[0]->getRequestObject();
-        $this->assertSame('{@test.grpcStubCallString}', $actualApiFuncCall);
-        @join assert : test.asserts
-            @if assert.hasExpectedValueTransformFunction
-                $this->assertEquals({@assert.expectedValueTransformFunction}(\
-                    ${@assert.expectedValueIdentifier}), \
-                    $actualApiRequestObject->{@assert.actualValueGetter}());
-            @else
-                $this->assertEquals(${@assert.expectedValueIdentifier}, \
-                    $actualApiRequestObject->{@assert.actualValueGetter}());
-            @end
-        @end
+        {@lroCallSuccessAsserts(test)}
 
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/{@test.name}');
@@ -243,10 +226,11 @@
 @end
 
 @private lroExceptionTestCase(test)
+
     /**
      * @@test
      */
-    public function {@test.name}()
+    public function {@test.nameWithException}()
     {
         $operationsStub = $this->createStub([$this, 'createMockOperationsStub']);
         $operationsClient = new OperationsClient([
@@ -282,18 +266,21 @@
         $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
+        {@lroCallSuccessAsserts(test)}
 
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/{@test.name}');
 
         try {
             $response->pollUntilComplete();
-            // If the reload() method call did not throw, fail the test
+            // If the pollUntilComplete() method call did not throw, fail the test
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
 
+            $operationsRequests = $operationsStub->getReceivedCalls();
+            $this->assertSame(1, count($operationsRequests));
             $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
             $actualOperationsRequestObject = $operationsRequests[0]->getRequestObject();
             $this->assertSame('/google.longrunning.Operations/GetOperation', $actualOperationsFuncCall);
@@ -341,6 +328,27 @@
         @else
             $this->assertEquals(${@assert.expectedValueIdentifier}, \
                 $actualRequestObject->{@assert.actualValueGetter}());
+        @end
+    @end
+@end
+
+@private lroCallSuccessAsserts(test)
+    $apiRequests = $grpcStub->getReceivedCalls();
+    $this->assertSame(1, count($apiRequests));
+    $operationsRequestsEmpty = $operationsStub->getReceivedCalls();
+    $this->assertSame(0, count($operationsRequestsEmpty));
+
+    $actualApiFuncCall = $apiRequests[0]->getFuncCall();
+    $actualApiRequestObject = $apiRequests[0]->getRequestObject();
+    $this->assertSame('{@test.grpcStubCallString}', $actualApiFuncCall);
+    @join assert : test.asserts
+        @if assert.hasExpectedValueTransformFunction
+            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+                ${@assert.expectedValueIdentifier}), \
+                $actualApiRequestObject->{@assert.actualValueGetter}());
+        @else
+            $this->assertEquals(${@assert.expectedValueIdentifier}, \
+                $actualApiRequestObject->{@assert.actualValueGetter}());
         @end
     @end
 @end
