@@ -96,7 +96,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
     return missingDefaultServiceAddress() || missingDefaultServiceScopes();
   }
 
-  public abstract String codeGenVersion();
+  public abstract String toolkitVersion();
 
   @Override
   public String resourceRoot() {
@@ -167,7 +167,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder hasDefaultServiceScopes(boolean val);
 
-    public abstract Builder codeGenVersion(String val);
+    public abstract Builder toolkitVersion(String val);
 
     public abstract DynamicLangXApiView build();
   }

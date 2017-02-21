@@ -149,7 +149,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
-    xapiClass.codeGenVersion(GeneratorVersionProvider.getGeneratorVersion());
+    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
 
     // must be done as the last step to catch all imports
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
