@@ -173,7 +173,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->createShelf($shelf);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -249,7 +249,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->getShelf($formattedName, $options);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -320,7 +320,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->listShelves();
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -385,7 +385,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->deleteShelf($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -461,7 +461,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->mergeShelves($formattedName, $formattedOtherShelfName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -540,7 +540,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->createBook($formattedName, $book);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -616,11 +616,14 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         // Mock request
         $shelf = new Shelf();
         $books = [];
+        $seriesString = "foobar";
+        $seriesUuid = new SeriesUuid();
+        $seriesUuid->setSeriesString($seriesString);
 
         try {
-            $client->publishSeries($shelf, $books);
+            $client->publishSeries($shelf, $books, $seriesUuid);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -632,6 +635,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
             $this->assertEquals($shelf, $actualRequestObject->getShelf());
             $this->assertEquals($books, $actualRequestObject->getBooksList());
+            $this->assertEquals($seriesUuid, $actualRequestObject->getSeriesUuid());
         }
 
         $this->assertTrue($grpcStub->isExhausted());
@@ -696,7 +700,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->getBook($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -773,7 +777,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->listBooks($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -839,7 +843,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->deleteBook($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -917,7 +921,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->updateBook($formattedName, $book);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -996,7 +1000,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->moveBook($formattedName, $formattedOtherShelfName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1067,7 +1071,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->listStrings();
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1149,7 +1153,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->addComments($formattedName, $comments);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1225,7 +1229,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->getBookFromArchive($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1303,7 +1307,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1378,7 +1382,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->updateBookIndex($formattedName, $indexName, $indexMap);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1462,7 +1466,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->findRelatedBooks($names, $shelves);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1533,7 +1537,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->addTag($formattedResource, $tag);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1604,7 +1608,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->addLabel($formattedResource, $label);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1718,7 +1722,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->getBigBook($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
@@ -1823,7 +1827,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         try {
             $client->getBigNothing($formattedName);
             // If the $client method call did not throw, fail the test
-            $this->assertTrue(false);
+            $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
