@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -343,5 +344,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return publicMethodName(identifier);
+  }
+
+  @Override
+  public String getOneofVariantTypeName(OneofConfig oneof) {
+    return String.format(
+        "%s_%s",
+        converter.getTypeName(oneof.parentType(), false).getNickname(),
+        publicFieldName(Name.from(oneof.field().getSimpleName())));
   }
 }

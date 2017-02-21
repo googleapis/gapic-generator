@@ -38,7 +38,8 @@
         private static readonly PathTemplate s_template = new PathTemplate("{@resource.pattern}");
 
         /// <summary>
-        /// Parses a {@resource.docName} resource name in string form into a <see cref="{@resource.typeName}"/>.
+        /// Parses the given {@resource.docName} resource name in string form into a new
+        /// <see cref="{@resource.typeName}"/> instance.
         /// </summary>
         /// <param name="{@resource.paramName}">The {@resource.docName} resource name in string form. Must not be <c>null</c>.</param>
         /// <returns>The parsed <see cref="{@resource.typeName}"/> if successful.</returns>
@@ -50,7 +51,8 @@
         }
         
         /// <summary>
-        /// Tries to parse {@resource.docName} resource name in string form into a <see cref="{@resource.typeName}"/>/
+        /// Tries to parse the given {@resource.docName} resource name in string form into a new
+        /// <see cref="{@resource.typeName}"/> instance.
         /// </summary>
         /// <remarks>
         /// This method still throws <see cref="ArgumentNullException"/> if <paramref name="{@resource.paramName}"/> is null,
@@ -77,13 +79,16 @@
         }
 
         /// <summary>
-        /// Constructs a {@resource.docName} name from its component parts.
+        /// Constructs a new instance of the <see cref="{@resource.typeName}"/> resource name class
+        /// from its component parts.
         /// </summary>
+        # param: ResourceNameParamView
         @join param : resource.params
             /// <param name="{@param.nameAsParam}">The {@param.docName} ID. Must not be <c>null</c>.</param>
         @end
         public {@resource.typeName}({@formatParams(resource.params)})
         {
+            # param: ResourceNameParamView
             @join param : resource.params
                 {@param.nameAsProperty} = GaxPreconditions.CheckNotNull({@param.nameAsParam}, nameof({@param.nameAsParam}));
             @end
@@ -153,7 +158,7 @@
         }
 
         /// <summary>
-        /// Parses a resource name in string form into a <see cref="{@resource.typeName}"/>.
+        /// Parses a resource name in string form into a new <see cref="{@resource.typeName}"/> instance.
         /// </summary>
         /// <remarks>
         /// To parse successfully the resource name must be one of the following:
@@ -166,7 +171,8 @@
         /// </remarks>
         /// <param name="name">The resource name in string form. Must not be <c>null</c>.</param>
         /// <param name="allowUnknown">If true, will successfully parse an unknown resource name
-        /// into an <see cref="UnknownResourceName"/>.</param>
+        /// into an <see cref="UnknownResourceName"/>; otherwise will throw an
+        /// <see cref="ArgumentException"/> if an unknown resource name is given.</param>
         /// <returns>The parsed <see cref="{@resource.typeName}"/> if successful.</returns>
         public static {@resource.typeName} Parse(string name, bool allowUnknown)
         {
@@ -179,7 +185,7 @@
         }
 
         /// <summary>
-        /// Tries to parse a resource name in string form into a <see cref="{@resource.typeName}"/>.
+        /// Tries to parse a resource name in string form into a new <see cref="{@resource.typeName}"/> instance.
         /// </summary>
         /// <remarks>
         /// To parse successfully the resource name must be one of the following:
@@ -222,7 +228,7 @@
 
         @join child : resource.children
             /// <summary>
-            /// Construct an instance of <see cref="{@resource.typeName}"/> from the provided <see cref="{@child.typeName}"/>
+            /// Construct a new instance of <see cref="{@resource.typeName}"/> from the provided <see cref="{@child.typeName}"/>
             /// </summary>
             /// <param name="{@child.paramName}">The <see cref="{@child.typeName}"/> to be contained within
             /// the returned <see cref="{@resource.typeName}"/>. Must not be <c>null</c>.</param>
@@ -243,7 +249,8 @@
         }
 
         /// <summary>
-        /// Constructs a {resource.docName} resource name from a suitable <see cref="IResourceName"/> instance.
+        /// Constructs a new instance of the <see cref="{@resource.typeName}"/> resource name class
+        /// from a suitable <see cref="IResourceName"/> instance.
         /// </summary>
         public {@resource.typeName}(OneofType type, IResourceName name)
         {
@@ -326,7 +333,7 @@
         public static {@resource.typeName} Instance => new {@resource.typeName}();
 
         /// <summary>
-        /// Parses a string into a <see cref="{@resource.typeName}"/>.
+        /// Parses the given string into a new <see cref="{@resource.typeName}"/> instance.
         /// Only succeeds if the string is equal to "{@resource.value}".
         /// </summary>
         public static {@resource.typeName} Parse(string {@resource.paramName})
@@ -340,7 +347,7 @@
         }
 
         /// <summary>
-        /// Tries to parses a string into a <see cref="{@resource.typeName}"/>.
+        /// Tries to parse the given string into a new <see cref="{@resource.typeName}"/> instance.
         /// Only succeeds if the string is equal to "{@resource.value}".
         /// </summary>
         public static bool TryParse(string {@resource.paramName}, out {@resource.typeName} result)
@@ -408,7 +415,7 @@
         {
             @join field : proto.fields
                 /// <summary>
-                /// A <see cref="{@field.docTypeName}"/>-typed view over the <see cref="{@field.underlyingPropertyName}"/> resource name property.
+                /// <see cref="{@field.docTypeName}"/>-typed view over the <see cref="{@field.underlyingPropertyName}"/> resource name property.
                 /// </summary>
                 @if field.isRepeated
                     public {@field.typeName} {@field.propertyName} =>

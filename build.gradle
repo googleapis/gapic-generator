@@ -45,7 +45,7 @@ apply plugin: "signing"
 sourceCompatibility = 1.7
 
 group = "com.google.api"
-version = "0.0.5"
+project.version = file("version.txt").text.trim()
 
 def protoVersion = "3.0.0-beta-3"
 
@@ -348,6 +348,17 @@ allprojects {
       options.compilerArgs << "-Xlint:unchecked"
     }
   }
+}
+
+task createProperties(dependsOn: processResources) << {
+  new File("$buildDir/resources/main/com/google/api/codegen/").mkdirs()
+  Properties p = new Properties()
+  p['version'] = project.version.toString()
+  p.store(new PrintWriter("$buildDir/resources/main/com/google/api/codegen/codegen.properties", "UTF-8"), null)
+}
+
+classes {
+  dependsOn createProperties
 }
 
 // Task to run CodeGeneratorTool

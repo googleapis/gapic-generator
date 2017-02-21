@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -795,6 +796,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name of the API callable class for this service method type. */
   public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
     return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");
+  }
+
+  /** Return the type name used to discriminate oneof variants. */
+  public String getOneofVariantTypeName(OneofConfig oneof) {
+    return getNotImplementedString("SurfaceNamer.getOneofVariantTypeName");
   }
 
   /////////////////////////////////////// Resource names //////////////////////////////////////////

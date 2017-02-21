@@ -64,6 +64,8 @@ class LibraryServiceClient(object):
 
     Check out `cloud docs! <https://cloud.google.com/library/example/link>`_.
     This is `not a cloud link <http://www.google.com>`_.
+
+    Service comment may include special characters: <>&\"``'@.
     """
 
     SERVICE_ADDRESS = 'library-example.googleapis.com'
@@ -231,9 +233,9 @@ class LibraryServiceClient(object):
             scopes=None,
             client_config=None,
             app_name=None,
-            app_version='UNKNOWN',
+            app_version='',
             lib_name=None,
-            lib_version='UNKNOWN',
+            lib_version='',
             metrics_headers=()):
         """Constructor.
 
@@ -422,6 +424,7 @@ class LibraryServiceClient(object):
             options=None):
         """
         Creates a shelf, and returns the new Shelf.
+        RPC method comment may include special characters: <>&\"``'@.
 
         Example:
           >>> from google.cloud.gapic.example.library.v1 import library_service_client
@@ -626,9 +629,9 @@ class LibraryServiceClient(object):
             self,
             shelf,
             books,
+            series_uuid,
             edition=None,
             review_copy=None,
-            series_uuid=b'',
             options=None):
         """
         Creates a series of books.
@@ -639,14 +642,16 @@ class LibraryServiceClient(object):
           >>> api = library_service_client.LibraryServiceClient()
           >>> shelf = library_pb2.Shelf()
           >>> books = []
-          >>> response = api.publish_series(shelf, books)
+          >>> series_string = ''
+          >>> series_uuid = library_pb2.SeriesUuid(series_string)
+          >>> response = api.publish_series(shelf, books, series_uuid)
 
         Args:
           shelf (:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
           books (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The books to publish in the series.
           edition (int): The edition of the series
           review_copy (bool): If the book is in a pre-publish state
-          series_uuid (bytes): Uniquely identifies the series to the publishing house.
+          series_uuid (:class:`google.cloud.proto.example.library.v1.library_pb2.SeriesUuid`): Uniquely identifies the series to the publishing house.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -660,9 +665,9 @@ class LibraryServiceClient(object):
         request = library_pb2.PublishSeriesRequest(
             shelf=shelf,
             books=books,
+            series_uuid=series_uuid,
             edition=edition,
-            review_copy=review_copy,
-            series_uuid=series_uuid)
+            review_copy=review_copy)
         return self._publish_series(request, options)
 
     def get_book(

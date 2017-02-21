@@ -54,6 +54,7 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
@@ -99,6 +100,8 @@ import javax.annotation.Generated;
  *
  * Check out [cloud docs!](/library/example/link).
  * This is [not a cloud link](http://www.google.com).
+ *
+ * Service comment may include special characters: &lt;&gt;&amp;"`'{@literal @}.
  *
  * Also see this awesome doc there! and there! and everywhere!
  *
@@ -308,6 +311,7 @@ public class LibraryServiceClient implements AutoCloseable {
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a shelf, and returns the new Shelf.
+   * RPC method comment may include special characters: &lt;&gt;&amp;"`'{@literal @}.
    *
    * Sample code:
    * <pre><code>
@@ -332,6 +336,7 @@ public class LibraryServiceClient implements AutoCloseable {
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a shelf, and returns the new Shelf.
+   * RPC method comment may include special characters: &lt;&gt;&amp;"`'{@literal @}.
    *
    * Sample code:
    * <pre><code>
@@ -354,6 +359,7 @@ public class LibraryServiceClient implements AutoCloseable {
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a shelf, and returns the new Shelf.
+   * RPC method comment may include special characters: &lt;&gt;&amp;"`'{@literal @}.
    *
    * Sample code:
    * <pre><code>
@@ -823,22 +829,28 @@ public class LibraryServiceClient implements AutoCloseable {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   int edition = 0;
-   *   PublishSeriesResponse response = libraryServiceClient.publishSeries(shelf, books, edition);
+   *   String seriesString = "foobar";
+   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+   *     .setSeriesString(seriesString)
+   *     .build();
+   *   PublishSeriesResponse response = libraryServiceClient.publishSeries(shelf, books, edition, seriesUuid);
    * }
    * </code></pre>
    *
    * @param shelf The shelf in which the series is created.
    * @param books The books to publish in the series.
    * @param edition The edition of the series
+   * @param seriesUuid Uniquely identifies the series to the publishing house.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition) {
+  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
 
     PublishSeriesRequest request =
         PublishSeriesRequest.newBuilder()
         .setShelf(shelf)
         .addAllBooks(books)
         .setEdition(edition)
+        .setSeriesUuid(seriesUuid)
         .build();
     return publishSeries(request);
   }
@@ -852,9 +864,14 @@ public class LibraryServiceClient implements AutoCloseable {
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   String seriesString = "foobar";
+   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+   *     .setSeriesString(seriesString)
+   *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
    *     .setShelf(shelf)
    *     .addAllBooks(books)
+   *     .setSeriesUuid(seriesUuid)
    *     .build();
    *   PublishSeriesResponse response = libraryServiceClient.publishSeries(request);
    * }
@@ -876,9 +893,14 @@ public class LibraryServiceClient implements AutoCloseable {
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   String seriesString = "foobar";
+   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+   *     .setSeriesString(seriesString)
+   *     .build();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
    *     .setShelf(shelf)
    *     .addAllBooks(books)
+   *     .setSeriesUuid(seriesUuid)
    *     .build();
    *   RpcFuture&lt;PublishSeriesResponse&gt; future = libraryServiceClient.publishSeriesCallable().futureCall(request);
    *   // Do something

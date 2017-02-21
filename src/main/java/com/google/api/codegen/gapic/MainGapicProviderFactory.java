@@ -46,6 +46,7 @@ import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
+import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.ruby.RubyPackageMetadataTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
@@ -426,6 +427,24 @@ public class MainGapicProviderFactory
                   .setModelToViewTransformer(new RubyGapicSurfaceDocTransformer(rubyPathMapper))
                   .build();
           providers.add(messageProvider);
+        }
+
+        if (generatorConfig.enableTestGenerator() && id.equals(RUBY)) {
+          GapicCodePathMapper rubyTestPathMapper =
+              CommonGapicCodePathMapper.newBuilder()
+                  .setPrefix("test")
+                  .setShouldAppendPackage(true)
+                  .setPackageFilePathNameFormatter(new RubyNameFormatter())
+                  .build();
+          GapicProvider<? extends Object> testProvider =
+              ViewModelGapicProvider.newBuilder()
+                  .setModel(model)
+                  .setApiConfig(apiConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(
+                      new RubyGapicSurfaceTestTransformer(rubyTestPathMapper))
+                  .build();
+          providers.add(testProvider);
         }
       }
 

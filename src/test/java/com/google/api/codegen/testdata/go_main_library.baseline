@@ -157,6 +157,8 @@ type Client struct {
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
 //
+// Service comment may include special characters: <>&"`'@.
+//
 // Write more docs here as an offering to the Great Gopher
 func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error) {
     conn, err := transport.DialGRPC(ctx, append(defaultClientOptions(), opts...)...)
@@ -189,7 +191,7 @@ func (c *Client) Close() error {
 // the `x-goog-api-client` header passed on each request. Intended for
 // use by Google-written clients.
 func (c *Client) SetGoogleClientInfo(clientName, clientVersion string) {
-    c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gax/%s grpc/UNKNOWN", version.Go(), clientName, clientVersion, gax.Version)
+    c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gax/%s grpc/", version.Go(), clientName, clientVersion, gax.Version)
 }
 
 // LibraryShelfPath returns the path for the shelf resource.
@@ -235,6 +237,7 @@ func (c *Client) BookIAM(book *librarypb.Book) *iam.Handle {
 
 
 // CreateShelf creates a shelf, and returns the new Shelf.
+// RPC method comment may include special characters: <>&"`'@.
 func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.Shelf

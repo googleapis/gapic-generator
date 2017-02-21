@@ -65,7 +65,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
-    this.apiMethodTransformer = new DynamicLangApiMethodTransformer();
+    this.apiMethodTransformer =
+        new DynamicLangApiMethodTransformer(new PhpApiMethodParamTransformer());
     this.grpcStubTransformer = new GrpcStubTransformer();
   }
 

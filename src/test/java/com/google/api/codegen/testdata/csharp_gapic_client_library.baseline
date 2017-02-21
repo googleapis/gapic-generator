@@ -76,7 +76,10 @@ namespace Google.Example.Library.V1
             GetBigBookSettings = existing.GetBigBookSettings;
             GetBigNothingSettings = existing.GetBigNothingSettings;
             LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
+            OnCopy(existing);
         }
+
+        partial void OnCopy(LibraryServiceSettings existing);
 
         /// <summary>
         /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
@@ -927,6 +930,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="shelf">
         /// The shelf to create.
@@ -948,6 +952,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="shelf">
         /// The shelf to create.
@@ -966,6 +971,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="shelf">
         /// The shelf to create.
@@ -987,6 +993,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
@@ -1006,6 +1013,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
@@ -1728,6 +1736,9 @@ namespace Google.Example.Library.V1
         /// <param name="edition">
         /// The edition of the series
         /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -1738,12 +1749,14 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
+            SeriesUuid seriesUuid,
             CallSettings callSettings = null) => PublishSeriesAsync(
                 new PublishSeriesRequest
                 {
                     Shelf = shelf,
                     Books = { books },
                     Edition = edition,
+                    SeriesUuid = seriesUuid,
                 },
                 callSettings);
 
@@ -1759,6 +1772,9 @@ namespace Google.Example.Library.V1
         /// <param name="edition">
         /// The edition of the series
         /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> to use for this RPC.
         /// </param>
@@ -1769,10 +1785,12 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
+            SeriesUuid seriesUuid,
             CancellationToken cancellationToken) => PublishSeriesAsync(
                 shelf,
                 books,
                 edition,
+                seriesUuid,
                 CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -1787,6 +1805,9 @@ namespace Google.Example.Library.V1
         /// <param name="edition">
         /// The edition of the series
         /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -1797,12 +1818,14 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
+            SeriesUuid seriesUuid,
             CallSettings callSettings = null) => PublishSeries(
                 new PublishSeriesRequest
                 {
                     Shelf = shelf,
                     Books = { books },
                     Edition = edition,
+                    SeriesUuid = seriesUuid,
                 },
                 callSettings);
 
@@ -3825,7 +3848,10 @@ namespace Google.Example.Library.V1
                 GrpcClient.GetBigBookAsync, GrpcClient.GetBigBook, effectiveSettings.GetBigBookSettings);
             _callGetBigNothing = clientHelper.BuildApiCall<GetBookRequest, Operation>(
                 GrpcClient.GetBigNothingAsync, GrpcClient.GetBigNothing, effectiveSettings.GetBigNothingSettings);
+            OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
+
+        partial void OnConstruction(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings effectiveSettings, ClientHelper clientHelper);
 
         /// <summary>
         /// The underlying gRPC LibraryService client.
@@ -3865,6 +3891,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.
@@ -3885,6 +3912,7 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
+        /// RPC method comment may include special characters: &lt;&gt;&amp;"`'@.
         /// </summary>
         /// <param name="request">
         /// The request object containing all of the parameters for the API call.

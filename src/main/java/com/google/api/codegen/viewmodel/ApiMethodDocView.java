@@ -33,8 +33,6 @@ public abstract class ApiMethodDocView {
   @Nullable
   public abstract String returnTypeName();
 
-  public abstract Builder toBuilder();
-
   public static Builder newBuilder() {
     return new AutoValue_ApiMethodDocView.Builder();
   }

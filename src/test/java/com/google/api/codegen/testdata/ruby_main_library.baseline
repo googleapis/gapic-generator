@@ -48,6 +48,8 @@ module Library
     # Check out {cloud docs!}[https://cloud.google.com/library/example/link].
     # This is {not a cloud link}[http://www.google.com].
     #
+    # Service comment may include special characters: <>&"+'@.
+    #
     # @!attribute [r] library_service_stub
     #   @return [Google::Example::Library::V1::LibraryService::Stub]
     # @!attribute [r] labeler_stub
@@ -222,7 +224,7 @@ module Library
           app_name: nil,
           app_version: nil,
           lib_name: nil,
-          lib_version: "UNKNOWN"
+          lib_version: ""
         # These require statements are intentionally placed here to initialize
         # the gRPC module only when it's required.
         # See https://github.com/googleapis/toolkit/issues/446
@@ -397,6 +399,7 @@ module Library
       # Service calls
 
       # Creates a shelf, and returns the new Shelf.
+      # RPC method comment may include special characters: <>&"+'@.
       #
       # @param shelf [Google::Example::Library::V1::Shelf]
       #   The shelf to create.
@@ -603,7 +606,7 @@ module Library
       #   The edition of the series
       # @param review_copy [true, false]
       #   If the book is in a pre-publish state
-      # @param series_uuid [String]
+      # @param series_uuid [Google::Example::Library::V1::SeriesUuid]
       #   Uniquely identifies the series to the publishing house.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
@@ -614,26 +617,30 @@ module Library
       #   require "library/v1/library_service_client"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
+      #   SeriesUuid = Google::Example::Library::V1::SeriesUuid
       #   Shelf = Google::Example::Library::V1::Shelf
       #
       #   library_service_client = LibraryServiceClient.new
       #   shelf = Shelf.new
       #   books = []
-      #   response = library_service_client.publish_series(shelf, books)
+      #   series_string = "foobar"
+      #   series_uuid = SeriesUuid.new
+      #   series_uuid.series_string = series_string
+      #   response = library_service_client.publish_series(shelf, books, series_uuid)
 
       def publish_series \
           shelf,
           books,
+          series_uuid,
           edition: nil,
           review_copy: nil,
-          series_uuid: nil,
           options: nil
         req = Google::Example::Library::V1::PublishSeriesRequest.new({
           shelf: shelf,
           books: books,
+          series_uuid: series_uuid,
           edition: edition,
-          review_copy: review_copy,
-          series_uuid: series_uuid
+          review_copy: review_copy
         }.delete_if { |_, v| v.nil? })
         @publish_series.call(req, options)
       end
