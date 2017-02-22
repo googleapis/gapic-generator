@@ -59,11 +59,11 @@ var ALL_SCOPES = [
  * @class
  */
 function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
-  opts = opts || {};
-  var servicePath = opts.servicePath || SERVICE_ADDRESS;
-  var port = opts.port || DEFAULT_SERVICE_PORT;
-  var sslCreds = opts.sslCreds || null;
-  var clientConfig = opts.clientConfig || {};
+  opts = extend({
+    servicePath: SERVICE_ADDRESS,
+    port: DEFAULT_SERVICE_PORT,
+    clientConfig: {}
+  }, opts);
 
   var googleApiClient = [
     'gl-node/' + process.versions.node,
@@ -80,17 +80,15 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
   var defaults = gaxGrpc.constructSettings(
       'google.cloud.example.v1.NoTemplatesAPIService',
       configData,
-      clientConfig,
+      opts.clientConfig,
       {'x-goog-api-client': googleApiClient.join(' ')});
 
   var self = this;
 
   this.auth = gaxGrpc.auth;
   var noTemplatesApiServiceStub = gaxGrpc.createStub(
-      servicePath,
-      port,
       grpcClients.google.cloud.example.v1.NoTemplatesAPIService,
-      {sslCreds: sslCreds});
+      opts);
   var noTemplatesApiServiceStubMethods = [
     'increment'
   ];
