@@ -28,6 +28,8 @@ public abstract class GrpcDocView implements ViewModel {
 
   public abstract List<GrpcElementDocView> elementDocs();
 
+  public abstract String packageName();
+
   public static Builder newBuilder() {
     return new AutoValue_GrpcDocView.Builder();
   }
@@ -46,6 +48,8 @@ public abstract class GrpcDocView implements ViewModel {
     public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder elementDocs(List<GrpcElementDocView> val);
+
+    public abstract Builder packageName(String val);
 
     public abstract GrpcDocView build();
   }

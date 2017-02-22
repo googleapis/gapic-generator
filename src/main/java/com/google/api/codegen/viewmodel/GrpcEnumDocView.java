@@ -21,6 +21,8 @@ import java.util.List;
 public abstract class GrpcEnumDocView implements GrpcElementDocView {
   public abstract String name();
 
+  public abstract String fullyQualifiedType();
+
   public abstract List<String> lines();
 
   public abstract List<GrpcEnumValueDocView> values();
@@ -33,9 +35,15 @@ public abstract class GrpcEnumDocView implements GrpcElementDocView {
     return GrpcEnumDocView.class.getSimpleName();
   }
 
+  public String firstLine() {
+    return lines().isEmpty() ? "" : lines().get(0);
+  }
+
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder name(String val);
+
+    public abstract Builder fullyQualifiedType(String val);
 
     public abstract Builder lines(List<String> val);
 
