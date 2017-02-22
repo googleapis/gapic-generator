@@ -28,6 +28,9 @@ public abstract class ClientTestClassView {
   public abstract String apiSettingsClassName();
 
   @Nullable
+  public abstract String apiVariableName();
+
+  @Nullable
   public abstract String apiName();
 
   public abstract List<MockServiceUsageView> mockServices();
@@ -48,6 +51,8 @@ public abstract class ClientTestClassView {
     public abstract Builder apiClassName(String val);
 
     public abstract Builder apiSettingsClassName(String val);
+
+    public abstract Builder apiVariableName(String val);
 
     public abstract Builder apiName(String val);
 

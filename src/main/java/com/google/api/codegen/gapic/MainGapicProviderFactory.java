@@ -42,6 +42,7 @@ import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransforme
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
+import com.google.api.codegen.transformer.py.PythonGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTestTransformer;
@@ -351,6 +352,23 @@ public class MainGapicProviderFactory
                   .build();
 
           providers.add(messageProvider);
+        }
+
+        if (generatorConfig.enableTestGenerator() && id.equals(PYTHON)) {
+          GapicCodePathMapper pythonTestPathMapper =
+              CommonGapicCodePathMapper.newBuilder()
+                  .setPrefix("test")
+                  .setShouldAppendPackage(true)
+                  .build();
+          GapicProvider<? extends Object> testProvider =
+              ViewModelGapicProvider.newBuilder()
+                  .setModel(model)
+                  .setApiConfig(apiConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(
+                      new PythonGapicSurfaceTestTransformer(pythonTestPathMapper))
+                  .build();
+          providers.add(testProvider);
         }
 
         GapicProvider<? extends Object> metadataProvider =
