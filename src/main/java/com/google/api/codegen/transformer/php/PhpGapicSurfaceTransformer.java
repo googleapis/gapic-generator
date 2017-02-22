@@ -25,6 +25,8 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -55,8 +57,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private PageStreamingTransformer pageStreamingTransformer;
   private DynamicLangApiMethodTransformer apiMethodTransformer;
   private GrpcStubTransformer grpcStubTransformer;
+  private final ImportSectionTransformer importSectionTransformer =
+      new PhpImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new PhpImportSectionTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
@@ -66,7 +70,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
     this.apiMethodTransformer =
-        new DynamicLangApiMethodTransformer(new PhpApiMethodParamTransformer());
+        new DynamicLangApiMethodTransformer(
+            new PhpApiMethodParamTransformer(), new InitCodeTransformer(importSectionTransformer));
     this.grpcStubTransformer = new GrpcStubTransformer();
   }
 

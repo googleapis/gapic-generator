@@ -20,6 +20,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
@@ -346,7 +347,9 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
     DynamicLangApiMethodTransformer methodTransformer =
-        new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer());
+        new DynamicLangApiMethodTransformer(
+            new RubyApiMethodParamTransformer(),
+            new InitCodeTransformer(new RubyImportSectionTransformer()));
     return methodTransformer.generateMethod(methodContext);
   }
 
@@ -359,13 +362,13 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   public List<ImportFileView> getServiceImports(Interface service) {
     RubyImportSectionTransformer importSectionTransformer = new RubyImportSectionTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    return importSectionTransformer.generateImportSection(context).serviceImports();
+    return importSectionTransformer.generateFileHeaderImportSection(context).serviceImports();
   }
 
   public List<ImportFileView> getProtoImports(Interface service) {
     RubyImportSectionTransformer importSectionTransformer = new RubyImportSectionTransformer();
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    return importSectionTransformer.generateImportSection(context).appImports();
+    return importSectionTransformer.generateFileHeaderImportSection(context).appImports();
   }
 
   public List<BundlingDescriptorView> getBundlingDescriptors(Interface service) {

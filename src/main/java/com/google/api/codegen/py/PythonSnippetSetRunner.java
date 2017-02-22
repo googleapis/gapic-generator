@@ -17,6 +17,7 @@ package com.google.api.codegen.py;
 import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -45,6 +46,7 @@ public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner.Genera
             .putAll(globalMap)
             .put("context", context)
             .put("importHandler", importHandler)
+            .put("util", new CommonRenderingUtil())
             .build();
 
     PythonSnippetSet<ElementT> snippets =

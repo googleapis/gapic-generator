@@ -20,6 +20,18 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.py.PythonApiMethodParamTransformer;
+import com.google.api.codegen.transformer.py.PythonFeatureConfig;
+import com.google.api.codegen.transformer.py.PythonImportSectionTransformer;
+import com.google.api.codegen.transformer.py.PythonModelTypeNameConverter;
+import com.google.api.codegen.transformer.py.PythonSurfaceNamer;
+import com.google.api.codegen.util.py.PythonTypeTable;
+import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.EnumType;
@@ -113,6 +125,36 @@ public class PythonGapicContext extends GapicContext {
 
   // Snippet Helpers
   // ===============
+
+  /**
+   * Return ApiMethodView for sample gen.
+   *
+   * <p>NOTE: Temporary solution to use MVVM with just sample gen. This class will eventually go
+   * away when code gen also converts to MVVM.
+   */
+  public ApiMethodView getApiMethodView(Interface service, Method method) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
+    DynamicLangApiMethodTransformer apiMethodTransformer =
+        new DynamicLangApiMethodTransformer(
+            new PythonApiMethodParamTransformer(),
+            new InitCodeTransformer(new PythonImportSectionTransformer()));
+
+    return apiMethodTransformer.generateMethod(methodContext);
+  }
+
+  private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
+    ModelTypeTable modelTypeTable =
+        new ModelTypeTable(
+            new PythonTypeTable(getApiConfig().getPackageName()),
+            new PythonModelTypeNameConverter(getApiConfig().getPackageName()));
+    return SurfaceTransformerContext.create(
+        service,
+        getApiConfig(),
+        modelTypeTable,
+        new PythonSurfaceNamer(getApiConfig().getPackageName()),
+        new PythonFeatureConfig());
+  }
 
   public String filePath(ProtoFile file, PythonImportHandler importHandler) {
     return importHandler
@@ -266,10 +308,6 @@ public class PythonGapicContext extends GapicContext {
 
     MessageType returnMessageType = method.getOutputMessage();
     return importHandler.elementPath(returnMessageType, true);
-  }
-
-  public PythonDocConfig.Builder newDocConfigBuilder() {
-    return PythonDocConfig.newBuilder();
   }
 
   public List<String> splitToLines(String s) {

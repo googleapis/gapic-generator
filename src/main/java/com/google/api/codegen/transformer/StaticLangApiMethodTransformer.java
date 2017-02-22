@@ -48,7 +48,8 @@ import java.util.List;
  * languages.
  */
 public class StaticLangApiMethodTransformer {
-  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final InitCodeTransformer initCodeTransformer =
+      new InitCodeTransformer(new StandardImportSectionTransformer());
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(MethodTransformerContext context) {

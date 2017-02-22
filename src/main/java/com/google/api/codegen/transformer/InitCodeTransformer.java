@@ -53,6 +53,12 @@ import java.util.Map;
  * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
+  private final ImportSectionTransformer importSectionTransformer;
+
+  public InitCodeTransformer(ImportSectionTransformer importSectionTransformer) {
+    this.importSectionTransformer = importSectionTransformer;
+  }
+
   /**
    * Generates initialization code from the given MethodTransformerContext and InitCodeContext
    * objects.
@@ -171,8 +177,6 @@ public class InitCodeTransformer {
       MethodTransformerContext context,
       Iterable<InitCodeNode> orderedItems,
       Iterable<InitCodeNode> argItems) {
-    StandardImportSectionTransformer importSectionTransformer =
-        new StandardImportSectionTransformer();
     ModelTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 
@@ -185,7 +189,8 @@ public class InitCodeTransformer {
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(getFieldSettings(context, argItems))
-        .importSection(importSectionTransformer.generateImportSection(typeTable.getImports()))
+        .importSection(
+            importSectionTransformer.generateInitCodeImportSection(context, orderedItems))
         .apiFileName(namer.getServiceFileName(context.getInterface()))
         .build();
   }
@@ -438,7 +443,8 @@ public class InitCodeTransformer {
       MethodTransformerContext context, List<String> varList, InitValueConfig initValueConfig) {
     List<String> formatFunctionArgs = new ArrayList<>();
     for (String entityName : varList) {
-      String entityValue = "\"[" + Name.from(entityName).toUpperUnderscore() + "]\"";
+      String entityValue =
+          context.getNamer().quoted("[" + Name.from(entityName).toUpperUnderscore() + "]");
       if (initValueConfig.hasFormattingConfigInitialValues()
           && initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);

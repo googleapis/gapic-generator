@@ -58,7 +58,8 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
-  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final InitCodeTransformer initCodeTransformer =
+      new InitCodeTransformer(importSectionTransformer);
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
 
   @Override

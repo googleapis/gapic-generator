@@ -75,6 +75,10 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     return new AutoValue_OptionalArrayMethodView.Builder(this);
   }
 
+  public boolean hasRequestStreaming() {
+    return !isSingularRequestMethod();
+  }
+
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder type(ClientMethodType val);

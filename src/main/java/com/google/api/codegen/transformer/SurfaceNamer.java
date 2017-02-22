@@ -1151,4 +1151,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
     return original;
   }
+
+  /** Converts the given text to a quoted string. */
+  public String quoted(String text) {
+    return "\"" + text + "\"";
+  }
 }

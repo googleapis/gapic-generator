@@ -12,14 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.viewmodel.ImportSectionView;
+import com.google.api.codegen.transformer.FeatureConfig;
 
-public interface ImportSectionTransformer {
-  ImportSectionView generateFileHeaderImportSection(SurfaceTransformerContext context);
-
-  ImportSectionView generateInitCodeImportSection(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes);
+public class PythonFeatureConfig extends FeatureConfig {
+  @Override
+  public boolean enableGrpcStreaming() {
+    return true;
+  }
 }

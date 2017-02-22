@@ -23,6 +23,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
@@ -61,9 +62,12 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String MOCK_SERVICE_IMPL_FILE = "java/mock_service_impl.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final ImportSectionTransformer importSectionTransformer =
+      new StandardImportSectionTransformer();
+  private final InitCodeTransformer initCodeTransformer =
+      new InitCodeTransformer(importSectionTransformer);
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new StandardImportSectionTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final JavaValueProducer valueProducer = new JavaValueProducer();
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
