@@ -192,7 +192,7 @@
     var defaults = gaxGrpc.constructSettings(
         '{@service.getFullName}',
         configData,
-        clientConfig,
+        opts.clientConfig,
         {'x-goog-api-client': googleApiClient.join(' ')});
   @end
 @end
@@ -235,10 +235,11 @@
      * @@class
      */
     function {@serviceName}(gaxGrpc, grpcClients, opts) {
-      opts = opts || {};
-      var servicePath = opts.servicePath || SERVICE_ADDRESS;
-      var port = opts.port || DEFAULT_SERVICE_PORT;
-      var clientConfig = opts.clientConfig || {};
+      opts = extend({
+        servicePath: SERVICE_ADDRESS,
+        port: DEFAULT_SERVICE_PORT,
+        clientConfig: {}
+      }, opts);
 
       var googleApiClient = [
         'gl-node/' + process.versions.node,
@@ -279,17 +280,10 @@
 
         @if longrunningMethods
 
-          var lroOpts = {};
-          Object.keys(opts).forEach(function(key) {
-            lroOpts[key] = opts[key];
-          });
-          lroOpts.servicePath = servicePath;
-          lroOpts.port = port;
-          lroOpts.clientConfig = clientConfig;
           this.operationsClient = new gax.lro({
             auth: gaxGrpc.auth,
             grpc: gaxGrpc.grpc
-          }).operationsClient(lroOpts);
+          }).operationsClient(opts);
           
           this.longrunningDescriptors = {
             @join method : longrunningMethods on {@", "}.add(BREAK)
@@ -311,8 +305,8 @@
       this.auth = gaxGrpc.auth;
       @join stub : stubs on BREAK.add(BREAK)
         var {@stub.name} = gaxGrpc.createStub(
-            servicePath,
-            port,
+            opts.servicePath,
+            opts.port,
             grpcClients.{@stub.fullyQualifiedType},
             opts);
         var {@stub.stubMethodsArrayName} = [
