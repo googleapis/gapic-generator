@@ -70,6 +70,7 @@ type CallOptions struct {
     AddLabel []gax.CallOption
     GetBigBook []gax.CallOption
     GetBigNothing []gax.CallOption
+    TestOptionalRequiredFlatteningParams []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -123,6 +124,7 @@ func defaultCallOptions() *CallOptions {
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
         GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
+        TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -680,6 +682,21 @@ func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookReques
     return &EmptyOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), resp),
     }, nil
+}
+
+// TestOptionalRequiredFlatteningParams test optional flattening parameters of all types
+func (c *Client) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
+    ctx = insertXGoog(ctx, c.xGoogHeader)
+    var resp *librarypb.TestOptionalRequiredFlatteningParamsResponse
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.TestOptionalRequiredFlatteningParams(ctx, req)
+        return err
+    }, c.CallOptions.TestOptionalRequiredFlatteningParams...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 

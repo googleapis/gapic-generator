@@ -59,6 +59,10 @@ public abstract class ParamWithSimpleDoc {
 
   public abstract boolean isArray();
 
+  public abstract boolean isPrimitive();
+
+  public abstract boolean isOptional();
+
   @Nullable // Used in C#
   public abstract String defaultValue();
 
@@ -74,6 +78,8 @@ public abstract class ParamWithSimpleDoc {
         .addCallName(addCallName())
         .isMap(isMap())
         .isArray(isArray())
+        .isPrimitive(isPrimitive())
+        .isOptional(isOptional())
         .defaultValue(defaultValue())
         .build();
   }
@@ -108,6 +114,10 @@ public abstract class ParamWithSimpleDoc {
     public abstract Builder isMap(boolean val);
 
     public abstract Builder isArray(boolean val);
+
+    public abstract Builder isPrimitive(boolean val);
+
+    public abstract Builder isOptional(boolean val);
 
     public abstract Builder defaultValue(String val);
 

@@ -52,7 +52,7 @@ public interface ModelTypeNameConverter {
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
    * type.
    */
-  TypedValue getZeroValue(TypeRef type);
+  TypedValue getZeroValue(TypeRef type, ZeroValuePurpose purpose);
 
   /** Renders the given value if it is a primitive type. */
   String renderPrimitiveValue(TypeRef type, String value);

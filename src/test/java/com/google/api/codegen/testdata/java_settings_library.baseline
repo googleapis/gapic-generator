@@ -74,6 +74,8 @@ import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
@@ -176,6 +178,7 @@ public class LibraryServiceSettings extends ClientSettings {
   private final SimpleCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
   private final OperationCallSettings<GetBookRequest, Book> getBigBookSettings;
   private final OperationCallSettings<GetBookRequest, Empty> getBigNothingSettings;
+  private final SimpleCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -359,6 +362,13 @@ public class LibraryServiceSettings extends ClientSettings {
     return getBigNothingSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to testOptionalRequiredFlatteningParams.
+   */
+  public SimpleCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
+    return testOptionalRequiredFlatteningParamsSettings;
+  }
+
 
   /**
    * Returns a builder for the default ExecutorProvider for this service.
@@ -460,6 +470,7 @@ public class LibraryServiceSettings extends ClientSettings {
     addLabelSettings = settingsBuilder.addLabelSettings().build();
     getBigBookSettings = settingsBuilder.getBigBookSettings().build();
     getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
+    testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
   }
 
   private static final PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
@@ -734,6 +745,7 @@ public class LibraryServiceSettings extends ClientSettings {
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Book> getBigBookSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty> getBigNothingSettings;
+    private final SimpleCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -838,6 +850,8 @@ public class LibraryServiceSettings extends ClientSettings {
           Empty.class);
 
 
+      testOptionalRequiredFlatteningParamsSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_TEST_OPTIONAL_REQUIRED_FLATTENING_PARAMS);
+
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           createShelfSettings,
           getShelfSettings,
@@ -858,7 +872,8 @@ public class LibraryServiceSettings extends ClientSettings {
           updateBookIndexSettings,
           findRelatedBooksSettings,
           addTagSettings,
-          addLabelSettings
+          addLabelSettings,
+          testOptionalRequiredFlatteningParamsSettings
       );
     }
 
@@ -948,6 +963,10 @@ public class LibraryServiceSettings extends ClientSettings {
       builder.addLabelSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.testOptionalRequiredFlatteningParamsSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
       builder.getBigBookSettings().getInitialCallSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -987,6 +1006,7 @@ public class LibraryServiceSettings extends ClientSettings {
       addLabelSettings = settings.addLabelSettings.toBuilder();
       getBigBookSettings = settings.getBigBookSettings.toBuilder();
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
+      testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           createShelfSettings,
@@ -1008,7 +1028,8 @@ public class LibraryServiceSettings extends ClientSettings {
           updateBookIndexSettings,
           findRelatedBooksSettings,
           addTagSettings,
-          addLabelSettings
+          addLabelSettings,
+          testOptionalRequiredFlatteningParamsSettings
       );
     }
 
@@ -1216,6 +1237,13 @@ public class LibraryServiceSettings extends ClientSettings {
      */
     public OperationCallSettings.Builder<GetBookRequest, Empty> getBigNothingSettings() {
       return getBigNothingSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to testOptionalRequiredFlatteningParams.
+     */
+    public SimpleCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
+      return testOptionalRequiredFlatteningParamsSettings;
     }
 
     @Override

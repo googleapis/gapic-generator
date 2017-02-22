@@ -366,7 +366,7 @@ public class InitCodeTransformer {
         default:
           throw new UnsupportedOperationException("unexpected entity name type");
       }
-    } else if (initValueConfig.hasFormattingConfig()) {
+    } else if (initValueConfig.hasFormattingConfig() && !item.getType().isRepeated()) {
       if (context.getFeatureConfig().enableStringFormatFunctions()) {
         FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
 
@@ -413,7 +413,9 @@ public class InitCodeTransformer {
         initValue.initialValue(value);
       } else {
         initValue.initialValue(
-            context.getTypeTable().getZeroValueAndSaveNicknameFor(item.getType()));
+            context
+                .getTypeTable()
+                .getZeroValueAndSaveNicknameFor(item.getType(), ZeroValuePurpose.Initialization));
         initValue.isRepeated(item.getType().isRepeated());
       }
 

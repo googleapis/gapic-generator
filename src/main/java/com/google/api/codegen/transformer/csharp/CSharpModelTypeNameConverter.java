@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.transformer.ZeroValuePurpose;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -71,7 +72,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\"\"")
-          .put(Type.TYPE_BYTES, "ByteString.CopyFromUtf8(\"\")")
+          .put(Type.TYPE_BYTES, "ByteString.Empty")
           .build();
 
   private TypeNameConverter typeNameConverter;
@@ -150,32 +151,77 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getZeroValue(TypeRef type, ZeroValuePurpose purpose) {
     if (type.isMap()) {
-      TypeName mapTypeName = typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
       TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
       TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
-      TypeName genericMapTypeName =
-          new TypeName(
-              mapTypeName.getFullName(),
-              mapTypeName.getNickname(),
-              "%s<%i, %i>",
-              keyTypeName,
-              valueTypeName);
-      return TypedValue.create(genericMapTypeName, "new %s()");
+      switch (purpose) {
+        case Initialization:
+          TypeName mapTypeName =
+              typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
+          TypeName genericMapTypeName =
+              new TypeName(
+                  mapTypeName.getFullName(),
+                  mapTypeName.getNickname(),
+                  "%s<%i, %i>",
+                  keyTypeName,
+                  valueTypeName);
+          return TypedValue.create(genericMapTypeName, "new %s()");
+        case OptionalValue:
+          TypeName emptyMapTypeName =
+              typeNameConverter.getTypeName("Google.Api.Gax.EmptyDictionary");
+          TypeName genericEmptyMapTypeName =
+              new TypeName(
+                  emptyMapTypeName.getFullName(),
+                  emptyMapTypeName.getNickname(),
+                  "%s<%i, %i>",
+                  keyTypeName,
+                  valueTypeName);
+          return TypedValue.create(genericEmptyMapTypeName, "%s.Instance");
+        default:
+          throw new IllegalStateException("Invalid ZeroValuePurpose: " + purpose);
+      }
     } else if (type.isRepeated()) {
-      TypeName listTypeName = typeNameConverter.getTypeName("System.Collections.Generic.List");
       TypeName elementTypeName = getTypeNameForElementType(type);
-      TypeName genericListTypeName =
-          new TypeName(
-              listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
-      return TypedValue.create(genericListTypeName, "new %s()");
+      switch (purpose) {
+        case Initialization:
+          TypeName listTypeName = typeNameConverter.getTypeName("System.Collections.Generic.List");
+          TypeName genericListTypeName =
+              new TypeName(
+                  listTypeName.getFullName(),
+                  listTypeName.getNickname(),
+                  "%s<%i>",
+                  elementTypeName);
+          return TypedValue.create(genericListTypeName, "new %s()");
+        case OptionalValue:
+          TypeName enumerableTypeName = typeNameConverter.getTypeName("System.Linq.Enumerable");
+          TypeName emptyTypeName =
+              new TypeName(
+                  enumerableTypeName.getFullName(),
+                  enumerableTypeName.getNickname(),
+                  "%s.Empty<%i>",
+                  elementTypeName);
+          return TypedValue.create(emptyTypeName, "%s()");
+        default:
+          throw new IllegalStateException("Invalid ZeroValuePurpose: " + purpose);
+      }
     } else if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "new %s()");
     } else if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     } else {
-      return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+      if (type.getKind() == Type.TYPE_BYTES) {
+        switch (purpose) {
+          case Initialization:
+            return TypedValue.create(getTypeName(type), "ByteString.CopyFromUtf8(\"\")");
+          case OptionalValue:
+            return TypedValue.create(getTypeName(type), "ByteString.Empty");
+          default:
+            throw new IllegalStateException("Invalid ZeroValuePurpose: " + purpose);
+        }
+      } else {
+        return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+      }
     }
   }
 
