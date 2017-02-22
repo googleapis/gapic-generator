@@ -332,9 +332,15 @@
      *                              that don't use retries. For calls that use retries,
      *                              set the timeout in RetryOptions.
      *                              Default: 30000 (30 seconds)
-     *     @@type string $appName The codename of the calling service. Default 'gax'.
-     *     @@type string $appVersion The version of the calling service.
-     *                              Default: the current version of GAX.
+     *     @@type string $appName The name of the application calling the service. Recommended
+     *                            for analytics purposes. Default: null
+     *     @@type string $appVersion The version of the application calling the service. Recommended
+     *                               for analytics purposes. Default: null
+     *     @@type string $libName The API library software used for calling the service.
+     *                            (Unless you are writing an API client itself, leave this as default.)
+     *     @@type string $libVersion The API library software version used for calling the service.
+     *                               (Unless you are writing an API client itself,
+     *                               leave this as default.)
      *     @@type \Google\Auth\CredentialsLoader $credentialsLoader
      *                              A CredentialsLoader object created using the
      *                              Google\Auth library.
@@ -370,8 +376,8 @@
             @end
             'retryingOverride' => null,
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
-            'appName' => null,
-            'appVersion' => null,
+            'libName' => null,
+            'libVersion' => null,
         ];
         $options = array_merge($defaultOptions, $options);
 
