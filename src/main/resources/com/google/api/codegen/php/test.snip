@@ -131,17 +131,25 @@
 
     // Mock response
     $incompleteOperation = new Operation();
-    $incompleteOperation->setName('operations/{@test.name}')->setDone(false);
+    $incompleteOperation->setName('operations/{@test.name}');
+    $incompleteOperation->setDone(false);
     $grpcStub->addResponse($incompleteOperation);
     @if test.hasReturnValue
         {@initCode(test.mockResponse.initCode)}
     @else
-        $expectedResponse = new EmptyC();
+        $expectedResponse = new GPBEmpty();
     @end
+    // Serialize/deserialize so that arrays are converted to repeated objects
+    $expectedResponseSerialized = $expectedResponse->serializeToString();
+    $expectedResponseClass = get_class($expectedResponse);
+    $expectedResponse = new $expectedResponseClass();
+    $expectedResponse->mergeFromString($expectedResponseSerialized);
     $anyResponse = new Any();
-    $anyResponse->setValue($expectedResponse->serialize());
+    $anyResponse->setValue($expectedResponse->serializeToString());
     $completeOperation = new Operation();
-    $completeOperation->setName('operations/{@test.name}')->setDone(true)->setResponse($anyResponse);
+    $completeOperation->setName('operations/{@test.name}');
+    $completeOperation->setDone(true);
+    $completeOperation->setResponse($anyResponse);
     $operationsStub->addResponse($completeOperation);
 
     @if test.hasRequestParameters
@@ -161,13 +169,21 @@
     $actualApiRequestObject = $apiRequests[0]->getRequestObject();
     $this->assertSame('{@test.grpcStubCallString}', $actualApiFuncCall);
     @join assert : test.asserts
+        @if assert.isArray
+            ${@assert.expectedValueIdentifier}Actual = [];
+            foreach ($actualApiRequestObject->{@assert.actualValueGetter}() as ${@assert.expectedValueIdentifier}Item) {
+                ${@assert.expectedValueIdentifier}Actual[] = ${@assert.expectedValueIdentifier}Item;
+            }
+        @else
+            ${@assert.expectedValueIdentifier}Actual = $actualApiRequestObject->{@assert.actualValueGetter}();
+        @end
         @if assert.hasExpectedValueTransformFunction
             $this->assertEquals({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
-                $actualApiRequestObject->{@assert.actualValueGetter}());
+                ${@assert.expectedValueIdentifier}Actual);
         @else
             $this->assertEquals(${@assert.expectedValueIdentifier}, \
-                $actualApiRequestObject->{@assert.actualValueGetter}());
+                ${@assert.expectedValueIdentifier}Actual);
         @end
     @end
 
@@ -200,11 +216,16 @@
     @if test.hasReturnValue
         // Mock response
         {@initCode(test.mockResponse.initCode)}
+        // Serialize/deserialize so that arrays are converted to repeated objects
+        $expectedResponseSerialized = $expectedResponse->serializeToString();
+        $expectedResponseClass = get_class($expectedResponse);
+        $expectedResponse = new $expectedResponseClass();
+        $expectedResponse->mergeFromString($expectedResponseSerialized);
         $grpcStub->addResponse($expectedResponse);
 
     @else
         // Add empty response to the grpc stub
-        $grpcStub->addResponse(new EmptyC());
+        $grpcStub->addResponse(new GPBEmpty());
     @end
     @if test.hasRequestParameters
       // Mock request
@@ -221,13 +242,23 @@
     $this->assertSame('{@test.grpcStubCallString}', $actualFuncCall);
 
     @join assert : test.asserts
+        @if assert.isArray
+            ${@assert.expectedValueIdentifier}Actual = [];
+            foreach ($actualRequestObject->{@assert.actualValueGetter}() as ${@assert.expectedValueIdentifier}Item) {
+                ${@assert.expectedValueIdentifier}Actual[] = ${@assert.expectedValueIdentifier}Item;
+            }
+
+        @else
+            ${@assert.expectedValueIdentifier}Actual = $actualRequestObject->{@assert.actualValueGetter}();
+
+        @end
         @if assert.hasExpectedValueTransformFunction
             $this->assertEquals({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
-                $actualRequestObject->{@assert.actualValueGetter}());
+                ${@assert.expectedValueIdentifier}Actual);
         @else
             $this->assertEquals(${@assert.expectedValueIdentifier}, \
-                $actualRequestObject->{@assert.actualValueGetter}());
+                ${@assert.expectedValueIdentifier}Actual);
         @end
     @end
 @end

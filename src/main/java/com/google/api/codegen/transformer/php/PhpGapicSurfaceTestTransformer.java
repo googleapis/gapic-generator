@@ -27,7 +27,6 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
@@ -60,8 +59,8 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "php/mock_service.snip";
 
   private final ValueProducer valueProducer = new StandardValueProducer();
-  private final StandardImportSectionTransformer importSectionTransformer =
-      new StandardImportSectionTransformer();
+  private final PhpImportSectionTransformer importSectionTransformer =
+      new PhpImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
@@ -252,7 +251,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\LongRunning\\MockOperationsImpl");
     typeTable.saveNicknameFor("\\PHPUnit_Framework_TestCase");
     typeTable.saveNicknameFor("\\google\\protobuf\\Any");
-    typeTable.saveNicknameFor("\\google\\protobuf\\EmptyC");
+    typeTable.saveNicknameFor("\\google\\protobuf\\GPBEmpty");
     typeTable.saveNicknameFor("\\google\\longrunning\\GetOperationRequest");
   }
 }

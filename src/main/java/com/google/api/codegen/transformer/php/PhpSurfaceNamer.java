@@ -57,17 +57,8 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldAddFunctionName(TypeRef type, Name identifier) {
-    return publicMethodName(Name.from("add").join(identifier));
-  }
-
-  @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
-    if (type.isRepeated() && !type.isMap()) {
-      return publicMethodName(Name.from("get").join(identifier).join("list"));
-    } else {
-      return publicMethodName(Name.from("get").join(identifier));
-    }
+    return publicMethodName(Name.from("get").join(identifier));
   }
 
   @Override
@@ -190,26 +181,18 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   public String getRequestTokenFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "requestPageTokenField" to the raw request token
-    // field name from the page streaming config.
-    return pageStreaming.getRequestTokenField().getSimpleName();
+    return getFieldGetFunctionName(pageStreaming.getRequestTokenField());
   }
 
   public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "requestPageSizeField" to the raw page size
-    // field name from the page streaming config.
-    return pageStreaming.getPageSizeField().getSimpleName();
+    return getFieldGetFunctionName(pageStreaming.getPageSizeField());
   }
 
   public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "responsePageTokenField" to the raw response
-    // token field name from the page streaming config.
-    return pageStreaming.getResponseTokenField().getSimpleName();
+    return getFieldGetFunctionName(pageStreaming.getResponseTokenField());
   }
 
   public String getResourcesFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "resourceField" to the raw resource field
-    // from name the page streaming config.
-    return pageStreaming.getResourcesFieldName();
+    return getFieldGetFunctionName(pageStreaming.getResourcesField());
   }
 }

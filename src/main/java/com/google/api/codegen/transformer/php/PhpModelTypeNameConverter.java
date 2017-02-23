@@ -16,11 +16,13 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
@@ -119,8 +121,38 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
+    try {
+      return getTypeName(elem, 20);
+    } catch (IllegalStateException e) {
+      throw new IllegalStateException("Could not determine type name for elem: " + elem, e);
+    }
+  }
+
+  private TypeName getTypeName(ProtoElement elem, int maxDepth) {
+    ProtoElement parent = elem.getParent();
+    if (parent != null && parent instanceof MessageType) {
+      MessageType parentMessage = (MessageType) parent;
+      if (parentMessage.isCyclic()) {
+        throw new IllegalStateException(
+            "Cannot determine type for cyclic message: " + parentMessage);
+      }
+      if (maxDepth == 0) {
+        throw new IllegalStateException("Cannot determine type for deeply nested message");
+      }
+
+      String parentFullName = getTypeName(elem.getParent(), maxDepth - 1).getFullName();
+      String nickname = elem.getSimpleName();
+      String enumFullName = String.format("%s_%s", parentFullName, nickname);
+
+      TypeAlias typeAlias = TypeAlias.createAliasedImport(enumFullName, nickname);
+      return new TypeName(typeAlias);
+    }
+    return getTypeNameSimple(elem);
+  }
+
+  private TypeName getTypeNameSimple(ProtoElement elem) {
     if (elem.getFullName().equals("google.protobuf.Empty")) {
-      return typeNameConverter.getTypeName("\\google\\protobuf\\EmptyC");
+      return typeNameConverter.getTypeName("\\Google\\Protobuf\\GPBEmpty");
     }
     return typeNameConverter.getTypeName("\\" + elem.getFullName().replaceAll("\\.", "\\\\"));
   }

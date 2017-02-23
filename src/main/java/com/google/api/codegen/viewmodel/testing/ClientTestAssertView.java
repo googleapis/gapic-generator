@@ -23,6 +23,8 @@ public abstract class ClientTestAssertView {
 
   public abstract String expectedValueIdentifier();
 
+  public abstract boolean isArray();
+
   @Nullable
   public abstract String expectedValueTransformFunction();
 
@@ -49,6 +51,8 @@ public abstract class ClientTestAssertView {
     public abstract Builder actualValueGetter(String val);
 
     public abstract Builder expectedValueIdentifier(String val);
+
+    public abstract Builder isArray(boolean val);
 
     public abstract Builder expectedValueTransformFunction(String val);
 
