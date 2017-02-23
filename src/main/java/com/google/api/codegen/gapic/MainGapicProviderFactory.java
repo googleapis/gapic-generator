@@ -415,7 +415,7 @@ public class MainGapicProviderFactory
 
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
-        providers.add(indexProvider);
+        providers.add(indexProvider); // This will become the main transformer with ruby mvvm.
 
         if (id.equals(RUBY_DOC)) {
           GapicProvider<? extends Object> messageProvider =

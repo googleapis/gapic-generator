@@ -185,6 +185,7 @@ public class InitCodeTransformer {
         .fieldSettings(getFieldSettings(context, argItems))
         .imports(importTypeTransformer.generateImports(typeTable.getImports()))
         .indexFileImportName(namer.getIndexFileImportName())
+        .apiFileName(namer.getServiceFileName(context.getInterface()))
         .build();
   }
 

@@ -31,6 +31,9 @@ public abstract class InitCodeView {
   /**
    * The file name of the client library generated. This is used for import statements in samples.
    */
+  public abstract String apiFileName();
+
+  /** The file name of the index file. */
   public abstract String indexFileImportName();
 
   public static Builder newBuilder() {
@@ -46,6 +49,8 @@ public abstract class InitCodeView {
     public abstract Builder fieldSettings(List<FieldSettingView> val);
 
     public abstract Builder imports(List<ImportTypeView> aliasingTypesMap);
+
+    public abstract Builder apiFileName(String apiFileName);
 
     public abstract Builder indexFileImportName(String indexFileImportName);
 

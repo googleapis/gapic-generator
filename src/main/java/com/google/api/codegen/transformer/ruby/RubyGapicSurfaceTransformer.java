@@ -17,10 +17,7 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
-import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.IndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.IndexView;
@@ -46,59 +43,21 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private ViewModel generateVersionIndexView(Model model, ApiConfig apiConfig) {
-    Iterable<Interface> services = new InterfaceView().getElementIterable(model);
     SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
-
-    ImmutableList.Builder<IndexRequireView> requireViewsBuilder = ImmutableList.builder();
-    for (Interface service : services) {
-      requireViewsBuilder.add(simpleRequireView(namer.getServiceFileName(service), namer));
+    ImmutableList.Builder<IndexRequireView> requireViews = ImmutableList.builder();
+    for (Interface service : new InterfaceView().getElementIterable(model)) {
+      requireViews.add(
+          IndexRequireView.newBuilder()
+              .clientName(namer.getNotImplementedString("IndexRequireView.clientName"))
+              .fileName(namer.getServiceFileName(service))
+              .build());
     }
 
-    ImmutableList.Builder<IndexRequireView> protoRequireViewsBuilder = ImmutableList.builder();
-    for (Interface service : services) {
-      protoRequireViewsBuilder.add(
-          simpleRequireView(namer.getProtoFileImportFromService(service), namer));
-    }
-
-    boolean hasLongrunning = false;
-    for (Interface service : services) {
-      ModelTypeTable modelTypeTable =
-          new ModelTypeTable(
-              new RubyTypeTable(apiConfig.getPackageName()),
-              new RubyModelTypeNameConverter(apiConfig.getPackageName()));
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service,
-              apiConfig,
-              modelTypeTable,
-              new RubySurfaceNamer(apiConfig.getPackageName()),
-              new RubyFeatureConfig());
-      if (context.getLongRunningMethods().iterator().hasNext()) {
-        hasLongrunning = true;
-        break;
-      }
-    }
-
-    if (hasLongrunning) {
-      requireViewsBuilder.add(simpleRequireView("google/longrunning/operations_client", namer));
-      protoRequireViewsBuilder.add(simpleRequireView("google/longrunning/operations_pb", namer));
-    }
-
-    IndexView.Builder versionIndexViewBuilder =
-        IndexView.newBuilder()
-            .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
-            .outputPath(namer.getIndexFileName())
-            .requireViews(requireViewsBuilder.build())
-            .protoRequireViews(protoRequireViewsBuilder.build());
-    versionIndexViewBuilder.apiVersion(namer.getApiWrapperModuleVersion());
-
-    return versionIndexViewBuilder.build();
-  }
-
-  private IndexRequireView simpleRequireView(String fileName, SurfaceNamer namer) {
-    return IndexRequireView.newBuilder()
-        .clientName(namer.getNotImplementedString("IndexRequireView.clientName"))
-        .fileName(fileName)
+    return IndexView.newBuilder()
+        .apiVersion(namer.getApiWrapperModuleVersion())
+        .outputPath(namer.getIndexFileName())
+        .requireViews(requireViews.build())
+        .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
         .build();
   }
 }
