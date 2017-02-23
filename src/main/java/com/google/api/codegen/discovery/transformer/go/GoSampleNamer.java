@@ -66,6 +66,11 @@ public class GoSampleNamer extends SampleNamer {
   }
 
   @Override
+  public String getRequestBodyFieldSetterName(String fieldName) {
+    return publicMethodName(Name.lowerCamel(fieldName));
+  }
+
+  @Override
   public String getResponseVarName() {
     return "resp";
   }

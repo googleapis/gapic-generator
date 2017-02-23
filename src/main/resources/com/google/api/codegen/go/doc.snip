@@ -15,5 +15,15 @@
     @end
     package {@view.fileHeader.localPackageName} // import "{@view.importPath}"
 
-    const gapicNameVersion = "gapic/0.1.0"
+    import (
+        "golang.org/x/net/context"
+        "google.golang.org/grpc/metadata"
+    )
+
+    func insertXGoog(ctx context.Context, val string) context.Context {
+        md, _ := metadata.FromContext(ctx)
+        md = md.Copy()
+        md["x-goog-api-client"] = []string{val}
+        return metadata.NewContext(ctx, md)
+    }
 @end

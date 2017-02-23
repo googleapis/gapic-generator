@@ -65,6 +65,7 @@ public class PythonImportHandler {
   /** This constructor is for the main imports of a generated service file */
   public PythonImportHandler(Interface service, ApiConfig apiConfig) {
     // Add non-service-specific imports.
+    addImportStandard("collections");
     addImportStandard("json");
     addImportStandard("os");
     addImportStandard("pkg_resources");

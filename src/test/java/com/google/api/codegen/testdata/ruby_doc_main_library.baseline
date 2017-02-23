@@ -28,7 +28,7 @@ require "pathname"
 
 require "google/gax"
 require "google/gax/operation"
-require "google/longrunning/operations_api"
+require "google/longrunning/operations_client"
 
 require "library_pb"
 require "tagger_pb"
@@ -48,6 +48,8 @@ module Library
     # Check out {cloud docs!}[https://cloud.google.com/library/example/link].
     # This is {not a cloud link}[http://www.google.com].
     #
+    # Service comment may include special characters: <>&"+'@.
+    #
     # @!attribute [r] library_service_stub
     #   @return [Google::Example::Library::V1::LibraryService::Stub]
     # @!attribute [r] labeler_stub
@@ -60,8 +62,6 @@ module Library
 
       # The default port of the service.
       DEFAULT_SERVICE_PORT = 443
-
-      CODE_GEN_NAME_VERSION = "gapic/0.1.0".freeze
 
       DEFAULT_TIMEOUT = 30
 
@@ -213,10 +213,6 @@ module Library
       #   or the specified config is missing data points.
       # @param timeout [Numeric]
       #   The default timeout, in seconds, for calls made through this client.
-      # @param app_name [String]
-      #   The codename of the calling service.
-      # @param app_version [String]
-      #   The version of the calling service.
       def initialize \
           service_path: SERVICE_ADDRESS,
           port: DEFAULT_SERVICE_PORT,
@@ -225,8 +221,10 @@ module Library
           scopes: ALL_SCOPES,
           client_config: {},
           timeout: DEFAULT_TIMEOUT,
-          app_name: "gax",
-          app_version: Google::Gax::VERSION
+          app_name: nil,
+          app_version: nil,
+          lib_name: nil,
+          lib_version: ""
         # These require statements are intentionally placed here to initialize
         # the gRPC module only when it's required.
         # See https://github.com/googleapis/toolkit/issues/446
@@ -234,7 +232,7 @@ module Library
         require "library_services_pb"
         require "tagger_services_pb"
 
-        @operations_client = Google::Longrunning::OperationsApi.new(
+        @operations_client = Google::Longrunning::OperationsClient.new(
           service_path: service_path,
           port: port,
           channel: channel,
@@ -243,12 +241,21 @@ module Library
           client_config: client_config,
           timeout: timeout,
           app_name: app_name,
-          app_version: app_version
+          app_version: app_version,
+          lib_name: lib_name,
+          lib_version: lib_version,
         )
 
-        google_api_client = "#{app_name}/#{app_version} " \
-          "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " \
-          "ruby/#{RUBY_VERSION}".freeze
+        if app_name || app_version
+          warn "`app_name` and `app_version` are no longer being used in the request headers."
+        end
+
+        google_api_client = "gl-ruby/#{RUBY_VERSION}"
+        google_api_client << " #{lib_name}/{lib_version}" if lib_name
+        google_api_client << " gapic/0.1.0 gax/#{Google::Gax::VERSION}"
+        google_api_client << " grpc/#{GRPC::VERSION}"
+        google_api_client.freeze
+
         headers = { :"x-goog-api-client" => google_api_client }
         client_config_file = Pathname.new(__dir__).join(
           "library_service_client_config.json"
@@ -392,6 +399,7 @@ module Library
       # Service calls
 
       # Creates a shelf, and returns the new Shelf.
+      # RPC method comment may include special characters: <>&"+'@.
       #
       # @param shelf [Google::Example::Library::V1::Shelf]
       #   The shelf to create.
@@ -598,7 +606,7 @@ module Library
       #   The edition of the series
       # @param review_copy [true, false]
       #   If the book is in a pre-publish state
-      # @param series_uuid [String]
+      # @param series_uuid [Google::Example::Library::V1::SeriesUuid]
       #   Uniquely identifies the series to the publishing house.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
@@ -609,26 +617,30 @@ module Library
       #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
+      #   SeriesUuid = Google::Example::Library::V1::SeriesUuid
       #   Shelf = Google::Example::Library::V1::Shelf
       #
       #   library_service_client = LibraryServiceClient.new
       #   shelf = Shelf.new
       #   books = []
-      #   response = library_service_client.publish_series(shelf, books)
+      #   series_string = "foobar"
+      #   series_uuid = SeriesUuid.new
+      #   series_uuid.series_string = series_string
+      #   response = library_service_client.publish_series(shelf, books, series_uuid)
 
       def publish_series \
           shelf,
           books,
+          series_uuid,
           edition: nil,
           review_copy: nil,
-          series_uuid: nil,
           options: nil
         req = Google::Example::Library::V1::PublishSeriesRequest.new({
           shelf: shelf,
           books: books,
+          series_uuid: series_uuid,
           edition: edition,
-          review_copy: review_copy,
-          series_uuid: series_uuid
+          review_copy: review_copy
         }.delete_if { |_, v| v.nil? })
         @publish_series.call(req, options)
       end

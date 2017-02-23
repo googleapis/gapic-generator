@@ -32,6 +32,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -40,6 +41,15 @@ import java.util.List;
 public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTransformer {
 
   private static final String TEMPLATE_FILENAME = "nodejs/sample.snip";
+
+  /**
+   * The set of param names reserved by the google-api-nodejs-client generator.
+   *
+   * <p>See
+   * https://github.com/google/google-api-nodejs-client/blob/482b7f7b972ad95047ea8d8ca6daabce9b1b4008/lib/generator.js#L58
+   */
+  private static final ImmutableSet<String> RESERVED_PARAM_NAMES =
+      ImmutableSet.of("resource", "media", "auth");
 
   public NodeJSSampleMethodToViewTransformer() {}
 
@@ -75,21 +85,22 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleAuthView sampleAuthView = createSampleAuthView(context, symbolTable);
 
     List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      String name = field.name();
-      // Since the requestBody is named `resource`, all fields named `resource`
-      // are renamed by the Node.js client library generator to `resource_`.
-      if (name.equals("resource")) {
-        name = "resource_";
+      SampleFieldView sampleFieldView = createSampleFieldView(field, typeTable, true);
+      if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
+      } else {
+        optionalFields.add(sampleFieldView);
       }
+    }
 
-      requiredFields.add(
-          SampleFieldView.newBuilder()
-              .name(name)
-              .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
-              .example(field.example())
-              .description(field.description())
-              .build());
+    boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
+    if (hasRequestBody) {
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(fieldInfo, typeTable, false));
+      }
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -109,9 +120,11 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
         .methodVerb(methodInfo.verb())
         .methodNameComponents(methodInfo.nameComponents())
         .requestVarName(requestVarName)
-        .hasRequestBody(methodInfo.requestBodyType() != null)
+        .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
         .requiredFields(requiredFields)
+        .optionalFields(optionalFields)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
@@ -165,8 +178,24 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel("handlePage"))));
     builder.pageVarName(
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name(), "page"))));
+    builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
     builder.pageTokenName(methodInfo.requestPageTokenName());
     builder.nextPageTokenName(methodInfo.responsePageTokenName());
     return builder.build();
+  }
+
+  private SampleFieldView createSampleFieldView(
+      FieldInfo field, SampleTypeTable typeTable, boolean escapeReservedParamNames) {
+    String name = field.name();
+    if (escapeReservedParamNames && RESERVED_PARAM_NAMES.contains(name)) {
+      name = name + "_";
+    }
+    return SampleFieldView.newBuilder()
+        .name(name)
+        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .example(field.example())
+        .description(field.description())
+        .required(field.required())
+        .build();
   }
 }

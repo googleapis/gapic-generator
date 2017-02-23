@@ -21,8 +21,10 @@
         //    https://www.nuget.org/profiles/google-apis-packages
     @end
 
-    @join import : class.imports
-        using {@import.fullName};
+    @join fileImport : class.importSection.appImports
+        @join import : fileImport.types
+            using {@import.fullName};
+        @end
     @end
 
     @if class.dataNamespace

@@ -139,17 +139,16 @@ $service = new Google_Service_CloudResourceManager($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_CloudResourceManager_SearchOrganizationsRequest();
 
-$optParams = [];
 do {
-  $response = $service->organizations->search($requestBody, $optParams);
+  $response = $service->organizations->search($requestBody);
 
   foreach ($response['organizations'] as $organization) {
     // TODO: Change code below to process each `organization` resource:
     echo '<pre>', var_export($organization, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -442,6 +441,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_CloudResourceManager($client);
 
 $optParams = [];
+
 do {
   $response = $service->projects->listProjects($optParams);
 

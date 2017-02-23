@@ -56,7 +56,6 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
-    SampleTypeTable typeTable = context.getSampleTypeTable();
     SymbolTable symbolTable = SymbolTable.fromSeed(PythonTypeTable.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
@@ -71,27 +70,33 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> requiredFields = new ArrayList<>();
+    List<SampleFieldView> optionalFields = new ArrayList<>();
     List<String> methodParamAssignments = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      String name = namer.localVarName(Name.lowerCamel(field.name()));
-      SampleFieldView sampleFieldView =
-          SampleFieldView.newBuilder()
-              .name(name)
-              .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
-              .example(field.example())
-              .description(field.description())
-              .build();
-      requiredFields.add(sampleFieldView);
+      SampleFieldView sampleFieldView = createSampleFieldView(field, context, symbolTable, true);
+      if (sampleFieldView.required()) {
+        requiredFields.add(sampleFieldView);
+      } else {
+        optionalFields.add(sampleFieldView);
+      }
       // Ex: "fooBar=foo_bar"
-      methodParamAssignments.add(field.name() + "=" + name);
+      methodParamAssignments.add(field.name() + "=" + sampleFieldView.name());
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName =
           symbolTable.getNewSymbol(
               namer.getRequestBodyVarName(methodInfo.requestBodyType().message().typeName()));
       builder.requestBodyVarName(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        // Request body fields are excluded from the symbol table because the
+        // field names are the keys of a map.
+        requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable, false));
+      }
+
       methodParamAssignments.add("body=" + requestBodyVarName);
     }
 
@@ -115,8 +120,10 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
         .methodNameComponents(methodInfo.nameComponents())
         .requestVarName(namer.getRequestVarName())
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
         .requiredFields(requiredFields)
+        .optionalFields(optionalFields)
         .isPageStreaming(methodInfo.isPageStreaming())
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
@@ -169,5 +176,30 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     builder.pageTokenName(methodInfo.requestPageTokenName());
     builder.nextPageTokenName(methodInfo.responsePageTokenName());
     return builder.build();
+  }
+
+  private SampleFieldView createSampleFieldView(
+      FieldInfo field,
+      SampleTransformerContext context,
+      SymbolTable symbolTable,
+      boolean disambiguateName) {
+    SampleNamer namer = context.getSampleNamer();
+    SampleTypeTable typeTable = context.getSampleTypeTable();
+    String name = namer.getFieldVarName(field.name());
+    if (disambiguateName) {
+      // Force names which are in the reserved set to be disambiguated with an
+      // `_` before being added to the symbol table.
+      if (PythonTypeTable.RESERVED_IDENTIFIER_SET.contains(name)) {
+        name += "_";
+      }
+      name = symbolTable.getNewSymbol(name);
+    }
+    return SampleFieldView.newBuilder()
+        .name(name)
+        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .example(field.example())
+        .description(field.description())
+        .required(field.required())
+        .build();
   }
 }

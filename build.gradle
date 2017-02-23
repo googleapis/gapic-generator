@@ -45,7 +45,7 @@ apply plugin: "signing"
 sourceCompatibility = 1.7
 
 group = "com.google.api"
-version = "0.0.5"
+project.version = file("version.txt").text.trim()
 
 def protoVersion = "3.0.0-beta-3"
 
@@ -350,22 +350,23 @@ allprojects {
   }
 }
 
+task createProperties(dependsOn: processResources) << {
+  new File("$buildDir/resources/main/com/google/api/codegen/").mkdirs()
+  Properties p = new Properties()
+  p['version'] = project.version.toString()
+  p.store(new PrintWriter("$buildDir/resources/main/com/google/api/codegen/codegen.properties", "UTF-8"), null)
+}
+
+classes {
+  dependsOn createProperties
+}
+
 // Task to run CodeGeneratorTool
 // =============================
 //
 // Command line args can be passed to the tool as a comma-separated list:
 //   ./gradlew runCodeGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
 task runCodeGen(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.CodeGeneratorTool'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
-// old task being retained for backwards-friendliness
-// TODO delete after 1 Oct 2016 (or before if all artman users are using runCodeGen)
-task runVGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.CodeGeneratorTool'
   if (project.hasProperty('clargs')) {
@@ -473,14 +474,10 @@ tasks.googleJavaFormat {
   exclude '.apt_generated/**'
   exclude 'bin/**'
   exclude 'build/**'
-  exclude 'vgen/build/**'
-  exclude 'vgen/.apt_generated/**'
 }
 tasks.verifyGoogleJavaFormat {
   exclude '.apt_generated/**'
   exclude 'bin/**'
   exclude 'build/**'
-  exclude 'vgen/build/**'
-  exclude 'vgen/.apt_generated/**'
 }
 test.dependsOn verifyGoogleJavaFormat

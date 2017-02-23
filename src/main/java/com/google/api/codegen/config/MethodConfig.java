@@ -20,6 +20,7 @@ import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
@@ -83,6 +84,8 @@ public abstract class MethodConfig {
   public abstract String getRerouteToGrpcInterface();
 
   public abstract VisibilityConfig getVisibility();
+
+  public abstract ReleaseLevel getReleaseLevel();
 
   @Nullable
   public abstract LongRunningConfig getLongRunningConfig();
@@ -219,12 +222,16 @@ public abstract class MethodConfig {
         Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
 
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
+    ReleaseLevel releaseLevel = ReleaseLevel.GA;
     for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
       if (!treatment.getIncludeLanguagesList().contains(language)) {
         continue;
       }
-      if (treatment.getVisibility() != VisibilityProto.UNSET) {
+      if (treatment.getVisibility() != VisibilityProto.UNSET_VISIBILITY) {
         visibility = VisibilityConfig.fromProto(treatment.getVisibility());
+      }
+      if (treatment.getReleaseLevel() != ReleaseLevel.UNSET_RELEASE_LEVEL) {
+        releaseLevel = treatment.getReleaseLevel();
       }
     }
 
@@ -258,6 +265,7 @@ public abstract class MethodConfig {
           sampleCodeInitFields,
           rerouteToGrpcInterface,
           visibility,
+          releaseLevel,
           longRunningConfig);
     }
   }

@@ -47,19 +47,17 @@
     @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
             codes = context.entrySet(interfaceConfig.getRetryCodesDefinition)
         @if codes
-            "retry_codes_def": {
-              @join retryDef : codes on ",".add(BREAK)
-                  @if retryDef.getValue
-                      "{@retryDef.getKey}": [
-                        @join code : retryDef.getValue on ",".add(BREAK)
-                            "{@code}"
-                        @end
-                      ]
-                  @else
-                      "{@retryDef.getKey}": []
-                  @end
-              @end
-            }
+            @join retryDef : codes on ",".add(BREAK)
+                @if retryDef.getValue
+                    "{@retryDef.getKey}": [
+                      @join code : retryDef.getValue on ",".add(BREAK)
+                          "{@code}"
+                      @end
+                    ]
+                @else
+                    "{@retryDef.getKey}": []
+                @end
+            @end
         @else
         @end
     @end

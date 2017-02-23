@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,14 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
+import com.google.api.codegen.viewmodel.ParamDocView;
 import java.util.List;
-import java.util.Map;
 
-public interface ImportTypeTransformer {
-  List<ImportTypeView> generateImports(Map<String, TypeAlias> imports);
+public interface ApiMethodParamTransformer {
+  /** Creates the views for the parameters in the API method definition. */
+  List<DynamicLangDefaultableParamView> generateMethodParams(MethodTransformerContext context);
+
+  /** Creates the views for the documentation of the API method parameters. */
+  List<ParamDocView> generateParamDocs(MethodTransformerContext context);
 }

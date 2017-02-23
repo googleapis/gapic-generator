@@ -17,7 +17,7 @@
 
 @snippet pagedCallableMethodSampleCode(apiMethod)
   {@initCode(apiMethod.initCode)}
-  ListenableFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod)};
+  RpcFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod)};
   // Do something
   for ({@apiMethod.listMethod.resourceTypeName} element : future.get().{@apiMethod.listMethod.iterateMethodName}()) {
     // doThingsWith(element);
@@ -60,7 +60,7 @@
 
 @snippet callableMethodSampleCode(apiMethod)
   {@initCode(apiMethod.initCode)}
-  ListenableFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  RpcFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
   // Do something
   @if apiMethod.hasReturnValue
     {@apiMethod.responseTypeName} response = future.get();
@@ -91,7 +91,7 @@
 
 @private bidiStreamingCallableSampleCode(apiMethod)
   {@responseObserver(apiMethod)}
-  StreamObserver<StreamingRecognizeRequest> requestObserver =
+  RpcStreamObserver<StreamingRecognizeRequest> requestObserver =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().bidiStreamingCall(responseObserver)});
 
   {@initCode(apiMethod.initCode)}
@@ -109,7 +109,7 @@
 
 @private clientStreamingCallableSampleCode(apiMethod)
   {@responseObserver(apiMethod)}
-  StreamObserver<StreamingRecognizeRequest> requestObserver =
+  RpcStreamObserver<StreamingRecognizeRequest> requestObserver =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().clientStreamingCall(responseObserver)});
 
   {@initCode(apiMethod.initCode)}
@@ -117,8 +117,8 @@
 @end
 
 @private responseObserver(apiMethod)
-  StreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}> responseObserver =
-      new StreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}>() {
+  RpcStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}> responseObserver =
+      new RpcStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}>() {
         @@Override
         public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {
           // Do something when receive a response

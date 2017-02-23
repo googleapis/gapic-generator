@@ -5329,13 +5329,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := computeService.InstanceGroups.ListInstances(project, zone, instanceGroup, rb).Context(ctx).Do()
-  if err != nil {
+  req := computeService.InstanceGroups.ListInstances(project, zone, instanceGroup, rb)
+  if err := req.Pages(ctx, func(page *compute.InstanceGroupsListInstances) error {
+    for _, instanceWithNamedPorts := range page.Items {
+      // TODO: Change code below to process each `instanceWithNamedPorts` resource:
+      fmt.Printf("%#v\n", instanceWithNamedPorts)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -9075,13 +9078,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := computeService.RegionInstanceGroups.ListInstances(project, region, instanceGroup, rb).Context(ctx).Do()
-  if err != nil {
+  req := computeService.RegionInstanceGroups.ListInstances(project, region, instanceGroup, rb)
+  if err := req.Pages(ctx, func(page *compute.RegionInstanceGroupsListInstances) error {
+    for _, instanceWithNamedPorts := range page.Items {
+      // TODO: Change code below to process each `instanceWithNamedPorts` resource:
+      fmt.Printf("%#v\n", instanceWithNamedPorts)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 

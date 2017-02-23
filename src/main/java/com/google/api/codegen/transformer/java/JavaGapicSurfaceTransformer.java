@@ -23,7 +23,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -33,14 +32,15 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
-import com.google.api.codegen.transformer.StandardImportTypeTransformer;
+import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
-import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PagedResponseIterateMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
@@ -58,10 +58,11 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Java. */
 public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
@@ -69,11 +70,14 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
-  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final StandardImportSectionTransformer importSectionTransformer =
+      new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new StandardImportTypeTransformer());
+      new FileHeaderTransformer(importSectionTransformer);
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
 
@@ -82,6 +86,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
+
+  private static final String DEFAULT_VERSION = "";
 
   public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
@@ -237,8 +243,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     pagedResponseWrappers.pagedResponseWrapperList(pagedResponseWrappersList);
 
     // must be done as the last step to catch all imports
+    ImportSectionView importSection =
+        importSectionTransformer.generateImportSection(typeTable.getImports());
     pagedResponseWrappers.fileHeader(
-        fileHeaderTransformer.generateFileHeader(apiConfig, typeTable.getImports(), namer));
+        fileHeaderTransformer.generateFileHeader(apiConfig, importSection, namer));
 
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, apiConfig);
@@ -369,8 +377,23 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
+    xsettingsClass.generatorVersion(getGeneratorVersion());
 
     return xsettingsClass.build();
+  }
+
+  private static String getGeneratorVersion() {
+    String version = DEFAULT_VERSION;
+    Properties properties = new Properties();
+    try {
+      properties.load(
+          JavaGapicSurfaceTransformer.class
+              .getResourceAsStream("/com/google/api/codegen/codegen.properties"));
+      version = properties.getProperty("version");
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
+    }
+    return version;
   }
 
   private PackageInfoView generatePackageInfo(
@@ -385,7 +408,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
-            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer));
+            apiConfig, ImportSectionView.newBuilder().build(), namer));
 
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, apiConfig);

@@ -22,7 +22,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.yaml.snakeyaml.Yaml;
@@ -42,13 +44,13 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> protoVersionBound();
 
-  protected abstract Map<TargetLanguage, VersionBound> commonProtosVersionBound();
-
   protected abstract Map<TargetLanguage, VersionBound> authVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> generatedPackageVersionBound();
 
   protected abstract Map<TargetLanguage, String> packageName();
+
+  protected abstract Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies();
 
   /** The version of GAX that this package depends on. Configured per language. */
   public VersionBound gaxVersionBound(TargetLanguage language) {
@@ -68,14 +70,6 @@ public abstract class PackageMetadataConfig {
     return protoVersionBound().get(language);
   }
 
-  /**
-   * The version of the googleapis common protos package that this package depends on. Configured
-   * per language.
-   */
-  public VersionBound commonProtosVersionBound(TargetLanguage language) {
-    return commonProtosVersionBound().get(language);
-  }
-
   /** The version the client library package. E.g., "0.14.0". Configured per language. */
   public VersionBound generatedPackageVersionBound(TargetLanguage language) {
     return generatedPackageVersionBound().get(language);
@@ -84,6 +78,11 @@ public abstract class PackageMetadataConfig {
   /** The version the auth library package that this package depends on. Configured per language. */
   public VersionBound authVersionBound(TargetLanguage language) {
     return authVersionBound().get(language);
+  }
+
+  /** The versions of the proto packages that this package depends on. Configured per language. */
+  public Map<String, VersionBound> protoPackageDependencies(TargetLanguage language) {
+    return protoPackageDependencies().get(language);
   }
 
   /**
@@ -127,13 +126,13 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder protoVersionBound(Map<TargetLanguage, VersionBound> val);
 
-    abstract Builder commonProtosVersionBound(Map<TargetLanguage, VersionBound> val);
-
     abstract Builder authVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder packageName(Map<TargetLanguage, String> val);
 
     abstract Builder generatedPackageVersionBound(Map<TargetLanguage, VersionBound> val);
+
+    abstract Builder protoPackageDependencies(Map<TargetLanguage, Map<String, VersionBound>> val);
 
     abstract Builder shortName(String val);
 
@@ -160,9 +159,9 @@ public abstract class PackageMetadataConfig {
         .grpcVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .packageName(ImmutableMap.<TargetLanguage, String>of())
-        .commonProtosVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .authVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .generatedPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
         .shortName("")
         .apiVersion("")
         .protoPath("")
@@ -185,15 +184,13 @@ public abstract class PackageMetadataConfig {
             createVersionMap((Map<String, Map<String, String>>) configMap.get("grpc_version")))
         .protoVersionBound(
             createVersionMap((Map<String, Map<String, String>>) configMap.get("proto_version")))
-        .commonProtosVersionBound(
-            createVersionMap(
-                (Map<String, Map<String, String>>) configMap.get("common_protos_version")))
         .authVersionBound(
             createVersionMap((Map<String, Map<String, String>>) configMap.get("auth_version")))
         .generatedPackageVersionBound(
             createVersionMap(
                 (Map<String, Map<String, String>>) configMap.get("generated_package_version")))
-        .packageName(createPackageNameMap((Map<String, String>) configMap.get("package_name")))
+        .protoPackageDependencies(createProtoPackageDependencies(configMap))
+        .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))
         .apiVersion((String) configMap.get("major_version"))
         .protoPath((String) configMap.get("proto_path"))
@@ -202,6 +199,42 @@ public abstract class PackageMetadataConfig {
         .homepage((String) configMap.get("homepage"))
         .licenseName((String) configMap.get("license"))
         .build();
+  }
+
+  @SuppressWarnings("unchecked")
+  private static Map<TargetLanguage, Map<String, VersionBound>> createProtoPackageDependencies(
+      Map<String, Object> configMap) {
+    Map<TargetLanguage, Map<String, VersionBound>> packageDependencies = new HashMap<>();
+    List<String> packages = (List<String>) configMap.get("proto_deps");
+
+    for (String packageName : packages) {
+      Map<String, Map<String, String>> config =
+          (Map<String, Map<String, String>>) configMap.get(packageName + "_version");
+      if (config == null) {
+        throw new IllegalArgumentException(
+            "'" + packageName + "' in proto_deps was not found in dependency list.");
+      }
+
+      Map<TargetLanguage, Map<String, String>> versionMap = buildMapWithDefault(config);
+      for (Entry<TargetLanguage, Map<String, String>> entry : versionMap.entrySet()) {
+        if (entry.getValue() == null) {
+          continue;
+        }
+        if (!packageDependencies.containsKey(entry.getKey())) {
+          packageDependencies.put(entry.getKey(), new HashMap<String, VersionBound>());
+        }
+
+        String languageName = entry.getValue().get("name_override");
+        if (languageName == null) {
+          languageName = packageName;
+        }
+        VersionBound version =
+            VersionBound.create(entry.getValue().get("lower"), entry.getValue().get("upper"));
+        packageDependencies.get(entry.getKey()).put(languageName, version);
+      }
+    }
+
+    return packageDependencies;
   }
 
   private static Map<TargetLanguage, VersionBound> createVersionMap(
@@ -220,10 +253,6 @@ public abstract class PackageMetadataConfig {
             return VersionBound.create(versionMap.get("lower"), versionMap.get("upper"));
           }
         });
-  }
-
-  private static Map<TargetLanguage, String> createPackageNameMap(Map<String, String> inputMap) {
-    return buildMapWithDefault(inputMap);
   }
 
   /**

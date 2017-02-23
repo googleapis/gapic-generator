@@ -56,6 +56,13 @@ public abstract class ApiCallSettingsView {
 
   public abstract String operationResultTypeName();
 
+  public boolean hasPollingInterval() {
+    return operationPollingIntervalMillis() != null;
+  }
+
+  @Nullable
+  public abstract String operationPollingIntervalMillis();
+
   public abstract String retryCodesName();
 
   public abstract String retryParamsName();
@@ -111,6 +118,8 @@ public abstract class ApiCallSettingsView {
     public abstract Builder bundlingConfig(BundlingConfigView val);
 
     public abstract Builder operationResultTypeName(String val);
+
+    public abstract Builder operationPollingIntervalMillis(String val);
 
     public abstract Builder retryCodesName(String val);
 

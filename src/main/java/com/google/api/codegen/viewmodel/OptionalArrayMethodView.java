@@ -71,6 +71,10 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     return new AutoValue_OptionalArrayMethodView.Builder();
   }
 
+  public Builder toBuilder() {
+    return new AutoValue_OptionalArrayMethodView.Builder(this);
+  }
+
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder type(ClientMethodType val);

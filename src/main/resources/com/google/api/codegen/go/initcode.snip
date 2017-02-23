@@ -16,7 +16,13 @@
 @private initLineStructure(line)
     var {@line.identifier} = {@line.typeConstructor}{
         @join fieldSetting : line.fieldSettings
-            {@fieldSetting.fieldName}: {@fieldSetting.identifier},
+            @if fieldSetting.isOneof
+                {@fieldSetting.oneofConfig.groupName}: &{@fieldSetting.oneofConfig.variantType}{
+                    {@fieldSetting.fieldName}: {@fieldSetting.identifier},
+                },
+            @else
+                {@fieldSetting.fieldName}: {@fieldSetting.identifier},
+            @end
         @end
     }
 @end

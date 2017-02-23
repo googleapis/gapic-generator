@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.tools.framework.model.TypeRef;
@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
-public class CSharpApiMethodTransformer extends ApiMethodTransformer {
+public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
 
   @Override
   protected void setServiceResponseTypeName(

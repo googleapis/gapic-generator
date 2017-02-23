@@ -1,5 +1,5 @@
 ============== file: cloud.google.com/go/library/apiv1/mock_test.go ==============
-// Copyright 2016, Google Inc. All rights reserved.
+// Copyright 2017, Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -732,9 +732,16 @@ func TestLibraryServicePublishSeries(t *testing.T) {
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
+    var seriesString string = "foobar"
+    var seriesUuid = &librarypb.SeriesUuid{
+        Source: &librarypb.SeriesUuid_SeriesString{
+            SeriesString: seriesString,
+        },
+    }
     var request = &librarypb.PublishSeriesRequest{
         Shelf: shelf,
         Books: books,
+        SeriesUuid: seriesUuid,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -763,9 +770,16 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
+    var seriesString string = "foobar"
+    var seriesUuid = &librarypb.SeriesUuid{
+        Source: &librarypb.SeriesUuid_SeriesString{
+            SeriesString: seriesString,
+        },
+    }
     var request = &librarypb.PublishSeriesRequest{
         Shelf: shelf,
         Books: books,
+        SeriesUuid: seriesUuid,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -1171,8 +1185,8 @@ func TestLibraryServiceAddComments(t *testing.T) {
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var comment []byte = []byte("95")
-    var stage librarypb.Comment_Stage = 0
-    var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = 0
+    var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
+    var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
     var commentsElement = &librarypb.Comment{
         Comment: comment,
         Stage: stage,
@@ -1207,8 +1221,8 @@ func TestLibraryServiceAddCommentsError(t *testing.T) {
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
     var comment []byte = []byte("95")
-    var stage librarypb.Comment_Stage = 0
-    var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = 0
+    var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
+    var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
     var commentsElement = &librarypb.Comment{
         Comment: comment,
         Stage: stage,

@@ -78,21 +78,24 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
     List<SampleFieldView> requiredFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
-      requiredFields.add(
-          SampleFieldView.newBuilder()
-              .name(field.name())
-              .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
-              .example(field.example())
-              .description(field.description())
-              .build());
+      // The distinction between required and optional fields doesn't matter as
+      // much in JS, because all fields are part of the same dict. Therefore, we
+      // don't bother splitting into two lists. That also saves us some trouble
+      // in the snippet.
+      requiredFields.add(createSampleFieldView(field, typeTable));
     }
 
     boolean hasRequestBody = methodInfo.requestBodyType() != null;
+    List<SampleFieldView> requestBodyFields = new ArrayList<>();
     if (hasRequestBody) {
       String requestBodyVarName =
           symbolTable.getNewSymbol(
               namer.getRequestBodyVarName(methodInfo.requestBodyType().message().typeName()));
       builder.requestBodyVarName(requestBodyVarName);
+
+      for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
+        requestBodyFields.add(createSampleFieldView(fieldInfo, typeTable));
+      }
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -119,6 +122,7 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .methodNameComponents(methodInfo.nameComponents())
         .requestVarName(requestVarName)
         .hasRequestBody(hasRequestBody)
+        .requestBodyFields(requestBodyFields)
         .hasResponse(hasResponse)
         .requiredFields(requiredFields)
         .isPageStreaming(methodInfo.isPageStreaming())
@@ -161,5 +165,14 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
     builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
     builder.executeRequestFuncName(symbolTable.getNewSymbol("executeRequest"));
     return builder.build();
+  }
+
+  private SampleFieldView createSampleFieldView(FieldInfo field, SampleTypeTable typeTable) {
+    return SampleFieldView.newBuilder()
+        .name(field.name())
+        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .example(field.example())
+        .description(field.description())
+        .build();
   }
 }

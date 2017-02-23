@@ -1,7 +1,7 @@
 ============== file: src/Example/Library/V1/LibraryServiceClient.php ==============
 <?php
 /*
- * Copyright 2016, Google Inc. All rights reserved.
+ * Copyright 2017, Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,7 @@ use google\example\library\v1\ListStringsRequest;
 use google\example\library\v1\MergeShelvesRequest;
 use google\example\library\v1\MoveBookRequest;
 use google\example\library\v1\PublishSeriesRequest;
+use google\example\library\v1\SeriesUuid;
 use google\example\library\v1\Shelf;
 use google\example\library\v1\SomeMessage;
 use google\example\library\v1\StreamBooksRequest;
@@ -87,6 +88,8 @@ use google\tagger\v1\LabelerGrpcClient;
  *
  * Check out [cloud docs!](/library/example/link).
  * This is [not a cloud link](http://www.google.com).
+ *
+ * Service comment may include special characters: <>&"`'&#64;.
  *
  * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
  * more frequently than those which have been declared beta or 1.0, including changes which break
@@ -528,6 +531,7 @@ class LibraryServiceClient
 
     /**
      * Creates a shelf, and returns the new Shelf.
+     * RPC method comment may include special characters: <>&"`'&#64;.
      *
      * Sample code:
      * ```
@@ -841,7 +845,10 @@ class LibraryServiceClient
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
      *     $books = [];
-     *     $response = $libraryServiceClient->publishSeries($shelf, $books);
+     *     $seriesString = "foobar";
+     *     $seriesUuid = new SeriesUuid();
+     *     $seriesUuid->setSeriesString($seriesString);
+     *     $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -849,14 +856,13 @@ class LibraryServiceClient
      *
      * @param Shelf $shelf The shelf in which the series is created.
      * @param Book[] $books The books to publish in the series.
+     * @param SeriesUuid $seriesUuid Uniquely identifies the series to the publishing house.
      * @param array $optionalArgs {
      *     Optional.
      *     @type int $edition
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
-     *     @type string $seriesUuid
-     *          Uniquely identifies the series to the publishing house.
      *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
@@ -869,21 +875,19 @@ class LibraryServiceClient
      *
      * @throws \Google\GAX\ApiException if the remote call fails
      */
-    public function publishSeries($shelf, $books, $optionalArgs = [])
+    public function publishSeries($shelf, $books, $seriesUuid, $optionalArgs = [])
     {
         $request = new PublishSeriesRequest();
         $request->setShelf($shelf);
         foreach ($books as $elem) {
             $request->addBooks($elem);
         }
+        $request->setSeriesUuid($seriesUuid);
         if (isset($optionalArgs['edition'])) {
             $request->setEdition($optionalArgs['edition']);
         }
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
-        }
-        if (isset($optionalArgs['seriesUuid'])) {
-            $request->setSeriesUuid($optionalArgs['seriesUuid']);
         }
 
         $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(
