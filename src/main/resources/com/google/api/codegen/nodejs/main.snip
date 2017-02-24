@@ -109,10 +109,6 @@
          * @@param {Object=} opts.clientConfig
          *   The customized config to build the call settings. See
          *   {@@link gax.constructSettings} for the format.
-         * @@param {number=} opts.appName
-         *   The codename of the calling service.
-         * @@param {String=} opts.appVersion
-         *   The version of the calling service.
          */
         this.{@context.upperCamelToLowerCamel(apiName)} = function(opts) {
           return new {@apiName}(gaxGrpc, {@clientsParamName(stubs)}, opts);
@@ -196,8 +192,8 @@
     var defaults = gaxGrpc.constructSettings(
         '{@service.getFullName}',
         configData,
-        clientConfig,
-        {'x-goog-api-client': googleApiClient});
+        opts.clientConfig,
+        {'x-goog-api-client': googleApiClient.join(' ')});
   @end
 @end
 
@@ -239,19 +235,23 @@
      * @@class
      */
     function {@serviceName}(gaxGrpc, grpcClients, opts) {
-      opts = opts || {};
-      var servicePath = opts.servicePath || SERVICE_ADDRESS;
-      var port = opts.port || DEFAULT_SERVICE_PORT;
-      var sslCreds = opts.sslCreds || null;
-      var clientConfig = opts.clientConfig || {};
-      var appName = opts.appName || 'gax';
-      var appVersion = opts.appVersion || gax.version;
+      opts = extend({
+        servicePath: SERVICE_ADDRESS,
+        port: DEFAULT_SERVICE_PORT,
+        clientConfig: {}
+      }, opts);
 
       var googleApiClient = [
-        appName + '/' + appVersion,
-        CODE_GEN_NAME_VERSION,
+        'gl-node/' + process.versions.node,
+        CODE_GEN_NAME_VERSION
+      ];
+      if (opts.libName && opts.libVersion) {
+        googleApiClient.push(opts.libName + '/' + opts.libVersion);
+      }
+      googleApiClient.push(
         'gax/' + gax.version,
-        'nodejs/' + process.version].join(' ');
+        'grpc/' + gaxGrpc.grpcVersion
+      );
       @let methods = context.getSupportedMethods(service), \
            bundlingMethods = context.messages.filterBundlingMethods(ifaceConfig, methods), \
            longrunningMethods = context.messages.filterLongrunningMethods(ifaceConfig, methods)
@@ -283,14 +283,7 @@
           this.operationsClient = new gax.lro({
             auth: gaxGrpc.auth,
             grpc: gaxGrpc.grpc
-          }).operationsClient({
-            servicePath: servicePath,
-            port: port,
-            sslCreds: sslCreds,
-            clientConfig: clientConfig,
-            appName: appName,
-            appVersion: appVersion
-          });
+          }).operationsClient(opts);
           
           this.longrunningDescriptors = {
             @join method : longrunningMethods on {@", "}.add(BREAK)
@@ -312,10 +305,8 @@
       this.auth = gaxGrpc.auth;
       @join stub : stubs on BREAK.add(BREAK)
         var {@stub.name} = gaxGrpc.createStub(
-            servicePath,
-            port,
             grpcClients.{@stub.fullyQualifiedType},
-            {sslCreds: sslCreds});
+            opts);
         var {@stub.stubMethodsArrayName} = [
           @join method : {@stub.methodNames} on {@","}.add(BREAK)
               '{@method}'

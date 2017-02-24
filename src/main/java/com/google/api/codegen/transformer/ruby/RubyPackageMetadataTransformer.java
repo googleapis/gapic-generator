@@ -28,7 +28,8 @@ import java.util.List;
 public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String GEMSPEC_FILE = "ruby/gemspec.snip";
   private static final List<String> TOP_LEVEL_FILES =
-      ImmutableList.of("ruby/Gemfile.snip", "ruby/Rakefile.snip", "ruby/README.md.snip");
+      ImmutableList.of(
+          "ruby/Gemfile.snip", "ruby/Rakefile.snip", "ruby/README.md.snip", "LICENSE.snip");
   PackageMetadataConfig packageConfig;
   PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
 

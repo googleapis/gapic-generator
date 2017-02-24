@@ -1,6 +1,6 @@
 @snippet generate(metadata)
-  # -*- ruby -*-
-  # encoding: utf-8
+  @# -*- ruby -*-
+  @# encoding: utf-8
 
   Gem::Specification.new do |s|
     s.name          = "{@metadata.identifier}"
@@ -10,6 +10,8 @@
     s.description   = "{@metadata.fullName} client for Ruby."
     s.email         = "{@metadata.email}"
     s.files         = Dir.glob(File.join("lib", "**", "*.rb"))
+    s.files        += Dir.glob(File.join('lib', '**', '*.json'))
+    s.files        += %w(Rakefile README.md LICENSE)
     s.homepage      = "{@metadata.homepage}"
     s.license       = "{@metadata.licenseName}"
     s.platform      = Gem::Platform::RUBY
@@ -20,6 +22,7 @@
 
     s.add_dependency "grpc", "~> {@metadata.grpcVersionBound.lower}"
     s.add_dependency "googleauth", "~> {@metadata.authVersionBound.lower}"
+    s.add_dependency "google-gax", "~> {@metadata.gaxVersionBound.lower}"
     @join packageDep : metadata.protoPackageDependencies
       s.add_dependency "{@packageDep.name}", "~> {@packageDep.versionBound.lower}"
     @end
@@ -27,4 +30,5 @@
     s.add_development_dependency "bundler", "~> 1.9"
     s.add_development_dependency "rake", "~> 10.4"
   end
+
 @end
