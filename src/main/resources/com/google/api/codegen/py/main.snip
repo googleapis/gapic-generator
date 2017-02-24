@@ -473,7 +473,8 @@
              documentation = methodComments(service, method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredParams = methodConfig.getRequiredFields(), \
-             optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
+             optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
+             oneOfParams = methodConfig.getOneofs()
         @if method.getRequestStreaming
             def {@methodName(method)}(
                     self,
@@ -504,6 +505,11 @@
                     @if {@defaultMutableValues(optionalParams)}
                         {@defaultMutableValues(optionalParams)}
                     @end
+                    @if oneOfParams
+                      {@checkOneOfParams(oneOfParams)}
+                    @end
+
+                    @# Create the request object.
                     @if requiredParams
                         @if optionalParams
                             request = {@methodInputElementPath}(
@@ -564,5 +570,34 @@
         @let paramName = {@field.getSimpleName()}
             {@paramName}={@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
         @end
+    @end
+@end
+
+@private checkOneOfParams(oneOfs)
+    @join oneOf : oneOfs on BREAK
+
+        @# Sanity check: We have some fields which are mutually exclusive;
+        @# piece together what these are.
+        mutually_exclusive = [
+            @join oneOfField : oneOf.getFields() on ", ".add(BREAK)
+                {@oneOfField.getSimpleName()}
+            @end
+        ]
+
+        @# If any mutually exclusive fields are in conflict, raise an exception.
+        @#
+        @# Note: This code works because `any` stops consuming the iterable the
+        @#   first time it encounters a truthy value; thus this check only
+        @#   passes if there are two or more.
+        iterator = iter(mutually_exclusive)
+        if not (any(iterator) and not any(iterator)):
+            raise ValueError('Only one of {fields} should be set.'.format(
+                fields=', '.join(sorted({
+                    @join oneOfField : oneOf.getFields() on ", ".add(BREAK)
+                        '{@oneOfField.getSimpleName()}'
+                    @end
+                })),
+
+            ))
     @end
 @end
