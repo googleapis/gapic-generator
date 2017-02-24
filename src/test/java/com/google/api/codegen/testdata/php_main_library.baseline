@@ -401,17 +401,6 @@ class LibraryServiceClient
      *                              that don't use retries. For calls that use retries,
      *                              set the timeout in RetryOptions.
      *                              Default: 30000 (30 seconds)
-     *     @type string $libName The API library software used for calling the service.
-     *                            (Unless you are writing an API client itself, leave this as default.)
-     *     @type string $libVersion The API library software version used for calling the service.
-     *                               (Unless you are writing an API client itself,
-     *                               leave this as default.)
-     *     @type string $appName Currently unsupported - reserved for future use.
-     *                            The name of the application calling the service. Recommended
-     *                            for analytics purposes.
-     *     @type string $appVersion Currently unsupported - reserved for future use.
-     *                               The version of the application calling the service. Recommended
-     *                               for analytics purposes.
      *     @type \Google\Auth\CredentialsLoader $credentialsLoader
      *                              A CredentialsLoader object created using the
      *                              Google\Auth library.
@@ -445,8 +434,7 @@ class LibraryServiceClient
         $headerDescriptor = new AgentHeaderDescriptor([
             'libName' => $options['libName'],
             'libVersion' => $options['libVersion'],
-            'codeGenName' => self::CODEGEN_NAME,
-            'codeGenVersion' => self::CODEGEN_VERSION,
+            'gapicVersion' => self::CODEGEN_VERSION,
         ]);
 
         $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
