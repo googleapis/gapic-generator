@@ -13,13 +13,19 @@
     from setuptools import setup, find_packages
 
     install_requires = [
+      @join packageDep : metadata.protoPackageDependencies
+        '{@packageDep.name}>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
+      @end
       'oauth2client>={@metadata.authVersionBound.lower}, <{@metadata.authVersionBound.upper}',
-      'googleapis-common-protos>={@metadata.commonProtosVersionBound.lower}, <{@metadata.commonProtosVersionBound.upper}',
     ]
 
     extras_require = {
       'grpc': [
-        'googleapis-common-protos[grpc]>={@metadata.commonProtosVersionBound.lower}, <{@metadata.commonProtosVersionBound.upper}',
+        @join packageDep : metadata.protoPackageDependencies
+          @if packageDep.name == "googleapis-common-protos"
+            '{@packageDep.name}[grpc]>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
+          @end
+        @end
         'grpcio>={@metadata.grpcVersionBound.lower}, <{@metadata.grpcVersionBound.upper}',
       ],
     }

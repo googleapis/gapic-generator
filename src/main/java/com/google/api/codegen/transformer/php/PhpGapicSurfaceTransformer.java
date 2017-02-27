@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.php;
 
+import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiConfig;
@@ -22,7 +23,7 @@ import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -53,10 +54,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private ServiceTransformer serviceTransformer;
   private PathTemplateTransformer pathTemplateTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
-  private ApiMethodTransformer apiMethodTransformer;
+  private DynamicLangApiMethodTransformer apiMethodTransformer;
   private GrpcStubTransformer grpcStubTransformer;
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new PhpImportTypeTransformer());
+      new FileHeaderTransformer(new PhpImportSectionTransformer());
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
@@ -65,7 +66,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
-    this.apiMethodTransformer = new ApiMethodTransformer();
+    this.apiMethodTransformer =
+        new DynamicLangApiMethodTransformer(new PhpApiMethodParamTransformer());
     this.grpcStubTransformer = new GrpcStubTransformer();
   }
 
@@ -127,6 +129,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
     xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
+    xapiClass.hasBundlingMethods(context.getInterfaceConfig().hasBundlingMethods());
     xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
     xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
@@ -145,6 +148,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
+
+    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
 
     // must be done as the last step to catch all imports
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -238,9 +243,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     List<ApiMethodView> apiMethods = new ArrayList<>(context.getInterface().getMethods().size());
 
     for (Method method : context.getSupportedMethods()) {
-      apiMethods.add(
-          apiMethodTransformer.generateDynamicLangApiMethod(
-              context.asDynamicMethodContext(method)));
+      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
     }
 
     return apiMethods;

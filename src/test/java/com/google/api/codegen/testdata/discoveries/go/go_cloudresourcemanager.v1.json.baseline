@@ -194,13 +194,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := cloudresourcemanagerService.Organizations.Search(rb).Context(ctx).Do()
-  if err != nil {
+  req := cloudresourcemanagerService.Organizations.Search(rb)
+  if err := req.Pages(ctx, func(page *cloudresourcemanager.SearchOrganizationsResponse) error {
+    for _, organization := range page.Organizations {
+      // TODO: Change code below to process each `organization` resource:
+      fmt.Printf("%#v\n", organization)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 

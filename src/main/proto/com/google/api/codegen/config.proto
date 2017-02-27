@@ -117,6 +117,7 @@ enum ReleaseLevel {
   ALPHA = 1;
   BETA = 2;
   GA = 3;
+  DEPRECATED = 4;
 }
 
 message LicenseHeaderProto {
@@ -455,10 +456,13 @@ message SurfaceTreatmentProto {
 
   // The visibility of the surface.
   VisibilityProto visibility = 2;
+
+  // Whether the method is deprecated.
+  ReleaseLevel release_level = 3;
 }
 
 enum VisibilityProto {
-  UNSET = 0;
+  UNSET_VISIBILITY = 0;
   PUBLIC = 1;
   PACKAGE = 2;
   PRIVATE = 3;
@@ -480,4 +484,7 @@ message LongRunningConfigProto {
 
   // Whether or not the server implements cancel.
   bool implements_cancel = 4;
+
+  // The interval of polling, in milliseconds.
+  uint64 polling_interval_millis = 5;
 }

@@ -26,12 +26,12 @@ import com.google.api.codegen.discovery.viewmodel.SampleAuthView;
 import com.google.api.codegen.discovery.viewmodel.SampleFieldView;
 import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
-import com.google.api.codegen.transformer.go.GoImportTransformer;
+import com.google.api.codegen.transformer.go.GoImportSectionTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -42,7 +42,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
   private static final String TEMPLATE_FILENAME = "go/sample.snip";
 
-  private final GoImportTransformer goImportTransformer = new GoImportTransformer();
+  private final GoImportSectionTransformer goImportTransformer = new GoImportSectionTransformer();
 
   @Override
   public ViewModel transform(Method method, SampleConfig sampleConfig) {
@@ -106,9 +106,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       }
     }
 
-    // The Go client only considers methods whose verb is "GET" to be page
-    // streaming calls. This excludes "search" methods, for example.
-    boolean isPageStreaming = methodInfo.isPageStreaming() && methodInfo.verb().equals("GET");
+    boolean isPageStreaming = methodInfo.isPageStreaming();
     if (isPageStreaming) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
@@ -125,8 +123,8 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     }
 
     // Imports must be collected last.
-    List<ImportTypeView> imports =
-        new ArrayList<>(goImportTransformer.generateImports(typeTable.getImports()));
+    ImportSectionView importSection =
+        goImportTransformer.generateImportSection(typeTable.getImports());
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
@@ -134,7 +132,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
-        .imports(imports)
+        .importSection(importSection)
         .auth(createSampleAuthView(context))
         .serviceVarName(serviceVarName)
         .methodVerb(methodInfo.verb())

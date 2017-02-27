@@ -51,7 +51,7 @@
 
   @end
   @join import : {@context.getProtoImports(service)}
-    require "{@import.fullName}"
+    require "{@import.moduleName}"
   @end
 @end
 
@@ -107,8 +107,6 @@
     @# The default port of the service.
     DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()}
 
-    CODE_GEN_NAME_VERSION = "gapic/0.1.0".freeze
-
     DEFAULT_TIMEOUT = 30
     @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
 
@@ -132,14 +130,9 @@
     @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service))
 
       BUNDLE_DESCRIPTORS = {
-        @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethods(service)) on {@", "}.add(BREAK)
-            @let bundling = ifaceConfig.getMethodConfig(method).getBundling(), \
-                 methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-              "{@methodName}" => Google::Gax::BundleDescriptor.new(
-                {@bundleDescriptorBody(bundling, method)})
-            @end
-          @end
+        @join descriptor : context.getBundlingDescriptors(service) on {@", "}.add(BREAK)
+          "{@descriptor.methodName}" => Google::Gax::BundleDescriptor.new(
+            {@bundleDescriptorBody(descriptor)})
         @end
       }.freeze
 
@@ -216,10 +209,6 @@
     @#   or the specified config is missing data points.
     @# @@param timeout [Numeric]
     @#   The default timeout, in seconds, for calls made through this client.
-    @# @@param app_name [String]
-    @#   The codename of the calling service.
-    @# @@param app_version [String]
-    @#   The version of the calling service.
     def initialize @\
         service_path: SERVICE_ADDRESS,
         port: DEFAULT_SERVICE_PORT,
@@ -228,18 +217,19 @@
         scopes: ALL_SCOPES,
         client_config: {},
         timeout: DEFAULT_TIMEOUT,
-        app_name: "gax",
-        app_version: Google::Gax::VERSION
+        app_name: nil,
+        app_version: nil,
+        lib_name: nil,
+        lib_version: ""
       @# These require statements are intentionally placed here to initialize
       @# the gRPC module only when it's required.
       @# See https://github.com/googleapis/toolkit/issues/446
-      require "google/gax/grpc"
       @join import : {@context.getServiceImports(service)}
-        require "{@import.fullName}"
+        require "{@import.moduleName}"
       @end
 
       @if context.hasLongrunningMethod(service)
-        @@operations_client = Google::Longrunning::OperationsApi.new(
+        @@operations_client = Google::Longrunning::OperationsClient.new(
           service_path: service_path,
           port: port,
           channel: channel,
@@ -248,13 +238,22 @@
           client_config: client_config,
           timeout: timeout,
           app_name: app_name,
-          app_version: app_version
+          app_version: app_version,
+          lib_name: lib_name,
+          lib_version: lib_version,
         )
       @end
 
-      google_api_client = "#{app_name}/#{app_version} " @\
-        "#{CODE_GEN_NAME_VERSION} gax/#{Google::Gax::VERSION} " @\
-        "ruby/#{RUBY_VERSION}".freeze
+      if app_name || app_version
+        warn "`app_name` and `app_version` are no longer being used in the request headers."
+      end
+
+      google_api_client = "gl-ruby/#{RUBY_VERSION}"
+      google_api_client << " #{lib_name}/#{lib_version}" if lib_name
+      google_api_client << " gapic/ gax/#{Google::Gax::VERSION}"
+      google_api_client << " grpc/#{GRPC::VERSION}"
+      google_api_client.freeze
+
       headers = { :"x-goog-api-client" => google_api_client }
       {@constructDefaults(service)}
       @let stubs = @context.getStubs(service)
@@ -283,25 +282,17 @@
   @end
 @end
 
-@private bundleDescriptorBody(bundling, method)
-  @let bundledField = bundling.getBundledField().getSimpleName(), \
-       discriminatorFields = bundling.getDiscriminatorFields()
-    @if {@bundling.hasSubresponseField}
-      "{@bundledField}",
-      [
-        @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          "{@fieldSelector.getParamName}"
-        @end
-      ],
-      subresponse_field: "{@bundling.getSubresponseField().getSimpleName()}"
-    @else
-      "{@bundledField}",
-      [
-        @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          "{@fieldSelector.getParamName}"
-        @end
-      ]
+@private bundleDescriptorBody(descriptor)
+  "{@descriptor.bundledFieldName}",
+  [
+    @join name : descriptor.discriminatorFieldNames on {@","}.add(BREAK)
+      "{@name}"
     @end
+  @if {@descriptor.hasSubresponseField}
+    ],
+    subresponse_field: "{@descriptor.subresponseFieldName}"
+  @else
+    ]
   @end
 @end
 

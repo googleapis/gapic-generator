@@ -34,6 +34,7 @@ import com.google.api.codegen.viewmodel.InitValueView;
 import com.google.api.codegen.viewmodel.ListInitCodeLineView;
 import com.google.api.codegen.viewmodel.MapEntryView;
 import com.google.api.codegen.viewmodel.MapInitCodeLineView;
+import com.google.api.codegen.viewmodel.OneofConfigView;
 import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
@@ -170,7 +171,8 @@ public class InitCodeTransformer {
       MethodTransformerContext context,
       Iterable<InitCodeNode> orderedItems,
       Iterable<InitCodeNode> argItems) {
-    StandardImportTypeTransformer importTypeTransformer = new StandardImportTypeTransformer();
+    StandardImportSectionTransformer importSectionTransformer =
+        new StandardImportSectionTransformer();
     ModelTypeTable typeTable = context.getTypeTable();
     SurfaceNamer namer = context.getNamer();
 
@@ -183,7 +185,7 @@ public class InitCodeTransformer {
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(getFieldSettings(context, argItems))
-        .imports(importTypeTransformer.generateImports(typeTable.getImports()))
+        .importSection(importSectionTransformer.generateImportSection(typeTable.getImports()))
         .apiFileName(namer.getServiceFileName(context.getInterface()))
         .build();
   }
@@ -483,6 +485,13 @@ public class InitCodeTransformer {
       fieldSetting.isMap(item.getType().isMap());
       fieldSetting.isArray(!item.getType().isMap() && item.getType().isRepeated());
       fieldSetting.elementTypeName(context.getTypeTable().getFullNameFor(item.getType()));
+      if (item.getOneofConfig() != null) {
+        fieldSetting.oneofConfig(
+            OneofConfigView.newBuilder()
+                .groupName(namer.publicFieldName(item.getOneofConfig().groupName()))
+                .variantType(namer.getOneofVariantTypeName(item.getOneofConfig()))
+                .build());
+      }
 
       allSettings.add(fieldSetting.build());
     }

@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class DynamicLangXApiView implements ViewModel {
@@ -48,6 +49,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
+  @Nullable
+  public abstract List<BundlingDescriptorView> bundlingDescriptors();
+
   public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
 
   public abstract List<GrpcStreamingDetailView> grpcStreamingDescriptors();
@@ -67,6 +71,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract List<ApiMethodView> apiMethods();
 
   public abstract boolean hasPageStreamingMethods();
+
+  public abstract boolean hasBundlingMethods();
 
   public abstract boolean hasLongRunningOperations();
 
@@ -89,6 +95,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public boolean hasMissingDefaultOptions() {
     return missingDefaultServiceAddress() || missingDefaultServiceScopes();
   }
+
+  public abstract String toolkitVersion();
 
   @Override
   public String resourceRoot() {
@@ -129,6 +137,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder pageStreamingDescriptors(List<PageStreamingDescriptorView> val);
 
+    public abstract Builder bundlingDescriptors(List<BundlingDescriptorView> val);
+
     public abstract Builder longRunningDescriptors(List<LongRunningOperationDetailView> val);
 
     public abstract Builder grpcStreamingDescriptors(List<GrpcStreamingDetailView> val);
@@ -149,11 +159,15 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder hasPageStreamingMethods(boolean val);
 
+    public abstract Builder hasBundlingMethods(boolean val);
+
     public abstract Builder hasLongRunningOperations(boolean val);
 
     public abstract Builder hasDefaultServiceAddress(boolean val);
 
     public abstract Builder hasDefaultServiceScopes(boolean val);
+
+    public abstract Builder toolkitVersion(String val);
 
     public abstract DynamicLangXApiView build();
   }

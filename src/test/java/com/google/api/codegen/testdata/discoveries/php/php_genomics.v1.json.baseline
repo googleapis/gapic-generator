@@ -166,17 +166,16 @@ $service = new Google_Service_Genomics($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Genomics_SearchAnnotationsRequest();
 
-$optParams = [];
 do {
-  $response = $service->annotations->search($requestBody, $optParams);
+  $response = $service->annotations->search($requestBody);
 
   foreach ($response['annotations'] as $annotation) {
     // TODO: Change code below to process each `annotation` resource:
     echo '<pre>', var_export($annotation, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -349,17 +348,16 @@ $service = new Google_Service_Genomics($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Genomics_SearchAnnotationSetsRequest();
 
-$optParams = [];
 do {
-  $response = $service->annotationsets->search($requestBody, $optParams);
+  $response = $service->annotationsets->search($requestBody);
 
   foreach ($response['annotationSets'] as $annotationSet) {
     // TODO: Change code below to process each `annotationSet` resource:
     echo '<pre>', var_export($annotationSet, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -571,17 +569,16 @@ $service = new Google_Service_Genomics($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Genomics_SearchCallSetsRequest();
 
-$optParams = [];
 do {
-  $response = $service->callsets->search($requestBody, $optParams);
+  $response = $service->callsets->search($requestBody);
 
   foreach ($response['callSets'] as $callSet) {
     // TODO: Change code below to process each `callSet` resource:
     echo '<pre>', var_export($callSet, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -751,6 +748,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_Genomics($client);
 
 $optParams = [];
+
 do {
   $response = $service->datasets->listDatasets($optParams);
 
@@ -1016,6 +1014,7 @@ $service = new Google_Service_Genomics($client);
 $name = '';  // TODO: Update placeholder value.
 
 $optParams = [];
+
 do {
   $response = $service->operations->listOperations($name, $optParams);
 
@@ -1058,6 +1057,7 @@ $service = new Google_Service_Genomics($client);
 $readGroupSetId = '';  // TODO: Update placeholder value.
 
 $optParams = [];
+
 do {
   $response = $service->readgroupsets_coveragebuckets->listReadgroupsetsCoveragebuckets($readGroupSetId, $optParams);
 
@@ -1281,17 +1281,16 @@ $service = new Google_Service_Genomics($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Genomics_SearchReadGroupSetsRequest();
 
-$optParams = [];
 do {
-  $response = $service->readgroupsets->search($requestBody, $optParams);
+  $response = $service->readgroupsets->search($requestBody);
 
   foreach ($response['readGroupSets'] as $readGroupSet) {
     // TODO: Change code below to process each `readGroupSet` resource:
     echo '<pre>', var_export($readGroupSet, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -1323,17 +1322,16 @@ $service = new Google_Service_Genomics($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Genomics_SearchReadsRequest();
 
-$optParams = [];
 do {
-  $response = $service->reads->search($requestBody, $optParams);
+  $response = $service->reads->search($requestBody);
 
   foreach ($response['alignments'] as $read) {
     // TODO: Change code below to process each `read` resource:
     echo '<pre>', var_export($read, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -1401,6 +1399,7 @@ $service = new Google_Service_Genomics($client);
 $referenceId = '';  // TODO: Update placeholder value.
 
 $optParams = [];
+
 do {
   $response = $service->references_bases->listReferencesBases($referenceId, $optParams);
 
@@ -1475,17 +1474,16 @@ $service = new Google_Service_Genomics($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Genomics_SearchReferencesRequest();
 
-$optParams = [];
 do {
-  $response = $service->references->search($requestBody, $optParams);
+  $response = $service->references->search($requestBody);
 
   foreach ($response['references'] as $reference) {
     // TODO: Change code below to process each `reference` resource:
     echo '<pre>', var_export($reference, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -1552,17 +1550,16 @@ $service = new Google_Service_Genomics($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Genomics_SearchReferenceSetsRequest();
 
-$optParams = [];
 do {
-  $response = $service->referencesets->search($requestBody, $optParams);
+  $response = $service->referencesets->search($requestBody);
 
   foreach ($response['referenceSets'] as $referenceSet) {
     // TODO: Change code below to process each `referenceSet` resource:
     echo '<pre>', var_export($referenceSet, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -1802,17 +1799,16 @@ $service = new Google_Service_Genomics($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Genomics_SearchVariantsRequest();
 
-$optParams = [];
 do {
-  $response = $service->variants->search($requestBody, $optParams);
+  $response = $service->variants->search($requestBody);
 
   foreach ($response['variants'] as $variant) {
     // TODO: Change code below to process each `variant` resource:
     echo '<pre>', var_export($variant, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>
 <?php
 /*
@@ -2059,15 +2055,14 @@ $service = new Google_Service_Genomics($client);
 // TODO: Assign values to desired properties of `requestBody`:
 $requestBody = new Google_Service_Genomics_SearchVariantSetsRequest();
 
-$optParams = [];
 do {
-  $response = $service->variantsets->search($requestBody, $optParams);
+  $response = $service->variantsets->search($requestBody);
 
   foreach ($response['variantSets'] as $variantSet) {
     // TODO: Change code below to process each `variantSet` resource:
     echo '<pre>', var_export($variantSet, true), '</pre>', "\n";
   }
 
-  $optParams['pageToken'] = $response->getNextPageToken();
-} while ($optParams['pageToken']);
+  $requestBody->setPageToken($response->getNextPageToken());
+} while ($requestBody->getPageToken());
 ?>

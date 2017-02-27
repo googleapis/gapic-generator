@@ -22,7 +22,6 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
@@ -33,12 +32,13 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.go.GoTypeTable;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
@@ -78,10 +78,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final int COMMENT_LINE_LENGTH = 75;
 
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
-  private final ApiMethodTransformer apiMethodTransformer = new ApiMethodTransformer();
+  private final StaticLangApiMethodTransformer apiMethodTransformer =
+      new StaticLangApiMethodTransformer();
   private final FeatureConfig featureConfig = new GoFeatureConfig();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(new GoImportTransformer());
+      new FileHeaderTransformer(new GoImportSectionTransformer());
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
@@ -240,7 +241,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
-            apiConfig, Collections.<String, TypeAlias>emptyMap(), namer));
+            apiConfig, ImportSectionView.newBuilder().build(), namer));
 
     return packageInfo.build();
   }
@@ -317,11 +318,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   void addXApiImports(SurfaceTransformerContext context, Collection<Method> methods) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("fmt;;;");
-    typeTable.saveNicknameFor("runtime;;;");
-    typeTable.saveNicknameFor("strings;;;");
+    typeTable.saveNicknameFor("cloud.google.com/go/internal/version;;;");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
-    typeTable.saveNicknameFor("google.golang.org/grpc/metadata;;;");
     typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");
     typeTable.saveNicknameFor("google.golang.org/api/option;;;");
     typeTable.saveNicknameFor("google.golang.org/api/transport;;;");

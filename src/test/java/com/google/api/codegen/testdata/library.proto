@@ -36,9 +36,12 @@ option go_package = "google.golang.org/genproto/googleapis/example/library/v1;li
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
 //
+// Service comment may include special characters: <>&"`'@.
+//
 service LibraryService {
 
   // Creates a shelf, and returns the new Shelf.
+  // RPC method comment may include special characters: <>&"`'@.
   rpc CreateShelf(CreateShelfRequest) returns (Shelf) {
     option (google.api.http) = { post: "/v1/bookShelves" body: "shelf" };
   }
@@ -170,9 +173,11 @@ service LibraryService {
 }
 
 // A single book in the library.
+// Message comment may include special characters: <>&"`'@.
 message Book {
   // The resource name of the book.
   // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+  // Message field comment may include special characters: <>&"`'@.
   string name = 1;
 
   // The name of the book author.
@@ -187,7 +192,7 @@ message Book {
 
   enum Rating {
     GOOD = 0; // GOOD enum description
-    BAD = 1;
+    BAD = 1; // Enum description with special characters: <>&"`'@.
   }
 
   // For testing enums.
@@ -391,7 +396,14 @@ message PublishSeriesRequest {
   }
 
   // Uniquely identifies the series to the publishing house.
-  bytes series_uuid = 5;
+  SeriesUuid series_uuid = 5;
+}
+
+message SeriesUuid {
+  oneof source {
+    bytes series_bytes = 1;
+    string series_string = 2;
+  }
 }
 
 // Response message for LibraryService.PublishSeries.
@@ -569,4 +581,9 @@ message FindRelatedBooksResponse {
 message GetBigBookMetadata {
     // Approximate percentage of the book processed thus far.
     int32 progress_percent = 1;
+}
+
+enum TopLevelEnum {
+  FOO = 0;
+  BAR = 1;
 }
