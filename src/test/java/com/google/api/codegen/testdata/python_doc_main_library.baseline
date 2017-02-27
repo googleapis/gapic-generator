@@ -34,6 +34,7 @@ from google.gapic.longrunning import operations_client
 from google.gax import api_callable
 from google.gax import config
 from google.gax import path_template
+from google.gax.utils import oneof
 import google.gax
 
 from google.cloud.gapic.example.library.v1 import enums
@@ -668,26 +669,11 @@ class LibraryServiceClient(object):
           :exc:`ValueError` if the parameters are invalid.
         """
         # Sanity check: We have some fields which are mutually exclusive;
-        # piece together what these are.
-        mutually_exclusive = [
-            edition,
-            review_copy
-        ]
-
-        # If any mutually exclusive fields are in conflict, raise an exception.
-        #
-        # Note: This code works because `any` stops consuming the iterable the
-        #   first time it encounters a truthy value; thus this check only
-        #   passes if there are two or more.
-        iterator = iter(mutually_exclusive)
-        if not (any(iterator) and not any(iterator)):
-            raise ValueError('Only one of {fields} should be set.'.format(
-                fields=', '.join(sorted({
-                    'edition',
-                    'review_copy'
-                })),
-
-            ))
+        # raise ValueError if more than one is sent.
+        oneof.check_oneof(
+            edition=edition,
+            review_copy=review_copy,
+        )
 
         # Create the request object.
         request = library_pb2.PublishSeriesRequest(

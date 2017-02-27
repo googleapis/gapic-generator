@@ -576,28 +576,12 @@
 @private checkOneOfParams(oneOfs)
     @join oneOf : oneOfs on BREAK
         @# Sanity check: We have some fields which are mutually exclusive;
-        @# piece together what these are.
-        mutually_exclusive = [
-            @join oneOfField : oneOf.getFields() on ", ".add(BREAK)
-                {@oneOfField.getSimpleName()}
+        @# raise ValueError if more than one is sent.
+        oneof.check_oneof(
+            @join oneOfField : oneOf.getFields() on BREAK
+                {@oneOfField.getSimpleName()}={@oneOfField.getSimpleName},
             @end
-        ]
-
-        @# If any mutually exclusive fields are in conflict, raise an exception.
-        @#
-        @# Note: This code works because `any` stops consuming the iterable the
-        @#   first time it encounters a truthy value; thus this check only
-        @#   passes if there are two or more.
-        iterator = iter(mutually_exclusive)
-        if not (any(iterator) and not any(iterator)):
-            raise ValueError('Only one of {fields} should be set.'.format(
-                fields=', '.join(sorted({
-                    @join oneOfField : oneOf.getFields() on ", ".add(BREAK)
-                        '{@oneOfField.getSimpleName()}'
-                    @end
-                })),
-
-            ))
+        )
 
     @end
 @end
