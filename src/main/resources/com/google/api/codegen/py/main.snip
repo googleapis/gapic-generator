@@ -415,7 +415,8 @@
              documentation = methodComments(service, method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredParams = methodConfig.getRequiredFields(), \
-             optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
+             optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
+             oneOfParams = methodConfig.getOneofs()
         @if method.getRequestStreaming
             def {@methodName(method)}(
                     self,
@@ -446,6 +447,10 @@
                     @if {@defaultMutableValues(optionalParams)}
                         {@defaultMutableValues(optionalParams)}
                     @end
+                    @if oneOfParams
+                        {@checkOneOfParams(oneOfParams)}
+                    @end
+                    @# Create the request object.
                     @if requiredParams
                         @if optionalParams
                             request = {@methodInputElementPath}(
@@ -467,6 +472,7 @@
                     @if documentation
                         {@documentation}
                     @end
+                    # Create the request object.
                     request = {@methodInputElementPath}()
                     {@callLine(methodConfig, method, "request")}
             @end
@@ -506,5 +512,18 @@
         @let paramName = {@field.getSimpleName()}
             {@paramName}={@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
         @end
+    @end
+@end
+
+@private checkOneOfParams(oneOfs)
+    @join oneOf : oneOfs on BREAK
+        @# Sanity check: We have some fields which are mutually exclusive;
+        @# raise ValueError if more than one is sent.
+        oneof.check_oneof(
+            @join oneOfField : oneOf.getFields() on BREAK
+                {@oneOfField.getSimpleName()}={@oneOfField.getSimpleName},
+            @end
+        )
+
     @end
 @end
