@@ -44,7 +44,6 @@ from google.protobuf import empty_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
 
 
-_BundleDesc = google.gax.BundleDescriptor
 
 
 _PageDesc = google.gax.PageDescriptor
@@ -94,17 +93,6 @@ class LibraryServiceClient(object):
             'page_token',
             'next_page_token',
             'names'
-        )
-    }
-
-    _BUNDLE_DESCRIPTORS = {
-        'publish_series': _BundleDesc(
-            'books',
-            [
-                'edition',
-                'shelf.name'
-            ],
-            subresponse_field='book_names',
         )
     }
 
@@ -1374,4 +1362,3 @@ class LibraryServiceClient(object):
             empty_pb2.Empty,
             library_pb2.GetBigBookMetadata,
             options)
-
