@@ -370,13 +370,13 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
                 apiMethodTransformer.generateFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam()));
           }
-          apiMethods.add(
-              apiMethodTransformer.generateRequestObjectAsyncMethod(
-                  requestMethodContext, csharpCommonTransformer.callSettingsParam()));
-          apiMethods.add(
-              apiMethodTransformer.generateRequestObjectMethod(
-                  requestMethodContext, csharpCommonTransformer.callSettingsParam()));
         }
+        apiMethods.add(
+            apiMethodTransformer.generateRequestObjectAsyncMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+        apiMethods.add(
+            apiMethodTransformer.generateRequestObjectMethod(
+                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
       }
     }
 
