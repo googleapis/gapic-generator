@@ -508,7 +508,6 @@
                     @if oneOfParams
                       {@checkOneOfParams(oneOfParams)}
                     @end
-
                     @# Create the request object.
                     @if requiredParams
                         @if optionalParams
@@ -531,6 +530,7 @@
                     @if documentation
                         {@documentation}
                     @end
+                    # Create the request object.
                     request = {@methodInputElementPath}()
                     {@callLine(methodConfig, method, "request")}
             @end
@@ -575,7 +575,6 @@
 
 @private checkOneOfParams(oneOfs)
     @join oneOf : oneOfs on BREAK
-
         @# Sanity check: We have some fields which are mutually exclusive;
         @# piece together what these are.
         mutually_exclusive = [
@@ -599,5 +598,6 @@
                 })),
 
             ))
+
     @end
 @end
