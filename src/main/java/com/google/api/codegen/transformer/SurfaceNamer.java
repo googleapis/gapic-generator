@@ -529,8 +529,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The variable name of the gRPC request object. */
-  public String getRequestObjectName(Method method) {
-    return getNotImplementedString("SurfaceNamer.getRequestObjectName");
+  public String getRequestVariableName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getRequestVariableName");
   }
 
   /////////////////////////////////////// Type names /////////////////////////////////////////////

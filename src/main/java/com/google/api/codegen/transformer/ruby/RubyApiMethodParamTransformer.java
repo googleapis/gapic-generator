@@ -32,7 +32,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
     if (context.getMethod().getRequestStreaming()) {
       DynamicLangDefaultableParamView.Builder param = DynamicLangDefaultableParamView.newBuilder();
-      param.name(context.getNamer().getRequestObjectName(context.getMethod()));
+      param.name(context.getNamer().getRequestVariableName(context.getMethod()));
       param.defaultValue("");
       methodParams.add(param.build());
     } else {
@@ -56,8 +56,12 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
         methodParams.add(param.build());
       }
     }
-    methodParams.add(
-        DynamicLangDefaultableParamView.newBuilder().name("options").defaultValue("nil").build());
+
+    DynamicLangDefaultableParamView.Builder optionsParam =
+        DynamicLangDefaultableParamView.newBuilder();
+    optionsParam.name("options");
+    optionsParam.defaultValue("nil");
+    methodParams.add(optionsParam.build());
     return methodParams.build();
   }
 
@@ -65,7 +69,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
   public List<ParamDocView> generateParamDocs(MethodTransformerContext context) {
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
     if (context.getMethod().getRequestStreaming()) {
-      docs.add(generateRequestsParamDoc(context));
+      docs.add(generateRequestStreamingParamDoc(context));
     } else {
       docs.addAll(generateMethodParamDocs(context, context.getMethodConfig().getRequiredFields()));
       docs.addAll(generateMethodParamDocs(context, context.getMethodConfig().getOptionalFields()));
@@ -74,9 +78,9 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
     return docs.build();
   }
 
-  private ParamDocView generateRequestsParamDoc(MethodTransformerContext context) {
+  private ParamDocView generateRequestStreamingParamDoc(MethodTransformerContext context) {
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
-    paramDoc.paramName(context.getNamer().getRequestObjectName(context.getMethod()));
+    paramDoc.paramName(context.getNamer().getRequestVariableName(context.getMethod()));
     paramDoc.lines(ImmutableList.of("The input requests."));
 
     String requestTypeName =

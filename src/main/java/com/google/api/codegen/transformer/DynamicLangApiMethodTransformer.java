@@ -72,7 +72,7 @@ public class DynamicLangApiMethodTransformer {
 
     apiMethod.name(
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
-    apiMethod.requestObjectName(namer.getRequestObjectName(context.getMethod()));
+    apiMethod.requestVariableName(namer.getRequestVariableName(context.getMethod()));
     apiMethod.requestTypeName(
         namer.getRequestTypeName(context.getTypeTable(), context.getMethod().getInputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));

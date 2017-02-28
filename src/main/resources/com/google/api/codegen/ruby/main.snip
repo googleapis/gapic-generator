@@ -372,7 +372,7 @@
 @private makeApiCall(apiMethod)
   @if apiMethod.isLongRunningOperation
     operation = Google::Gax::Operation.new(
-      @@{@apiMethod.name}.call({@apiMethod.requestObjectName}, options),
+      @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options),
       @@operations_client,
       {@apiMethod.longRunningView.operationPayloadTypeName},
       {@apiMethod.longRunningView.metadataTypeName},
@@ -381,7 +381,7 @@
     operation.on_done { |operation| yield(operation) } if block_given?
     operation
   @else
-    @@{@apiMethod.name}.call({@apiMethod.requestObjectName}, options)
+    @@{@apiMethod.name}.call({@apiMethod.requestVariableName}, options)
     @if apiMethod.hasReturnValue
     @else
       nil

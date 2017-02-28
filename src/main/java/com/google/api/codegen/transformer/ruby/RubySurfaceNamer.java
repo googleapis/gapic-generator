@@ -90,7 +90,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRequestObjectName(Method method) {
+  public String getRequestVariableName(Method method) {
     return method.getRequestStreaming() ? "reqs" : "req";
   }
 
