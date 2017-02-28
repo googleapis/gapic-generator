@@ -58,12 +58,6 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
   }
 
-  @Override
-  public String getPathTemplateName(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
-    return Name.from(resourceNameConfig.getEntityName(), "path", "template").toUpperUnderscore();
-  }
-
   /** The function name to set a field having the given type and name. */
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
