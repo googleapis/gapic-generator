@@ -30,6 +30,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
@@ -403,5 +404,19 @@ public abstract class MethodConfig {
 
   public Iterable<Field> getOptionalFields() {
     return FieldConfig.toFieldIterable(getOptionalFieldConfigs());
+  }
+
+  /** Return the list of "one of" instances associated with the fields. */
+  public Iterable<Oneof> getOneofs() {
+    ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
+
+    for (Field field : getOptionalFields()) {
+      if (field.getOneof() == null) {
+        continue;
+      }
+      answer.add(field.getOneof());
+    }
+
+    return answer.build();
   }
 }
