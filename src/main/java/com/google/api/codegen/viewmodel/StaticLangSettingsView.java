@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.viewmodel.StaticLangSettingsFileView.Builder;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public abstract class StaticLangSettingsView {
   public abstract Integer servicePort();
 
   @Nullable
-  public abstract String generatorVersion();
+  public abstract String toolkitVersion();
 
   public abstract Iterable<String> authScopes();
 
@@ -89,7 +88,7 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder servicePort(Integer val);
 
-    public abstract Builder generatorVersion(String val);
+    public abstract Builder toolkitVersion(String val);
 
     public abstract Builder authScopes(Iterable<String> val);
 
