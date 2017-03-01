@@ -416,7 +416,7 @@ public class MainGapicProviderFactory
 
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
-        providers.add(metadataProvider);
+        //        providers.add(metadataProvider);
 
         if (id.equals(RUBY_DOC)) {
           GapicProvider<? extends Object> messageProvider =
