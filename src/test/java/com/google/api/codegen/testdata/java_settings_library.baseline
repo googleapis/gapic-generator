@@ -125,7 +125,7 @@ import org.joda.time.Duration;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC")
+@Generated("by GAPIC v{settingsFile.fileHeader.generatorVersion}")
 @ExperimentalApi
 public class LibraryServiceSettings extends ClientSettings {
   /**
@@ -147,8 +147,8 @@ public class LibraryServiceSettings extends ClientSettings {
       .build();
 
 
-  private static final String DEFAULT_GENERATOR_NAME = "gapic";
-  private static final String DEFAULT_GENERATOR_VERSION = "0.0.5";
+  private static final String DEFAULT_GAPIC_NAME = "gapic";
+  private static final String DEFAULT_GAPIC_VERSION = "";
 
   private final SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings;
@@ -398,15 +398,18 @@ public class LibraryServiceSettings extends ClientSettings {
         ;
   }
 
-  /**
-   * Returns a builder for the default ChannelProvider for this service.
-   */
+  /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
         .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
         .setPort(DEFAULT_SERVICE_PORT)
-        .setGeneratorHeader(DEFAULT_GENERATOR_NAME, DEFAULT_GENERATOR_VERSION)
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+  }
+
+  private static String getGapicVersion() {
+    String packageVersion = PublisherSettings.class.getPackage().getImplementationVersion();
+    return packageVersion != null ? packageVersion : DEFAULT_GAPIC_VERSION;
   }
 
   /**

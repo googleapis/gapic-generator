@@ -40,6 +40,12 @@ public abstract class FileHeaderView {
     return version() != null && version().length() > 0;
   }
 
+  public abstract String generatorVersion();
+
+  public boolean hasGeneratorVersion() {
+    return generatorVersion() != null && generatorVersion().length() > 0;
+  }
+
   public abstract String localExamplePackageName();
 
   public abstract ImportSectionView importSection();
@@ -63,6 +69,8 @@ public abstract class FileHeaderView {
     public abstract Builder modules(ImmutableList<String> val);
 
     public abstract Builder version(String val);
+
+    public abstract Builder generatorVersion(String val);
 
     public abstract Builder localExamplePackageName(String val);
 
