@@ -409,6 +409,8 @@ module Library
       #   library_service_client = LibraryServiceClient.new
       #   shelf = Shelf.new
       #   response = library_service_client.create_shelf(shelf)
+      #   # Process the response.
+      #   process_response response
 
       def create_shelf \
           shelf,
@@ -442,6 +444,8 @@ module Library
       #   formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   options_ = ''
       #   response = library_service_client.get_shelf(formatted_name, options_)
+      #   # Process the response.
+      #   process_response response
 
       def get_shelf \
           name,
@@ -479,6 +483,7 @@ module Library
       #   # Iterate over all results.
       #   library_service_client.list_shelves.each do |element|
       #     # Process element.
+      #     process_element element
       #   end
       #
       #   # Or iterate over results one page at a time.
@@ -486,6 +491,7 @@ module Library
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
+      #       process_element element
       #     end
       #   end
 
@@ -543,6 +549,8 @@ module Library
       #   formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   response = library_service_client.merge_shelves(formatted_name, formatted_other_shelf_name)
+      #   # Process the response.
+      #   process_response response
 
       def merge_shelves \
           name,
@@ -576,6 +584,8 @@ module Library
       #   formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   book = Book.new
       #   response = library_service_client.create_book(formatted_name, book)
+      #   # Process the response.
+      #   process_response response
 
       def create_book \
           name,
@@ -615,6 +625,8 @@ module Library
       #   shelf = Shelf.new
       #   books = []
       #   response = library_service_client.publish_series(shelf, books)
+      #   # Process the response.
+      #   process_response response
 
       def publish_series \
           shelf,
@@ -650,6 +662,8 @@ module Library
       #   library_service_client = LibraryServiceClient.new
       #   formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_service_client.get_book(formatted_name)
+      #   # Process the response.
+      #   process_response response
 
       def get_book \
           name,
@@ -692,6 +706,7 @@ module Library
       #   # Iterate over all results.
       #   library_service_client.list_books(formatted_name).each do |element|
       #     # Process element.
+      #     process_element element
       #   end
       #
       #   # Or iterate over results one page at a time.
@@ -699,6 +714,7 @@ module Library
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
+      #       process_element element
       #     end
       #   end
 
@@ -767,6 +783,8 @@ module Library
       #   formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   book = Book.new
       #   response = library_service_client.update_book(formatted_name, book)
+      #   # Process the response.
+      #   process_response response
 
       def update_book \
           name,
@@ -803,6 +821,8 @@ module Library
       #   formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   response = library_service_client.move_book(formatted_name, formatted_other_shelf_name)
+      #   # Process the response.
+      #   process_response response
 
       def move_book \
           name,
@@ -843,6 +863,7 @@ module Library
       #   # Iterate over all results.
       #   library_service_client.list_strings.each do |element|
       #     # Process element.
+      #     process_element element
       #   end
       #
       #   # Or iterate over results one page at a time.
@@ -850,6 +871,7 @@ module Library
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
+      #       process_element element
       #     end
       #   end
 
@@ -921,6 +943,8 @@ module Library
       #   library_service_client = LibraryServiceClient.new
       #   formatted_name = LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
       #   response = library_service_client.get_book_from_archive(formatted_name)
+      #   # Process the response.
+      #   process_response response
 
       def get_book_from_archive \
           name,
@@ -952,6 +976,8 @@ module Library
       #   formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_alt_book_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_service_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+      #   # Process the response.
+      #   process_response response
 
       def get_book_from_anywhere \
           name,
@@ -1020,6 +1046,7 @@ module Library
       #   library_service_client = LibraryServiceClient.new
       #   library_service_client.stream_shelves.each do |element|
       #     # Process element.
+      #     process_element element
       #   end
 
       def stream_shelves options: nil
@@ -1048,6 +1075,7 @@ module Library
       #   name = ''
       #   library_service_client.stream_books(name).each do |element|
       #     # Process element.
+      #     process_element element
       #   end
 
       def stream_books \
@@ -1090,6 +1118,7 @@ module Library
       #   requests = [request]
       #   library_service_client.discuss_book(requests).each do |element|
       #     # Process element.
+      #     process_element element
       #   end
 
       def discuss_book reqs, options: nil
@@ -1124,6 +1153,8 @@ module Library
       #   request.name = name
       #   requests = [request]
       #   response = library_service_client.monolog_about_book(requests)
+      #   # Process the response.
+      #   process_response response
 
       def monolog_about_book reqs, options: nil
         @monolog_about_book.call(reqs, options)
@@ -1159,6 +1190,7 @@ module Library
       #   # Iterate over all results.
       #   library_service_client.find_related_books(names, shelves).each do |element|
       #     # Process element.
+      #     process_element element
       #   end
       #
       #   # Or iterate over results one page at a time.
@@ -1166,6 +1198,7 @@ module Library
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
+      #       process_element element
       #     end
       #   end
 
@@ -1204,6 +1237,8 @@ module Library
       #   formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   tag = ''
       #   response = library_service_client.add_tag(formatted_resource, tag)
+      #   # Process the response.
+      #   process_response response
 
       def add_tag \
           resource,
@@ -1238,6 +1273,8 @@ module Library
       #   formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   label = ''
       #   response = library_service_client.add_label(formatted_resource, label)
+      #   # Process the response.
+      #   process_response response
 
       def add_label \
           resource,
@@ -1272,9 +1309,11 @@ module Library
       #     raise op.results.message if op.error?
       #     op_results = op.results
       #     # Process the results.
+      #     process_results op_results
       #
       #     metadata = op.metadata
       #     # Process the metadata.
+      #     process_metadata metadata
       #   end
       #
       #   # Or use the return value to register a callback.
@@ -1282,9 +1321,11 @@ module Library
       #     raise op.results.message if op.error?
       #     op_results = op.results
       #     # Process the results.
+      #     process_results op_results
       #
       #     metadata = op.metadata
       #     # Process the metadata.
+      #     process_metadata metadata
       #   end
       #
       #   # Manually reload the operation.
@@ -1333,9 +1374,11 @@ module Library
       #     raise op.results.message if op.error?
       #     op_results = op.results
       #     # Process the results.
+      #     process_results op_results
       #
       #     metadata = op.metadata
       #     # Process the metadata.
+      #     process_metadata metadata
       #   end
       #
       #   # Or use the return value to register a callback.
@@ -1343,9 +1386,11 @@ module Library
       #     raise op.results.message if op.error?
       #     op_results = op.results
       #     # Process the results.
+      #     process_results op_results
       #
       #     metadata = op.metadata
       #     # Process the metadata.
+      #     process_metadata metadata
       #   end
       #
       #   # Manually reload the operation.

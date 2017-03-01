@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -25,6 +26,17 @@ import com.google.common.base.Preconditions;
 // TODO(jcanizales): Only RubyGapicContext here is Ruby-specific, and unnecessarily so. Refactor so
 // this can be shared with other languages.
 public class UnitTestCaseViewModel {
+
+  /**
+   * Names used for the response variables in the generated Ruby samples. They change depending on
+   * the method type.
+   */
+  public enum RubySampleResponseName {
+    Empty,
+    Response,
+    Element,
+    ResultsAndMetadata
+  }
 
   private final Interface service;
   private final Method method;
@@ -49,5 +61,37 @@ public class UnitTestCaseViewModel {
 
   public String responseTypeName() {
     return typeTable.getAndSaveNicknameFor(method.getOutputType());
+  }
+
+  public RubySampleResponseName sampleResponseName() {
+    OptionalArrayMethodView methodView = methodView();
+    if (!methodView.hasReturnValue()) {
+      return RubySampleResponseName.Empty;
+    }
+    if (methodView.isLongRunningOperation()) {
+      return RubySampleResponseName.ResultsAndMetadata;
+    }
+    if (methodView.type() == ClientMethodType.PagedOptionalArrayMethod) {
+      return RubySampleResponseName.Element;
+    }
+
+    Preconditions.checkArgument(
+        methodView.type() == ClientMethodType.OptionalArrayMethod,
+        "This code needs to be updated with the new method type used: %s",
+        methodView.type());
+
+    switch (methodView.grpcStreamingType()) {
+      case NonStreaming:
+        // fall through
+      case ClientStreaming:
+        return RubySampleResponseName.Response;
+      case ServerStreaming:
+        // fall through
+      case BidiStreaming:
+        return RubySampleResponseName.Element;
+    }
+
+    // Unreachable; to placate the compiler.
+    return RubySampleResponseName.Response;
   }
 }

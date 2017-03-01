@@ -68,11 +68,35 @@
                   mocked_response,
                   [expected_request, Hash],
                 )
+                @switch testCase.sampleResponseName.toString
+                @case "Empty"
+                  # No response verifier to declare.
+                @case "Response"
+
+                  process_response = ->(response) {
+                    @# Verification.
+                    response.must_equal mocked_response
+                  }
+                @case "Element"
+
+                  process_element = ->(element) {
+                    @# TODO(jcanizales): verify a mocked element.
+                  }
+                @case "ResultsAndMetadata"
+
+                  process_results = ->(results) {
+                    @# TODO(jcanizales): Verify mocked results.
+                  }
+
+                  process_metadata = ->(metadata) {
+                    @# TODO(jcanizales): Verify mocked metadata.
+                  }
+                @default
+
+                  $unhandledCase: {@methodView.sampleResponseName.toString}$
+                @end
 
                 {@sampleCodeBody(methodView)}
-
-                @# Verification:
-                response.must_equal mocked_response
               end
             end
           end

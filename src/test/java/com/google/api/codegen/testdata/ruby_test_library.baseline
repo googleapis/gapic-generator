@@ -54,12 +54,16 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         shelf = Shelf.new
         response = library_service_client.create_shelf(shelf)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -82,13 +86,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         options_ = ''
         response = library_service_client.get_shelf(formatted_name, options_)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -110,11 +118,16 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
         library_service_client = LibraryServiceClient.new
 
         # Iterate over all results.
         library_service_client.list_shelves.each do |element|
           # Process element.
+          process_element element
         end
 
         # Or iterate over results one page at a time.
@@ -122,11 +135,9 @@ describe LibraryServiceClient do
           # Process each page at a time.
           page.each do |element|
             # Process element.
+            process_element element
           end
         end
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -151,9 +162,6 @@ describe LibraryServiceClient do
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         library_service_client.delete_shelf(formatted_name)
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -176,13 +184,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         response = library_service_client.merge_shelves(formatted_name, formatted_other_shelf_name)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -206,13 +218,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         book = Book.new
         response = library_service_client.create_book(formatted_name, book)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -236,13 +252,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         shelf = Shelf.new
         books = []
         response = library_service_client.publish_series(shelf, books)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -264,12 +284,16 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         response = library_service_client.get_book(formatted_name)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -291,12 +315,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
 
         # Iterate over all results.
         library_service_client.list_books(formatted_name).each do |element|
           # Process element.
+          process_element element
         end
 
         # Or iterate over results one page at a time.
@@ -304,11 +333,9 @@ describe LibraryServiceClient do
           # Process each page at a time.
           page.each do |element|
             # Process element.
+            process_element element
           end
         end
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -333,9 +360,6 @@ describe LibraryServiceClient do
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         library_service_client.delete_book(formatted_name)
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -359,13 +383,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         book = Book.new
         response = library_service_client.update_book(formatted_name, book)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -388,13 +416,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         response = library_service_client.move_book(formatted_name, formatted_other_shelf_name)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -416,11 +448,16 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
         library_service_client = LibraryServiceClient.new
 
         # Iterate over all results.
         library_service_client.list_strings.each do |element|
           # Process element.
+          process_element element
         end
 
         # Or iterate over results one page at a time.
@@ -428,11 +465,9 @@ describe LibraryServiceClient do
           # Process each page at a time.
           page.each do |element|
             # Process element.
+            process_element element
           end
         end
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -477,9 +512,6 @@ describe LibraryServiceClient do
         comments_element.alignment = alignment
         comments = [comments_element]
         library_service_client.add_comments(formatted_name, comments)
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -501,12 +533,16 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
         response = library_service_client.get_book_from_archive(formatted_name)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -529,13 +565,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         formatted_alt_book_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         response = library_service_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -566,9 +606,6 @@ describe LibraryServiceClient do
         index_map_item = ''
         index_map = { "default_key" => index_map_item }
         library_service_client.update_book_index(formatted_name, index_name, index_map)
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -590,13 +627,15 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
         library_service_client = LibraryServiceClient.new
         library_service_client.stream_shelves.each do |element|
           # Process element.
+          process_element element
         end
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -618,14 +657,16 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
         library_service_client = LibraryServiceClient.new
         name = ''
         library_service_client.stream_books(name).each do |element|
           # Process element.
+          process_element element
         end
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -651,6 +692,10 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
         library_service_client = LibraryServiceClient.new
         name = ''
         request = DiscussBookRequest.new
@@ -658,10 +703,8 @@ describe LibraryServiceClient do
         requests = [request]
         library_service_client.discuss_book(requests).each do |element|
           # Process element.
+          process_element element
         end
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -687,15 +730,19 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         name = ''
         request = DiscussBookRequest.new
         request.name = name
         requests = [request]
         response = library_service_client.monolog_about_book(requests)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -719,6 +766,10 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
         library_service_client = LibraryServiceClient.new
         names_element = ''
         names = [names_element]
@@ -727,6 +778,7 @@ describe LibraryServiceClient do
         # Iterate over all results.
         library_service_client.find_related_books(names, shelves).each do |element|
           # Process element.
+          process_element element
         end
 
         # Or iterate over results one page at a time.
@@ -734,11 +786,9 @@ describe LibraryServiceClient do
           # Process each page at a time.
           page.each do |element|
             # Process element.
+            process_element element
           end
         end
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -761,13 +811,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         tag = ''
         response = library_service_client.add_tag(formatted_resource, tag)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -790,13 +844,17 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         label = ''
         response = library_service_client.add_label(formatted_resource, label)
-
-        # Verification:
-        response.must_equal mocked_response
+        # Process the response.
+        process_response response
       end
     end
   end
@@ -818,6 +876,14 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_results = ->(results) {
+          # TODO(jcanizales): Verify mocked results.
+        }
+
+        process_metadata = ->(metadata) {
+          # TODO(jcanizales): Verify mocked metadata.
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
@@ -826,9 +892,11 @@ describe LibraryServiceClient do
           raise op.results.message if op.error?
           op_results = op.results
           # Process the results.
+          process_results op_results
 
           metadata = op.metadata
           # Process the metadata.
+          process_metadata metadata
         end
 
         # Or use the return value to register a callback.
@@ -836,9 +904,11 @@ describe LibraryServiceClient do
           raise op.results.message if op.error?
           op_results = op.results
           # Process the results.
+          process_results op_results
 
           metadata = op.metadata
           # Process the metadata.
+          process_metadata metadata
         end
 
         # Manually reload the operation.
@@ -847,9 +917,6 @@ describe LibraryServiceClient do
         # Or block until the operation completes, triggering callbacks on
         # completion.
         operation.wait_until_done!
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
@@ -871,6 +938,14 @@ describe LibraryServiceClient do
           [expected_request, Hash],
         )
 
+        process_results = ->(results) {
+          # TODO(jcanizales): Verify mocked results.
+        }
+
+        process_metadata = ->(metadata) {
+          # TODO(jcanizales): Verify mocked metadata.
+        }
+
         library_service_client = LibraryServiceClient.new
         formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
@@ -879,9 +954,11 @@ describe LibraryServiceClient do
           raise op.results.message if op.error?
           op_results = op.results
           # Process the results.
+          process_results op_results
 
           metadata = op.metadata
           # Process the metadata.
+          process_metadata metadata
         end
 
         # Or use the return value to register a callback.
@@ -889,9 +966,11 @@ describe LibraryServiceClient do
           raise op.results.message if op.error?
           op_results = op.results
           # Process the results.
+          process_results op_results
 
           metadata = op.metadata
           # Process the metadata.
+          process_metadata metadata
         end
 
         # Manually reload the operation.
@@ -900,9 +979,6 @@ describe LibraryServiceClient do
         # Or block until the operation completes, triggering callbacks on
         # completion.
         operation.wait_until_done!
-
-        # Verification:
-        response.must_equal mocked_response
       end
     end
   end
