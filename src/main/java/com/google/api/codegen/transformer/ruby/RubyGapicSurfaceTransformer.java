@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.ServiceConfig;
@@ -133,6 +134,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
             context.getTypeTable(), context.getInterface()));
 
     xapiClass.apiMethods(methods);
+
+    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
 
     return xapiClass.build();
   }
