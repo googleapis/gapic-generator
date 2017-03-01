@@ -385,10 +385,22 @@
             }
         @end
 
+        if (isset($options['libVersion'])) {
+          $gapicVersion = $options['libVersion'];
+        } elseif (class_exists('\Google\Cloud\ServiceBuilder') &&
+            defined('\Google\Cloud\ServiceBuilder::VERSION'))
+        ) {
+          $gapicVersion = \Google\Cloud\ServiceBuilder::VERSION;
+        } elseif (file_exists(__DIR__ . "../VERSION")) {
+          $gapicVersion = file_get_contents(__DIR__ . "../VERSION");
+        } else {
+          $gapicVersion = null;
+        }
+        
         $headerDescriptor = new AgentHeaderDescriptor([
             'libName' => $options['libName'],
             'libVersion' => $options['libVersion'],
-            'gapicVersion' => self::CODEGEN_VERSION,
+            'gapicVersion' => $gapicVersion,
         ]);
 
         $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
