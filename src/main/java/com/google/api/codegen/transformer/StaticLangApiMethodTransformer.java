@@ -802,6 +802,7 @@ public class StaticLangApiMethodTransformer {
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
+    param.keyName(namer.getFieldKey(field));
     param.nameAsMethodName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);

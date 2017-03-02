@@ -98,6 +98,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract String toolkitVersion();
 
+  @Nullable
+  public abstract String packageVersion();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -168,6 +171,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder hasDefaultServiceScopes(boolean val);
 
     public abstract Builder toolkitVersion(String val);
+
+    public abstract Builder packageVersion(String val);
 
     public abstract DynamicLangXApiView build();
   }

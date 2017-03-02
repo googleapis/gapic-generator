@@ -19,6 +19,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
@@ -126,6 +127,16 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     String publicClassName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), suffix));
     return namePath.withHead(publicClassName);
+  }
+
+  @Override
+  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getAndSaveNicknameFor(type);
+  }
+
+  @Override
+  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override

@@ -83,6 +83,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return valueType(typeTable.getAndSaveNicknameFor(type));
+  }
+
+  @Override
   public List<String> getDocLines(Method method, MethodConfig methodConfig) {
     String text = DocumentationUtil.getDescription(method);
     text = lowerFirstLetter(text);

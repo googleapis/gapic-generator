@@ -30,8 +30,6 @@ import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
-import com.google.api.codegen.ruby.RubyGapicContext;
-import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
@@ -47,6 +45,7 @@ import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTestTransformer;
+import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.ruby.RubyPackageMetadataTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
@@ -386,14 +385,12 @@ public class MainGapicProviderFactory
                 .setPackageFilePathNameFormatter(new RubyNameFormatter())
                 .build();
         GapicProvider<? extends Object> mainProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+            ViewModelGapicProvider.newBuilder()
                 .setModel(model)
-                .setView(new InterfaceView())
-                .setContext(new RubyGapicContext(model, apiConfig, packageConfig))
-                .setSnippetSetRunner(
-                    new RubySnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                .setSnippetFileNames(Arrays.asList("ruby/main.snip"))
-                .setCodePathMapper(rubyPathMapper)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new RubyGapicSurfaceTransformer(rubyPathMapper, packageConfig))
                 .build();
         GapicProvider<? extends Object> clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
