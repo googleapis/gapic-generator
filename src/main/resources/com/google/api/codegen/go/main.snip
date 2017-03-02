@@ -96,7 +96,7 @@
                 {@stub.name}: {@stub.createStubFunctionName}(conn),
             @end
         }
-        c.SetGoogleClientInfo("gapic", version.Repo)
+        c.SetGoogleClientInfo("", "")
         return c, nil
     }
 
@@ -115,7 +115,11 @@
     // the `x-goog-api-client` header passed on each request. Intended for
     // use by Google-written clients.
     func (c *{@view.clientTypeName}) SetGoogleClientInfo(clientName, clientVersion string) {
-        c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gax/%s grpc/", version.Go(), clientName, clientVersion, gax.Version)
+        if clientName == "" {
+            c.xGoogHeader = fmt.Sprintf("gl-go/%s gapic/%s gax/%s grpc/", version.Go(), version.Repo, gax.Version)
+        } else {
+            c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gapic/%s gax/%s grpc/", version.Go(), clientName, clientVersion, version.Repo, gax.Version)
+        }
     }
 
     @join getter : view.pathTemplateGetters

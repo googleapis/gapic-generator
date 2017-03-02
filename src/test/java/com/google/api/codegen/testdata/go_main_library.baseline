@@ -172,7 +172,7 @@ func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error
         client: librarypb.NewLibraryServiceClient(conn),
         labelerClient: taggerpb.NewLabelerClient(conn),
     }
-    c.SetGoogleClientInfo("gapic", version.Repo)
+    c.SetGoogleClientInfo("", "")
     return c, nil
 }
 
@@ -191,7 +191,11 @@ func (c *Client) Close() error {
 // the `x-goog-api-client` header passed on each request. Intended for
 // use by Google-written clients.
 func (c *Client) SetGoogleClientInfo(clientName, clientVersion string) {
-    c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gax/%s grpc/", version.Go(), clientName, clientVersion, gax.Version)
+    if clientName == "" {
+        c.xGoogHeader = fmt.Sprintf("gl-go/%s gapic/%s gax/%s grpc/", version.Go(), version.Repo, gax.Version)
+    } else {
+        c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gapic/%s gax/%s grpc/", version.Go(), clientName, clientVersion, version.Repo, gax.Version)
+    }
 }
 
 // LibraryShelfPath returns the path for the shelf resource.
