@@ -389,7 +389,8 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setApiConfig(apiConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new RubyGapicSurfaceTransformer(rubyPathMapper))
+                .setModelToViewTransformer(
+                    new RubyGapicSurfaceTransformer(rubyPathMapper, packageConfig))
                 .build();
         GapicProvider<? extends Object> clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()

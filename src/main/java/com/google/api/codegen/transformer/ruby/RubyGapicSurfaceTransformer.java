@@ -16,7 +16,9 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.BundlingTransformer;
@@ -49,6 +51,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String XAPI_TEMPLATE_FILENAME = "ruby/main.snip";
 
   private final GapicCodePathMapper pathMapper;
+  private final PackageMetadataConfig packageConfig;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
   private final DynamicLangApiMethodTransformer apiMethodTransformer =
@@ -59,8 +62,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
 
-  public RubyGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
+  public RubyGapicSurfaceTransformer(
+      GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
     this.pathMapper = pathMapper;
+    this.packageConfig = packageConfig;
   }
 
   @Override
@@ -136,6 +141,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods);
 
     xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
+    xapiClass.packageVersion(
+        packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower());
 
     return xapiClass.build();
   }

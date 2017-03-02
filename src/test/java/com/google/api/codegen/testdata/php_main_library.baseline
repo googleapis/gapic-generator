@@ -343,6 +343,17 @@ class LibraryServiceClient
         ];
     }
 
+    private static function getGapicVersion()
+    {
+        if (file_exists(__DIR__ . "../VERSION")) {
+          $gapicVersion = file_get_contents(__DIR__ . "../VERSION");
+        } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
+          $gapicVersion = \Google\Cloud\ServiceBuilder::VERSION;
+        } else {
+          $gapicVersion = null;
+        }
+    }
+
     /**
      * Return an OperationsClient object with the same endpoint as $this.
      *
@@ -435,10 +446,16 @@ class LibraryServiceClient
             ]);
         }
 
+        if (isset($options['libVersion'])) {
+          $gapicVersion = $options['libVersion'];
+        } else {
+          $gapicVersion = self::getGapicVersion();
+        }
+
         $headerDescriptor = new AgentHeaderDescriptor([
             'libName' => $options['libName'],
             'libVersion' => $options['libVersion'],
-            'gapicVersion' => self::CODEGEN_VERSION,
+            'gapicVersion' => $gapicVersion,
         ]);
 
         $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
