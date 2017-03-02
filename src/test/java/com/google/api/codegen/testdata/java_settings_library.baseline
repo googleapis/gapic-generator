@@ -16,12 +16,13 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.bundling.BundlingSettings;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.grpc.BundledRequestIssuer;
 import com.google.api.gax.grpc.BundlingCallSettings;
 import com.google.api.gax.grpc.BundlingDescriptor;
-import com.google.api.gax.grpc.BundlingSettings;
 import com.google.api.gax.grpc.CallContext;
 import com.google.api.gax.grpc.ChannelProvider;
 import com.google.api.gax.grpc.ClientSettings;
@@ -32,7 +33,6 @@ import com.google.api.gax.grpc.OperationCallSettings;
 import com.google.api.gax.grpc.PagedCallSettings;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
-import com.google.api.gax.grpc.RequestIssuer;
 import com.google.api.gax.grpc.SimpleCallSettings;
 import com.google.api.gax.grpc.StreamingCallSettings;
 import com.google.api.gax.grpc.UnaryCallSettings;
@@ -647,31 +647,32 @@ public class LibraryServiceSettings extends ClientSettings {
         }
 
         @Override
-        public PublishSeriesRequest mergeRequests(Collection<PublishSeriesRequest> requests) {
-          PublishSeriesRequest firstRequest = requests.iterator().next();
-
-          List<Book> elements = new ArrayList<>();
-          for (PublishSeriesRequest request : requests) {
-            elements.addAll(request.getBooksList());
+        public BundlingDescriptor.RequestBuilder<RequestT> getRequestBuilder() {
+          return new BundlingDescriptor.RequestBuilder<RequestT>() {
+            private PublishSeriesRequest.Builder builder;
+            @Override
+            public void appendRequest(RequestT request) {
+              if (builder == null) {
+                builder = request.toBuilder();
+              } else {
+                builder.addAllBooks(request.getBooksList());
+              }
+            }
+            @Override
+            public RequestT build() {
+              return builder.build();
+            }
           }
-
-          PublishSeriesRequest bundleRequest =
-              PublishSeriesRequest.newBuilder()
-                  .setEdition(firstRequest.getEdition())
-                  .setName(firstRequest.getName())
-                  .addAllBooks(elements)
-                  .build();
-          return bundleRequest;
         }
 
         @Override
         public void splitResponse(
             PublishSeriesResponse bundleResponse,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
+            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
           int bundleMessageIndex = 0;
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
             List<String> subresponseElements = new ArrayList<>();
-            int subresponseCount = responder.getRequest().getBooksCount();
+            int subresponseCount = responder.getMergedRequestCount();
             for (int i = 0; i < subresponseCount; i++) {
               subresponseElements.add(bundleResponse.getBookNames(bundleMessageIndex));
               bundleMessageIndex += 1;
@@ -685,8 +686,8 @@ public class LibraryServiceSettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
+          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
             responder.setException(throwable);
           }
         }
