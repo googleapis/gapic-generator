@@ -20,9 +20,6 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class FileHeaderView {
-  Boolean hasVersion = null;
-  Boolean hasGeneratorVersion = null;
-
   public abstract ImmutableList<String> copyrightLines();
 
   public abstract ImmutableList<String> licenseLines();
@@ -39,19 +36,15 @@ public abstract class FileHeaderView {
   public abstract String version();
 
   public boolean hasVersion() {
-    if (hasVersion == null) {
-      hasVersion = version() != null && version().length() > 0;
-    }
-    return hasVersion;
+    String version = version();
+    return version != null && version.length() > 0;
   }
 
   public abstract String generatorVersion();
 
   public boolean hasGeneratorVersion() {
-    if (hasGeneratorVersion == null) {
-      hasGeneratorVersion = generatorVersion() != null && generatorVersion().length() > 0;
-    }
-    return hasGeneratorVersion;
+    String generatorVersion = generatorVersion();
+    return generatorVersion != null && generatorVersion.length() > 0;
   }
 
   public abstract String localExamplePackageName();
