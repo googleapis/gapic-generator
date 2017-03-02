@@ -389,7 +389,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new RubyGapicContext(model, apiConfig))
+                .setContext(new RubyGapicContext(model, apiConfig, packageConfig))
                 .setSnippetSetRunner(
                     new RubySnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
                 .setSnippetFileNames(Arrays.asList("ruby/main.snip"))

@@ -15,8 +15,10 @@
 package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.BundlingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
@@ -59,8 +61,11 @@ import javax.annotation.Nullable;
 /** A GapicContext specialized for Ruby. */
 public class RubyGapicContext extends GapicContext implements RubyContext {
 
-  public RubyGapicContext(Model model, ApiConfig apiConfig) {
+  private PackageMetadataConfig packageConfig;
+
+  public RubyGapicContext(Model model, ApiConfig apiConfig, PackageMetadataConfig packageConfig) {
     super(model, apiConfig);
+    this.packageConfig = packageConfig;
   }
 
   @Override
@@ -340,6 +345,10 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
   public Iterable<String> getApiModules() {
     return Splitter.on("::").splitToList(getApiConfig().getPackageName());
+  }
+
+  public String getPackageVersion() {
+    return packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower();
   }
 
   public OptionalArrayMethodView getMethodView(Interface service, Method method) {
