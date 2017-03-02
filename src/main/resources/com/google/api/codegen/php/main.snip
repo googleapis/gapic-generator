@@ -134,6 +134,7 @@
     {@pageStreamingDescriptorFunction(xapiClass)}
     {@longRunningDescriptorFunction(xapiClass)}
     {@grpcStreamingDescriptorFunction(xapiClass)}
+    {@gapicVersionFunction()}
 @end
 
 @private formatResourceFunction(function)
@@ -250,6 +251,20 @@
         }
         {@""}
     @end
+@end
+
+@private gapicVersionFunction()
+    private static function getGapicVersion()
+    {
+        if (file_exists(__DIR__ . "../VERSION")) {
+          $gapicVersion = file_get_contents(__DIR__ . "../VERSION");
+        } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
+          $gapicVersion = \Google\Cloud\ServiceBuilder::VERSION;
+        } else {
+          $gapicVersion = null;
+        }
+    }
+    {@""}
 @end
 
 @private functions(xapiClass)
@@ -385,10 +400,16 @@
             }
         @end
 
+        if (isset($options['libVersion'])) {
+          $gapicVersion = $options['libVersion'];
+        } else {
+          $gapicVersion = self::getGapicVersion();
+        }
+
         $headerDescriptor = new AgentHeaderDescriptor([
             'libName' => $options['libName'],
             'libVersion' => $options['libVersion'],
-            'gapicVersion' => self::CODEGEN_VERSION,
+            'gapicVersion' => $gapicVersion,
         ]);
 
         $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
