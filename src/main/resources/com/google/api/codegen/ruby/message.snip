@@ -1,12 +1,35 @@
 @extends "ruby/common.snip"
 
 @snippet generate(doc)
-  @let body = documentChildren(doc)
-    {@licenseSection(doc.fileHeader)}
+  {@license(doc.fileHeader)}
 
-    {@module(doc.fileHeader.modules.iterator, body) }
+  {@renderDoc(doc.fileHeader.modules.iterator, doc) }
+
+@end
+
+@private renderDoc(moduleNames, doc)
+  @if moduleNames.hasNext
+    @let moduleName = moduleNames.next
+      @if moduleNames.hasNext
+      @else
+        @##
+        @# The `{@doc.packageName}` module provides the following types:
+        @#
+        @# Class | Description
+        @# ----- | -----------
+        @join child : doc.elementDocs
+          @# {@child.fullyQualifiedType} | {@child.firstLine}
+        @end
+        @#
+
+      @end
+      module {@moduleName}
+        {@renderDoc(moduleNames, doc)}
+      end
+    @end
+  @else
+    {@documentChildren(doc)}
   @end
-
 @end
 
 @private documentMessage(doc)
@@ -72,12 +95,6 @@
   @default
     {@unhandledCase()}
   @end
-@end
-
-@private licenseSection(fileHeader)
-  {@toComments(fileHeader.copyrightLines)}
-  @#
-  {@toComments(fileHeader.licenseLines)}
 @end
 
 @private toComments(commentLines)

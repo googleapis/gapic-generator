@@ -27,15 +27,26 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class GrpcElementDocTransformer {
   public List<GrpcElementDocView> generateElementDocs(
       ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
-    ImmutableList.Builder<GrpcElementDocView> children = ImmutableList.builder();
+    List<GrpcElementDocView> children = new ArrayList<>();
     children.addAll(generateMessageDocs(typeTable, namer, containerElement));
     children.addAll(generateEnumDocs(typeTable, namer, containerElement));
-    return children.build();
+    Collections.sort(
+        children,
+        new Comparator<GrpcElementDocView>() {
+          @Override
+          public int compare(GrpcElementDocView a, GrpcElementDocView b) {
+            return a.name().compareTo(b.name());
+          }
+        });
+    return children;
   }
 
   private List<GrpcElementDocView> generateMessageDocs(
@@ -49,6 +60,7 @@ public class GrpcElementDocTransformer {
 
       GrpcMessageDocView.Builder doc = GrpcMessageDocView.newBuilder();
       doc.name(typeTable.getNicknameFor(TypeRef.of(message)));
+      doc.fullyQualifiedType(typeTable.getFullNameFor(message));
       doc.lines(namer.getDocLines(message));
       doc.properties(generateMessagePropertyDocs(typeTable, namer, message.getFields()));
       doc.elementDocs(generateElementDocs(typeTable, namer, message));
@@ -76,6 +88,7 @@ public class GrpcElementDocTransformer {
     for (EnumType enumElement : containerElement.getEnums()) {
       GrpcEnumDocView.Builder doc = GrpcEnumDocView.newBuilder();
       doc.name(typeTable.getNicknameFor(TypeRef.of(enumElement)));
+      doc.fullyQualifiedType(typeTable.getFullNameFor(enumElement));
       doc.lines(namer.getDocLines(enumElement));
       doc.values(generateEnumValueDocs(namer, enumElement));
       enumDocs.add(doc.build());

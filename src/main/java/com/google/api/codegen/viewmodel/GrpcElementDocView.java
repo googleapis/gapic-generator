@@ -14,4 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public interface GrpcElementDocView {}
+public interface GrpcElementDocView {
+  String name();
+}
