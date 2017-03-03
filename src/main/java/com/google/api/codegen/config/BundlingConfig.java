@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.BundlingDescriptorProto;
 import com.google.api.codegen.BundlingSettingsProto;
+import com.google.api.codegen.FlowControlLimitExceededBehavior;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -93,9 +94,11 @@ public abstract class BundlingConfig {
     if (flowControlByteLimit == 0) {
       flowControlByteLimit = null;
     }
-    FlowControlLimitConfig flowControlLimitConfig =
-        FlowControlLimitConfig.fromProto(
-            bundlingConfig.getThresholds().getFlowControlLimitExceededBehavior());
+    FlowControlLimitExceededBehavior flowControlLimitExceededBehavior =
+        bundlingConfig.getThresholds().getFlowControlLimitExceededBehavior();
+    if (flowControlLimitExceededBehavior == FlowControlLimitExceededBehavior.UNSET_BEHAVIOR) {
+      flowControlLimitExceededBehavior = FlowControlLimitExceededBehavior.IGNORE;
+    }
 
     if (bundledFieldName == null) {
       return null;
@@ -112,7 +115,7 @@ public abstract class BundlingConfig {
         subresponseField,
         flowControlElementLimit,
         flowControlByteLimit,
-        flowControlLimitConfig);
+        flowControlLimitExceededBehavior);
   }
 
   public abstract int getElementCountThreshold();
@@ -132,15 +135,15 @@ public abstract class BundlingConfig {
   @Nullable
   public abstract Field getSubresponseField();
 
-  public boolean hasSubresponseField() {
-    return getSubresponseField() != null;
-  }
-
   @Nullable
   public abstract Long getFlowControlElementLimit();
 
   @Nullable
   public abstract Long getFlowControlByteLimit();
 
-  public abstract FlowControlLimitConfig getFlowControlLimitConfig();
+  public abstract FlowControlLimitExceededBehavior getFlowControlLimitExceededBehavior();
+
+  public boolean hasSubresponseField() {
+    return getSubresponseField() != null;
+  }
 }

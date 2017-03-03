@@ -78,7 +78,7 @@ public class BundlingTransformer {
     bundlingConfigView.flowControlElementLimit(bundlingConfig.getFlowControlElementLimit());
     bundlingConfigView.flowControlByteLimit(bundlingConfig.getFlowControlByteLimit());
     bundlingConfigView.flowControlLimitExceededBehavior(
-        bundlingConfig.getFlowControlLimitConfig().toString());
+        bundlingConfig.getFlowControlLimitExceededBehavior().toString());
 
     return bundlingConfigView.build();
   }

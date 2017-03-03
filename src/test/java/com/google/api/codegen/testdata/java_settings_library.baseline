@@ -961,7 +961,7 @@ public class LibraryServiceSettings extends ClientSettings {
           .setDelayThreshold(Duration.millis(500))
           .setFlowControlSettings(
             FlowControlSettings.newBuilder()
-              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
+              .setLimitExceededBehavior(LimitExceededBehavior.IGNORE)
               .build());
       builder.publishSeriesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
@@ -992,12 +992,12 @@ public class LibraryServiceSettings extends ClientSettings {
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.addCommentsSettings().getBundlingSettingsBuilder()
-          .setElementCountThreshold(6)
-          .setRequestByteThreshold(100000)
-          .setDelayThreshold(Duration.millis(500))
+          .setElementCountThreshold(0)
+          .setRequestByteThreshold(0)
+          .setDelayThreshold(Duration.millis(0))
           .setFlowControlSettings(
             FlowControlSettings.newBuilder()
-              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
+              .setLimitExceededBehavior(LimitExceededBehavior.IGNORE)
               .build());
       builder.addCommentsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
