@@ -96,9 +96,6 @@ public abstract class BundlingConfig {
     }
     FlowControlLimitExceededBehavior flowControlLimitExceededBehavior =
         bundlingConfig.getThresholds().getFlowControlLimitExceededBehavior();
-    if (flowControlLimitExceededBehavior == FlowControlLimitExceededBehavior.UNSET_BEHAVIOR) {
-      flowControlLimitExceededBehavior = FlowControlLimitExceededBehavior.IGNORE;
-    }
 
     if (bundledFieldName == null) {
       return null;

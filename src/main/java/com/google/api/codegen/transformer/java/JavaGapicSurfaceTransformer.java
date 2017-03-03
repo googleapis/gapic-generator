@@ -460,6 +460,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     if (interfaceConfig.hasBundlingMethods()) {
       typeTable.saveNicknameFor("com.google.api.gax.bundling.BundlingSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.core.FlowController");
+      typeTable.saveNicknameFor("com.google.api.gax.core.FlowController.LimitExceededBehavior");
+      typeTable.saveNicknameFor("com.google.api.gax.core.FlowControlSettings");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingCallSettings");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingDescriptor");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.BundledRequestIssuer");

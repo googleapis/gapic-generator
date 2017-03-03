@@ -18,6 +18,9 @@ package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.bundling.BundlingSettings;
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.FlowControlSettings;
+import com.google.api.gax.core.FlowController;
+import com.google.api.gax.core.FlowController.LimitExceededBehavior;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.gax.grpc.BundledRequestIssuer;
@@ -647,11 +650,11 @@ public class LibraryServiceSettings extends ClientSettings {
         }
 
         @Override
-        public BundlingDescriptor.RequestBuilder<RequestT> getRequestBuilder() {
-          return new BundlingDescriptor.RequestBuilder<RequestT>() {
+        public BundlingDescriptor.RequestBuilder<PublishSeriesRequest> getRequestBuilder() {
+          return new BundlingDescriptor.RequestBuilder<PublishSeriesRequest>() {
             private PublishSeriesRequest.Builder builder;
             @Override
-            public void appendRequest(RequestT request) {
+            public void appendRequest(PublishSeriesRequest request) {
               if (builder == null) {
                 builder = request.toBuilder();
               } else {
@@ -659,10 +662,10 @@ public class LibraryServiceSettings extends ClientSettings {
               }
             }
             @Override
-            public RequestT build() {
+            public PublishSeriesRequest build() {
               return builder.build();
             }
-          }
+          };
         }
 
         @Override
@@ -711,28 +714,30 @@ public class LibraryServiceSettings extends ClientSettings {
         }
 
         @Override
-        public AddCommentsRequest mergeRequests(Collection<AddCommentsRequest> requests) {
-          AddCommentsRequest firstRequest = requests.iterator().next();
-
-          List<Comment> elements = new ArrayList<>();
-          for (AddCommentsRequest request : requests) {
-            elements.addAll(request.getCommentsList());
-          }
-
-          AddCommentsRequest bundleRequest =
-              AddCommentsRequest.newBuilder()
-                  .setName(firstRequest.getName())
-                  .addAllComments(elements)
-                  .build();
-          return bundleRequest;
+        public BundlingDescriptor.RequestBuilder<AddCommentsRequest> getRequestBuilder() {
+          return new BundlingDescriptor.RequestBuilder<AddCommentsRequest>() {
+            private AddCommentsRequest.Builder builder;
+            @Override
+            public void appendRequest(AddCommentsRequest request) {
+              if (builder == null) {
+                builder = request.toBuilder();
+              } else {
+                builder.addAllComments(request.getCommentsList());
+              }
+            }
+            @Override
+            public AddCommentsRequest build() {
+              return builder.build();
+            }
+          };
         }
 
         @Override
         public void splitResponse(
             Empty bundleResponse,
-            Collection<? extends RequestIssuer<AddCommentsRequest, Empty>> bundle) {
+            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
           int bundleMessageIndex = 0;
-          for (RequestIssuer<AddCommentsRequest, Empty> responder : bundle) {
+          for (BundledRequestIssuer<Empty> responder : bundle) {
             Empty response =
                 Empty.newBuilder().build();
             responder.setResponse(response);
@@ -742,8 +747,8 @@ public class LibraryServiceSettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends RequestIssuer<AddCommentsRequest, Empty>> bundle) {
-          for (RequestIssuer<AddCommentsRequest, Empty> responder : bundle) {
+            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
+          for (BundledRequestIssuer<Empty> responder : bundle) {
             responder.setException(throwable);
           }
         }
@@ -955,7 +960,7 @@ public class LibraryServiceSettings extends ClientSettings {
           .setDelayThreshold(Duration.millis(500))
           .setFlowControlSettings(
             FlowControlSettings.newBuilder()
-              .setLimitExceededBehavior(LimitExceededBehavior.IGNORE)
+              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
               .build());
       builder.publishSeriesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
@@ -991,7 +996,7 @@ public class LibraryServiceSettings extends ClientSettings {
           .setDelayThreshold(Duration.millis(0))
           .setFlowControlSettings(
             FlowControlSettings.newBuilder()
-              .setLimitExceededBehavior(LimitExceededBehavior.IGNORE)
+              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
               .build());
       builder.addCommentsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
