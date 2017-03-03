@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class BundlingConfigView {
@@ -27,6 +28,22 @@ public abstract class BundlingConfigView {
   public abstract long requestByteLimit();
 
   public abstract long delayThresholdMillis();
+
+  @Nullable
+  public abstract Long flowControlElementLimit();
+
+  @Nullable
+  public abstract Long flowControlByteLimit();
+
+  public abstract String flowControlLimitExceededBehavior();
+
+  public boolean hasFlowControlElementLimit() {
+    return flowControlElementLimit() != null;
+  }
+
+  public boolean hasFlowControlByteLimit() {
+    return flowControlByteLimit() != null;
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_BundlingConfigView.Builder();
@@ -43,6 +60,12 @@ public abstract class BundlingConfigView {
     public abstract Builder requestByteLimit(long val);
 
     public abstract Builder delayThresholdMillis(long val);
+
+    public abstract Builder flowControlElementLimit(Long val);
+
+    public abstract Builder flowControlByteLimit(Long val);
+
+    public abstract Builder flowControlLimitExceededBehavior(String val);
 
     public abstract BundlingConfigView build();
   }
