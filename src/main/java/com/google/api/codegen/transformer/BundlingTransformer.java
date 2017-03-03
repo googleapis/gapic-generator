@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.FlowControlLimitExceededBehavior;
+import com.google.api.codegen.FlowControlLimitExceededBehaviorProto;
 import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
@@ -92,7 +92,7 @@ public class BundlingTransformer {
   }
 
   private static FlowControlLimitBehavior getFlowControlLimitBehavior(
-      FlowControlLimitExceededBehavior behavior) {
+      FlowControlLimitExceededBehaviorProto behavior) {
     switch (behavior) {
       case BLOCK:
         return FlowControlLimitBehavior.Block;

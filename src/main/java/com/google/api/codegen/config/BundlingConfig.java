@@ -17,7 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.BundlingDescriptorProto;
 import com.google.api.codegen.BundlingSettingsProto;
-import com.google.api.codegen.FlowControlLimitExceededBehavior;
+import com.google.api.codegen.FlowControlLimitExceededBehaviorProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -94,7 +94,7 @@ public abstract class BundlingConfig {
     if (flowControlByteLimit == 0) {
       flowControlByteLimit = null;
     }
-    FlowControlLimitExceededBehavior flowControlLimitExceededBehavior =
+    FlowControlLimitExceededBehaviorProto flowControlLimitExceededBehavior =
         bundlingConfig.getThresholds().getFlowControlLimitExceededBehavior();
 
     if (bundledFieldName == null) {
@@ -138,7 +138,7 @@ public abstract class BundlingConfig {
   @Nullable
   public abstract Long getFlowControlByteLimit();
 
-  public abstract FlowControlLimitExceededBehavior getFlowControlLimitExceededBehavior();
+  public abstract FlowControlLimitExceededBehaviorProto getFlowControlLimitExceededBehavior();
 
   public boolean hasSubresponseField() {
     return getSubresponseField() != null;
