@@ -17,25 +17,20 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.BundlingConfigProto;
 import com.google.api.codegen.BundlingDescriptorProto;
 import com.google.api.codegen.BundlingSettingsProto;
+import com.google.api.codegen.FlowControlLimitExceededBehavior;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
 
 /** BundlingConfig represents the bundling configuration for a method. */
-public class BundlingConfig {
-  private final int elementCountThreshold;
-  private final long requestByteThreshold;
-  private final int elementCountLimit;
-  private final long requestByteLimit;
-  private final long delayThresholdMillis;
-  private final Field bundledField;
-  private final ImmutableList<FieldSelector> discriminatorFields;
-  private final Field subresponseField;
+@AutoValue
+public abstract class BundlingConfig {
 
   /**
    * Creates an instance of BundlingConfig based on BundlingConfigProto, linking it up with the
@@ -90,12 +85,23 @@ public class BundlingConfig {
     int elementCountLimit = bundlingSettings.getElementCountLimit();
     long requestByteLimit = bundlingSettings.getRequestByteLimit();
     long delayThresholdMillis = bundlingConfig.getThresholds().getDelayThresholdMillis();
+    Long flowControlElementLimit =
+        (long) bundlingConfig.getThresholds().getFlowControlElementLimit();
+    if (flowControlElementLimit == 0) {
+      flowControlElementLimit = null;
+    }
+    Long flowControlByteLimit = (long) bundlingConfig.getThresholds().getFlowControlByteLimit();
+    if (flowControlByteLimit == 0) {
+      flowControlByteLimit = null;
+    }
+    FlowControlLimitExceededBehavior flowControlLimitExceededBehavior =
+        bundlingConfig.getThresholds().getFlowControlLimitExceededBehavior();
 
     if (bundledFieldName == null) {
       return null;
     }
 
-    return new BundlingConfig(
+    return new AutoValue_BundlingConfig(
         elementCountThreshold,
         requestByteThreshold,
         elementCountLimit,
@@ -103,62 +109,38 @@ public class BundlingConfig {
         delayThresholdMillis,
         bundledField,
         discriminatorsBuilder.build(),
-        subresponseField);
+        subresponseField,
+        flowControlElementLimit,
+        flowControlByteLimit,
+        flowControlLimitExceededBehavior);
   }
 
-  private BundlingConfig(
-      int elementCountThreshold,
-      long requestByteThreshold,
-      int elementCountLimit,
-      long requestByteLimit,
-      long delayThresholdMillis,
-      Field bundledField,
-      ImmutableList<FieldSelector> discriminatorFields,
-      Field subresponseField) {
-    this.elementCountThreshold = elementCountThreshold;
-    this.requestByteThreshold = requestByteThreshold;
-    this.elementCountLimit = elementCountLimit;
-    this.requestByteLimit = requestByteLimit;
-    this.delayThresholdMillis = delayThresholdMillis;
-    this.bundledField = bundledField;
-    this.discriminatorFields = discriminatorFields;
-    this.subresponseField = subresponseField;
-  }
+  public abstract int getElementCountThreshold();
 
-  public int getElementCountThreshold() {
-    return elementCountThreshold;
-  }
+  public abstract long getRequestByteThreshold();
 
-  public long getRequestByteThreshold() {
-    return requestByteThreshold;
-  }
+  public abstract int getElementCountLimit();
 
-  public int getElementCountLimit() {
-    return elementCountLimit;
-  }
+  public abstract long getRequestByteLimit();
 
-  public long getRequestByteLimit() {
-    return requestByteLimit;
-  }
+  public abstract long getDelayThresholdMillis();
 
-  public long getDelayThresholdMillis() {
-    return delayThresholdMillis;
-  }
+  public abstract Field getBundledField();
 
-  public Field getBundledField() {
-    return bundledField;
-  }
-
-  public ImmutableList<FieldSelector> getDiscriminatorFields() {
-    return discriminatorFields;
-  }
-
-  public boolean hasSubresponseField() {
-    return subresponseField != null;
-  }
+  public abstract ImmutableList<FieldSelector> getDiscriminatorFields();
 
   @Nullable
-  public Field getSubresponseField() {
-    return subresponseField;
+  public abstract Field getSubresponseField();
+
+  @Nullable
+  public abstract Long getFlowControlElementLimit();
+
+  @Nullable
+  public abstract Long getFlowControlByteLimit();
+
+  public abstract FlowControlLimitExceededBehavior getFlowControlLimitExceededBehavior();
+
+  public boolean hasSubresponseField() {
+    return getSubresponseField() != null;
   }
 }

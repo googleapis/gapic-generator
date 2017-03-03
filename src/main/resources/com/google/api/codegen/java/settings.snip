@@ -526,7 +526,17 @@
         builder.{@settings.settingsGetFunction}().getBundlingSettingsBuilder()
             .setElementCountThreshold({@settings.bundlingConfig.elementCountThreshold})
             .setRequestByteThreshold({@settings.bundlingConfig.requestByteThreshold})
-            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}));
+            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}))
+            .setFlowControlSettings(
+              FlowControlSettings.newBuilder()
+                @if settings.bundlingConfig.hasFlowControlElementLimit
+                  .setMaxOutstandingElementCount({@settings.bundlingConfig.flowControlElementLimit})
+                @end
+                @if settings.bundlingConfig.hasFlowControlByteLimit
+                  .setMaxOutstandingRequestBytes({@settings.bundlingConfig.flowControlByteLimit})
+                @end
+                .setLimitExceededBehavior(LimitExceededBehavior.{@settings.bundlingConfig.flowControlLimitExceededBehavior})
+                .build());
       @default
       @end
       # retry settings

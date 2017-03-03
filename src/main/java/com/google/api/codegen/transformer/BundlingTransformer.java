@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.FlowControlLimitExceededBehavior;
 import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
@@ -31,6 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BundlingTransformer {
+
+  enum FlowControlLimitBehavior {
+    ThrowException,
+    Block,
+    Ignore,
+  }
 
   public List<BundlingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
@@ -75,8 +82,30 @@ public class BundlingTransformer {
     bundlingConfigView.requestByteThreshold(bundlingConfig.getRequestByteThreshold());
     bundlingConfigView.requestByteLimit(bundlingConfig.getRequestByteLimit());
     bundlingConfigView.delayThresholdMillis(bundlingConfig.getDelayThresholdMillis());
+    bundlingConfigView.flowControlElementLimit(bundlingConfig.getFlowControlElementLimit());
+    bundlingConfigView.flowControlByteLimit(bundlingConfig.getFlowControlByteLimit());
+    bundlingConfigView.flowControlLimitExceededBehavior(
+        getFlowControlLimitBehavior(bundlingConfig.getFlowControlLimitExceededBehavior())
+            .toString());
 
     return bundlingConfigView.build();
+  }
+
+  private static FlowControlLimitBehavior getFlowControlLimitBehavior(
+      FlowControlLimitExceededBehavior behavior) {
+    switch (behavior) {
+      case BLOCK:
+        return FlowControlLimitBehavior.Block;
+      case THROW_EXCEPTION:
+        return FlowControlLimitBehavior.ThrowException;
+      case IGNORE:
+      case UNSET_BEHAVIOR:
+        return FlowControlLimitBehavior.Ignore;
+      case UNRECOGNIZED:
+      default:
+        throw new IllegalArgumentException(
+            "Unexpected FlowControlLimitExceededBehavior: " + behavior);
+    }
   }
 
   private List<String> generateDiscriminatorFieldNames(BundlingConfig bundling) {
