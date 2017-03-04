@@ -528,6 +528,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedListResponseFactory"));
   }
 
+  /** The variable name of the gRPC request object. */
+  public String getRequestVariableName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getRequestVariableName");
+  }
+
   /////////////////////////////////////// Type names /////////////////////////////////////////////
 
   /** The name of the class that implements a particular proto interface. */
@@ -803,6 +808,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getOneofVariantTypeName");
   }
 
+  /**
+   * The formatted name of a type used in long running operations, i.e. the operation payload and
+   * metadata,
+   */
+  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getLongRunningOperationTypeName");
+  }
+
+  /** The type name for the gPRC request. */
+  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getRequestTypeName");
+  }
+
   /////////////////////////////////////// Resource names //////////////////////////////////////////
 
   public String getResourceParameterName(ResourceNameConfig resourceNameConfig) {
@@ -880,6 +898,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The key to use in a dictionary for the given method. */
   public String getMethodKey(Method method) {
     return keyName(Name.upperCamel(method.getSimpleName()));
+  }
+
+  /** The key to use in a dictionary for the given field. */
+  public String getFieldKey(Field field) {
+    return keyName(Name.from(field.getSimpleName()));
   }
 
   /** The path to the client config for the given interface. */

@@ -48,7 +48,7 @@ import org.joda.time.Duration;
 /**
  * Settings class to configure an instance of {@link NoTemplatesApiServiceClient}.
  */
-@Generated("by GAPIC")
+@Generated("by GAPIC v0.0.5")
 @ExperimentalApi
 public class NoTemplatesApiServiceSettings extends ClientSettings {
 
@@ -58,8 +58,8 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   private static final int DEFAULT_SERVICE_PORT = 443;
 
 
-  private static final String DEFAULT_GENERATOR_NAME = "gapic";
-  private static final String DEFAULT_GENERATOR_VERSION = "0.0.5";
+  private static final String DEFAULT_GAPIC_NAME = "gapic";
+  private static final String DEFAULT_GAPIC_VERSION = "";
 
   private final SimpleCallSettings<IncrementRequest, Empty> incrementSettings;
 
@@ -94,14 +94,18 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
         ;
   }
 
-  /**
-   * Returns a builder for the default ChannelProvider for this service.
-   */
+  /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
+        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
         .setPort(DEFAULT_SERVICE_PORT)
-        .setGeneratorHeader(DEFAULT_GENERATOR_NAME, DEFAULT_GENERATOR_VERSION)
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+  }
+
+  private static String getGapicVersion() {
+    String packageVersion = NoTemplatesApiServiceSettings.class.getPackage().getImplementationVersion();
+    return packageVersion != null ? packageVersion : DEFAULT_GAPIC_VERSION;
   }
 
   /**

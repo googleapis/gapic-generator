@@ -77,7 +77,7 @@ public class RubyNameFormatter implements NameFormatter {
 
   @Override
   public String inittedConstantName(Name name) {
-    return wrapIfKeywordOrBuiltIn(name.toUpperCamel());
+    return wrapIfKeywordOrBuiltIn(name.toUpperUnderscore());
   }
 
   @Override

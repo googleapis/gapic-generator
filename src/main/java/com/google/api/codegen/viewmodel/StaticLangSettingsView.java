@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class StaticLangSettingsView {
@@ -29,9 +28,6 @@ public abstract class StaticLangSettingsView {
   public abstract String serviceAddress();
 
   public abstract Integer servicePort();
-
-  @Nullable
-  public abstract String toolkitVersion();
 
   public abstract Iterable<String> authScopes();
 
@@ -87,8 +83,6 @@ public abstract class StaticLangSettingsView {
     public abstract Builder serviceAddress(String val);
 
     public abstract Builder servicePort(Integer val);
-
-    public abstract Builder toolkitVersion(String val);
 
     public abstract Builder authScopes(Iterable<String> val);
 

@@ -4,7 +4,11 @@
   {@renderFileHeader(settingsFile.fileHeader)}
 
   {@settingsDoc(settingsFile.settings.doc)}
-  @@Generated("by GAPIC")
+  @if settingsFile.fileHeader.hasGeneratorVersion
+    @@Generated("by GAPIC v{@settingsFile.fileHeader.generatorVersion}")
+  @else
+    @@Generated("by GAPIC")
+  @end
   @@ExperimentalApi
   public class {@settingsFile.settings.name} extends ClientSettings {
     {@constants(settingsFile.settings)}
@@ -73,8 +77,8 @@
     {@""}
   @end
 
-  private static final String DEFAULT_GENERATOR_NAME = "gapic";
-  private static final String DEFAULT_GENERATOR_VERSION = "{@xsettingsClass.toolkitVersion}";
+  private static final String DEFAULT_GAPIC_NAME = "gapic";
+  private static final String DEFAULT_GAPIC_VERSION = "";
   {@""}
 @end
 
@@ -126,17 +130,18 @@
         ;
   }
 
-  /**
-   * Returns a builder for the default ChannelProvider for this service.
-   */
+  /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
-        @if xsettingsClass.hasDefaultServiceAddress
-            .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-        @end
+        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
         .setPort(DEFAULT_SERVICE_PORT)
-        .setGeneratorHeader(DEFAULT_GENERATOR_NAME, DEFAULT_GENERATOR_VERSION)
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+  }
+
+  private static String getGapicVersion() {
+    String packageVersion = {@xsettingsClass.name}.class.getPackage().getImplementationVersion();
+    return packageVersion != null ? packageVersion : DEFAULT_GAPIC_VERSION;
   }
 
   /**
