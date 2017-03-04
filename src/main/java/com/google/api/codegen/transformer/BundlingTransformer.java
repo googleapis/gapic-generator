@@ -33,12 +33,6 @@ import java.util.List;
 
 public class BundlingTransformer {
 
-  enum FlowControlLimitBehavior {
-    ThrowException,
-    Block,
-    Ignore,
-  }
-
   public List<BundlingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     ImmutableList.Builder<BundlingDescriptorView> descriptors = ImmutableList.builder();
@@ -85,22 +79,21 @@ public class BundlingTransformer {
     bundlingConfigView.flowControlElementLimit(bundlingConfig.getFlowControlElementLimit());
     bundlingConfigView.flowControlByteLimit(bundlingConfig.getFlowControlByteLimit());
     bundlingConfigView.flowControlLimitExceededBehavior(
-        getFlowControlLimitBehavior(bundlingConfig.getFlowControlLimitExceededBehavior())
-            .toString());
+        getFlowControlLimitBehavior(bundlingConfig.getFlowControlLimitExceededBehavior()));
 
     return bundlingConfigView.build();
   }
 
-  private static FlowControlLimitBehavior getFlowControlLimitBehavior(
+  private static String getFlowControlLimitBehavior(
       FlowControlLimitExceededBehaviorProto behavior) {
     switch (behavior) {
       case BLOCK:
-        return FlowControlLimitBehavior.Block;
+        return "Block";
       case THROW_EXCEPTION:
-        return FlowControlLimitBehavior.ThrowException;
+        return "ThrowException";
       case IGNORE:
       case UNSET_BEHAVIOR:
-        return FlowControlLimitBehavior.Ignore;
+        return "Ignore";
       case UNRECOGNIZED:
       default:
         throw new IllegalArgumentException(
