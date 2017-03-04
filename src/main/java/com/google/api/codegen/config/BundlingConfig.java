@@ -94,8 +94,9 @@ public abstract class BundlingConfig {
     if (flowControlByteLimit == 0) {
       flowControlByteLimit = null;
     }
-    FlowControlLimitExceededBehavior flowControlLimitExceededBehavior =
-        bundlingConfig.getThresholds().getFlowControlLimitExceededBehavior();
+    FlowControlLimitConfig flowControlLimitConfig =
+        FlowControlLimitConfig.fromProto(
+            bundlingConfig.getThresholds().getFlowControlLimitExceededBehavior());
 
     if (bundledFieldName == null) {
       return null;
@@ -112,7 +113,7 @@ public abstract class BundlingConfig {
         subresponseField,
         flowControlElementLimit,
         flowControlByteLimit,
-        flowControlLimitExceededBehavior);
+        flowControlLimitConfig);
   }
 
   public abstract int getElementCountThreshold();
@@ -132,15 +133,15 @@ public abstract class BundlingConfig {
   @Nullable
   public abstract Field getSubresponseField();
 
+  public boolean hasSubresponseField() {
+    return getSubresponseField() != null;
+  }
+
   @Nullable
   public abstract Long getFlowControlElementLimit();
 
   @Nullable
   public abstract Long getFlowControlByteLimit();
 
-  public abstract FlowControlLimitExceededBehavior getFlowControlLimitExceededBehavior();
-
-  public boolean hasSubresponseField() {
-    return getSubresponseField() != null;
-  }
+  public abstract FlowControlLimitConfig getFlowControlLimitConfig();
 }

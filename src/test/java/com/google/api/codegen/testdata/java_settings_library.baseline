@@ -714,30 +714,28 @@ public class LibraryServiceSettings extends ClientSettings {
         }
 
         @Override
-        public BundlingDescriptor.RequestBuilder<AddCommentsRequest> getRequestBuilder() {
-          return new BundlingDescriptor.RequestBuilder<AddCommentsRequest>() {
-            private AddCommentsRequest.Builder builder;
-            @Override
-            public void appendRequest(AddCommentsRequest request) {
-              if (builder == null) {
-                builder = request.toBuilder();
-              } else {
-                builder.addAllComments(request.getCommentsList());
-              }
-            }
-            @Override
-            public AddCommentsRequest build() {
-              return builder.build();
-            }
-          };
+        public AddCommentsRequest mergeRequests(Collection<AddCommentsRequest> requests) {
+          AddCommentsRequest firstRequest = requests.iterator().next();
+
+          List<Comment> elements = new ArrayList<>();
+          for (AddCommentsRequest request : requests) {
+            elements.addAll(request.getCommentsList());
+          }
+
+          AddCommentsRequest bundleRequest =
+              AddCommentsRequest.newBuilder()
+                  .setName(firstRequest.getName())
+                  .addAllComments(elements)
+                  .build();
+          return bundleRequest;
         }
 
         @Override
         public void splitResponse(
             Empty bundleResponse,
-            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
+            Collection<? extends RequestIssuer<AddCommentsRequest, Empty>> bundle) {
           int bundleMessageIndex = 0;
-          for (BundledRequestIssuer<Empty> responder : bundle) {
+          for (RequestIssuer<AddCommentsRequest, Empty> responder : bundle) {
             Empty response =
                 Empty.newBuilder().build();
             responder.setResponse(response);
@@ -747,8 +745,8 @@ public class LibraryServiceSettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
-          for (BundledRequestIssuer<Empty> responder : bundle) {
+            Collection<? extends RequestIssuer<AddCommentsRequest, Empty>> bundle) {
+          for (RequestIssuer<AddCommentsRequest, Empty> responder : bundle) {
             responder.setException(throwable);
           }
         }
@@ -991,9 +989,9 @@ public class LibraryServiceSettings extends ClientSettings {
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.addCommentsSettings().getBundlingSettingsBuilder()
-          .setElementCountThreshold(0)
-          .setRequestByteThreshold(0)
-          .setDelayThreshold(Duration.millis(0))
+          .setElementCountThreshold(6)
+          .setRequestByteThreshold(100000)
+          .setDelayThreshold(Duration.millis(500))
           .setFlowControlSettings(
             FlowControlSettings.newBuilder()
               .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
