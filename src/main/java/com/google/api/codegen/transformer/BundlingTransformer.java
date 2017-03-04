@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.FlowControlLimitExceededBehaviorProto;
 import com.google.api.codegen.config.BundlingConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
@@ -79,26 +78,9 @@ public class BundlingTransformer {
     bundlingConfigView.flowControlElementLimit(bundlingConfig.getFlowControlElementLimit());
     bundlingConfigView.flowControlByteLimit(bundlingConfig.getFlowControlByteLimit());
     bundlingConfigView.flowControlLimitExceededBehavior(
-        getFlowControlLimitBehavior(bundlingConfig.getFlowControlLimitExceededBehavior()));
+        bundlingConfig.getFlowControlLimitConfig().toString());
 
     return bundlingConfigView.build();
-  }
-
-  private static String getFlowControlLimitBehavior(
-      FlowControlLimitExceededBehaviorProto behavior) {
-    switch (behavior) {
-      case BLOCK:
-        return "Block";
-      case THROW_EXCEPTION:
-        return "ThrowException";
-      case IGNORE:
-      case UNSET_BEHAVIOR:
-        return "Ignore";
-      case UNRECOGNIZED:
-      default:
-        throw new IllegalArgumentException(
-            "Unexpected FlowControlLimitExceededBehavior: " + behavior);
-    }
   }
 
   private List<String> generateDiscriminatorFieldNames(BundlingConfig bundling) {
