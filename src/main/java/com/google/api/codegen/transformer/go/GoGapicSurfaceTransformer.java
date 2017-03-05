@@ -317,7 +317,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   @VisibleForTesting
   void addXApiImports(SurfaceTransformerContext context, Collection<Method> methods) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.saveNicknameFor("fmt;;;");
     typeTable.saveNicknameFor("cloud.google.com/go/internal/version;;;");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
