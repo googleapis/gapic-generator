@@ -17,6 +17,7 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.bundling.BundlingSettings;
+import com.google.api.gax.bundling.RequestBuilder;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.FlowControlSettings;
 import com.google.api.gax.core.FlowController;
@@ -653,31 +654,32 @@ public class LibraryServiceSettings extends ClientSettings {
         }
 
         @Override
-        public PublishSeriesRequest mergeRequests(Collection<PublishSeriesRequest> requests) {
-          PublishSeriesRequest firstRequest = requests.iterator().next();
-
-          List<Book> elements = new ArrayList<>();
-          for (PublishSeriesRequest request : requests) {
-            elements.addAll(request.getBooksList());
-          }
-
-          PublishSeriesRequest bundleRequest =
-              PublishSeriesRequest.newBuilder()
-                  .setEdition(firstRequest.getEdition())
-                  .setName(firstRequest.getName())
-                  .addAllBooks(elements)
-                  .build();
-          return bundleRequest;
+        public RequestBuilder<PublishSeriesRequest> getRequestBuilder() {
+          return new RequestBuilder<PublishSeriesRequest>() {
+            private PublishSeriesRequest.Builder builder;
+            @Override
+            public void appendRequest(PublishSeriesRequest request) {
+              if (builder == null) {
+                builder = request.toBuilder();
+              } else {
+                builder.addAllBooks(request.getBooksList());
+              }
+            }
+            @Override
+            public PublishSeriesRequest build() {
+              return builder.build();
+            }
+          };
         }
 
         @Override
         public void splitResponse(
             PublishSeriesResponse bundleResponse,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
+            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
           int bundleMessageIndex = 0;
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
             List<String> subresponseElements = new ArrayList<>();
-            int subresponseCount = responder.getRequest().getBooksCount();
+            int subresponseCount = responder.getMergedRequestCount();
             for (int i = 0; i < subresponseCount; i++) {
               subresponseElements.add(bundleResponse.getBookNames(bundleMessageIndex));
               bundleMessageIndex += 1;
@@ -691,8 +693,8 @@ public class LibraryServiceSettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
+          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
             responder.setException(throwable);
           }
         }
@@ -716,28 +718,30 @@ public class LibraryServiceSettings extends ClientSettings {
         }
 
         @Override
-        public AddCommentsRequest mergeRequests(Collection<AddCommentsRequest> requests) {
-          AddCommentsRequest firstRequest = requests.iterator().next();
-
-          List<Comment> elements = new ArrayList<>();
-          for (AddCommentsRequest request : requests) {
-            elements.addAll(request.getCommentsList());
-          }
-
-          AddCommentsRequest bundleRequest =
-              AddCommentsRequest.newBuilder()
-                  .setName(firstRequest.getName())
-                  .addAllComments(elements)
-                  .build();
-          return bundleRequest;
+        public RequestBuilder<AddCommentsRequest> getRequestBuilder() {
+          return new RequestBuilder<AddCommentsRequest>() {
+            private AddCommentsRequest.Builder builder;
+            @Override
+            public void appendRequest(AddCommentsRequest request) {
+              if (builder == null) {
+                builder = request.toBuilder();
+              } else {
+                builder.addAllComments(request.getCommentsList());
+              }
+            }
+            @Override
+            public AddCommentsRequest build() {
+              return builder.build();
+            }
+          };
         }
 
         @Override
         public void splitResponse(
             Empty bundleResponse,
-            Collection<? extends RequestIssuer<AddCommentsRequest, Empty>> bundle) {
+            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
           int bundleMessageIndex = 0;
-          for (RequestIssuer<AddCommentsRequest, Empty> responder : bundle) {
+          for (BundledRequestIssuer<Empty> responder : bundle) {
             Empty response =
                 Empty.newBuilder().build();
             responder.setResponse(response);
@@ -747,8 +751,8 @@ public class LibraryServiceSettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends RequestIssuer<AddCommentsRequest, Empty>> bundle) {
-          for (RequestIssuer<AddCommentsRequest, Empty> responder : bundle) {
+            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
+          for (BundledRequestIssuer<Empty> responder : bundle) {
             responder.setException(throwable);
           }
         }
