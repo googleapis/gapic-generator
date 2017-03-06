@@ -16,9 +16,4 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.transformer.FeatureConfig;
 
-public class GoFeatureConfig extends FeatureConfig {
-  @Override
-  public boolean enableGrpcStreaming() {
-    return true;
-  }
-}
+public class GoFeatureConfig extends FeatureConfig {}

@@ -40,18 +40,18 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   @Override
   public ImportSectionView generateInitCodeImportSection(
       MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
-    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
-    importSection.appImports(generateInitCodeAppImports(context, specItemNodes));
-    return importSection.build();
+    return ImportSectionView.newBuilder()
+        .appImports(generateInitCodeAppImports(context, specItemNodes))
+        .build();
   }
 
   private List<ImportFileView> generateInitCodeAppImports(
       MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
-    ImmutableList.Builder<ImportFileView> appImports = ImmutableList.builder();
-    appImports.add(generateApiImport(context));
-    appImports.addAll(generateProtoImports(context, specItemNodes));
-    appImports.addAll(generatePageStreamingImports(context));
-    return appImports.build();
+    return ImmutableList.<ImportFileView>builder()
+        .add(generateApiImport(context))
+        .addAll(generateProtoImports(context, specItemNodes))
+        .addAll(generatePageStreamingImports(context))
+        .build();
   }
 
   private ImportFileView generateApiImport(MethodTransformerContext context) {
@@ -80,32 +80,34 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generatePageStreamingImports(MethodTransformerContext context) {
     ImmutableList.Builder<ImportFileView> pageStreamingImports = ImmutableList.builder();
     if (context.getMethodConfig().isPageStreaming()) {
-      ImportTypeView.Builder callOptionsImport = ImportTypeView.newBuilder();
-      callOptionsImport.fullName("CallOptions");
-      callOptionsImport.nickname("");
-
-      ImportTypeView.Builder initialPageImport = ImportTypeView.newBuilder();
-      initialPageImport.fullName("INITIAL_PAGE");
-      initialPageImport.nickname("");
-
-      ImportFileView.Builder fileImport = ImportFileView.newBuilder();
-      fileImport.moduleName("google.gax");
-      fileImport.types(ImmutableList.of(callOptionsImport.build(), initialPageImport.build()));
-      pageStreamingImports.add(fileImport.build());
+      ImportTypeView callOptionsImport =
+          ImportTypeView.newBuilder().fullName("CallOptions").nickname("").build();
+      ImportTypeView initialPageImport =
+          ImportTypeView.newBuilder().fullName("INITIAL_PAGE").nickname("").build();
+      ImportFileView fileImport =
+          ImportFileView.newBuilder()
+              .moduleName("google.gax")
+              .types(ImmutableList.of(callOptionsImport, initialPageImport))
+              .build();
+      pageStreamingImports.add(fileImport);
     }
     return pageStreamingImports.build();
   }
 
+  /**
+   * Orders the imports by: (1) number of attributes (least to most), (2) module name (A-Z), (3)
+   * attribute name (A-Z)
+   */
   private Comparator<ImportFileView> importFileViewComparator() {
     return new Comparator<ImportFileView>() {
       @Override
       public int compare(ImportFileView o1, ImportFileView o2) {
-        if (!o1.moduleName().equals(o2.moduleName())) {
-          return o1.moduleName().compareTo(o2.moduleName());
-        }
-
         if (o1.types().size() != o2.types().size()) {
           return o2.types().size() - o1.types().size();
+        }
+
+        if (!o1.moduleName().equals(o2.moduleName())) {
+          return o1.moduleName().compareTo(o2.moduleName());
         }
 
         for (int i = 0; i < o1.types().size(); ++i) {
@@ -122,6 +124,14 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     };
   }
 
+  /**
+   * Generates an import from the fullName and the nickname of a type.
+   *
+   * <p>Handles the following cases: (1) Module only -- generateAppImport("foo.Bar", "foo.Bar") =>
+   * import foo (2) Module and attribute -- generateAppImport("foo.bar.Baz", "bar.Baz") => from foo
+   * import bar (3) Module, attribute, local -- generateAppImport("foo.bar.Baz", "qux.Baz") => from
+   * foo import bar as qux
+   */
   private ImportFileView generateAppImport(String fullName, String nickname) {
     int nicknameDottedClassIndex = nickname.indexOf(".");
     String localName = nickname.substring(0, nicknameDottedClassIndex);
@@ -143,31 +153,27 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private ImportFileView createImport(String moduleName) {
-    ImportFileView.Builder fileImport = ImportFileView.newBuilder();
-    fileImport.moduleName(moduleName);
-    fileImport.types(ImmutableList.<ImportTypeView>of());
-    return fileImport.build();
+    return ImportFileView.newBuilder()
+        .moduleName(moduleName)
+        .types(ImmutableList.<ImportTypeView>of())
+        .build();
   }
 
   private ImportFileView createImport(String moduleName, String attributeName) {
-    ImportTypeView.Builder typeImport = ImportTypeView.newBuilder();
-    typeImport.fullName(attributeName);
-    typeImport.nickname("");
-
-    ImportFileView.Builder fileImport = ImportFileView.newBuilder();
-    fileImport.moduleName(moduleName);
-    fileImport.types(ImmutableList.of(typeImport.build()));
-    return fileImport.build();
+    ImportTypeView typeImport =
+        ImportTypeView.newBuilder().fullName(attributeName).nickname("").build();
+    return ImportFileView.newBuilder()
+        .moduleName(moduleName)
+        .types(ImmutableList.of(typeImport))
+        .build();
   }
 
   private ImportFileView createImport(String moduleName, String attributeName, String localName) {
-    ImportTypeView.Builder typeImport = ImportTypeView.newBuilder();
-    typeImport.fullName(attributeName);
-    typeImport.nickname(localName);
-
-    ImportFileView.Builder fileImport = ImportFileView.newBuilder();
-    fileImport.moduleName(moduleName);
-    fileImport.types(ImmutableList.of(typeImport.build()));
-    return fileImport.build();
+    ImportTypeView typeImport =
+        ImportTypeView.newBuilder().fullName(attributeName).nickname(localName).build();
+    return ImportFileView.newBuilder()
+        .moduleName(moduleName)
+        .types(ImmutableList.of(typeImport))
+        .build();
   }
 }

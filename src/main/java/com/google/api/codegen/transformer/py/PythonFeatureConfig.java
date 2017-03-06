@@ -16,9 +16,4 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.transformer.FeatureConfig;
 
-public class PythonFeatureConfig extends FeatureConfig {
-  @Override
-  public boolean enableGrpcStreaming() {
-    return true;
-  }
-}
+public class PythonFeatureConfig extends FeatureConfig {}

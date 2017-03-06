@@ -26,9 +26,4 @@ public class CSharpFeatureConfig extends FeatureConfig {
   public boolean resourceNameTypesEnabled() {
     return true;
   }
-
-  @Override
-  public boolean enableGrpcStreaming() {
-    return true;
-  }
 }

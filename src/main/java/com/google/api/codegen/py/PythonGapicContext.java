@@ -30,6 +30,7 @@ import com.google.api.codegen.transformer.py.PythonFeatureConfig;
 import com.google.api.codegen.transformer.py.PythonImportSectionTransformer;
 import com.google.api.codegen.transformer.py.PythonModelTypeNameConverter;
 import com.google.api.codegen.transformer.py.PythonSurfaceNamer;
+import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -129,8 +130,8 @@ public class PythonGapicContext extends GapicContext {
   /**
    * Return ApiMethodView for sample gen.
    *
-   * <p>NOTE: Temporary solution to use MVVM with just sample gen. This class will eventually go
-   * away when code gen also converts to MVVM.
+   * <p>TODO(eoogbe): Temporary solution to use MVVM with just sample gen. This class will
+   * eventually go away when code gen also converts to MVVM.
    */
   public ApiMethodView getApiMethodView(Interface service, Method method) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
@@ -488,7 +489,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   public String getSphinxifiedScopedDescription(ProtoElement element) {
-    return PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(element));
+    return new PythonCommentReformatter().reformat(DocumentationUtil.getScopedDescription(element));
   }
 
   /**

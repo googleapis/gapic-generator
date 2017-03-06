@@ -33,11 +33,6 @@ public abstract class JavaFeatureConfig extends FeatureConfig {
     return true;
   }
 
-  @Override
-  public boolean enableGrpcStreaming() {
-    return true;
-  }
-
   public static Builder newBuilder() {
     return new AutoValue_JavaFeatureConfig.Builder();
   }

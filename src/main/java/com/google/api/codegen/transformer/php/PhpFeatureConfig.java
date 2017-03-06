@@ -21,9 +21,4 @@ public class PhpFeatureConfig extends FeatureConfig {
   public boolean enableMixins() {
     return true;
   }
-
-  @Override
-  public boolean enableGrpcStreaming() {
-    return true;
-  }
 }
