@@ -1,25 +1,9 @@
 @extends "common.snip"
 
 @snippet license(fileHeader)
-  @join line : fileHeader.copyrightLines
-    @# {@line}
-  @end
+  {@toComments(fileHeader.copyrightLines)}
   @#
-  @join line : fileHeader.licenseLines
-    @# {@line}
-  @end
-@end
-
-@snippet importList(imports)
-  @join import : imports
-    require "{@import.fullName}"
-  @end
-@end
-
-@snippet renderFileHeader(fileHeader)
-  {@license(fileHeader)}
-
-  {@importList(fileHeader.imports)}
+  {@toComments(fileHeader.licenseLines)}
 @end
 
 @snippet module(moduleNames, content)
@@ -32,8 +16,8 @@
   @end
 @end
 
-@snippet varList(args)
-  @join arg : args on ", "
-    {@arg}
+@snippet toComments(commentLines)
+  @join comment : commentLines
+    @# {@comment}
   @end
 @end

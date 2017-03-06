@@ -36,6 +36,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String name();
 
+  public abstract String requestVariableName();
+
   public abstract String requestTypeName();
 
   public abstract String key();
@@ -53,6 +55,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   public abstract List<RequestObjectParamView> optionalRequestObjectParamsNoPageToken();
 
   public abstract boolean hasRequestParameters();
+
+  public abstract boolean hasRequiredParameters();
 
   public abstract boolean hasReturnValue();
 
@@ -95,6 +99,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder name(String val);
 
+    public abstract Builder requestVariableName(String val);
+
     public abstract Builder requestTypeName(String val);
 
     public abstract Builder key(String val);
@@ -113,6 +119,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
         List<RequestObjectParamView> val);
 
     public abstract Builder hasRequestParameters(boolean val);
+
+    public abstract Builder hasRequiredParameters(boolean val);
 
     public abstract Builder hasReturnValue(boolean val);
 

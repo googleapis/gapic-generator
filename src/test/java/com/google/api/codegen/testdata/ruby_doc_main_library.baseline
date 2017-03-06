@@ -1,11 +1,11 @@
 ============== file: lib/library/v1/library_service_client.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -251,8 +251,8 @@ module Library
         end
 
         google_api_client = "gl-ruby/#{RUBY_VERSION}"
-        google_api_client << " #{lib_name}/{lib_version}" if lib_name
-        google_api_client << " gapic/0.1.0 gax/#{Google::Gax::VERSION}"
+        google_api_client << " #{lib_name}/#{lib_version}" if lib_name
+        google_api_client << " gapic/0.6.8 gax/#{Google::Gax::VERSION}"
         google_api_client << " grpc/#{GRPC::VERSION}"
         google_api_client.freeze
 
@@ -431,11 +431,11 @@ module Library
       #
       # @param name [String]
       #   The name of the shelf to retrieve.
+      # @param options_ [String]
+      #   To test 'options' parameter name conflict.
       # @param message [Google::Example::Library::V1::SomeMessage]
       #   Field to verify that message-type query parameter gets flattened.
       # @param string_builder [Google::Example::Library::V1::StringBuilder]
-      # @param options_ [String]
-      #   To test 'options' parameter name conflict.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -602,12 +602,12 @@ module Library
       #   The shelf in which the series is created.
       # @param books [Array<Google::Example::Library::V1::Book>]
       #   The books to publish in the series.
+      # @param series_uuid [Google::Example::Library::V1::SeriesUuid]
+      #   Uniquely identifies the series to the publishing house.
       # @param edition [Integer]
       #   The edition of the series
       # @param review_copy [true, false]
       #   If the book is in a pre-publish state
-      # @param series_uuid [Google::Example::Library::V1::SeriesUuid]
-      #   Uniquely identifies the series to the publishing house.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.

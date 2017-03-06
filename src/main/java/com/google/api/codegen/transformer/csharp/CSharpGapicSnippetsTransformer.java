@@ -163,9 +163,9 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             methods.add(generateFlattenedAsyncMethod(methodContextFlat, nameSuffix));
             methods.add(generateFlattenedMethod(methodContextFlat, nameSuffix));
           }
-          methods.add(generateRequestAsyncMethod(methodContext));
-          methods.add(generateRequestMethod(methodContext));
         }
+        methods.add(generateRequestAsyncMethod(methodContext));
+        methods.add(generateRequestMethod(methodContext));
       }
     }
 

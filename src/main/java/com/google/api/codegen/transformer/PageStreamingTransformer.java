@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
 import com.google.api.codegen.viewmodel.PagedListResponseFactoryClassView;
@@ -45,7 +44,7 @@ public class PageStreamingTransformer {
       }
       descriptor.responseTokenFieldName(pageStreaming.getResponseTokenField().getSimpleName());
       descriptor.resourcesFieldName(pageStreaming.getResourcesFieldName());
-      descriptor.methodName(Name.upperCamel(method.getSimpleName()).toLowerCamel());
+      descriptor.methodName(context.getNamer().getMethodKey(method));
 
       descriptors.add(descriptor.build());
     }
