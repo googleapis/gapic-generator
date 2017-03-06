@@ -55,6 +55,10 @@ import java.util.Map;
 public class InitCodeTransformer {
   private final ImportSectionTransformer importSectionTransformer;
 
+  public InitCodeTransformer() {
+    this(new StandardImportSectionTransformer());
+  }
+
   public InitCodeTransformer(ImportSectionTransformer importSectionTransformer) {
     this.importSectionTransformer = importSectionTransformer;
   }

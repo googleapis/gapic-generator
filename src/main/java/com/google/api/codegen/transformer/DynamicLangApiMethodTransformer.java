@@ -41,6 +41,10 @@ public class DynamicLangApiMethodTransformer {
   private final InitCodeTransformer initCodeTransformer;
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
 
+  public DynamicLangApiMethodTransformer(ApiMethodParamTransformer apiMethodParamTransformer) {
+    this(apiMethodParamTransformer, new InitCodeTransformer());
+  }
+
   public DynamicLangApiMethodTransformer(
       ApiMethodParamTransformer apiMethodParamTransformer,
       InitCodeTransformer initCodeTransformer) {

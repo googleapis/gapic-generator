@@ -20,7 +20,6 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -49,10 +48,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String SMOKE_TEST_TEMPLATE_FILE = "ruby/smoke_test.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final ImportSectionTransformer importSectionTransformer =
-      new RubyImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(importSectionTransformer);
+      new FileHeaderTransformer(new RubyImportSectionTransformer());
   private final ValueProducer valueProducer = new RubyValueProducer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
 
@@ -119,10 +116,9 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(
       MethodTransformerContext context) {
-    InitCodeTransformer initCodeTransformer = new InitCodeTransformer(importSectionTransformer);
+    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     OptionalArrayMethodView initialApiMethodView =
-        new DynamicLangApiMethodTransformer(
-                new RubyApiMethodParamTransformer(), initCodeTransformer)
+        new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer())
             .generateMethod(context);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
