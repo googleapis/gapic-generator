@@ -237,11 +237,15 @@ describe LibraryServiceClient do
     it "forwards calls to LibraryService::Stub" do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
+        SeriesUuid = Google::Example::Library::V1::SeriesUuid
         Shelf = Google::Example::Library::V1::Shelf
 
         expected_request = PublishSeriesRequest.new(
           shelf: Shelf.new,
           books: [],
+          series_uuid: SeriesUuid.new(
+            series_string: "foobar"
+          ),
         )
 
         mocked_response = PublishSeriesResponse.new
@@ -260,6 +264,9 @@ describe LibraryServiceClient do
         library_service_client = LibraryServiceClient.new
         shelf = Shelf.new
         books = []
+        series_uuid = SeriesUuid.new
+        series_uuid.series_string = "foobar"
+        response = library_service_client.publish_series(shelf, books, series_uuid)
         response = library_service_client.publish_series(shelf, books)
         # Process the response.
         process_response response
