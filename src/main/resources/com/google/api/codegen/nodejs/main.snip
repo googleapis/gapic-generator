@@ -441,18 +441,7 @@
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
        apiMethodView = context.getApiMethodView(service, method)
-    /**
-     @if context.defaultComments(method)
-       {@comments(context.defaultComments(method))}
-       *
-     @end
-     {@comments(util.getDocLines(context.paramComments(service, method)))}
-     {@comments(util.getDocLines(context.returnTypeComment(method, methodConfig)))}
-     *
-     * @@example
-     *
-     {@comments(util.getDocLines(decorateSampleCodeSegment(apiMethodView)))}
-     */
+    {@methodComments(apiMethodView, method, methodConfig)}
     {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options{@callbackParams(apiMethodView)}) {
       @switch apiMethodView.grpcStreamingType.toString
       @case "ClientStreaming"
@@ -483,7 +472,7 @@
        *
        * @@see {@@link https://nodejs.org/api/stream.html}
        *
-       {@comments(util.getDocLines(context.paramComments(service, method)))}
+       {@createParamTypesComment(apiMethodView.doc.paramDocs)}
        * @@return {Stream}
        *   An object stream which emits {@context.typeDocument(methodConfig.getPageStreaming.getResourcesField.getType)} on 'data' event.
        *
@@ -500,6 +489,36 @@
       };
     @default
     @end
+  @end
+@end
+
+@private methodComments(apiMethodView, method, methodConfig)
+  @let doc = apiMethodView.doc
+    /**
+     @if comments(doc.mainDocLines)
+       {@comments(doc.mainDocLines)}
+       *
+     @end
+     {@createParamTypesComment(doc.paramDocs)}
+     {@comments(util.getDocLines(context.returnTypeComment(method, methodConfig)))}
+     *
+     * @@example
+     *
+     {@comments(util.getDocLines(decorateSampleCodeSegment(apiMethodView)))}
+     */
+  @end
+@end
+
+@private createParamTypesComment(paramDocs)
+  @join doc : paramDocs
+    {@paramDoc(doc)}
+  @end
+@end
+
+@private paramDoc(doc)
+  * @@param {{@doc.typeName}} {@doc.paramName}
+  @join line : doc.lines
+    *   {@line}
   @end
 @end
 
