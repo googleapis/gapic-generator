@@ -349,7 +349,7 @@
             for (BundledRequestIssuer<{@desc.responseTypeName}> responder : bundle) {
               @if desc.hasSubresponse
                 {@desc.subresponseTypeName} subresponseElements = new ArrayList<>();
-                int subresponseCount = responder.getMergedRequestCount();
+                long subresponseCount = responder.getMessageCount();
                 for (int i = 0; i < subresponseCount; i++) {
                   subresponseElements.add(bundleResponse.{@desc.subresponseByIndexGetFunction}(bundleMessageIndex));
                   bundleMessageIndex += 1;
