@@ -46,6 +46,9 @@ import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
+import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
+import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTestTransformer;
+import com.google.api.codegen.transformer.ruby.RubyPackageMetadataTransformer;
 import com.google.api.codegen.transformer.ruby.RubyTestsTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
@@ -312,7 +315,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new PythonGapicContext(model, apiConfig))
+                .setContext(new PythonGapicContext(model, apiConfig, packageConfig))
                 .setSnippetSetRunner(
                     new PythonSnippetSetRunner<>(
                         new PythonInterfaceInitializer(apiConfig),
@@ -325,7 +328,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new PythonGapicContext(model, apiConfig))
+                .setContext(new PythonGapicContext(model, apiConfig, packageConfig))
                 .setSnippetSetRunner(
                     new PythonSnippetSetRunner<Interface>(
                         new PythonInterfaceInitializer(apiConfig),
@@ -353,7 +356,7 @@ public class MainGapicProviderFactory
               CommonGapicProvider.<ProtoFile>newBuilder()
                   .setModel(model)
                   .setView(new ProtoFileView())
-                  .setContext(new PythonGapicContext(model, apiConfig))
+                  .setContext(new PythonGapicContext(model, apiConfig, packageConfig))
                   .setSnippetSetRunner(
                       new PythonSnippetSetRunner<>(
                           new PythonProtoFileInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
@@ -409,34 +412,56 @@ public class MainGapicProviderFactory
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(rubyPathMapper)
                 .build();
-
-        providers.add(mainProvider);
-        providers.add(clientConfigProvider);
-
-        if (id.equals(RUBY_DOC)) {
-          GapicProvider<? extends Object> messageProvider =
-              CommonGapicProvider.<ProtoFile>newBuilder()
-                  .setModel(model)
-                  .setView(new ProtoFileView())
-                  .setContext(new RubyGapicContext(model, apiConfig))
-                  .setSnippetSetRunner(
-                      new RubySnippetSetRunner<ProtoFile>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                  .setSnippetFileNames(Arrays.asList("ruby/message.snip"))
-                  .setCodePathMapper(rubyPathMapper)
-                  .build();
-          providers.add(messageProvider);
-        }
-      }
-
-      if (generatorConfig.enableTestGenerator() && id.equals(RUBY)) {
-        GapicProvider<?> testsProvider =
+        GapicProvider<? extends Object> metadataProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setApiConfig(apiConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(snippetContext))
-                .setModelToViewTransformer(new RubyTestsTransformer())
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new RubyPackageMetadataTransformer(packageConfig))
                 .build();
-        providers.add(testsProvider);
+
+        providers.add(mainProvider);
+        providers.add(clientConfigProvider);
+        providers.add(metadataProvider);
+
+        if (id.equals(RUBY_DOC)) {
+          GapicProvider<? extends Object> messageProvider =
+              ViewModelGapicProvider.newBuilder()
+                  .setModel(model)
+                  .setApiConfig(apiConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(new RubyGapicSurfaceDocTransformer(rubyPathMapper))
+                  .build();
+          providers.add(messageProvider);
+        }
+
+        if (generatorConfig.enableTestGenerator() && id.equals(RUBY)) {
+          GapicCodePathMapper rubyTestPathMapper =
+              CommonGapicCodePathMapper.newBuilder()
+                  .setPrefix("test")
+                  .setShouldAppendPackage(true)
+                  .setPackageFilePathNameFormatter(new RubyNameFormatter())
+                  .build();
+
+          GapicProvider<?> smokeTestsProvider =
+              ViewModelGapicProvider.newBuilder()
+                  .setModel(model)
+                  .setApiConfig(apiConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(
+                      new RubyGapicSurfaceTestTransformer(rubyTestPathMapper))
+                  .build();
+          providers.add(smokeTestsProvider);
+
+          GapicProvider<?> unitTestsProvider =
+              ViewModelGapicProvider.newBuilder()
+                  .setModel(model)
+                  .setApiConfig(apiConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(snippetContext))
+                  .setModelToViewTransformer(new RubyTestsTransformer())
+                  .build();
+          providers.add(unitTestsProvider);
+        }
       }
 
     } else {

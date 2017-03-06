@@ -45,11 +45,15 @@
 @private renderServiceDoc(xapiClassDoc, exampleMethodSampleCode)
   // AUTO-GENERATED DOCUMENTATION AND SERVICE
   /**
-   * Service Description: {@xapiClassDoc.firstLine}
-  @if xapiClassDoc.remainingLines
-    @join commentLine : xapiClassDoc.remainingLines
-      {@""} * {@commentLine}
+  @if xapiClassDoc.lines
+    {@""} * Service Description: {@xapiClassDoc.firstLine}
+    @if xapiClassDoc.remainingLines
+      @join commentLine : xapiClassDoc.remainingLines
+        {@""} * {@commentLine}
+      @end
     @end
+  @else
+    {@""} * Service Description:
   @end
    *
    * <p>This class provides the ability to make remote calls to the backing service through method
@@ -338,6 +342,10 @@
   @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
     @join pathTemplateCheck : apiMethod.pathTemplateChecks
       {@pathTemplateCheckLine(pathTemplateCheck)}
@@ -353,6 +361,10 @@
 @private pagedRequestObjectMethod(apiMethod)
   @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
@@ -379,6 +391,10 @@
   @let coreSampleCode = syncMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}(\
        {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
@@ -393,6 +409,10 @@
 @private requestObjectMethod(apiMethod)
   @let coreSampleCode = syncMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
@@ -412,6 +432,10 @@
 @end
 
 @private callableMethodImpl(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.visibility} final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
@@ -422,6 +446,10 @@
   @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.visibility} final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
@@ -431,6 +459,10 @@
 @private asyncOperationFlattenedMethod(apiMethod)
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}> {@apiMethod.name}(\
        {@paramList(apiMethod.methodParams)}) {
@@ -443,6 +475,10 @@
   @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
   @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
   {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<{@apiMethod.responseTypeName}> \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
     return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
@@ -452,6 +488,10 @@
 @private operationCallableMethod(apiMethod)
   @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
   @end
   {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
@@ -473,8 +513,12 @@
 @private methodDoc(apiMethodDoc, methodSampleCode)
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-  @join commentLine : apiMethodDoc.mainDocLines
-    {@""} * {@commentLine}
+  @if apiMethodDoc.mainDocLines
+    @join commentLine : apiMethodDoc.mainDocLines
+      {@""} * {@commentLine}
+    @end
+  @else
+    {@""} *
   @end
    *
    * Sample code:
@@ -508,11 +552,15 @@
 @end
 
 @private simpleParamDoc(doc)
-  {@""} * @@param {@doc.paramName} {@doc.firstLine}
-  @if doc.remainingLines
-    @join commentLine : doc.remainingLines
-      {@""} * {@commentLine}
+  @if doc.lines
+    {@""} * @@param {@doc.paramName} {@doc.firstLine}
+    @if doc.remainingLines
+      @join commentLine : doc.remainingLines
+        {@""} * {@commentLine}
+      @end
     @end
+  @else
+    {@""} * @@param {@doc.paramName}
   @end
 @end
 

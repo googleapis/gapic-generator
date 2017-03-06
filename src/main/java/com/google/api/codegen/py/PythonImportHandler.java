@@ -21,6 +21,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -65,6 +66,7 @@ public class PythonImportHandler {
   /** This constructor is for the main imports of a generated service file */
   public PythonImportHandler(Interface service, ApiConfig apiConfig) {
     // Add non-service-specific imports.
+    addImportStandard("collections");
     addImportStandard("json");
     addImportStandard("os");
     addImportStandard("pkg_resources");
@@ -85,6 +87,13 @@ public class PythonImportHandler {
 
     // Add method request-type imports.
     for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(service).getMethodConfigs()) {
+      // Add the import for gax.utils.oneof if and only if there is at
+      // least one "one of" argument set.
+      for (Oneof oneof : methodConfig.getOneofs()) {
+        addImportExternal("google.gax.utils", "oneof");
+        break;
+      }
+
       if (methodConfig.isLongRunningOperation()) {
         addImportExternal("google.gapic.longrunning", "operations_client");
         addImportForMessage(methodConfig.getLongRunningConfig().getReturnType().getMessageType());

@@ -155,7 +155,8 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
 
     SamplePageStreamingView.Builder builder = SamplePageStreamingView.newBuilder();
 
-    builder.resourceFieldName(namer.publicFieldName(Name.lowerCamel(fieldInfo.name())));
+    String resourceFieldName = namer.publicFieldName(Name.lowerCamel(fieldInfo.name()));
+    builder.resourceFieldName(resourceFieldName.equals("items") ? "" : resourceFieldName);
     if (fieldInfo.type().isMap()) {
       // Assume that the value in the map is a message.
       if (!fieldInfo.type().mapValue().isMessage()) {
@@ -176,7 +177,11 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     builder.isResourceMap(fieldInfo.type().isMap());
     builder.pageVarName(
         symbolTable.getNewSymbol(namer.localVarName(Name.lowerCamel(fieldInfo.name()))));
+    builder.isResourceSetterInRequestBody(methodInfo.isPageStreamingResourceSetterInRequestBody());
     builder.pageTokenName(Name.lowerCamel(methodInfo.requestPageTokenName()).toLowerUnderscore());
+    String nextPageTokenName =
+        Name.lowerCamel(methodInfo.responsePageTokenName()).toLowerUnderscore();
+    builder.nextPageTokenName(nextPageTokenName.equals("next_page_token") ? "" : nextPageTokenName);
     return builder.build();
   }
 

@@ -1,6 +1,6 @@
 ============== file: src/test/java/com/google/gcloud/pubsub/spi/LibraryServiceClientTest.java ==============
 /*
- * Copyright 2016, Google Inc. All rights reserved.
+ * Copyright 2017, Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.core.PagedListResponse;
+import com.google.api.gax.core.RpcStreamObserver;
 import com.google.api.gax.grpc.ApiException;
 import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.testing.MockGrpcService;
@@ -54,6 +55,7 @@ import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
 import com.google.example.library.v1.SomeMessage;
@@ -79,7 +81,6 @@ import com.google.tagger.v1.AddTagRequest;
 import com.google.tagger.v1.AddTagResponse;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -483,9 +484,13 @@ public class LibraryServiceClientTest {
     Shelf shelf = Shelf.newBuilder().build();
     List<Book> books = new ArrayList<>();
     int edition = -1887963714;
+    String seriesString = "foobar";
+    SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+      .setSeriesString(seriesString)
+      .build();
 
     PublishSeriesResponse actualResponse =
-        client.publishSeries(shelf, books, edition);
+        client.publishSeries(shelf, books, edition, seriesUuid);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
@@ -495,6 +500,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(shelf, actualRequest.getShelf());
     Assert.assertEquals(books, actualRequest.getBooksList());
     Assert.assertEquals(edition, actualRequest.getEdition());
+    Assert.assertEquals(seriesUuid, actualRequest.getSeriesUuid());
   }
 
   @Test
@@ -507,8 +513,12 @@ public class LibraryServiceClientTest {
       Shelf shelf = Shelf.newBuilder().build();
       List<Book> books = new ArrayList<>();
       int edition = -1887963714;
+      String seriesString = "foobar";
+      SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+        .setSeriesString(seriesString)
+        .build();
 
-      client.publishSeries(shelf, books, edition);
+      client.publishSeries(shelf, books, edition, seriesUuid);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
       Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
@@ -1178,7 +1188,7 @@ public class LibraryServiceClientTest {
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
-    StreamObserver<DiscussBookRequest> requestObserver =
+    RpcStreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
 
     requestObserver.onNext(request);
@@ -1203,7 +1213,7 @@ public class LibraryServiceClientTest {
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
-    StreamObserver<DiscussBookRequest> requestObserver =
+    RpcStreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
 
     requestObserver.onNext(request);

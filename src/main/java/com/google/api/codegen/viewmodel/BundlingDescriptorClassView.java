@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class BundlingDescriptorClassView {
@@ -28,6 +29,7 @@ public abstract class BundlingDescriptorClassView {
 
   public abstract String bundledFieldTypeName();
 
+  @Nullable
   public abstract String subresponseTypeName();
 
   public abstract List<BundlingPartitionKeyView> partitionKeys();
@@ -40,9 +42,15 @@ public abstract class BundlingDescriptorClassView {
 
   public abstract String bundledFieldCountGetFunction();
 
+  @Nullable
   public abstract String subresponseByIndexGetFunction();
 
+  @Nullable
   public abstract String subresponseSetFunction();
+
+  public boolean hasSubresponse() {
+    return subresponseTypeName() != null;
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_BundlingDescriptorClassView.Builder();

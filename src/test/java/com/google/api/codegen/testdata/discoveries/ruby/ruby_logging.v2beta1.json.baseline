@@ -96,7 +96,8 @@ service.authorization = \
 request_body = Google::Apis::LoggingV2beta1::ListLogEntriesRequest.new
 
 entries = service.fetch_all(items: :entries) do |token|
-  service.list_entry_log_entries(request_body, page_token: token)
+  request_body.page_token = token
+  service.list_entry_log_entries(request_body)
 end
 
 entries.each do |log_entry|

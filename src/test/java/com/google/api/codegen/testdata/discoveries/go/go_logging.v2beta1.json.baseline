@@ -149,13 +149,16 @@ func main() {
     // TODO: Add desired fields of the request body.
   }
 
-  resp, err := loggingService.Entries.List(rb).Context(ctx).Do()
-  if err != nil {
+  req := loggingService.Entries.List(rb)
+  if err := req.Pages(ctx, func(page *logging.ListLogEntriesResponse) error {
+    for _, logEntry := range page.Entries {
+      // TODO: Change code below to process each `logEntry` resource:
+      fmt.Printf("%#v\n", logEntry)
+    }
+    return nil
+  }); err != nil {
     log.Fatal(err)
   }
-
-  // TODO: Change code below to process the `resp` object:
-  fmt.Printf("%#v\n", resp)
 }
 package main
 

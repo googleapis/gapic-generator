@@ -18,36 +18,57 @@ import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.ProtoContainerElement;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
+import java.util.Collection;
 import org.junit.rules.TemporaryFolder;
 
 public class ModelTypeNameConverterTestUtil {
   public static TypeRef getTestEnumType(TemporaryFolder tempDir) {
+    return getTestType(tempDir, "Book", "Rating");
+  }
+
+  public static TypeRef getTestType(TemporaryFolder tempDir, String... path) {
+    String fileName = "library.proto";
     TestDataLocator locator = TestDataLocator.create(CodegenTestUtil.class);
     Model model =
         CodegenTestUtil.readModel(
-            locator, tempDir, new String[] {"library.proto"}, new String[] {"library.yaml"});
-    for (ProtoFile file : model.getFiles()) {
-      if (!file.getSimpleName().equals("library.proto")) {
-        continue;
-      }
-
-      for (MessageType message : file.getMessages()) {
-        if (!message.getSimpleName().equals("Book")) {
-          continue;
-        }
-
-        for (EnumType enumType : message.getEnums()) {
-          if (enumType.getSimpleName().equals("Rating")) {
-            return TypeRef.of(enumType);
-          }
-        }
-        break;
-      }
-      break;
+            locator, tempDir, new String[] {fileName}, new String[] {"library.yaml"});
+    ProtoContainerElement container = getElementWithName(model.getFiles(), fileName);
+    if (container == null) {
+      throw new IllegalStateException("file not found: " + fileName);
     }
-    throw new IllegalStateException("test enum not found");
+
+    for (int i = 0; i < path.length; i++) {
+      String pathElement = path[i];
+      MessageType messageType = getElementWithName(container.getMessages(), pathElement);
+      EnumType enumType = getElementWithName(container.getEnums(), pathElement);
+      if (messageType != null) {
+        container = messageType;
+      } else if (enumType != null && i == path.length - 1) {
+        return TypeRef.of(enumType);
+      } else if (enumType != null) {
+        throw new IllegalStateException("enum type cannot contain further elements: " + enumType);
+      } else {
+        throw new IllegalStateException("element not found: " + pathElement);
+      }
+    }
+
+    if (container instanceof MessageType) {
+      return TypeRef.of((MessageType) container);
+    }
+    throw new IllegalStateException("not a type: " + container);
+  }
+
+  private static <E extends ProtoElement> E getElementWithName(
+      Collection<E> elements, String name) {
+    for (E e : elements) {
+      if (e.getSimpleName().equals(name)) {
+        return e;
+      }
+    }
+    return null;
   }
 }

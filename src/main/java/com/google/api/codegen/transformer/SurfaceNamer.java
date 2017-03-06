@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -35,7 +36,9 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
 import io.grpc.Status;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +146,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getNamespace(Interface service) {
     NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
     return qualifiedName(namePath.withoutHead());
+  }
+
+  /** The modules of the package. */
+  public ImmutableList<String> getApiModules() {
+    return ImmutableList.<String>of();
   }
 
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
@@ -635,6 +643,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withHead(publicClassName));
   }
 
+  /** The type name for the method param */
+  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getParamTypeName");
+  }
+
   /** The type name for retry settings. */
   public String getRetrySettingsTypeName() {
     return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
@@ -783,6 +796,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name of the API callable class for this service method type. */
   public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
     return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");
+  }
+
+  /** Return the type name used to discriminate oneof variants. */
+  public String getOneofVariantTypeName(OneofConfig oneof) {
+    return getNotImplementedString("SurfaceNamer.getOneofVariantTypeName");
   }
 
   /////////////////////////////////////// Resource names //////////////////////////////////////////
@@ -995,6 +1013,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getSourceFilePath(String path, String publicClassName) {
     return getNotImplementedString("SurfaceNamer.getSourceFilePath");
+  }
+
+  /** The language-specific file name for a proto file. */
+  public String getProtoFileName(ProtoFile file) {
+    return getNotImplementedString("SurfaceNamer.getProtoFileName");
   }
 
   ////////////////////////////////////////// Test /////////////////////////////////////////////

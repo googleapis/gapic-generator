@@ -55,8 +55,11 @@
             @if api.hasLongRunningOperations
                 LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
             @end
+            OnCopy(existing);
         }
-        
+
+        partial void OnCopy({@settings.name} existing);
+
         @join retry : settings.retryCodesDefinitions
             /// <summary>
             /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
@@ -306,6 +309,7 @@
             }
 
         @end
+        # method: StaticLangApiMethodView
         @join method : api.apiMethods
             {@xmlDoc(method.doc)}
             {@method(api, method, FALSE)}
@@ -321,7 +325,6 @@
     /// </summary>
     public sealed partial class {@api.implName} : {@api.name}
     {
-        private readonly ClientHelper _clientHelper;
         @join call : api.apiCallableMembers
             @switch call.grpcStreamingType.toString
             @case "NonStreaming"
@@ -346,23 +349,26 @@
                 LongRunningOperationsClient = new OperationsClientImpl(
                     grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
             @end
-            _clientHelper = new ClientHelper(effectiveSettings);
+            ClientHelper clientHelper = new ClientHelper(effectiveSettings);
             @join rerouted : api.reroutedGrpcClients
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
             @end
             @join call : api.apiCallableMembers
                 @switch call.grpcStreamingType.toString
                 @case "NonStreaming"
-                    {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
+                    {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
                         {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
                 @case "BidiStreaming"
-                    {@call.name} = _clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
+                    {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
                         {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName}, effectiveSettings.{@call.methodName}StreamingSettings);
                 @default
                     *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
                 @end
             @end
+            OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
+
+        partial void OnConstruction({@api.grpcTypeName} grpcClient, {@settings.name} effectiveSettings, ClientHelper clientHelper);
 
         /// <summary>
         /// The underlying gRPC {@api.grpcServiceName} client.
@@ -389,7 +395,8 @@
                 *** ERROR: Cannot handle grpc streaming type '{@method.grpcStreamingType.toString}' ***
             @end
         @end
-        
+
+        # method: StaticLangApiMethodView
         @join method : api.apiMethodsImpl
             {@xmlDoc(method.doc)}
             {@method(api, method, TRUE)}
