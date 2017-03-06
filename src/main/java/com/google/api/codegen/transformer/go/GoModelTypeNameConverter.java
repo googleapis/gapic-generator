@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
-import com.google.api.codegen.transformer.ZeroValuePurpose;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
@@ -229,11 +228,16 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(TypeRef type, ZeroValuePurpose purpose) {
+  public TypedValue getZeroValue(TypeRef type) {
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(getTypeName(type), getZeroValueStr(type));
+  }
+
+  @Override
+  public TypedValue getInternalZeroValue(TypeRef type) {
+    return getZeroValue(type);
   }
 
   private String getZeroValueStr(TypeRef type) {

@@ -413,9 +413,7 @@ public class InitCodeTransformer {
         initValue.initialValue(value);
       } else {
         initValue.initialValue(
-            context
-                .getTypeTable()
-                .getZeroValueAndSaveNicknameFor(item.getType(), ZeroValuePurpose.Initialization));
+            context.getTypeTable().getZeroValueAndSaveNicknameFor(item.getType()));
         initValue.isRepeated(item.getType().isRepeated());
       }
 

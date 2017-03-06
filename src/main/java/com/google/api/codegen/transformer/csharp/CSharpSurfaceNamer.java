@@ -26,7 +26,6 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.Synchronicity;
-import com.google.api.codegen.transformer.ZeroValuePurpose;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -514,9 +513,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       }
     } else {
       if (type.isPrimitive() || type.isEnum() || type.isRepeated()) {
-        return context
-            .getTypeTable()
-            .getZeroValueAndSaveNicknameFor(type, ZeroValuePurpose.OptionalValue);
+        return context.getTypeTable().getInternalZeroValueAndSaveNicknameFor(type);
       } else {
         return null;
       }

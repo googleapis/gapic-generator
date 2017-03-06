@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
-import com.google.api.codegen.transformer.ZeroValuePurpose;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
@@ -41,10 +40,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
     DynamicLangDefaultableParamView.Builder optionalArgs =
         DynamicLangDefaultableParamView.newBuilder();
     optionalArgs.name(context.getNamer().localVarName(Name.from("optional", "args")));
-    optionalArgs.defaultValue(
-        context
-            .getTypeTable()
-            .getZeroValueAndSaveNicknameFor(arrayType, ZeroValuePurpose.Initialization));
+    optionalArgs.defaultValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType));
     methodParams.add(optionalArgs.build());
 
     return methodParams.build();

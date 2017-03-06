@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
-import com.google.api.codegen.transformer.ZeroValuePurpose;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
@@ -121,7 +120,7 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
    * Returns the NodeJS representation of a zero value for that type, to be used in code sample doc.
    */
   @Override
-  public TypedValue getZeroValue(TypeRef type, ZeroValuePurpose purpose) {
+  public TypedValue getZeroValue(TypeRef type) {
     // Don't call getTypeName; we don't need to import these.
     if (type.isMap()) {
       return TypedValue.create(new TypeName("Object"), "{}");
@@ -139,6 +138,11 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(new TypeName(""), "null");
+  }
+
+  @Override
+  public TypedValue getInternalZeroValue(TypeRef type) {
+    return getZeroValue(type);
   }
 
   @Override

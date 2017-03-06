@@ -85,10 +85,7 @@ public class PageStreamingTransformer {
 
     TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
-    desc.defaultTokenValue(
-        context
-            .getTypeTable()
-            .getZeroValueAndSaveNicknameFor(tokenType, ZeroValuePurpose.Initialization));
+    desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
