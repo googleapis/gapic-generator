@@ -990,6 +990,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getGrpcClientImportName");
   }
 
+  public String getClientConfigImportModule(Interface service) {
+    return getNotImplementedString("SurfaceNamer.getClientConfigImportModule");
+  }
+
   /////////////////////////////////// Docs & Annotations //////////////////////////////////////////
 
   /** The documentation name of a parameter for the given lower-case field name. */

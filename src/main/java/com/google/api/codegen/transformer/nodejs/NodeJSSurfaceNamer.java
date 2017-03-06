@@ -153,4 +153,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
+
+  @Override
+  public String getClientConfigImportModule(Interface service) {
+    return Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore();
+  }
 }
