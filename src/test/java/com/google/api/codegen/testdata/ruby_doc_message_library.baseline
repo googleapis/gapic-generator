@@ -208,6 +208,12 @@ module Google
     #       end.seconds += 1;
     #       end.nanos -= 1000000000;
     #     }
+    #
+    # Example 3: Compute Duration from datetime.timedelta in Python.
+    #
+    #     td = datetime.timedelta(days=3, minutes=10)
+    #     duration = Duration()
+    #     duration.FromTimedelta(td)
     # @!attribute [rw] seconds
     #   @return [Integer]
     #     Signed seconds of the span of time. Must be from -315,576,000,000
@@ -283,7 +289,7 @@ module Google
     #     }
     #
     # A repeated field is not allowed except at the last position of a
-    # field mask.
+    # paths string.
     #
     # If a FieldMask object is not present in a get operation, the
     # operation applies to all fields (as if a FieldMask of all fields
@@ -310,8 +316,8 @@ module Google
     #
     # If a repeated field is specified for an update operation, the existing
     # repeated values in the target resource will be overwritten by the new values.
-    # Note that a repeated field is only allowed in the last position of a field
-    # mask.
+    # Note that a repeated field is only allowed in the last position of a +paths+
+    # string.
     #
     # If a sub-message is specified in the last position of the field mask for an
     # update operation, then the existing sub-message in the target resource is
@@ -587,14 +593,12 @@ module Google
     #
     # Example 5: Compute Timestamp from current time in Python.
     #
-    #     now = time.time()
-    #     seconds = int(now)
-    #     nanos = int((now - seconds) * 10**9)
-    #     timestamp = Timestamp(seconds=seconds, nanos=nanos)
+    #     timestamp = Timestamp()
+    #     timestamp.GetCurrentTime()
     # @!attribute [rw] seconds
     #   @return [Integer]
     #     Represents seconds of UTC time since Unix epoch
-    #     1970-01-01T00:00:00Z. Must be from from 0001-01-01T00:00:00Z to
+    #     1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
     #     9999-12-31T23:59:59Z inclusive.
     # @!attribute [rw] nanos
     #   @return [Integer]
