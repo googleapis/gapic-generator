@@ -173,6 +173,14 @@ public class DynamicLangApiMethodTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     Field field = fieldConfig.getField();
 
+    Iterable<Field> requiredFields = context.getMethodConfig().getRequiredFields();
+    boolean isRequired = false;
+    for (Field f : requiredFields) {
+      if (f.getSimpleName().equals(field.getSimpleName())) {
+        isRequired = true;
+      }
+    }
+
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
     param.keyName(namer.getFieldKey(field));
@@ -183,6 +191,11 @@ public class DynamicLangApiMethodTransformer {
     param.addCallName(namer.getFieldAddFunctionName(field));
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
+    param.isPrimitive(namer.isPrimitive(field.getType()));
+    param.isOptional(!isRequired);
+    if (!isRequired) {
+      param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
+    }
     return param.build();
   }
 

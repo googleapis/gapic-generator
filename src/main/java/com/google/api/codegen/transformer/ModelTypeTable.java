@@ -161,8 +161,12 @@ public class ModelTypeTable implements ModelTypeFormatter {
    * If the given type is not implicitly imported, the add it to the import set, then return the
    * zero value for that type.
    */
-  public String getZeroValueAndSaveNicknameFor(TypeRef type) {
-    return typeNameConverter.getZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
+  public String getSnippetZeroValueAndSaveNicknameFor(TypeRef type) {
+    return typeNameConverter.getSnippetZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
+  }
+
+  public String getImplZeroValueAndSaveNicknameFor(TypeRef type) {
+    return typeNameConverter.getImplZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   /** Returns the imports accumulated so far. */

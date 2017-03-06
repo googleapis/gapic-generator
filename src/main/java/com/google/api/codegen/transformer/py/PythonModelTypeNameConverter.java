@@ -131,20 +131,27 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
+    List<String> path = getClassNamePath(elem);
+
     if (elem instanceof EnumType) {
-      List<String> path = new LinkedList<>();
-      path.add(elem.getSimpleName());
-      for (ProtoElement elt = elem.getParent(); elt.getParent() != null; elt = elt.getParent()) {
-        path.add(0, elt.getSimpleName());
-      }
       path.add(0, "enums");
       String shortName = Joiner.on(".").join(path);
       return getTypeNameInImplicitPackage(shortName);
     }
 
-    String packageName = protoPackageToPythonPackage(elem.getFile().getProto().getPackage());
-    String filename = getPbFileName(elem.getFile().getSimpleName());
-    return typeNameConverter.getTypeName(packageName + "." + filename + "." + elem.getSimpleName());
+    path.add(0, getPbFileName(elem.getFile().getSimpleName()));
+    path.add(0, protoPackageToPythonPackage(elem.getFile().getProto().getPackage()));
+    String fullName = Joiner.on(".").join(path);
+    return typeNameConverter.getTypeName(fullName);
+  }
+
+  private List<String> getClassNamePath(ProtoElement elem) {
+    List<String> path = new LinkedList<>();
+    path.add(elem.getSimpleName());
+    for (ProtoElement elt = elem.getParent(); elt.getParent() != null; elt = elt.getParent()) {
+      path.add(0, elt.getSimpleName());
+    }
+    return path;
   }
 
   @Override
@@ -153,7 +160,7 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     // Don't call getTypeName; we don't need to import these.
     if (type.isMap()) {
       return TypedValue.create(new TypeName("dict"), "{}");
@@ -171,6 +178,11 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(new TypeName(""), "None");
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   @Override

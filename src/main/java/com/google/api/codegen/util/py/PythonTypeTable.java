@@ -22,6 +22,7 @@ import com.google.api.codegen.util.TypeTable;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.HashBiMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -42,14 +43,21 @@ public class PythonTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    List<String> nameParts = Splitter.on(".").splitToList(fullName);
-    int numParts = nameParts.size();
-    if (numParts < 2) {
+    List<String> namespaces = new ArrayList<>();
+    List<String> shortNameParts = new ArrayList<>();
+    for (String name : Splitter.on(".").split(fullName)) {
+      if (shortNameParts.isEmpty() && Character.isLowerCase(name.charAt(0))) {
+        namespaces.add(name);
+      } else {
+        shortNameParts.add(name);
+      }
+    }
+    if (namespaces.isEmpty() || shortNameParts.isEmpty()) {
       throw new IllegalArgumentException("expected fully qualified name");
     }
-    List<String> nicknameParts = nameParts.subList(numParts - 2, numParts);
-    String nickname = Joiner.on(".").join(nicknameParts);
-    return new TypeName(fullName, nickname);
+    String filename = namespaces.get(namespaces.size() - 1);
+    String nickname = Joiner.on(".").join(shortNameParts);
+    return new TypeName(fullName, filename + "." + nickname);
   }
 
   @Override
