@@ -447,7 +447,7 @@
        *
      @end
      {@comments(util.getDocLines(context.paramComments(service, method)))}
-     {@comments(util.getDocLines(context.returnTypeComment(method, methodConfig)))}
+     {@createReturnTypeComment(apiMethodView.doc.returnTypeName, apiMethodView.doc.returnsDocLines)}
      *
      * @@example
      *
@@ -485,7 +485,7 @@
        *
        {@comments(util.getDocLines(context.paramComments(service, method)))}
        * @@return {Stream}
-       *   An object stream which emits {@context.typeDocument(methodConfig.getPageStreaming.getResourcesField.getType)} on 'data' event.
+       *   An object stream which emits {@apiMethodView.doc.pageStreamingResourceTypeName} on 'data' event.
        *
        * @@example
        *
@@ -500,6 +500,12 @@
       };
     @default
     @end
+  @end
+@end
+
+@private createReturnTypeComment(typeName, lines)
+  @join line : lines
+    * {@line}
   @end
 @end
 
