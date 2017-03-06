@@ -1174,4 +1174,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
     return original;
   }
+
+  /** Make the given type name able to accept nulls, if it is a primitive type */
+  public String makePrimitiveTypeNullable(String typeName, TypeRef type) {
+    return typeName;
+  }
+
+  /** Is this type a primitive, according to target language. */
+  public boolean isPrimitive(TypeRef type) {
+    return type.isPrimitive();
+  }
+
+  /** The default value for an optional field, null if no default value required. */
+  public String getOptionalFieldDefaultValue(
+      FieldConfig fieldConfig, MethodTransformerContext context) {
+    return getNotImplementedString("SurfaceNamer.getOptionalFieldDefaultValue");
+  }
 }

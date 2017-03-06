@@ -40,7 +40,8 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
     DynamicLangDefaultableParamView.Builder optionalArgs =
         DynamicLangDefaultableParamView.newBuilder();
     optionalArgs.name(context.getNamer().localVarName(Name.from("optional", "args")));
-    optionalArgs.defaultValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType));
+    optionalArgs.defaultValue(
+        context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(arrayType));
     methodParams.add(optionalArgs.build());
 
     return methodParams.build();

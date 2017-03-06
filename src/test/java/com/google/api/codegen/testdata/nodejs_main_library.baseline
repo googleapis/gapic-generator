@@ -185,7 +185,8 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     'findRelatedBooks',
     'addTag',
     'getBigBook',
-    'getBigNothing'
+    'getBigNothing',
+    'testOptionalRequiredFlatteningParams'
   ];
   libraryServiceStubMethods.forEach(function(methodName) {
     self['_' + methodName] = gax.createApiCall(
@@ -1927,6 +1928,146 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
   }
 
   return this._getBigNothing(request, options, callback);
+};
+
+/**
+ * Test optional flattening parameters of all types
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {number} request.requiredSingularInt32
+ * @param {number} request.requiredSingularInt64
+ * @param {number} request.requiredSingularFloat
+ * @param {number} request.requiredSingularDouble
+ * @param {boolean} request.requiredSingularBool
+ * @param {number} request.requiredSingularEnum
+ *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ * @param {string} request.requiredSingularString
+ * @param {string} request.requiredSingularBytes
+ * @param {Object} request.requiredSingularMessage
+ *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ * @param {string} request.requiredSingularResourceName
+ * @param {string} request.requiredSingularResourceNameOneof
+ * @param {number[]} request.requiredRepeatedInt32
+ * @param {number[]} request.requiredRepeatedInt64
+ * @param {number[]} request.requiredRepeatedFloat
+ * @param {number[]} request.requiredRepeatedDouble
+ * @param {boolean[]} request.requiredRepeatedBool
+ * @param {number[]} request.requiredRepeatedEnum
+ *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ * @param {string[]} request.requiredRepeatedString
+ * @param {string[]} request.requiredRepeatedBytes
+ * @param {Object[]} request.requiredRepeatedMessage
+ *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ * @param {string[]} request.requiredRepeatedResourceName
+ * @param {string[]} request.requiredRepeatedResourceNameOneof
+ * @param {Object.<number, string>} request.requiredMap
+ * @param {number=} request.optionalSingularInt32
+ * @param {number=} request.optionalSingularInt64
+ * @param {number=} request.optionalSingularFloat
+ * @param {number=} request.optionalSingularDouble
+ * @param {boolean=} request.optionalSingularBool
+ * @param {number=} request.optionalSingularEnum
+ *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ * @param {string=} request.optionalSingularString
+ * @param {string=} request.optionalSingularBytes
+ * @param {Object=} request.optionalSingularMessage
+ *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ * @param {string=} request.optionalSingularResourceName
+ * @param {string=} request.optionalSingularResourceNameOneof
+ * @param {number[]=} request.optionalRepeatedInt32
+ * @param {number[]=} request.optionalRepeatedInt64
+ * @param {number[]=} request.optionalRepeatedFloat
+ * @param {number[]=} request.optionalRepeatedDouble
+ * @param {boolean[]=} request.optionalRepeatedBool
+ * @param {number[]=} request.optionalRepeatedEnum
+ *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ * @param {string[]=} request.optionalRepeatedString
+ * @param {string[]=} request.optionalRepeatedBytes
+ * @param {Object[]=} request.optionalRepeatedMessage
+ *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ * @param {string[]=} request.optionalRepeatedResourceName
+ * @param {string[]=} request.optionalRepeatedResourceNameOneof
+ * @param {Object.<number, string>=} request.optionalMap
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link TestOptionalRequiredFlatteningParamsResponse}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link TestOptionalRequiredFlatteningParamsResponse}.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
+ *
+ * @example
+ *
+ * var client = libraryV1.libraryServiceClient();
+ * var requiredSingularInt32 = 0;
+ * var requiredSingularInt64 = 0;
+ * var requiredSingularFloat = 0.0;
+ * var requiredSingularDouble = 0.0;
+ * var requiredSingularBool = false;
+ * var requiredSingularEnum = libraryV1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+ * var requiredSingularString = '';
+ * var requiredSingularBytes = '';
+ * var requiredSingularMessage = {};
+ * var requiredSingularResourceName = '';
+ * var requiredSingularResourceNameOneof = '';
+ * var requiredRepeatedInt32 = [];
+ * var requiredRepeatedInt64 = [];
+ * var requiredRepeatedFloat = [];
+ * var requiredRepeatedDouble = [];
+ * var requiredRepeatedBool = [];
+ * var requiredRepeatedEnum = [];
+ * var requiredRepeatedString = [];
+ * var requiredRepeatedBytes = [];
+ * var requiredRepeatedMessage = [];
+ * var formattedRequiredRepeatedResourceName = [];
+ * var formattedRequiredRepeatedResourceNameOneof = [];
+ * var requiredMap = {};
+ * var request = {
+ *     requiredSingularInt32: requiredSingularInt32,
+ *     requiredSingularInt64: requiredSingularInt64,
+ *     requiredSingularFloat: requiredSingularFloat,
+ *     requiredSingularDouble: requiredSingularDouble,
+ *     requiredSingularBool: requiredSingularBool,
+ *     requiredSingularEnum: requiredSingularEnum,
+ *     requiredSingularString: requiredSingularString,
+ *     requiredSingularBytes: requiredSingularBytes,
+ *     requiredSingularMessage: requiredSingularMessage,
+ *     requiredSingularResourceName: requiredSingularResourceName,
+ *     requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+ *     requiredRepeatedInt32: requiredRepeatedInt32,
+ *     requiredRepeatedInt64: requiredRepeatedInt64,
+ *     requiredRepeatedFloat: requiredRepeatedFloat,
+ *     requiredRepeatedDouble: requiredRepeatedDouble,
+ *     requiredRepeatedBool: requiredRepeatedBool,
+ *     requiredRepeatedEnum: requiredRepeatedEnum,
+ *     requiredRepeatedString: requiredRepeatedString,
+ *     requiredRepeatedBytes: requiredRepeatedBytes,
+ *     requiredRepeatedMessage: requiredRepeatedMessage,
+ *     requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+ *     requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+ *     requiredMap: requiredMap
+ * };
+ * client.testOptionalRequiredFlatteningParams(request).then(function(responses) {
+ *     var response = responses[0];
+ *     // doThingsWith(response)
+ * }).catch(function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceClient.prototype.testOptionalRequiredFlatteningParams = function(request, options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+
+  return this._testOptionalRequiredFlatteningParams(request, options, callback);
 };
 
 function LibraryServiceClientBuilder(gaxGrpc) {

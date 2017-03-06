@@ -150,11 +150,11 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     if (type.isMap()) {
-      TypeName mapTypeName = typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
       TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
       TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
+      TypeName mapTypeName = typeNameConverter.getTypeName("System.Collections.Generic.Dictionary");
       TypeName genericMapTypeName =
           new TypeName(
               mapTypeName.getFullName(),
@@ -164,8 +164,8 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
               valueTypeName);
       return TypedValue.create(genericMapTypeName, "new %s()");
     } else if (type.isRepeated()) {
-      TypeName listTypeName = typeNameConverter.getTypeName("System.Collections.Generic.List");
       TypeName elementTypeName = getTypeNameForElementType(type);
+      TypeName listTypeName = typeNameConverter.getTypeName("System.Collections.Generic.List");
       TypeName genericListTypeName =
           new TypeName(
               listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
@@ -176,6 +176,43 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     } else {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+    }
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    if (type.isMap()) {
+      TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
+      TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
+      TypeName emptyMapTypeName = typeNameConverter.getTypeName("Google.Api.Gax.EmptyDictionary");
+      TypeName genericEmptyMapTypeName =
+          new TypeName(
+              emptyMapTypeName.getFullName(),
+              emptyMapTypeName.getNickname(),
+              "%s<%i, %i>",
+              keyTypeName,
+              valueTypeName);
+      return TypedValue.create(genericEmptyMapTypeName, "%s.Instance");
+    } else if (type.isRepeated()) {
+      TypeName elementTypeName = getTypeNameForElementType(type);
+      TypeName enumerableTypeName = typeNameConverter.getTypeName("System.Linq.Enumerable");
+      TypeName emptyTypeName =
+          new TypeName(
+              enumerableTypeName.getFullName(),
+              enumerableTypeName.getNickname(),
+              "%s.Empty<%i>",
+              elementTypeName);
+      return TypedValue.create(emptyTypeName, "%s()");
+    } else if (type.isMessage()) {
+      return TypedValue.create(getTypeName(type), "new %s()");
+    } else if (type.isEnum()) {
+      return getEnumValue(type, type.getEnumType().getValues().get(0));
+    } else {
+      if (type.getKind() == Type.TYPE_BYTES) {
+        return TypedValue.create(getTypeName(type), "ByteString.Empty");
+      } else {
+        return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+      }
     }
   }
 
