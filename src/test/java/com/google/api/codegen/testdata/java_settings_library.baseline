@@ -680,7 +680,7 @@ public class LibraryServiceSettings extends ClientSettings {
           int bundleMessageIndex = 0;
           for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
             List<String> subresponseElements = new ArrayList<>();
-            int subresponseCount = responder.getMergedRequestCount();
+            long subresponseCount = responder.getMessageCount();
             for (int i = 0; i < subresponseCount; i++) {
               subresponseElements.add(bundleResponse.getBookNames(bundleMessageIndex));
               bundleMessageIndex += 1;
