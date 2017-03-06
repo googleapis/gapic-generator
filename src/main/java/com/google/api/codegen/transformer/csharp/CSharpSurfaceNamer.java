@@ -513,7 +513,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       }
     } else {
       if (type.isPrimitive() || type.isEnum() || type.isRepeated()) {
-        return context.getTypeTable().getInternalZeroValueAndSaveNicknameFor(type);
+        return context.getTypeTable().getImplZeroValueAndSaveNicknameFor(type);
       } else {
         return null;
       }

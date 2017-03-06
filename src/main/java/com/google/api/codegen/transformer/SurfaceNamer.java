@@ -1165,6 +1165,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The default value for an optional field, null if no default value required. */
   public String getOptionalFieldDefaultValue(
       FieldConfig fieldConfig, MethodTransformerContext context) {
-    return null;
+    return getNotImplementedString("SurfaceNamer.getOptionalFieldDefaultValue");
   }
 }

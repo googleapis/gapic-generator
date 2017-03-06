@@ -121,7 +121,7 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
    * Returns the Ruby representation of a zero value for that type, to be used in code sample doc.
    */
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     // Don't call getTypeName; we don't need to import these.
     if (type.isMap()) {
       return TypedValue.create(new TypeName("Hash"), "{}");
@@ -142,8 +142,8 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getInternalZeroValue(TypeRef type) {
-    return getZeroValue(type);
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   @Override

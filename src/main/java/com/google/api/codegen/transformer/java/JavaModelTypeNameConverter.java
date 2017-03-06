@@ -186,7 +186,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
    * initialization.
    */
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     // Don't call importAndGetShortestName; we don't need to import these.
     if (type.isMap()) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.HashMap"), "new %s<>()");
@@ -207,8 +207,8 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getInternalZeroValue(TypeRef type) {
-    return getZeroValue(type);
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   @Override

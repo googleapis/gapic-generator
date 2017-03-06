@@ -150,7 +150,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     if (type.isMap()) {
       TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
       TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
@@ -180,7 +180,7 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getInternalZeroValue(TypeRef type) {
+  public TypedValue getImplZeroValue(TypeRef type) {
     if (type.isMap()) {
       TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType());
       TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType());
