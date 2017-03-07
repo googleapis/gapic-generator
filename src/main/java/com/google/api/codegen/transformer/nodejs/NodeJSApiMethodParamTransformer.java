@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransformer {
-  JSCommentReformatter jsCommentReformatter = new JSCommentReformatter();
+  private static final JSCommentReformatter jsCommentReformatter = new JSCommentReformatter();
 
   @Override
   public List<DynamicLangDefaultableParamView> generateMethodParams(
