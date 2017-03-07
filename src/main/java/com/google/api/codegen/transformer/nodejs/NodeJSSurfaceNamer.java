@@ -31,14 +31,8 @@ import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.List;
 
 /** The SurfaceNamer for NodeJS. */
@@ -162,88 +156,13 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLinkedElementName(ProtoElement element) {
-    if (isExternalFile(element.getFile())) {
-      String fullName = element.getFullName();
-      return String.format("[%s]{@link external:\"%s\"}", fullName, fullName);
-    } else {
-      String simpleName = element.getSimpleName();
-      return String.format("[%s]{@link %s}", simpleName, simpleName);
-    }
-  }
-
-  @Override
-  public String getFieldTypeDoc(ModelTypeTable typeTable, Field field) {
-    TypeRef type = field.getType();
-
-    String cardinalityComment = "";
-    if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
-      if (type.isMap()) {
-        String keyType = getParamTypeName(typeTable, type.getMapKeyField().getType());
-        String valueType = getParamTypeName(typeTable, type.getMapValueField().getType());
-        return String.format("Object.<%s, %s>", keyType, valueType);
-      } else {
-        cardinalityComment = "[]";
-      }
-    }
-    String typeComment = getParamTypeName(typeTable, field.getType());
-    return String.format("%s%s", typeComment, cardinalityComment);
-  }
-
-  private boolean isExternalFile(ProtoFile file) {
-    String filePath = file.getSimpleName();
-    for (String commonPath : COMMON_PROTO_PATHS) {
-      if (filePath.startsWith(commonPath)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
   public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
-    switch (type.getKind()) {
-      case TYPE_MESSAGE:
-        return "Object";
-      case TYPE_ENUM:
-        return "number";
-      default:
-        {
-          String name = PRIMITIVE_TYPE_NAMES.get(type.getKind());
-          if (!Strings.isNullOrEmpty(name)) {
-            return name;
-          }
-          throw new IllegalArgumentException("unknown type kind: " + type.getKind());
-        }
+    if (type.isMessage()) {
+      return "Object";
     }
+    if (type.isEnum()) {
+      return "number";
+    }
+    return typeTable.getFullNameForElementType(type);
   }
-
-  private static final ImmutableSet<String> COMMON_PROTO_PATHS =
-      ImmutableSet.of(
-          "google/api",
-          "google/bytestream",
-          "google/logging/type",
-          "google/longrunning",
-          "google/protobuf",
-          "google/rpc",
-          "google/type");
-
-  private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_NAMES =
-      ImmutableMap.<Type, String>builder()
-          .put(Type.TYPE_BOOL, "boolean")
-          .put(Type.TYPE_DOUBLE, "number")
-          .put(Type.TYPE_FLOAT, "number")
-          .put(Type.TYPE_INT64, "number")
-          .put(Type.TYPE_UINT64, "number")
-          .put(Type.TYPE_SINT64, "number")
-          .put(Type.TYPE_FIXED64, "number")
-          .put(Type.TYPE_SFIXED64, "number")
-          .put(Type.TYPE_INT32, "number")
-          .put(Type.TYPE_UINT32, "number")
-          .put(Type.TYPE_SINT32, "number")
-          .put(Type.TYPE_FIXED32, "number")
-          .put(Type.TYPE_SFIXED32, "number")
-          .put(Type.TYPE_STRING, "string")
-          .put(Type.TYPE_BYTES, "string")
-          .build();
 }

@@ -17,16 +17,21 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransformer {
+  JSCommentReformatter jsCommentReformatter = new JSCommentReformatter();
+
   @Override
   public List<DynamicLangDefaultableParamView> generateMethodParams(
       MethodTransformerContext context) {
@@ -127,7 +132,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName("request." + namer.getVariableName(field));
 
-      String typeName = namer.getFieldTypeDoc(context.getTypeTable(), field);
+      String typeName = getFieldTypeDoc(context, field);
       paramDoc.typeName(typeName + (isOptional ? "=" : ""));
       List<String> fieldDocLines = namer.getDocLines(field);
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
@@ -155,17 +160,35 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
       if (fieldIsMap) {
         docLines.add(
             "This object should have the same structure as "
-                + namer.getLinkedElementName(field.getType().getMessageType()));
+                + jsCommentReformatter.getLinkedElementName(field.getType().getMessageType()));
       } else if (fieldIsEnum) {
         docLines.add(
             "The number should be among the values of "
-                + namer.getLinkedElementName(field.getType().getEnumType()));
+                + jsCommentReformatter.getLinkedElementName(field.getType().getEnumType()));
       }
 
       paramDoc.lines(docLines.build());
       docs.add(paramDoc.build());
     }
     return docs.build();
+  }
+
+  public String getFieldTypeDoc(MethodTransformerContext context, Field field) {
+    TypeRef type = field.getType();
+    ModelTypeTable typeTable = context.getTypeTable();
+    SurfaceNamer namer = context.getNamer();
+    String cardinalityComment = "";
+    if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
+      if (type.isMap()) {
+        String keyType = namer.getParamTypeName(typeTable, type.getMapKeyField().getType());
+        String valueType = namer.getParamTypeName(typeTable, type.getMapValueField().getType());
+        return String.format("Object.<%s, %s>", keyType, valueType);
+      } else {
+        cardinalityComment = "[]";
+      }
+    }
+    String typeComment = namer.getParamTypeName(typeTable, field.getType());
+    return String.format("%s%s", typeComment, cardinalityComment);
   }
 
   private boolean isRequestTokenParam(MethodConfig methodConfig, Field field) {

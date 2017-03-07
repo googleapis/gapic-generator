@@ -1027,14 +1027,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getReleaseAnnotation");
   }
 
-  public String getLinkedElementName(ProtoElement element) {
-    return getNotImplementedString("SurfaceNamer.getLinkedElementName");
-  }
-
-  public String getFieldTypeDoc(ModelTypeTable typeTable, Field field) {
-    return getNotImplementedString("SurfaceNamer.getFieldTypeDoc");
-  }
-
   //////////////////////////////////////// File names ////////////////////////////////////////////
 
   /** The file name for an API service. */
