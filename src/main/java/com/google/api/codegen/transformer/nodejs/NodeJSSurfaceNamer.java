@@ -157,12 +157,24 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+    String cardinalityComment = "";
+    if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
+      if (type.isMap()) {
+        String keyType = getParamTypeName(typeTable, type.getMapKeyField().getType());
+        String valueType = getParamTypeName(typeTable, type.getMapValueField().getType());
+        return String.format("Object.<%s, %s>", keyType, valueType);
+      } else {
+        cardinalityComment = "[]";
+      }
+    }
+    String typeComment = "";
     if (type.isMessage()) {
-      return "Object";
+      typeComment = "Object";
+    } else if (type.isEnum()) {
+      typeComment = "Number";
+    } else {
+      typeComment = typeTable.getFullNameForElementType(type);
     }
-    if (type.isEnum()) {
-      return "number";
-    }
-    return typeTable.getFullNameForElementType(type);
+    return String.format("%s%s", typeComment, cardinalityComment);
   }
 }
