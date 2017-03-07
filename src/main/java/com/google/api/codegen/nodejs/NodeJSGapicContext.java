@@ -15,9 +15,11 @@
 package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -58,11 +60,13 @@ import javax.annotation.Nullable;
 /** A GapicContext specialized for NodeJS. */
 public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   private GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+  private PackageMetadataConfig packageConfig;
 
   NodeJSSurfaceNamer namer;
 
-  public NodeJSGapicContext(Model model, ApiConfig apiConfig) {
+  public NodeJSGapicContext(Model model, ApiConfig apiConfig, PackageMetadataConfig packageConfig) {
     super(model, apiConfig);
+    this.packageConfig = packageConfig;
     namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
   }
 
@@ -107,6 +111,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
             new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
     return SurfaceTransformerContext.create(
         service, getApiConfig(), modelTypeTable, namer, new NodeJSFeatureConfig());
+  }
+
+  public String packageVersion() {
+    return packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower();
   }
 
   public String filePath(ProtoFile file) {

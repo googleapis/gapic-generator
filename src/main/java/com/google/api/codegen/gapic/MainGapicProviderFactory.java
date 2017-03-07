@@ -192,7 +192,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new NodeJSGapicContext(model, apiConfig))
+                .setContext(new NodeJSGapicContext(model, apiConfig, packageConfig))
                 .setSnippetSetRunner(
                     new NodeJSSnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
                 .setSnippetFileNames(Arrays.asList("nodejs/main.snip"))
@@ -234,7 +234,7 @@ public class MainGapicProviderFactory
               CommonGapicProvider.<ProtoFile>newBuilder()
                   .setModel(model)
                   .setView(new ProtoFileView())
-                  .setContext(new NodeJSGapicContext(model, apiConfig))
+                  .setContext(new NodeJSGapicContext(model, apiConfig, packageConfig))
                   .setSnippetSetRunner(
                       new NodeJSSnippetSetRunner<ProtoFile>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
                   .setSnippetFileNames(Arrays.asList("nodejs/message.snip"))

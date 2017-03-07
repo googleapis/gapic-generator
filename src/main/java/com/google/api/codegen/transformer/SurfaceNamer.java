@@ -730,7 +730,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /**
    * The generic-aware response type name for the given type. For example, in Java, this will be the
-   * type used for RpcFuture&lt;...&gt;.
+   * type used for Future&lt;...&gt;.
    */
   public String getGenericAwareResponseTypeName(TypeRef outputType) {
     return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
@@ -1173,5 +1173,21 @@ public class SurfaceNamer extends NameFormatterDelegator {
       original = original.substring(0, original.length() - suffix.length());
     }
     return original;
+  }
+
+  /** Make the given type name able to accept nulls, if it is a primitive type */
+  public String makePrimitiveTypeNullable(String typeName, TypeRef type) {
+    return typeName;
+  }
+
+  /** Is this type a primitive, according to target language. */
+  public boolean isPrimitive(TypeRef type) {
+    return type.isPrimitive();
+  }
+
+  /** The default value for an optional field, null if no default value required. */
+  public String getOptionalFieldDefaultValue(
+      FieldConfig fieldConfig, MethodTransformerContext context) {
+    return getNotImplementedString("SurfaceNamer.getOptionalFieldDefaultValue");
   }
 }

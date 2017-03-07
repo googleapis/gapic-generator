@@ -780,16 +780,16 @@ namespace Google.Example.Library.V1
     public partial class FindRelatedBooksRequest
     {
         /// <summary>
-        /// <see cref="IList{BookName}"/>-typed view over the <see cref="Names"/> resource name property.
+        /// <see cref="ResourceNameList{BookName}"/>-typed view over the <see cref="Names"/> resource name property.
         /// </summary>
-        public IList<BookName> BookNames =>
+        public ResourceNameList<BookName> BookNames =>
             new ResourceNameList<BookName>(Names,
                 str => BookName.Parse(str));
 
         /// <summary>
-        /// <see cref="IList{ShelfName}"/>-typed view over the <see cref="Shelves"/> resource name property.
+        /// <see cref="ResourceNameList{ShelfName}"/>-typed view over the <see cref="Shelves"/> resource name property.
         /// </summary>
-        public IList<ShelfName> ShelvesAsShelfNames =>
+        public ResourceNameList<ShelfName> ShelvesAsShelfNames =>
             new ResourceNameList<ShelfName>(Shelves,
                 str => ShelfName.Parse(str));
 
@@ -798,9 +798,9 @@ namespace Google.Example.Library.V1
     public partial class FindRelatedBooksResponse
     {
         /// <summary>
-        /// <see cref="IList{BookName}"/>-typed view over the <see cref="Names"/> resource name property.
+        /// <see cref="ResourceNameList{BookName}"/>-typed view over the <see cref="Names"/> resource name property.
         /// </summary>
-        public IList<BookName> BookNames =>
+        public ResourceNameList<BookName> BookNames =>
             new ResourceNameList<BookName>(Names,
                 str => BookName.Parse(str));
 
@@ -896,9 +896,9 @@ namespace Google.Example.Library.V1
     public partial class ListStringsResponse
     {
         /// <summary>
-        /// <see cref="IList{IResourceName}"/>-typed view over the <see cref="Strings"/> resource name property.
+        /// <see cref="ResourceNameList{IResourceName}"/>-typed view over the <see cref="Strings"/> resource name property.
         /// </summary>
-        public IList<IResourceName> StringsAsResourceNames =>
+        public ResourceNameList<IResourceName> StringsAsResourceNames =>
             new ResourceNameList<IResourceName>(Strings,
                 str => UnknownResourceName.Parse(str));
 
@@ -958,6 +958,74 @@ namespace Google.Example.Library.V1
             get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.ShelfName.Parse(Name); }
             set { Name = value != null ? value.ToString() : ""; }
         }
+
+    }
+
+    public partial class TestOptionalRequiredFlatteningParamsRequest
+    {
+        /// <summary>
+        /// <see cref="BookName"/>-typed view over the <see cref="RequiredSingularResourceName"/> resource name property.
+        /// </summary>
+        public BookName RequiredSingularResourceNameAsBookName
+        {
+            get { return string.IsNullOrEmpty(RequiredSingularResourceName) ? null : Google.Example.Library.V1.BookName.Parse(RequiredSingularResourceName); }
+            set { RequiredSingularResourceName = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="BookNameOneof"/>-typed view over the <see cref="RequiredSingularResourceNameOneof"/> resource name property.
+        /// </summary>
+        public BookNameOneof RequiredSingularResourceNameOneofAsBookNameOneof
+        {
+            get { return string.IsNullOrEmpty(RequiredSingularResourceNameOneof) ? null : Google.Example.Library.V1.BookNameOneof.Parse(RequiredSingularResourceNameOneof, true); }
+            set { RequiredSingularResourceNameOneof = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="ResourceNameList{BookName}"/>-typed view over the <see cref="RequiredRepeatedResourceName"/> resource name property.
+        /// </summary>
+        public ResourceNameList<BookName> RequiredRepeatedResourceNameAsBookNames =>
+            new ResourceNameList<BookName>(RequiredRepeatedResourceName,
+                str => BookName.Parse(str));
+
+        /// <summary>
+        /// <see cref="ResourceNameList{BookNameOneof}"/>-typed view over the <see cref="RequiredRepeatedResourceNameOneof"/> resource name property.
+        /// </summary>
+        public ResourceNameList<BookNameOneof> RequiredRepeatedResourceNameOneofAsBookNameOneofs =>
+            new ResourceNameList<BookNameOneof>(RequiredRepeatedResourceNameOneof,
+                str => BookNameOneof.Parse(str, true));
+
+        /// <summary>
+        /// <see cref="BookName"/>-typed view over the <see cref="OptionalSingularResourceName"/> resource name property.
+        /// </summary>
+        public BookName OptionalSingularResourceNameAsBookName
+        {
+            get { return string.IsNullOrEmpty(OptionalSingularResourceName) ? null : Google.Example.Library.V1.BookName.Parse(OptionalSingularResourceName); }
+            set { OptionalSingularResourceName = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="BookNameOneof"/>-typed view over the <see cref="OptionalSingularResourceNameOneof"/> resource name property.
+        /// </summary>
+        public BookNameOneof OptionalSingularResourceNameOneofAsBookNameOneof
+        {
+            get { return string.IsNullOrEmpty(OptionalSingularResourceNameOneof) ? null : Google.Example.Library.V1.BookNameOneof.Parse(OptionalSingularResourceNameOneof, true); }
+            set { OptionalSingularResourceNameOneof = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="ResourceNameList{BookName}"/>-typed view over the <see cref="OptionalRepeatedResourceName"/> resource name property.
+        /// </summary>
+        public ResourceNameList<BookName> OptionalRepeatedResourceNameAsBookNames =>
+            new ResourceNameList<BookName>(OptionalRepeatedResourceName,
+                str => BookName.Parse(str));
+
+        /// <summary>
+        /// <see cref="ResourceNameList{BookNameOneof}"/>-typed view over the <see cref="OptionalRepeatedResourceNameOneof"/> resource name property.
+        /// </summary>
+        public ResourceNameList<BookNameOneof> OptionalRepeatedResourceNameOneofAsBookNameOneofs =>
+            new ResourceNameList<BookNameOneof>(OptionalRepeatedResourceNameOneof,
+                str => BookNameOneof.Parse(str, true));
 
     }
 
