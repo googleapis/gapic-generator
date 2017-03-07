@@ -171,7 +171,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     if (type.isMessage()) {
       typeComment = "Object";
     } else if (type.isEnum()) {
-      typeComment = "Number";
+      typeComment = "number";
     } else {
       typeComment = typeTable.getFullNameForElementType(type);
     }
