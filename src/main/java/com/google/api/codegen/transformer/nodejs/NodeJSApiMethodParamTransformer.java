@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransformer {
-  private static final JSCommentReformatter jsCommentReformatter = new JSCommentReformatter();
+  private static JSCommentReformatter commentReformatter = new JSCommentReformatter();
 
   @Override
   public List<DynamicLangDefaultableParamView> generateMethodParams(
@@ -158,11 +158,11 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
       if (fieldIsMap) {
         docLines.add(
             "This object should have the same structure as "
-                + jsCommentReformatter.getLinkedElementName(field.getType().getMessageType()));
+                + commentReformatter.getLinkedElementName(field.getType().getMessageType()));
       } else if (fieldIsEnum) {
         docLines.add(
             "The number should be among the values of "
-                + jsCommentReformatter.getLinkedElementName(field.getType().getEnumType()));
+                + commentReformatter.getLinkedElementName(field.getType().getEnumType()));
       }
 
       paramDoc.lines(docLines.build());
