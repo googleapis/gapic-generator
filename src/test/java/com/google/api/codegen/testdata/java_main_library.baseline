@@ -265,6 +265,9 @@ public class LibraryServiceClient implements AutoCloseable {
     this.listStringsPagedCallable =
         UnaryCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
     this.addCommentsCallable = UnaryCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
+    if (settings.addCommentsSettings().getBundlerFactory() != null) {
+      closeables.add(settings.addCommentsSettings().getBundlerFactory());
+    }
     this.getBookFromArchiveCallable = UnaryCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
     this.getBookFromAnywhereCallable = UnaryCallable.create(settings.getBookFromAnywhereSettings(), this.channel, this.executor);
     this.updateBookIndexCallable = UnaryCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);

@@ -75,6 +75,10 @@ public class BundlingTransformer {
     bundlingConfigView.requestByteThreshold(bundlingConfig.getRequestByteThreshold());
     bundlingConfigView.requestByteLimit(bundlingConfig.getRequestByteLimit());
     bundlingConfigView.delayThresholdMillis(bundlingConfig.getDelayThresholdMillis());
+    bundlingConfigView.flowControlElementLimit(bundlingConfig.getFlowControlElementLimit());
+    bundlingConfigView.flowControlByteLimit(bundlingConfig.getFlowControlByteLimit());
+    bundlingConfigView.flowControlLimitExceededBehavior(
+        bundlingConfig.getFlowControlLimitConfig().toString());
 
     return bundlingConfigView.build();
   }
