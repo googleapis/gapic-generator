@@ -23,7 +23,6 @@ import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -34,13 +33,11 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
     methodParams.addAll(generateDefaultableParams(context));
 
-    TypeRef arrayType = TypeRef.fromPrimitiveName("string").makeRepeated();
-
-    DynamicLangDefaultableParamView.Builder optionalArgs =
+    DynamicLangDefaultableParamView.Builder optionsParam =
         DynamicLangDefaultableParamView.newBuilder();
-    optionalArgs.name(context.getNamer().localVarName(Name.from("optional", "args")));
-    optionalArgs.defaultValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType));
-    methodParams.add(optionalArgs.build());
+    optionsParam.name("options");
+    optionsParam.defaultValue("null");
+    methodParams.add(optionsParam.build());
 
     return methodParams.build();
   }
@@ -132,8 +129,9 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
 
       String typeName = namer.getFieldTypeDoc(context.getTypeTable(), field);
       paramDoc.typeName(typeName + (isOptional ? "=" : ""));
-
+      List<String> fieldDocLines = namer.getDocLines(field);
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
+      boolean hasFieldDocs;
       if (isPageSizeParam(methodConfig, field)) {
         docLines.add(
             "The maximum number of resources contained in the underlying API",
@@ -141,19 +139,24 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
             "parameter does not affect the return value. If page streaming is",
             "performed per-page, this determines the maximum number of",
             "resources in a page.");
+        hasFieldDocs = true;
       } else {
-        docLines.addAll(namer.getDocLines(field));
+        docLines.addAll(fieldDocLines);
+        hasFieldDocs = fieldDocLines.size() > 0;
       }
 
-      if (field.getType().isMessage() && !field.getType().isMap()) {
-        // Add an empty line if there was doclines added previously
-        if (docLines.build().size() > 0) {
-          docLines.add("");
-        }
+      // Add a break if both documentation was added previously and documentation will be added.
+      boolean fieldIsMap = field.getType().isMessage() && !field.getType().isMap();
+      boolean fieldIsEnum = field.getType().isEnum();
+      if (hasFieldDocs && (fieldIsMap || fieldIsEnum)) {
+        docLines.add("");
+      }
+
+      if (fieldIsMap) {
         docLines.add(
             "This object should have the same structure as "
                 + namer.getLinkedElementName(field.getType().getMessageType()));
-      } else if (field.getType().isEnum()) {
+      } else if (fieldIsEnum) {
         docLines.add(
             "The number should be among the values of "
                 + namer.getLinkedElementName(field.getType().getEnumType()));
