@@ -66,6 +66,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     Set<ImportFileView> protoImports = new TreeSet<>(importFileViewComparator());
     for (InitCodeNode item : specItemNodes) {
       TypeRef type = item.getType();
+      // Exclude map entry types
       if (!type.isRepeated() && type.isMessage()) {
         String fullName = typeTable.getFullNameFor(type);
         String nickname = typeTable.getNicknameFor(type);
