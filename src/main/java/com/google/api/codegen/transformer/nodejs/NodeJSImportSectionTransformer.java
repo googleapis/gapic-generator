@@ -35,7 +35,7 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateExternalImports(SurfaceTransformerContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     Interface service = context.getInterface();
-    String configModule = context.getNamer().getClientConfigImportModule(service);
+    String configModule = context.getNamer().getClientConfigPath(service);
     imports.add(createImport("configData", "./" + configModule));
     imports.add(createImport("extend", "extend"));
     imports.add(createImport("gax", "google-gax"));

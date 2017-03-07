@@ -100,9 +100,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(Interface service) {
-    return "./resources/"
-        + Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore()
-        + ".json";
+    return Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore();
   }
 
   public String getClientFileName(Interface service) {
@@ -152,10 +150,5 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
-  }
-
-  @Override
-  public String getClientConfigImportModule(Interface service) {
-    return Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore();
   }
 }
