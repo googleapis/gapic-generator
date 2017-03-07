@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
@@ -536,8 +537,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /////////////////////////////////////// Type names /////////////////////////////////////////////
 
   /** The name of the class that implements a particular proto interface. */
-  public String getApiWrapperClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
+    return interfaceConfig.hasClassNameOverride()
+        ? interfaceConfig.getClassNameOverride()
+        : publicClassName(
+            Name.upperCamel(interfaceConfig.getInterface().getSimpleName(), "Client"));
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
@@ -579,7 +583,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The fully qualified class name of a an API service. TODO: Support the general pattern of
    * package + class name in NameFormatter.
    */
-  public String getFullyQualifiedApiWrapperClassName(Interface interfaze) {
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
   }
 
@@ -1030,7 +1034,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   //////////////////////////////////////// File names ////////////////////////////////////////////
 
   /** The file name for an API service. */
-  public String getServiceFileName(Interface service) {
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getServiceFileName");
   }
 

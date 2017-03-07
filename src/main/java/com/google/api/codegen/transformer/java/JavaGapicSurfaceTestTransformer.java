@@ -126,7 +126,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
-    testClass.apiClassName(namer.getApiWrapperClassName(service));
+    testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
@@ -157,7 +157,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     ClientTestClassView.Builder testClass = ClientTestClassView.newBuilder();
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
-    testClass.apiClassName(namer.getApiWrapperClassName(service));
+    testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.testCases(createTestCaseViews(context));
     testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());

@@ -149,7 +149,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     fileView.settings(generateSettingsClass(context));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    String name = context.getNamer().getApiWrapperClassName(context.getInterface());
+    String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     fileView.outputPath(outputPath + File.separator + name + ".cs");
 
     // must be done as the last step to catch all imports
@@ -166,7 +166,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
     apiClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
-    apiClass.name(namer.getApiWrapperClassName(context.getInterface()));
+    apiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiClass.implName(namer.getApiWrapperClassImplName(context.getInterface()));
     apiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterface()));
     apiClass.grpcTypeName(namer.getGrpcServiceClassName(context.getInterface()));
@@ -391,7 +391,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     settingsDoc.servicePort(serviceConfig.getServicePort());
     settingsDoc.exampleApiMethodName(""); // Unused in C#
     settingsDoc.exampleApiMethodSettingsGetter(""); // Unused in C#
-    settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
+    settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterface()));
     settingsDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterface()));
     settingsDoc.settingsBuilderVarName(namer.getApiSettingsBuilderVarName(context.getInterface()));

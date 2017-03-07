@@ -36,7 +36,6 @@ import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
@@ -129,7 +128,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     view.templateFileName(API_TEMPLATE_FILENAME);
     view.serviceDoc(serviceTransformer.generateServiceDoc(context, null));
-    view.clientTypeName(namer.getApiWrapperClassName(service));
+    view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(service));
     view.defaultCallOptionFunctionName(namer.getDefaultCallSettingsFunctionName(service));
@@ -138,7 +137,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.servicePhraseName(namer.getServicePhraseName(service));
 
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
-    String fileName = namer.getServiceFileName(service);
+    String fileName = namer.getServiceFileName(context.getInterfaceConfig());
     view.outputPath(outputPath + File.separator + fileName);
 
     List<RetryConfigDefinitionView> retryDef =
@@ -204,7 +203,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     String fileName = namer.getExampleFileName(service);
     view.outputPath(outputPath + File.separator + fileName);
 
-    view.clientTypeName(namer.getApiWrapperClassName(service));
+    view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
     view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
     view.apiMethods(generateApiMethods(context, context.getPublicMethods()));

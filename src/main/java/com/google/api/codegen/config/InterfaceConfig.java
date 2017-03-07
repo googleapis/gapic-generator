@@ -54,6 +54,8 @@ public abstract class InterfaceConfig {
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
       ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
 
+  public abstract Interface getInterface();
+
   public abstract List<MethodConfig> getMethodConfigs();
 
   @Nullable
@@ -73,6 +75,13 @@ public abstract class InterfaceConfig {
 
   public abstract String getManualDoc();
 
+  @Nullable
+  public abstract String getClassNameOverride();
+
+  public boolean hasClassNameOverride() {
+    return getClassNameOverride() != null;
+  }
+
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up method configurations
    * with specified methods in methodConfigMap. On errors, null will be returned, and diagnostics
@@ -84,6 +93,7 @@ public abstract class InterfaceConfig {
       String language,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
+      String classNameOverride,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
@@ -147,6 +157,7 @@ public abstract class InterfaceConfig {
       return null;
     } else {
       return new AutoValue_InterfaceConfig(
+          iface,
           methodConfigs,
           smokeTestConfig,
           methodConfigMap,
@@ -155,7 +166,8 @@ public abstract class InterfaceConfig {
           iamResources,
           requiredConstructorParams,
           singleResourceNames,
-          manualDoc);
+          manualDoc,
+          classNameOverride);
     }
   }
 

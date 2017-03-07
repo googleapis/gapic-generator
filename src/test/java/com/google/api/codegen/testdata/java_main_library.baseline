@@ -1,4 +1,4 @@
-============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryServiceClient.java ==============
+============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryClient.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -115,7 +115,7 @@ import javax.annotation.Generated;
  *
  * <pre>
  * <code>
- * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+ * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
  *   Shelf shelf = Shelf.newBuilder().build();
  *   Shelf response = libraryServiceClient.createShelf(shelf);
  * }
@@ -157,13 +157,13 @@ import javax.annotation.Generated;
  *         .build();
  * LibraryServiceSettings libraryServiceSettings =
  *     LibraryServiceSettings.defaultBuilder().setChannelProvider(channelProvider).build();
- * LibraryServiceClient libraryServiceClient =
- *     LibraryServiceClient.create(libraryServiceSettings);
+ * LibraryClient libraryServiceClient =
+ *     LibraryClient.create(libraryServiceSettings);
  * </code>
  * </pre>
  */
 @Generated("by GAPIC")
-public class LibraryServiceClient implements AutoCloseable {
+public class LibraryClient implements AutoCloseable {
   private final LibraryServiceSettings settings;
   private final ScheduledExecutorService executor;
   private final ManagedChannel channel;
@@ -207,27 +207,27 @@ public class LibraryServiceClient implements AutoCloseable {
 
 
   /**
-   * Constructs an instance of LibraryServiceClient with default settings.
+   * Constructs an instance of LibraryClient with default settings.
    */
-  public static final LibraryServiceClient create() throws IOException {
+  public static final LibraryClient create() throws IOException {
     return create(LibraryServiceSettings.defaultBuilder().build());
   }
 
   /**
-   * Constructs an instance of LibraryServiceClient, using the given settings.
+   * Constructs an instance of LibraryClient, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
    */
-  public static final LibraryServiceClient create(LibraryServiceSettings settings) throws IOException {
-    return new LibraryServiceClient(settings);
+  public static final LibraryClient create(LibraryServiceSettings settings) throws IOException {
+    return new LibraryClient(settings);
   }
 
   /**
-   * Constructs an instance of LibraryServiceClient, using the given settings.
+   * Constructs an instance of LibraryClient, using the given settings.
    * This is protected so that it easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected LibraryServiceClient(LibraryServiceSettings settings) throws IOException {
+  protected LibraryClient(LibraryServiceSettings settings) throws IOException {
     this.settings = settings;
     ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
     this.executor = channelAndExecutor.getExecutor();
@@ -325,7 +325,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   Shelf response = libraryServiceClient.createShelf(shelf);
    * }
@@ -350,7 +350,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
    *     .setShelf(shelf)
@@ -373,7 +373,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
    *     .setShelf(shelf)
@@ -394,7 +394,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   Shelf response = libraryServiceClient.getShelf(name);
    * }
@@ -418,7 +418,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   Shelf response = libraryServiceClient.getShelf(formattedName, message);
@@ -445,7 +445,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
@@ -475,7 +475,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
@@ -499,7 +499,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
@@ -522,7 +522,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *
    *   for (Shelf element : libraryServiceClient.listShelves().iterateAllElements()) {
    *     // doThingsWith(element);
@@ -545,7 +545,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
    *   for (Shelf element : libraryServiceClient.listShelves(request).iterateAllElements()) {
    *     // doThingsWith(element);
@@ -567,7 +567,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
    *   ApiFuture&lt;ListShelvesPagedResponse&gt; future = libraryServiceClient.listShelvesPagedCallable().futureCall(request);
    *   // Do something
@@ -587,7 +587,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
    *   while (true) {
    *     ListShelvesResponse response = libraryServiceClient.listShelvesCallable().call(request);
@@ -614,7 +614,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   libraryServiceClient.deleteShelf(name);
    * }
@@ -638,7 +638,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -660,7 +660,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -683,7 +683,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   Shelf response = libraryServiceClient.mergeShelves(name, otherShelfName);
@@ -712,7 +712,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
@@ -738,7 +738,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
@@ -761,7 +761,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryServiceClient.createBook(formattedName, book);
@@ -788,7 +788,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
@@ -812,7 +812,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
@@ -835,7 +835,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   int edition = 0;
@@ -871,7 +871,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
@@ -900,7 +900,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
@@ -928,7 +928,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book response = libraryServiceClient.getBook(name);
    * }
@@ -952,7 +952,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -974,7 +974,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -995,7 +995,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   String filter = "";
    *   for (Book element : libraryServiceClient.listBooks(name, filter).iterateAllElements()) {
@@ -1023,7 +1023,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -1048,7 +1048,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -1071,7 +1071,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -1101,7 +1101,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   libraryServiceClient.deleteBook(name);
    * }
@@ -1125,7 +1125,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -1147,7 +1147,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -1168,7 +1168,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryServiceClient.updateBook(name, book);
@@ -1195,7 +1195,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   FieldMask updateMask = FieldMask.newBuilder().build();
@@ -1228,7 +1228,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
@@ -1252,7 +1252,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
@@ -1275,7 +1275,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   Book response = libraryServiceClient.moveBook(name, otherShelfName);
@@ -1302,7 +1302,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
@@ -1326,7 +1326,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
@@ -1349,7 +1349,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *
    *   for (ResourceName element : libraryServiceClient.listStrings().iterateAllAsResourceName()) {
    *     // doThingsWith(element);
@@ -1372,7 +1372,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ResourceName name = ShelfName.create("[SHELF_ID]");
    *   for (ResourceName element : libraryServiceClient.listStrings(name).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
@@ -1397,7 +1397,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   for (ResourceName element : libraryServiceClient.listStrings(request).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
@@ -1419,7 +1419,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   ApiFuture&lt;ListStringsPagedResponse&gt; future = libraryServiceClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
@@ -1439,7 +1439,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   while (true) {
    *     ListStringsResponse response = libraryServiceClient.listStringsCallable().call(request);
@@ -1466,7 +1466,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
@@ -1501,7 +1501,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
@@ -1533,7 +1533,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedName = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
@@ -1564,7 +1564,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   BookFromArchive response = libraryServiceClient.getBookFromArchive(name);
    * }
@@ -1588,7 +1588,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithArchivedBookName(name)
@@ -1610,7 +1610,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithArchivedBookName(name)
@@ -1631,7 +1631,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   BookName altBookName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   BookFromAnywhere response = libraryServiceClient.getBookFromAnywhere(name, altBookName);
@@ -1659,7 +1659,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   BookNameOneof altBookName = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
@@ -1683,7 +1683,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   BookNameOneof altBookName = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
@@ -1706,7 +1706,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
@@ -1738,7 +1738,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
@@ -1766,7 +1766,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
@@ -1794,7 +1794,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   RpcStreamObserver&lt;StreamShelvesResponse&gt; responseObserver =
    *       new RpcStreamObserver&lt;StreamShelvesResponse&gt;() {
    *         {@literal @}Override
@@ -1830,7 +1830,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   RpcStreamObserver&lt;Book&gt; responseObserver =
    *       new RpcStreamObserver&lt;Book&gt;() {
    *         {@literal @}Override
@@ -1869,7 +1869,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   RpcStreamObserver&lt;Comment&gt; responseObserver =
    *       new RpcStreamObserver&lt;Comment&gt;() {
    *         {@literal @}Override
@@ -1909,7 +1909,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   RpcStreamObserver&lt;Comment&gt; responseObserver =
    *       new RpcStreamObserver&lt;Comment&gt;() {
    *         {@literal @}Override
@@ -1948,7 +1948,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
@@ -1977,7 +1977,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
@@ -2005,7 +2005,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
@@ -2031,7 +2031,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
@@ -2064,7 +2064,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String tag = "";
    *   AddTagResponse response = libraryServiceClient.addTag(formattedResource, tag);
@@ -2093,7 +2093,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
@@ -2117,7 +2117,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
@@ -2140,7 +2140,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String label = "";
    *   AddLabelResponse response = libraryServiceClient.addLabel(formattedResource, label);
@@ -2170,7 +2170,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
@@ -2195,7 +2195,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
@@ -2219,7 +2219,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book response = libraryServiceClient.getBigBookAsync(name).get();
    * }
@@ -2243,7 +2243,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2265,7 +2265,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2286,7 +2286,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2307,7 +2307,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Empty response = libraryServiceClient.getBigNothingAsync(name).get();
    * }
@@ -2331,7 +2331,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2353,7 +2353,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2374,7 +2374,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2395,7 +2395,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   int requiredSingularInt32 = 0;
    *   long requiredSingularInt64 = 0L;
    *   float requiredSingularFloat = 0.0F;
@@ -2554,7 +2554,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   int requiredSingularInt32 = 0;
    *   long requiredSingularInt64 = 0L;
    *   float requiredSingularFloat = 0.0F;
@@ -2620,7 +2620,7 @@ public class LibraryServiceClient implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   * try (LibraryClient libraryServiceClient = LibraryClient.create()) {
    *   int requiredSingularInt32 = 0;
    *   long requiredSingularInt64 = 0L;
    *   float requiredSingularFloat = 0.0F;

@@ -160,7 +160,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     apiFile.api(generateApiClass(context));
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    String className = context.getNamer().getApiWrapperClassName(context.getInterface());
+    String className = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     apiFile.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
@@ -179,7 +179,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     ApiMethodView exampleApiMethod = getExampleApiMethod(methods);
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod));
 
-    String name = context.getNamer().getApiWrapperClassName(context.getInterface());
+    String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.releaseAnnotation(
         context.getNamer().getReleaseAnnotation(context.getApiConfig().getReleaseLevel()));
     xapiClass.name(name);
@@ -497,7 +497,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     settingsDoc.servicePort(serviceConfig.getServicePort());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());
-    settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
+    settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterface()));
     settingsDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterface()));
     settingsDoc.settingsBuilderVarName(namer.getApiSettingsBuilderVarName(context.getInterface()));
