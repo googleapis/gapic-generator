@@ -125,7 +125,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
     TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
 
-    testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
+    testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
@@ -156,7 +156,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String name = namer.getUnitTestClassName(service);
 
     ClientTestClassView.Builder testClass = ClientTestClassView.newBuilder();
-    testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
+    testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.testCases(createTestCaseViews(context));

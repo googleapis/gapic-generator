@@ -192,8 +192,8 @@ public abstract class ApiConfig {
                 interfaceConfigProto.getName()));
         continue;
       }
-      String classNameOverride =
-          languageSettings.getClassNames().get(interfaceConfigProto.getName());
+      String interfaceNameOverride =
+          languageSettings.getInterfaceNames().get(interfaceConfigProto.getName());
 
       InterfaceConfig interfaceConfig =
           InterfaceConfig.createInterfaceConfig(
@@ -201,7 +201,7 @@ public abstract class ApiConfig {
               configProto.getLanguage(),
               interfaceConfigProto,
               iface,
-              classNameOverride,
+              interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs);
       if (interfaceConfig == null) {

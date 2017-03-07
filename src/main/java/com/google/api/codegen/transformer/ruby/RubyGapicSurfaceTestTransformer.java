@@ -97,7 +97,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext);
 
-    testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
+    testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));

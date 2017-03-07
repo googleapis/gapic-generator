@@ -1,4 +1,4 @@
-============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryServiceSettings.java ==============
+============== file: src/main/java/com/google/gcloud/pubsub/spi/LibrarySettings.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -124,17 +124,17 @@ import org.joda.time.Duration;
  *
  * <pre>
  * <code>
- * LibraryServiceSettings.Builder libraryServiceSettingsBuilder =
- *     LibraryServiceSettings.defaultBuilder();
- * libraryServiceSettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
+ * LibrarySettings.Builder librarySettingsBuilder =
+ *     LibrarySettings.defaultBuilder();
+ * librarySettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.standardSeconds(30));
- * LibraryServiceSettings libraryServiceSettings = libraryServiceSettingsBuilder.build();
+ * LibrarySettings librarySettings = librarySettingsBuilder.build();
  * </code>
  * </pre>
  */
 @Generated("by GAPIC v0.0.5")
 @ExperimentalApi
-public class LibraryServiceSettings extends ClientSettings {
+public class LibrarySettings extends ClientSettings {
   /**
    * The default address of the service.
    */
@@ -423,7 +423,7 @@ public class LibraryServiceSettings extends ClientSettings {
   }
 
   private static String getGapicVersion() {
-    String packageVersion = LibraryServiceSettings.class.getPackage().getImplementationVersion();
+    String packageVersion = LibrarySettings.class.getPackage().getImplementationVersion();
     return packageVersion != null ? packageVersion : DEFAULT_GAPIC_VERSION;
   }
 
@@ -448,7 +448,7 @@ public class LibraryServiceSettings extends ClientSettings {
     return new Builder(this);
   }
 
-  private LibraryServiceSettings(Builder settingsBuilder) throws IOException {
+  private LibrarySettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder.getExecutorProvider(),
           settingsBuilder.getChannelProvider());
 
@@ -781,7 +781,7 @@ public class LibraryServiceSettings extends ClientSettings {
       };
 
   /**
-   * Builder for LibraryServiceSettings.
+   * Builder for LibrarySettings.
    */
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
@@ -1059,7 +1059,7 @@ public class LibraryServiceSettings extends ClientSettings {
       return builder;
     }
 
-    private Builder(LibraryServiceSettings settings) {
+    private Builder(LibrarySettings settings) {
       super(settings);
 
       createShelfSettings = settings.createShelfSettings.toBuilder();
@@ -1329,8 +1329,8 @@ public class LibraryServiceSettings extends ClientSettings {
     }
 
     @Override
-    public LibraryServiceSettings build() throws IOException {
-      return new LibraryServiceSettings(this);
+    public LibrarySettings build() throws IOException {
+      return new LibrarySettings(this);
     }
   }
 }

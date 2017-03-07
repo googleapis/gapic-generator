@@ -76,10 +76,10 @@ public abstract class InterfaceConfig {
   public abstract String getManualDoc();
 
   @Nullable
-  public abstract String getClassNameOverride();
+  public abstract String getInterfaceNameOverride();
 
-  public boolean hasClassNameOverride() {
-    return getClassNameOverride() != null;
+  public boolean hasInterfaceNameOverride() {
+    return getInterfaceNameOverride() != null;
   }
 
   /**
@@ -93,7 +93,7 @@ public abstract class InterfaceConfig {
       String language,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
-      String classNameOverride,
+      String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
@@ -167,7 +167,7 @@ public abstract class InterfaceConfig {
           requiredConstructorParams,
           singleResourceNames,
           manualDoc,
-          classNameOverride);
+          interfaceNameOverride);
     }
   }
 

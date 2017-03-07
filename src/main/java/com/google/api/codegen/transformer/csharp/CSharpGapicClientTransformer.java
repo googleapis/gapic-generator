@@ -170,7 +170,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.implName(namer.getApiWrapperClassImplName(context.getInterface()));
     apiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterface()));
     apiClass.grpcTypeName(namer.getGrpcServiceClassName(context.getInterface()));
-    apiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
+    apiClass.settingsClassName(
+        context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
     List<ApiCallableView> callables = new ArrayList<>();
     for (ApiCallableView call : apiCallableTransformer.generateStaticLangApiCallables(context)) {
       if (call.type() == ApiCallableImplType.SimpleApiCallable
@@ -220,7 +221,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private StaticLangSettingsView generateSettingsClass(SurfaceTransformerContext context) {
     StaticLangSettingsView.Builder settingsClass = StaticLangSettingsView.newBuilder();
     settingsClass.doc(generateSettingsDoc(context));
-    String name = context.getNamer().getApiSettingsClassName(context.getInterface());
+    String name = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
     settingsClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
     settingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
@@ -392,9 +393,10 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     settingsDoc.exampleApiMethodName(""); // Unused in C#
     settingsDoc.exampleApiMethodSettingsGetter(""); // Unused in C#
     settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterface()));
-    settingsDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterface()));
-    settingsDoc.settingsBuilderVarName(namer.getApiSettingsBuilderVarName(context.getInterface()));
+    settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
+    settingsDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
+    settingsDoc.settingsBuilderVarName(
+        namer.getApiSettingsBuilderVarName(context.getInterfaceConfig()));
     settingsDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     return settingsDoc.build();
   }

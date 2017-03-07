@@ -455,24 +455,24 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of a variable that holds an instance of the class that implements a particular proto
    * interface.
    */
-  public String getApiWrapperVariableName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  public String getApiWrapperVariableName(InterfaceConfig interfaceConfig) {
+    return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
   /**
    * The name of a variable that holds the settings class for a particular proto interface; not used
    * in most languages.
    */
-  public String getApiSettingsVariableName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+  public String getApiSettingsVariableName(InterfaceConfig interfaceConfig) {
+    return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "Settings"));
   }
 
   /**
    * The name of the builder class for the settings class for a particular proto interface; not used
    * in most languages.
    */
-  public String getApiSettingsBuilderVarName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "SettingsBuilder"));
+  public String getApiSettingsBuilderVarName(InterfaceConfig interfaceConfig) {
+    return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "SettingsBuilder"));
   }
 
   /** The variable name for the given identifier that is formatted. */
@@ -536,12 +536,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /////////////////////////////////////// Type names /////////////////////////////////////////////
 
+  private String getInterfaceName(InterfaceConfig interfaceConfig) {
+    return interfaceConfig.hasInterfaceNameOverride()
+        ? interfaceConfig.getInterfaceNameOverride()
+        : interfaceConfig.getInterface().getSimpleName();
+  }
+
   /** The name of the class that implements a particular proto interface. */
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
-    return interfaceConfig.hasClassNameOverride()
-        ? interfaceConfig.getClassNameOverride()
-        : publicClassName(
-            Name.upperCamel(interfaceConfig.getInterface().getSimpleName(), "Client"));
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
@@ -557,8 +560,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /**
    * The name of the settings class for a particular proto interface; not used in most languages.
    */
-  public String getApiSettingsClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+  public String getApiSettingsClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Settings"));
   }
 
   /** The name of the class that contains paged list response wrappers. */
