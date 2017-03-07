@@ -110,7 +110,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .apiSettingsClassName(
                   namer.getNotImplementedString(
                       "NodeJSGapicSurfaceTestTransformer.generateTestView - apiSettingsClassName"))
-              .apiClassName(namer.getApiWrapperClassName(service))
+              .apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()))
               .name(
                   namer.getNotImplementedString(
                       "NodeJSGapicSurfaceTestTransformer.generateTestView - name"))

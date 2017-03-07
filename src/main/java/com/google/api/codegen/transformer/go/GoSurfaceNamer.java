@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -182,8 +183,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassName(Interface service) {
-    return publicClassName(clientNamePrefix(service).join("client"));
+  public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(clientNamePrefix(interfaceConfig.getInterface()).join("client"));
   }
 
   @Override
@@ -255,8 +256,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getServiceFileName(Interface service) {
-    return classFileNameBase(getReducedServiceName(service).join("client"));
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
+    return classFileNameBase(getReducedServiceName(interfaceConfig.getInterface()).join("client"));
   }
 
   @Override

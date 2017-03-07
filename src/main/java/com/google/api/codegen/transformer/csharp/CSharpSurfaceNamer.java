@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
@@ -143,8 +144,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(Interface service) {
-    return getPackageName() + "." + getApiWrapperClassName(service);
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
+    return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
   }
 
   @Override

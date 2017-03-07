@@ -112,7 +112,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    String name = namer.getApiWrapperClassName(context.getInterface());
+    String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
     xapiClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
