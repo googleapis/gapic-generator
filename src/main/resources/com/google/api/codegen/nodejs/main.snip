@@ -43,15 +43,15 @@
 @end
 
 @private serviceClass(service)
-  @let path_templates = {@pathTemplateSection(service)}, \
-       apiName = context.getApiWrapperName(service)
+  @let apiName = context.getApiWrapperName(service)
     {@constantSection(service)}
 
     {@constructor(service)}
-    @if path_templates
+    @if context.getPathTemplates(service)
 
       // Path templates
-      {@path_templates}
+
+      {@pathTemplateSection(service, apiName)}
     @end
 
     /**
@@ -338,79 +338,60 @@
   @end
 @end
 
-@private pathTemplateName(collectionConfig)
-  {@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName)}_PATH_TEMPLATE
-@end
+@private pathTemplateSection(service, apiName)
+  @join pathTemplate : context.getPathTemplates(service) on BREAK
+    var {@pathTemplate.name} = new gax.PathTemplate(
+        '{@pathTemplate.pattern}');
 
-@private pathTemplateSection(service)
-  @if context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+  @end
+  @join function : context.getFormatResourceFunctions(service)
 
-      var {@pathTemplateName(collectionConfig)} = new gax.PathTemplate(
-          '{@collectionConfig.getNamePattern}');
-    @end
+    {@createResourceFunction(function, apiName)}
+  @end
 
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+  @join function : context.getParseResourceFunctions(service)
 
-      {@createResourceFunction(service, collectionConfig)}
-
-      {@createMatchFunctions(service, collectionConfig)}
-    @end
+    {@createMatchFunction(function, apiName)}
   @end
 @end
 
-@private createResourceFunction(service, collectionConfig)
+@private createResourceFunction(function, apiName)
   /**
-   * Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
-   @join param : collectionConfig.getNameTemplate.vars()
-     * @@param {String} {@context.lowerUnderscoreToLowerCamel(param)}
+   * Returns a fully-qualified {@function.entityName} resource name string.
+   @join param : function.resourceIdParams
+     * @@param {String} {@param.name}
    @end
    * @@returns {String}
    */
-  {@context.getApiWrapperName(service)}.prototype.{@resourceFunctionName(collectionConfig)} = \
-  function({@createResourceFunctionParams(collectionConfig)}) {
-    return {@pathTemplateName(collectionConfig)}.render({
-      {@createRenderDictionary(collectionConfig)}
+  {@apiName}.prototype.{@function.name} = \
+  function({@createResourceFunctionParams(function.resourceIdParams)}) {
+    return {@function.pathTemplateName}.render({
+      {@createRenderDictionary(function.resourceIdParams)}
     });
   };
 @end
 
-@private createMatchFunctions(service, collectionConfig)
-  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
-    @let fieldPath = resourceName(collectionConfig), \
-         fieldParam = context.upperCamelToLowerCamel(fieldPath), \
-         subFieldUpper = context.lowerUnderscoreToUpperCamel(subField)
-      /**
-       * Parses the {@fieldParam} from a {@collectionConfig.getEntityName} resource.
-       * @@param {String} {@fieldParam}
-       *   A fully-qualified path representing a {@collectionConfig.getEntityName} resources.
-       * @@returns {String} - A string representing the {@subField}.
-       */
-      {@context.getApiWrapperName(service)}.prototype.match{@subFieldUpper}From{@fieldPath} = \
-          function({@fieldParam}) {
-        return {@pathTemplateName(collectionConfig)}.match({@fieldParam}).{@subField};
-      };
-    @end
+@private createMatchFunction(function, apiName)
+  /**
+   * Parses the {@function.entityNameParamName} from a {@function.entityName} resource.
+   * @@param {String} {@function.entityNameParamName}
+   *   A fully-qualified path representing a {@function.entityName} resources.
+   * @@returns {String} - A string representing the {@function.outputResourceId}.
+   */
+  {@apiName}.prototype.{@function.name} = function({@function.entityNameParamName}) {
+    return {@function.pathTemplateName}.match({@function.entityNameParamName}).{@function.outputResourceId};
+  };
+@end
+
+@private createResourceFunctionParams(resourceIdParams)
+  @join param : resourceIdParams on ", "
+    {@param.name}
   @end
 @end
 
-@private resourceFunctionName(collectionConfig)
-  {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)}Path
-@end
-
-@private resourceName(collectionConfig)
-  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
-@end
-
-@private createResourceFunctionParams(collectionConfig)
-  @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
-  @end
-@end
-
-@private createRenderDictionary(collectionConfig)
-  @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    {@param}: {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
+@private createRenderDictionary(resourceIdParams)
+  @join param: resourceIdParams on {@","}.add(BREAK)
+    {@param.templateKey}: {@param.name}
   @end
 @end
 
