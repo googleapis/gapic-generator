@@ -16,12 +16,16 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.bundling.BundlingSettings;
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.FlowControlSettings;
+import com.google.api.gax.core.FlowController;
+import com.google.api.gax.core.FlowController.LimitExceededBehavior;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.grpc.BundledRequestIssuer;
 import com.google.api.gax.grpc.BundlingCallSettings;
 import com.google.api.gax.grpc.BundlingDescriptor;
-import com.google.api.gax.grpc.BundlingSettings;
 import com.google.api.gax.grpc.CallContext;
 import com.google.api.gax.grpc.ChannelProvider;
 import com.google.api.gax.grpc.ClientSettings;
@@ -32,7 +36,6 @@ import com.google.api.gax.grpc.OperationCallSettings;
 import com.google.api.gax.grpc.PagedCallSettings;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
-import com.google.api.gax.grpc.RequestIssuer;
 import com.google.api.gax.grpc.SimpleCallSettings;
 import com.google.api.gax.grpc.StreamingCallSettings;
 import com.google.api.gax.grpc.UnaryCallSettings;
@@ -165,7 +168,7 @@ public class LibraryServiceSettings extends ClientSettings {
   private final SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final SimpleCallSettings<MoveBookRequest, Book> moveBookSettings;
   private final PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-  private final SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
+  private final BundlingCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
   private final SimpleCallSettings<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
   private final SimpleCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
   private final SimpleCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -274,7 +277,7 @@ public class LibraryServiceSettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to addComments.
    */
-  public SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
+  public BundlingCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
     return addCommentsSettings;
   }
 
@@ -661,31 +664,32 @@ public class LibraryServiceSettings extends ClientSettings {
         }
 
         @Override
-        public PublishSeriesRequest mergeRequests(Collection<PublishSeriesRequest> requests) {
-          PublishSeriesRequest firstRequest = requests.iterator().next();
-
-          List<Book> elements = new ArrayList<>();
-          for (PublishSeriesRequest request : requests) {
-            elements.addAll(request.getBooksList());
-          }
-
-          PublishSeriesRequest bundleRequest =
-              PublishSeriesRequest.newBuilder()
-                  .setEdition(firstRequest.getEdition())
-                  .setName(firstRequest.getName())
-                  .addAllBooks(elements)
-                  .build();
-          return bundleRequest;
+        public BundlingDescriptor.RequestBuilder<PublishSeriesRequest> getRequestBuilder() {
+          return new BundlingDescriptor.RequestBuilder<PublishSeriesRequest>() {
+            private PublishSeriesRequest.Builder builder;
+            @Override
+            public void appendRequest(PublishSeriesRequest request) {
+              if (builder == null) {
+                builder = request.toBuilder();
+              } else {
+                builder.addAllBooks(request.getBooksList());
+              }
+            }
+            @Override
+            public PublishSeriesRequest build() {
+              return builder.build();
+            }
+          };
         }
 
         @Override
         public void splitResponse(
             PublishSeriesResponse bundleResponse,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
+            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
           int bundleMessageIndex = 0;
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
             List<String> subresponseElements = new ArrayList<>();
-            int subresponseCount = responder.getRequest().getBooksCount();
+            int subresponseCount = responder.getMergedRequestCount();
             for (int i = 0; i < subresponseCount; i++) {
               subresponseElements.add(bundleResponse.getBookNames(bundleMessageIndex));
               bundleMessageIndex += 1;
@@ -699,8 +703,8 @@ public class LibraryServiceSettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
+          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
             responder.setException(throwable);
           }
         }
@@ -712,6 +716,62 @@ public class LibraryServiceSettings extends ClientSettings {
 
         @Override
         public long countBytes(PublishSeriesRequest request) {
+          return request.getSerializedSize();
+        }
+      };
+
+  private static final BundlingDescriptor<AddCommentsRequest, Empty> ADD_COMMENTS_BUNDLING_DESC =
+      new BundlingDescriptor<AddCommentsRequest, Empty>() {
+        @Override
+        public String getBundlePartitionKey(AddCommentsRequest request) {
+          return request.getName() + "|";
+        }
+
+        @Override
+        public AddCommentsRequest mergeRequests(Collection<AddCommentsRequest> requests) {
+          AddCommentsRequest firstRequest = requests.iterator().next();
+
+          List<Comment> elements = new ArrayList<>();
+          for (AddCommentsRequest request : requests) {
+            elements.addAll(request.getCommentsList());
+          }
+
+          AddCommentsRequest bundleRequest =
+              AddCommentsRequest.newBuilder()
+                  .setName(firstRequest.getName())
+                  .addAllComments(elements)
+                  .build();
+          return bundleRequest;
+        }
+
+        @Override
+        public void splitResponse(
+            Empty bundleResponse,
+            Collection<? extends RequestIssuer<AddCommentsRequest, Empty>> bundle) {
+          int bundleMessageIndex = 0;
+          for (RequestIssuer<AddCommentsRequest, Empty> responder : bundle) {
+            Empty response =
+                Empty.newBuilder().build();
+            responder.setResponse(response);
+          }
+        }
+
+        @Override
+        public void splitException(
+            Throwable throwable,
+            Collection<? extends RequestIssuer<AddCommentsRequest, Empty>> bundle) {
+          for (RequestIssuer<AddCommentsRequest, Empty> responder : bundle) {
+            responder.setException(throwable);
+          }
+        }
+
+        @Override
+        public long countElements(AddCommentsRequest request) {
+          return request.getCommentsCount();
+        }
+
+        @Override
+        public long countBytes(AddCommentsRequest request) {
           return request.getSerializedSize();
         }
       };
@@ -735,7 +795,7 @@ public class LibraryServiceSettings extends ClientSettings {
     private final SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
     private final SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
     private final PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-    private final SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
+    private final BundlingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private final SimpleCallSettings.Builder<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
     private final SimpleCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
     private final SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -818,7 +878,10 @@ public class LibraryServiceSettings extends ClientSettings {
           LibraryServiceGrpc.METHOD_LIST_STRINGS,
           LIST_STRINGS_PAGE_STR_FACT);
 
-      addCommentsSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_ADD_COMMENTS);
+      addCommentsSettings = BundlingCallSettings.newBuilder(
+          LibraryServiceGrpc.METHOD_ADD_COMMENTS,
+          ADD_COMMENTS_BUNDLING_DESC)
+              .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
 
       getBookFromArchiveSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BOOK_FROM_ARCHIVE);
 
@@ -910,7 +973,11 @@ public class LibraryServiceSettings extends ClientSettings {
       builder.publishSeriesSettings().getBundlingSettingsBuilder()
           .setElementCountThreshold(6)
           .setRequestByteThreshold(100000)
-          .setDelayThreshold(Duration.millis(500));
+          .setDelayThreshold(Duration.millis(500))
+          .setFlowControlSettings(
+            FlowControlSettings.newBuilder()
+              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
+              .build());
       builder.publishSeriesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -939,6 +1006,14 @@ public class LibraryServiceSettings extends ClientSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.addCommentsSettings().getBundlingSettingsBuilder()
+          .setElementCountThreshold(6)
+          .setRequestByteThreshold(100000)
+          .setDelayThreshold(Duration.millis(500))
+          .setFlowControlSettings(
+            FlowControlSettings.newBuilder()
+              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
+              .build());
       builder.addCommentsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -1154,7 +1229,7 @@ public class LibraryServiceSettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to addComments.
      */
-    public SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
+    public BundlingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
       return addCommentsSettings;
     }
 
