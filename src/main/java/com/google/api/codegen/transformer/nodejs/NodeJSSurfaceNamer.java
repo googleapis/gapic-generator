@@ -41,7 +41,7 @@ import java.util.List;
 
 /** The SurfaceNamer for NodeJS. */
 public class NodeJSSurfaceNamer extends SurfaceNamer {
-  private static final JSCommentReformatter jsCommentReformatter = new JSCommentReformatter();
+  private static final JSCommentReformatter commentReformatter = new JSCommentReformatter();
 
   public NodeJSSurfaceNamer(String packageName) {
     super(
@@ -183,10 +183,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
             "@returns {Stream}",
             "  An object stream which is both readable and writable. It accepts objects",
             "  representing "
-                + jsCommentReformatter.getLinkedElementName(method.getInputType().getMessageType())
+                + commentReformatter.getLinkedElementName(method.getInputType().getMessageType())
                 + " for write() method, and",
             "  will emit objects representing "
-                + jsCommentReformatter.getLinkedElementName(method.getOutputType().getMessageType())
+                + commentReformatter.getLinkedElementName(method.getOutputType().getMessageType())
                 + " on 'data' event asynchronously.")
         .build();
   }
@@ -196,7 +196,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         .add(
             "@returns {Stream}",
             "  An object stream which emits "
-                + jsCommentReformatter.getLinkedElementName(method.getOutputType().getMessageType())
+                + commentReformatter.getLinkedElementName(method.getOutputType().getMessageType())
                 + " on 'data' event.")
         .build();
   }
@@ -205,9 +205,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef typeRef) {
     if (typeRef.isMessage()) {
       return "an object representing "
-          + jsCommentReformatter.getLinkedElementName(typeRef.getMessageType());
+          + commentReformatter.getLinkedElementName(typeRef.getMessageType());
     } else if (typeRef.isEnum()) {
-      return "a number of " + jsCommentReformatter.getLinkedElementName(typeRef.getEnumType());
+      return "a number of " + commentReformatter.getLinkedElementName(typeRef.getEnumType());
     }
     // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
     return "a " + getParamTypeNoCardinality(typeTable, typeRef).toLowerCase();
@@ -253,7 +253,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       returnMessageLines.add(
           "@return {Stream} - A writable stream which accepts objects representing",
           "  "
-              + jsCommentReformatter.getLinkedElementName(method.getInputType().getMessageType())
+              + commentReformatter.getLinkedElementName(method.getInputType().getMessageType())
               + " for write() method.");
     } else {
       if (isProtobufEmpty(method.getOutputMessage())) {
@@ -307,9 +307,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       returnTypeDoc = "Array of ";
       TypeRef resourcesType = methodConfig.getPageStreaming().getResourcesField().getType();
       if (resourcesType.isMessage()) {
-        returnTypeDoc += jsCommentReformatter.getLinkedElementName(resourcesType.getMessageType());
+        returnTypeDoc += commentReformatter.getLinkedElementName(resourcesType.getMessageType());
       } else if (resourcesType.isEnum()) {
-        returnTypeDoc += jsCommentReformatter.getLinkedElementName(resourcesType.getEnumType());
+        returnTypeDoc += commentReformatter.getLinkedElementName(resourcesType.getEnumType());
       } else {
         // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
         returnTypeDoc += getParamTypeNoCardinality(typeTable, resourcesType).toLowerCase();
