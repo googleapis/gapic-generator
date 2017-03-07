@@ -34,19 +34,15 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.List;
 
 /** The SurfaceNamer for NodeJS. */
 public class NodeJSSurfaceNamer extends SurfaceNamer {
+  private static final JSCommentReformatter jsCommentReformatter = new JSCommentReformatter();
+
   public NodeJSSurfaceNamer(String packageName) {
     super(
         new JSNameFormatter(),
@@ -166,7 +162,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   /** Return JSDoc callback comment and return type comment for the given method. */
-  // TODO(landrito): Move this to a docTransformer.
   @Override
   public List<String> getReturnDocLines(
       SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
@@ -188,10 +183,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
             "@returns {Stream}",
             "  An object stream which is both readable and writable. It accepts objects",
             "  representing "
-                + getLinkedElementName(method.getInputType().getMessageType())
+                + jsCommentReformatter.getLinkedElementName(method.getInputType().getMessageType())
                 + " for write() method, and",
             "  will emit objects representing "
-                + getLinkedElementName(method.getOutputType().getMessageType())
+                + jsCommentReformatter.getLinkedElementName(method.getOutputType().getMessageType())
                 + " on 'data' event asynchronously.")
         .build();
   }
@@ -201,40 +196,21 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         .add(
             "@returns {Stream}",
             "  An object stream which emits "
-                + getLinkedElementName(method.getOutputType().getMessageType())
+                + jsCommentReformatter.getLinkedElementName(method.getOutputType().getMessageType())
                 + " on 'data' event.")
         .build();
   }
 
   @Override
-  public String getLinkedElementName(ProtoElement element) {
-    if (isExternalFile(element.getFile())) {
-      String fullName = element.getFullName();
-      return String.format("[%s]{@link external:\"%s\"}", fullName, fullName);
-    } else {
-      String simpleName = element.getSimpleName();
-      return String.format("[%s]{@link %s}", simpleName, simpleName);
-    }
-  }
-
-  private boolean isExternalFile(ProtoFile file) {
-    String filePath = file.getSimpleName();
-    for (String commonPath : COMMON_PROTO_PATHS) {
-      if (filePath.startsWith(commonPath)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
   public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef typeRef) {
     if (typeRef.isMessage()) {
-      return "an object representing " + getLinkedElementName(typeRef.getMessageType());
+      return "an object representing "
+          + jsCommentReformatter.getLinkedElementName(typeRef.getMessageType());
     } else if (typeRef.isEnum()) {
-      return "a number of " + getLinkedElementName(typeRef.getEnumType());
+      return "a number of " + jsCommentReformatter.getLinkedElementName(typeRef.getEnumType());
     }
-    return "a " + getParamTypeName(typeTable, typeRef);
+    // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
+    return "a " + getParamTypeNoCardinality(typeTable, typeRef).toLowerCase();
   }
 
   private List<String> returnCallbackDocLines(ModelTypeTable typeTable, MethodConfig methodConfig) {
@@ -277,7 +253,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       returnMessageLines.add(
           "@return {Stream} - A writable stream which accepts objects representing",
           "  "
-              + getLinkedElementName(method.getInputType().getMessageType())
+              + jsCommentReformatter.getLinkedElementName(method.getInputType().getMessageType())
               + " for write() method.");
     } else {
       if (isProtobufEmpty(method.getOutputMessage())) {
@@ -307,20 +283,18 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
-    switch (type.getKind()) {
-      case TYPE_MESSAGE:
-        return "Object";
-      case TYPE_ENUM:
-        return "number";
-      default:
-        {
-          String name = PRIMITIVE_TYPE_NAMES.get(type.getKind());
-          if (!Strings.isNullOrEmpty(name)) {
-            return name;
-          }
-          throw new IllegalArgumentException("unknown type kind: " + type.getKind());
-        }
+    String cardinalityComment = "";
+    if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
+      if (type.isMap()) {
+        String keyType = getParamTypeName(typeTable, type.getMapKeyField().getType());
+        String valueType = getParamTypeName(typeTable, type.getMapValueField().getType());
+        return String.format("Object.<%s, %s>", keyType, valueType);
+      } else {
+        cardinalityComment = "[]";
+      }
     }
+
+    return String.format("%s%s", getParamTypeNoCardinality(typeTable, type), cardinalityComment);
   }
 
   private boolean isProtobufEmpty(MessageType message) {
@@ -333,11 +307,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       returnTypeDoc = "Array of ";
       TypeRef resourcesType = methodConfig.getPageStreaming().getResourcesField().getType();
       if (resourcesType.isMessage()) {
-        returnTypeDoc += getLinkedElementName(resourcesType.getMessageType());
+        returnTypeDoc += jsCommentReformatter.getLinkedElementName(resourcesType.getMessageType());
       } else if (resourcesType.isEnum()) {
-        returnTypeDoc += getLinkedElementName(resourcesType.getEnumType());
+        returnTypeDoc += jsCommentReformatter.getLinkedElementName(resourcesType.getEnumType());
       } else {
-        returnTypeDoc += getParamTypeName(typeTable, resourcesType);
+        // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
+        returnTypeDoc += getParamTypeNoCardinality(typeTable, resourcesType).toLowerCase();
       }
     } else if (methodConfig.isLongRunningOperation()) {
       returnTypeDoc =
@@ -348,32 +323,13 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return returnTypeDoc;
   }
 
-  private static final ImmutableSet<String> COMMON_PROTO_PATHS =
-      ImmutableSet.of(
-          "google/api",
-          "google/bytestream",
-          "google/logging/type",
-          "google/longrunning",
-          "google/protobuf",
-          "google/rpc",
-          "google/type");
-
-  private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_NAMES =
-      ImmutableMap.<Type, String>builder()
-          .put(Type.TYPE_BOOL, "boolean")
-          .put(Type.TYPE_DOUBLE, "number")
-          .put(Type.TYPE_FLOAT, "number")
-          .put(Type.TYPE_INT64, "number")
-          .put(Type.TYPE_UINT64, "number")
-          .put(Type.TYPE_SINT64, "number")
-          .put(Type.TYPE_FIXED64, "number")
-          .put(Type.TYPE_SFIXED64, "number")
-          .put(Type.TYPE_INT32, "number")
-          .put(Type.TYPE_UINT32, "number")
-          .put(Type.TYPE_SINT32, "number")
-          .put(Type.TYPE_FIXED32, "number")
-          .put(Type.TYPE_SFIXED32, "number")
-          .put(Type.TYPE_STRING, "string")
-          .put(Type.TYPE_BYTES, "string")
-          .build();
+  private String getParamTypeNoCardinality(ModelTypeTable typeTable, TypeRef type) {
+    if (type.isMessage()) {
+      return "Object";
+    } else if (type.isEnum()) {
+      return "number";
+    } else {
+      return typeTable.getFullNameForElementType(type);
+    }
+  }
 }

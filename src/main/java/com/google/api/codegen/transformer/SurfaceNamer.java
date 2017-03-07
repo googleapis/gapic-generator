@@ -1028,10 +1028,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getReleaseAnnotation");
   }
 
-  public String getLinkedElementName(ProtoElement element) {
-    return getNotImplementedString("SurfaceNamer.getLinkedElementName");
-  }
-
   public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef type) {
     return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
   }
