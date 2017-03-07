@@ -397,6 +397,19 @@ message BundlingSettingsProto {
 
   // The maximum size of the request that could be accepted by server.
   uint32 request_byte_limit = 5;
+
+  uint32 flow_control_element_limit = 6;
+
+  uint32 flow_control_byte_limit = 7;
+
+  FlowControlLimitExceededBehaviorProto flow_control_limit_exceeded_behavior = 8;
+}
+
+enum FlowControlLimitExceededBehaviorProto {
+  UNSET_BEHAVIOR = 0;
+  THROW_EXCEPTION = 1;
+  BLOCK = 2;
+  IGNORE = 3;
 }
 
 // `BundlingDescriptorProto` specifies the fields of the request message to be

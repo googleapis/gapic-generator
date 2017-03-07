@@ -129,7 +129,14 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
         'shelf.name'
       ],
       'bookNames',
-      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book))
+      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book)),
+    addComments: new gax.BundleDescriptor(
+      'comments',
+      [
+        'name'
+      ],
+      null,
+      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Comment))
   };
 
   this.operationsClient = new gax.lro({
