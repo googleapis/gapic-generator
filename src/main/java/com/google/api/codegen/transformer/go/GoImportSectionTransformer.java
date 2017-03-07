@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -27,13 +25,7 @@ import java.util.Map;
 
 public class GoImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateFileHeaderImportSection(SurfaceTransformerContext context) {
-    return generateImportSection(context.getTypeTable().getImports());
-  }
-
-  @Override
-  public ImportSectionView generateInitCodeImportSection(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
+  public ImportSectionView generateImportSection(SurfaceTransformerContext context) {
     return generateImportSection(context.getTypeTable().getImports());
   }
 

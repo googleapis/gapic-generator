@@ -15,10 +15,9 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.InitCodeImportSectionTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
@@ -30,15 +29,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class PythonImportSectionTransformer implements ImportSectionTransformer {
+public class PythonImportSectionTransformer implements InitCodeImportSectionTransformer {
   @Override
-  public ImportSectionView generateFileHeaderImportSection(SurfaceTransformerContext context) {
-    // TODO(eoogbe): implement this method when migrating to MVVM
-    return ImportSectionView.newBuilder().build();
-  }
-
-  @Override
-  public ImportSectionView generateInitCodeImportSection(
+  public ImportSectionView generateImportSection(
       MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
     return ImportSectionView.newBuilder()
         .appImports(generateInitCodeAppImports(context, specItemNodes))

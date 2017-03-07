@@ -14,12 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 
 public interface ImportSectionTransformer {
-  ImportSectionView generateFileHeaderImportSection(SurfaceTransformerContext context);
-
-  ImportSectionView generateInitCodeImportSection(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes);
+  ImportSectionView generateImportSection(SurfaceTransformerContext context);
 }

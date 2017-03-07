@@ -14,10 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
-import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -31,7 +28,7 @@ import java.util.TreeSet;
 
 public class RubyImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateFileHeaderImportSection(SurfaceTransformerContext context) {
+  public ImportSectionView generateImportSection(SurfaceTransformerContext context) {
     Set<String> importFilenames = generateImportFilenames(context);
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateStandardImports());
@@ -39,13 +36,6 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     importSection.appImports(generateAppImports(context, importFilenames));
     importSection.serviceImports(generateServiceImports(context, importFilenames));
     return importSection.build();
-  }
-
-  @Override
-  public ImportSectionView generateInitCodeImportSection(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
-    return new StandardImportSectionTransformer()
-        .generateInitCodeImportSection(context, specItemNodes);
   }
 
   private List<ImportFileView> generateStandardImports() {

@@ -42,8 +42,7 @@ import java.util.List;
 
 /** TestCaseTransformer contains helper methods useful for creating test views. */
 public class TestCaseTransformer {
-  private final InitCodeTransformer initCodeTransformer =
-      new InitCodeTransformer(new StandardImportSectionTransformer());
+  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
   private final TestValueGenerator valueGenerator;
 
   public TestCaseTransformer(ValueProducer valueProducer) {

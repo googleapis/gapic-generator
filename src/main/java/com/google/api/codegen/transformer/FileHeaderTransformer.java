@@ -30,7 +30,7 @@ public class FileHeaderTransformer {
   public FileHeaderView generateFileHeader(SurfaceTransformerContext context) {
     return generateFileHeader(
         context.getApiConfig(),
-        importSectionTransformer.generateFileHeaderImportSection(context),
+        importSectionTransformer.generateImportSection(context),
         context.getNamer());
   }
 

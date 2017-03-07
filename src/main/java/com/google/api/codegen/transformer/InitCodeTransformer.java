@@ -54,13 +54,13 @@ import java.util.Map;
  * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
-  private final ImportSectionTransformer importSectionTransformer;
+  private final InitCodeImportSectionTransformer importSectionTransformer;
 
   public InitCodeTransformer() {
     this(new StandardImportSectionTransformer());
   }
 
-  public InitCodeTransformer(ImportSectionTransformer importSectionTransformer) {
+  public InitCodeTransformer(InitCodeImportSectionTransformer importSectionTransformer) {
     this.importSectionTransformer = importSectionTransformer;
   }
 
@@ -194,8 +194,7 @@ public class InitCodeTransformer {
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(getFieldSettings(context, argItems))
-        .importSection(
-            importSectionTransformer.generateInitCodeImportSection(context, orderedItems))
+        .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
         .apiFileName(namer.getServiceFileName(context.getInterface()))
         .build();
   }
