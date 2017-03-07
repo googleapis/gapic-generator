@@ -1028,6 +1028,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getReleaseAnnotation");
   }
 
+  /** The name of a type with with qualifying articles and descriptions. */
   public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef type) {
     return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
   }
