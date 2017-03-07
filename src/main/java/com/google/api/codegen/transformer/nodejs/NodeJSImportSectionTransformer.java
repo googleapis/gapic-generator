@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
-import com.google.api.codegen.util.ImportType;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
@@ -48,13 +47,7 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
 
   private ImportFileView createImport(String localName, String moduleName) {
     return ImportFileView.newBuilder()
-        .types(
-            Collections.singletonList(
-                ImportTypeView.newBuilder()
-                    .nickname(localName)
-                    .fullName("")
-                    .type(ImportType.AliasedImport)
-                    .build()))
+        .types(Collections.singletonList(ImportTypeView.newBuilder().fullName(localName).build()))
         .moduleName(moduleName)
         .build();
   }

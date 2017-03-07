@@ -16,11 +16,13 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.util.ImportType;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ImportTypeView {
   public abstract String fullName();
 
+  @Nullable
   public abstract String nickname();
 
   public abstract ImportType type();
