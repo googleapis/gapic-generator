@@ -910,22 +910,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The formatted field name of a page streaming request token. */
   public String getRequestTokenFieldName(PageStreamingConfig pageStreaming) {
-    return pageStreaming.getRequestTokenField().getSimpleName();
+    return keyName(Name.from(pageStreaming.getRequestTokenField().getSimpleName()));
   }
 
   /** The formatted name of a page streaming page size field. */
   public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
-    return pageStreaming.getPageSizeField().getSimpleName();
+    return keyName(Name.from(pageStreaming.getPageSizeField().getSimpleName()));
   }
 
   /** The formatted field name of a page streaming response token. */
   public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
-    return pageStreaming.getResponseTokenField().getSimpleName();
+    return keyName(Name.from(pageStreaming.getResponseTokenField().getSimpleName()));
   }
 
   /** The formatted name of a page streaming resources field. */
   public String getResourcesFieldName(PageStreamingConfig pageStreaming) {
-    return pageStreaming.getResourcesFieldName();
+    return keyName(Name.from(pageStreaming.getResourcesFieldName()));
   }
 
   ///////////////////////////////////// Constant & Keyword ////////////////////////////////////////

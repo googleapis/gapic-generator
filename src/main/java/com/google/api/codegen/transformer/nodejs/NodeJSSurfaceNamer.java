@@ -19,7 +19,6 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -351,26 +350,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
             .join("client")
             .toLowerUnderscore()
         + ".js";
-  }
-
-  @Override
-  public String getRequestTokenFieldName(PageStreamingConfig pageStreaming) {
-    return localVarName(Name.from(pageStreaming.getRequestTokenField().getSimpleName()));
-  }
-
-  @Override
-  public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
-    return localVarName(Name.from(pageStreaming.getPageSizeField().getSimpleName()));
-  }
-
-  @Override
-  public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
-    return localVarName(Name.from(pageStreaming.getResponseTokenField().getSimpleName()));
-  }
-
-  @Override
-  public String getResourcesFieldName(PageStreamingConfig pageStreaming) {
-    return localVarName(Name.from(pageStreaming.getResourcesFieldName()));
   }
 
   @Override
