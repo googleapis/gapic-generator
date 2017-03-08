@@ -3,6 +3,8 @@ language_settings:
   java:
     package_name: com.google.gcloud.pubsub.spi
     release_level: BETA
+    interface_names:
+      google.example.library.v1.LibraryService: Library
   python:
     package_name: google.cloud.gapic.example.library.v1
   go:
@@ -343,6 +345,16 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 10000
+    # Test bundling with minimal settings (no flow control)
+    bundling:
+      thresholds:
+        element_count_threshold: 6
+        request_byte_threshold: 100000
+        delay_threshold_millis: 500
+      bundle_descriptor:
+        bundled_field: comments
+        discriminator_fields:
+          - name
     request_object_method: true
     # Test resource_name_treatment unset, so using default
     # resource_name_treatment: VALIDATE

@@ -103,19 +103,20 @@ public abstract class ApiConfig {
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(model.getDiagCollector(), configProto, file);
 
-    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
-        createInterfaceConfigMap(
-            model.getDiagCollector(),
-            configProto,
-            messageConfigs,
-            resourceNameConfigs,
-            model.getSymbolTable());
-
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
+
+    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
+        createInterfaceConfigMap(
+            model.getDiagCollector(),
+            configProto,
+            settings,
+            messageConfigs,
+            resourceNameConfigs,
+            model.getSymbolTable());
 
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
@@ -175,6 +176,7 @@ public abstract class ApiConfig {
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
       ConfigProto configProto,
+      LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable) {
@@ -190,12 +192,16 @@ public abstract class ApiConfig {
                 interfaceConfigProto.getName()));
         continue;
       }
+      String interfaceNameOverride =
+          languageSettings.getInterfaceNames().get(interfaceConfigProto.getName());
+
       InterfaceConfig interfaceConfig =
           InterfaceConfig.createInterfaceConfig(
               diagCollector,
               configProto.getLanguage(),
               interfaceConfigProto,
               iface,
+              interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs);
       if (interfaceConfig == null) {
