@@ -113,9 +113,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(Interface service) {
-    return "./resources/"
-        + Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore()
-        + ".json";
+    return Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore();
   }
 
   public String getClientFileName(Interface service) {

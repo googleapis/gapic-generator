@@ -5,41 +5,49 @@
 @end
 
 @snippet generateBody(service)
-  {@licenseSection(service)}
-  /* TODO: introduce line-wrapping so that it never exceeds the limit. */
-  /* jscs: disable maximumLineLength */
-  'use strict';
-
-  {@importSection(service)}
+  {@header(context.getFileHeader(service), service.getFile.getSimpleName)}
 
   {@serviceClass(service)}
 @end
 
-@private licenseSection(service)
+@private header(fileHeader, protoFilename)
   /*
-   {@copyright()}
+   {@comments(fileHeader.copyrightLines)}
+   *
+   {@comments(fileHeader.licenseLines)}
+   {@editingInstructions(protoFilename)}
+   */
+  /* TODO: introduce line-wrapping so that it never exceeds the limit. */
+  /* jscs: disable maximumLineLength */
+  'use strict';
+
+  {@importSection(fileHeader.importSection)}
+@end
+
+@private importSection(imports)
+  {@importGroup(imports.externalImports)}
+@end
+
+@private importGroup(group)
+  @join import : group
+    # Currently there is only one type per import. This will need to be refactored if changed.
+    @join type : import.types
+      var {@type.nickname} = require('{@import.moduleName}');
+    @end
+  @end
+@end
+
+@private editingInstructions(protoFileName)
    *
    * EDITING INSTRUCTIONS
    * This file was generated from the file
-   * https://github.com/googleapis/googleapis/blob/master/{@service.getFile().getSimpleName()},
+   * https://github.com/googleapis/googleapis/blob/master/{@protoFileName},
    * and updates to that file get reflected here through a refresh process.
    * For the short term, the refresh process will only be runnable by Google
    * engineers.
    *
    * The only allowed edits are to method and file documentation. A 3-way
    * merge preserves those additions if the generated source changes.
-   */
-@end
-
-@private importSection(service)
-  var configData = require('./{@context.upperCamelToLowerUnderscore(service.getSimpleName)}_client_config');
-  var extend = require('extend');
-  var gax = require('google-gax');
-  @switch context.getStubs(service).size.toString
-  @case "1"
-  @default
-    var merge = require('lodash.merge');
-  @end
 @end
 
 @private serviceClass(service)

@@ -21,6 +21,7 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -28,10 +29,12 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.nodejs.NodeJSApiMethodParamTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
+import com.google.api.codegen.transformer.nodejs.NodeJSImportSectionTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
@@ -63,6 +66,8 @@ import javax.annotation.Nullable;
 
 /** A GapicContext specialized for NodeJS. */
 public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
+  private FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new NodeJSImportSectionTransformer());
   private GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
 
@@ -108,6 +113,17 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   public List<GrpcStubView> getStubs(Interface service) {
     SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
     return grpcStubTransformer.generateGrpcStubs(context);
+  }
+
+  /**
+   * Return the file header view.
+   *
+   * <p>NOTE: Temporary solution to use MVVM with just sample gen. This class will eventually go
+   * away when code gen also converts to MVVM.
+   */
+  public FileHeaderView getFileHeader(Interface service) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return fileHeaderTransformer.generateFileHeader(context);
   }
 
   public List<PathTemplateView> getPathTemplates(Interface service) {
