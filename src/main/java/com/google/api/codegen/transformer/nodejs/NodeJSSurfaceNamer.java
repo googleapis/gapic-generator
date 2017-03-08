@@ -21,6 +21,7 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
@@ -152,5 +153,28 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
+  }
+
+  @Override
+  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+    String cardinalityComment = "";
+    if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
+      if (type.isMap()) {
+        String keyType = getParamTypeName(typeTable, type.getMapKeyField().getType());
+        String valueType = getParamTypeName(typeTable, type.getMapValueField().getType());
+        return String.format("Object.<%s, %s>", keyType, valueType);
+      } else {
+        cardinalityComment = "[]";
+      }
+    }
+    String typeComment = "";
+    if (type.isMessage()) {
+      typeComment = "Object";
+    } else if (type.isEnum()) {
+      typeComment = "number";
+    } else {
+      typeComment = typeTable.getFullNameForElementType(type);
+    }
+    return String.format("%s%s", typeComment, cardinalityComment);
   }
 }

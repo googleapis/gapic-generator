@@ -44,8 +44,8 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_SINT32, "number")
           .put(Type.TYPE_FIXED32, "number")
           .put(Type.TYPE_SFIXED32, "number")
-          .put(Type.TYPE_STRING, "String")
-          .put(Type.TYPE_BYTES, "String")
+          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_BYTES, "string")
           .build();
 
   /** A map from primitive types in proto to zero value in NodeJS */

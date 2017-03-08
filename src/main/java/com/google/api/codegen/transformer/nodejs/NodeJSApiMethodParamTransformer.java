@@ -14,24 +14,171 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
+import com.google.api.codegen.viewmodel.SimpleParamDocView;
+import com.google.api.tools.framework.model.Field;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransformer {
+  private static JSCommentReformatter commentReformatter = new JSCommentReformatter();
+
   @Override
   public List<DynamicLangDefaultableParamView> generateMethodParams(
       MethodTransformerContext context) {
-    // TODO(eoogbe): implement this method when migrating to MVVM
-    return ImmutableList.<DynamicLangDefaultableParamView>of();
+    ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
+    methodParams.addAll(generateDefaultableParams(context));
+
+    DynamicLangDefaultableParamView.Builder optionsParam =
+        DynamicLangDefaultableParamView.newBuilder();
+    optionsParam.name("options");
+    optionsParam.defaultValue("null");
+    methodParams.add(optionsParam.build());
+
+    return methodParams.build();
+  }
+
+  private List<DynamicLangDefaultableParamView> generateDefaultableParams(
+      MethodTransformerContext context) {
+    if (context.getMethod().getRequestStreaming()) {
+      return ImmutableList.of();
+    }
+    ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
+    for (Field field : context.getMethodConfig().getRequiredFields()) {
+      DynamicLangDefaultableParamView param =
+          DynamicLangDefaultableParamView.newBuilder()
+              .name(context.getNamer().getVariableName(field))
+              .defaultValue("")
+              .build();
+      methodParams.add(param);
+    }
+    return methodParams.build();
   }
 
   @Override
   public List<ParamDocView> generateParamDocs(MethodTransformerContext context) {
-    // TODO(eoogbe): implement this method when migrating to MVVM
-    return ImmutableList.<ParamDocView>of();
+    ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
+    if (!context.getMethod().getRequestStreaming()) {
+      docs.add(generateRequestObjectParamDoc(context));
+      docs.addAll(
+          generateMethodParamDocs(context, context.getMethodConfig().getRequiredFields(), false));
+      docs.addAll(
+          generateMethodParamDocs(context, context.getMethodConfig().getOptionalFields(), true));
+    }
+    docs.add(generateOptionsParamDoc());
+    return docs.build();
+  }
+
+  private ParamDocView generateRequestObjectParamDoc(MethodTransformerContext context) {
+    MethodConfig methodConfig = context.getMethodConfig();
+    SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
+    paramDoc.paramName(context.getNamer().localVarName(Name.from("request")));
+    paramDoc.lines(ImmutableList.of("The request object that will be sent."));
+
+    String typeName = "Object";
+    Iterable<Field> optionalParams = removePageTokenFromFields(methodConfig);
+    if (!methodConfig.getRequiredFieldConfigs().iterator().hasNext()
+        && !optionalParams.iterator().hasNext()) {
+      typeName += "=";
+    }
+
+    paramDoc.typeName(typeName);
+    return paramDoc.build();
+  }
+
+  private ParamDocView generateOptionsParamDoc() {
+    SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
+    paramDoc.paramName("options");
+    paramDoc.typeName("Object=");
+    paramDoc.lines(
+        ImmutableList.of(
+            "Optional parameters. You can override the default settings for this call, e.g, timeout,",
+            "retries, paginations, etc. See [gax.CallOptions]{@link "
+                + "https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details."));
+    return paramDoc.build();
+  }
+
+  private List<Field> removePageTokenFromFields(MethodConfig methodConfig) {
+    ImmutableList.Builder<Field> newFields = ImmutableList.builder();
+    for (Field field : methodConfig.getOptionalFields()) {
+      if (methodConfig.isPageStreaming()
+          && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
+        continue;
+      }
+      newFields.add(field);
+    }
+    return newFields.build();
+  }
+
+  private List<ParamDocView> generateMethodParamDocs(
+      MethodTransformerContext context, Iterable<Field> fields, boolean isOptional) {
+    SurfaceNamer namer = context.getNamer();
+    MethodConfig methodConfig = context.getMethodConfig();
+    ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
+    for (Field field : fields) {
+      if (isRequestTokenParam(methodConfig, field)) {
+        continue;
+      }
+
+      SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
+      paramDoc.paramName("request." + namer.getVariableName(field));
+
+      String typeName = namer.getParamTypeName(context.getTypeTable(), field.getType());
+      paramDoc.typeName(typeName + (isOptional ? "=" : ""));
+      List<String> fieldDocLines = namer.getDocLines(field);
+      ImmutableList.Builder<String> docLines = ImmutableList.builder();
+      boolean hasFieldDocs;
+      if (isPageSizeParam(methodConfig, field)) {
+        docLines.add(
+            "The maximum number of resources contained in the underlying API",
+            "response. If page streaming is performed per-resource, this",
+            "parameter does not affect the return value. If page streaming is",
+            "performed per-page, this determines the maximum number of",
+            "resources in a page.");
+        hasFieldDocs = true;
+      } else {
+        docLines.addAll(fieldDocLines);
+        hasFieldDocs = fieldDocLines.size() > 0;
+      }
+
+      // Add a break if both documentation was added previously and documentation will be added.
+      boolean fieldIsMap = field.getType().isMessage() && !field.getType().isMap();
+      boolean fieldIsEnum = field.getType().isEnum();
+      if (hasFieldDocs && (fieldIsMap || fieldIsEnum)) {
+        docLines.add("");
+      }
+
+      if (fieldIsMap) {
+        docLines.add(
+            "This object should have the same structure as "
+                + commentReformatter.getLinkedElementName(field.getType().getMessageType()));
+      } else if (fieldIsEnum) {
+        docLines.add(
+            "The number should be among the values of "
+                + commentReformatter.getLinkedElementName(field.getType().getEnumType()));
+      }
+
+      paramDoc.lines(docLines.build());
+      docs.add(paramDoc.build());
+    }
+    return docs.build();
+  }
+
+  private boolean isRequestTokenParam(MethodConfig methodConfig, Field field) {
+    return methodConfig.isPageStreaming()
+        && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
+  }
+
+  private boolean isPageSizeParam(MethodConfig methodConfig, Field field) {
+    return methodConfig.isPageStreaming()
+        && methodConfig.getPageStreaming().hasPageSizeField()
+        && field.equals(methodConfig.getPageStreaming().getPageSizeField());
   }
 }
