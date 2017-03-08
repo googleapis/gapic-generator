@@ -42,6 +42,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import io.grpc.Status;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -1027,11 +1028,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The doc lines that describe the return value for an API method. */
   public List<String> getReturnDocLines(
       SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    return new ArrayList<>();
+    return Collections.singletonList(getNotImplementedString("SurfaceNamer.getReturnDocLines"));
   }
 
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
     return getNotImplementedString("SurfaceNamer.getReleaseAnnotation");
+  }
+
+  /** The name of a type with with qualifying articles and descriptions. */
+  public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
   }
 
   //////////////////////////////////////// File names ////////////////////////////////////////////

@@ -27,6 +27,7 @@ import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
@@ -113,22 +114,23 @@ public class DynamicLangApiMethodTransformer {
 
   private ApiMethodDocView generateMethodDoc(MethodTransformerContext context) {
     ApiMethodDocView.Builder docBuilder = ApiMethodDocView.newBuilder();
+    SurfaceNamer surfaceNamer = context.getNamer();
+    Method method = context.getMethod();
+    MethodConfig methodConfig = context.getMethodConfig();
 
-    docBuilder.mainDocLines(
-        context.getNamer().getDocLines(context.getMethod(), context.getMethodConfig()));
+    docBuilder.mainDocLines(surfaceNamer.getDocLines(method, methodConfig));
     docBuilder.paramDocs(apiMethodParamTransformer.generateParamDocs(context));
-    docBuilder.returnTypeName(
-        context
-            .getNamer()
-            .getDynamicLangReturnTypeName(context.getMethod(), context.getMethodConfig()));
+    docBuilder.returnTypeName(surfaceNamer.getDynamicLangReturnTypeName(method, methodConfig));
     docBuilder.returnsDocLines(
-        context
-            .getNamer()
-            .getReturnDocLines(
-                context.getSurfaceTransformerContext(),
-                context.getMethodConfig(),
-                Synchronicity.Sync));
-    docBuilder.throwsDocLines(context.getNamer().getThrowsDocLines());
+        surfaceNamer.getReturnDocLines(
+            context.getSurfaceTransformerContext(), methodConfig, Synchronicity.Sync));
+    if (methodConfig.isPageStreaming()) {
+      docBuilder.pageStreamingResourceTypeName(
+          surfaceNamer.getTypeNameDoc(
+              context.getTypeTable(),
+              methodConfig.getPageStreaming().getResourcesField().getType()));
+    }
+    docBuilder.throwsDocLines(surfaceNamer.getThrowsDocLines());
 
     return docBuilder.build();
   }
