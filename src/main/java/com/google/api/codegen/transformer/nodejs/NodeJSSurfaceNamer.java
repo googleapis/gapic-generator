@@ -16,7 +16,10 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -43,13 +46,18 @@ import java.util.List;
 public class NodeJSSurfaceNamer extends SurfaceNamer {
   private static final JSCommentReformatter commentReformatter = new JSCommentReformatter();
 
-  public NodeJSSurfaceNamer(String packageName) {
+  private final boolean isGcloud;
+  private final String packageName;
+
+  public NodeJSSurfaceNamer(String packageName, boolean isGcloud) {
     super(
         new JSNameFormatter(),
         new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter(packageName)),
         new JSTypeTable(packageName),
         new JSCommentReformatter(),
         packageName);
+    this.packageName = packageName;
+    this.isGcloud = isGcloud;
   }
 
   /**
@@ -63,16 +71,16 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
    */
   @Override
   public String getApiWrapperModuleName() {
-    List<String> names = Splitter.on(".").splitToList(getPackageName());
+    List<String> names = Splitter.on(".").splitToList(packageName);
     if (names.size() < 2) {
-      return getPackageName();
+      return packageName;
     }
     return names.get(0) + Name.from(names.get(1)).toUpperCamel();
   }
 
   @Override
   public String getApiWrapperModuleVersion() {
-    List<String> names = Splitter.on(".").splitToList(getPackageName());
+    List<String> names = Splitter.on(".").splitToList(packageName);
     if (names.size() < 2) {
       return null;
     }
@@ -334,6 +342,80 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       return "number";
     } else {
       return typeTable.getFullNameForElementType(type);
+    }
+  }
+
+  @Override
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterface().getSimpleName())
+            .join("client")
+            .toLowerUnderscore()
+        + ".js";
+  }
+
+  @Override
+  public String getRequestTokenFieldName(PageStreamingConfig pageStreaming) {
+    return localVarName(Name.from(pageStreaming.getRequestTokenField().getSimpleName()));
+  }
+
+  @Override
+  public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
+    return localVarName(Name.from(pageStreaming.getPageSizeField().getSimpleName()));
+  }
+
+  @Override
+  public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
+    return localVarName(Name.from(pageStreaming.getResponseTokenField().getSimpleName()));
+  }
+
+  @Override
+  public String getResourcesFieldName(PageStreamingConfig pageStreaming) {
+    return localVarName(Name.from(pageStreaming.getResourcesFieldName()));
+  }
+
+  @Override
+  public String getPackageName() {
+    if (isGcloud) {
+      return "@google-cloud/" + packageName.split("\\.")[0];
+    }
+    return packageName;
+  }
+
+  @Override
+  public String getByteLengthFunctionName(TypeRef typeRef) {
+    switch (typeRef.getKind()) {
+      case TYPE_MESSAGE:
+        return "gax.createByteLengthFunction(grpcClients."
+            + typeRef.getMessageType().getFullName()
+            + ")";
+      case TYPE_STRING:
+      case TYPE_BYTES:
+        return "function(s) { return s.length; }";
+      default:
+        // There is no easy way to say the actual length of the numeric fields.
+        // For now throwing an exception.
+        throw new IllegalArgumentException(
+            "Can't determine the byte length function for " + typeRef.getKind());
+    }
+  }
+
+  @Override
+  public String getLocalPackageName() {
+    return getApiWrapperModuleName();
+  }
+
+  @Override
+  public String getStreamTypeName(GrpcStreamingType type) {
+    switch (type) {
+      case BidiStreaming:
+        return "gax.StreamType.BIDI_STREAMING";
+      case ClientStreaming:
+        return "gax.StreamType.CLIENT_STREAMING";
+      case ServerStreaming:
+        return "gax.StreamType.SERVER_STREAMING";
+      default:
+        return getNotImplementedString(
+            "SurfaceNamer.getStreamTypeName(GrpcStreamingType." + type.toString() + ")");
     }
   }
 }

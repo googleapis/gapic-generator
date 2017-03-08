@@ -46,6 +46,8 @@ public class BundlingTransformer {
         descriptor.subresponseFieldName(namer.getFieldName(bundling.getSubresponseField()));
       }
 
+      descriptor.byteLengthFunctionName(
+          namer.getByteLengthFunctionName(bundling.getBundledField().getType()));
       descriptors.add(descriptor.build());
     }
     return descriptors.build();

@@ -58,7 +58,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
+function NoTemplatesApiServiceClient(gaxGrpc, grpcClients, opts) {
   opts = extend({
     servicePath: SERVICE_ADDRESS,
     port: DEFAULT_SERVICE_PORT,
@@ -105,12 +105,13 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
   });
 }
 
+
 /**
  * Get the project ID used by this class.
- * @aram {function(Error, string)} callback - the callback to be called with
+ * @param {function(Error, string)} callback - the callback to be called with
  *   the current project Id.
  */
-NoTemplatesAPIServiceClient.prototype.getProjectId = function(callback) {
+NoTemplatesApiServiceClient.prototype.getProjectId = function(callback) {
   return this.auth.getProjectId(callback);
 };
 
@@ -142,7 +143,7 @@ NoTemplatesAPIServiceClient.prototype.getProjectId = function(callback) {
  *     console.error(err);
  * });
  */
-NoTemplatesAPIServiceClient.prototype.increment = function(request, options, callback) {
+NoTemplatesApiServiceClient.prototype.increment = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -156,9 +157,9 @@ NoTemplatesAPIServiceClient.prototype.increment = function(request, options, cal
   return this._increment(request, options, callback);
 };
 
-function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
-  if (!(this instanceof NoTemplatesAPIServiceClientBuilder)) {
-    return new NoTemplatesAPIServiceClientBuilder(gaxGrpc);
+function NoTemplatesApiServiceClientBuilder(gaxGrpc) {
+  if (!(this instanceof NoTemplatesApiServiceClientBuilder)) {
+    return new NoTemplatesApiServiceClientBuilder(gaxGrpc);
   }
 
   var noTemplatesApiServiceClient = require('grpc-google-cloud-example-v1').client;
@@ -166,7 +167,7 @@ function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
 
 
   /**
-   * Build a new instance of {@link NoTemplatesAPIServiceClient}.
+   * Build a new instance of {@link NoTemplatesApiServiceClient}.
    *
    * @param {Object=} opts - The optional parameters.
    * @param {String=} opts.servicePath
@@ -180,10 +181,10 @@ function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
    *   {@link gax.constructSettings} for the format.
    */
   this.noTemplatesApiServiceClient = function(opts) {
-    return new NoTemplatesAPIServiceClient(gaxGrpc, noTemplatesApiServiceClient, opts);
+    return new NoTemplatesApiServiceClient(gaxGrpc, noTemplatesApiServiceClient, opts);
   };
-  extend(this.noTemplatesApiServiceClient, NoTemplatesAPIServiceClient);
+  extend(this.noTemplatesApiServiceClient, NoTemplatesApiServiceClient);
 }
-module.exports = NoTemplatesAPIServiceClientBuilder;
+module.exports = NoTemplatesApiServiceClientBuilder;
 module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
 module.exports.ALL_SCOPES = ALL_SCOPES;
