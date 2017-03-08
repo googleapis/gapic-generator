@@ -104,6 +104,8 @@ public class CSharpCommonTransformer {
         .addCallName("")
         .isMap(false)
         .isArray(false)
+        .isPrimitive(false)
+        .isOptional(false)
         .defaultValue(defaultValue)
         .docLines(Arrays.asList(doc))
         .build();

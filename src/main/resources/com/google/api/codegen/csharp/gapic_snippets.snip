@@ -470,6 +470,12 @@
         {@renderResourceName(initValue)}
     @case "ResourceNameOneofInitValueView"
         {@initValue.resourceOneofTypeName}.From({@renderResourceName(initValue.specificResourceNameView)})
+    @case "RepeatedResourceNameInitValueView"
+        @if isObjectInitializer
+            { }
+        @else
+            new List<{@initValue.resourceTypeName}>()
+        @end
     @default
         $unhandledCase: {@initValue.type}$
     @end

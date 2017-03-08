@@ -50,9 +50,16 @@ public interface ModelTypeNameConverter {
 
   /**
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
-   * type.
+   * type; suitable for use within code snippets.
    */
-  TypedValue getZeroValue(TypeRef type);
+  TypedValue getSnippetZeroValue(TypeRef type);
+
+  /**
+   * Provides a TypedValue containing the zero value of the given type, for use internally within
+   * the vkit layer; plus the TypeName of the type. This will often return the same value as {@link
+   * #getSnippetZeroValue(TypeRef)}.
+   */
+  TypedValue getImplZeroValue(TypeRef type);
 
   /** Renders the given value if it is a primitive type. */
   String renderPrimitiveValue(TypeRef type, String value);

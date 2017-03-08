@@ -1,4 +1,4 @@
-============== file: src/test/java/com/google/gcloud/pubsub/spi/LibraryServiceClientTest.java ==============
+============== file: src/test/java/com/google/gcloud/pubsub/spi/LibraryClientTest.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -63,6 +63,10 @@ import com.google.example.library.v1.SomeMessage2.SomeMessage3.Alignment;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
@@ -84,7 +88,9 @@ import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -94,11 +100,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 @javax.annotation.Generated("by GAPIC")
-public class LibraryServiceClientTest {
+public class LibraryClientTest {
   private static MockLibraryService mockLibraryService;
   private static MockLabeler mockLabeler;
   private static MockServiceHelper serviceHelper;
-  private LibraryServiceClient client;
+  private LibraryClient client;
 
   @BeforeClass
   public static void startStaticServer() {
@@ -116,10 +122,10 @@ public class LibraryServiceClientTest {
   @Before
   public void setUp() throws IOException {
     serviceHelper.reset();
-    LibraryServiceSettings settings = LibraryServiceSettings.defaultBuilder()
+    LibrarySettings settings = LibrarySettings.defaultBuilder()
         .setChannelProvider(serviceHelper.createChannelProvider())
         .build();
-    client = LibraryServiceClient.create(settings);
+    client = LibraryClient.create(settings);
   }
 
   @After
@@ -1451,5 +1457,175 @@ public class LibraryServiceClientTest {
     }
   }
 
+
+  @Test
+  @SuppressWarnings("all")
+  public void testOptionalRequiredFlatteningParamsTest() {
+    TestOptionalRequiredFlatteningParamsResponse expectedResponse = TestOptionalRequiredFlatteningParamsResponse.newBuilder().build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    int requiredSingularInt32 = -72313594;
+    long requiredSingularInt64 = -72313499L;
+    float requiredSingularFloat = -7514705.0F;
+    double requiredSingularDouble = 1.9111005E8;
+    boolean requiredSingularBool = true;
+    TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+    String requiredSingularString = "requiredSingularString-1949894503";
+    ByteString requiredSingularBytes = ByteString.copyFromUtf8("-29");
+    TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
+    BookName requiredSingularResourceName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+    List<Integer> requiredRepeatedInt32 = new ArrayList<>();
+    List<Long> requiredRepeatedInt64 = new ArrayList<>();
+    List<Float> requiredRepeatedFloat = new ArrayList<>();
+    List<Double> requiredRepeatedDouble = new ArrayList<>();
+    List<Boolean> requiredRepeatedBool = new ArrayList<>();
+    List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum = new ArrayList<>();
+    List<String> requiredRepeatedString = new ArrayList<>();
+    List<ByteString> requiredRepeatedBytes = new ArrayList<>();
+    List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage = new ArrayList<>();
+    List<BookName> requiredRepeatedResourceName = new ArrayList<>();
+    List<BookNameOneof> requiredRepeatedResourceNameOneof = new ArrayList<>();
+    Map<Integer, String> requiredMap = new HashMap<>();
+    int optionalSingularInt32 = -1196565723;
+    long optionalSingularInt64 = -1196565628L;
+    float optionalSingularFloat = -1.19939918E8F;
+    double optionalSingularDouble = 1.41902287E8;
+    boolean optionalSingularBool = false;
+    TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum = TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+    String optionalSingularString = "optionalSingularString1852995162";
+    ByteString optionalSingularBytes = ByteString.copyFromUtf8("2");
+    TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
+    BookName optionalSingularResourceName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+    List<Integer> optionalRepeatedInt32 = new ArrayList<>();
+    List<Long> optionalRepeatedInt64 = new ArrayList<>();
+    List<Float> optionalRepeatedFloat = new ArrayList<>();
+    List<Double> optionalRepeatedDouble = new ArrayList<>();
+    List<Boolean> optionalRepeatedBool = new ArrayList<>();
+    List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum = new ArrayList<>();
+    List<String> optionalRepeatedString = new ArrayList<>();
+    List<ByteString> optionalRepeatedBytes = new ArrayList<>();
+    List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage = new ArrayList<>();
+    List<BookName> optionalRepeatedResourceName = new ArrayList<>();
+    List<BookNameOneof> optionalRepeatedResourceNameOneof = new ArrayList<>();
+    Map<Integer, String> optionalMap = new HashMap<>();
+
+    TestOptionalRequiredFlatteningParamsResponse actualResponse =
+        client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalMap);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    TestOptionalRequiredFlatteningParamsRequest actualRequest = (TestOptionalRequiredFlatteningParamsRequest)actualRequests.get(0);
+
+    Assert.assertEquals(requiredSingularInt32, actualRequest.getRequiredSingularInt32());
+    Assert.assertEquals(requiredSingularInt64, actualRequest.getRequiredSingularInt64());
+    Assert.assertEquals(requiredSingularFloat, actualRequest.getRequiredSingularFloat());
+    Assert.assertEquals(requiredSingularDouble, actualRequest.getRequiredSingularDouble());
+    Assert.assertEquals(requiredSingularBool, actualRequest.getRequiredSingularBool());
+    Assert.assertEquals(requiredSingularEnum, actualRequest.getRequiredSingularEnum());
+    Assert.assertEquals(requiredSingularString, actualRequest.getRequiredSingularString());
+    Assert.assertEquals(requiredSingularBytes, actualRequest.getRequiredSingularBytes());
+    Assert.assertEquals(requiredSingularMessage, actualRequest.getRequiredSingularMessage());
+    Assert.assertEquals(requiredSingularResourceName, actualRequest.getRequiredSingularResourceNameAsBookName());
+    Assert.assertEquals(requiredSingularResourceNameOneof, actualRequest.getRequiredSingularResourceNameOneofAsBookNameOneof());
+    Assert.assertEquals(requiredRepeatedInt32, actualRequest.getRequiredRepeatedInt32List());
+    Assert.assertEquals(requiredRepeatedInt64, actualRequest.getRequiredRepeatedInt64List());
+    Assert.assertEquals(requiredRepeatedFloat, actualRequest.getRequiredRepeatedFloatList());
+    Assert.assertEquals(requiredRepeatedDouble, actualRequest.getRequiredRepeatedDoubleList());
+    Assert.assertEquals(requiredRepeatedBool, actualRequest.getRequiredRepeatedBoolList());
+    Assert.assertEquals(requiredRepeatedEnum, actualRequest.getRequiredRepeatedEnumList());
+    Assert.assertEquals(requiredRepeatedString, actualRequest.getRequiredRepeatedStringList());
+    Assert.assertEquals(requiredRepeatedBytes, actualRequest.getRequiredRepeatedBytesList());
+    Assert.assertEquals(requiredRepeatedMessage, actualRequest.getRequiredRepeatedMessageList());
+    Assert.assertEquals(requiredRepeatedResourceName, actualRequest.getRequiredRepeatedResourceNameListAsBookNameList());
+    Assert.assertEquals(requiredRepeatedResourceNameOneof, actualRequest.getRequiredRepeatedResourceNameOneofListAsBookNameOneofList());
+    Assert.assertEquals(requiredMap, actualRequest.getRequiredMap());
+    Assert.assertEquals(optionalSingularInt32, actualRequest.getOptionalSingularInt32());
+    Assert.assertEquals(optionalSingularInt64, actualRequest.getOptionalSingularInt64());
+    Assert.assertEquals(optionalSingularFloat, actualRequest.getOptionalSingularFloat());
+    Assert.assertEquals(optionalSingularDouble, actualRequest.getOptionalSingularDouble());
+    Assert.assertEquals(optionalSingularBool, actualRequest.getOptionalSingularBool());
+    Assert.assertEquals(optionalSingularEnum, actualRequest.getOptionalSingularEnum());
+    Assert.assertEquals(optionalSingularString, actualRequest.getOptionalSingularString());
+    Assert.assertEquals(optionalSingularBytes, actualRequest.getOptionalSingularBytes());
+    Assert.assertEquals(optionalSingularMessage, actualRequest.getOptionalSingularMessage());
+    Assert.assertEquals(optionalSingularResourceName, actualRequest.getOptionalSingularResourceNameAsBookName());
+    Assert.assertEquals(optionalSingularResourceNameOneof, actualRequest.getOptionalSingularResourceNameOneofAsBookNameOneof());
+    Assert.assertEquals(optionalRepeatedInt32, actualRequest.getOptionalRepeatedInt32List());
+    Assert.assertEquals(optionalRepeatedInt64, actualRequest.getOptionalRepeatedInt64List());
+    Assert.assertEquals(optionalRepeatedFloat, actualRequest.getOptionalRepeatedFloatList());
+    Assert.assertEquals(optionalRepeatedDouble, actualRequest.getOptionalRepeatedDoubleList());
+    Assert.assertEquals(optionalRepeatedBool, actualRequest.getOptionalRepeatedBoolList());
+    Assert.assertEquals(optionalRepeatedEnum, actualRequest.getOptionalRepeatedEnumList());
+    Assert.assertEquals(optionalRepeatedString, actualRequest.getOptionalRepeatedStringList());
+    Assert.assertEquals(optionalRepeatedBytes, actualRequest.getOptionalRepeatedBytesList());
+    Assert.assertEquals(optionalRepeatedMessage, actualRequest.getOptionalRepeatedMessageList());
+    Assert.assertEquals(optionalRepeatedResourceName, actualRequest.getOptionalRepeatedResourceNameListAsBookNameList());
+    Assert.assertEquals(optionalRepeatedResourceNameOneof, actualRequest.getOptionalRepeatedResourceNameOneofListAsBookNameOneofList());
+    Assert.assertEquals(optionalMap, actualRequest.getOptionalMap());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void testOptionalRequiredFlatteningParamsExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    mockLibraryService.addException(exception);
+
+    try {
+      int requiredSingularInt32 = -72313594;
+      long requiredSingularInt64 = -72313499L;
+      float requiredSingularFloat = -7514705.0F;
+      double requiredSingularDouble = 1.9111005E8;
+      boolean requiredSingularBool = true;
+      TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+      String requiredSingularString = "requiredSingularString-1949894503";
+      ByteString requiredSingularBytes = ByteString.copyFromUtf8("-29");
+      TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
+      BookName requiredSingularResourceName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+      BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+      List<Integer> requiredRepeatedInt32 = new ArrayList<>();
+      List<Long> requiredRepeatedInt64 = new ArrayList<>();
+      List<Float> requiredRepeatedFloat = new ArrayList<>();
+      List<Double> requiredRepeatedDouble = new ArrayList<>();
+      List<Boolean> requiredRepeatedBool = new ArrayList<>();
+      List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum = new ArrayList<>();
+      List<String> requiredRepeatedString = new ArrayList<>();
+      List<ByteString> requiredRepeatedBytes = new ArrayList<>();
+      List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage = new ArrayList<>();
+      List<BookName> requiredRepeatedResourceName = new ArrayList<>();
+      List<BookNameOneof> requiredRepeatedResourceNameOneof = new ArrayList<>();
+      Map<Integer, String> requiredMap = new HashMap<>();
+      int optionalSingularInt32 = -1196565723;
+      long optionalSingularInt64 = -1196565628L;
+      float optionalSingularFloat = -1.19939918E8F;
+      double optionalSingularDouble = 1.41902287E8;
+      boolean optionalSingularBool = false;
+      TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum = TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+      String optionalSingularString = "optionalSingularString1852995162";
+      ByteString optionalSingularBytes = ByteString.copyFromUtf8("2");
+      TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
+      BookName optionalSingularResourceName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+      BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+      List<Integer> optionalRepeatedInt32 = new ArrayList<>();
+      List<Long> optionalRepeatedInt64 = new ArrayList<>();
+      List<Float> optionalRepeatedFloat = new ArrayList<>();
+      List<Double> optionalRepeatedDouble = new ArrayList<>();
+      List<Boolean> optionalRepeatedBool = new ArrayList<>();
+      List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum = new ArrayList<>();
+      List<String> optionalRepeatedString = new ArrayList<>();
+      List<ByteString> optionalRepeatedBytes = new ArrayList<>();
+      List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage = new ArrayList<>();
+      List<BookName> optionalRepeatedResourceName = new ArrayList<>();
+      List<BookNameOneof> optionalRepeatedResourceNameOneof = new ArrayList<>();
+      Map<Integer, String> optionalMap = new HashMap<>();
+
+      client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalMap);
+      Assert.fail("No exception raised");
+    } catch (ApiException e) {
+      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+    }
+  }
 
 }

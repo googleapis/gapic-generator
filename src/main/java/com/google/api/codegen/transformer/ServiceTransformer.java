@@ -36,10 +36,10 @@ public class ServiceTransformer {
     serviceDoc.lines(docLines.build());
 
     serviceDoc.exampleApiMethod(exampleApiMethod);
-    serviceDoc.apiVarName(namer.getApiWrapperVariableName(context.getInterface()));
-    serviceDoc.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
-    serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterface()));
-    serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterface()));
+    serviceDoc.apiVarName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
+    serviceDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
+    serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
+    serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     serviceDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     return serviceDoc.build();
   }

@@ -45,11 +45,22 @@ public abstract class RequestObjectParamView {
     return isMap() || isArray();
   }
 
+  public abstract boolean isPrimitive();
+
+  public abstract boolean isOptional();
+
   @Nullable // Used in C#
   public abstract String defaultValue();
 
   public boolean hasDefaultValue() {
     return defaultValue() != null;
+  }
+
+  @Nullable // Used in C#
+  public abstract String optionalDefault();
+
+  public boolean hasOptionalDefault() {
+    return optionalDefault() != null;
   }
 
   public boolean hasTransformParamFunction() {
@@ -82,7 +93,13 @@ public abstract class RequestObjectParamView {
 
     public abstract Builder isArray(boolean val);
 
+    public abstract Builder isPrimitive(boolean val);
+
+    public abstract Builder isOptional(boolean val);
+
     public abstract Builder defaultValue(String val);
+
+    public abstract Builder optionalDefault(String val);
 
     public abstract RequestObjectParamView build();
   }
