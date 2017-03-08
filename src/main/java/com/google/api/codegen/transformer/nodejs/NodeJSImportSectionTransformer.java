@@ -47,7 +47,9 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
 
   private ImportFileView createImport(String localName, String moduleName) {
     return ImportFileView.newBuilder()
-        .types(Collections.singletonList(ImportTypeView.newBuilder().fullName(localName).build()))
+        .types(
+            Collections.singletonList(
+                ImportTypeView.newBuilder().nickname(localName).fullName("").build()))
         .moduleName(moduleName)
         .build();
   }
