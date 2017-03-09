@@ -15,7 +15,11 @@
 
   {@sampleCodeAliases(apiMethod)}
 
-  {@sampleCodeCore(apiMethod)}
+  {@sampleCodeClientInit(apiMethod)}
+  @if apiMethod.initCode.lines
+    {@initCode(apiMethod.initCode)}
+  @end
+  {@sampleCodeCall(apiMethod)}
 @end
 
 @snippet sampleCodeAliases(apiMethod)
@@ -26,11 +30,11 @@
   @end
 @end
 
-@snippet sampleCodeCore(apiMethod)
+@snippet sampleCodeClientInit(apiMethod)
   {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
-  @if apiMethod.initCode.lines
-    {@initCode(apiMethod.initCode)}
-  @end
+@end
+
+@snippet sampleCodeCall(apiMethod)
   # The different *SampleCode(apiMethod) snippets include calls to
   # non-declared methods, like:
   #

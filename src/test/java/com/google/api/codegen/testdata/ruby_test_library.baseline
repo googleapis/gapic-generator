@@ -42,8 +42,9 @@ describe LibraryServiceClient do
         LibraryServiceClient = Library::V1::LibraryServiceClient
         Shelf = Google::Example::Library::V1::Shelf
 
+        shelf = Shelf.new
         expected_request = CreateShelfRequest.new(
-          shelf: Shelf.new,
+          shelf: shelf,
         )
 
         mocked_response = Shelf.new
@@ -60,7 +61,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        shelf = Shelf.new
         response = library_service_client.create_shelf(shelf)
         # Process the response.
         process_response response
@@ -73,9 +73,11 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        options_ = ''
         expected_request = GetShelfRequest.new(
-          formatted_name: LibraryServiceClient.shelf_path("[SHELF_ID]"),
-          options_: '',
+          formatted_name: formatted_name,
+          options_: options_,
         )
 
         mocked_response = Shelf.new
@@ -92,8 +94,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
-        options_ = ''
         response = library_service_client.get_shelf(formatted_name, options_)
         # Process the response.
         process_response response
@@ -106,8 +106,8 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
-        expected_request = ListShelvesRequest.new(
 
+        expected_request = ListShelvesRequest.new(
         )
 
         mocked_response = ListShelvesResponse.new
@@ -147,8 +147,9 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         expected_request = DeleteShelfRequest.new(
-          formatted_name: LibraryServiceClient.shelf_path("[SHELF_ID]"),
+          formatted_name: formatted_name,
         )
 
         mocked_response = Empty.new
@@ -160,7 +161,6 @@ describe LibraryServiceClient do
         )
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         library_service_client.delete_shelf(formatted_name)
       end
     end
@@ -171,9 +171,11 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         expected_request = MergeShelvesRequest.new(
-          formatted_name: LibraryServiceClient.shelf_path("[SHELF_ID]"),
-          formatted_other_shelf_name: LibraryServiceClient.shelf_path("[SHELF_ID]"),
+          formatted_name: formatted_name,
+          formatted_other_shelf_name: formatted_other_shelf_name,
         )
 
         mocked_response = Shelf.new
@@ -190,8 +192,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
-        formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         response = library_service_client.merge_shelves(formatted_name, formatted_other_shelf_name)
         # Process the response.
         process_response response
@@ -205,9 +205,11 @@ describe LibraryServiceClient do
         Book = Google::Example::Library::V1::Book
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        book = Book.new
         expected_request = CreateBookRequest.new(
-          formatted_name: LibraryServiceClient.shelf_path("[SHELF_ID]"),
-          book: Book.new,
+          formatted_name: formatted_name,
+          book: book,
         )
 
         mocked_response = Book.new
@@ -224,8 +226,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
-        book = Book.new
         response = library_service_client.create_book(formatted_name, book)
         # Process the response.
         process_response response
@@ -240,12 +240,15 @@ describe LibraryServiceClient do
         SeriesUuid = Google::Example::Library::V1::SeriesUuid
         Shelf = Google::Example::Library::V1::Shelf
 
+        shelf = Shelf.new
+        books = []
+        series_string = "foobar"
+        series_uuid = SeriesUuid.new
+        series_uuid.series_string = series_string
         expected_request = PublishSeriesRequest.new(
-          shelf: Shelf.new,
-          books: [],
-          series_uuid: SeriesUuid.new(
-            series_string: "foobar"
-          ),
+          shelf: shelf,
+          books: books,
+          series_uuid: series_uuid,
         )
 
         mocked_response = PublishSeriesResponse.new
@@ -262,12 +265,7 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        shelf = Shelf.new
-        books = []
-        series_uuid = SeriesUuid.new
-        series_uuid.series_string = "foobar"
         response = library_service_client.publish_series(shelf, books, series_uuid)
-        response = library_service_client.publish_series(shelf, books)
         # Process the response.
         process_response response
       end
@@ -279,8 +277,9 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         expected_request = GetBookRequest.new(
-          formatted_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
+          formatted_name: formatted_name,
         )
 
         mocked_response = Book.new
@@ -297,7 +296,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         response = library_service_client.get_book(formatted_name)
         # Process the response.
         process_response response
@@ -310,8 +308,9 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         expected_request = ListBooksRequest.new(
-          formatted_name: LibraryServiceClient.shelf_path("[SHELF_ID]"),
+          formatted_name: formatted_name,
         )
 
         mocked_response = ListBooksResponse.new
@@ -327,7 +326,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
 
         # Iterate over all results.
         library_service_client.list_books(formatted_name).each do |element|
@@ -352,8 +350,9 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         expected_request = DeleteBookRequest.new(
-          formatted_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
+          formatted_name: formatted_name,
         )
 
         mocked_response = Empty.new
@@ -365,7 +364,6 @@ describe LibraryServiceClient do
         )
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         library_service_client.delete_book(formatted_name)
       end
     end
@@ -377,9 +375,11 @@ describe LibraryServiceClient do
         Book = Google::Example::Library::V1::Book
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        book = Book.new
         expected_request = UpdateBookRequest.new(
-          formatted_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
-          book: Book.new,
+          formatted_name: formatted_name,
+          book: book,
         )
 
         mocked_response = Book.new
@@ -396,8 +396,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-        book = Book.new
         response = library_service_client.update_book(formatted_name, book)
         # Process the response.
         process_response response
@@ -410,9 +408,11 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         expected_request = MoveBookRequest.new(
-          formatted_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
-          formatted_other_shelf_name: LibraryServiceClient.shelf_path("[SHELF_ID]"),
+          formatted_name: formatted_name,
+          formatted_other_shelf_name: formatted_other_shelf_name,
         )
 
         mocked_response = Book.new
@@ -429,8 +429,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-        formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
         response = library_service_client.move_book(formatted_name, formatted_other_shelf_name)
         # Process the response.
         process_response response
@@ -443,8 +441,8 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
-        expected_request = ListStringsRequest.new(
 
+        expected_request = ListStringsRequest.new(
         )
 
         mocked_response = ListStringsResponse.new
@@ -487,17 +485,18 @@ describe LibraryServiceClient do
         LibraryServiceClient = Library::V1::LibraryServiceClient
         Stage = Google::Example::Library::V1::Comment::Stage
 
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        comment = ''
+        stage = Stage::UNSET
+        alignment = Alignment::CHAR
+        comments_element = Comment.new
+        comments_element.comment = comment
+        comments_element.stage = stage
+        comments_element.alignment = alignment
+        comments = [comments_element]
         expected_request = AddCommentsRequest.new(
-          formatted_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
-          comment: '',
-          stage: Stage::UNSET,
-          alignment: Alignment::CHAR,
-          comments_element: Comment.new(
-            comment: comment
-            stage: stage
-            alignment: alignment
-          ),
-          comments: [comments_element],
+          formatted_name: formatted_name,
+          comments: comments,
         )
 
         mocked_response = Empty.new
@@ -509,15 +508,6 @@ describe LibraryServiceClient do
         )
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-        comment = ''
-        stage = Stage::UNSET
-        alignment = Alignment::CHAR
-        comments_element = Comment.new
-        comments_element.comment = comment
-        comments_element.stage = stage
-        comments_element.alignment = alignment
-        comments = [comments_element]
         library_service_client.add_comments(formatted_name, comments)
       end
     end
@@ -528,8 +518,9 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
         expected_request = GetBookFromArchiveRequest.new(
-          formatted_name: LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]"),
+          formatted_name: formatted_name,
         )
 
         mocked_response = BookFromArchive.new
@@ -546,7 +537,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
         response = library_service_client.get_book_from_archive(formatted_name)
         # Process the response.
         process_response response
@@ -559,9 +549,11 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        formatted_alt_book_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         expected_request = GetBookFromAnywhereRequest.new(
-          formatted_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
-          formatted_alt_book_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
+          formatted_name: formatted_name,
+          formatted_alt_book_name: formatted_alt_book_name,
         )
 
         mocked_response = BookFromAnywhere.new
@@ -578,8 +570,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-        formatted_alt_book_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         response = library_service_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
         # Process the response.
         process_response response
@@ -592,11 +582,14 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        index_name = "default index"
+        index_map_item = ''
+        index_map = { "default_key" => index_map_item }
         expected_request = UpdateBookIndexRequest.new(
-          formatted_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
-          index_name: "default index",
-          index_map_item: '',
-          index_map: { "default_key" => index_map_item },
+          formatted_name: formatted_name,
+          index_name: index_name,
+          index_map: index_map,
         )
 
         mocked_response = Empty.new
@@ -608,10 +601,6 @@ describe LibraryServiceClient do
         )
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-        index_name = "default index"
-        index_map_item = ''
-        index_map = { "default_key" => index_map_item }
         library_service_client.update_book_index(formatted_name, index_name, index_map)
       end
     end
@@ -622,8 +611,8 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
-        expected_request = StreamShelvesRequest.new(
 
+        expected_request = StreamShelvesRequest.new(
         )
 
         mocked_response = StreamShelvesResponse.new
@@ -652,8 +641,9 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        name = ''
         expected_request = StreamBooksRequest.new(
-          name: '',
+          name: name,
         )
 
         mocked_response = Book.new
@@ -669,7 +659,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        name = ''
         library_service_client.stream_books(name).each do |element|
           # Process element.
           process_element element
@@ -684,12 +673,10 @@ describe LibraryServiceClient do
         DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
-        expected_request = DiscussBookRequest.new(
-          name: '',
-          request: DiscussBookRequest.new(
-            name: name
-          ),
-        )
+        name = ''
+        request = DiscussBookRequest.new
+        request.name = name
+        expected_request = request
 
         mocked_response = Comment.new
 
@@ -704,9 +691,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        name = ''
-        request = DiscussBookRequest.new
-        request.name = name
         requests = [request]
         library_service_client.discuss_book(requests).each do |element|
           # Process element.
@@ -722,12 +706,10 @@ describe LibraryServiceClient do
         DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
-        expected_request = DiscussBookRequest.new(
-          name: '',
-          request: DiscussBookRequest.new(
-            name: name
-          ),
-        )
+        name = ''
+        request = DiscussBookRequest.new
+        request.name = name
+        expected_request = request
 
         mocked_response = Comment.new
 
@@ -743,9 +725,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        name = ''
-        request = DiscussBookRequest.new
-        request.name = name
         requests = [request]
         response = library_service_client.monolog_about_book(requests)
         # Process the response.
@@ -759,10 +738,12 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        names_element = ''
+        names = [names_element]
+        shelves = []
         expected_request = FindRelatedBooksRequest.new(
-          names_element: '',
-          names: [names_element],
-          shelves: [],
+          names: names,
+          shelves: shelves,
         )
 
         mocked_response = FindRelatedBooksResponse.new
@@ -778,9 +759,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        names_element = ''
-        names = [names_element]
-        shelves = []
 
         # Iterate over all results.
         library_service_client.find_related_books(names, shelves).each do |element|
@@ -805,9 +783,11 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        tag = ''
         expected_request = AddTagRequest.new(
-          formatted_resource: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
-          tag: '',
+          formatted_resource: formatted_resource,
+          tag: tag,
         )
 
         mocked_response = AddTagResponse.new
@@ -824,8 +804,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-        tag = ''
         response = library_service_client.add_tag(formatted_resource, tag)
         # Process the response.
         process_response response
@@ -838,9 +816,11 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        label = ''
         expected_request = AddLabelRequest.new(
-          formatted_resource: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
-          label: '',
+          formatted_resource: formatted_resource,
+          label: label,
         )
 
         mocked_response = AddLabelResponse.new
@@ -857,8 +837,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-        label = ''
         response = library_service_client.add_label(formatted_resource, label)
         # Process the response.
         process_response response
@@ -871,8 +849,9 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         expected_request = GetBookRequest.new(
-          formatted_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
+          formatted_name: formatted_name,
         )
 
         mocked_response = Operation.new
@@ -892,7 +871,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
         # Register a callback during the method call.
         operation = library_service_client.get_big_book(formatted_name) do |op|
@@ -933,8 +911,9 @@ describe LibraryServiceClient do
       stub_grpc_client do |mock_client|
         LibraryServiceClient = Library::V1::LibraryServiceClient
 
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
         expected_request = GetBookRequest.new(
-          formatted_name: LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]"),
+          formatted_name: formatted_name,
         )
 
         mocked_response = Operation.new
@@ -954,7 +933,6 @@ describe LibraryServiceClient do
         }
 
         library_service_client = LibraryServiceClient.new
-        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
         # Register a callback during the method call.
         operation = library_service_client.get_big_nothing(formatted_name) do |op|

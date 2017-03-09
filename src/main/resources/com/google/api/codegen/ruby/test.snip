@@ -56,9 +56,23 @@
                 # include Google::Cloud::Language::V1beta1 in the sample.
                 {@sampleCodeAliases(methodView)}
 
-                expected_request = {@testCase.requestTypeName}.new(
-                  {@initRequest(methodView.initCode)}
-                )
+                {@initCode(methodView.initCode)}
+                # Initialize the protobuf request expected by the mock gRPC client,
+                # using the same values that will be passed to the generated method
+                # in the sample code.
+                # RPCs with request streaming are an exception here: the sample
+                # code initializes an array of one protobuf request; we just reuse
+                # that request directly.
+                @if or(methodView.grpcStreamingType.toString == "NonStreaming", \
+                       methodView.grpcStreamingType.toString == "ServerStreaming")
+                  expected_request = {@testCase.requestTypeName}.new(
+                    @join field : methodView.initCode.fieldSettings
+                      {@field.identifier}: {@field.identifier},
+                    @end
+                  )
+                @else
+                  expected_request = request
+                @end
 
                 mocked_response = {@testCase.responseTypeName}.new
                 # TODO(jcanizales): testCase.mockResponse.initCode
@@ -96,7 +110,8 @@
                   $unhandledCase: {@methodView.sampleResponseName.toString}$
                 @end
 
-                {@sampleCodeCore(methodView)}
+                {@sampleCodeClientInit(methodView)}
+                {@sampleCodeCall(methodView)}
               end
             end
           end
@@ -106,68 +121,4 @@
     @end    
   end
 
-@end
-
-# The following were adapted from initcode.snip.
-# TODO(jcanizales): Is there a way to reduce redundancy with them?
-
-@private initRequest(initCodeSpec)
-  @join line : initCodeSpec.lines
-    @switch line.lineType.toString
-    @case "StructureInitLine"
-      {@structureArg(line)},
-    @case "ListInitLine"
-      {@listArg(line)},
-    @case "MapInitLine"
-      {@mapArg(line)},
-    @case "SimpleInitLine"
-      {@scalarArg(line)},
-    @default
-      $unhandledCase: {@line.lineType.toString}$
-    @end
-  @end
-@end
-
-@private structureArg(line)
-  {@line.identifier}: {@line.typeName}.new(
-    @join fieldSetting : line.fieldSettings
-      {@fieldSetting.fieldSetFunction}: {@fieldSetting.identifier}
-    @end
-  )
-@end
-
-@private listArg(line)
-  {@line.identifier}: [{@joinedByComma(line.elementIdentifiers)}]
-@end
-
-@snippet joinedByComma(args)
-  @join arg : args on ", "
-    {@arg}
-  @end
-@end
-
-@private mapArg(line)
-  {@line.identifier}: { {@asMapLiteral(line.initEntries)} }
-@end
-
-@private asMapLiteral(mapEntries)
-  @join mapEntry : mapEntries on ", "
-    {@mapEntry.key} => {@mapEntry.valueString}
-  @end
-@end
-
-@private scalarArg(line)
-  {@line.identifier}: {@renderArgument(line.initValue)}
-@end
-
-@private renderArgument(initValue)
-  @switch initValue.type
-  @case "SimpleInitValueView"
-    {@initValue.initialValue}
-  @case "FormattedInitValueView"
-    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}\
-      ({@joinedByComma(initValue.formatArgs)})
-  @default
-    $unhandledCase: {@initValue.type}$
-  @end
 @end
