@@ -25,6 +25,10 @@ describe "LibraryServiceSmokeTest" do
     end
     project_id = ENV["SMOKE_TEST_PROJECT"].freeze
 
+    process_response = ->(response) {
+      # Nothing to do.
+    }
+
     Book = Google::Example::Library::V1::Book
     FieldMask = Google::Protobuf::FieldMask
     LibraryServiceClient = Library::V1::LibraryServiceClient
@@ -37,5 +41,7 @@ describe "LibraryServiceSmokeTest" do
     book = Book.new
     book.rating = rating
     response = library_service_client.update_book(formatted_name, book)
+    # Process the response.
+    process_response response
   end
 end
