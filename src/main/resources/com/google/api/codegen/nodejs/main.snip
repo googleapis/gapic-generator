@@ -5,58 +5,66 @@
 @end
 
 @snippet generateBody(service)
-  {@licenseSection(service)}
-  /* TODO: introduce line-wrapping so that it never exceeds the limit. */
-  /* jscs: disable maximumLineLength */
-  'use strict';
-
-  {@importSection(service)}
+  {@header(context.getFileHeader(service), service.getFile.getSimpleName)}
 
   {@serviceClass(service)}
 @end
 
-@private licenseSection(service)
+@private header(fileHeader, protoFilename)
   /*
-   {@copyright()}
+   {@comments(fileHeader.copyrightLines)}
+   *
+   {@comments(fileHeader.licenseLines)}
+   {@editingInstructions(protoFilename)}
+   */
+  /* TODO: introduce line-wrapping so that it never exceeds the limit. */
+  /* jscs: disable maximumLineLength */
+  'use strict';
+
+  {@importSection(fileHeader.importSection)}
+@end
+
+@private importSection(imports)
+  {@importGroup(imports.externalImports)}
+@end
+
+@private importGroup(group)
+  @join import : group
+    # Currently there is only one type per import. This will need to be refactored if changed.
+    @join type : import.types
+      var {@type.nickname} = require('{@import.moduleName}');
+    @end
+  @end
+@end
+
+@private editingInstructions(protoFileName)
    *
    * EDITING INSTRUCTIONS
    * This file was generated from the file
-   * https://github.com/googleapis/googleapis/blob/master/{@service.getFile().getSimpleName()},
+   * https://github.com/googleapis/googleapis/blob/master/{@protoFileName},
    * and updates to that file get reflected here through a refresh process.
    * For the short term, the refresh process will only be runnable by Google
    * engineers.
    *
    * The only allowed edits are to method and file documentation. A 3-way
    * merge preserves those additions if the generated source changes.
-   */
-@end
-
-@private importSection(service)
-  var configData = require('./{@context.upperCamelToLowerUnderscore(service.getSimpleName)}_client_config');
-  var extend = require('extend');
-  var gax = require('google-gax');
-  @switch context.getStubs(service).size.toString
-  @case "1"
-  @default
-    var merge = require('lodash.merge');
-  @end
 @end
 
 @private serviceClass(service)
-  @let path_templates = {@pathTemplateSection(service)}, \
-       apiName = context.getApiWrapperName(service)
+  @let apiName = context.getApiWrapperName(service)
     {@constantSection(service)}
 
     {@constructor(service)}
-    @if path_templates
+    @if context.getPathTemplates(service)
 
       // Path templates
-      {@path_templates}
+
+      {@pathTemplateSection(service, apiName)}
     @end
 
     /**
      * Get the project ID used by this class.
-     * @param {function(Error, string)} callback - the callback to be called with
+     * @@param {function(Error, string)} callback - the callback to be called with
      *   the current project Id.
      */
     {@context.getApiWrapperName(service)}.prototype.getProjectId = function(callback) {
@@ -137,7 +145,7 @@
 
     var DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
 
-    var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
+    var CODE_GEN_NAME_VERSION = 'gapic/{@context.packageVersion}';
     @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethods(service))
 
       var PAGE_DESCRIPTORS = {
@@ -242,13 +250,13 @@
       }, opts);
 
       var googleApiClient = [
-        'gl-node/' + process.versions.node,
-        CODE_GEN_NAME_VERSION
+        'gl-node/' + process.versions.node
       ];
       if (opts.libName && opts.libVersion) {
         googleApiClient.push(opts.libName + '/' + opts.libVersion);
       }
       googleApiClient.push(
+        CODE_GEN_NAME_VERSION,
         'gax/' + gax.version,
         'grpc/' + gaxGrpc.grpcVersion
       );
@@ -338,79 +346,60 @@
   @end
 @end
 
-@private pathTemplateName(collectionConfig)
-  {@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName)}_PATH_TEMPLATE
-@end
+@private pathTemplateSection(service, apiName)
+  @join pathTemplate : context.getPathTemplates(service) on BREAK
+    var {@pathTemplate.name} = new gax.PathTemplate(
+        '{@pathTemplate.pattern}');
 
-@private pathTemplateSection(service)
-  @if context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+  @end
+  @join function : context.getFormatResourceFunctions(service)
 
-      var {@pathTemplateName(collectionConfig)} = new gax.PathTemplate(
-          '{@collectionConfig.getNamePattern}');
-    @end
+    {@createResourceFunction(function, apiName)}
+  @end
 
-    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+  @join function : context.getParseResourceFunctions(service)
 
-      {@createResourceFunction(service, collectionConfig)}
-
-      {@createMatchFunctions(service, collectionConfig)}
-    @end
+    {@createMatchFunction(function, apiName)}
   @end
 @end
 
-@private createResourceFunction(service, collectionConfig)
+@private createResourceFunction(function, apiName)
   /**
-   * Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
-   @join param : collectionConfig.getNameTemplate.vars()
-     * @@param {String} {@context.lowerUnderscoreToLowerCamel(param)}
+   * Returns a fully-qualified {@function.entityName} resource name string.
+   @join param : function.resourceIdParams
+     * @@param {String} {@param.name}
    @end
    * @@returns {String}
    */
-  {@context.getApiWrapperName(service)}.prototype.{@resourceFunctionName(collectionConfig)} = \
-  function({@createResourceFunctionParams(collectionConfig)}) {
-    return {@pathTemplateName(collectionConfig)}.render({
-      {@createRenderDictionary(collectionConfig)}
+  {@apiName}.prototype.{@function.name} = \
+  function({@createResourceFunctionParams(function.resourceIdParams)}) {
+    return {@function.pathTemplateName}.render({
+      {@createRenderDictionary(function.resourceIdParams)}
     });
   };
 @end
 
-@private createMatchFunctions(service, collectionConfig)
-  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
-    @let fieldPath = resourceName(collectionConfig), \
-         fieldParam = context.upperCamelToLowerCamel(fieldPath), \
-         subFieldUpper = context.lowerUnderscoreToUpperCamel(subField)
-      /**
-       * Parses the {@fieldParam} from a {@collectionConfig.getEntityName} resource.
-       * @@param {String} {@fieldParam}
-       *   A fully-qualified path representing a {@collectionConfig.getEntityName} resources.
-       * @@returns {String} - A string representing the {@subField}.
-       */
-      {@context.getApiWrapperName(service)}.prototype.match{@subFieldUpper}From{@fieldPath} = \
-          function({@fieldParam}) {
-        return {@pathTemplateName(collectionConfig)}.match({@fieldParam}).{@subField};
-      };
-    @end
+@private createMatchFunction(function, apiName)
+  /**
+   * Parses the {@function.entityNameParamName} from a {@function.entityName} resource.
+   * @@param {String} {@function.entityNameParamName}
+   *   A fully-qualified path representing a {@function.entityName} resources.
+   * @@returns {String} - A string representing the {@function.outputResourceId}.
+   */
+  {@apiName}.prototype.{@function.name} = function({@function.entityNameParamName}) {
+    return {@function.pathTemplateName}.match({@function.entityNameParamName}).{@function.outputResourceId};
+  };
+@end
+
+@private createResourceFunctionParams(resourceIdParams)
+  @join param : resourceIdParams on ", "
+    {@param.name}
   @end
 @end
 
-@private resourceFunctionName(collectionConfig)
-  {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)}Path
-@end
-
-@private resourceName(collectionConfig)
-  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
-@end
-
-@private createResourceFunctionParams(collectionConfig)
-  @join param : collectionConfig.getNameTemplate.vars() on ", "
-    {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
-  @end
-@end
-
-@private createRenderDictionary(collectionConfig)
-  @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    {@param}: {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(param))}
+@private createRenderDictionary(resourceIdParams)
+  @join param: resourceIdParams on {@","}.add(BREAK)
+    {@param.templateKey}: {@param.name}
   @end
 @end
 
@@ -441,18 +430,7 @@
        requiredParams = methodConfig.getRequiredFields(), \
        optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
        apiMethodView = context.getApiMethodView(service, method)
-    /**
-     @if context.defaultComments(method)
-       {@comments(context.defaultComments(method))}
-       *
-     @end
-     {@comments(util.getDocLines(context.paramComments(service, method)))}
-     {@comments(util.getDocLines(context.returnTypeComment(method, methodConfig)))}
-     *
-     * @@example
-     *
-     {@comments(util.getDocLines(decorateSampleCodeSegment(apiMethodView)))}
-     */
+    {@methodComments(apiMethodView, method, methodConfig)}
     {@serviceName}.prototype.{@methodName(method)} = function({@methodRequestParameters(apiMethodView)}options{@callbackParams(apiMethodView)}) {
       @switch apiMethodView.grpcStreamingType.toString
       @case "ClientStreaming"
@@ -483,9 +461,9 @@
        *
        * @@see {@@link https://nodejs.org/api/stream.html}
        *
-       {@comments(util.getDocLines(context.paramComments(service, method)))}
+       {@createParamTypesComment(apiMethodView.doc.paramDocs)}
        * @@return {Stream}
-       *   An object stream which emits {@context.typeDocument(methodConfig.getPageStreaming.getResourcesField.getType)} on 'data' event.
+       *   An object stream which emits {@apiMethodView.doc.pageStreamingResourceTypeName} on 'data' event.
        *
        * @@example
        *
@@ -500,6 +478,42 @@
       };
     @default
     @end
+  @end
+@end
+
+@private methodComments(apiMethodView, method, methodConfig)
+  @let doc = apiMethodView.doc
+    /**
+     @if comments(doc.mainDocLines)
+       {@comments(doc.mainDocLines)}
+       *
+     @end
+     {@createParamTypesComment(doc.paramDocs)}
+     {@createReturnTypeComment(apiMethodView.doc.returnTypeName, apiMethodView.doc.returnsDocLines)}
+     *
+     * @@example
+     *
+     {@comments(util.getDocLines(decorateSampleCodeSegment(apiMethodView)))}
+     */
+  @end
+@end
+
+@private createParamTypesComment(paramDocs)
+  @join doc : paramDocs
+    {@paramDoc(doc)}
+  @end
+@end
+
+@private paramDoc(doc)
+  * @@param {{@doc.typeName}} {@doc.paramName}
+  @join line : doc.lines
+    *   {@line}
+  @end
+@end
+
+@private createReturnTypeComment(typeName, lines)
+  @join line : lines
+    * {@line}
   @end
 @end
 

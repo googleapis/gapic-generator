@@ -178,7 +178,7 @@ public class PathTemplateTransformer {
                 .getTypeTable()
                 .getAndSaveNicknameForTypedResourceName(fieldConfig, fieldTypeSimpleName);
         if (field.getType().isRepeated()) {
-          fieldTypeName = fieldTypeName.replaceFirst("IEnumerable", "IList");
+          fieldTypeName = fieldTypeName.replaceFirst("IEnumerable", "ResourceNameList");
         }
         String fieldDocTypeName = fieldTypeName.replace('<', '{').replace('>', '}');
         String fieldElementTypeName =

@@ -468,8 +468,9 @@ public class StaticLangApiMethodTransformer {
 
     setServiceResponseTypeName(context, methodViewBuilder);
 
-    methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
-    methodViewBuilder.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
+    methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
+    methodViewBuilder.apiVariableName(
+        namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     methodViewBuilder.stubName(namer.getStubName(context.getTargetInterface()));
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
@@ -768,6 +769,14 @@ public class StaticLangApiMethodTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     Field field = fieldConfig.getField();
 
+    Iterable<Field> requiredFields = context.getMethodConfig().getRequiredFields();
+    boolean isRequired = false;
+    for (Field f : requiredFields) {
+      if (f.getSimpleName().equals(field.getSimpleName())) {
+        isRequired = true;
+      }
+    }
+
     String typeName =
         namer.getNotImplementedString(
             "StaticLangApiMethodTransformer.generateRequestObjectParam - typeName");
@@ -786,6 +795,9 @@ public class StaticLangApiMethodTransformer {
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {
         typeName = typeTable.getAndSaveNicknameFor(field.getType());
+        if (!isRequired) {
+          typeName = namer.makePrimitiveTypeNullable(typeName, field.getType());
+        }
       }
       if (namer.shouldImportRequestObjectParamElementType(field)) {
         elementTypeName = typeTable.getAndSaveNicknameForElementType(field.getType());
@@ -802,6 +814,7 @@ public class StaticLangApiMethodTransformer {
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
+    param.keyName(namer.getFieldKey(field));
     param.nameAsMethodName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
     param.typeName(typeName);
     param.elementTypeName(elementTypeName);
@@ -810,6 +823,12 @@ public class StaticLangApiMethodTransformer {
     param.transformParamFunctionName(transformParamFunctionName);
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
+    param.isPrimitive(namer.isPrimitive(field.getType()));
+    param.isOptional(!isRequired);
+    if (!isRequired) {
+      param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
+    }
+
     return param.build();
   }
 

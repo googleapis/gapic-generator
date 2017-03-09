@@ -78,10 +78,9 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   ///////////////////////////////////// Smoke Test ///////////////////////////////////////
 
   private SmokeTestClassView createSmokeTestClassView(SurfaceTransformerContext context) {
-    Interface service = context.getInterface();
-    String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
+    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     SurfaceNamer namer = context.getNamer();
-    String name = namer.getSmokeTestClassName(service);
+    String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
     Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =
@@ -97,8 +96,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     OptionalArrayMethodView apiMethodView =
         createSmokeTestCaseApiMethodView(flattenedMethodContext);
 
-    testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
-    testClass.apiClassName(namer.getApiWrapperClassName(service));
+    testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
+    testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);

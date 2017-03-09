@@ -4,7 +4,11 @@
   {@renderFileHeader(settingsFile.fileHeader)}
 
   {@settingsDoc(settingsFile.settings.doc)}
-  @@Generated("by GAPIC")
+  @if settingsFile.fileHeader.hasGeneratorVersion
+    @@Generated("by GAPIC v{@settingsFile.fileHeader.generatorVersion}")
+  @else
+    @@Generated("by GAPIC")
+  @end
   @@ExperimentalApi
   public class {@settingsFile.settings.name} extends ClientSettings {
     {@constants(settingsFile.settings)}
@@ -73,8 +77,8 @@
     {@""}
   @end
 
-  private static final String DEFAULT_GENERATOR_NAME = "gapic";
-  private static final String DEFAULT_GENERATOR_VERSION = "{@xsettingsClass.toolkitVersion}";
+  private static final String DEFAULT_GAPIC_NAME = "gapic";
+  private static final String DEFAULT_GAPIC_VERSION = "";
   {@""}
 @end
 
@@ -126,17 +130,18 @@
         ;
   }
 
-  /**
-   * Returns a builder for the default ChannelProvider for this service.
-   */
+  /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
-        @if xsettingsClass.hasDefaultServiceAddress
-            .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-        @end
+        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
         .setPort(DEFAULT_SERVICE_PORT)
-        .setGeneratorHeader(DEFAULT_GENERATOR_NAME, DEFAULT_GENERATOR_VERSION)
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+  }
+
+  private static String getGapicVersion() {
+    String packageVersion = {@xsettingsClass.name}.class.getPackage().getImplementationVersion();
+    return packageVersion != null ? packageVersion : DEFAULT_GAPIC_VERSION;
   }
 
   /**
@@ -318,31 +323,33 @@
           }
 
           @@Override
-          public {@desc.requestTypeName} mergeRequests(Collection<{@desc.requestTypeName}> requests) {
-            {@desc.requestTypeName} firstRequest = requests.iterator().next();
-
-            {@desc.bundledFieldTypeName} elements = new ArrayList<>();
-            for ({@desc.requestTypeName} request : requests) {
-              elements.addAll(request.{@desc.bundledFieldGetFunction}());
-            }
-
-            {@desc.requestTypeName} bundleRequest =
-                {@desc.requestTypeName}.newBuilder()
-                    {@fieldCopyCalls(desc.discriminatorFieldCopies)}
-                    .{@desc.bundledFieldSetFunction}(elements)
-                    .build();
-            return bundleRequest;
+          public RequestBuilder<{@desc.requestTypeName}> getRequestBuilder() {
+            return new RequestBuilder<{@desc.requestTypeName}>() {
+              private {@desc.requestTypeName}.Builder builder;
+              @@Override
+              public void appendRequest({@desc.requestTypeName} request) {
+                if (builder == null) {
+                  builder = request.toBuilder();
+                } else {
+                  builder.{@desc.bundledFieldSetFunction}(request.{@desc.bundledFieldGetFunction}());
+                }
+              }
+              @@Override
+              public {@desc.requestTypeName} build() {
+                return builder.build();
+              }
+            };
           }
 
           @@Override
           public void splitResponse(
               {@desc.responseTypeName} bundleResponse,
-              Collection<? extends RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}>> bundle) {
+              Collection<? extends BundledRequestIssuer<{@desc.responseTypeName}>> bundle) {
             int bundleMessageIndex = 0;
-            for (RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}> responder : bundle) {
+            for (BundledRequestIssuer<{@desc.responseTypeName}> responder : bundle) {
               @if desc.hasSubresponse
                 {@desc.subresponseTypeName} subresponseElements = new ArrayList<>();
-                int subresponseCount = responder.getRequest().{@desc.bundledFieldCountGetFunction}();
+                long subresponseCount = responder.getMessageCount();
                 for (int i = 0; i < subresponseCount; i++) {
                   subresponseElements.add(bundleResponse.{@desc.subresponseByIndexGetFunction}(bundleMessageIndex));
                   bundleMessageIndex += 1;
@@ -360,8 +367,8 @@
           @@Override
           public void splitException(
               Throwable throwable,
-              Collection<? extends RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}>> bundle) {
-            for (RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}> responder : bundle) {
+              Collection<? extends BundledRequestIssuer<{@desc.responseTypeName}>> bundle) {
+            for (BundledRequestIssuer<{@desc.responseTypeName}> responder : bundle) {
               responder.setException(throwable);
             }
           }
@@ -526,7 +533,17 @@
         builder.{@settings.settingsGetFunction}().getBundlingSettingsBuilder()
             .setElementCountThreshold({@settings.bundlingConfig.elementCountThreshold})
             .setRequestByteThreshold({@settings.bundlingConfig.requestByteThreshold})
-            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}));
+            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}))
+            .setFlowControlSettings(
+              FlowControlSettings.newBuilder()
+                @if settings.bundlingConfig.hasFlowControlElementLimit
+                  .setMaxOutstandingElementCount({@settings.bundlingConfig.flowControlElementLimit})
+                @end
+                @if settings.bundlingConfig.hasFlowControlByteLimit
+                  .setMaxOutstandingRequestBytes({@settings.bundlingConfig.flowControlByteLimit})
+                @end
+                .setLimitExceededBehavior(LimitExceededBehavior.{@settings.bundlingConfig.flowControlLimitExceededBehavior})
+                .build());
       @default
       @end
       # retry settings
