@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.viewmodel.ImportSectionView;
 
+/** Generates an ImportSectionView for a file header. */
 public interface ImportSectionTransformer {
   ImportSectionView generateImportSection(SurfaceTransformerContext context);
 }

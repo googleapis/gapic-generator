@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 
+/** Generates an ImportSectionView for the InitCodeTransformer. */
 public interface InitCodeImportSectionTransformer {
   ImportSectionView generateImportSection(
       MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes);
