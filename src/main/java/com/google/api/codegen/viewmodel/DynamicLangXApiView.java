@@ -118,10 +118,6 @@ public abstract class DynamicLangXApiView implements ViewModel {
     return new AutoValue_DynamicLangXApiView.Builder().isGcloud(false);
   }
 
-  public boolean hasValidDescriptorsNames() {
-    return validDescriptorsNames().size() > 0;
-  }
-
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder templateFileName(String val);
