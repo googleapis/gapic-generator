@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
@@ -41,6 +42,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import io.grpc.Status;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -454,24 +456,24 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of a variable that holds an instance of the class that implements a particular proto
    * interface.
    */
-  public String getApiWrapperVariableName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  public String getApiWrapperVariableName(InterfaceConfig interfaceConfig) {
+    return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
   /**
    * The name of a variable that holds the settings class for a particular proto interface; not used
    * in most languages.
    */
-  public String getApiSettingsVariableName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+  public String getApiSettingsVariableName(InterfaceConfig interfaceConfig) {
+    return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "Settings"));
   }
 
   /**
    * The name of the builder class for the settings class for a particular proto interface; not used
    * in most languages.
    */
-  public String getApiSettingsBuilderVarName(Interface interfaze) {
-    return localVarName(Name.upperCamel(interfaze.getSimpleName(), "SettingsBuilder"));
+  public String getApiSettingsBuilderVarName(InterfaceConfig interfaceConfig) {
+    return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "SettingsBuilder"));
   }
 
   /** The variable name for the given identifier that is formatted. */
@@ -535,9 +537,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /////////////////////////////////////// Type names /////////////////////////////////////////////
 
+  protected String getInterfaceName(InterfaceConfig interfaceConfig) {
+    return interfaceConfig.hasInterfaceNameOverride()
+        ? interfaceConfig.getInterfaceNameOverride()
+        : interfaceConfig.getInterface().getSimpleName();
+  }
+
   /** The name of the class that implements a particular proto interface. */
-  public String getApiWrapperClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Client"));
+  public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
@@ -553,8 +561,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /**
    * The name of the settings class for a particular proto interface; not used in most languages.
    */
-  public String getApiSettingsClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+  public String getApiSettingsClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Settings"));
   }
 
   /** The name of the class that contains paged list response wrappers. */
@@ -579,7 +587,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The fully qualified class name of a an API service. TODO: Support the general pattern of
    * package + class name in NameFormatter.
    */
-  public String getFullyQualifiedApiWrapperClassName(Interface interfaze) {
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
   }
 
@@ -1020,17 +1028,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The doc lines that describe the return value for an API method. */
   public List<String> getReturnDocLines(
       SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    return new ArrayList<>();
+    return Collections.singletonList(getNotImplementedString("SurfaceNamer.getReturnDocLines"));
   }
 
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
     return getNotImplementedString("SurfaceNamer.getReleaseAnnotation");
   }
 
+  /** The name of a type with with qualifying articles and descriptions. */
+  public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef type) {
+    return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
+  }
+
   //////////////////////////////////////// File names ////////////////////////////////////////////
 
   /** The file name for an API service. */
-  public String getServiceFileName(Interface service) {
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getServiceFileName");
   }
 
@@ -1063,13 +1076,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The unit test class name for the given API service. */
-  public String getUnitTestClassName(Interface service) {
-    return publicClassName(Name.upperCamel(service.getSimpleName(), "Client", "Test"));
+  public String getUnitTestClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client", "Test"));
   }
 
   /** The smoke test class name for the given API service. */
-  public String getSmokeTestClassName(Interface service) {
-    return publicClassName(Name.upperCamel(service.getSimpleName(), "Smoke", "Test"));
+  public String getSmokeTestClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Smoke", "Test"));
   }
 
   /** The class name of the mock gRPC service for the given API service. */

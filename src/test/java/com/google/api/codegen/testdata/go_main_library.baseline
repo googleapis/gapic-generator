@@ -665,6 +665,7 @@ func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) 
     }
     return &BookOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), resp),
+        xGoogHeader: c.xGoogHeader,
     }, nil
 }
 
@@ -682,6 +683,7 @@ func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookReques
     }
     return &EmptyOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), resp),
+        xGoogHeader: c.xGoogHeader,
     }, nil
 }
 
@@ -831,6 +833,9 @@ func (it *StringIterator) takeBuf() interface{} {
 // BookOperation manages a long-running operation yielding librarypb.Book.
 type BookOperation struct {
     lro *longrunning.Operation
+
+    // The metadata to be sent with each request.
+    xGoogHeader string
 }
 
 // BookOperation returns a new BookOperation from a given name.
@@ -838,6 +843,7 @@ type BookOperation struct {
 func (c *Client) BookOperation(name string) *BookOperation {
     return &BookOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+        xGoogHeader: c.xGoogHeader,
     }
 }
 
@@ -846,6 +852,7 @@ func (c *Client) BookOperation(name string) *BookOperation {
 // See documentation of Poll for error-handling information.
 func (op *BookOperation) Wait(ctx context.Context) (*librarypb.Book, error) {
     var resp librarypb.Book
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     if err := op.lro.Wait(ctx, &resp); err != nil {
         return nil, err
     }
@@ -863,6 +870,7 @@ func (op *BookOperation) Wait(ctx context.Context) (*librarypb.Book, error) {
 // If Poll succeeds and the operation has not completed, the returned response and error are both nil.
 func (op *BookOperation) Poll(ctx context.Context) (*librarypb.Book, error) {
     var resp librarypb.Book
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     if err := op.lro.Poll(ctx, &resp); err != nil {
         return nil, err
     }
@@ -903,12 +911,16 @@ func (op *BookOperation) Name() string {
 // completed despite cancellation. On successful cancellation, the operation is not deleted;
 // instead, op.Poll returns an error with code Canceled.
 func (op *BookOperation) Cancel(ctx context.Context) error {
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     return op.lro.Cancel(ctx)
 }
 
 // EmptyOperation manages a long-running operation with no result.
 type EmptyOperation struct {
     lro *longrunning.Operation
+
+    // The metadata to be sent with each request.
+    xGoogHeader string
 }
 
 // EmptyOperation returns a new EmptyOperation from a given name.
@@ -916,6 +928,7 @@ type EmptyOperation struct {
 func (c *Client) EmptyOperation(name string) *EmptyOperation {
     return &EmptyOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+        xGoogHeader: c.xGoogHeader,
     }
 }
 
@@ -923,6 +936,7 @@ func (c *Client) EmptyOperation(name string) *EmptyOperation {
 //
 // See documentation of Poll for error-handling information.
 func (op *EmptyOperation) Wait(ctx context.Context) error {
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     return op.lro.Wait(ctx, nil)
 }
 
@@ -934,6 +948,7 @@ func (op *EmptyOperation) Wait(ctx context.Context) error {
 // the operation has completed with failure, the error is returned and op.Done will return true.
 // If Poll succeeds and the operation has completed successfully, op.Done will return true.
 func (op *EmptyOperation) Poll(ctx context.Context) error {
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     return op.lro.Poll(ctx, nil)
 }
 
@@ -967,5 +982,6 @@ func (op *EmptyOperation) Name() string {
 // This method indicates that the client is no longer interested in the operation result.
 // It does not cancel the operation.
 func (op *EmptyOperation) Delete(ctx context.Context) error {
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     return op.lro.Delete(ctx)
 }

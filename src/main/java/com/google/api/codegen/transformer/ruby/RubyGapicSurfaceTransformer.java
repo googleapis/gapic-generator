@@ -94,7 +94,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   private ViewModel generateApiClass(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     String subPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    String name = namer.getApiWrapperClassName(context.getInterface());
+    String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     List<ApiMethodView> methods = generateApiMethods(context);
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();

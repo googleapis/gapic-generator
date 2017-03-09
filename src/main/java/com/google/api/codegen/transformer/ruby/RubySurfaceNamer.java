@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -194,13 +195,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The file name for an API service. */
   @Override
-  public String getServiceFileName(Interface service) {
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
     String[] names = getPackageName().split("::");
     List<String> newNames = new ArrayList<>();
     for (String name : names) {
       newNames.add(packageFilePathPiece(Name.upperCamel(name)));
     }
-    newNames.add(classFileNameBase(Name.upperCamel(getApiWrapperClassName(service))));
+    newNames.add(classFileNameBase(Name.upperCamel(getApiWrapperClassName(interfaceConfig))));
     return Joiner.on("/").join(newNames.toArray());
   }
 
@@ -216,8 +217,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(Interface service) {
-    return getPackageName() + "::" + getApiWrapperClassName(service);
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
+    return getPackageName() + "::" + getApiWrapperClassName(interfaceConfig);
   }
 
   @Override

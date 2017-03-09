@@ -1,12 +1,12 @@
 ============== file: src/v1/library_service_client.js ==============
 /*
- * Copyright 2016 Google Inc. All rights reserved.
+ * Copyright 2017, Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -249,16 +249,6 @@ LibraryServiceClient.prototype.shelfPath = function(shelfId) {
 };
 
 /**
- * Parses the shelfName from a shelf resource.
- * @param {String} shelfName
- *   A fully-qualified path representing a shelf resources.
- * @returns {String} - A string representing the shelf_id.
- */
-LibraryServiceClient.prototype.matchShelfIdFromShelfName = function(shelfName) {
-  return SHELF_PATH_TEMPLATE.match(shelfName).shelf_id;
-};
-
-/**
  * Returns a fully-qualified book resource name string.
  * @param {String} shelfId
  * @param {String} bookId
@@ -269,6 +259,31 @@ LibraryServiceClient.prototype.bookPath = function(shelfId, bookId) {
     shelf_id: shelfId,
     book_id: bookId
   });
+};
+
+/**
+ * Returns a fully-qualified return resource name string.
+ * @param {String} shelf
+ * @param {String} book
+ * @param {String} return_
+ * @returns {String}
+ */
+LibraryServiceClient.prototype.returnPath = function(shelf, book, return_) {
+  return RETURN_PATH_TEMPLATE.render({
+    shelf: shelf,
+    book: book,
+    return: return_
+  });
+};
+
+/**
+ * Parses the shelfName from a shelf resource.
+ * @param {String} shelfName
+ *   A fully-qualified path representing a shelf resources.
+ * @returns {String} - A string representing the shelf_id.
+ */
+LibraryServiceClient.prototype.matchShelfIdFromShelfName = function(shelfName) {
+  return SHELF_PATH_TEMPLATE.match(shelfName).shelf_id;
 };
 
 /**
@@ -289,21 +304,6 @@ LibraryServiceClient.prototype.matchShelfIdFromBookName = function(bookName) {
  */
 LibraryServiceClient.prototype.matchBookIdFromBookName = function(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).book_id;
-};
-
-/**
- * Returns a fully-qualified return resource name string.
- * @param {String} shelf
- * @param {String} book
- * @param {String} return
- * @returns {String}
- */
-LibraryServiceClient.prototype.returnPath = function(shelf, book, return_) {
-  return RETURN_PATH_TEMPLATE.render({
-    shelf: shelf,
-    book: book,
-    return: return_
-  });
 };
 
 /**

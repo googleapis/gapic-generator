@@ -50,7 +50,7 @@ public class PythonImportSectionTransformer implements InitCodeImportSectionTran
   private ImportFileView generateApiImport(MethodTransformerContext context) {
     return createImport(
         context.getApiConfig().getPackageName(),
-        context.getNamer().getApiWrapperVariableName(context.getInterface()));
+        context.getNamer().getApiWrapperVariableName(context.getInterfaceConfig()));
   }
 
   private List<ImportFileView> generateProtoImports(

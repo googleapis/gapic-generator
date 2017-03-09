@@ -468,8 +468,9 @@ public class StaticLangApiMethodTransformer {
 
     setServiceResponseTypeName(context, methodViewBuilder);
 
-    methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
-    methodViewBuilder.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
+    methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
+    methodViewBuilder.apiVariableName(
+        namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     methodViewBuilder.stubName(namer.getStubName(context.getTargetInterface()));
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));

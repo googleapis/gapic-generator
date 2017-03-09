@@ -145,7 +145,7 @@ public class InitCodeTransformer {
       SingleResourceNameConfig resourceNameConfig =
           context.getSingleResourceNameConfig(fieldNamePattern.getValue());
       String apiWrapperClassName =
-          context.getNamer().getApiWrapperClassName(context.getInterface());
+          context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
       InitValueConfig initValueConfig =
           InitValueConfig.create(apiWrapperClassName, resourceNameConfig);
       mapBuilder.put(fieldNamePattern.getKey(), initValueConfig);
@@ -188,14 +188,14 @@ public class InitCodeTransformer {
     // Initialize the type table with the apiClassName since each sample will be using the
     // apiClass.
     typeTable.getAndSaveNicknameFor(
-        namer.getFullyQualifiedApiWrapperClassName(context.getInterface()));
+        namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
 
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(getFieldSettings(context, argItems))
         .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
-        .apiFileName(namer.getServiceFileName(context.getInterface()))
+        .apiFileName(namer.getServiceFileName(context.getInterfaceConfig()))
         .build();
   }
 
@@ -383,7 +383,8 @@ public class InitCodeTransformer {
       if (context.getFeatureConfig().enableStringFormatFunctions()) {
         FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
 
-        initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
+        initValue.apiWrapperName(
+            context.getNamer().getApiWrapperClassName(context.getInterfaceConfig()));
         initValue.formatFunctionName(
             context
                 .getNamer()
