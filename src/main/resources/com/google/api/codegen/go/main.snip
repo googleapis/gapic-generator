@@ -96,7 +96,7 @@
                 {@stub.name}: {@stub.createStubFunctionName}(conn),
             @end
         }
-        c.SetGoogleClientInfo("gapic", version.Repo)
+        c.SetGoogleClientInfo()
         return c, nil
     }
 
@@ -114,8 +114,10 @@
     // SetGoogleClientInfo sets the name and version of the application in
     // the `x-goog-api-client` header passed on each request. Intended for
     // use by Google-written clients.
-    func (c *{@view.clientTypeName}) SetGoogleClientInfo(clientName, clientVersion string) {
-        c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gax/%s grpc/", version.Go(), clientName, clientVersion, gax.Version)
+    func (c *{@view.clientTypeName}) SetGoogleClientInfo(keyval ...string) {
+        kv := append([]string{"gl-go", version.Go()}, keyval...)
+        kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", "")
+        c.xGoogHeader = gax.XGoogHeader(kv...)
     }
 
     @join getter : view.pathTemplateGetters
@@ -209,6 +211,7 @@
         }
         return &{@method.operationMethod.clientReturnTypeName}{
             lro: longrunning.InternalNewOperation(c.Connection(), resp),
+            xGoogHeader: c.xGoogHeader,
         }, nil
     }
 @end
@@ -332,6 +335,9 @@
 
     type {@lro.clientReturnTypeName} struct {
         lro *longrunning.Operation
+
+        // The metadata to be sent with each request.
+        xGoogHeader string
     }
 
     // {@lro.constructorName} returns a new {@lro.clientReturnTypeName} from a given name.
@@ -339,6 +345,7 @@
     func (c *{@view.clientTypeName}) {@lro.constructorName}(name string) *{@lro.clientReturnTypeName} {
         return &{@lro.clientReturnTypeName}{
             lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+            xGoogHeader: c.xGoogHeader,
         }
     }
 
@@ -347,6 +354,7 @@
         //
         // See documentation of Poll for error-handling information.
         func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context) error {
+            ctx = insertXGoog(ctx, op.xGoogHeader)
             return op.lro.Wait(ctx, nil)
         }
 
@@ -358,6 +366,7 @@
         // the operation has completed with failure, the error is returned and op.Done will return true.
         // If Poll succeeds and the operation has completed successfully, op.Done will return true.
         func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context) error {
+            ctx = insertXGoog(ctx, op.xGoogHeader)
             return op.lro.Poll(ctx, nil)
         }
     @else
@@ -366,6 +375,7 @@
         // See documentation of Poll for error-handling information.
         func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
             var resp {@lro.operationPayloadTypeName}
+            ctx = insertXGoog(ctx, op.xGoogHeader)
             if err := op.lro.Wait(ctx, &resp); err != nil {
                 return nil, err
             }
@@ -383,6 +393,7 @@
         // If Poll succeeds and the operation has not completed, the returned response and error are both nil.
         func (op *{@lro.clientReturnTypeName}) Poll(ctx context.Context) (*{@lro.operationPayloadTypeName}, error) {
             var resp {@lro.operationPayloadTypeName}
+            ctx = insertXGoog(ctx, op.xGoogHeader)
             if err := op.lro.Poll(ctx, &resp); err != nil {
                 return nil, err
             }
@@ -425,6 +436,7 @@
         // completed despite cancellation. On successful cancellation, the operation is not deleted;
         // instead, op.Poll returns an error with code Canceled.
         func (op *{@lro.clientReturnTypeName}) Cancel(ctx context.Context) error {
+            ctx = insertXGoog(ctx, op.xGoogHeader)
             return op.lro.Cancel(ctx)
         }
     @end
@@ -434,6 +446,7 @@
         // This method indicates that the client is no longer interested in the operation result.
         // It does not cancel the operation.
         func (op *{@lro.clientReturnTypeName}) Delete(ctx context.Context) error {
+            ctx = insertXGoog(ctx, op.xGoogHeader)
             return op.lro.Delete(ctx)
         }
     @end

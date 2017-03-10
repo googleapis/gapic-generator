@@ -2,7 +2,7 @@
 
 @snippet generate(doc)
   @let body = documentChildren(doc)
-    {@licenseSection(doc.fileHeader)}
+    {@license(doc.fileHeader)}
 
     {@module(doc.fileHeader.modules.iterator, body) }
   @end
@@ -71,17 +71,5 @@
     {@documentEnum(doc)}
   @default
     {@unhandledCase()}
-  @end
-@end
-
-@private licenseSection(fileHeader)
-  {@toComments(fileHeader.copyrightLines)}
-  @#
-  {@toComments(fileHeader.licenseLines)}
-@end
-
-@private toComments(commentLines)
-  @join comment : commentLines
-    @# {@comment}
   @end
 @end

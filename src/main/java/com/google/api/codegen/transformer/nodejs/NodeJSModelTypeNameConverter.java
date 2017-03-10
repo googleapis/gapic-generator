@@ -44,8 +44,8 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_SINT32, "number")
           .put(Type.TYPE_FIXED32, "number")
           .put(Type.TYPE_SFIXED32, "number")
-          .put(Type.TYPE_STRING, "String")
-          .put(Type.TYPE_BYTES, "String")
+          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_BYTES, "string")
           .build();
 
   /** A map from primitive types in proto to zero value in NodeJS */
@@ -120,7 +120,7 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
    * Returns the NodeJS representation of a zero value for that type, to be used in code sample doc.
    */
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     // Don't call getTypeName; we don't need to import these.
     if (type.isMap()) {
       return TypedValue.create(new TypeName("Object"), "{}");
@@ -138,6 +138,11 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(new TypeName(""), "null");
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   @Override

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,26 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.util.ImportType;
 import com.google.auto.value.AutoValue;
-import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class ImportTypeView {
-  public abstract String fullName();
+public abstract class RepeatedResourceNameInitValueView implements InitValueView {
 
-  @Nullable
-  public abstract String nickname();
+  public abstract String resourceTypeName();
 
-  public abstract ImportType type();
+  public String type() {
+    return RepeatedResourceNameInitValueView.class.getSimpleName();
+  }
 
   public static Builder newBuilder() {
-    return new AutoValue_ImportTypeView.Builder().type(ImportType.SimpleImport);
+    return new AutoValue_RepeatedResourceNameInitValueView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder fullName(String fullName);
 
-    public abstract Builder nickname(String nickName);
+    public abstract Builder resourceTypeName(String val);
 
-    public abstract Builder type(ImportType type);
-
-    public abstract ImportTypeView build();
+    public abstract RepeatedResourceNameInitValueView build();
   }
 }

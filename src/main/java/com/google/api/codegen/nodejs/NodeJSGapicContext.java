@@ -15,21 +15,30 @@
 package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.nodejs.NodeJSApiMethodParamTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSFeatureConfig;
+import com.google.api.codegen.transformer.nodejs.NodeJSImportSectionTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSModelTypeNameConverter;
 import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.FileHeaderView;
+import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.GrpcStubView;
+import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
+import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -57,12 +66,18 @@ import javax.annotation.Nullable;
 
 /** A GapicContext specialized for NodeJS. */
 public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
+  private FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new NodeJSImportSectionTransformer());
   private GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+
+  private PackageMetadataConfig packageConfig;
 
   NodeJSSurfaceNamer namer;
 
-  public NodeJSGapicContext(Model model, ApiConfig apiConfig) {
+  public NodeJSGapicContext(Model model, ApiConfig apiConfig, PackageMetadataConfig packageConfig) {
     super(model, apiConfig);
+    this.packageConfig = packageConfig;
     namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
   }
 
@@ -100,6 +115,32 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return grpcStubTransformer.generateGrpcStubs(context);
   }
 
+  /**
+   * Return the file header view.
+   *
+   * <p>NOTE: Temporary solution to use MVVM with just sample gen. This class will eventually go
+   * away when code gen also converts to MVVM.
+   */
+  public FileHeaderView getFileHeader(Interface service) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return fileHeaderTransformer.generateFileHeader(context);
+  }
+
+  public List<PathTemplateView> getPathTemplates(Interface service) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return pathTemplateTransformer.generatePathTemplates(context);
+  }
+
+  public List<FormatResourceFunctionView> getFormatResourceFunctions(Interface service) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return pathTemplateTransformer.generateFormatResourceFunctions(context);
+  }
+
+  public List<ParseResourceFunctionView> getParseResourceFunctions(Interface service) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return pathTemplateTransformer.generateParseResourceFunctions(context);
+  }
+
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
@@ -107,6 +148,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
             new NodeJSModelTypeNameConverter(getApiConfig().getPackageName()));
     return SurfaceTransformerContext.create(
         service, getApiConfig(), modelTypeTable, namer, new NodeJSFeatureConfig());
+  }
+
+  public String packageVersion() {
+    return packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower();
   }
 
   public String filePath(ProtoFile file) {

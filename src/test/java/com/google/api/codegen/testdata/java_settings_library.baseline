@@ -1,4 +1,4 @@
-============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryServiceSettings.java ==============
+============== file: src/main/java/com/google/gcloud/pubsub/spi/LibrarySettings.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -16,12 +16,17 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.bundling.BundlingSettings;
+import com.google.api.gax.bundling.RequestBuilder;
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.FlowControlSettings;
+import com.google.api.gax.core.FlowController;
+import com.google.api.gax.core.FlowController.LimitExceededBehavior;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.grpc.BundledRequestIssuer;
 import com.google.api.gax.grpc.BundlingCallSettings;
 import com.google.api.gax.grpc.BundlingDescriptor;
-import com.google.api.gax.grpc.BundlingSettings;
 import com.google.api.gax.grpc.CallContext;
 import com.google.api.gax.grpc.ChannelProvider;
 import com.google.api.gax.grpc.ClientSettings;
@@ -74,6 +79,8 @@ import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
@@ -100,7 +107,7 @@ import org.joda.time.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
- * Settings class to configure an instance of {@link LibraryServiceClient}.
+ * Settings class to configure an instance of {@link LibraryClient}.
  *
  * <p>The default instance has everything set to sensible defaults:
  *
@@ -117,17 +124,17 @@ import org.joda.time.Duration;
  *
  * <pre>
  * <code>
- * LibraryServiceSettings.Builder libraryServiceSettingsBuilder =
- *     LibraryServiceSettings.defaultBuilder();
- * libraryServiceSettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
+ * LibrarySettings.Builder librarySettingsBuilder =
+ *     LibrarySettings.defaultBuilder();
+ * librarySettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.standardSeconds(30));
- * LibraryServiceSettings libraryServiceSettings = libraryServiceSettingsBuilder.build();
+ * LibrarySettings librarySettings = librarySettingsBuilder.build();
  * </code>
  * </pre>
  */
-@Generated("by GAPIC")
+@Generated("by GAPIC v0.0.5")
 @ExperimentalApi
-public class LibraryServiceSettings extends ClientSettings {
+public class LibrarySettings extends ClientSettings {
   /**
    * The default address of the service.
    */
@@ -147,8 +154,8 @@ public class LibraryServiceSettings extends ClientSettings {
       .build();
 
 
-  private static final String DEFAULT_GENERATOR_NAME = "gapic";
-  private static final String DEFAULT_GENERATOR_VERSION = "0.0.5";
+  private static final String DEFAULT_GAPIC_NAME = "gapic";
+  private static final String DEFAULT_GAPIC_VERSION = "";
 
   private final SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings;
@@ -163,7 +170,7 @@ public class LibraryServiceSettings extends ClientSettings {
   private final SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final SimpleCallSettings<MoveBookRequest, Book> moveBookSettings;
   private final PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-  private final SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
+  private final BundlingCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
   private final SimpleCallSettings<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
   private final SimpleCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
   private final SimpleCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -176,6 +183,7 @@ public class LibraryServiceSettings extends ClientSettings {
   private final SimpleCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
   private final OperationCallSettings<GetBookRequest, Book> getBigBookSettings;
   private final OperationCallSettings<GetBookRequest, Empty> getBigNothingSettings;
+  private final SimpleCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -271,7 +279,7 @@ public class LibraryServiceSettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to addComments.
    */
-  public SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
+  public BundlingCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
     return addCommentsSettings;
   }
 
@@ -359,6 +367,13 @@ public class LibraryServiceSettings extends ClientSettings {
     return getBigNothingSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to testOptionalRequiredFlatteningParams.
+   */
+  public SimpleCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
+    return testOptionalRequiredFlatteningParamsSettings;
+  }
+
 
   /**
    * Returns a builder for the default ExecutorProvider for this service.
@@ -398,15 +413,18 @@ public class LibraryServiceSettings extends ClientSettings {
         ;
   }
 
-  /**
-   * Returns a builder for the default ChannelProvider for this service.
-   */
+  /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
         .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
         .setPort(DEFAULT_SERVICE_PORT)
-        .setGeneratorHeader(DEFAULT_GENERATOR_NAME, DEFAULT_GENERATOR_VERSION)
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+  }
+
+  private static String getGapicVersion() {
+    String packageVersion = LibrarySettings.class.getPackage().getImplementationVersion();
+    return packageVersion != null ? packageVersion : DEFAULT_GAPIC_VERSION;
   }
 
   /**
@@ -430,7 +448,7 @@ public class LibraryServiceSettings extends ClientSettings {
     return new Builder(this);
   }
 
-  private LibraryServiceSettings(Builder settingsBuilder) throws IOException {
+  private LibrarySettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder.getExecutorProvider(),
           settingsBuilder.getChannelProvider());
 
@@ -460,6 +478,7 @@ public class LibraryServiceSettings extends ClientSettings {
     addLabelSettings = settingsBuilder.addLabelSettings().build();
     getBigBookSettings = settingsBuilder.getBigBookSettings().build();
     getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
+    testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
   }
 
   private static final PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
@@ -647,31 +666,32 @@ public class LibraryServiceSettings extends ClientSettings {
         }
 
         @Override
-        public PublishSeriesRequest mergeRequests(Collection<PublishSeriesRequest> requests) {
-          PublishSeriesRequest firstRequest = requests.iterator().next();
-
-          List<Book> elements = new ArrayList<>();
-          for (PublishSeriesRequest request : requests) {
-            elements.addAll(request.getBooksList());
-          }
-
-          PublishSeriesRequest bundleRequest =
-              PublishSeriesRequest.newBuilder()
-                  .setEdition(firstRequest.getEdition())
-                  .setName(firstRequest.getName())
-                  .addAllBooks(elements)
-                  .build();
-          return bundleRequest;
+        public RequestBuilder<PublishSeriesRequest> getRequestBuilder() {
+          return new RequestBuilder<PublishSeriesRequest>() {
+            private PublishSeriesRequest.Builder builder;
+            @Override
+            public void appendRequest(PublishSeriesRequest request) {
+              if (builder == null) {
+                builder = request.toBuilder();
+              } else {
+                builder.addAllBooks(request.getBooksList());
+              }
+            }
+            @Override
+            public PublishSeriesRequest build() {
+              return builder.build();
+            }
+          };
         }
 
         @Override
         public void splitResponse(
             PublishSeriesResponse bundleResponse,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
+            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
           int bundleMessageIndex = 0;
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
             List<String> subresponseElements = new ArrayList<>();
-            int subresponseCount = responder.getRequest().getBooksCount();
+            long subresponseCount = responder.getMessageCount();
             for (int i = 0; i < subresponseCount; i++) {
               subresponseElements.add(bundleResponse.getBookNames(bundleMessageIndex));
               bundleMessageIndex += 1;
@@ -685,8 +705,8 @@ public class LibraryServiceSettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
+          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
             responder.setException(throwable);
           }
         }
@@ -702,8 +722,66 @@ public class LibraryServiceSettings extends ClientSettings {
         }
       };
 
+  private static final BundlingDescriptor<AddCommentsRequest, Empty> ADD_COMMENTS_BUNDLING_DESC =
+      new BundlingDescriptor<AddCommentsRequest, Empty>() {
+        @Override
+        public String getBundlePartitionKey(AddCommentsRequest request) {
+          return request.getName() + "|";
+        }
+
+        @Override
+        public RequestBuilder<AddCommentsRequest> getRequestBuilder() {
+          return new RequestBuilder<AddCommentsRequest>() {
+            private AddCommentsRequest.Builder builder;
+            @Override
+            public void appendRequest(AddCommentsRequest request) {
+              if (builder == null) {
+                builder = request.toBuilder();
+              } else {
+                builder.addAllComments(request.getCommentsList());
+              }
+            }
+            @Override
+            public AddCommentsRequest build() {
+              return builder.build();
+            }
+          };
+        }
+
+        @Override
+        public void splitResponse(
+            Empty bundleResponse,
+            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
+          int bundleMessageIndex = 0;
+          for (BundledRequestIssuer<Empty> responder : bundle) {
+            Empty response =
+                Empty.newBuilder().build();
+            responder.setResponse(response);
+          }
+        }
+
+        @Override
+        public void splitException(
+            Throwable throwable,
+            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
+          for (BundledRequestIssuer<Empty> responder : bundle) {
+            responder.setException(throwable);
+          }
+        }
+
+        @Override
+        public long countElements(AddCommentsRequest request) {
+          return request.getCommentsCount();
+        }
+
+        @Override
+        public long countBytes(AddCommentsRequest request) {
+          return request.getSerializedSize();
+        }
+      };
+
   /**
-   * Builder for LibraryServiceSettings.
+   * Builder for LibrarySettings.
    */
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
@@ -721,7 +799,7 @@ public class LibraryServiceSettings extends ClientSettings {
     private final SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
     private final SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
     private final PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-    private final SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
+    private final BundlingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private final SimpleCallSettings.Builder<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
     private final SimpleCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
     private final SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -734,6 +812,7 @@ public class LibraryServiceSettings extends ClientSettings {
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Book> getBigBookSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty> getBigNothingSettings;
+    private final SimpleCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -803,7 +882,10 @@ public class LibraryServiceSettings extends ClientSettings {
           LibraryServiceGrpc.METHOD_LIST_STRINGS,
           LIST_STRINGS_PAGE_STR_FACT);
 
-      addCommentsSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_ADD_COMMENTS);
+      addCommentsSettings = BundlingCallSettings.newBuilder(
+          LibraryServiceGrpc.METHOD_ADD_COMMENTS,
+          ADD_COMMENTS_BUNDLING_DESC)
+              .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
 
       getBookFromArchiveSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BOOK_FROM_ARCHIVE);
 
@@ -838,6 +920,8 @@ public class LibraryServiceSettings extends ClientSettings {
           Empty.class);
 
 
+      testOptionalRequiredFlatteningParamsSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_TEST_OPTIONAL_REQUIRED_FLATTENING_PARAMS);
+
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           createShelfSettings,
           getShelfSettings,
@@ -858,7 +942,8 @@ public class LibraryServiceSettings extends ClientSettings {
           updateBookIndexSettings,
           findRelatedBooksSettings,
           addTagSettings,
-          addLabelSettings
+          addLabelSettings,
+          testOptionalRequiredFlatteningParamsSettings
       );
     }
 
@@ -892,7 +977,11 @@ public class LibraryServiceSettings extends ClientSettings {
       builder.publishSeriesSettings().getBundlingSettingsBuilder()
           .setElementCountThreshold(6)
           .setRequestByteThreshold(100000)
-          .setDelayThreshold(Duration.millis(500));
+          .setDelayThreshold(Duration.millis(500))
+          .setFlowControlSettings(
+            FlowControlSettings.newBuilder()
+              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
+              .build());
       builder.publishSeriesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -921,6 +1010,14 @@ public class LibraryServiceSettings extends ClientSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.addCommentsSettings().getBundlingSettingsBuilder()
+          .setElementCountThreshold(6)
+          .setRequestByteThreshold(100000)
+          .setDelayThreshold(Duration.millis(500))
+          .setFlowControlSettings(
+            FlowControlSettings.newBuilder()
+              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
+              .build());
       builder.addCommentsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -948,6 +1045,10 @@ public class LibraryServiceSettings extends ClientSettings {
       builder.addLabelSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.testOptionalRequiredFlatteningParamsSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
       builder.getBigBookSettings().getInitialCallSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -958,7 +1059,7 @@ public class LibraryServiceSettings extends ClientSettings {
       return builder;
     }
 
-    private Builder(LibraryServiceSettings settings) {
+    private Builder(LibrarySettings settings) {
       super(settings);
 
       createShelfSettings = settings.createShelfSettings.toBuilder();
@@ -987,6 +1088,7 @@ public class LibraryServiceSettings extends ClientSettings {
       addLabelSettings = settings.addLabelSettings.toBuilder();
       getBigBookSettings = settings.getBigBookSettings.toBuilder();
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
+      testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           createShelfSettings,
@@ -1008,7 +1110,8 @@ public class LibraryServiceSettings extends ClientSettings {
           updateBookIndexSettings,
           findRelatedBooksSettings,
           addTagSettings,
-          addLabelSettings
+          addLabelSettings,
+          testOptionalRequiredFlatteningParamsSettings
       );
     }
 
@@ -1130,7 +1233,7 @@ public class LibraryServiceSettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to addComments.
      */
-    public SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
+    public BundlingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
       return addCommentsSettings;
     }
 
@@ -1218,9 +1321,16 @@ public class LibraryServiceSettings extends ClientSettings {
       return getBigNothingSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to testOptionalRequiredFlatteningParams.
+     */
+    public SimpleCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
+      return testOptionalRequiredFlatteningParamsSettings;
+    }
+
     @Override
-    public LibraryServiceSettings build() throws IOException {
-      return new LibraryServiceSettings(this);
+    public LibrarySettings build() throws IOException {
+      return new LibrarySettings(this);
     }
   }
 }

@@ -166,13 +166,14 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
                 .build());
       }
 
-      String testClassName = surfacePackageNamer.getUnitTestClassName(service);
+      String testClassName = surfacePackageNamer.getUnitTestClassName(context.getInterfaceConfig());
       ClientTestClassView testClassView =
           ClientTestClassView.newBuilder()
               .apiSettingsClassName(
                   surfacePackageNamer.getNotImplementedString(
                       "PhpGapicSurfaceTestTransformer.generateTestView - apiSettingsClassName"))
-              .apiClassName(surfacePackageNamer.getApiWrapperClassName(service))
+              .apiClassName(
+                  surfacePackageNamer.getApiWrapperClassName(context.getInterfaceConfig()))
               .name(testClassName)
               .apiName(
                   PhpPackageMetadataNamer.getApiNameFromPackageName(

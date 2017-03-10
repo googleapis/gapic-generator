@@ -291,6 +291,14 @@ func (s *mockLibraryServer) GetBigNothing(_ context.Context, req *librarypb.GetB
     return s.resps[0].(*longrunningpb.Operation), nil
 }
 
+func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(_ context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.TestOptionalRequiredFlatteningParamsResponse), nil
+}
+
 type mockLabelerServer struct {
     // Embed for forward compatibility.
     // Tests will keep working if more methods are added
@@ -2010,4 +2018,146 @@ func TestLibraryServiceGetBigNothingError(t *testing.T) {
     if c := grpc.Code(err); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
+}
+func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
+    var expectedResponse *librarypb.TestOptionalRequiredFlatteningParamsResponse = &librarypb.TestOptionalRequiredFlatteningParamsResponse{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var requiredSingularInt32 int32 = -72313594
+    var requiredSingularInt64 int64 = -72313499
+    var requiredSingularFloat float32 = -7514705.0
+    var requiredSingularDouble float64 = 1.9111005E8
+    var requiredSingularBool bool = true
+    var requiredSingularEnum librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = librarypb.TestOptionalRequiredFlatteningParamsRequest_ZERO
+    var requiredSingularString string = "requiredSingularString-1949894503"
+    var requiredSingularBytes []byte = []byte("-29")
+    var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
+    var requiredSingularResourceName string = "requiredSingularResourceName-1701575020"
+    var requiredSingularResourceNameOneof string = "requiredSingularResourceNameOneof-25303726"
+    var requiredRepeatedInt32 []int32 = nil
+    var requiredRepeatedInt64 []int64 = nil
+    var requiredRepeatedFloat []float32 = nil
+    var requiredRepeatedDouble []float64 = nil
+    var requiredRepeatedBool []bool = nil
+    var requiredRepeatedEnum []librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = librarypb.TestOptionalRequiredFlatteningParamsRequest_ZERO
+    var requiredRepeatedString []string = nil
+    var requiredRepeatedBytes [][]byte = nil
+    var requiredRepeatedMessage []*librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = nil
+    var formattedRequiredRepeatedResourceName []string = nil
+    var formattedRequiredRepeatedResourceNameOneof []string = nil
+    var requiredMap map[int32]string = nil
+    var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
+        RequiredSingularInt32: requiredSingularInt32,
+        RequiredSingularInt64: requiredSingularInt64,
+        RequiredSingularFloat: requiredSingularFloat,
+        RequiredSingularDouble: requiredSingularDouble,
+        RequiredSingularBool: requiredSingularBool,
+        RequiredSingularEnum: requiredSingularEnum,
+        RequiredSingularString: requiredSingularString,
+        RequiredSingularBytes: requiredSingularBytes,
+        RequiredSingularMessage: requiredSingularMessage,
+        RequiredSingularResourceName: requiredSingularResourceName,
+        RequiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        RequiredRepeatedInt32: requiredRepeatedInt32,
+        RequiredRepeatedInt64: requiredRepeatedInt64,
+        RequiredRepeatedFloat: requiredRepeatedFloat,
+        RequiredRepeatedDouble: requiredRepeatedDouble,
+        RequiredRepeatedBool: requiredRepeatedBool,
+        RequiredRepeatedEnum: requiredRepeatedEnum,
+        RequiredRepeatedString: requiredRepeatedString,
+        RequiredRepeatedBytes: requiredRepeatedBytes,
+        RequiredRepeatedMessage: requiredRepeatedMessage,
+        RequiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+        RequiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        RequiredMap: requiredMap,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
+    errCode := codes.Internal
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
+
+    var requiredSingularInt32 int32 = -72313594
+    var requiredSingularInt64 int64 = -72313499
+    var requiredSingularFloat float32 = -7514705.0
+    var requiredSingularDouble float64 = 1.9111005E8
+    var requiredSingularBool bool = true
+    var requiredSingularEnum librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = librarypb.TestOptionalRequiredFlatteningParamsRequest_ZERO
+    var requiredSingularString string = "requiredSingularString-1949894503"
+    var requiredSingularBytes []byte = []byte("-29")
+    var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
+    var requiredSingularResourceName string = "requiredSingularResourceName-1701575020"
+    var requiredSingularResourceNameOneof string = "requiredSingularResourceNameOneof-25303726"
+    var requiredRepeatedInt32 []int32 = nil
+    var requiredRepeatedInt64 []int64 = nil
+    var requiredRepeatedFloat []float32 = nil
+    var requiredRepeatedDouble []float64 = nil
+    var requiredRepeatedBool []bool = nil
+    var requiredRepeatedEnum []librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = librarypb.TestOptionalRequiredFlatteningParamsRequest_ZERO
+    var requiredRepeatedString []string = nil
+    var requiredRepeatedBytes [][]byte = nil
+    var requiredRepeatedMessage []*librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = nil
+    var formattedRequiredRepeatedResourceName []string = nil
+    var formattedRequiredRepeatedResourceNameOneof []string = nil
+    var requiredMap map[int32]string = nil
+    var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
+        RequiredSingularInt32: requiredSingularInt32,
+        RequiredSingularInt64: requiredSingularInt64,
+        RequiredSingularFloat: requiredSingularFloat,
+        RequiredSingularDouble: requiredSingularDouble,
+        RequiredSingularBool: requiredSingularBool,
+        RequiredSingularEnum: requiredSingularEnum,
+        RequiredSingularString: requiredSingularString,
+        RequiredSingularBytes: requiredSingularBytes,
+        RequiredSingularMessage: requiredSingularMessage,
+        RequiredSingularResourceName: requiredSingularResourceName,
+        RequiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        RequiredRepeatedInt32: requiredRepeatedInt32,
+        RequiredRepeatedInt64: requiredRepeatedInt64,
+        RequiredRepeatedFloat: requiredRepeatedFloat,
+        RequiredRepeatedDouble: requiredRepeatedDouble,
+        RequiredRepeatedBool: requiredRepeatedBool,
+        RequiredRepeatedEnum: requiredRepeatedEnum,
+        RequiredRepeatedString: requiredRepeatedString,
+        RequiredRepeatedBytes: requiredRepeatedBytes,
+        RequiredRepeatedMessage: requiredRepeatedMessage,
+        RequiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+        RequiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        RequiredMap: requiredMap,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
+
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
 }

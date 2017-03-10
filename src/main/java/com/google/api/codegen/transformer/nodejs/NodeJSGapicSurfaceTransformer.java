@@ -45,20 +45,20 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     Iterable<Interface> services = new InterfaceView().getElementIterable(model);
     List<ViewModel> models = new ArrayList<ViewModel>();
     NodeJSSurfaceNamer surfaceNamer = new NodeJSSurfaceNamer(apiConfig.getPackageName());
-    models.addAll(generateIndexViews(services, surfaceNamer));
+    models.addAll(generateIndexViews(services, surfaceNamer, apiConfig));
 
     return models;
   }
 
   private List<ViewModel> generateIndexViews(
-      Iterable<Interface> services, NodeJSSurfaceNamer namer) {
+      Iterable<Interface> services, NodeJSSurfaceNamer namer, ApiConfig apiConfig) {
     ArrayList<ViewModel> indexViews = new ArrayList<>();
 
     ArrayList<IndexRequireView> requireViews = new ArrayList<>();
     for (Interface service : services) {
       requireViews.add(
           IndexRequireView.newBuilder()
-              .clientName(namer.getApiWrapperVariableName(service))
+              .clientName(namer.getApiWrapperVariableName(apiConfig.getInterfaceConfig(service)))
               .fileName(namer.getClientFileName(service))
               .build());
     }

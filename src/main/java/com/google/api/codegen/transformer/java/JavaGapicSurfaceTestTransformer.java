@@ -109,10 +109,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private SmokeTestClassView createSmokeTestClassView(SurfaceTransformerContext context) {
     addSmokeTestImports(context);
 
-    Interface service = context.getInterface();
-    String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
+    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     SurfaceNamer namer = context.getNamer();
-    String name = namer.getSmokeTestClassName(service);
+    String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
     Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =
@@ -125,8 +124,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
     TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
 
-    testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
-    testClass.apiClassName(namer.getApiWrapperClassName(service));
+    testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
+    testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
@@ -150,14 +149,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private ClientTestFileView createUnitTestFileView(SurfaceTransformerContext context) {
     addUnitTestImports(context);
 
-    Interface service = context.getInterface();
-    String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
+    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     SurfaceNamer namer = context.getNamer();
-    String name = namer.getUnitTestClassName(service);
+    String name = namer.getUnitTestClassName(context.getInterfaceConfig());
 
     ClientTestClassView.Builder testClass = ClientTestClassView.newBuilder();
-    testClass.apiSettingsClassName(namer.getApiSettingsClassName(service));
-    testClass.apiClassName(namer.getApiWrapperClassName(service));
+    testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
+    testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
     testClass.testCases(createTestCaseViews(context));
     testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());

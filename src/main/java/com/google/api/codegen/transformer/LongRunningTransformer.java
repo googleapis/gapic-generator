@@ -30,17 +30,17 @@ public class LongRunningTransformer {
         namer.getAndSaveOperationResponseTypeName(
             context.getMethod(), context.getTypeTable(), methodConfig);
     String operationPayloadTypeName =
-        context.getTypeTable().getAndSaveNicknameFor(lroConfig.getReturnType());
+        namer.getLongRunningOperationTypeName(context.getTypeTable(), lroConfig.getReturnType());
     String metadataTypeName =
-        context.getTypeTable().getAndSaveNicknameFor(lroConfig.getMetadataType());
+        namer.getLongRunningOperationTypeName(context.getTypeTable(), lroConfig.getMetadataType());
 
     return LongRunningOperationDetailView.newBuilder()
         .methodName(namer.getApiMethodName(context.getMethod(), VisibilityConfig.PUBLIC))
         .constructorName(namer.getTypeConstructor(clientReturnTypeName))
         .clientReturnTypeName(clientReturnTypeName)
-        .operationPayloadTypeName(namer.valueType(operationPayloadTypeName))
+        .operationPayloadTypeName(operationPayloadTypeName)
         .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
-        .metadataTypeName(namer.valueType(metadataTypeName))
+        .metadataTypeName(metadataTypeName)
         .implementsDelete(lroConfig.implementsDelete())
         .implementsCancel(lroConfig.implementsCancel())
         .build();

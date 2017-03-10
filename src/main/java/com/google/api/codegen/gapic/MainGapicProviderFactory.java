@@ -30,8 +30,6 @@ import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
-import com.google.api.codegen.ruby.RubyGapicContext;
-import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
@@ -194,7 +192,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new NodeJSGapicContext(model, apiConfig))
+                .setContext(new NodeJSGapicContext(model, apiConfig, packageConfig))
                 .setSnippetSetRunner(
                     new NodeJSSnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
                 .setSnippetFileNames(Arrays.asList("nodejs/main.snip"))
@@ -236,7 +234,7 @@ public class MainGapicProviderFactory
               CommonGapicProvider.<ProtoFile>newBuilder()
                   .setModel(model)
                   .setView(new ProtoFileView())
-                  .setContext(new NodeJSGapicContext(model, apiConfig))
+                  .setContext(new NodeJSGapicContext(model, apiConfig, packageConfig))
                   .setSnippetSetRunner(
                       new NodeJSSnippetSetRunner<ProtoFile>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
                   .setSnippetFileNames(Arrays.asList("nodejs/message.snip"))
@@ -387,14 +385,12 @@ public class MainGapicProviderFactory
                 .setPackageFilePathNameFormatter(new RubyNameFormatter())
                 .build();
         GapicProvider<? extends Object> mainProvider =
-            CommonGapicProvider.<Interface>newBuilder()
+            ViewModelGapicProvider.newBuilder()
                 .setModel(model)
-                .setView(new InterfaceView())
-                .setContext(new RubyGapicContext(model, apiConfig))
-                .setSnippetSetRunner(
-                    new RubySnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                .setSnippetFileNames(Arrays.asList("ruby/main.snip"))
-                .setCodePathMapper(rubyPathMapper)
+                .setApiConfig(apiConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new RubyGapicSurfaceTransformer(rubyPathMapper, packageConfig))
                 .build();
         GapicProvider<? extends Object> clientConfigProvider =
             CommonGapicProvider.<Interface>newBuilder()
@@ -407,14 +403,6 @@ public class MainGapicProviderFactory
                 .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
                 .setCodePathMapper(rubyPathMapper)
                 .build();
-        GapicProvider<? extends Object> indexProvider =
-            ViewModelGapicProvider.newBuilder()
-                .setModel(model)
-                .setApiConfig(apiConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new RubyGapicSurfaceTransformer())
-                .build();
-
         GapicProvider<? extends Object> metadataProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
@@ -425,7 +413,6 @@ public class MainGapicProviderFactory
 
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
-        providers.add(indexProvider); // This will become the main transformer with ruby mvvm.
         providers.add(metadataProvider);
 
         if (id.equals(RUBY_DOC)) {

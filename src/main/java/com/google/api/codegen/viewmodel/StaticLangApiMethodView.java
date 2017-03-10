@@ -91,8 +91,6 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract String releaseLevelAnnotation();
 
-  public abstract Builder toBuilder();
-
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiMethodView.Builder();
   }
