@@ -49,9 +49,8 @@
   @if metadata.hasSmokeTests
     desc "Runs the smoke tests."
     task :smoke_test, :project do |t, args|
-      project = args[:project]
-      project ||= ENV["SMOKE_TEST_PROJECT"]
-      if project.nil?
+      ENV["SMOKE_TEST_PROJECT"] = :project || ENV["SMOKE_TEST_PROJECT"]
+      if ENV["SMOKE_TEST_PROJECT"].nil?
         fail "You must provide a project. e.g. rake smoke_test[test123] or SMOKE_TEST_PROJECT=test123 rake smoke_test"
       end
 
