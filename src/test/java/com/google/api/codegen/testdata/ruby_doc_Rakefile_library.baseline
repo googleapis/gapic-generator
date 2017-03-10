@@ -39,10 +39,10 @@ namespace :test do
 end
 
 desc "Runs the smoke tests."
-task :smoke_test, :project do |t, args|
-  ENV["SMOKE_TEST_PROJECT"] = :project || ENV["SMOKE_TEST_PROJECT"]
+task :smoke_test do |t, args|
   if ENV["SMOKE_TEST_PROJECT"].nil?
-    fail "You must provide a project. e.g. rake smoke_test[test123] or SMOKE_TEST_PROJECT=test123 rake smoke_test"
+    fail "The SMOKE_TEST_PROJECT environment variable must be set. "\
+      "e.g SMOKE_TEST_PROJECT=test123 rake smoke_test"
   end
 
   $LOAD_PATH.unshift "lib", "smoke_test"
@@ -51,7 +51,7 @@ end
 
 namespace :smoke_test do
   desc "Runs smoke tests with coverage."
-  task :coverage, :project do |t, args|
+  task :coverage do |t, args|
     require "simplecov"
     SimpleCov.start do
       command_name "library"
