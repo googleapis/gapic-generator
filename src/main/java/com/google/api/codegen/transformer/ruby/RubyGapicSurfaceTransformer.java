@@ -37,6 +37,7 @@ import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -183,6 +184,9 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .outputPath(pathMapper.getOutputPath(interfaces.iterator().next(), apiConfig) + ".rb")
         .requireViews(requireViews.build())
         .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
+        .fileHeader(
+            fileHeaderTransformer.generateFileHeader(
+                apiConfig, ImportSectionView.newBuilder().build(), namer))
         .build();
   }
 }

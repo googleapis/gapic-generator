@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -41,6 +42,8 @@ public abstract class IndexView implements ViewModel {
 
   public abstract List<IndexRequireView> requireViews();
 
+  public abstract FileHeaderView fileHeader();
+
   public boolean hasMultipleServices() {
     return requireViews().size() > 1;
   }
@@ -61,6 +64,8 @@ public abstract class IndexView implements ViewModel {
     public abstract Builder apiVersion(String val);
 
     public abstract Builder requireViews(List<IndexRequireView> val);
+
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract IndexView build();
   }

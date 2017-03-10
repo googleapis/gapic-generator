@@ -16,7 +16,9 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.IndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.IndexView;
@@ -52,6 +54,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ViewModel> generateIndexViews(
       Iterable<Interface> services, NodeJSSurfaceNamer namer, ApiConfig apiConfig) {
+    FileHeaderTransformer fileHeaderTransformer =
+        new FileHeaderTransformer(new NodeJSImportSectionTransformer());
     ArrayList<ViewModel> indexViews = new ArrayList<>();
 
     ArrayList<IndexRequireView> requireViews = new ArrayList<>();
@@ -70,7 +74,10 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
             .templateFileName(INDEX_TEMPLATE_FILE)
             .outputPath(indexOutputPath)
             .requireViews(requireViews)
-            .primaryService(requireViews.get(0));
+            .primaryService(requireViews.get(0))
+            .fileHeader(
+                fileHeaderTransformer.generateFileHeader(
+                    apiConfig, ImportSectionView.newBuilder().build(), namer));
     if (hasVersion) {
       indexViewbuilder.apiVersion(version);
     }
@@ -83,7 +90,10 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
               .outputPath(versionIndexOutputPath)
               .requireViews(new ArrayList<IndexRequireView>())
-              .apiVersion(version);
+              .apiVersion(version)
+              .fileHeader(
+                  fileHeaderTransformer.generateFileHeader(
+                      apiConfig, ImportSectionView.newBuilder().build(), namer));
       indexViews.add(versionIndexViewBuilder.build());
     }
     return indexViews;
