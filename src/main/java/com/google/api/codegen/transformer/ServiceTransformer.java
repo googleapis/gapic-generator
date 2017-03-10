@@ -17,8 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 public class ServiceTransformer {
 
@@ -26,22 +25,21 @@ public class ServiceTransformer {
       SurfaceTransformerContext context, ApiMethodView exampleApiMethod) {
     SurfaceNamer namer = context.getNamer();
     ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
-    List<String> docLines = context.getNamer().getDocLines(context.getInterface());
-    serviceDoc.firstLine(docLines.get(0));
 
-    List<String> remainingLines = new ArrayList<>(docLines.subList(1, docLines.size()));
+    ImmutableList.Builder<String> docLines = ImmutableList.builder();
+    docLines.addAll(namer.getDocLines(context.getInterface()));
     InterfaceConfig conf = context.getInterfaceConfig();
     if (!conf.getManualDoc().isEmpty()) {
-      remainingLines.add("");
-      remainingLines.addAll(context.getNamer().getDocLines(conf.getManualDoc()));
+      docLines.add("");
+      docLines.addAll(namer.getDocLines(conf.getManualDoc()));
     }
-    serviceDoc.remainingLines(remainingLines);
+    serviceDoc.lines(docLines.build());
 
     serviceDoc.exampleApiMethod(exampleApiMethod);
-    serviceDoc.apiVarName(namer.getApiWrapperVariableName(context.getInterface()));
-    serviceDoc.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
-    serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterface()));
-    serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterface()));
+    serviceDoc.apiVarName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
+    serviceDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
+    serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
+    serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     serviceDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     return serviceDoc.build();
   }

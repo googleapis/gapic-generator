@@ -890,10 +890,12 @@ from google.protobuf import wrappers_pb2
 class Book(object):
     """
     A single book in the library.
+    Message comment may include special characters: <>&\"``'@.
 
     Attributes:
       name (string): The resource name of the book.
         Book names have the form ``bookShelves/{shelf_id}/books/{book_id}``.
+        Message field comment may include special characters: <>&\"``'@.
       author (string): The name of the book author.
       title (string): The title of the book.
       read (bool): Value indicating whether the book has been read.
@@ -1106,7 +1108,17 @@ class PublishSeriesRequest(object):
       books (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The books to publish in the series.
       edition (int): The edition of the series
       review_copy (bool): If the book is in a pre-publish state
-      series_uuid (bytes): Uniquely identifies the series to the publishing house.
+      series_uuid (:class:`google.cloud.proto.example.library.v1.library_pb2.SeriesUuid`): Uniquely identifies the series to the publishing house.
+
+    """
+    pass
+
+
+class SeriesUuid(object):
+    """
+    Attributes:
+      series_bytes (bytes)
+      series_string (string)
 
     """
     pass
@@ -1341,6 +1353,68 @@ class GetBigBookMetadata(object):
 
     Attributes:
       progress_percent (int): Approximate percentage of the book processed thus far.
+
+    """
+    pass
+
+
+class TestOptionalRequiredFlatteningParamsRequest(object):
+    """
+    Attributes:
+      required_singular_int32 (int)
+      required_singular_int64 (long)
+      required_singular_float (float)
+      required_singular_double (float)
+      required_singular_bool (bool)
+      required_singular_enum (enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`)
+      required_singular_string (string)
+      required_singular_bytes (bytes)
+      required_singular_message (:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`)
+      required_singular_resource_name (string)
+      required_singular_resource_name_oneof (string)
+      required_repeated_int32 (list[int])
+      required_repeated_int64 (list[long])
+      required_repeated_float (list[float])
+      required_repeated_double (list[float])
+      required_repeated_bool (list[bool])
+      required_repeated_enum (list[enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`])
+      required_repeated_string (list[string])
+      required_repeated_bytes (list[bytes])
+      required_repeated_message (list[:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`])
+      required_repeated_resource_name (list[string])
+      required_repeated_resource_name_oneof (list[string])
+      required_map (dict[int -> :class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.RequiredMapEntry`])
+      optional_singular_int32 (int)
+      optional_singular_int64 (long)
+      optional_singular_float (float)
+      optional_singular_double (float)
+      optional_singular_bool (bool)
+      optional_singular_enum (enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`)
+      optional_singular_string (string)
+      optional_singular_bytes (bytes)
+      optional_singular_message (:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`)
+      optional_singular_resource_name (string)
+      optional_singular_resource_name_oneof (string)
+      optional_repeated_int32 (list[int])
+      optional_repeated_int64 (list[long])
+      optional_repeated_float (list[float])
+      optional_repeated_double (list[float])
+      optional_repeated_bool (list[bool])
+      optional_repeated_enum (list[enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`])
+      optional_repeated_string (list[string])
+      optional_repeated_bytes (list[bytes])
+      optional_repeated_message (list[:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`])
+      optional_repeated_resource_name (list[string])
+      optional_repeated_resource_name_oneof (list[string])
+      optional_map (dict[int -> :class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.OptionalMapEntry`])
+
+    """
+    pass
+
+
+class TestOptionalRequiredFlatteningParamsResponse(object):
+    """
+    Attributes:
 
     """
     pass

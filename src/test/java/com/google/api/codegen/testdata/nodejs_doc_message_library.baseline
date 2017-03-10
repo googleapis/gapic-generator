@@ -902,10 +902,12 @@ var FieldMask = {
 
 /**
  * A single book in the library.
+ * Message comment may include special characters: <>&"`'@.
  *
  * @property {string} name
  *   The resource name of the book.
  *   Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+ *   Message field comment may include special characters: <>&"`'@.
  *
  * @property {string} author
  *   The name of the book author.
@@ -1323,13 +1325,27 @@ var CreateBookRequest = {
  * @property {boolean} reviewCopy
  *   If the book is in a pre-publish state
  *
- * @property {string} seriesUuid
+ * @property {Object} seriesUuid
  *   Uniquely identifies the series to the publishing house.
+ *
+ *   This object should have the same structure as [SeriesUuid]{@link SeriesUuid}
  *
  * @class
  * @see [google.example.library.v1.PublishSeriesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
 var PublishSeriesRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} seriesBytes
+ *
+ * @property {string} seriesString
+ *
+ * @class
+ * @see [google.example.library.v1.SeriesUuid definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var SeriesUuid = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -1663,6 +1679,147 @@ var FindRelatedBooksResponse = {
  * @see [google.example.library.v1.GetBigBookMetadata definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
 var GetBigBookMetadata = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {number} requiredSingularInt32
+ *
+ * @property {number} requiredSingularInt64
+ *
+ * @property {number} requiredSingularFloat
+ *
+ * @property {number} requiredSingularDouble
+ *
+ * @property {boolean} requiredSingularBool
+ *
+ * @property {number} requiredSingularEnum
+ *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *
+ * @property {string} requiredSingularString
+ *
+ * @property {string} requiredSingularBytes
+ *
+ * @property {Object} requiredSingularMessage
+ *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *
+ * @property {string} requiredSingularResourceName
+ *
+ * @property {string} requiredSingularResourceNameOneof
+ *
+ * @property {number[]} requiredRepeatedInt32
+ *
+ * @property {number[]} requiredRepeatedInt64
+ *
+ * @property {number[]} requiredRepeatedFloat
+ *
+ * @property {number[]} requiredRepeatedDouble
+ *
+ * @property {boolean[]} requiredRepeatedBool
+ *
+ * @property {number[]} requiredRepeatedEnum
+ *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *
+ * @property {string[]} requiredRepeatedString
+ *
+ * @property {string[]} requiredRepeatedBytes
+ *
+ * @property {Object[]} requiredRepeatedMessage
+ *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *
+ * @property {string[]} requiredRepeatedResourceName
+ *
+ * @property {string[]} requiredRepeatedResourceNameOneof
+ *
+ * @property {Object.<number, string>} requiredMap
+ *
+ * @property {number} optionalSingularInt32
+ *
+ * @property {number} optionalSingularInt64
+ *
+ * @property {number} optionalSingularFloat
+ *
+ * @property {number} optionalSingularDouble
+ *
+ * @property {boolean} optionalSingularBool
+ *
+ * @property {number} optionalSingularEnum
+ *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *
+ * @property {string} optionalSingularString
+ *
+ * @property {string} optionalSingularBytes
+ *
+ * @property {Object} optionalSingularMessage
+ *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *
+ * @property {string} optionalSingularResourceName
+ *
+ * @property {string} optionalSingularResourceNameOneof
+ *
+ * @property {number[]} optionalRepeatedInt32
+ *
+ * @property {number[]} optionalRepeatedInt64
+ *
+ * @property {number[]} optionalRepeatedFloat
+ *
+ * @property {number[]} optionalRepeatedDouble
+ *
+ * @property {boolean[]} optionalRepeatedBool
+ *
+ * @property {number[]} optionalRepeatedEnum
+ *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *
+ * @property {string[]} optionalRepeatedString
+ *
+ * @property {string[]} optionalRepeatedBytes
+ *
+ * @property {Object[]} optionalRepeatedMessage
+ *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *
+ * @property {string[]} optionalRepeatedResourceName
+ *
+ * @property {string[]} optionalRepeatedResourceNameOneof
+ *
+ * @property {Object.<number, string>} optionalMap
+ *
+ * @class
+ * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var TestOptionalRequiredFlatteningParamsRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+
+  /**
+
+   * @class
+   * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+   */
+  InnerMessage: {
+    // This is for documentation. Actual contents will be loaded by gRPC.
+  }
+
+  /**
+   * For testing all types, plus resource-names, as required and optional.
+   *
+   * @enum {number}
+   */
+  InnerEnum: {
+    /**
+     * For testing all types, plus resource-names, as required and optional.
+     */  ZERO: 0,
+
+    /**
+     * For testing all types, plus resource-names, as required and optional.
+     */  ONE: 1
+  }
+};
+
+/**
+
+ * @class
+ * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var TestOptionalRequiredFlatteningParamsResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 }
 ============== file: src/doc_shared_type.js ==============

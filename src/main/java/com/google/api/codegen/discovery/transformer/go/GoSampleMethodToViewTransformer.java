@@ -106,9 +106,7 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       }
     }
 
-    // The Go client only considers methods whose verb is "GET" to be page
-    // streaming calls. This excludes "search" methods, for example.
-    boolean isPageStreaming = methodInfo.isPageStreaming() && methodInfo.verb().equals("GET");
+    boolean isPageStreaming = methodInfo.isPageStreaming();
     if (isPageStreaming) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }

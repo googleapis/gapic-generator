@@ -12,12 +12,16 @@
   import sys
 
   install_requires = [
-      @join packageDep : metadata.protoPackageDependencies
-        '{@packageDep.name}>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
-      @end
       'google-gax>={@metadata.gaxVersionBound.lower}, <{@metadata.gaxVersionBound.upper}',
-      '{@metadata.protoPackageName}>={@metadata.packageVersionBound.lower}, <{@metadata.packageVersionBound.upper}',
       'oauth2client>={@metadata.authVersionBound.lower}, <{@metadata.authVersionBound.upper}',
+      '{@metadata.protoPackageName}[grpc]>={@metadata.packageVersionBound.lower}, <{@metadata.packageVersionBound.upper}',
+      @join packageDep : metadata.protoPackageDependencies
+        @if or(packageDep.name == "googleapis-common-protos", packageDep.name.startsWith("proto-"))
+          '{@packageDep.name}[grpc]>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
+        @else
+          '{@packageDep.name}>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
+        @end
+      @end
   ]
 
   setup(

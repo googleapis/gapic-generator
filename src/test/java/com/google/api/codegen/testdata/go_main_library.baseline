@@ -18,7 +18,6 @@
 package library
 
 import (
-    "fmt"
     "math"
     "time"
 
@@ -70,6 +69,7 @@ type CallOptions struct {
     AddLabel []gax.CallOption
     GetBigBook []gax.CallOption
     GetBigNothing []gax.CallOption
+    TestOptionalRequiredFlatteningParams []gax.CallOption
 }
 
 func defaultClientOptions() []option.ClientOption {
@@ -123,6 +123,7 @@ func defaultCallOptions() *CallOptions {
         AddLabel: retry[[2]string{"default", "non_idempotent"}],
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
         GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
+        TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -157,6 +158,8 @@ type Client struct {
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
 //
+// Service comment may include special characters: <>&"`'@.
+//
 // Write more docs here as an offering to the Great Gopher
 func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error) {
     conn, err := transport.DialGRPC(ctx, append(defaultClientOptions(), opts...)...)
@@ -170,7 +173,7 @@ func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error
         client: librarypb.NewLibraryServiceClient(conn),
         labelerClient: taggerpb.NewLabelerClient(conn),
     }
-    c.SetGoogleClientInfo("gapic", version.Repo)
+    c.SetGoogleClientInfo()
     return c, nil
 }
 
@@ -188,8 +191,10 @@ func (c *Client) Close() error {
 // SetGoogleClientInfo sets the name and version of the application in
 // the `x-goog-api-client` header passed on each request. Intended for
 // use by Google-written clients.
-func (c *Client) SetGoogleClientInfo(clientName, clientVersion string) {
-    c.xGoogHeader = fmt.Sprintf("gl-go/%s %s/%s gax/%s grpc/UNKNOWN", version.Go(), clientName, clientVersion, gax.Version)
+func (c *Client) SetGoogleClientInfo(keyval ...string) {
+    kv := append([]string{"gl-go", version.Go()}, keyval...)
+    kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", "")
+    c.xGoogHeader = gax.XGoogHeader(kv...)
 }
 
 // LibraryShelfPath returns the path for the shelf resource.
@@ -235,6 +240,7 @@ func (c *Client) BookIAM(book *librarypb.Book) *iam.Handle {
 
 
 // CreateShelf creates a shelf, and returns the new Shelf.
+// RPC method comment may include special characters: <>&"`'@.
 func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.Shelf
@@ -659,6 +665,7 @@ func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) 
     }
     return &BookOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), resp),
+        xGoogHeader: c.xGoogHeader,
     }, nil
 }
 
@@ -676,7 +683,23 @@ func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookReques
     }
     return &EmptyOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), resp),
+        xGoogHeader: c.xGoogHeader,
     }, nil
+}
+
+// TestOptionalRequiredFlatteningParams test optional flattening parameters of all types
+func (c *Client) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
+    ctx = insertXGoog(ctx, c.xGoogHeader)
+    var resp *librarypb.TestOptionalRequiredFlatteningParamsResponse
+    err := gax.Invoke(ctx, func(ctx context.Context) error {
+        var err error
+        resp, err = c.client.TestOptionalRequiredFlatteningParams(ctx, req)
+        return err
+    }, c.CallOptions.TestOptionalRequiredFlatteningParams...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 
@@ -810,6 +833,9 @@ func (it *StringIterator) takeBuf() interface{} {
 // BookOperation manages a long-running operation yielding librarypb.Book.
 type BookOperation struct {
     lro *longrunning.Operation
+
+    // The metadata to be sent with each request.
+    xGoogHeader string
 }
 
 // BookOperation returns a new BookOperation from a given name.
@@ -817,6 +843,7 @@ type BookOperation struct {
 func (c *Client) BookOperation(name string) *BookOperation {
     return &BookOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+        xGoogHeader: c.xGoogHeader,
     }
 }
 
@@ -825,6 +852,7 @@ func (c *Client) BookOperation(name string) *BookOperation {
 // See documentation of Poll for error-handling information.
 func (op *BookOperation) Wait(ctx context.Context) (*librarypb.Book, error) {
     var resp librarypb.Book
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     if err := op.lro.Wait(ctx, &resp); err != nil {
         return nil, err
     }
@@ -842,6 +870,7 @@ func (op *BookOperation) Wait(ctx context.Context) (*librarypb.Book, error) {
 // If Poll succeeds and the operation has not completed, the returned response and error are both nil.
 func (op *BookOperation) Poll(ctx context.Context) (*librarypb.Book, error) {
     var resp librarypb.Book
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     if err := op.lro.Poll(ctx, &resp); err != nil {
         return nil, err
     }
@@ -882,12 +911,16 @@ func (op *BookOperation) Name() string {
 // completed despite cancellation. On successful cancellation, the operation is not deleted;
 // instead, op.Poll returns an error with code Canceled.
 func (op *BookOperation) Cancel(ctx context.Context) error {
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     return op.lro.Cancel(ctx)
 }
 
 // EmptyOperation manages a long-running operation with no result.
 type EmptyOperation struct {
     lro *longrunning.Operation
+
+    // The metadata to be sent with each request.
+    xGoogHeader string
 }
 
 // EmptyOperation returns a new EmptyOperation from a given name.
@@ -895,6 +928,7 @@ type EmptyOperation struct {
 func (c *Client) EmptyOperation(name string) *EmptyOperation {
     return &EmptyOperation{
         lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
+        xGoogHeader: c.xGoogHeader,
     }
 }
 
@@ -902,6 +936,7 @@ func (c *Client) EmptyOperation(name string) *EmptyOperation {
 //
 // See documentation of Poll for error-handling information.
 func (op *EmptyOperation) Wait(ctx context.Context) error {
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     return op.lro.Wait(ctx, nil)
 }
 
@@ -913,6 +948,7 @@ func (op *EmptyOperation) Wait(ctx context.Context) error {
 // the operation has completed with failure, the error is returned and op.Done will return true.
 // If Poll succeeds and the operation has completed successfully, op.Done will return true.
 func (op *EmptyOperation) Poll(ctx context.Context) error {
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     return op.lro.Poll(ctx, nil)
 }
 
@@ -946,5 +982,6 @@ func (op *EmptyOperation) Name() string {
 // This method indicates that the client is no longer interested in the operation result.
 // It does not cancel the operation.
 func (op *EmptyOperation) Delete(ctx context.Context) error {
+    ctx = insertXGoog(ctx, op.xGoogHeader)
     return op.lro.Delete(ctx)
 }

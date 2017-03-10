@@ -33,7 +33,8 @@ public abstract class ApiMethodDocView {
   @Nullable
   public abstract String returnTypeName();
 
-  public abstract Builder toBuilder();
+  @Nullable
+  public abstract String pageStreamingResourceTypeName();
 
   public static Builder newBuilder() {
     return new AutoValue_ApiMethodDocView.Builder();
@@ -50,6 +51,8 @@ public abstract class ApiMethodDocView {
     public abstract Builder returnTypeName(String name);
 
     public abstract Builder returnsDocLines(List<String> lines);
+
+    public abstract Builder pageStreamingResourceTypeName(String name);
 
     public abstract ApiMethodDocView build();
   }

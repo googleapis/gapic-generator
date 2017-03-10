@@ -1,5 +1,11 @@
 @extends "common.snip"
 
+@snippet license(fileHeader)
+  {@toComments(fileHeader.copyrightLines)}
+  @#
+  {@toComments(fileHeader.licenseLines)}
+@end
+
 @snippet module(moduleNames, content)
   @if moduleNames.hasNext
     module {@moduleNames.next}
@@ -7,5 +13,11 @@
     end
   @else
     {@ content}
+  @end
+@end
+
+@snippet toComments(commentLines)
+  @join comment : commentLines
+    @# {@comment}
   @end
 @end

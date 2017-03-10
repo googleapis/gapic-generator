@@ -94,7 +94,7 @@
     /**
      * The code generator version, to be included in the agent header.
      */
-    const CODEGEN_VERSION = '0.1.0';
+    const CODEGEN_VERSION = '{@xapiClass.toolkitVersion}';
     {@""}
 @end
 
@@ -134,6 +134,7 @@
     {@pageStreamingDescriptorFunction(xapiClass)}
     {@longRunningDescriptorFunction(xapiClass)}
     {@grpcStreamingDescriptorFunction(xapiClass)}
+    {@gapicVersionFunction()}
 @end
 
 @private formatResourceFunction(function)
@@ -252,28 +253,42 @@
     @end
 @end
 
+@private gapicVersionFunction()
+    private static function getGapicVersion()
+    {
+        if (file_exists(__DIR__ . "/../VERSION")) {
+          return trim(file_get_contents(__DIR__ . "/../VERSION"));
+        } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
+          return \Google\Cloud\ServiceBuilder::VERSION;
+        } else {
+          return;
+        }
+    }
+    {@""}
+@end
+
 @private functions(xapiClass)
     @if xapiClass.hasLongRunningOperations
         /**
          * Return an OperationsClient object with the same endpoint as $this.
-         * 
+         *
          * @@return \Google\GAX\LongRunning\OperationsClient
          */
         public function getOperationsClient()
         {
             return $this->operationsClient;
         }
-        
+
         /**
          * Resume an existing long running operation that was previously started
          * by a long running API method. If $methodName is not provided, or does
          * not match a long running API method, then the operation can still be
          * resumed, but the OperationResponse object will not deserialize the
          * final response.
-         * 
+         *
          * @@param string $operationName The name of the long running operation
          * @@param string $methodName The name of the method used to start the operation
-         * 
+         *
          * @@return \Google\GAX\OperationResponse
          */
         public function resumeOperation($operationName, $methodName = null)
@@ -332,9 +347,6 @@
      *                              that don't use retries. For calls that use retries,
      *                              set the timeout in RetryOptions.
      *                              Default: 30000 (30 seconds)
-     *     @@type string $appName The codename of the calling service. Default 'gax'.
-     *     @@type string $appVersion The version of the calling service.
-     *                              Default: the current version of GAX.
      *     @@type \Google\Auth\CredentialsLoader $credentialsLoader
      *                              A CredentialsLoader object created using the
      *                              Google\Auth library.
@@ -370,8 +382,8 @@
             @end
             'retryingOverride' => null,
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
-            'appName' => 'gax',
-            'appVersion' => AgentHeaderDescriptor::getGaxVersion(),
+            'libName' => null,
+            'libVersion' => null,
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -382,17 +394,18 @@
                 $this->operationsClient = new OperationsClient([
                     'serviceAddress' => $options['serviceAddress'],
                     'scopes' => $options['scopes'],
+                    'libName' => $options['libName'],
+                    'libVersion' => $options['libVersion'],
                 ]);
             }
         @end
 
+        $gapicVersion = $options['libVersion'] ?: self::getGapicVersion();
+
         $headerDescriptor = new AgentHeaderDescriptor([
-            'clientName' => $options['appName'],
-            'clientVersion' => $options['appVersion'],
-            'codeGenName' => self::CODEGEN_NAME,
-            'codeGenVersion' => self::CODEGEN_VERSION,
-            'gaxVersion' => AgentHeaderDescriptor::getGaxVersion(),
-            'phpVersion' => phpversion(),
+            'libName' => $options['libName'],
+            'libVersion' => $options['libVersion'],
+            'gapicVersion' => $gapicVersion,
         ]);
 
         $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
@@ -470,7 +483,7 @@
                 @join param : apiMethod.optionalRequestObjectParams
                     {@setOptionalFieldCall(param)}
                 @end
-                
+
             @end
             $mergedSettings = $this->defaultCallSettings['{@apiMethod.key}']->merge(
                 new CallSettings($optionalArgs));
@@ -536,8 +549,12 @@
 
 @private methodDoc(apiMethodDoc, methodSampleCode)
     /**
-    @join commentLine : apiMethodDoc.mainDocLines
-        {@""} * {@commentLine}
+    @if apiMethodDoc.mainDocLines
+        @join commentLine : apiMethodDoc.mainDocLines
+            {@""} * {@commentLine}
+        @end
+    @else
+        {@""} *
     @end
      *
      * Sample code:
@@ -574,11 +591,15 @@
 @end
 
 @private simpleParamDoc(doc)
-    {@""} * @@param {@doc.typeName} ${@doc.paramName} {@doc.firstLine}
-    @if doc.remainingLines
-        @join commentLine : doc.remainingLines
-            {@""} * {@commentLine}
+    @if doc.lines
+        {@""} * @@param {@doc.typeName} ${@doc.paramName} {@doc.firstLine}
+        @if doc.remainingLines
+            @join commentLine : doc.remainingLines
+                {@""} * {@commentLine}
+            @end
         @end
+    @else
+        {@""} * @@param {@doc.typeName} ${@doc.paramName}
     @end
 @end
 
@@ -593,12 +614,12 @@
     @if doc.arrayKeyDocs
         @join simpleParamDoc : doc.arrayKeyDocs
             {@""} *     @@type {@simpleParamDoc.typeName} ${@simpleParamDoc.paramName}
-            @if simpleParamDoc.firstLine
+            @if simpleParamDoc.lines
                 {@""} *          {@simpleParamDoc.firstLine}
-            @end
-            @if simpleParamDoc.remainingLines
-                @join commentLine : simpleParamDoc.remainingLines
-                    {@""} *          {@commentLine}
+                @if simpleParamDoc.remainingLines
+                    @join commentLine : simpleParamDoc.remainingLines
+                        {@""} *          {@commentLine}
+                    @end
                 @end
             @end
         @end

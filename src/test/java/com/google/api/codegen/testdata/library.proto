@@ -36,9 +36,12 @@ option go_package = "google.golang.org/genproto/googleapis/example/library/v1;li
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
 //
+// Service comment may include special characters: <>&"`'@.
+//
 service LibraryService {
 
   // Creates a shelf, and returns the new Shelf.
+  // RPC method comment may include special characters: <>&"`'@.
   rpc CreateShelf(CreateShelfRequest) returns (Shelf) {
     option (google.api.http) = { post: "/v1/bookShelves" body: "shelf" };
   }
@@ -167,12 +170,19 @@ service LibraryService {
   rpc GetBigNothing(GetBookRequest) returns (google.longrunning.Operation) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:bignothing" };
   }
+
+  // Test optional flattening parameters of all types
+  rpc TestOptionalRequiredFlatteningParams(TestOptionalRequiredFlatteningParamsRequest) returns (TestOptionalRequiredFlatteningParamsResponse) {
+    option (google.api.http) = { post: "/v1/testofp" body: "*" };
+  }
 }
 
 // A single book in the library.
+// Message comment may include special characters: <>&"`'@.
 message Book {
   // The resource name of the book.
   // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+  // Message field comment may include special characters: <>&"`'@.
   string name = 1;
 
   // The name of the book author.
@@ -187,7 +197,7 @@ message Book {
 
   enum Rating {
     GOOD = 0; // GOOD enum description
-    BAD = 1;
+    BAD = 1; // Enum description with special characters: <>&"`'@.
   }
 
   // For testing enums.
@@ -391,7 +401,14 @@ message PublishSeriesRequest {
   }
 
   // Uniquely identifies the series to the publishing house.
-  bytes series_uuid = 5;
+  SeriesUuid series_uuid = 5;
+}
+
+message SeriesUuid {
+  oneof source {
+    bytes series_bytes = 1;
+    string series_string = 2;
+  }
 }
 
 // Response message for LibraryService.PublishSeries.
@@ -569,4 +586,75 @@ message FindRelatedBooksResponse {
 message GetBigBookMetadata {
     // Approximate percentage of the book processed thus far.
     int32 progress_percent = 1;
+}
+
+enum TopLevelEnum {
+  FOO = 0;
+  BAR = 1;
+}
+
+message TestOptionalRequiredFlatteningParamsRequest {
+    // For testing all types, plus resource-names, as required and optional.
+    enum InnerEnum {
+        ZERO = 0;
+        ONE = 1;
+    }
+
+    message InnerMessage {
+    }
+
+    int32 required_singular_int32 = 1;
+    int64 required_singular_int64 = 2;
+    float required_singular_float = 3;
+    double required_singular_double = 4;
+    bool required_singular_bool = 5;
+    InnerEnum required_singular_enum = 6;
+    string required_singular_string = 7;
+    bytes required_singular_bytes = 8;
+    InnerMessage required_singular_message = 9;
+    string required_singular_resource_name = 10;
+    string required_singular_resource_name_oneof = 11;
+
+    repeated int32 required_repeated_int32 = 21;
+    repeated int64 required_repeated_int64 = 22;
+    repeated float required_repeated_float = 23;
+    repeated double required_repeated_double = 24;
+    repeated bool required_repeated_bool = 25;
+    repeated InnerEnum required_repeated_enum = 26;
+    repeated string required_repeated_string = 27;
+    repeated bytes required_repeated_bytes = 28;
+    repeated InnerMessage required_repeated_message = 29;
+    repeated string required_repeated_resource_name = 30;
+    repeated string required_repeated_resource_name_oneof = 31;
+
+    map<int32, string> required_map = 41;
+
+    int32 optional_singular_int32 = 51;
+    int64 optional_singular_int64 = 52;
+    float optional_singular_float = 53;
+    double optional_singular_double = 54;
+    bool optional_singular_bool = 55;
+    InnerEnum optional_singular_enum = 56;
+    string optional_singular_string = 57;
+    bytes optional_singular_bytes = 58;
+    InnerMessage optional_singular_message = 59;
+    string optional_singular_resource_name = 60;
+    string optional_singular_resource_name_oneof = 61;
+
+    repeated int32 optional_repeated_int32 = 71;
+    repeated int64 optional_repeated_int64 = 72;
+    repeated float optional_repeated_float = 73;
+    repeated double optional_repeated_double = 74;
+    repeated bool optional_repeated_bool = 75;
+    repeated InnerEnum optional_repeated_enum = 76;
+    repeated string optional_repeated_string = 77;
+    repeated bytes optional_repeated_bytes = 78;
+    repeated InnerMessage optional_repeated_message = 79;
+    repeated string optional_repeated_resource_name = 80;
+    repeated string optional_repeated_resource_name_oneof = 81;
+
+    map<int32, string> optional_map = 91;
+}
+
+message TestOptionalRequiredFlatteningParamsResponse {
 }

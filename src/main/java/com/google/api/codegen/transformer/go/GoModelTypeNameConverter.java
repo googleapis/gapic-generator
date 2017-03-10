@@ -111,7 +111,7 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
     return getTypeName(elem, elem instanceof MessageType);
   }
 
-  private TypeName getTypeName(ProtoElement elem, boolean isPointer) {
+  TypeName getTypeName(ProtoElement elem, boolean isPointer) {
     String importPath = elem.getFile().getProto().getOptions().getGoPackage();
     String protoPackage = elem.getFile().getProto().getPackage();
     String elemName = getElemName(elem);
@@ -228,11 +228,16 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(getTypeName(type), getZeroValueStr(type));
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   private String getZeroValueStr(TypeRef type) {
@@ -273,7 +278,16 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, EnumValue value) {
-    return TypedValue.create(
-        getTypeName(type.getEnumType().getParent(), false), "%s_" + value.getSimpleName());
+    // Go names enums in two different ways.
+    // If the enum is nested in a message, the format is <message type>_<enum value>,
+    // respecting the C++ scoping rule used by protobuf,
+    // where enum values are scoped at the same level as the enum type, not as its children.
+    // On the other hand, if the enum is at top-level, there is no parent message,
+    // and the format is <enum type>_<enum value>
+    ProtoElement parent = type.getEnumType().getParent();
+    if (parent instanceof ProtoFile) {
+      parent = type.getEnumType();
+    }
+    return TypedValue.create(getTypeName(parent, false), "%s_" + value.getSimpleName());
   }
 }

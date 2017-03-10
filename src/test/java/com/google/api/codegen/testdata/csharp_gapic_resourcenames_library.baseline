@@ -30,7 +30,8 @@ namespace Google.Example.Library.V1
         private static readonly PathTemplate s_template = new PathTemplate("shelves/{shelf_id}");
 
         /// <summary>
-        /// Parses a shelf resource name in string form into a <see cref="ShelfName"/>.
+        /// Parses the given shelf resource name in string form into a new
+        /// <see cref="ShelfName"/> instance.
         /// </summary>
         /// <param name="shelfName">The shelf resource name in string form. Must not be <c>null</c>.</param>
         /// <returns>The parsed <see cref="ShelfName"/> if successful.</returns>
@@ -42,7 +43,8 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Tries to parse shelf resource name in string form into a <see cref="ShelfName"/>/
+        /// Tries to parse the given shelf resource name in string form into a new
+        /// <see cref="ShelfName"/> instance.
         /// </summary>
         /// <remarks>
         /// This method still throws <see cref="ArgumentNullException"/> if <paramref name="shelfName"/> is null,
@@ -69,24 +71,25 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Constructs a shelf name from its component parts.
+        /// Constructs a new instance of the <see cref="ShelfName"/> resource name class
+        /// from its component parts.
         /// </summary>
-        /// <param name="shelfIdId">The shelfId ID. Must not be <c>null</c>.</param>
-        public ShelfName(string shelfIdId)
+        /// <param name="shelfId">The shelf ID. Must not be <c>null</c>.</param>
+        public ShelfName(string shelfId)
         {
-            ShelfIdId = GaxPreconditions.CheckNotNull(shelfIdId, nameof(shelfIdId));
+            ShelfId = GaxPreconditions.CheckNotNull(shelfId, nameof(shelfId));
         }
 
         /// <summary>
-        /// The shelfId ID. Never <c>null</c>.
+        /// The shelf ID. Never <c>null</c>.
         /// </summary>
-        public string ShelfIdId { get; }
+        public string ShelfId { get; }
 
         /// <inheritdoc />
         public ResourceNameKind Kind => ResourceNameKind.Simple;
 
         /// <inheritdoc />
-        public override string ToString() => s_template.Expand(ShelfIdId);
+        public override string ToString() => s_template.Expand(ShelfId);
 
         /// <inheritdoc />
         public override int GetHashCode() => ToString().GetHashCode();
@@ -112,7 +115,8 @@ namespace Google.Example.Library.V1
         private static readonly PathTemplate s_template = new PathTemplate("archives/{archive_path}/books/{book_id=**}");
 
         /// <summary>
-        /// Parses a archived_book resource name in string form into a <see cref="ArchivedBookName"/>.
+        /// Parses the given archived_book resource name in string form into a new
+        /// <see cref="ArchivedBookName"/> instance.
         /// </summary>
         /// <param name="archivedBookName">The archived_book resource name in string form. Must not be <c>null</c>.</param>
         /// <returns>The parsed <see cref="ArchivedBookName"/> if successful.</returns>
@@ -124,7 +128,8 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Tries to parse archived_book resource name in string form into a <see cref="ArchivedBookName"/>/
+        /// Tries to parse the given archived_book resource name in string form into a new
+        /// <see cref="ArchivedBookName"/> instance.
         /// </summary>
         /// <remarks>
         /// This method still throws <see cref="ArgumentNullException"/> if <paramref name="archivedBookName"/> is null,
@@ -151,14 +156,15 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Constructs a archived_book name from its component parts.
+        /// Constructs a new instance of the <see cref="ArchivedBookName"/> resource name class
+        /// from its component parts.
         /// </summary>
         /// <param name="archivePathId">The archivePath ID. Must not be <c>null</c>.</param>
-        /// <param name="bookIdId">The bookId ID. Must not be <c>null</c>.</param>
-        public ArchivedBookName(string archivePathId, string bookIdId)
+        /// <param name="bookId">The book ID. Must not be <c>null</c>.</param>
+        public ArchivedBookName(string archivePathId, string bookId)
         {
             ArchivePathId = GaxPreconditions.CheckNotNull(archivePathId, nameof(archivePathId));
-            BookIdId = GaxPreconditions.CheckNotNull(bookIdId, nameof(bookIdId));
+            BookId = GaxPreconditions.CheckNotNull(bookId, nameof(bookId));
         }
 
         /// <summary>
@@ -167,15 +173,15 @@ namespace Google.Example.Library.V1
         public string ArchivePathId { get; }
 
         /// <summary>
-        /// The bookId ID. Never <c>null</c>.
+        /// The book ID. Never <c>null</c>.
         /// </summary>
-        public string BookIdId { get; }
+        public string BookId { get; }
 
         /// <inheritdoc />
         public ResourceNameKind Kind => ResourceNameKind.Simple;
 
         /// <inheritdoc />
-        public override string ToString() => s_template.Expand(ArchivePathId, BookIdId);
+        public override string ToString() => s_template.Expand(ArchivePathId, BookId);
 
         /// <inheritdoc />
         public override int GetHashCode() => ToString().GetHashCode();
@@ -201,7 +207,8 @@ namespace Google.Example.Library.V1
         private static readonly PathTemplate s_template = new PathTemplate("shelves/{shelf_id}/books/{book_id}");
 
         /// <summary>
-        /// Parses a book resource name in string form into a <see cref="BookName"/>.
+        /// Parses the given book resource name in string form into a new
+        /// <see cref="BookName"/> instance.
         /// </summary>
         /// <param name="bookName">The book resource name in string form. Must not be <c>null</c>.</param>
         /// <returns>The parsed <see cref="BookName"/> if successful.</returns>
@@ -213,7 +220,8 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Tries to parse book resource name in string form into a <see cref="BookName"/>/
+        /// Tries to parse the given book resource name in string form into a new
+        /// <see cref="BookName"/> instance.
         /// </summary>
         /// <remarks>
         /// This method still throws <see cref="ArgumentNullException"/> if <paramref name="bookName"/> is null,
@@ -240,31 +248,32 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Constructs a book name from its component parts.
+        /// Constructs a new instance of the <see cref="BookName"/> resource name class
+        /// from its component parts.
         /// </summary>
-        /// <param name="shelfIdId">The shelfId ID. Must not be <c>null</c>.</param>
-        /// <param name="bookIdId">The bookId ID. Must not be <c>null</c>.</param>
-        public BookName(string shelfIdId, string bookIdId)
+        /// <param name="shelfId">The shelf ID. Must not be <c>null</c>.</param>
+        /// <param name="bookId">The book ID. Must not be <c>null</c>.</param>
+        public BookName(string shelfId, string bookId)
         {
-            ShelfIdId = GaxPreconditions.CheckNotNull(shelfIdId, nameof(shelfIdId));
-            BookIdId = GaxPreconditions.CheckNotNull(bookIdId, nameof(bookIdId));
+            ShelfId = GaxPreconditions.CheckNotNull(shelfId, nameof(shelfId));
+            BookId = GaxPreconditions.CheckNotNull(bookId, nameof(bookId));
         }
 
         /// <summary>
-        /// The shelfId ID. Never <c>null</c>.
+        /// The shelf ID. Never <c>null</c>.
         /// </summary>
-        public string ShelfIdId { get; }
+        public string ShelfId { get; }
 
         /// <summary>
-        /// The bookId ID. Never <c>null</c>.
+        /// The book ID. Never <c>null</c>.
         /// </summary>
-        public string BookIdId { get; }
+        public string BookId { get; }
 
         /// <inheritdoc />
         public ResourceNameKind Kind => ResourceNameKind.Simple;
 
         /// <inheritdoc />
-        public override string ToString() => s_template.Expand(ShelfIdId, BookIdId);
+        public override string ToString() => s_template.Expand(ShelfId, BookId);
 
         /// <inheritdoc />
         public override int GetHashCode() => ToString().GetHashCode();
@@ -290,7 +299,8 @@ namespace Google.Example.Library.V1
         private static readonly PathTemplate s_template = new PathTemplate("shelves/{shelf}/books/{book}/returns/{return}");
 
         /// <summary>
-        /// Parses a return resource name in string form into a <see cref="ReturnName"/>.
+        /// Parses the given return resource name in string form into a new
+        /// <see cref="ReturnName"/> instance.
         /// </summary>
         /// <param name="returnName">The return resource name in string form. Must not be <c>null</c>.</param>
         /// <returns>The parsed <see cref="ReturnName"/> if successful.</returns>
@@ -302,7 +312,8 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Tries to parse return resource name in string form into a <see cref="ReturnName"/>/
+        /// Tries to parse the given return resource name in string form into a new
+        /// <see cref="ReturnName"/> instance.
         /// </summary>
         /// <remarks>
         /// This method still throws <see cref="ArgumentNullException"/> if <paramref name="returnName"/> is null,
@@ -329,7 +340,8 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Constructs a return name from its component parts.
+        /// Constructs a new instance of the <see cref="ReturnName"/> resource name class
+        /// from its component parts.
         /// </summary>
         /// <param name="shelfId">The shelf ID. Must not be <c>null</c>.</param>
         /// <param name="bookId">The book ID. Must not be <c>null</c>.</param>
@@ -418,7 +430,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Parses a resource name in string form into a <see cref="BookNameOneof"/>.
+        /// Parses a resource name in string form into a new <see cref="BookNameOneof"/> instance.
         /// </summary>
         /// <remarks>
         /// To parse successfully the resource name must be one of the following:
@@ -431,7 +443,8 @@ namespace Google.Example.Library.V1
         /// </remarks>
         /// <param name="name">The resource name in string form. Must not be <c>null</c>.</param>
         /// <param name="allowUnknown">If true, will successfully parse an unknown resource name
-        /// into an <see cref="UnknownResourceName"/>.</param>
+        /// into an <see cref="UnknownResourceName"/>; otherwise will throw an
+        /// <see cref="ArgumentException"/> if an unknown resource name is given.</param>
         /// <returns>The parsed <see cref="BookNameOneof"/> if successful.</returns>
         public static BookNameOneof Parse(string name, bool allowUnknown)
         {
@@ -444,7 +457,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Tries to parse a resource name in string form into a <see cref="BookNameOneof"/>.
+        /// Tries to parse a resource name in string form into a new <see cref="BookNameOneof"/> instance.
         /// </summary>
         /// <remarks>
         /// To parse successfully the resource name must be one of the following:
@@ -496,7 +509,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Construct an instance of <see cref="BookNameOneof"/> from the provided <see cref="BookName"/>
+        /// Construct a new instance of <see cref="BookNameOneof"/> from the provided <see cref="BookName"/>
         /// </summary>
         /// <param name="bookName">The <see cref="BookName"/> to be contained within
         /// the returned <see cref="BookNameOneof"/>. Must not be <c>null</c>.</param>
@@ -504,7 +517,7 @@ namespace Google.Example.Library.V1
         public static BookNameOneof From(BookName bookName) => new BookNameOneof(OneofType.BookName, bookName);
 
         /// <summary>
-        /// Construct an instance of <see cref="BookNameOneof"/> from the provided <see cref="ArchivedBookName"/>
+        /// Construct a new instance of <see cref="BookNameOneof"/> from the provided <see cref="ArchivedBookName"/>
         /// </summary>
         /// <param name="archivedBookName">The <see cref="ArchivedBookName"/> to be contained within
         /// the returned <see cref="BookNameOneof"/>. Must not be <c>null</c>.</param>
@@ -512,7 +525,7 @@ namespace Google.Example.Library.V1
         public static BookNameOneof From(ArchivedBookName archivedBookName) => new BookNameOneof(OneofType.ArchivedBookName, archivedBookName);
 
         /// <summary>
-        /// Construct an instance of <see cref="BookNameOneof"/> from the provided <see cref="DeletedBookNameFixed"/>
+        /// Construct a new instance of <see cref="BookNameOneof"/> from the provided <see cref="DeletedBookNameFixed"/>
         /// </summary>
         /// <param name="deletedBookNameFixed">The <see cref="DeletedBookNameFixed"/> to be contained within
         /// the returned <see cref="BookNameOneof"/>. Must not be <c>null</c>.</param>
@@ -532,7 +545,8 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Constructs a {resource.docName} resource name from a suitable <see cref="IResourceName"/> instance.
+        /// Constructs a new instance of the <see cref="BookNameOneof"/> resource name class
+        /// from a suitable <see cref="IResourceName"/> instance.
         /// </summary>
         public BookNameOneof(OneofType type, IResourceName name)
         {
@@ -628,7 +642,7 @@ namespace Google.Example.Library.V1
         public static DeletedBookNameFixed Instance => new DeletedBookNameFixed();
 
         /// <summary>
-        /// Parses a string into a <see cref="DeletedBookNameFixed"/>.
+        /// Parses the given string into a new <see cref="DeletedBookNameFixed"/> instance.
         /// Only succeeds if the string is equal to "_deleted-book_".
         /// </summary>
         public static DeletedBookNameFixed Parse(string deletedBookNameFixed)
@@ -642,7 +656,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Tries to parses a string into a <see cref="DeletedBookNameFixed"/>.
+        /// Tries to parse the given string into a new <see cref="DeletedBookNameFixed"/> instance.
         /// Only succeeds if the string is equal to "_deleted-book_".
         /// </summary>
         public static bool TryParse(string deletedBookNameFixed, out DeletedBookNameFixed result)
@@ -688,7 +702,7 @@ namespace Google.Example.Library.V1
     public partial class Book
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -701,7 +715,7 @@ namespace Google.Example.Library.V1
     public partial class BookFromAnywhere
     {
         /// <summary>
-        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookNameOneof BookNameOneof
         {
@@ -714,7 +728,7 @@ namespace Google.Example.Library.V1
     public partial class BookFromArchive
     {
         /// <summary>
-        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ArchivedBookName ArchivedBookName
         {
@@ -727,7 +741,7 @@ namespace Google.Example.Library.V1
     public partial class CreateBookRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -740,7 +754,7 @@ namespace Google.Example.Library.V1
     public partial class DeleteBookRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -753,7 +767,7 @@ namespace Google.Example.Library.V1
     public partial class DeleteShelfRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -766,16 +780,16 @@ namespace Google.Example.Library.V1
     public partial class FindRelatedBooksRequest
     {
         /// <summary>
-        /// A <see cref="IList{BookName}"/>-typed view over the <see cref="Names"/> resource name property.
+        /// <see cref="ResourceNameList{BookName}"/>-typed view over the <see cref="Names"/> resource name property.
         /// </summary>
-        public IList<BookName> BookNames =>
+        public ResourceNameList<BookName> BookNames =>
             new ResourceNameList<BookName>(Names,
                 str => BookName.Parse(str));
 
         /// <summary>
-        /// A <see cref="IList{ShelfName}"/>-typed view over the <see cref="Shelves"/> resource name property.
+        /// <see cref="ResourceNameList{ShelfName}"/>-typed view over the <see cref="Shelves"/> resource name property.
         /// </summary>
-        public IList<ShelfName> ShelvesAsShelfNames =>
+        public ResourceNameList<ShelfName> ShelvesAsShelfNames =>
             new ResourceNameList<ShelfName>(Shelves,
                 str => ShelfName.Parse(str));
 
@@ -784,9 +798,9 @@ namespace Google.Example.Library.V1
     public partial class FindRelatedBooksResponse
     {
         /// <summary>
-        /// A <see cref="IList{BookName}"/>-typed view over the <see cref="Names"/> resource name property.
+        /// <see cref="ResourceNameList{BookName}"/>-typed view over the <see cref="Names"/> resource name property.
         /// </summary>
-        public IList<BookName> BookNames =>
+        public ResourceNameList<BookName> BookNames =>
             new ResourceNameList<BookName>(Names,
                 str => BookName.Parse(str));
 
@@ -795,7 +809,7 @@ namespace Google.Example.Library.V1
     public partial class GetBookFromAnywhereRequest
     {
         /// <summary>
-        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="BookNameOneof"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookNameOneof BookNameOneof
         {
@@ -804,7 +818,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// A <see cref="BookNameOneof"/>-typed view over the <see cref="AltBookName"/> resource name property.
+        /// <see cref="BookNameOneof"/>-typed view over the <see cref="AltBookName"/> resource name property.
         /// </summary>
         public BookNameOneof AltBookNameAsBookNameOneof
         {
@@ -817,7 +831,7 @@ namespace Google.Example.Library.V1
     public partial class GetBookFromArchiveRequest
     {
         /// <summary>
-        /// A <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="ArchivedBookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ArchivedBookName ArchivedBookName
         {
@@ -830,7 +844,7 @@ namespace Google.Example.Library.V1
     public partial class GetBookRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -843,7 +857,7 @@ namespace Google.Example.Library.V1
     public partial class GetShelfRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -856,7 +870,7 @@ namespace Google.Example.Library.V1
     public partial class ListBooksRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -869,7 +883,7 @@ namespace Google.Example.Library.V1
     public partial class ListStringsRequest
     {
         /// <summary>
-        /// A <see cref="IResourceName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="IResourceName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public IResourceName AsResourceName
         {
@@ -882,9 +896,9 @@ namespace Google.Example.Library.V1
     public partial class ListStringsResponse
     {
         /// <summary>
-        /// A <see cref="IList{IResourceName}"/>-typed view over the <see cref="Strings"/> resource name property.
+        /// <see cref="ResourceNameList{IResourceName}"/>-typed view over the <see cref="Strings"/> resource name property.
         /// </summary>
-        public IList<IResourceName> StringsAsResourceNames =>
+        public ResourceNameList<IResourceName> StringsAsResourceNames =>
             new ResourceNameList<IResourceName>(Strings,
                 str => UnknownResourceName.Parse(str));
 
@@ -893,7 +907,7 @@ namespace Google.Example.Library.V1
     public partial class MergeShelvesRequest
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -902,7 +916,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource name property.
+        /// <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource name property.
         /// </summary>
         public ShelfName OtherShelfNameAsShelfName
         {
@@ -915,7 +929,7 @@ namespace Google.Example.Library.V1
     public partial class MoveBookRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -924,7 +938,7 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource name property.
+        /// <see cref="ShelfName"/>-typed view over the <see cref="OtherShelfName"/> resource name property.
         /// </summary>
         public ShelfName OtherShelfNameAsShelfName
         {
@@ -937,7 +951,7 @@ namespace Google.Example.Library.V1
     public partial class Shelf
     {
         /// <summary>
-        /// A <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="ShelfName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public ShelfName ShelfName
         {
@@ -947,10 +961,78 @@ namespace Google.Example.Library.V1
 
     }
 
+    public partial class TestOptionalRequiredFlatteningParamsRequest
+    {
+        /// <summary>
+        /// <see cref="BookName"/>-typed view over the <see cref="RequiredSingularResourceName"/> resource name property.
+        /// </summary>
+        public BookName RequiredSingularResourceNameAsBookName
+        {
+            get { return string.IsNullOrEmpty(RequiredSingularResourceName) ? null : Google.Example.Library.V1.BookName.Parse(RequiredSingularResourceName); }
+            set { RequiredSingularResourceName = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="BookNameOneof"/>-typed view over the <see cref="RequiredSingularResourceNameOneof"/> resource name property.
+        /// </summary>
+        public BookNameOneof RequiredSingularResourceNameOneofAsBookNameOneof
+        {
+            get { return string.IsNullOrEmpty(RequiredSingularResourceNameOneof) ? null : Google.Example.Library.V1.BookNameOneof.Parse(RequiredSingularResourceNameOneof, true); }
+            set { RequiredSingularResourceNameOneof = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="ResourceNameList{BookName}"/>-typed view over the <see cref="RequiredRepeatedResourceName"/> resource name property.
+        /// </summary>
+        public ResourceNameList<BookName> RequiredRepeatedResourceNameAsBookNames =>
+            new ResourceNameList<BookName>(RequiredRepeatedResourceName,
+                str => BookName.Parse(str));
+
+        /// <summary>
+        /// <see cref="ResourceNameList{BookNameOneof}"/>-typed view over the <see cref="RequiredRepeatedResourceNameOneof"/> resource name property.
+        /// </summary>
+        public ResourceNameList<BookNameOneof> RequiredRepeatedResourceNameOneofAsBookNameOneofs =>
+            new ResourceNameList<BookNameOneof>(RequiredRepeatedResourceNameOneof,
+                str => BookNameOneof.Parse(str, true));
+
+        /// <summary>
+        /// <see cref="BookName"/>-typed view over the <see cref="OptionalSingularResourceName"/> resource name property.
+        /// </summary>
+        public BookName OptionalSingularResourceNameAsBookName
+        {
+            get { return string.IsNullOrEmpty(OptionalSingularResourceName) ? null : Google.Example.Library.V1.BookName.Parse(OptionalSingularResourceName); }
+            set { OptionalSingularResourceName = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="BookNameOneof"/>-typed view over the <see cref="OptionalSingularResourceNameOneof"/> resource name property.
+        /// </summary>
+        public BookNameOneof OptionalSingularResourceNameOneofAsBookNameOneof
+        {
+            get { return string.IsNullOrEmpty(OptionalSingularResourceNameOneof) ? null : Google.Example.Library.V1.BookNameOneof.Parse(OptionalSingularResourceNameOneof, true); }
+            set { OptionalSingularResourceNameOneof = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="ResourceNameList{BookName}"/>-typed view over the <see cref="OptionalRepeatedResourceName"/> resource name property.
+        /// </summary>
+        public ResourceNameList<BookName> OptionalRepeatedResourceNameAsBookNames =>
+            new ResourceNameList<BookName>(OptionalRepeatedResourceName,
+                str => BookName.Parse(str));
+
+        /// <summary>
+        /// <see cref="ResourceNameList{BookNameOneof}"/>-typed view over the <see cref="OptionalRepeatedResourceNameOneof"/> resource name property.
+        /// </summary>
+        public ResourceNameList<BookNameOneof> OptionalRepeatedResourceNameOneofAsBookNameOneofs =>
+            new ResourceNameList<BookNameOneof>(OptionalRepeatedResourceNameOneof,
+                str => BookNameOneof.Parse(str, true));
+
+    }
+
     public partial class UpdateBookIndexRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {
@@ -963,7 +1045,7 @@ namespace Google.Example.Library.V1
     public partial class UpdateBookRequest
     {
         /// <summary>
-        /// A <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// <see cref="BookName"/>-typed view over the <see cref="Name"/> resource name property.
         /// </summary>
         public BookName BookName
         {

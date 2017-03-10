@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
@@ -29,6 +30,8 @@ public abstract class SmokeTestClassView implements ViewModel {
   public abstract String apiClassName();
 
   public abstract String apiSettingsClassName();
+
+  public abstract ApiMethodView apiMethod();
 
   public abstract TestCaseView method();
 
@@ -63,6 +66,8 @@ public abstract class SmokeTestClassView implements ViewModel {
     public abstract Builder outputPath(String val);
 
     public abstract Builder templateFileName(String val);
+
+    public abstract Builder apiMethod(ApiMethodView val);
 
     public abstract Builder method(TestCaseView val);
 

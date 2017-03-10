@@ -16,17 +16,22 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.PassThroughCommentReformatter;
+import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypeNameConverter;
+import com.google.api.codegen.util.TypedValue;
+import com.google.api.codegen.util.csharp.CSharpCommentReformatter;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.Interface;
@@ -129,7 +134,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
         new CSharpNameFormatter(),
         new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName)),
         new CSharpTypeTable(packageName),
-        new PassThroughCommentReformatter(),
+        new CSharpCommentReformatter(),
         packageName);
   }
 
@@ -139,8 +144,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(Interface service) {
-    return getPackageName() + "." + getApiWrapperClassName(service);
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
+    return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
   }
 
   @Override
@@ -350,19 +355,34 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()));
   }
 
+  private Name addId(Name name) {
+    if (name.toUpperCamel().endsWith("Id")) {
+      return name;
+    } else {
+      return name.join("id");
+    }
+  }
+
   @Override
   public String getParamName(String var) {
-    return localVarName(Name.from(var).join("id"));
+    return localVarName(addId(Name.from(var)));
   }
 
   @Override
   public String getPropertyName(String var) {
-    return publicMethodName(Name.from(var).join("id"));
+    return publicMethodName(addId(Name.from(var)));
   }
 
   @Override
   public String getParamDocName(String var) {
-    return super.localVarName(Name.from(var));
+    // 'super' to prevent '@' being prefixed to keywords
+    String name = super.localVarName(Name.from(var));
+    // Remove "id" suffix if present, as the C# code template always adds an ID suffix.
+    if (name.toLowerCase().endsWith("id")) {
+      return name.substring(0, name.length() - 2);
+    } else {
+      return name;
+    }
   }
 
   @Override
@@ -430,5 +450,74 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       }
     }
     throw new IllegalStateException("Invalid Synchronicity: " + synchronicity);
+  }
+
+  @Override
+  public String getResourceOneofCreateMethod(ModelTypeTable typeTable, FieldConfig fieldConfig) {
+    String result = super.getResourceOneofCreateMethod(typeTable, fieldConfig);
+    return result.replaceFirst("IEnumerable<(\\w*)>(\\..*)", "$1$2");
+  }
+
+  @Override
+  public String makePrimitiveTypeNullable(String typeName, TypeRef type) {
+    return isPrimitive(type) ? typeName + "?" : typeName;
+  }
+
+  @Override
+  public boolean isPrimitive(TypeRef type) {
+    if (type.isRepeated()) {
+      return false;
+    }
+    switch (type.getKind()) {
+      case TYPE_BOOL:
+      case TYPE_DOUBLE:
+      case TYPE_ENUM:
+      case TYPE_FIXED32:
+      case TYPE_FIXED64:
+      case TYPE_FLOAT:
+      case TYPE_INT32:
+      case TYPE_INT64:
+      case TYPE_SFIXED32:
+      case TYPE_SFIXED64:
+      case TYPE_SINT32:
+      case TYPE_SINT64:
+      case TYPE_UINT32:
+      case TYPE_UINT64:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  @Override
+  public String getOptionalFieldDefaultValue(
+      FieldConfig fieldConfig, MethodTransformerContext context) {
+    // Need to provide defaults for primitives, enums, strings, and repeated (including maps)
+    TypeRef type = fieldConfig.getField().getType();
+    if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      if (type.isRepeated()) {
+        TypeName elementTypeName =
+            new TypeName(
+                getResourceTypeNameObject(fieldConfig.getResourceNameConfig()).toUpperCamel());
+        TypeNameConverter typeNameConverter = getTypeNameConverter();
+        TypeName enumerableTypeName = typeNameConverter.getTypeName("System.Linq.Enumerable");
+        TypeName emptyTypeName =
+            new TypeName(
+                enumerableTypeName.getFullName(),
+                enumerableTypeName.getNickname(),
+                "%s.Empty<%i>",
+                elementTypeName);
+        return TypedValue.create(emptyTypeName, "%s()")
+            .getValueAndSaveTypeNicknameIn((CSharpTypeTable) typeNameConverter);
+      } else {
+        return null;
+      }
+    } else {
+      if (type.isPrimitive() || type.isEnum() || type.isRepeated()) {
+        return context.getTypeTable().getImplZeroValueAndSaveNicknameFor(type);
+      } else {
+        return null;
+      }
+    }
   }
 }

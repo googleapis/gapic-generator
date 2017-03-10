@@ -60,11 +60,17 @@ use google\example\library\v1\ListStringsRequest;
 use google\example\library\v1\MergeShelvesRequest;
 use google\example\library\v1\MoveBookRequest;
 use google\example\library\v1\PublishSeriesRequest;
+use google\example\library\v1\SeriesUuid;
 use google\example\library\v1\Shelf;
 use google\example\library\v1\SomeMessage;
 use google\example\library\v1\StreamBooksRequest;
 use google\example\library\v1\StreamShelvesRequest;
 use google\example\library\v1\StringBuilder;
+use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest;
+use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum;
+use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerMessage;
+use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\OptionalMapEntry;
+use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\RequiredMapEntry;
 use google\example\library\v1\UpdateBookIndexRequest;
 use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
 use google\example\library\v1\UpdateBookRequest;
@@ -87,6 +93,8 @@ use google\tagger\v1\LabelerGrpcClient;
  *
  * Check out [cloud docs!](/library/example/link).
  * This is [not a cloud link](http://www.google.com).
+ *
+ * Service comment may include special characters: <>&"`'&#64;.
  *
  * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
  * more frequently than those which have been declared beta or 1.0, including changes which break
@@ -135,7 +143,7 @@ class LibraryServiceClient
     /**
      * The code generator version, to be included in the agent header.
      */
-    const CODEGEN_VERSION = '0.1.0';
+    const CODEGEN_VERSION = '0.0.5';
 
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
@@ -340,6 +348,17 @@ class LibraryServiceClient
         ];
     }
 
+    private static function getGapicVersion()
+    {
+        if (file_exists(__DIR__ . "/../VERSION")) {
+          return trim(file_get_contents(__DIR__ . "/../VERSION"));
+        } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
+          return \Google\Cloud\ServiceBuilder::VERSION;
+        } else {
+          return;
+        }
+    }
+
     /**
      * Return an OperationsClient object with the same endpoint as $this.
      *
@@ -400,9 +419,6 @@ class LibraryServiceClient
      *                              that don't use retries. For calls that use retries,
      *                              set the timeout in RetryOptions.
      *                              Default: 30000 (30 seconds)
-     *     @type string $appName The codename of the calling service. Default 'gax'.
-     *     @type string $appVersion The version of the calling service.
-     *                              Default: the current version of GAX.
      *     @type \Google\Auth\CredentialsLoader $credentialsLoader
      *                              A CredentialsLoader object created using the
      *                              Google\Auth library.
@@ -419,8 +435,8 @@ class LibraryServiceClient
             ],
             'retryingOverride' => null,
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
-            'appName' => 'gax',
-            'appVersion' => AgentHeaderDescriptor::getGaxVersion(),
+            'libName' => null,
+            'libVersion' => null,
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -430,16 +446,17 @@ class LibraryServiceClient
             $this->operationsClient = new OperationsClient([
                 'serviceAddress' => $options['serviceAddress'],
                 'scopes' => $options['scopes'],
+                'libName' => $options['libName'],
+                'libVersion' => $options['libVersion'],
             ]);
         }
 
+        $gapicVersion = $options['libVersion'] ?: self::getGapicVersion();
+
         $headerDescriptor = new AgentHeaderDescriptor([
-            'clientName' => $options['appName'],
-            'clientVersion' => $options['appVersion'],
-            'codeGenName' => self::CODEGEN_NAME,
-            'codeGenVersion' => self::CODEGEN_VERSION,
-            'gaxVersion' => AgentHeaderDescriptor::getGaxVersion(),
-            'phpVersion' => phpversion(),
+            'libName' => $options['libName'],
+            'libVersion' => $options['libVersion'],
+            'gapicVersion' => $gapicVersion,
         ]);
 
         $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
@@ -470,6 +487,7 @@ class LibraryServiceClient
             'addLabel' => $defaultDescriptors,
             'getBigBook' => $defaultDescriptors,
             'getBigNothing' => $defaultDescriptors,
+            'testOptionalRequiredFlatteningParams' => $defaultDescriptors,
         ];
         $pageStreamingDescriptors = self::getPageStreamingDescriptors();
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
@@ -528,6 +546,7 @@ class LibraryServiceClient
 
     /**
      * Creates a shelf, and returns the new Shelf.
+     * RPC method comment may include special characters: <>&"`'&#64;.
      *
      * Sample code:
      * ```
@@ -841,7 +860,10 @@ class LibraryServiceClient
      *     $libraryServiceClient = new LibraryServiceClient();
      *     $shelf = new Shelf();
      *     $books = [];
-     *     $response = $libraryServiceClient->publishSeries($shelf, $books);
+     *     $seriesString = "foobar";
+     *     $seriesUuid = new SeriesUuid();
+     *     $seriesUuid->setSeriesString($seriesString);
+     *     $response = $libraryServiceClient->publishSeries($shelf, $books, $seriesUuid);
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -849,14 +871,13 @@ class LibraryServiceClient
      *
      * @param Shelf $shelf The shelf in which the series is created.
      * @param Book[] $books The books to publish in the series.
+     * @param SeriesUuid $seriesUuid Uniquely identifies the series to the publishing house.
      * @param array $optionalArgs {
      *     Optional.
      *     @type int $edition
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
-     *     @type string $seriesUuid
-     *          Uniquely identifies the series to the publishing house.
      *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeoutMillis is ignored.
@@ -869,21 +890,19 @@ class LibraryServiceClient
      *
      * @throws \Google\GAX\ApiException if the remote call fails
      */
-    public function publishSeries($shelf, $books, $optionalArgs = [])
+    public function publishSeries($shelf, $books, $seriesUuid, $optionalArgs = [])
     {
         $request = new PublishSeriesRequest();
         $request->setShelf($shelf);
         foreach ($books as $elem) {
             $request->addBooks($elem);
         }
+        $request->setSeriesUuid($seriesUuid);
         if (isset($optionalArgs['edition'])) {
             $request->setEdition($optionalArgs['edition']);
         }
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
-        }
-        if (isset($optionalArgs['seriesUuid'])) {
-            $request->setSeriesUuid($optionalArgs['seriesUuid']);
         }
 
         $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(
@@ -1962,6 +1981,257 @@ class LibraryServiceClient
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBigNothing', $mergedSettings, $this->descriptors['getBigNothing']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Test optional flattening parameters of all types
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $requiredSingularInt32 = 0;
+     *     $requiredSingularInt64 = 0;
+     *     $requiredSingularFloat = 0.0;
+     *     $requiredSingularDouble = 0.0;
+     *     $requiredSingularBool = false;
+     *     $requiredSingularEnum = InnerEnum::ZERO;
+     *     $requiredSingularString = "";
+     *     $requiredSingularBytes = "";
+     *     $requiredSingularMessage = new InnerMessage();
+     *     $requiredSingularResourceName = "";
+     *     $requiredSingularResourceNameOneof = "";
+     *     $requiredRepeatedInt32 = [];
+     *     $requiredRepeatedInt64 = [];
+     *     $requiredRepeatedFloat = [];
+     *     $requiredRepeatedDouble = [];
+     *     $requiredRepeatedBool = [];
+     *     $requiredRepeatedEnum = [];
+     *     $requiredRepeatedString = [];
+     *     $requiredRepeatedBytes = [];
+     *     $requiredRepeatedMessage = [];
+     *     $formattedRequiredRepeatedResourceName = [];
+     *     $formattedRequiredRepeatedResourceNameOneof = [];
+     *     $requiredMap = [];
+     *     $response = $libraryServiceClient->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredMap);
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param int $requiredSingularInt32
+     * @param int $requiredSingularInt64
+     * @param float $requiredSingularFloat
+     * @param float $requiredSingularDouble
+     * @param bool $requiredSingularBool
+     * @param InnerEnum $requiredSingularEnum
+     * @param string $requiredSingularString
+     * @param string $requiredSingularBytes
+     * @param InnerMessage $requiredSingularMessage
+     * @param string $requiredSingularResourceName
+     * @param string $requiredSingularResourceNameOneof
+     * @param int[] $requiredRepeatedInt32
+     * @param int[] $requiredRepeatedInt64
+     * @param float[] $requiredRepeatedFloat
+     * @param float[] $requiredRepeatedDouble
+     * @param bool[] $requiredRepeatedBool
+     * @param InnerEnum[] $requiredRepeatedEnum
+     * @param string[] $requiredRepeatedString
+     * @param string[] $requiredRepeatedBytes
+     * @param InnerMessage[] $requiredRepeatedMessage
+     * @param string[] $requiredRepeatedResourceName
+     * @param string[] $requiredRepeatedResourceNameOneof
+     * @param array $requiredMap
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type int $optionalSingularInt32
+     *     @type int $optionalSingularInt64
+     *     @type float $optionalSingularFloat
+     *     @type float $optionalSingularDouble
+     *     @type bool $optionalSingularBool
+     *     @type InnerEnum $optionalSingularEnum
+     *     @type string $optionalSingularString
+     *     @type string $optionalSingularBytes
+     *     @type InnerMessage $optionalSingularMessage
+     *     @type string $optionalSingularResourceName
+     *     @type string $optionalSingularResourceNameOneof
+     *     @type int[] $optionalRepeatedInt32
+     *     @type int[] $optionalRepeatedInt64
+     *     @type float[] $optionalRepeatedFloat
+     *     @type float[] $optionalRepeatedDouble
+     *     @type bool[] $optionalRepeatedBool
+     *     @type InnerEnum[] $optionalRepeatedEnum
+     *     @type string[] $optionalRepeatedString
+     *     @type string[] $optionalRepeatedBytes
+     *     @type InnerMessage[] $optionalRepeatedMessage
+     *     @type string[] $optionalRepeatedResourceName
+     *     @type string[] $optionalRepeatedResourceNameOneof
+     *     @type array $optionalMap
+     *     @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeoutMillis is ignored.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return \google\example\library\v1\TestOptionalRequiredFlatteningParamsResponse
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     */
+    public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredMap, $optionalArgs = [])
+    {
+        $request = new TestOptionalRequiredFlatteningParamsRequest();
+        $request->setRequiredSingularInt32($requiredSingularInt32);
+        $request->setRequiredSingularInt64($requiredSingularInt64);
+        $request->setRequiredSingularFloat($requiredSingularFloat);
+        $request->setRequiredSingularDouble($requiredSingularDouble);
+        $request->setRequiredSingularBool($requiredSingularBool);
+        $request->setRequiredSingularEnum($requiredSingularEnum);
+        $request->setRequiredSingularString($requiredSingularString);
+        $request->setRequiredSingularBytes($requiredSingularBytes);
+        $request->setRequiredSingularMessage($requiredSingularMessage);
+        $request->setRequiredSingularResourceName($requiredSingularResourceName);
+        $request->setRequiredSingularResourceNameOneof($requiredSingularResourceNameOneof);
+        foreach ($requiredRepeatedInt32 as $elem) {
+            $request->addRequiredRepeatedInt32($elem);
+        }
+        foreach ($requiredRepeatedInt64 as $elem) {
+            $request->addRequiredRepeatedInt64($elem);
+        }
+        foreach ($requiredRepeatedFloat as $elem) {
+            $request->addRequiredRepeatedFloat($elem);
+        }
+        foreach ($requiredRepeatedDouble as $elem) {
+            $request->addRequiredRepeatedDouble($elem);
+        }
+        foreach ($requiredRepeatedBool as $elem) {
+            $request->addRequiredRepeatedBool($elem);
+        }
+        foreach ($requiredRepeatedEnum as $elem) {
+            $request->addRequiredRepeatedEnum($elem);
+        }
+        foreach ($requiredRepeatedString as $elem) {
+            $request->addRequiredRepeatedString($elem);
+        }
+        foreach ($requiredRepeatedBytes as $elem) {
+            $request->addRequiredRepeatedBytes($elem);
+        }
+        foreach ($requiredRepeatedMessage as $elem) {
+            $request->addRequiredRepeatedMessage($elem);
+        }
+        foreach ($requiredRepeatedResourceName as $elem) {
+            $request->addRequiredRepeatedResourceName($elem);
+        }
+        foreach ($requiredRepeatedResourceNameOneof as $elem) {
+            $request->addRequiredRepeatedResourceNameOneof($elem);
+        }
+        foreach ($requiredMap as $key => $value) {
+            $request->addRequiredMap((new RequiredMapEntry())->setKey($key)->setValue($value));
+        }
+        if (isset($optionalArgs['optionalSingularInt32'])) {
+            $request->setOptionalSingularInt32($optionalArgs['optionalSingularInt32']);
+        }
+        if (isset($optionalArgs['optionalSingularInt64'])) {
+            $request->setOptionalSingularInt64($optionalArgs['optionalSingularInt64']);
+        }
+        if (isset($optionalArgs['optionalSingularFloat'])) {
+            $request->setOptionalSingularFloat($optionalArgs['optionalSingularFloat']);
+        }
+        if (isset($optionalArgs['optionalSingularDouble'])) {
+            $request->setOptionalSingularDouble($optionalArgs['optionalSingularDouble']);
+        }
+        if (isset($optionalArgs['optionalSingularBool'])) {
+            $request->setOptionalSingularBool($optionalArgs['optionalSingularBool']);
+        }
+        if (isset($optionalArgs['optionalSingularEnum'])) {
+            $request->setOptionalSingularEnum($optionalArgs['optionalSingularEnum']);
+        }
+        if (isset($optionalArgs['optionalSingularString'])) {
+            $request->setOptionalSingularString($optionalArgs['optionalSingularString']);
+        }
+        if (isset($optionalArgs['optionalSingularBytes'])) {
+            $request->setOptionalSingularBytes($optionalArgs['optionalSingularBytes']);
+        }
+        if (isset($optionalArgs['optionalSingularMessage'])) {
+            $request->setOptionalSingularMessage($optionalArgs['optionalSingularMessage']);
+        }
+        if (isset($optionalArgs['optionalSingularResourceName'])) {
+            $request->setOptionalSingularResourceName($optionalArgs['optionalSingularResourceName']);
+        }
+        if (isset($optionalArgs['optionalSingularResourceNameOneof'])) {
+            $request->setOptionalSingularResourceNameOneof($optionalArgs['optionalSingularResourceNameOneof']);
+        }
+        if (isset($optionalArgs['optionalRepeatedInt32'])) {
+            foreach ($optionalArgs['optionalRepeatedInt32'] as $elem) {
+                $request->addOptionalRepeatedInt32($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedInt64'])) {
+            foreach ($optionalArgs['optionalRepeatedInt64'] as $elem) {
+                $request->addOptionalRepeatedInt64($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedFloat'])) {
+            foreach ($optionalArgs['optionalRepeatedFloat'] as $elem) {
+                $request->addOptionalRepeatedFloat($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedDouble'])) {
+            foreach ($optionalArgs['optionalRepeatedDouble'] as $elem) {
+                $request->addOptionalRepeatedDouble($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedBool'])) {
+            foreach ($optionalArgs['optionalRepeatedBool'] as $elem) {
+                $request->addOptionalRepeatedBool($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedEnum'])) {
+            foreach ($optionalArgs['optionalRepeatedEnum'] as $elem) {
+                $request->addOptionalRepeatedEnum($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedString'])) {
+            foreach ($optionalArgs['optionalRepeatedString'] as $elem) {
+                $request->addOptionalRepeatedString($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedBytes'])) {
+            foreach ($optionalArgs['optionalRepeatedBytes'] as $elem) {
+                $request->addOptionalRepeatedBytes($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedMessage'])) {
+            foreach ($optionalArgs['optionalRepeatedMessage'] as $elem) {
+                $request->addOptionalRepeatedMessage($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedResourceName'])) {
+            foreach ($optionalArgs['optionalRepeatedResourceName'] as $elem) {
+                $request->addOptionalRepeatedResourceName($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalRepeatedResourceNameOneof'])) {
+            foreach ($optionalArgs['optionalRepeatedResourceNameOneof'] as $elem) {
+                $request->addOptionalRepeatedResourceNameOneof($elem);
+            }
+        }
+        if (isset($optionalArgs['optionalMap'])) {
+            foreach ($optionalArgs['optionalMap'] as $key => $value) {
+                $request->addOptionalMap((new OptionalMapEntry())->setKey($key)->setValue($value));
+            }
+        }
+
+        $mergedSettings = $this->defaultCallSettings['testOptionalRequiredFlatteningParams']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'TestOptionalRequiredFlatteningParams', $mergedSettings, $this->descriptors['testOptionalRequiredFlatteningParams']);
 
         return $callable(
             $request,

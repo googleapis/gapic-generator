@@ -317,9 +317,14 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var shelf = {};
       var books = [];
+      var seriesString = 'foobar';
+      var seriesUuid = {
+          seriesString : seriesString
+      };
       var request = {
           shelf : shelf,
-          books : books
+          books : books,
+          seriesUuid : seriesUuid
       };
 
       // Mock response
@@ -344,9 +349,14 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var shelf = {};
       var books = [];
+      var seriesString = 'foobar';
+      var seriesUuid = {
+          seriesString : seriesString
+      };
       var request = {
           shelf : shelf,
-          books : books
+          books : books,
+          seriesUuid : seriesUuid
       };
 
       // Mock Grpc layer
@@ -1249,6 +1259,135 @@ describe('LibraryServiceClient', function() {
       }).then(function(responses) {
         assert.fail();
       }).catch(function(err) {
+        assert(err instanceof Error);
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
+  describe('testOptionalRequiredFlatteningParams', function() {
+    it('invokes testOptionalRequiredFlatteningParams without error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var requiredSingularInt32 = -72313594;
+      var requiredSingularInt64 = -72313499;
+      var requiredSingularFloat = -7514705.0;
+      var requiredSingularDouble = 1.9111005E8;
+      var requiredSingularBool = true;
+      var requiredSingularEnum = libraryV1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+      var requiredSingularString = 'requiredSingularString-1949894503';
+      var requiredSingularBytes = '-29';
+      var requiredSingularMessage = {};
+      var requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
+      var requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
+      var requiredRepeatedInt32 = [];
+      var requiredRepeatedInt64 = [];
+      var requiredRepeatedFloat = [];
+      var requiredRepeatedDouble = [];
+      var requiredRepeatedBool = [];
+      var requiredRepeatedEnum = [];
+      var requiredRepeatedString = [];
+      var requiredRepeatedBytes = [];
+      var requiredRepeatedMessage = [];
+      var formattedRequiredRepeatedResourceName = [];
+      var formattedRequiredRepeatedResourceNameOneof = [];
+      var requiredMap = {};
+      var request = {
+          requiredSingularInt32 : requiredSingularInt32,
+          requiredSingularInt64 : requiredSingularInt64,
+          requiredSingularFloat : requiredSingularFloat,
+          requiredSingularDouble : requiredSingularDouble,
+          requiredSingularBool : requiredSingularBool,
+          requiredSingularEnum : requiredSingularEnum,
+          requiredSingularString : requiredSingularString,
+          requiredSingularBytes : requiredSingularBytes,
+          requiredSingularMessage : requiredSingularMessage,
+          requiredSingularResourceName : requiredSingularResourceName,
+          requiredSingularResourceNameOneof : requiredSingularResourceNameOneof,
+          requiredRepeatedInt32 : requiredRepeatedInt32,
+          requiredRepeatedInt64 : requiredRepeatedInt64,
+          requiredRepeatedFloat : requiredRepeatedFloat,
+          requiredRepeatedDouble : requiredRepeatedDouble,
+          requiredRepeatedBool : requiredRepeatedBool,
+          requiredRepeatedEnum : requiredRepeatedEnum,
+          requiredRepeatedString : requiredRepeatedString,
+          requiredRepeatedBytes : requiredRepeatedBytes,
+          requiredRepeatedMessage : requiredRepeatedMessage,
+          requiredRepeatedResourceName : formattedRequiredRepeatedResourceName,
+          requiredRepeatedResourceNameOneof : formattedRequiredRepeatedResourceNameOneof,
+          requiredMap : requiredMap
+      };
+
+      // Mock response
+      var expectedResponse = {};
+
+      // Mock Grpc layer
+      client._testOptionalRequiredFlatteningParams = mockSimpleGrpcMethod(request, expectedResponse);
+
+      client.testOptionalRequiredFlatteningParams(request, function(err, response) {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes testOptionalRequiredFlatteningParams with error', function(done) {
+      var client = libraryV1.libraryServiceClient();
+      // Mock request
+      var requiredSingularInt32 = -72313594;
+      var requiredSingularInt64 = -72313499;
+      var requiredSingularFloat = -7514705.0;
+      var requiredSingularDouble = 1.9111005E8;
+      var requiredSingularBool = true;
+      var requiredSingularEnum = libraryV1.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO;
+      var requiredSingularString = 'requiredSingularString-1949894503';
+      var requiredSingularBytes = '-29';
+      var requiredSingularMessage = {};
+      var requiredSingularResourceName = 'requiredSingularResourceName-1701575020';
+      var requiredSingularResourceNameOneof = 'requiredSingularResourceNameOneof-25303726';
+      var requiredRepeatedInt32 = [];
+      var requiredRepeatedInt64 = [];
+      var requiredRepeatedFloat = [];
+      var requiredRepeatedDouble = [];
+      var requiredRepeatedBool = [];
+      var requiredRepeatedEnum = [];
+      var requiredRepeatedString = [];
+      var requiredRepeatedBytes = [];
+      var requiredRepeatedMessage = [];
+      var formattedRequiredRepeatedResourceName = [];
+      var formattedRequiredRepeatedResourceNameOneof = [];
+      var requiredMap = {};
+      var request = {
+          requiredSingularInt32 : requiredSingularInt32,
+          requiredSingularInt64 : requiredSingularInt64,
+          requiredSingularFloat : requiredSingularFloat,
+          requiredSingularDouble : requiredSingularDouble,
+          requiredSingularBool : requiredSingularBool,
+          requiredSingularEnum : requiredSingularEnum,
+          requiredSingularString : requiredSingularString,
+          requiredSingularBytes : requiredSingularBytes,
+          requiredSingularMessage : requiredSingularMessage,
+          requiredSingularResourceName : requiredSingularResourceName,
+          requiredSingularResourceNameOneof : requiredSingularResourceNameOneof,
+          requiredRepeatedInt32 : requiredRepeatedInt32,
+          requiredRepeatedInt64 : requiredRepeatedInt64,
+          requiredRepeatedFloat : requiredRepeatedFloat,
+          requiredRepeatedDouble : requiredRepeatedDouble,
+          requiredRepeatedBool : requiredRepeatedBool,
+          requiredRepeatedEnum : requiredRepeatedEnum,
+          requiredRepeatedString : requiredRepeatedString,
+          requiredRepeatedBytes : requiredRepeatedBytes,
+          requiredRepeatedMessage : requiredRepeatedMessage,
+          requiredRepeatedResourceName : formattedRequiredRepeatedResourceName,
+          requiredRepeatedResourceNameOneof : formattedRequiredRepeatedResourceNameOneof,
+          requiredMap : requiredMap
+      };
+
+      // Mock Grpc layer
+      client._testOptionalRequiredFlatteningParams = mockSimpleGrpcMethod(request, null, error);
+
+      client.testOptionalRequiredFlatteningParams(request, function(err, response) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();

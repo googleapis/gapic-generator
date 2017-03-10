@@ -99,7 +99,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .apiSettingsClassName(
                   namer.getNotImplementedString(
                       "GoGapicSurfaceTestTransformer.generateMockServiceView - apiSettingsClassName"))
-              .apiClassName(namer.getApiWrapperClassName(service))
+              .apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()))
               .name(
                   namer.getNotImplementedString(
                       "GoGapicSurfaceTestTransformer.generateMockServiceView - name"))
