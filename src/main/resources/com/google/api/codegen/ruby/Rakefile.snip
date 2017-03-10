@@ -3,10 +3,10 @@
 @snippet generate(metadata)
   {@header(metadata.fileHeader)}
 
-  {@unitTests(metadata)}
-  @if smokeTests(metadata)
+  {@unitTestsTask(metadata)}
+  @if smokeTestsTask(metadata)
 
-    {@smokeTests(metadata)}
+    {@smokeTestsTask(metadata)}
   @else
   @end
 @end
@@ -23,7 +23,7 @@
   RuboCop::RakeTask.new
 @end
 
-@private unitTests(metadata)
+@private unitTestsTask(metadata)
   desc "Run tests."
   task :test do
     $LOAD_PATH.unshift "lib", "test"
@@ -45,7 +45,7 @@
   end
 @end
 
-@private smokeTests(metadata)
+@private smokeTestsTask(metadata)
   @if metadata.hasSmokeTests
     desc "Runs the smoke tests."
     task :smoke_test, :project do |t, args|
