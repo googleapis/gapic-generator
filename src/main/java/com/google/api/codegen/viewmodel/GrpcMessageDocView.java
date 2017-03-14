@@ -21,11 +21,19 @@ import java.util.List;
 public abstract class GrpcMessageDocView implements GrpcElementDocView {
   public abstract String name();
 
+  public abstract String fullName();
+
   public abstract List<String> lines();
 
   public abstract List<ParamDocView> properties();
 
   public abstract List<GrpcElementDocView> elementDocs();
+
+  public abstract String fileUrl();
+
+  public boolean hasProperties() {
+    return !properties().isEmpty();
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_GrpcMessageDocView.Builder();
@@ -39,11 +47,15 @@ public abstract class GrpcMessageDocView implements GrpcElementDocView {
   public abstract static class Builder {
     public abstract Builder name(String val);
 
+    public abstract Builder fullName(String val);
+
     public abstract Builder lines(List<String> val);
 
     public abstract Builder properties(List<ParamDocView> val);
 
     public abstract Builder elementDocs(List<GrpcElementDocView> val);
+
+    public abstract Builder fileUrl(String val);
 
     public abstract GrpcMessageDocView build();
   }

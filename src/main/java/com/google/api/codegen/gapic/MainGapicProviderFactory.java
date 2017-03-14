@@ -36,6 +36,7 @@ import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
+import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransformer;
@@ -231,14 +232,11 @@ public class MainGapicProviderFactory
 
         if (id.equals(NODEJS_DOC)) {
           GapicProvider<? extends Object> messageProvider =
-              CommonGapicProvider.<ProtoFile>newBuilder()
+              ViewModelGapicProvider.newBuilder()
                   .setModel(model)
-                  .setView(new ProtoFileView())
-                  .setContext(new NodeJSGapicContext(model, apiConfig, packageConfig))
-                  .setSnippetSetRunner(
-                      new NodeJSSnippetSetRunner<ProtoFile>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                  .setSnippetFileNames(Arrays.asList("nodejs/message.snip"))
-                  .setCodePathMapper(nodeJSPathMapper)
+                  .setApiConfig(apiConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(new NodeJSGapicSurfaceDocTransformer())
                   .build();
           providers.add(messageProvider);
         }
