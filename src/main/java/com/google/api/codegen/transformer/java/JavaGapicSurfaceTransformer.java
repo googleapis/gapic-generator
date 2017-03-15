@@ -458,14 +458,14 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     }
     if (interfaceConfig.hasBundlingMethods()) {
-      typeTable.saveNicknameFor("com.google.api.gax.bundling.BundlingSettings");
-      typeTable.saveNicknameFor("com.google.api.gax.bundling.RequestBuilder");
+      typeTable.saveNicknameFor("com.google.api.gax.batching.BatchingSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.batching.RequestBuilder");
       typeTable.saveNicknameFor("com.google.api.gax.core.FlowController");
       typeTable.saveNicknameFor("com.google.api.gax.core.FlowController.LimitExceededBehavior");
       typeTable.saveNicknameFor("com.google.api.gax.core.FlowControlSettings");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingCallSettings");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BundledRequestIssuer");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingDescriptor");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchedRequestIssuer");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingDescriptor");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.RequestIssuer");
       typeTable.saveNicknameFor("java.util.ArrayList");
       typeTable.saveNicknameFor("java.util.Collection");
