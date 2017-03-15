@@ -235,9 +235,6 @@
             UnaryCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
       @case "BundlingApiCallable"
         this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
-        if (settings.{@apiCallable.settingsFunctionName}().getBundlerFactory() != null) {
-          closeables.add(settings.{@apiCallable.settingsFunctionName}().getBundlerFactory());
-        }
       @case "StreamingApiCallable"
         this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
       @case "InitialOperationApiCallable"

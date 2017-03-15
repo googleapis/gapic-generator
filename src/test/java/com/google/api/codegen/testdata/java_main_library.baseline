@@ -251,9 +251,6 @@ public class LibraryClient implements AutoCloseable {
     this.mergeShelvesCallable = UnaryCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
     this.createBookCallable = UnaryCallable.create(settings.createBookSettings(), this.channel, this.executor);
     this.publishSeriesCallable = UnaryCallable.create(settings.publishSeriesSettings(), this.channel, this.executor);
-    if (settings.publishSeriesSettings().getBundlerFactory() != null) {
-      closeables.add(settings.publishSeriesSettings().getBundlerFactory());
-    }
     this.getBookCallable = UnaryCallable.create(settings.getBookSettings(), this.channel, this.executor);
     this.listBooksCallable = UnaryCallable.create(settings.listBooksSettings(), this.channel, this.executor);
     this.listBooksPagedCallable =
@@ -265,9 +262,6 @@ public class LibraryClient implements AutoCloseable {
     this.listStringsPagedCallable =
         UnaryCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
     this.addCommentsCallable = UnaryCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
-    if (settings.addCommentsSettings().getBundlerFactory() != null) {
-      closeables.add(settings.addCommentsSettings().getBundlerFactory());
-    }
     this.getBookFromArchiveCallable = UnaryCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
     this.getBookFromAnywhereCallable = UnaryCallable.create(settings.getBookFromAnywhereSettings(), this.channel, this.executor);
     this.updateBookIndexCallable = UnaryCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
