@@ -254,7 +254,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getIndexFileImportName() {
+  public String getVersionIndexFileImportName() {
     return getPackageFilePath();
   }
 

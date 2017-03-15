@@ -41,8 +41,8 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.metadata.IndexRequireView;
-import com.google.api.codegen.viewmodel.metadata.IndexView;
+import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
+import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -168,17 +168,17 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private ViewModel generateVersionIndexView(Model model, ApiConfig apiConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
-    ImmutableList.Builder<IndexRequireView> requireViews = ImmutableList.builder();
+    ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
     Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
     for (Interface service : interfaces) {
       requireViews.add(
-          IndexRequireView.newBuilder()
-              .clientName(namer.getNotImplementedString("IndexRequireView.clientName"))
+          VersionIndexRequireView.newBuilder()
+              .clientName(namer.getNotImplementedString("VersionIndexRequireView.clientName"))
               .fileName(namer.getServiceFileName(apiConfig.getInterfaceConfig(service)))
               .build());
     }
 
-    return IndexView.newBuilder()
+    return VersionIndexView.newBuilder()
         .apiVersion(namer.getApiWrapperModuleVersion())
         // The following assumes that all generated services are generated to the same output path.
         .outputPath(pathMapper.getOutputPath(interfaces.iterator().next(), apiConfig) + ".rb")
