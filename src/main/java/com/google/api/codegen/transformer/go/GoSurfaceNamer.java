@@ -119,12 +119,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSaveOperationResponseTypeName(
       Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
-    String typeName =
-        converter
-            .getTypeNameForElementType(methodConfig.getLongRunningConfig().getReturnType())
-            .getNickname();
-    typeName = unqualifyTypeName(typeName);
-    return publicClassName(Name.anyCamel(typeName).join("operation"));
+    return publicClassName(Name.upperCamel(method.getSimpleName()).join("operation"));
   }
 
   @Override
