@@ -17,14 +17,14 @@ package com.google.api.codegen.viewmodel.metadata;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class IndexRequireView {
+public abstract class VersionIndexRequireView {
 
   public abstract String clientName();
 
   public abstract String fileName();
 
   public static Builder newBuilder() {
-    return new AutoValue_IndexRequireView.Builder();
+    return new AutoValue_VersionIndexRequireView.Builder();
   }
 
   @AutoValue.Builder
@@ -33,6 +33,6 @@ public abstract class IndexRequireView {
 
     public abstract Builder fileName(String val);
 
-    public abstract IndexRequireView build();
+    public abstract VersionIndexRequireView build();
   }
 }

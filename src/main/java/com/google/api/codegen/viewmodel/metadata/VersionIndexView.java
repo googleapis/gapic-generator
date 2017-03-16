@@ -15,13 +15,14 @@
 package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class IndexView implements ViewModel {
+public abstract class VersionIndexView implements ViewModel {
 
   @Override
   public String resourceRoot() {
@@ -35,11 +36,13 @@ public abstract class IndexView implements ViewModel {
   public abstract String outputPath();
 
   @Nullable
-  public abstract IndexRequireView primaryService();
+  public abstract VersionIndexRequireView primaryService();
 
   public abstract String apiVersion();
 
-  public abstract List<IndexRequireView> requireViews();
+  public abstract List<VersionIndexRequireView> requireViews();
+
+  public abstract FileHeaderView fileHeader();
 
   public boolean hasMultipleServices() {
     return requireViews().size() > 1;
@@ -47,7 +50,7 @@ public abstract class IndexView implements ViewModel {
 
   public static Builder newBuilder() {
     // Use v1 as the default version.
-    return new AutoValue_IndexView.Builder().apiVersion("v1");
+    return new AutoValue_VersionIndexView.Builder().apiVersion("v1");
   }
 
   @AutoValue.Builder
@@ -56,12 +59,14 @@ public abstract class IndexView implements ViewModel {
 
     public abstract Builder templateFileName(String val);
 
-    public abstract Builder primaryService(IndexRequireView val);
+    public abstract Builder primaryService(VersionIndexRequireView val);
 
     public abstract Builder apiVersion(String val);
 
-    public abstract Builder requireViews(List<IndexRequireView> val);
+    public abstract Builder requireViews(List<VersionIndexRequireView> val);
 
-    public abstract IndexView build();
+    public abstract Builder fileHeader(FileHeaderView val);
+
+    public abstract VersionIndexView build();
   }
 }

@@ -195,6 +195,7 @@ public class InitCodeTransformer {
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(getFieldSettings(context, argItems))
         .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
+        .versionIndexFileImportName(namer.getVersionIndexFileImportName())
         .apiFileName(namer.getServiceFileName(context.getInterfaceConfig()))
         .build();
   }

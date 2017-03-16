@@ -196,13 +196,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The file name for an API service. */
   @Override
   public String getServiceFileName(InterfaceConfig interfaceConfig) {
-    String[] names = getPackageName().split("::");
-    List<String> newNames = new ArrayList<>();
-    for (String name : names) {
-      newNames.add(packageFilePathPiece(Name.upperCamel(name)));
-    }
-    newNames.add(classFileNameBase(Name.upperCamel(getApiWrapperClassName(interfaceConfig))));
-    return Joiner.on("/").join(newNames.toArray());
+    return getPackageFilePath()
+        + "/"
+        + classFileNameBase(Name.upperCamel(getApiWrapperClassName(interfaceConfig)));
   }
 
   @Override
@@ -255,5 +251,18 @@ public class RubySurfaceNamer extends SurfaceNamer {
       }
     }
     return Joiner.on(" + ").join(stringParts);
+  }
+
+  @Override
+  public String getVersionIndexFileImportName() {
+    return getPackageFilePath();
+  }
+
+  private String getPackageFilePath() {
+    List<String> newNames = new ArrayList<>();
+    for (String name : getPackageName().split("::")) {
+      newNames.add(packageFilePathPiece(Name.upperCamel(name)));
+    }
+    return Joiner.on("/").join(newNames.toArray());
   }
 }
