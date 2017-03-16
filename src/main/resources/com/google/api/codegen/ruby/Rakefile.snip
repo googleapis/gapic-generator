@@ -9,6 +9,12 @@
     {@smokeTestsTask(metadata)}
   @else
   @end
+
+  {@ciTask(metadata)}
+
+  task :default => :test
+
+  {@helpers()}
 @end
 
 @private header(fileHeader)
@@ -73,4 +79,39 @@
     end
   @else
   @end
+@end
+
+@private ciTask(metadata)
+  desc "Run the CI build"
+  task :ci do
+    header "BUILDING {@metadata.identifier}"
+    header "{@metadata.identifier} rubocop", "*"
+    sh "bundle exec rake rubocop"
+    header "{@metadata.identifier} test", "*"
+    sh "bundle exec rake test"
+  end
+
+  namespace :ci do
+    desc "Run the CI build, with smoke_tests."
+    task :smoke_test do
+      Rake::Task["ci"].invoke
+      header "{@metadata.identifier} smoke_test", "*"
+      sh "bundle exec rake smoke_test -v"
+    end
+    task :a do
+      @# This is a handy shortcut to save typing
+      Rake::Task["ci:smoke_test"].invoke
+    end
+  end
+@end
+
+@private helpers()
+  def header str, token = "#"
+    line_length = str.length + 8
+    puts ""
+    puts token * line_length
+    puts "#{token * 3} #{str} #{token * 3}"
+    puts token * line_length
+    puts ""
+  end
 @end
