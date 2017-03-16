@@ -36,7 +36,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-@Deprecated // TODO(eoogbe): This class will be made obselete by MVVM
+// TODO(eoogbe): This class will be made obselete by MVVM
+@Deprecated
 public class PythonImportHandler {
 
   // TODO (geigerj): Read this from configuration?

@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 
-public class CSharpFeatureConfig extends FeatureConfig {
+public class CSharpFeatureConfig extends DefaultFeatureConfig {
   @Override
   public boolean enableMixins() {
     return true;

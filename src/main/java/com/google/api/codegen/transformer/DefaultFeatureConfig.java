@@ -12,13 +12,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.nodejs;
+package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.config.FieldConfig;
 
-public class NodeJSFeatureConfig extends FeatureConfig {
+public class DefaultFeatureConfig implements FeatureConfig {
+
+  @Override
+  public boolean resourceNameTypesEnabled() {
+    return false;
+  }
+
+  @Override
+  public boolean useResourceNameFormatOption(FieldConfig fieldConfig) {
+    return resourceNameTypesEnabled() && fieldConfig != null && fieldConfig.useResourceNameType();
+  }
+
   @Override
   public boolean enableMixins() {
+    return false;
+  }
+
+  @Override
+  public boolean enableGrpcStreaming() {
+    return true;
+  }
+
+  @Override
+  public boolean enableStringFormatFunctions() {
     return true;
   }
 }

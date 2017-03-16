@@ -20,13 +20,13 @@ import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.py.PythonApiMethodParamTransformer;
-import com.google.api.codegen.transformer.py.PythonFeatureConfig;
 import com.google.api.codegen.transformer.py.PythonImportSectionTransformer;
 import com.google.api.codegen.transformer.py.PythonModelTypeNameConverter;
 import com.google.api.codegen.transformer.py.PythonSurfaceNamer;
@@ -154,7 +154,7 @@ public class PythonGapicContext extends GapicContext {
         getApiConfig(),
         modelTypeTable,
         new PythonSurfaceNamer(getApiConfig().getPackageName()),
-        new PythonFeatureConfig());
+        new DefaultFeatureConfig());
   }
 
   public String filePath(ProtoFile file, PythonImportHandler importHandler) {

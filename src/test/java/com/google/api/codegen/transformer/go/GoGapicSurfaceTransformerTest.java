@@ -18,6 +18,7 @@ import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.gapic.PackageNameCodePathMapper;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.tools.framework.model.Interface;
@@ -80,7 +81,7 @@ public class GoGapicSurfaceTransformerTest {
             apiConfig,
             GoGapicSurfaceTransformer.createTypeTable(),
             namer,
-            new GoFeatureConfig());
+            new DefaultFeatureConfig());
   }
 
   @Test

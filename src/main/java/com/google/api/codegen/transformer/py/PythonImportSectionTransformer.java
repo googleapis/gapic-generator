@@ -49,9 +49,10 @@ public class PythonImportSectionTransformer implements InitCodeImportSectionTran
   }
 
   private ImportFileView generateApiImport(MethodTransformerContext context) {
-    return createImport(
-        context.getApiConfig().getPackageName(),
-        context.getNamer().getApiWrapperVariableName(context.getInterfaceConfig()));
+    String moduleName = context.getApiConfig().getPackageName();
+    String attributeName =
+        context.getNamer().getApiWrapperVariableName(context.getInterfaceConfig());
+    return createImport(moduleName, attributeName);
   }
 
   private List<ImportFileView> generateProtoImports(
@@ -90,8 +91,13 @@ public class PythonImportSectionTransformer implements InitCodeImportSectionTran
   }
 
   /**
-   * Orders the imports by: (1) number of attributes (least to most), (2) module name (A-Z), (3)
-   * attribute name (A-Z)
+   * Orders the imports by:
+   *
+   * <ol>
+   *   <li>number of attributes (least to most)
+   *   <li>module name (A-Z)
+   *   <li>attribute name (A-Z)
+   * </ol>
    */
   private Comparator<ImportFileView> importFileViewComparator() {
     return new Comparator<ImportFileView>() {
@@ -122,10 +128,15 @@ public class PythonImportSectionTransformer implements InitCodeImportSectionTran
   /**
    * Generates an import from the fullName and the nickname of a type.
    *
-   * <p>Handles the following cases: (1) Module only -- generateAppImport("foo.Bar", "foo.Bar") =>
-   * import foo (2) Module and attribute -- generateAppImport("foo.bar.Baz", "bar.Baz") => from foo
-   * import bar (3) Module, attribute, local -- generateAppImport("foo.bar.Baz", "qux.Baz") => from
-   * foo import bar as qux
+   * <p>Handles the following cases:
+   *
+   * <ul>
+   *   <li>Module only -- generateAppImport("foo.Bar", "foo.Bar") => import foo
+   *   <li>Module and attribute -- generateAppImport("foo.bar.Baz", "bar.Baz") => from foo import
+   *       bar
+   *   <li>Module, attribute, local -- generateAppImport("foo.bar.Baz", "qux.Baz") => from * foo
+   *       import bar as qux
+   * </ul>
    */
   private ImportFileView generateAppImport(String fullName, String nickname) {
     int nicknameDottedClassIndex = nickname.indexOf(".");
