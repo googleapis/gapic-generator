@@ -374,9 +374,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   private String getExtraFieldDescription(Field field) {
-    boolean fieldIsMap = field.getType().isMessage() && !field.getType().isMap();
+    boolean fieldIsMessage = field.getType().isMessage() && !field.getType().isMap();
     boolean fieldIsEnum = field.getType().isEnum();
-    if (fieldIsMap) {
+    if (fieldIsMessage) {
       return "This object should have the same structure as "
           + commentReformatter.getLinkedElementName(field.getType().getMessageType());
     } else if (fieldIsEnum) {
