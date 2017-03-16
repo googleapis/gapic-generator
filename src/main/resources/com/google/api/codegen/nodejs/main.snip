@@ -261,26 +261,26 @@
         'grpc/' + gaxGrpc.grpcVersion
       );
       @let methods = context.getSupportedMethods(service), \
-           bundlingMethods = context.messages.filterBundlingMethods(ifaceConfig, methods), \
+           batchingMethods = context.messages.filterBatchingMethods(ifaceConfig, methods), \
            longrunningMethods = context.messages.filterLongrunningMethods(ifaceConfig, methods)
-        @if bundlingMethods
+        @if batchingMethods
 
           var bundleDescriptors = {
-            @join method : bundlingMethods on {@", "}.add(BREAK)
-              @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
+            @join method : batchingMethods on {@", "}.add(BREAK)
+              @let batching = ifaceConfig.getMethodConfig(method).getBatching()
                 {@methodName(method)}: new gax.BundleDescriptor(
-                  '{@bundling.getBundledField().getSimpleName()}',
+                  '{@batching.getBatchedField().getSimpleName()}',
                   [
-                    @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
+                    @join fieldSelector : batching.getDiscriminatorFields() on {@", "}.add(BREAK)
                       '{@context.fieldSelectorName(fieldSelector)}'
                     @end
                   ],
-                  @if bundling.hasSubresponseField()
-                    '{@context.propertyName(bundling.getSubresponseField())}',
+                  @if batching.hasSubresponseField()
+                    '{@context.propertyName(batching.getSubresponseField())}',
                   @else
                     null,
                   @end
-                  {@context.getByteLengthFunction(service, method, bundling.getBundledField().getType())})
+                  {@context.getByteLengthFunction(service, method, batching.getBatchedField().getType())})
               @end
             @end
           };

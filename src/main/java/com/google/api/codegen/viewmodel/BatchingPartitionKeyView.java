@@ -14,18 +14,17 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.viewmodel.BundlingDescriptorClassView.Builder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class BundlingPartitionKeyView {
+public abstract class BatchingPartitionKeyView {
 
   public abstract String separatorLiteral();
 
   public abstract String fieldGetFunction();
 
   public static Builder newBuilder() {
-    return new AutoValue_BundlingPartitionKeyView.Builder();
+    return new AutoValue_BatchingPartitionKeyView.Builder();
   }
 
   @AutoValue.Builder
@@ -35,6 +34,6 @@ public abstract class BundlingPartitionKeyView {
 
     public abstract Builder fieldGetFunction(String val);
 
-    public abstract BundlingPartitionKeyView build();
+    public abstract BatchingPartitionKeyView build();
   }
 }

@@ -16,7 +16,7 @@ package com.google.api.codegen.clientconfig;
 
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.BundlingConfig;
+import com.google.api.codegen.config.BatchingConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -31,22 +31,22 @@ public class ClientConfigGapicContext extends GapicContext {
     super(model, config);
   }
 
-  public Map<String, String> bundlingParams(BundlingConfig bundling) {
+  public Map<String, String> batchingParams(BatchingConfig batching) {
     ImmutableMap.Builder<String, String> builder = ImmutableMap.<String, String>builder();
-    if (bundling.getElementCountThreshold() > 0) {
-      builder.put("element_count_threshold", Integer.toString(bundling.getElementCountThreshold()));
+    if (batching.getElementCountThreshold() > 0) {
+      builder.put("element_count_threshold", Integer.toString(batching.getElementCountThreshold()));
     }
-    if (bundling.getElementCountLimit() > 0) {
-      builder.put("element_count_limit", Integer.toString(bundling.getElementCountLimit()));
+    if (batching.getElementCountLimit() > 0) {
+      builder.put("element_count_limit", Integer.toString(batching.getElementCountLimit()));
     }
-    if (bundling.getRequestByteThreshold() > 0) {
-      builder.put("request_byte_threshold", Long.toString(bundling.getRequestByteThreshold()));
+    if (batching.getRequestByteThreshold() > 0) {
+      builder.put("request_byte_threshold", Long.toString(batching.getRequestByteThreshold()));
     }
-    if (bundling.getRequestByteLimit() > 0) {
-      builder.put("request_byte_limit", Long.toString(bundling.getRequestByteLimit()));
+    if (batching.getRequestByteLimit() > 0) {
+      builder.put("request_byte_limit", Long.toString(batching.getRequestByteLimit()));
     }
-    if (bundling.getDelayThresholdMillis() > 0) {
-      builder.put("delay_threshold_millis", Long.toString(bundling.getDelayThresholdMillis()));
+    if (batching.getDelayThresholdMillis() > 0) {
+      builder.put("delay_threshold_millis", Long.toString(batching.getDelayThresholdMillis()));
     }
     return builder.build();
   }

@@ -177,7 +177,7 @@
       private final PagedCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.memberName};
-    @case "BundlingApiCallable"
+    @case "BatchingApiCallable"
       private final BatchingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "StreamingApiCallable"
@@ -210,7 +210,7 @@
           {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
-    @case "BundlingApiCallable"
+    @case "BatchingApiCallable"
       public BatchingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
@@ -314,7 +314,7 @@
 @end
 
 @private batchingDescriptors(xsettingsClass)
-  @join desc : xsettingsClass.bundlingDescriptors
+  @join desc : xsettingsClass.batchingDescriptors
     private static final BatchingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}> {@desc.name} =
         new BatchingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}>() {
           @@Override
@@ -331,7 +331,7 @@
                 if (builder == null) {
                   builder = request.toBuilder();
                 } else {
-                  builder.{@desc.bundledFieldSetFunction}(request.{@desc.bundledFieldGetFunction}());
+                  builder.{@desc.batchedFieldSetFunction}(request.{@desc.batchedFieldGetFunction}());
                 }
               }
               @@Override
@@ -375,7 +375,7 @@
 
           @@Override
           public long countElements({@desc.requestTypeName} request) {
-            return request.{@desc.bundledFieldCountGetFunction}();
+            return request.{@desc.batchedFieldCountGetFunction}();
           }
 
           @@Override
@@ -426,7 +426,7 @@
       private final PagedCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.memberName};
-    @case "BundlingApiCallable"
+    @case "BatchingApiCallable"
       private final BatchingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "StreamingApiCallable"
@@ -496,10 +496,10 @@
         {@settings.memberName} = PagedCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
             {@settings.pagedListResponseFactoryName});
-      @case "BundlingApiCallable"
+      @case "BatchingApiCallable"
         {@settings.memberName} = BatchingCallSettings.newBuilder(
             {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
-            {@settings.bundlingDescriptorName})
+            {@settings.batchingDescriptorName})
                 .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
       @case "StreamingApiCallable"
         {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcTypeName}.{@settings.grpcMethodConstant});
@@ -529,20 +529,20 @@
       {@""}
       # batching settings
       @switch settings.type
-      @case "BundlingApiCallable"
+      @case "BatchingApiCallable"
         builder.{@settings.settingsGetFunction}().getBatchingSettingsBuilder()
-            .setElementCountThreshold({@settings.bundlingConfig.elementCountThreshold})
-            .setRequestByteThreshold({@settings.bundlingConfig.requestByteThreshold})
-            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}))
+            .setElementCountThreshold({@settings.batchingConfig.elementCountThreshold})
+            .setRequestByteThreshold({@settings.batchingConfig.requestByteThreshold})
+            .setDelayThreshold(Duration.millis({@settings.batchingConfig.delayThresholdMillis}))
             .setFlowControlSettings(
               FlowControlSettings.newBuilder()
-                @if settings.bundlingConfig.hasFlowControlElementLimit
-                  .setMaxOutstandingElementCount({@settings.bundlingConfig.flowControlElementLimit})
+                @if settings.batchingConfig.hasFlowControlElementLimit
+                  .setMaxOutstandingElementCount({@settings.batchingConfig.flowControlElementLimit})
                 @end
-                @if settings.bundlingConfig.hasFlowControlByteLimit
-                  .setMaxOutstandingRequestBytes({@settings.bundlingConfig.flowControlByteLimit})
+                @if settings.batchingConfig.hasFlowControlByteLimit
+                  .setMaxOutstandingRequestBytes({@settings.batchingConfig.flowControlByteLimit})
                 @end
-                .setLimitExceededBehavior(LimitExceededBehavior.{@settings.bundlingConfig.flowControlLimitExceededBehavior})
+                .setLimitExceededBehavior(LimitExceededBehavior.{@settings.batchingConfig.flowControlLimitExceededBehavior})
                 .build());
       @default
       @end
@@ -615,7 +615,7 @@
           {@settings.responseTypeName}, {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
-    @case "BundlingApiCallable"
+    @case "BatchingApiCallable"
       public BatchingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};

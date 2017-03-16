@@ -193,7 +193,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getBundlingDescriptorConstName(Method method) {
+  public String getBatchingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("batching_desc"));
   }
 }

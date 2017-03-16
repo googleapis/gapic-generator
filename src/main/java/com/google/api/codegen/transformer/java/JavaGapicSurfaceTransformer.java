@@ -23,7 +23,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.BundlingTransformer;
+import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -71,7 +71,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private final StaticLangApiMethodTransformer apiMethodTransformer =
       new StaticLangApiMethodTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
-  private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -365,7 +365,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         pageStreamingTransformer.generateDescriptorClasses(context));
     xsettingsClass.pagedListResponseFactories(
         pageStreamingTransformer.generateFactoryClasses(context));
-    xsettingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
+    xsettingsClass.batchingDescriptors(batchingTransformer.generateDescriptorClasses(context));
     xsettingsClass.retryCodesDefinitions(
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
     xsettingsClass.retryParamsDefinitions(
@@ -457,7 +457,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     }
-    if (interfaceConfig.hasBundlingMethods()) {
+    if (interfaceConfig.hasBatchingMethods()) {
       typeTable.saveNicknameFor("com.google.api.gax.batching.BatchingSettings");
       typeTable.saveNicknameFor("com.google.api.gax.batching.RequestBuilder");
       typeTable.saveNicknameFor("com.google.api.gax.core.FlowController");

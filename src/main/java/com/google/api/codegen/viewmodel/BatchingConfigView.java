@@ -18,7 +18,7 @@ import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class BundlingConfigView {
+public abstract class BatchingConfigView {
   public abstract int elementCountThreshold();
 
   public abstract long requestByteThreshold();
@@ -46,7 +46,7 @@ public abstract class BundlingConfigView {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_BundlingConfigView.Builder();
+    return new AutoValue_BatchingConfigView.Builder();
   }
 
   @AutoValue.Builder
@@ -67,6 +67,6 @@ public abstract class BundlingConfigView {
 
     public abstract Builder flowControlLimitExceededBehavior(String val);
 
-    public abstract BundlingConfigView build();
+    public abstract BatchingConfigView build();
   }
 }

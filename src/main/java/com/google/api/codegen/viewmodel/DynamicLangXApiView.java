@@ -50,7 +50,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
   @Nullable
-  public abstract List<BundlingDescriptorView> bundlingDescriptors();
+  public abstract List<BatchingDescriptorView> batchingDescriptors();
 
   public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
 
@@ -72,7 +72,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract boolean hasPageStreamingMethods();
 
-  public abstract boolean hasBundlingMethods();
+  public abstract boolean hasBatchingMethods();
 
   public abstract boolean hasLongRunningOperations();
 
@@ -140,7 +140,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder pageStreamingDescriptors(List<PageStreamingDescriptorView> val);
 
-    public abstract Builder bundlingDescriptors(List<BundlingDescriptorView> val);
+    public abstract Builder batchingDescriptors(List<BatchingDescriptorView> val);
 
     public abstract Builder longRunningDescriptors(List<LongRunningOperationDetailView> val);
 
@@ -162,7 +162,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder hasPageStreamingMethods(boolean val);
 
-    public abstract Builder hasBundlingMethods(boolean val);
+    public abstract Builder hasBatchingMethods(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
 

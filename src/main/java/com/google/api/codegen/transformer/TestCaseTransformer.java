@@ -215,9 +215,9 @@ public class TestCaseTransformer {
           InitCodeNode.createWithValue(
               responseTokenName, InitValueConfig.createWithValue(InitValue.createLiteral(""))));
     }
-    if (context.getMethodConfig().isBundling()) {
-      // Initialize one bundling element if it is bundling.
-      BundlingConfig config = context.getMethodConfig().getBundling();
+    if (context.getMethodConfig().isBatching()) {
+      // Initialize one batching element if it is batching.
+      BatchingConfig config = context.getMethodConfig().getBatching();
       if (config.getSubresponseField() != null) {
         String subResponseFieldName = config.getSubresponseField().getSimpleName();
         additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));

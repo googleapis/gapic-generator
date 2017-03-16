@@ -57,7 +57,7 @@ public abstract class StaticLangSettingsView {
 
   public abstract List<PagedListResponseFactoryClassView> pagedListResponseFactories();
 
-  public abstract List<BundlingDescriptorClassView> bundlingDescriptors();
+  public abstract List<BatchingDescriptorClassView> batchingDescriptors();
 
   public abstract List<RetryCodesDefinitionView> retryCodesDefinitions();
 
@@ -93,7 +93,7 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder pagedListResponseFactories(List<PagedListResponseFactoryClassView> val);
 
-    public abstract Builder bundlingDescriptors(List<BundlingDescriptorClassView> val);
+    public abstract Builder batchingDescriptors(List<BatchingDescriptorClassView> val);
 
     public abstract Builder retryCodesDefinitions(List<RetryCodesDefinitionView> val);
 

@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.BundlingConfig;
+import com.google.api.codegen.config.BatchingConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.viewmodel.BundlingConfigView;
-import com.google.api.codegen.viewmodel.BundlingDescriptorClassView;
-import com.google.api.codegen.viewmodel.BundlingDescriptorView;
-import com.google.api.codegen.viewmodel.BundlingPartitionKeyView;
+import com.google.api.codegen.viewmodel.BatchingConfigView;
+import com.google.api.codegen.viewmodel.BatchingDescriptorClassView;
+import com.google.api.codegen.viewmodel.BatchingDescriptorView;
+import com.google.api.codegen.viewmodel.BatchingPartitionKeyView;
 import com.google.api.codegen.viewmodel.FieldCopyView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
@@ -30,20 +30,20 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BundlingTransformer {
+public class BatchingTransformer {
 
-  public List<BundlingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
+  public List<BatchingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
-    ImmutableList.Builder<BundlingDescriptorView> descriptors = ImmutableList.builder();
-    for (Method method : context.getBundlingMethods()) {
-      BundlingConfig bundling = context.getMethodConfig(method).getBundling();
-      BundlingDescriptorView.Builder descriptor = BundlingDescriptorView.newBuilder();
+    ImmutableList.Builder<BatchingDescriptorView> descriptors = ImmutableList.builder();
+    for (Method method : context.getBatchingMethods()) {
+      BatchingConfig batching = context.getMethodConfig(method).getBatching();
+      BatchingDescriptorView.Builder descriptor = BatchingDescriptorView.newBuilder();
       descriptor.methodName(namer.getMethodKey(method));
-      descriptor.bundledFieldName(namer.getFieldName(bundling.getBundledField()));
-      descriptor.discriminatorFieldNames(generateDiscriminatorFieldNames(bundling));
+      descriptor.batchedFieldName(namer.getFieldName(batching.getBatchedField()));
+      descriptor.discriminatorFieldNames(generateDiscriminatorFieldNames(batching));
 
-      if (bundling.hasSubresponseField()) {
-        descriptor.subresponseFieldName(namer.getFieldName(bundling.getSubresponseField()));
+      if (batching.hasSubresponseField()) {
+        descriptor.subresponseFieldName(namer.getFieldName(batching.getSubresponseField()));
       }
 
       descriptors.add(descriptor.build());
@@ -51,13 +51,13 @@ public class BundlingTransformer {
     return descriptors.build();
   }
 
-  public List<BundlingDescriptorClassView> generateDescriptorClasses(
+  public List<BatchingDescriptorClassView> generateDescriptorClasses(
       SurfaceTransformerContext context) {
-    List<BundlingDescriptorClassView> descriptors = new ArrayList<>();
+    List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      if (!methodConfig.isBundling()) {
+      if (!methodConfig.isBatching()) {
         continue;
       }
       descriptors.add(generateDescriptorClass(context.asRequestMethodContext(method)));
@@ -66,56 +66,56 @@ public class BundlingTransformer {
     return descriptors;
   }
 
-  public BundlingConfigView generateBundlingConfig(MethodTransformerContext context) {
-    BundlingConfig bundlingConfig = context.getMethodConfig().getBundling();
-    BundlingConfigView.Builder bundlingConfigView = BundlingConfigView.newBuilder();
+  public BatchingConfigView generateBatchingConfig(MethodTransformerContext context) {
+    BatchingConfig batchingConfig = context.getMethodConfig().getBatching();
+    BatchingConfigView.Builder batchingConfigView = BatchingConfigView.newBuilder();
 
-    bundlingConfigView.elementCountThreshold(bundlingConfig.getElementCountThreshold());
-    bundlingConfigView.elementCountLimit(bundlingConfig.getElementCountLimit());
-    bundlingConfigView.requestByteThreshold(bundlingConfig.getRequestByteThreshold());
-    bundlingConfigView.requestByteLimit(bundlingConfig.getRequestByteLimit());
-    bundlingConfigView.delayThresholdMillis(bundlingConfig.getDelayThresholdMillis());
-    bundlingConfigView.flowControlElementLimit(bundlingConfig.getFlowControlElementLimit());
-    bundlingConfigView.flowControlByteLimit(bundlingConfig.getFlowControlByteLimit());
-    bundlingConfigView.flowControlLimitExceededBehavior(
-        bundlingConfig.getFlowControlLimitConfig().toString());
+    batchingConfigView.elementCountThreshold(batchingConfig.getElementCountThreshold());
+    batchingConfigView.elementCountLimit(batchingConfig.getElementCountLimit());
+    batchingConfigView.requestByteThreshold(batchingConfig.getRequestByteThreshold());
+    batchingConfigView.requestByteLimit(batchingConfig.getRequestByteLimit());
+    batchingConfigView.delayThresholdMillis(batchingConfig.getDelayThresholdMillis());
+    batchingConfigView.flowControlElementLimit(batchingConfig.getFlowControlElementLimit());
+    batchingConfigView.flowControlByteLimit(batchingConfig.getFlowControlByteLimit());
+    batchingConfigView.flowControlLimitExceededBehavior(
+        batchingConfig.getFlowControlLimitConfig().toString());
 
-    return bundlingConfigView.build();
+    return batchingConfigView.build();
   }
 
-  private List<String> generateDiscriminatorFieldNames(BundlingConfig bundling) {
+  private List<String> generateDiscriminatorFieldNames(BatchingConfig batching) {
     ImmutableList.Builder<String> fieldNames = ImmutableList.builder();
-    for (FieldSelector fieldSelector : bundling.getDiscriminatorFields()) {
+    for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {
       fieldNames.add(fieldSelector.getParamName());
     }
     return fieldNames.build();
   }
 
-  private BundlingDescriptorClassView generateDescriptorClass(MethodTransformerContext context) {
+  private BatchingDescriptorClassView generateDescriptorClass(MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    BundlingConfig bundling = context.getMethodConfig().getBundling();
+    BatchingConfig batching = context.getMethodConfig().getBatching();
 
-    Field bundledField = bundling.getBundledField();
-    TypeRef bundledType = bundledField.getType();
-    Name bundledTypeName = Name.from(bundledField.getSimpleName());
+    Field batchedField = batching.getBatchedField();
+    TypeRef batchedType = batchedField.getType();
+    Name batchedTypeName = Name.from(batchedField.getSimpleName());
 
-    Field subresponseField = bundling.getSubresponseField();
+    Field subresponseField = batching.getSubresponseField();
 
-    BundlingDescriptorClassView.Builder desc = BundlingDescriptorClassView.newBuilder();
+    BatchingDescriptorClassView.Builder desc = BatchingDescriptorClassView.newBuilder();
 
-    desc.name(namer.getBundlingDescriptorConstName(method));
+    desc.name(namer.getBatchingDescriptorConstName(method));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    desc.bundledFieldTypeName(typeTable.getAndSaveNicknameFor(bundledType));
+    desc.batchedFieldTypeName(typeTable.getAndSaveNicknameFor(batchedType));
 
     desc.partitionKeys(generatePartitionKeys(context));
     desc.discriminatorFieldCopies(generateDiscriminatorFieldCopies(context));
 
-    desc.bundledFieldGetFunction(namer.getFieldGetFunctionName(bundledType, bundledTypeName));
-    desc.bundledFieldSetFunction(namer.getFieldSetFunctionName(bundledType, bundledTypeName));
-    desc.bundledFieldCountGetFunction(namer.getFieldCountGetFunctionName(bundledField));
+    desc.batchedFieldGetFunction(namer.getFieldGetFunctionName(batchedType, batchedTypeName));
+    desc.batchedFieldSetFunction(namer.getFieldSetFunctionName(batchedType, batchedTypeName));
+    desc.batchedFieldCountGetFunction(namer.getFieldCountGetFunctionName(batchedField));
 
     if (subresponseField != null) {
       TypeRef subresponseType = subresponseField.getType();
@@ -129,14 +129,14 @@ public class BundlingTransformer {
     return desc.build();
   }
 
-  private List<BundlingPartitionKeyView> generatePartitionKeys(MethodTransformerContext context) {
-    List<BundlingPartitionKeyView> keys = new ArrayList<>();
-    BundlingConfig bundling = context.getMethodConfig().getBundling();
-    for (FieldSelector fieldSelector : bundling.getDiscriminatorFields()) {
+  private List<BatchingPartitionKeyView> generatePartitionKeys(MethodTransformerContext context) {
+    List<BatchingPartitionKeyView> keys = new ArrayList<>();
+    BatchingConfig batching = context.getMethodConfig().getBatching();
+    for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {
       TypeRef selectedType = fieldSelector.getLastField().getType();
       Name selectedTypeName = Name.from(fieldSelector.getLastField().getSimpleName());
-      BundlingPartitionKeyView key =
-          BundlingPartitionKeyView.newBuilder()
+      BatchingPartitionKeyView key =
+          BatchingPartitionKeyView.newBuilder()
               .separatorLiteral("\"|\"")
               .fieldGetFunction(
                   context.getNamer().getFieldGetFunctionName(selectedType, selectedTypeName))
@@ -148,8 +148,8 @@ public class BundlingTransformer {
 
   private List<FieldCopyView> generateDiscriminatorFieldCopies(MethodTransformerContext context) {
     List<FieldCopyView> fieldCopies = new ArrayList<>();
-    BundlingConfig bundling = context.getMethodConfig().getBundling();
-    for (FieldSelector fieldSelector : bundling.getDiscriminatorFields()) {
+    BatchingConfig batching = context.getMethodConfig().getBatching();
+    for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {
       TypeRef selectedType = fieldSelector.getLastField().getType();
       Name selectedTypeName = Name.from(fieldSelector.getLastField().getSimpleName());
       FieldCopyView fieldCopy =

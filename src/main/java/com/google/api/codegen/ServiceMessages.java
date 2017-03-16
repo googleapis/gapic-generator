@@ -55,18 +55,18 @@ public class ServiceMessages {
     return Iterables.filter(methods, isPageStreaming);
   }
 
-  /** Inputs a list of methods and returns only those which are bundling. */
-  public Iterable<Method> filterBundlingMethods(
+  /** Inputs a list of methods and returns only those which are batching. */
+  public Iterable<Method> filterBatchingMethods(
       final InterfaceConfig config, List<Method> methods) {
-    Predicate<Method> isBundling =
+    Predicate<Method> isBatching =
         new Predicate<Method>() {
           @Override
           public boolean apply(Method method) {
-            return config.getMethodConfig(method).isBundling();
+            return config.getMethodConfig(method).isBatching();
           }
         };
 
-    return Iterables.filter(methods, isBundling);
+    return Iterables.filter(methods, isBatching);
   }
 
   public Iterable<Method> filterLongrunningMethods(

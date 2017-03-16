@@ -365,9 +365,9 @@ public abstract class InterfaceConfig {
     return false;
   }
 
-  public boolean hasBundlingMethods() {
+  public boolean hasBatchingMethods() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
-      if (methodConfig.isBundling()) {
+      if (methodConfig.isBatching()) {
         return true;
       }
     }
