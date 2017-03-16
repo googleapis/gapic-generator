@@ -16,10 +16,12 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.metadata.IndexRequireView;
-import com.google.api.codegen.viewmodel.metadata.IndexView;
+import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
+import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
@@ -52,12 +54,14 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ViewModel> generateIndexViews(
       Iterable<Interface> services, NodeJSSurfaceNamer namer, ApiConfig apiConfig) {
+    FileHeaderTransformer fileHeaderTransformer =
+        new FileHeaderTransformer(new NodeJSImportSectionTransformer());
     ArrayList<ViewModel> indexViews = new ArrayList<>();
 
-    ArrayList<IndexRequireView> requireViews = new ArrayList<>();
+    ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
     for (Interface service : services) {
       requireViews.add(
-          IndexRequireView.newBuilder()
+          VersionIndexRequireView.newBuilder()
               .clientName(namer.getApiWrapperVariableName(apiConfig.getInterfaceConfig(service)))
               .fileName(namer.getClientFileName(service))
               .build());
@@ -65,12 +69,15 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     String version = namer.getApiWrapperModuleVersion();
     boolean hasVersion = version != null && !version.isEmpty();
     String indexOutputPath = hasVersion ? "src/" + version + "/index.js" : "src/index.js";
-    IndexView.Builder indexViewbuilder =
-        IndexView.newBuilder()
+    VersionIndexView.Builder indexViewbuilder =
+        VersionIndexView.newBuilder()
             .templateFileName(INDEX_TEMPLATE_FILE)
             .outputPath(indexOutputPath)
             .requireViews(requireViews)
-            .primaryService(requireViews.get(0));
+            .primaryService(requireViews.get(0))
+            .fileHeader(
+                fileHeaderTransformer.generateFileHeader(
+                    apiConfig, ImportSectionView.newBuilder().build(), namer));
     if (hasVersion) {
       indexViewbuilder.apiVersion(version);
     }
@@ -78,12 +85,15 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
     if (hasVersion) {
       String versionIndexOutputPath = "src/index.js";
-      IndexView.Builder versionIndexViewBuilder =
-          IndexView.newBuilder()
+      VersionIndexView.Builder versionIndexViewBuilder =
+          VersionIndexView.newBuilder()
               .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
               .outputPath(versionIndexOutputPath)
-              .requireViews(new ArrayList<IndexRequireView>())
-              .apiVersion(version);
+              .requireViews(new ArrayList<VersionIndexRequireView>())
+              .apiVersion(version)
+              .fileHeader(
+                  fileHeaderTransformer.generateFileHeader(
+                      apiConfig, ImportSectionView.newBuilder().build(), namer));
       indexViews.add(versionIndexViewBuilder.build());
     }
     return indexViews;
