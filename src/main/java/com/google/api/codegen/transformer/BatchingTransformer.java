@@ -46,6 +46,8 @@ public class BatchingTransformer {
         descriptor.subresponseFieldName(namer.getFieldName(batching.getSubresponseField()));
       }
 
+      descriptor.byteLengthFunctionName(
+          namer.getByteLengthFunctionName(batching.getBatchedField().getType()));
       descriptors.add(descriptor.build());
     }
     return descriptors.build();

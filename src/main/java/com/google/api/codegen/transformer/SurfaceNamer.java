@@ -16,9 +16,11 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.OneofConfig;
+import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -442,6 +444,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getAsyncApiMethodName(method, visibility);
   }
 
+  public String getByteLengthFunctionName(TypeRef typeRef) {
+    return getNotImplementedString("SurfaceNamer.getByteLengthFunctionName");
+  }
+
   /////////////////////////////////////// Variable names //////////////////////////////////////////
 
   /**
@@ -829,6 +835,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getRequestTypeName");
   }
 
+  public String getStreamTypeName(GrpcStreamingConfig.GrpcStreamingType type) {
+    return getNotImplementedString("SurfaceNamer.getStreamTypeName");
+  }
+
   /////////////////////////////////////// Resource names //////////////////////////////////////////
 
   public String getResourceParameterName(ResourceNameConfig resourceNameConfig) {
@@ -894,6 +904,28 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The parameter name for the entity for the given collection config. */
   public String getEntityNameParamName(SingleResourceNameConfig resourceNameConfig) {
     return localVarName(Name.from(resourceNameConfig.getEntityName(), "name"));
+  }
+
+  /////////////////////////////////////// Page Streaming ////////////////////////////////////////
+
+  /** The formatted field name of a page streaming request token. */
+  public String getRequestTokenFieldName(PageStreamingConfig pageStreaming) {
+    return keyName(Name.from(pageStreaming.getRequestTokenField().getSimpleName()));
+  }
+
+  /** The formatted name of a page streaming page size field. */
+  public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
+    return keyName(Name.from(pageStreaming.getPageSizeField().getSimpleName()));
+  }
+
+  /** The formatted field name of a page streaming response token. */
+  public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
+    return keyName(Name.from(pageStreaming.getResponseTokenField().getSimpleName()));
+  }
+
+  /** The formatted name of a page streaming resources field. */
+  public String getResourcesFieldName(PageStreamingConfig pageStreaming) {
+    return keyName(Name.from(pageStreaming.getResourcesFieldName()));
   }
 
   ///////////////////////////////////// Constant & Keyword ////////////////////////////////////////
@@ -996,6 +1028,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the import for a specific grpcClient */
   public String getGrpcClientImportName(Interface service) {
     return getNotImplementedString("SurfaceNamer.getGrpcClientImportName");
+  }
+
+  public String getVersionIndexFileImportName() {
+    return getNotImplementedString("SurfaceNamer.getVersionIndexFileImportName");
   }
 
   /////////////////////////////////// Docs & Annotations //////////////////////////////////////////

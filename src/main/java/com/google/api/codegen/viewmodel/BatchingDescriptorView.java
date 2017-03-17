@@ -26,6 +26,8 @@ public abstract class BatchingDescriptorView {
 
   public abstract List<String> discriminatorFieldNames();
 
+  public abstract String byteLengthFunctionName();
+
   @Nullable
   public abstract String subresponseFieldName();
 
@@ -46,6 +48,8 @@ public abstract class BatchingDescriptorView {
     public abstract Builder subresponseFieldName(String val);
 
     public abstract Builder discriminatorFieldNames(List<String> val);
+
+    public abstract Builder byteLengthFunctionName(String val);
 
     public abstract BatchingDescriptorView build();
   }

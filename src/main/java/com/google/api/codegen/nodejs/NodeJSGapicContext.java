@@ -77,8 +77,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   public NodeJSGapicContext(Model model, ApiConfig apiConfig, PackageMetadataConfig packageConfig) {
     super(model, apiConfig);
-    this.packageConfig = packageConfig;
-    namer = new NodeJSSurfaceNamer(getApiConfig().getPackageName());
+    namer =
+        new NodeJSSurfaceNamer(getApiConfig().getPackageName(), NodeJSUtils.isGcloud(apiConfig));
   }
 
   @Override

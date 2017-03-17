@@ -37,17 +37,21 @@ import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
+import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
-/** The ModelToViewTransfomer to transform a Model into the standard GAPIC surface in Ruby. */
+/** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Ruby. */
 public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
+  private static final String VERSION_INDEX_TEMPLATE_FILE = "ruby/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "ruby/main.snip";
 
   private final GapicCodePathMapper pathMapper;
@@ -70,11 +74,18 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return ImmutableList.of(XAPI_TEMPLATE_FILENAME);
+    return ImmutableList.of(XAPI_TEMPLATE_FILENAME, VERSION_INDEX_TEMPLATE_FILE);
   }
 
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+    ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
+    views.add(generateVersionIndexView(model, apiConfig));
+    views.addAll(generateApiClasses(model, apiConfig));
+    return views.build();
+  }
+
+  private List<ViewModel> generateApiClasses(Model model, ApiConfig apiConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
     FeatureConfig featureConfig = new RubyFeatureConfig();
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
@@ -153,5 +164,29 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
     }
     return apiMethods.build();
+  }
+
+  private ViewModel generateVersionIndexView(Model model, ApiConfig apiConfig) {
+    SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
+    ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
+    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
+    for (Interface service : interfaces) {
+      requireViews.add(
+          VersionIndexRequireView.newBuilder()
+              .clientName(namer.getNotImplementedString("VersionIndexRequireView.clientName"))
+              .fileName(namer.getServiceFileName(apiConfig.getInterfaceConfig(service)))
+              .build());
+    }
+
+    return VersionIndexView.newBuilder()
+        .apiVersion(namer.getApiWrapperModuleVersion())
+        // The following assumes that all generated services are generated to the same output path.
+        .outputPath(pathMapper.getOutputPath(interfaces.iterator().next(), apiConfig) + ".rb")
+        .requireViews(requireViews.build())
+        .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
+        .fileHeader(
+            fileHeaderTransformer.generateFileHeader(
+                apiConfig, ImportSectionView.newBuilder().build(), namer))
+        .build();
   }
 }
