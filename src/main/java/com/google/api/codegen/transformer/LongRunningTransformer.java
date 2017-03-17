@@ -19,8 +19,20 @@ import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
+import com.google.api.tools.framework.model.Method;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 public class LongRunningTransformer {
+  public List<LongRunningOperationDetailView> generateDetailViews(
+      SurfaceTransformerContext context) {
+    ImmutableList.Builder<LongRunningOperationDetailView> views = ImmutableList.builder();
+    for (Method method : context.getLongRunningMethods()) {
+      views.add(generateDetailView(context.asDynamicMethodContext(method)));
+    }
+    return views.build();
+  }
+
   public LongRunningOperationDetailView generateDetailView(MethodTransformerContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
     LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();

@@ -101,13 +101,21 @@ public abstract class DynamicLangXApiView implements ViewModel {
   @Nullable
   public abstract String packageVersion();
 
+  @Nullable
+  public abstract List<String> validDescriptorsNames();
+
+  @Nullable
+  public abstract String constructorName();
+
+  public abstract boolean isGcloud();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_DynamicLangXApiView.Builder();
+    return new AutoValue_DynamicLangXApiView.Builder().isGcloud(false);
   }
 
   @AutoValue.Builder
@@ -173,6 +181,12 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder toolkitVersion(String val);
 
     public abstract Builder packageVersion(String val);
+
+    public abstract Builder validDescriptorsNames(List<String> strings);
+
+    public abstract Builder constructorName(String val);
+
+    public abstract Builder isGcloud(boolean val);
 
     public abstract DynamicLangXApiView build();
   }
