@@ -39,7 +39,7 @@ namespace :test do
 end
 
 desc "Runs the smoke tests."
-task :smoke_test do |t, args|
+task :smoke_test do
   if ENV["SMOKE_TEST_PROJECT"].nil?
     fail "The SMOKE_TEST_PROJECT environment variable must be set. "\
       "e.g SMOKE_TEST_PROJECT=test123 rake smoke_test"
@@ -51,7 +51,7 @@ end
 
 namespace :smoke_test do
   desc "Runs smoke tests with coverage."
-  task :coverage do |t, args|
+  task :coverage do
     require "simplecov"
     SimpleCov.start do
       command_name "library"
