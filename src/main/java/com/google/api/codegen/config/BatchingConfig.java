@@ -40,8 +40,8 @@ public abstract class BatchingConfig {
   public static BatchingConfig createBatching(
       DiagCollector diagCollector, BatchingConfigProto batchingConfig, Method method) {
 
-    BatchingDescriptorProto batchDescriptor = batchingConfig.getBundleDescriptor();
-    String batchedFieldName = batchDescriptor.getBundledField();
+    BatchingDescriptorProto batchDescriptor = batchingConfig.getBatchDescriptor();
+    String batchedFieldName = batchDescriptor.getBatchedField();
     Field batchedField = method.getInputType().getMessageType().lookupField(batchedFieldName);
     if (batchedField == null) {
       diagCollector.addDiag(

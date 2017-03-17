@@ -145,9 +145,9 @@ public abstract class MethodConfig {
     }
 
     BatchingConfig batching = null;
-    if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBundling())) {
+    if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
       batching =
-          BatchingConfig.createBatching(diagCollector, methodConfigProto.getBundling(), method);
+          BatchingConfig.createBatching(diagCollector, methodConfigProto.getBatching(), method);
       if (batching == null) {
         error = true;
       }

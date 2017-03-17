@@ -49,12 +49,12 @@ option java_package = "com.google.api.codegen";
 //           response:
 //             token_field: next_page_token
 //             resources_field: books
-//         bundling:
+//         batching:
 //           thresholds:
 //             element_count_threshold: 5
 //             request_byte_threshold: 16384
-//           bundle_descriptor:
-//             bundled_field: pictures
+//           batch_descriptor:
+//             batched_field: pictures
 //             request_discriminator_fields:
 //             - album
 //             - labels
@@ -244,7 +244,7 @@ message MethodConfigProto {
   uint64 timeout_millis = 11;
 
   // Specifies the configuration for batching.
-  BatchingConfigProto bundling = 6;
+  BatchingConfigProto batching = 6;
 
   // Turns on or off the generation of a method whose sole parameter is
   // a request object. Not all languages will generate this method.
@@ -378,7 +378,7 @@ message BatchingConfigProto {
   BatchingSettingsProto thresholds = 1;
 
   // The request and response fields used in batching.
-  BatchingDescriptorProto bundle_descriptor = 2;
+  BatchingDescriptorProto batch_descriptor = 2;
 }
 
 // `BatchingSettingsProto` specifies a set of batching thresholds, each of
@@ -423,7 +423,7 @@ enum FlowControlLimitExceededBehaviorProto {
 // used for demultiplexing.
 message BatchingDescriptorProto {
   // The repeated field in the request message to be aggregated by batching.
-  string bundled_field = 1;
+  string batched_field = 1;
 
   // A list of the fields in the request message. Two requests will be batched
   // together only if the values of every field specified in
