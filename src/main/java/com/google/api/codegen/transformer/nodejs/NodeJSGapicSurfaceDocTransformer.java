@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -58,7 +59,8 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
             new JSTypeTable(apiConfig.getPackageName()),
             new NodeJSModelTypeNameConverter(apiConfig.getPackageName()));
     // Use file path for package name to get file-specific package instead of package for the API.
-    SurfaceNamer namer = new NodeJSSurfaceNamer(apiConfig.getPackageName());
+    SurfaceNamer namer =
+        new NodeJSSurfaceNamer(apiConfig.getPackageName(), NodeJSUtils.isGcloud(apiConfig));
     JSCommentReformatter commentReformatter = new JSCommentReformatter();
     GrpcDocView.Builder doc = GrpcDocView.newBuilder();
     doc.templateFileName(DOC_TEMPLATE_FILENAME);

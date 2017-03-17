@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
+import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
@@ -74,7 +75,8 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    NodeJSSurfaceNamer namer = new NodeJSSurfaceNamer(apiConfig.getPackageName());
+    NodeJSSurfaceNamer namer =
+        new NodeJSSurfaceNamer(apiConfig.getPackageName(), NodeJSUtils.isGcloud(apiConfig));
     models.add(generateTestView(model, apiConfig, namer));
     return models;
   }
