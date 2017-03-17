@@ -49,7 +49,9 @@
        *
      @end
    @end
-   {@properties(message)}
+   @if properties(message)
+     {@properties(message)}
+   @end
    * @@class
    * @@see [{@message.fullName} definition in proto format]{@@link {@message.fileUrl}}
    */
@@ -72,11 +74,13 @@
    * @@enum {number}
    */
   {@header}
-    @join value : enum.values() on ",".add(BREAK).add(BREAK)
+    @join value : enum.values() on ",".add(BREAK)
       @if value.lines
+
         /**
          {@comments(value.lines)}
          */
+      
       @end
       {@value.name}: {@value.number}
     @end
@@ -90,7 +94,9 @@
      *
    @end
    * @@external "{@message.fullName}"
-   {@properties(message)}
+   @if properties(message)
+     {@properties(message)}
+   @end
    * @@see [{@message.fullName} definition in proto format]{@@link {@message.fileUrl}}
    */
 @end
