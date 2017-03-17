@@ -45,6 +45,14 @@ public class JavaTypeNameGenerator extends TypeNameGenerator {
     // method signature.
     List<String> copy = getMethodNameComponents(methodNameComponents);
     for (int i = 0; i < copy.size(); i++) {
+      // When generating the request type name, if the current method name
+      // component is the same as the first method name component (which is
+      // removed from the copy returned by `getMethodNameComponents`), then
+      // "Operations" is appended.
+      // ex: "sheets.spreadsheets.sheets.copyTo" -> "Spreadsheets.SheetsOperations.CopyTo"
+      if (copy.get(i).equals(methodNameComponents.get(0))) {
+        copy.set(i, Name.lowerCamel(copy.get(i), "operations").toLowerCamel());
+      }
       copy.set(i, Name.lowerCamel(copy.get(i)).toUpperCamel());
     }
     return Joiner.on('.').join(copy);
