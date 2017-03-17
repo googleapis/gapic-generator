@@ -70,8 +70,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
    * <p>The name for the module for this vkit module. This assumes that the package_name in the API
    * config will be in the format of 'apiname.version', and extracts the 'apiname' and 'version'
    * part and combine them to lower-camelcased style (like pubsubV1).
-   *
-   * <p>Based on {@link com.google.api.codegen.nodejs.NodeJSGapicContext#getModuleName}.
    */
   @Override
   public String getApiWrapperModuleName() {
