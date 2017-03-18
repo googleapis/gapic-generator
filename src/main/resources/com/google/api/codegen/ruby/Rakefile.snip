@@ -32,7 +32,9 @@
   desc "Run tests."
   task :test do
     $LOAD_PATH.unshift "lib", "test"
-    Dir.glob("test/**/*_test.rb").each { |file| require_relative file }
+    Dir.glob("test/**/*_test.rb")
+      .reject { |file| file.include? "smoke_test" }
+      .each { |file| require_relative file }
   end
 
   namespace :test do
@@ -60,7 +62,7 @@
       end
 
       $LOAD_PATH.unshift "lib", "smoke_test"
-      Dir.glob("smoke_test/**/*smoke_test.rb").each { |file| require_relative file }
+      Dir.glob("test/**/*smoke_test.rb").each { |file| require_relative file }
     end
 
     namespace :smoke_test do
@@ -70,7 +72,7 @@
         SimpleCov.start do
           command_name "{@metadata.identifier}"
           track_files "lib/**/*.rb"
-          add_filter "smoke_test/"
+          add_filter "test/"
         end
 
         Rake::Task["smoke_test"].invoke
