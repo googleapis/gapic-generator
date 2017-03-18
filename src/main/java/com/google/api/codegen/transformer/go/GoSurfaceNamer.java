@@ -234,7 +234,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getStatusCodeName(Status.Code code) {
-    return publicFieldName(Name.upperUnderscore(code.toString()));
+    String codeString = code.toString();
+    if (code.equals(Status.Code.CANCELLED)) {
+      codeString = "CANCELED";
+    }
+    return publicFieldName(Name.upperUnderscore(codeString));
   }
 
   @Override
