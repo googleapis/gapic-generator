@@ -380,7 +380,7 @@ public class MainGapicProviderFactory
 
     } else if (id.equals(RUBY) || id.equals(RUBY_DOC)) {
       // Object with utility methods for the main and test snippets.
-      GapicContext snippetContext = new GapicContext(model, apiConfig);
+      GapicContext snippetContext = new GapicContext(model, apiConfig) {}; // FIXME: Undo this hack.
 
       if (generatorConfig.enableSurfaceGenerator()) {
         GapicCodePathMapper rubyPathMapper =

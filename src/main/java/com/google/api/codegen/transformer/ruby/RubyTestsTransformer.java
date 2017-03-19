@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -40,7 +40,7 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
-    RubyGapicContext context = new RubyGapicContext(model, apiConfig);
+    GapicContext context = new GapicContext(model, apiConfig) {}; // FIXME: hack
     ModelTypeTable typeTable =
         new ModelTypeTable(
             new RubyTypeTable(apiConfig.getPackageName()),
@@ -49,7 +49,13 @@ public class RubyTestsTransformer implements ModelToViewTransformer {
     List<ViewModel> views = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       views.add(
-          new UnitTestsViewModel(service, namer, typeTable, context, UNIT_TEST_TEMPLATE_FILE));
+          new UnitTestsViewModel(
+              apiConfig.getInterfaceConfig(service),
+              namer,
+              typeTable,
+              context,
+              UNIT_TEST_TEMPLATE_FILE,
+              apiConfig));
     }
     return views;
   }

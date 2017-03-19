@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.tools.framework.model.Interface;
 import com.google.common.base.Preconditions;
 
 /**
@@ -26,13 +26,13 @@ import com.google.common.base.Preconditions;
 // TODO(jcanizales): Move it to/merge it with something common to all languages. Reuse it for Ruby
 // MVVM.
 public class GeneratedLibraryViewModel {
-  private final Interface service;
+  private final InterfaceConfig interfaceConfig;
   private final SurfaceNamer namer;
   private final ModelTypeTable typeTable;
 
   public GeneratedLibraryViewModel(
-      Interface service, SurfaceNamer namer, ModelTypeTable typeTable) {
-    this.service = Preconditions.checkNotNull(service);
+      InterfaceConfig interfaceConfig, SurfaceNamer namer, ModelTypeTable typeTable) {
+    this.interfaceConfig = Preconditions.checkNotNull(interfaceConfig);
     this.namer = Preconditions.checkNotNull(namer);
     this.typeTable = Preconditions.checkNotNull(typeTable);
   }
@@ -42,14 +42,15 @@ public class GeneratedLibraryViewModel {
   }
 
   public String outputFile() {
-    return namer.getServiceFileName(service);
+    return namer.getServiceFileName(interfaceConfig);
   }
 
   public String apiClassName() {
-    return namer.getApiWrapperClassName(service);
+    return namer.getApiWrapperClassName(interfaceConfig);
   }
 
   public String grpcClientTypeName() {
-    return typeTable.getAndSaveNicknameFor(namer.getGrpcClientTypeName(service));
+    return typeTable.getAndSaveNicknameFor(
+        namer.getGrpcClientTypeName(interfaceConfig.getInterface()));
   }
 }

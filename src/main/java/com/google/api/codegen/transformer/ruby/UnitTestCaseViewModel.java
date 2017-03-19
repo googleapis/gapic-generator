@@ -14,8 +14,13 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.ruby.RubyGapicContext;
+import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.tools.framework.model.Interface;
@@ -38,21 +43,46 @@ public class UnitTestCaseViewModel {
     ResultsAndMetadata
   }
 
-  private final Interface service;
+  private final InterfaceConfig interfaceConfig;
   private final Method method;
   private final ModelTypeTable typeTable;
-  private final RubyGapicContext util;
+  private final ApiConfig apiConfig;
 
   public UnitTestCaseViewModel(
-      Interface service, Method method, ModelTypeTable typeTable, RubyGapicContext util) {
-    this.service = Preconditions.checkNotNull(service);
+      InterfaceConfig interfaceConfig,
+      Method method,
+      ModelTypeTable typeTable,
+      ApiConfig apiConfig) {
+    this.interfaceConfig = Preconditions.checkNotNull(interfaceConfig);
     this.method = Preconditions.checkNotNull(method);
     this.typeTable = Preconditions.checkNotNull(typeTable);
-    this.util = Preconditions.checkNotNull(util);
+    this.apiConfig = Preconditions.checkNotNull(apiConfig);
+  }
+
+  // FIXME: Don't duplicate any of this code.
+  private OptionalArrayMethodView getMethodView(Interface service, Method method) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
+    DynamicLangApiMethodTransformer methodTransformer =
+        new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer());
+    return methodTransformer.generateMethod(methodContext);
+  }
+
+  private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
+    ModelTypeTable modelTypeTable =
+        new ModelTypeTable(
+            new RubyTypeTable(apiConfig.getPackageName()),
+            new RubyModelTypeNameConverter(apiConfig.getPackageName()));
+    return SurfaceTransformerContext.create(
+        service,
+        apiConfig,
+        modelTypeTable,
+        new RubySurfaceNamer(apiConfig.getPackageName()),
+        new RubyFeatureConfig());
   }
 
   public OptionalArrayMethodView methodView() {
-    return util.getMethodView(service, method);
+    return this.getMethodView(interfaceConfig.getInterface(), method);
   }
 
   public String requestTypeName() {
