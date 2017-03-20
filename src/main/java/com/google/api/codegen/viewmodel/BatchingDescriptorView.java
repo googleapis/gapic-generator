@@ -19,18 +19,20 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class BundlingDescriptorView {
+public abstract class BatchingDescriptorView {
   public abstract String methodName();
 
-  public abstract String bundledFieldName();
+  public abstract String batchedFieldName();
 
   public abstract List<String> discriminatorFieldNames();
+
+  public abstract String byteLengthFunctionName();
 
   @Nullable
   public abstract String subresponseFieldName();
 
   public static Builder newBuilder() {
-    return new AutoValue_BundlingDescriptorView.Builder();
+    return new AutoValue_BatchingDescriptorView.Builder();
   }
 
   public boolean hasSubresponseField() {
@@ -41,12 +43,14 @@ public abstract class BundlingDescriptorView {
   public abstract static class Builder {
     public abstract Builder methodName(String val);
 
-    public abstract Builder bundledFieldName(String val);
+    public abstract Builder batchedFieldName(String val);
 
     public abstract Builder subresponseFieldName(String val);
 
     public abstract Builder discriminatorFieldNames(List<String> val);
 
-    public abstract BundlingDescriptorView build();
+    public abstract Builder byteLengthFunctionName(String val);
+
+    public abstract BatchingDescriptorView build();
   }
 }

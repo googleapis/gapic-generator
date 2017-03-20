@@ -38,12 +38,13 @@ public class PageStreamingTransformer {
 
       PageStreamingDescriptorView.Builder descriptor = PageStreamingDescriptorView.newBuilder();
       descriptor.varName(context.getNamer().getPageStreamingDescriptorName(method));
-      descriptor.requestTokenFieldName(pageStreaming.getRequestTokenField().getSimpleName());
+      descriptor.requestTokenFieldName(context.getNamer().getRequestTokenFieldName(pageStreaming));
       if (pageStreaming.hasPageSizeField()) {
-        descriptor.requestPageSizeFieldName(pageStreaming.getPageSizeField().getSimpleName());
+        descriptor.requestPageSizeFieldName(context.getNamer().getPageSizeFieldName(pageStreaming));
       }
-      descriptor.responseTokenFieldName(pageStreaming.getResponseTokenField().getSimpleName());
-      descriptor.resourcesFieldName(pageStreaming.getResourcesFieldName());
+      descriptor.responseTokenFieldName(
+          context.getNamer().getResponseTokenFieldName(pageStreaming));
+      descriptor.resourcesFieldName(context.getNamer().getResourcesFieldName(pageStreaming));
       descriptor.methodName(context.getNamer().getMethodKey(method));
 
       descriptors.add(descriptor.build());

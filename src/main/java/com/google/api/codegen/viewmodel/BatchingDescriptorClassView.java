@@ -19,7 +19,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class BundlingDescriptorClassView {
+public abstract class BatchingDescriptorClassView {
 
   public abstract String name();
 
@@ -27,20 +27,20 @@ public abstract class BundlingDescriptorClassView {
 
   public abstract String responseTypeName();
 
-  public abstract String bundledFieldTypeName();
+  public abstract String batchedFieldTypeName();
 
   @Nullable
   public abstract String subresponseTypeName();
 
-  public abstract List<BundlingPartitionKeyView> partitionKeys();
+  public abstract List<BatchingPartitionKeyView> partitionKeys();
 
   public abstract List<FieldCopyView> discriminatorFieldCopies();
 
-  public abstract String bundledFieldGetFunction();
+  public abstract String batchedFieldGetFunction();
 
-  public abstract String bundledFieldSetFunction();
+  public abstract String batchedFieldSetFunction();
 
-  public abstract String bundledFieldCountGetFunction();
+  public abstract String batchedFieldCountGetFunction();
 
   @Nullable
   public abstract String subresponseByIndexGetFunction();
@@ -53,7 +53,7 @@ public abstract class BundlingDescriptorClassView {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_BundlingDescriptorClassView.Builder();
+    return new AutoValue_BatchingDescriptorClassView.Builder();
   }
 
   @AutoValue.Builder
@@ -65,25 +65,25 @@ public abstract class BundlingDescriptorClassView {
 
     public abstract Builder responseTypeName(String val);
 
-    public abstract Builder bundledFieldTypeName(String val);
+    public abstract Builder batchedFieldTypeName(String val);
 
     public abstract Builder subresponseTypeName(String val);
 
-    public abstract Builder partitionKeys(List<BundlingPartitionKeyView> val);
+    public abstract Builder partitionKeys(List<BatchingPartitionKeyView> val);
 
     public abstract Builder discriminatorFieldCopies(
         List<FieldCopyView> generateDiscriminatorFieldCopies);
 
-    public abstract Builder bundledFieldGetFunction(String val);
+    public abstract Builder batchedFieldGetFunction(String val);
 
-    public abstract Builder bundledFieldSetFunction(String val);
+    public abstract Builder batchedFieldSetFunction(String val);
 
-    public abstract Builder bundledFieldCountGetFunction(String val);
+    public abstract Builder batchedFieldCountGetFunction(String val);
 
     public abstract Builder subresponseByIndexGetFunction(String val);
 
     public abstract Builder subresponseSetFunction(String val);
 
-    public abstract BundlingDescriptorClassView build();
+    public abstract BatchingDescriptorClassView build();
   }
 }

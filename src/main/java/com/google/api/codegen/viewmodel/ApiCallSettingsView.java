@@ -52,7 +52,7 @@ public abstract class ApiCallSettingsView {
 
   public abstract String pagedListResponseFactoryName();
 
-  public abstract String bundlingDescriptorName();
+  public abstract String batchingDescriptorName();
 
   public abstract String operationResultTypeName();
 
@@ -74,7 +74,7 @@ public abstract class ApiCallSettingsView {
   public abstract RetryParamsDefinitionView retryParamsView();
 
   @Nullable
-  public abstract BundlingConfigView bundlingConfig();
+  public abstract BatchingConfigView batchingConfig();
 
   public abstract Builder toBuilder();
 
@@ -113,9 +113,9 @@ public abstract class ApiCallSettingsView {
 
     public abstract Builder pagedListResponseFactoryName(String val);
 
-    public abstract Builder bundlingDescriptorName(String val);
+    public abstract Builder batchingDescriptorName(String val);
 
-    public abstract Builder bundlingConfig(BundlingConfigView val);
+    public abstract Builder batchingConfig(BatchingConfigView val);
 
     public abstract Builder operationResultTypeName(String val);
 

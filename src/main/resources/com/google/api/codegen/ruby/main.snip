@@ -95,12 +95,12 @@
 
     private_constant :PAGE_DESCRIPTORS
   @end
-  @if xapiClass.hasBundlingMethods
+  @if xapiClass.hasBatchingMethods
 
     BUNDLE_DESCRIPTORS = {
-      @join descriptor : xapiClass.bundlingDescriptors on {@", "}.add(BREAK)
+      @join descriptor : xapiClass.batchingDescriptors on {@", "}.add(BREAK)
         "{@descriptor.methodName}" => Google::Gax::BundleDescriptor.new(
-          {@bundleDescriptorBody(descriptor)})
+          {@batchDescriptorBody(descriptor)})
       @end
     }.freeze
 
@@ -127,7 +127,7 @@
       client_config,
       Google::Gax::Grpc::STATUS_CODE_NAMES,
       timeout,
-      @if xapiClass.hasBundlingMethods
+      @if xapiClass.hasBatchingMethods
         bundle_descriptors: BUNDLE_DESCRIPTORS,
       @end
       @if xapiClass.hasPageStreamingMethods
@@ -224,8 +224,8 @@
   end
 @end
 
-@private bundleDescriptorBody(descriptor)
-  "{@descriptor.bundledFieldName}",
+@private batchDescriptorBody(descriptor)
+  "{@descriptor.batchedFieldName}",
   [
     @join name : descriptor.discriminatorFieldNames on {@","}.add(BREAK)
       "{@name}"

@@ -23,7 +23,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.BundlingTransformer;
+import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -71,7 +71,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private final StaticLangApiMethodTransformer apiMethodTransformer =
       new StaticLangApiMethodTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
-  private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -365,7 +365,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         pageStreamingTransformer.generateDescriptorClasses(context));
     xsettingsClass.pagedListResponseFactories(
         pageStreamingTransformer.generateFactoryClasses(context));
-    xsettingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
+    xsettingsClass.batchingDescriptors(batchingTransformer.generateDescriptorClasses(context));
     xsettingsClass.retryCodesDefinitions(
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
     xsettingsClass.retryParamsDefinitions(
@@ -457,15 +457,15 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     }
-    if (interfaceConfig.hasBundlingMethods()) {
-      typeTable.saveNicknameFor("com.google.api.gax.bundling.BundlingSettings");
-      typeTable.saveNicknameFor("com.google.api.gax.bundling.RequestBuilder");
+    if (interfaceConfig.hasBatchingMethods()) {
+      typeTable.saveNicknameFor("com.google.api.gax.batching.BatchingSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.batching.RequestBuilder");
       typeTable.saveNicknameFor("com.google.api.gax.core.FlowController");
       typeTable.saveNicknameFor("com.google.api.gax.core.FlowController.LimitExceededBehavior");
       typeTable.saveNicknameFor("com.google.api.gax.core.FlowControlSettings");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingCallSettings");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BundledRequestIssuer");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BundlingDescriptor");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchedRequestIssuer");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingDescriptor");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.RequestIssuer");
       typeTable.saveNicknameFor("java.util.ArrayList");
       typeTable.saveNicknameFor("java.util.Collection");

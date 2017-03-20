@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.config.VersionBound;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -79,6 +80,13 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract boolean hasMultipleServices();
 
+  public abstract boolean hasSmokeTests();
+
+  // TODO(landrito) Currently only Ruby supports using fileHeaderView. Switch all metadata gen to
+  // use this field.
+  @Nullable
+  public abstract FileHeaderView fileHeader();
+
   // Python-specific configuration
   @Nullable
   public abstract List<String> namespacePackages();
@@ -90,7 +98,7 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract List<String> typeModules();
 
   public static Builder newBuilder() {
-    return new AutoValue_PackageMetadataView.Builder();
+    return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
   }
 
   @AutoValue.Builder
@@ -159,6 +167,12 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** The names of the GAPIC modules defining service types. */
     public abstract Builder typeModules(List<String> val);
+
+    /** Whether a smoketest was generated for the package. */
+    public abstract Builder hasSmokeTests(boolean val);
+
+    /** File header information such as copyright lines and license lines */
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract PackageMetadataView build();
   }
