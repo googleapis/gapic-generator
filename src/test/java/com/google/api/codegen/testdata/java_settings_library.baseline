@@ -16,17 +16,17 @@
  */
 package com.google.gcloud.pubsub.spi;
 
-import com.google.api.gax.bundling.BundlingSettings;
-import com.google.api.gax.bundling.RequestBuilder;
+import com.google.api.gax.batching.BatchingSettings;
+import com.google.api.gax.batching.RequestBuilder;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.FlowControlSettings;
 import com.google.api.gax.core.FlowController;
 import com.google.api.gax.core.FlowController.LimitExceededBehavior;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.RetrySettings;
-import com.google.api.gax.grpc.BundledRequestIssuer;
-import com.google.api.gax.grpc.BundlingCallSettings;
-import com.google.api.gax.grpc.BundlingDescriptor;
+import com.google.api.gax.grpc.BatchedRequestIssuer;
+import com.google.api.gax.grpc.BatchingCallSettings;
+import com.google.api.gax.grpc.BatchingDescriptor;
 import com.google.api.gax.grpc.CallContext;
 import com.google.api.gax.grpc.ChannelProvider;
 import com.google.api.gax.grpc.ClientSettings;
@@ -163,14 +163,14 @@ public class LibrarySettings extends ClientSettings {
   private final SimpleCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
   private final SimpleCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final SimpleCallSettings<CreateBookRequest, Book> createBookSettings;
-  private final BundlingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+  private final BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
   private final SimpleCallSettings<GetBookRequest, Book> getBookSettings;
   private final PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
   private final SimpleCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
   private final SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final SimpleCallSettings<MoveBookRequest, Book> moveBookSettings;
   private final PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-  private final BundlingCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
+  private final BatchingCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
   private final SimpleCallSettings<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
   private final SimpleCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
   private final SimpleCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -230,7 +230,7 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to publishSeries.
    */
-  public BundlingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+  public BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
     return publishSeriesSettings;
   }
 
@@ -279,7 +279,7 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to addComments.
    */
-  public BundlingCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
+  public BatchingCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
     return addCommentsSettings;
   }
 
@@ -658,10 +658,10 @@ public class LibrarySettings extends ClientSettings {
         }
       };
 
-  private static final BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse> PUBLISH_SERIES_BUNDLING_DESC =
-      new BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
+  private static final BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse> PUBLISH_SERIES_BATCHING_DESC =
+      new BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
         @Override
-        public String getBundlePartitionKey(PublishSeriesRequest request) {
+        public String getBatchPartitionKey(PublishSeriesRequest request) {
           return request.getEdition() + "|" + request.getName() + "|";
         }
 
@@ -686,15 +686,15 @@ public class LibrarySettings extends ClientSettings {
 
         @Override
         public void splitResponse(
-            PublishSeriesResponse bundleResponse,
-            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
-          int bundleMessageIndex = 0;
-          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
+            PublishSeriesResponse batchResponse,
+            Collection<? extends BatchedRequestIssuer<PublishSeriesResponse>> batch) {
+          int batchMessageIndex = 0;
+          for (BatchedRequestIssuer<PublishSeriesResponse> responder : batch) {
             List<String> subresponseElements = new ArrayList<>();
             long subresponseCount = responder.getMessageCount();
             for (int i = 0; i < subresponseCount; i++) {
-              subresponseElements.add(bundleResponse.getBookNames(bundleMessageIndex));
-              bundleMessageIndex += 1;
+              subresponseElements.add(batchResponse.getBookNames(batchMessageIndex));
+              batchMessageIndex += 1;
             }
             PublishSeriesResponse response =
                 PublishSeriesResponse.newBuilder().addAllBookNames(subresponseElements).build();
@@ -705,8 +705,8 @@ public class LibrarySettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends BundledRequestIssuer<PublishSeriesResponse>> bundle) {
-          for (BundledRequestIssuer<PublishSeriesResponse> responder : bundle) {
+            Collection<? extends BatchedRequestIssuer<PublishSeriesResponse>> batch) {
+          for (BatchedRequestIssuer<PublishSeriesResponse> responder : batch) {
             responder.setException(throwable);
           }
         }
@@ -722,10 +722,10 @@ public class LibrarySettings extends ClientSettings {
         }
       };
 
-  private static final BundlingDescriptor<AddCommentsRequest, Empty> ADD_COMMENTS_BUNDLING_DESC =
-      new BundlingDescriptor<AddCommentsRequest, Empty>() {
+  private static final BatchingDescriptor<AddCommentsRequest, Empty> ADD_COMMENTS_BATCHING_DESC =
+      new BatchingDescriptor<AddCommentsRequest, Empty>() {
         @Override
-        public String getBundlePartitionKey(AddCommentsRequest request) {
+        public String getBatchPartitionKey(AddCommentsRequest request) {
           return request.getName() + "|";
         }
 
@@ -750,10 +750,10 @@ public class LibrarySettings extends ClientSettings {
 
         @Override
         public void splitResponse(
-            Empty bundleResponse,
-            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
-          int bundleMessageIndex = 0;
-          for (BundledRequestIssuer<Empty> responder : bundle) {
+            Empty batchResponse,
+            Collection<? extends BatchedRequestIssuer<Empty>> batch) {
+          int batchMessageIndex = 0;
+          for (BatchedRequestIssuer<Empty> responder : batch) {
             Empty response =
                 Empty.newBuilder().build();
             responder.setResponse(response);
@@ -763,8 +763,8 @@ public class LibrarySettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends BundledRequestIssuer<Empty>> bundle) {
-          for (BundledRequestIssuer<Empty> responder : bundle) {
+            Collection<? extends BatchedRequestIssuer<Empty>> batch) {
+          for (BatchedRequestIssuer<Empty> responder : batch) {
             responder.setException(throwable);
           }
         }
@@ -792,14 +792,14 @@ public class LibrarySettings extends ClientSettings {
     private final SimpleCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
     private final SimpleCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private final SimpleCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
-    private final BundlingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+    private final BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
     private final SimpleCallSettings.Builder<GetBookRequest, Book> getBookSettings;
     private final PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
     private final SimpleCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
     private final SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
     private final SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
     private final PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-    private final BundlingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
+    private final BatchingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private final SimpleCallSettings.Builder<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
     private final SimpleCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
     private final SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -861,10 +861,10 @@ public class LibrarySettings extends ClientSettings {
 
       createBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_CREATE_BOOK);
 
-      publishSeriesSettings = BundlingCallSettings.newBuilder(
+      publishSeriesSettings = BatchingCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_PUBLISH_SERIES,
-          PUBLISH_SERIES_BUNDLING_DESC)
-              .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
+          PUBLISH_SERIES_BATCHING_DESC)
+              .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
 
       getBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BOOK);
 
@@ -882,10 +882,10 @@ public class LibrarySettings extends ClientSettings {
           LibraryServiceGrpc.METHOD_LIST_STRINGS,
           LIST_STRINGS_PAGE_STR_FACT);
 
-      addCommentsSettings = BundlingCallSettings.newBuilder(
+      addCommentsSettings = BatchingCallSettings.newBuilder(
           LibraryServiceGrpc.METHOD_ADD_COMMENTS,
-          ADD_COMMENTS_BUNDLING_DESC)
-              .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
+          ADD_COMMENTS_BATCHING_DESC)
+              .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
 
       getBookFromArchiveSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BOOK_FROM_ARCHIVE);
 
@@ -974,7 +974,7 @@ public class LibrarySettings extends ClientSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.publishSeriesSettings().getBundlingSettingsBuilder()
+      builder.publishSeriesSettings().getBatchingSettingsBuilder()
           .setElementCountThreshold(6)
           .setRequestByteThreshold(100000)
           .setDelayThreshold(Duration.millis(500))
@@ -1010,7 +1010,7 @@ public class LibrarySettings extends ClientSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.addCommentsSettings().getBundlingSettingsBuilder()
+      builder.addCommentsSettings().getBatchingSettingsBuilder()
           .setElementCountThreshold(6)
           .setRequestByteThreshold(100000)
           .setDelayThreshold(Duration.millis(500))
@@ -1184,7 +1184,7 @@ public class LibrarySettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to publishSeries.
      */
-    public BundlingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+    public BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
       return publishSeriesSettings;
     }
 
@@ -1233,7 +1233,7 @@ public class LibrarySettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to addComments.
      */
-    public BundlingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
+    public BatchingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
       return addCommentsSettings;
     }
 

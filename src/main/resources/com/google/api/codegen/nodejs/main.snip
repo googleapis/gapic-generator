@@ -211,9 +211,9 @@
       'gax/' + gax.version,
       'grpc/' + gaxGrpc.grpcVersion
     );
-    @if xapi.hasBundlingMethods
+    @if xapi.hasBatchingMethods
 
-      {@bundlingDescriptors(xapi.bundlingDescriptors)}
+      {@batchingDescriptors(xapi.batchingDescriptors)}
     @end
     @if xapi.hasLongRunningOperations
 
@@ -249,11 +249,11 @@
   }
 @end
 
-@private bundlingDescriptors(descriptors)
+@private batchingDescriptors(descriptors)
   var bundleDescriptors = {
     @join descriptor : descriptors on {@", "}.add(BREAK)
       {@descriptor.methodName}: new gax.BundleDescriptor(
-        '{@descriptor.bundledFieldName}',
+        '{@descriptor.batchedFieldName}',
         [
           @join fieldName : descriptor.discriminatorFieldNames() on {@", "}.add(BREAK)
             '{@fieldName}'

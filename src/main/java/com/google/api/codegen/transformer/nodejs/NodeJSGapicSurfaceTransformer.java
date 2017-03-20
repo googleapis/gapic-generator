@@ -26,7 +26,7 @@ import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
-import com.google.api.codegen.transformer.BundlingTransformer;
+import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -71,7 +71,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
-  private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final PackageMetadataConfig packageConfig;
 
@@ -141,11 +141,11 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
-    xapiClass.bundlingDescriptors(bundlingTransformer.generateDescriptors(context));
+    xapiClass.batchingDescriptors(batchingTransformer.generateDescriptors(context));
     xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
     xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
     xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
-    xapiClass.hasBundlingMethods(context.getInterfaceConfig().hasBundlingMethods());
+    xapiClass.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
 
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
@@ -181,7 +181,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
       validDescriptorsNames.add("PAGE_DESCRIPTORS");
     }
-    if (context.getInterfaceConfig().hasBundlingMethods()) {
+    if (context.getInterfaceConfig().hasBatchingMethods()) {
       validDescriptorsNames.add("bundleDescriptors");
     }
     if (context.getInterfaceConfig().hasGrpcStreamingMethods()) {

@@ -1,5 +1,117 @@
-@snippet generate(metadata)
-  @# -*- ruby -*-
-  require 'bundler/gem_tasks'
+@extends "ruby/common.snip"
 
+@snippet generate(metadata)
+  {@header(metadata.fileHeader)}
+
+  {@unitTestsTask(metadata)}
+  @if smokeTestsTask(metadata)
+
+    {@smokeTestsTask(metadata)}
+  @end
+
+  {@ciTask(metadata)}
+
+  task :default => :test
+
+  {@helpers()}
+@end
+
+@private header(fileHeader)
+  {@toComments(fileHeader.copyrightLines)}
+  #
+  {@toComments(fileHeader.licenseLines)}
+
+  require "bundler/setup"
+  require "bundler/gem_tasks"
+
+  require "rubocop/rake_task"
+  RuboCop::RakeTask.new
+@end
+
+@private unitTestsTask(metadata)
+  desc "Run tests."
+  task :test do
+    $LOAD_PATH.unshift "lib", "test"
+    Dir.glob("test/**/*_test.rb")
+      .reject { |file| file.include? "smoke_test" }
+      .each { |file| require_relative file }
+  end
+
+  namespace :test do
+    desc "Runs tests with coverage."
+    task :coverage do
+      require "simplecov"
+      SimpleCov.start do
+        command_name "{@metadata.identifier}"
+        track_files "lib/**/*.rb"
+        add_filter "test/"
+      end
+
+      Rake::Task["test"].invoke
+    end
+  end
+@end
+
+@private smokeTestsTask(metadata)
+  @if metadata.hasSmokeTests
+    desc "Runs the smoke tests."
+    task :smoke_test do
+      if ENV["SMOKE_TEST_PROJECT"].nil?
+        fail "The SMOKE_TEST_PROJECT environment variable must be set. "@\
+          "e.g SMOKE_TEST_PROJECT=test123 rake smoke_test"
+      end
+
+      $LOAD_PATH.unshift "lib", "smoke_test"
+      Dir.glob("test/**/*smoke_test.rb").each { |file| require_relative file }
+    end
+
+    namespace :smoke_test do
+      desc "Runs smoke tests with coverage."
+      task :coverage do
+        require "simplecov"
+        SimpleCov.start do
+          command_name "{@metadata.identifier}"
+          track_files "lib/**/*.rb"
+          add_filter "test/"
+        end
+
+        Rake::Task["smoke_test"].invoke
+      end
+    end
+  @end
+@end
+
+@private ciTask(metadata)
+  desc "Run the CI build"
+  task :ci do
+    header "BUILDING {@metadata.identifier}"
+    header "{@metadata.identifier} rubocop", "*"
+    sh "bundle exec rake rubocop"
+    header "{@metadata.identifier} test", "*"
+    sh "bundle exec rake test"
+  end
+
+  namespace :ci do
+    desc "Run the CI build, with smoke_tests."
+    task :smoke_test do
+      Rake::Task["ci"].invoke
+      header "{@metadata.identifier} smoke_test", "*"
+      sh "bundle exec rake smoke_test -v"
+    end
+    task :a do
+      @# This is a handy shortcut to save typing
+      Rake::Task["ci:smoke_test"].invoke
+    end
+  end
+@end
+
+@private helpers()
+  def header str, token = "#"
+    line_length = str.length + 8
+    puts ""
+    puts token * line_length
+    puts "#{token * 3} #{str} #{token * 3}"
+    puts token * line_length
+    puts ""
+  end
 @end
