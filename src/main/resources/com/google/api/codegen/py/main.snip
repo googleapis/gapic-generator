@@ -343,7 +343,7 @@
       EXPERIMENTAL: This method interface might change in the future.
 
     @end
-    {@methodSample(service, method)}
+    {@sampleCode(context.getApiMethodView(service, method))}
     @if signatureComments.isEmpty
     @else
 
@@ -353,32 +353,6 @@
       {@comment}
     @end
     """
-  @end
-@end
-
-@private methodSample(service, method)
-  @let apiConfig = context.getApiConfig, \
-       apiName = context.getApiWrapperName(service), \
-       returnType = context.returnTypeOrEmpty(method, importHandler), \
-       fields = context.getRequiredFields(service, method), \
-       builder = context.newDocConfigBuilder \
-         .setInterface(service) \
-         .setApiConfig(apiConfig) \
-         .setApiName(apiName) \
-         .setImportHandler(importHandler) \
-         .setMethod(method) \
-         .setReturnType(returnType)
-    @if method.getRequestStreaming()
-      {@generateMethodSampleCode(builder \
-        .setRequestObjectInitCode(context, service, method) \
-        .setEmptyParams() \
-        .build)}
-    @else
-      {@generateMethodSampleCode(builder \
-        .setFieldInitCode(context, service, method, fields) \
-        .setFieldParams(context, fields) \
-        .build)}
-    @end
   @end
 @end
 

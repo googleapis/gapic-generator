@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class JavaFeatureConfig extends FeatureConfig {
+public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
 
   @Override
   public abstract boolean enableStringFormatFunctions();
@@ -30,11 +30,6 @@ public abstract class JavaFeatureConfig extends FeatureConfig {
 
   @Override
   public boolean enableMixins() {
-    return true;
-  }
-
-  @Override
-  public boolean enableGrpcStreaming() {
     return true;
   }
 

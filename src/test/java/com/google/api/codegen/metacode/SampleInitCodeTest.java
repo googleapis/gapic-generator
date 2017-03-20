@@ -458,10 +458,7 @@ public class SampleInitCodeTest {
             : first.getType().equals(second.getType()))
         && (first.getIdentifier() == null
             ? second.getIdentifier() == null
-            : first.getIdentifier().equals(second.getIdentifier()))
-        && (first.getInitCodeLine() == null
-            ? second.getInitCodeLine() == null
-            : first.getInitCodeLine().equals(second.getInitCodeLine())))) {
+            : first.getIdentifier().equals(second.getIdentifier())))) {
       return false;
     }
     for (String key : first.getChildren().keySet()) {

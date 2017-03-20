@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.py;
+package com.google.api.codegen.util.py;
 
 import com.google.api.codegen.CommentPatterns;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.base.Splitter;
 import java.util.regex.Matcher;
 
-/** Utility class for formatting Python comments to follow Sphinx style. */
-public class PythonSphinxCommentFixer {
-
-  /** Returns a Sphinx-formatted comment string. */
-  public static String sphinxify(String comment) {
+public class PythonCommentReformatter implements CommentReformatter {
+  @Override
+  public String reformat(String comment) {
     boolean inCodeBlock = false;
     boolean first = true;
     Iterable<String> lines = Splitter.on("\n").split(comment);
@@ -53,15 +52,15 @@ public class PythonSphinxCommentFixer {
     return sb.toString().trim();
   }
 
-  private static String applyTransformations(String line) {
+  private String applyTransformations(String line) {
     line = CommentPatterns.BACK_QUOTE_PATTERN.matcher(line).replaceAll("``");
-    line = sphinxifyProtoMarkdownLinks(line);
-    line = sphinxifyAbsoluteMarkdownLinks(line);
-    return sphinxifyCloudMarkdownLinks(line);
+    line = reformatProtoMarkdownLinks(line);
+    line = reformatAbsoluteMarkdownLinks(line);
+    return reformatCloudMarkdownLinks(line);
   }
 
   /** Returns a string with all proto markdown links formatted to Sphinx style. */
-  private static String sphinxifyProtoMarkdownLinks(String comment) {
+  private String reformatProtoMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(comment);
     if (!m.find()) {
@@ -76,7 +75,7 @@ public class PythonSphinxCommentFixer {
   }
 
   /** Returns a string with all absolute markdown links formatted to Sphinx style. */
-  private static String sphinxifyAbsoluteMarkdownLinks(String comment) {
+  private String reformatAbsoluteMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.ABSOLUTE_LINK_PATTERN.matcher(comment);
     if (!m.find()) {
@@ -92,7 +91,7 @@ public class PythonSphinxCommentFixer {
   }
 
   /** Returns a string with all cloud markdown links formatted to Sphinx style. */
-  private static String sphinxifyCloudMarkdownLinks(String comment) {
+  private String reformatCloudMarkdownLinks(String comment) {
     StringBuffer sb = new StringBuffer();
     Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);
     if (!m.find()) {

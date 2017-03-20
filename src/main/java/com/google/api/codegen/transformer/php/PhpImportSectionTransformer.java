@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen.transformer.php;
 
+import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -26,8 +28,18 @@ import java.util.Map;
 public class PhpImportSectionTransformer implements ImportSectionTransformer {
   @Override
   public ImportSectionView generateImportSection(SurfaceTransformerContext context) {
+    return generateImportSection(context.getTypeTable().getImports());
+  }
+
+  @Override
+  public ImportSectionView generateImportSection(
+      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
+    return generateImportSection(context.getTypeTable().getImports());
+  }
+
+  private ImportSectionView generateImportSection(Map<String, TypeAlias> typeImports) {
     ImmutableList.Builder<ImportFileView> appImports = ImmutableList.builder();
-    for (Map.Entry<String, TypeAlias> entry : context.getTypeTable().getImports().entrySet()) {
+    for (Map.Entry<String, TypeAlias> entry : typeImports.entrySet()) {
       String key = entry.getKey();
       TypeAlias alias = entry.getValue();
       // Remove leading backslash because it is not required by PHP use statements

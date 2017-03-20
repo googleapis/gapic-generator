@@ -16,33 +16,23 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 
-public class FeatureConfig {
+public interface FeatureConfig {
 
   /** Returns true if generated types are supported for resource name fields. */
-  public boolean resourceNameTypesEnabled() {
-    return false;
-  }
+  boolean resourceNameTypesEnabled();
 
   /**
    * Returns true if resourceNameTypesEnabled() is true, and the field config provided has a
    * resource name format option, and is configured to use it.
    */
-  public boolean useResourceNameFormatOption(FieldConfig fieldConfig) {
-    return resourceNameTypesEnabled() && fieldConfig != null && fieldConfig.useResourceNameType();
-  }
+  boolean useResourceNameFormatOption(FieldConfig fieldConfig);
 
   /** Returns true if mixin APIs are supported. */
-  public boolean enableMixins() {
-    return false;
-  }
+  boolean enableMixins();
 
   /** Returns true if streaming APIs are supported. */
-  public boolean enableGrpcStreaming() {
-    return false;
-  }
+  boolean enableGrpcStreaming();
 
   /** Returns true if string format functions are supported. */
-  public boolean enableStringFormatFunctions() {
-    return true;
-  }
+  boolean enableStringFormatFunctions();
 }

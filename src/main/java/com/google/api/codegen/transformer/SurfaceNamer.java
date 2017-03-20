@@ -543,7 +543,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /////////////////////////////////////// Type names /////////////////////////////////////////////
 
-  private String getInterfaceName(InterfaceConfig interfaceConfig) {
+  protected String getInterfaceName(InterfaceConfig interfaceConfig) {
     return interfaceConfig.hasInterfaceNameOverride()
         ? interfaceConfig.getInterfaceNameOverride()
         : interfaceConfig.getInterface().getSimpleName();
@@ -1222,6 +1222,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
       original = original.substring(0, original.length() - suffix.length());
     }
     return original;
+  }
+
+  /** Converts the given text to a quoted string. */
+  public String quoted(String text) {
+    return "\"" + text + "\"";
   }
 
   /** Make the given type name able to accept nulls, if it is a primitive type */

@@ -28,6 +28,7 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.collect.Iterables;
@@ -56,7 +57,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
-    SymbolTable symbolTable = SymbolTable.fromSeed(PythonTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(PythonNameFormatter.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
@@ -187,11 +188,6 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleTypeTable typeTable = context.getSampleTypeTable();
     String name = namer.getFieldVarName(field.name());
     if (disambiguateName) {
-      // Force names which are in the reserved set to be disambiguated with an
-      // `_` before being added to the symbol table.
-      if (PythonTypeTable.RESERVED_IDENTIFIER_SET.contains(name)) {
-        name += "_";
-      }
       name = symbolTable.getNewSymbol(name);
     }
     return SampleFieldView.newBuilder()

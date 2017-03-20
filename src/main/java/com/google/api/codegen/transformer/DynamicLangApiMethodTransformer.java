@@ -39,11 +39,18 @@ import java.util.List;
  */
 public class DynamicLangApiMethodTransformer {
   private final ApiMethodParamTransformer apiMethodParamTransformer;
-  private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+  private final InitCodeTransformer initCodeTransformer;
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
 
   public DynamicLangApiMethodTransformer(ApiMethodParamTransformer apiMethodParamTransformer) {
+    this(apiMethodParamTransformer, new InitCodeTransformer());
+  }
+
+  public DynamicLangApiMethodTransformer(
+      ApiMethodParamTransformer apiMethodParamTransformer,
+      InitCodeTransformer initCodeTransformer) {
     this.apiMethodParamTransformer = apiMethodParamTransformer;
+    this.initCodeTransformer = initCodeTransformer;
   }
 
   public OptionalArrayMethodView generateMethod(MethodTransformerContext context) {
