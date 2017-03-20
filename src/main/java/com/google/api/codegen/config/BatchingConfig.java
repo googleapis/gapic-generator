@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.BundlingConfigProto;
-import com.google.api.codegen.BundlingDescriptorProto;
-import com.google.api.codegen.BundlingSettingsProto;
+import com.google.api.codegen.BatchingConfigProto;
+import com.google.api.codegen.BatchingDescriptorProto;
+import com.google.api.codegen.BatchingSettingsProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -27,41 +27,41 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
 
-/** BundlingConfig represents the bundling configuration for a method. */
+/** BatchingConfig represents the batching configuration for a method. */
 @AutoValue
-public abstract class BundlingConfig {
+public abstract class BatchingConfig {
 
   /**
-   * Creates an instance of BundlingConfig based on BundlingConfigProto, linking it up with the
+   * Creates an instance of BatchingConfig based on BatchingConfigProto, linking it up with the
    * provided method. On errors, null will be returned, and diagnostics are reported to the diag
    * collector.
    */
   @Nullable
-  public static BundlingConfig createBundling(
-      DiagCollector diagCollector, BundlingConfigProto bundlingConfig, Method method) {
+  public static BatchingConfig createBatching(
+      DiagCollector diagCollector, BatchingConfigProto batchingConfig, Method method) {
 
-    BundlingDescriptorProto bundleDescriptor = bundlingConfig.getBundleDescriptor();
-    String bundledFieldName = bundleDescriptor.getBundledField();
-    Field bundledField = method.getInputType().getMessageType().lookupField(bundledFieldName);
-    if (bundledField == null) {
+    BatchingDescriptorProto batchDescriptor = batchingConfig.getBatchDescriptor();
+    String batchedFieldName = batchDescriptor.getBatchedField();
+    Field batchedField = method.getInputType().getMessageType().lookupField(batchedFieldName);
+    if (batchedField == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
-              "Bundled field missing for bundle config: method = %s, message type = %s, field = %s",
+              "Batched field missing for batch config: method = %s, message type = %s, field = %s",
               method.getFullName(),
               method.getInputType().getMessageType().getFullName(),
-              bundledFieldName));
+              batchedFieldName));
     }
 
     ImmutableList.Builder<FieldSelector> discriminatorsBuilder = ImmutableList.builder();
-    for (String discriminatorName : bundleDescriptor.getDiscriminatorFieldsList()) {
+    for (String discriminatorName : batchDescriptor.getDiscriminatorFieldsList()) {
       FieldSelector selector =
           FieldSelector.resolve(method.getInputType().getMessageType(), discriminatorName);
       if (selector == null) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Discriminator field missing for bundle config: method = %s, message type = %s, "
+                "Discriminator field missing for batch config: method = %s, message type = %s, "
                     + "field = %s",
                 method.getFullName(),
                 method.getInputType().getMessageType().getFullName(),
@@ -70,7 +70,7 @@ public abstract class BundlingConfig {
       discriminatorsBuilder.add(selector);
     }
 
-    String subresponseFieldName = bundleDescriptor.getSubresponseField();
+    String subresponseFieldName = batchDescriptor.getSubresponseField();
     Field subresponseField;
     if (!subresponseFieldName.isEmpty()) {
       subresponseField = method.getOutputType().getMessageType().lookupField(subresponseFieldName);
@@ -78,36 +78,36 @@ public abstract class BundlingConfig {
       subresponseField = null;
     }
 
-    BundlingSettingsProto bundlingSettings = bundlingConfig.getThresholds();
-    int elementCountThreshold = bundlingSettings.getElementCountThreshold();
-    long requestByteThreshold = bundlingSettings.getRequestByteThreshold();
-    int elementCountLimit = bundlingSettings.getElementCountLimit();
-    long requestByteLimit = bundlingSettings.getRequestByteLimit();
-    long delayThresholdMillis = bundlingConfig.getThresholds().getDelayThresholdMillis();
+    BatchingSettingsProto batchingSettings = batchingConfig.getThresholds();
+    int elementCountThreshold = batchingSettings.getElementCountThreshold();
+    long requestByteThreshold = batchingSettings.getRequestByteThreshold();
+    int elementCountLimit = batchingSettings.getElementCountLimit();
+    long requestByteLimit = batchingSettings.getRequestByteLimit();
+    long delayThresholdMillis = batchingConfig.getThresholds().getDelayThresholdMillis();
     Long flowControlElementLimit =
-        (long) bundlingConfig.getThresholds().getFlowControlElementLimit();
+        (long) batchingConfig.getThresholds().getFlowControlElementLimit();
     if (flowControlElementLimit == 0) {
       flowControlElementLimit = null;
     }
-    Long flowControlByteLimit = (long) bundlingConfig.getThresholds().getFlowControlByteLimit();
+    Long flowControlByteLimit = (long) batchingConfig.getThresholds().getFlowControlByteLimit();
     if (flowControlByteLimit == 0) {
       flowControlByteLimit = null;
     }
     FlowControlLimitConfig flowControlLimitConfig =
         FlowControlLimitConfig.fromProto(
-            bundlingConfig.getThresholds().getFlowControlLimitExceededBehavior());
+            batchingConfig.getThresholds().getFlowControlLimitExceededBehavior());
 
-    if (bundledFieldName == null) {
+    if (batchedFieldName == null) {
       return null;
     }
 
-    return new AutoValue_BundlingConfig(
+    return new AutoValue_BatchingConfig(
         elementCountThreshold,
         requestByteThreshold,
         elementCountLimit,
         requestByteLimit,
         delayThresholdMillis,
-        bundledField,
+        batchedField,
         discriminatorsBuilder.build(),
         subresponseField,
         flowControlElementLimit,
@@ -125,7 +125,7 @@ public abstract class BundlingConfig {
 
   public abstract long getDelayThresholdMillis();
 
-  public abstract Field getBundledField();
+  public abstract Field getBatchedField();
 
   public abstract ImmutableList<FieldSelector> getDiscriminatorFields();
 

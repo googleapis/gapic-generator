@@ -204,10 +204,10 @@ public abstract class SurfaceTransformerContext {
     return methods;
   }
 
-  public List<Method> getBundlingMethods() {
+  public List<Method> getBatchingMethods() {
     List<Method> methods = new ArrayList<>();
     for (Method method : getSupportedMethods()) {
-      if (getMethodConfig(method).isBundling()) {
+      if (getMethodConfig(method).isBatching()) {
         methods.add(method);
       }
     }

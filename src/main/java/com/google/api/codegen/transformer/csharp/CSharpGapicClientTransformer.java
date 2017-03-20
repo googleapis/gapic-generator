@@ -23,7 +23,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.BundlingTransformer;
+import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -76,7 +76,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
-  private final BundlingTransformer bundlingTransformer = new BundlingTransformer();
+  private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
@@ -175,7 +175,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     List<ApiCallableView> callables = new ArrayList<>();
     for (ApiCallableView call : apiCallableTransformer.generateStaticLangApiCallables(context)) {
       if (call.type() == ApiCallableImplType.SimpleApiCallable
-          || call.type() == ApiCallableImplType.BundlingApiCallable
+          || call.type() == ApiCallableImplType.BatchingApiCallable
           || call.type() == ApiCallableImplType.InitialOperationApiCallable
           || (call.type() == ApiCallableImplType.StreamingApiCallable
               && call.grpcStreamingType() == GrpcStreamingType.BidiStreaming)) {
@@ -232,7 +232,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         pageStreamingTransformer.generateDescriptorClasses(context));
     settingsClass.pagedListResponseFactories(
         pageStreamingTransformer.generateFactoryClasses(context));
-    settingsClass.bundlingDescriptors(bundlingTransformer.generateDescriptorClasses(context));
+    settingsClass.batchingDescriptors(batchingTransformer.generateDescriptorClasses(context));
     settingsClass.retryCodesDefinitions(
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
     settingsClass.retryParamsDefinitions(

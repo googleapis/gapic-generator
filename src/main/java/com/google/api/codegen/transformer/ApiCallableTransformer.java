@@ -35,11 +35,11 @@ import java.util.Map;
 import org.joda.time.Duration;
 
 public class ApiCallableTransformer {
-  private final BundlingTransformer bundlingTransformer;
+  private final BatchingTransformer batchingTransformer;
   private final RetryDefinitionsTransformer retryDefinitionsTransformer;
 
   public ApiCallableTransformer() {
-    this.bundlingTransformer = new BundlingTransformer();
+    this.batchingTransformer = new BatchingTransformer();
     this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
   }
 
@@ -107,8 +107,8 @@ public class ApiCallableTransformer {
     if (methodConfig.isGrpcStreaming()) {
       callableImplType = ApiCallableImplType.StreamingApiCallable;
       apiCallableBuilder.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
-    } else if (methodConfig.isBundling()) {
-      callableImplType = ApiCallableImplType.BundlingApiCallable;
+    } else if (methodConfig.isBatching()) {
+      callableImplType = ApiCallableImplType.BatchingApiCallable;
     } else if (methodConfig.isLongRunningOperation()) {
       callableImplType = ApiCallableImplType.InitialOperationApiCallable;
     }
@@ -223,8 +223,8 @@ public class ApiCallableTransformer {
         namer.getNotImplementedString(notImplementedPrefix + "pageStreamingDescriptorName"));
     settings.pagedListResponseFactoryName(
         namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseFactoryName"));
-    settings.bundlingDescriptorName(
-        namer.getNotImplementedString(notImplementedPrefix + "bundlingDescriptorName"));
+    settings.batchingDescriptorName(
+        namer.getNotImplementedString(notImplementedPrefix + "batchingDescriptorName"));
     settings.operationResultTypeName(
         namer.getNotImplementedString(notImplementedPrefix + "operationResultTypeName"));
 
@@ -247,10 +247,10 @@ public class ApiCallableTransformer {
               methodConfig.getPageStreaming().getResourcesFieldConfig()));
       settings.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
       settings.pagedListResponseFactoryName(namer.getPagedListResponseFactoryConstName(method));
-    } else if (methodConfig.isBundling()) {
-      settings.type(ApiCallableImplType.BundlingApiCallable);
-      settings.bundlingDescriptorName(namer.getBundlingDescriptorConstName(method));
-      settings.bundlingConfig(bundlingTransformer.generateBundlingConfig(context));
+    } else if (methodConfig.isBatching()) {
+      settings.type(ApiCallableImplType.BatchingApiCallable);
+      settings.batchingDescriptorName(namer.getBatchingDescriptorConstName(method));
+      settings.batchingConfig(batchingTransformer.generateBatchingConfig(context));
     } else if (methodConfig.isLongRunningOperation()) {
       settings.type(ApiCallableImplType.OperationApiCallable);
       TypeRef operationResultType = methodConfig.getLongRunningConfig().getReturnType();

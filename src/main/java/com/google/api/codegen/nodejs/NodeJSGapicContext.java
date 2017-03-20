@@ -480,7 +480,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     if (messages().filterPageStreamingMethods(ifaceConfig, methods).iterator().hasNext()) {
       builder.add("PAGE_DESCRIPTORS");
     }
-    if (messages().filterBundlingMethods(ifaceConfig, methods).iterator().hasNext()) {
+    if (messages().filterBatchingMethods(ifaceConfig, methods).iterator().hasNext()) {
       builder.add("bundleDescriptors");
     }
     if (filterStreamingMethods(service).iterator().hasNext()) {

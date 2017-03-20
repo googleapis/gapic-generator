@@ -930,8 +930,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   ///////////////////////////////////// Constant & Keyword ////////////////////////////////////////
 
-  /** The name of the constant to hold the bundling descriptor for the given method. */
-  public String getBundlingDescriptorConstName(Method method) {
+  /** The name of the constant to hold the batching descriptor for the given method. */
+  public String getBatchingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("bundling_desc"));
   }
 

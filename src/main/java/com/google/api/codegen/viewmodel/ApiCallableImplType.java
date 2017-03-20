@@ -18,7 +18,7 @@ package com.google.api.codegen.viewmodel;
 public enum ApiCallableImplType {
   SimpleApiCallable(ServiceMethodType.UnaryMethod),
   PagedApiCallable(ServiceMethodType.UnaryMethod),
-  BundlingApiCallable(ServiceMethodType.UnaryMethod),
+  BatchingApiCallable(ServiceMethodType.UnaryMethod),
   StreamingApiCallable(ServiceMethodType.GrpcStreamingMethod),
   InitialOperationApiCallable(ServiceMethodType.UnaryMethod),
   OperationApiCallable(ServiceMethodType.LongRunningMethod);

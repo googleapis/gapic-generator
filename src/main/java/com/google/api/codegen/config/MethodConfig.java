@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.BundlingConfigProto;
+import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.LongRunningConfigProto;
@@ -73,7 +73,7 @@ public abstract class MethodConfig {
   public abstract ResourceNameTreatment getDefaultResourceNameTreatment();
 
   @Nullable
-  public abstract BundlingConfig getBundling();
+  public abstract BatchingConfig getBatching();
 
   public abstract boolean hasRequestObjectMethod();
 
@@ -144,11 +144,11 @@ public abstract class MethodConfig {
       }
     }
 
-    BundlingConfig bundling = null;
-    if (!BundlingConfigProto.getDefaultInstance().equals(methodConfigProto.getBundling())) {
-      bundling =
-          BundlingConfig.createBundling(diagCollector, methodConfigProto.getBundling(), method);
-      if (bundling == null) {
+    BatchingConfig batching = null;
+    if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
+      batching =
+          BatchingConfig.createBatching(diagCollector, methodConfigProto.getBatching(), method);
+      if (batching == null) {
         error = true;
       }
     }
@@ -260,7 +260,7 @@ public abstract class MethodConfig {
           requiredFieldConfigs,
           optionalFieldConfigs,
           defaultResourceNameTreatment,
-          bundling,
+          batching,
           hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
@@ -389,9 +389,9 @@ public abstract class MethodConfig {
     return getFlatteningConfigs() != null;
   }
 
-  /** Returns true if this method has bundling configured. */
-  public boolean isBundling() {
-    return getBundling() != null;
+  /** Returns true if this method has batching configured. */
+  public boolean isBatching() {
+    return getBatching() != null;
   }
 
   public boolean isLongRunningOperation() {
