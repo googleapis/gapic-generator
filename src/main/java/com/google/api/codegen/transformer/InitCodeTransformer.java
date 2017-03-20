@@ -54,13 +54,13 @@ import java.util.Map;
  * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
-  private final InitCodeImportSectionTransformer importSectionTransformer;
+  private final ImportSectionTransformer importSectionTransformer;
 
   public InitCodeTransformer() {
     this(new StandardImportSectionTransformer());
   }
 
-  public InitCodeTransformer(InitCodeImportSectionTransformer importSectionTransformer) {
+  public InitCodeTransformer(ImportSectionTransformer importSectionTransformer) {
     this.importSectionTransformer = importSectionTransformer;
   }
 

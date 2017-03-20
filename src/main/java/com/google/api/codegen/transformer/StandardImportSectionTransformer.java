@@ -22,8 +22,7 @@ import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.common.collect.ImmutableList;
 import java.util.Map;
 
-public class StandardImportSectionTransformer
-    implements ImportSectionTransformer, InitCodeImportSectionTransformer {
+public class StandardImportSectionTransformer implements ImportSectionTransformer {
   @Override
   public ImportSectionView generateImportSection(SurfaceTransformerContext context) {
     return generateImportSection(context.getTypeTable().getImports());

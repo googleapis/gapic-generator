@@ -14,8 +14,11 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -26,10 +29,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class NodeJSImportSectionTransformer implements ImportSectionTransformer {
+  @Override
   public ImportSectionView generateImportSection(SurfaceTransformerContext context) {
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.externalImports(generateExternalImports(context));
     return importSection.build();
+  }
+
+  @Override
+  public ImportSectionView generateImportSection(
+      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
+    return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
   private List<ImportFileView> generateExternalImports(SurfaceTransformerContext context) {
