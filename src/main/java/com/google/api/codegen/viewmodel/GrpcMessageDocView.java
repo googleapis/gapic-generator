@@ -31,10 +31,6 @@ public abstract class GrpcMessageDocView implements GrpcElementDocView {
 
   public abstract String fileUrl();
 
-  public boolean hasProperties() {
-    return !properties().isEmpty();
-  }
-
   public static Builder newBuilder() {
     return new AutoValue_GrpcMessageDocView.Builder();
   }
