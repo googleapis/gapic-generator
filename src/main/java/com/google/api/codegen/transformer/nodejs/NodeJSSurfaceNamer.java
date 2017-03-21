@@ -32,13 +32,18 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
+import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
+import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
 import java.util.List;
 
 /** The SurfaceNamer for NodeJS. */
@@ -65,8 +70,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
    * <p>The name for the module for this vkit module. This assumes that the package_name in the API
    * config will be in the format of 'apiname.version', and extracts the 'apiname' and 'version'
    * part and combine them to lower-camelcased style (like pubsubV1).
-   *
-   * <p>Based on {@link com.google.api.codegen.nodejs.NodeJSGapicContext#getModuleName}.
    */
   @Override
   public String getApiWrapperModuleName() {
@@ -342,6 +345,68 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     } else {
       return typeTable.getFullNameForElementType(type);
     }
+  }
+
+  @Override
+  public String getProtoFileName(ProtoFile file) {
+    String filePath = file.getSimpleName().replace(".proto", ".js");
+    if (commentReformatter.isExternalFile(file)) {
+      filePath = filePath.replaceAll("/", "_");
+    } else {
+      int lastSlash = filePath.lastIndexOf('/');
+      if (lastSlash >= 0) {
+        filePath = filePath.substring(lastSlash + 1);
+      }
+    }
+    return filePath;
+  }
+
+  @Override
+  public List<String> getDocLines(Field field) {
+    ImmutableList.Builder<String> lines = ImmutableList.builder();
+    List<String> fieldDocLines = getDocLines(DocumentationUtil.getScopedDescription(field));
+    String extraFieldDescription = getExtraFieldDescription(field);
+
+    lines.addAll(fieldDocLines);
+    if (!Strings.isNullOrEmpty(extraFieldDescription)) {
+      if (!fieldDocLines.isEmpty()) {
+        // Add a break if there was field docs and an extra description.
+        lines.add("");
+      }
+      lines.add(extraFieldDescription);
+    }
+    return lines.build();
+  }
+
+  private String getExtraFieldDescription(Field field) {
+    boolean fieldIsMessage = field.getType().isMessage() && !field.getType().isMap();
+    boolean fieldIsEnum = field.getType().isEnum();
+    if (fieldIsMessage) {
+      return "This object should have the same structure as "
+          + commentReformatter.getLinkedElementName(field.getType().getMessageType());
+    } else if (fieldIsEnum) {
+      return "The number should be among the values of "
+          + commentReformatter.getLinkedElementName(field.getType().getEnumType());
+    }
+    return "";
+  }
+
+  @Override
+  public String getMessageTypeName(ModelTypeTable typeTable, MessageType message) {
+    // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
+    // to be stripped from the message type name.
+    List<String> messageNames =
+        Arrays.asList(typeTable.getNicknameFor(TypeRef.of(message)).split("\\."));
+    return messageNames.get(messageNames.size() - 1);
+  }
+
+  @Override
+  public String getEnumTypeName(ModelTypeTable typeTable, EnumType enumType) {
+    // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
+    // to be stripped from the enum type name.
+    List<String> enumNames =
+        Arrays.asList(typeTable.getNicknameFor(TypeRef.of(enumType)).split("\\."));
+    return enumNames.get(enumNames.size() - 1);
   }
 
   @Override
