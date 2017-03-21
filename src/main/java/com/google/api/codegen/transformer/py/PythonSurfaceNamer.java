@@ -17,12 +17,15 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 
 /** The SurfaceNamer for Python. */
@@ -54,6 +57,48 @@ public class PythonSurfaceNamer extends SurfaceNamer {
             getPackageName(),
             getApiWrapperVariableName(interfaceConfig),
             getApiWrapperClassName(interfaceConfig));
+  }
+
+  @Override
+  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+    if (type.isMap()) {
+      TypeName mapTypeName = new TypeName("dict");
+      TypeName keyTypeName =
+          new TypeName(getParamTypeNameForElementType(type.getMapKeyField().getType()));
+      TypeName valueTypeName =
+          new TypeName(getParamTypeNameForElementType(type.getMapValueField().getType()));
+      return new TypeName(
+              mapTypeName.getFullName(),
+              mapTypeName.getNickname(),
+              "%s[%i -> %i]",
+              keyTypeName,
+              valueTypeName)
+          .getFullName();
+    }
+
+    if (type.isRepeated()) {
+      TypeName listTypeName = new TypeName("list");
+      TypeName elementTypeName = new TypeName(getParamTypeNameForElementType(type));
+      return new TypeName(
+              listTypeName.getFullName(), listTypeName.getNickname(), "%s[%i]", elementTypeName)
+          .getFullName();
+    }
+
+    return getParamTypeNameForElementType(type);
+  }
+
+  private String getParamTypeNameForElementType(TypeRef type) {
+    String typeName = getModelTypeFormatter().getFullNameForElementType(type);
+
+    if (type.isMessage()) {
+      return ":class:`" + typeName + "`";
+    }
+
+    if (type.isEnum()) {
+      return "enum :class:`" + typeName + "`";
+    }
+
+    return typeName;
   }
 
   @Override

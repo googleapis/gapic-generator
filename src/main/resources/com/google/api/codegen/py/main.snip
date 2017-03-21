@@ -329,7 +329,9 @@
 
 @private methodComments(service, method)
   @let descriptionComments = context.methodDescriptionComments(method), \
-       signatureComments = context.methodSignatureComments(service, method, importHandler)
+       returnTypeComments = util.getDocLines(context.returnTypeComment(service, method, importHandler)), \
+       throwsComments = util.getDocLines(context.throwsComment(service, method)), \
+       methodView = context.getApiMethodView(service, method)
     """
     @join comment : descriptionComments
       {@comment}
@@ -343,14 +345,27 @@
       EXPERIMENTAL: This method interface might change in the future.
 
     @end
-    {@sampleCode(context.getApiMethodView(service, method))}
-    @if signatureComments.isEmpty
-    @else
+    {@sampleCode(methodView)}
 
+    Args:
+      @join paramDoc : methodView.doc.paramDocs
+          @if paramDoc.lines
+              {@paramDoc.paramName} ({@paramDoc.typeName}): {@paramDoc.firstLine}
+                @join line : paramDoc.remainingLines
+                    {@line}
+                @end
+          @else
+              {@paramDoc.paramName} ({@paramDoc.typeName})
+          @end
+      @end
+    @if returnTypeComments
 
+        @join line : returnTypeComments
+              {@line}
+        @end
     @end
-    @join comment : signatureComments
-      {@comment}
+    @join line : throwsComments
+        {@line}
     @end
     """
   @end
