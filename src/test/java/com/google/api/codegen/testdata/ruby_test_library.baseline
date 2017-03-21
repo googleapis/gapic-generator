@@ -1,0 +1,1249 @@
+============== file: test/test.rb ==============
+# Copyright 2017, Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "minitest/autorun"
+require "minitest/spec"
+
+require "library/v1/library_service_client"
+
+def simple_grpc_mock(expected_request, response: nil, error: nil)
+  proc do |actual_request|
+    assert_equal(expected_request, actual_request)
+    raise error if error
+    response
+  end
+end
+
+describe Library::V1::LibraryServiceClient do
+  error = Google::Gax::GaxError.new "Test error"
+
+  describe 'create_shelf' do
+
+    CreateShelfRequest = Google::Example::Library::V1::CreateShelfRequest
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    Shelf = Google::Example::Library::V1::Shelf
+
+    it 'invokes create_shelf without error' do
+      # Create request parameters and expected request
+      shelf = Shelf.new
+      expected_request = CreateShelfRequest.new
+      expected_request.shelf = shelf
+
+      # Create expected grpc response
+      name = "name3373707"
+      theme = "theme110327241"
+      internal_theme = "internalTheme792518087"
+      expected_response = Shelf.new
+      expected_response.name = name
+      expected_response.theme = theme
+      expected_response.internal_theme = internal_theme
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@create_shelf",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.create_shelf(shelf)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes create_shelf with error' do
+      # Create request parameters and expected request
+      shelf = Shelf.new
+      expected_request = CreateShelfRequest.new
+      expected_request.shelf = shelf
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@create_shelf",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.create_shelf(shelf)
+      end
+    end
+  end
+
+  describe 'get_shelf' do
+
+    GetShelfRequest = Google::Example::Library::V1::GetShelfRequest
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    Shelf = Google::Example::Library::V1::Shelf
+
+    it 'invokes get_shelf without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      options_ = ''
+      expected_request = GetShelfRequest.new
+      expected_request.name = formatted_name
+      expected_request.options = options_
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      theme = "theme110327241"
+      internal_theme = "internalTheme792518087"
+      expected_response = Shelf.new
+      expected_response.name = name_2
+      expected_response.theme = theme
+      expected_response.internal_theme = internal_theme
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@get_shelf",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.get_shelf(formatted_name, options_)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes get_shelf with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      options_ = ''
+      expected_request = GetShelfRequest.new
+      expected_request.name = formatted_name
+      expected_request.options = options_
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@get_shelf",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.get_shelf(formatted_name, options_)
+      end
+    end
+  end
+
+  describe 'delete_shelf' do
+
+    DeleteShelfRequest = Google::Example::Library::V1::DeleteShelfRequest
+    Empty = Google::Protobuf::Empty
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes delete_shelf without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      expected_request = DeleteShelfRequest.new
+      expected_request.name = formatted_name
+
+      # Create expected grpc response
+      expected_response = Empty.new
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@delete_shelf",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.delete_shelf(formatted_name)
+
+      assert_nil(response)
+    end
+
+    it 'invokes delete_shelf with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      expected_request = DeleteShelfRequest.new
+      expected_request.name = formatted_name
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@delete_shelf",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.delete_shelf(formatted_name)
+      end
+    end
+  end
+
+  describe 'merge_shelves' do
+
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    MergeShelvesRequest = Google::Example::Library::V1::MergeShelvesRequest
+    Shelf = Google::Example::Library::V1::Shelf
+
+    it 'invokes merge_shelves without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      expected_request = MergeShelvesRequest.new
+      expected_request.name = formatted_name
+      expected_request.other_shelf_name = formatted_other_shelf_name
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      theme = "theme110327241"
+      internal_theme = "internalTheme792518087"
+      expected_response = Shelf.new
+      expected_response.name = name_2
+      expected_response.theme = theme
+      expected_response.internal_theme = internal_theme
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@merge_shelves",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.merge_shelves(formatted_name, formatted_other_shelf_name)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes merge_shelves with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      expected_request = MergeShelvesRequest.new
+      expected_request.name = formatted_name
+      expected_request.other_shelf_name = formatted_other_shelf_name
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@merge_shelves",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.merge_shelves(formatted_name, formatted_other_shelf_name)
+      end
+    end
+  end
+
+  describe 'create_book' do
+
+    Book = Google::Example::Library::V1::Book
+    CreateBookRequest = Google::Example::Library::V1::CreateBookRequest
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes create_book without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      book = Book.new
+      expected_request = CreateBookRequest.new
+      expected_request.name = formatted_name
+      expected_request.book = book
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = Book.new
+      expected_response.name = name_2
+      expected_response.author = author
+      expected_response.title = title
+      expected_response.read = read
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@create_book",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.create_book(formatted_name, book)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes create_book with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      book = Book.new
+      expected_request = CreateBookRequest.new
+      expected_request.name = formatted_name
+      expected_request.book = book
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@create_book",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.create_book(formatted_name, book)
+      end
+    end
+  end
+
+  describe 'publish_series' do
+
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    PublishSeriesRequest = Google::Example::Library::V1::PublishSeriesRequest
+    PublishSeriesResponse = Google::Example::Library::V1::PublishSeriesResponse
+    SeriesUuid = Google::Example::Library::V1::SeriesUuid
+    Shelf = Google::Example::Library::V1::Shelf
+
+    it 'invokes publish_series without error' do
+      # Create request parameters and expected request
+      shelf = Shelf.new
+      books = []
+      series_string = "foobar"
+      series_uuid = SeriesUuid.new
+      series_uuid.series_string = series_string
+      expected_request = PublishSeriesRequest.new
+      expected_request.shelf = shelf
+      expected_request.books += books unless books.empty?
+      expected_request.series_uuid = series_uuid
+
+      # Create expected grpc response
+      book_names_element = "bookNamesElement1491670575"
+      book_names = [book_names_element]
+      expected_response = PublishSeriesResponse.new
+      expected_response.book_names += book_names unless book_names.empty?
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@publish_series",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.publish_series(
+        shelf,
+        books,
+        series_uuid
+      )
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes publish_series with error' do
+      # Create request parameters and expected request
+      shelf = Shelf.new
+      books = []
+      series_string = "foobar"
+      series_uuid = SeriesUuid.new
+      series_uuid.series_string = series_string
+      expected_request = PublishSeriesRequest.new
+      expected_request.shelf = shelf
+      expected_request.books += books unless books.empty?
+      expected_request.series_uuid = series_uuid
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@publish_series",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.publish_series(
+          shelf,
+          books,
+          series_uuid
+        )
+      end
+    end
+  end
+
+  describe 'get_book' do
+
+    Book = Google::Example::Library::V1::Book
+    GetBookRequest = Google::Example::Library::V1::GetBookRequest
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes get_book without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      expected_request = GetBookRequest.new
+      expected_request.name = formatted_name
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = Book.new
+      expected_response.name = name_2
+      expected_response.author = author
+      expected_response.title = title
+      expected_response.read = read
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@get_book",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.get_book(formatted_name)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes get_book with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      expected_request = GetBookRequest.new
+      expected_request.name = formatted_name
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@get_book",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.get_book(formatted_name)
+      end
+    end
+  end
+
+  describe 'delete_book' do
+
+    DeleteBookRequest = Google::Example::Library::V1::DeleteBookRequest
+    Empty = Google::Protobuf::Empty
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes delete_book without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      expected_request = DeleteBookRequest.new
+      expected_request.name = formatted_name
+
+      # Create expected grpc response
+      expected_response = Empty.new
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@delete_book",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.delete_book(formatted_name)
+
+      assert_nil(response)
+    end
+
+    it 'invokes delete_book with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      expected_request = DeleteBookRequest.new
+      expected_request.name = formatted_name
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@delete_book",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.delete_book(formatted_name)
+      end
+    end
+  end
+
+  describe 'update_book' do
+
+    Book = Google::Example::Library::V1::Book
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    UpdateBookRequest = Google::Example::Library::V1::UpdateBookRequest
+
+    it 'invokes update_book without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      book = Book.new
+      expected_request = UpdateBookRequest.new
+      expected_request.name = formatted_name
+      expected_request.book = book
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = Book.new
+      expected_response.name = name_2
+      expected_response.author = author
+      expected_response.title = title
+      expected_response.read = read
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@update_book",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.update_book(formatted_name, book)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes update_book with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      book = Book.new
+      expected_request = UpdateBookRequest.new
+      expected_request.name = formatted_name
+      expected_request.book = book
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@update_book",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.update_book(formatted_name, book)
+      end
+    end
+  end
+
+  describe 'move_book' do
+
+    Book = Google::Example::Library::V1::Book
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    MoveBookRequest = Google::Example::Library::V1::MoveBookRequest
+
+    it 'invokes move_book without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      expected_request = MoveBookRequest.new
+      expected_request.name = formatted_name
+      expected_request.other_shelf_name = formatted_other_shelf_name
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = Book.new
+      expected_response.name = name_2
+      expected_response.author = author
+      expected_response.title = title
+      expected_response.read = read
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@move_book",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.move_book(formatted_name, formatted_other_shelf_name)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes move_book with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+      expected_request = MoveBookRequest.new
+      expected_request.name = formatted_name
+      expected_request.other_shelf_name = formatted_other_shelf_name
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@move_book",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.move_book(formatted_name, formatted_other_shelf_name)
+      end
+    end
+  end
+
+  describe 'add_comments' do
+
+    AddCommentsRequest = Google::Example::Library::V1::AddCommentsRequest
+    Alignment = Google::Example::Library::V1::SomeMessage2::SomeMessage3::Alignment
+    Comment = Google::Example::Library::V1::Comment
+    Empty = Google::Protobuf::Empty
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    Stage = Google::Example::Library::V1::Comment::Stage
+
+    it 'invokes add_comments without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      comment = ''
+      stage = Stage::UNSET
+      alignment = Alignment::CHAR
+      comments_element = Comment.new
+      comments_element.comment = comment
+      comments_element.stage = stage
+      comments_element.alignment = alignment
+      comments = [comments_element]
+      expected_request = AddCommentsRequest.new
+      expected_request.name = formatted_name
+      expected_request.comments += comments unless comments.empty?
+
+      # Create expected grpc response
+      expected_response = Empty.new
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@add_comments",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.add_comments(formatted_name, comments)
+
+      assert_nil(response)
+    end
+
+    it 'invokes add_comments with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      comment = ''
+      stage = Stage::UNSET
+      alignment = Alignment::CHAR
+      comments_element = Comment.new
+      comments_element.comment = comment
+      comments_element.stage = stage
+      comments_element.alignment = alignment
+      comments = [comments_element]
+      expected_request = AddCommentsRequest.new
+      expected_request.name = formatted_name
+      expected_request.comments += comments unless comments.empty?
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@add_comments",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.add_comments(formatted_name, comments)
+      end
+    end
+  end
+
+  describe 'get_book_from_archive' do
+
+    BookFromArchive = Google::Example::Library::V1::BookFromArchive
+    GetBookFromArchiveRequest = Google::Example::Library::V1::GetBookFromArchiveRequest
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes get_book_from_archive without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
+      expected_request = GetBookFromArchiveRequest.new
+      expected_request.name = formatted_name
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = BookFromArchive.new
+      expected_response.name = name_2
+      expected_response.author = author
+      expected_response.title = title
+      expected_response.read = read
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@get_book_from_archive",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.get_book_from_archive(formatted_name)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes get_book_from_archive with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
+      expected_request = GetBookFromArchiveRequest.new
+      expected_request.name = formatted_name
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@get_book_from_archive",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.get_book_from_archive(formatted_name)
+      end
+    end
+  end
+
+  describe 'get_book_from_anywhere' do
+
+    BookFromAnywhere = Google::Example::Library::V1::BookFromAnywhere
+    GetBookFromAnywhereRequest = Google::Example::Library::V1::GetBookFromAnywhereRequest
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes get_book_from_anywhere without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_alt_book_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      expected_request = GetBookFromAnywhereRequest.new
+      expected_request.name = formatted_name
+      expected_request.alt_book_name = formatted_alt_book_name
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = BookFromAnywhere.new
+      expected_response.name = name_2
+      expected_response.author = author
+      expected_response.title = title
+      expected_response.read = read
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@get_book_from_anywhere",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes get_book_from_anywhere with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_alt_book_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      expected_request = GetBookFromAnywhereRequest.new
+      expected_request.name = formatted_name
+      expected_request.alt_book_name = formatted_alt_book_name
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@get_book_from_anywhere",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+      end
+    end
+  end
+
+  describe 'update_book_index' do
+
+    Empty = Google::Protobuf::Empty
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    UpdateBookIndexRequest = Google::Example::Library::V1::UpdateBookIndexRequest
+
+    it 'invokes update_book_index without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      index_name = "default index"
+      index_map_item = ''
+      index_map = { "default_key" => index_map_item }
+      expected_request = UpdateBookIndexRequest.new
+      expected_request.name = formatted_name
+      expected_request.index_name = index_name
+      expected_request.index_map = index_map
+
+      # Create expected grpc response
+      expected_response = Empty.new
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@update_book_index",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.update_book_index(
+        formatted_name,
+        index_name,
+        index_map
+      )
+
+      assert_nil(response)
+    end
+
+    it 'invokes update_book_index with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      index_name = "default index"
+      index_map_item = ''
+      index_map = { "default_key" => index_map_item }
+      expected_request = UpdateBookIndexRequest.new
+      expected_request.name = formatted_name
+      expected_request.index_name = index_name
+      expected_request.index_map = index_map
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@update_book_index",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.update_book_index(
+          formatted_name,
+          index_name,
+          index_map
+        )
+      end
+    end
+  end
+
+  describe 'add_tag' do
+
+    AddTagRequest = Google::Tagger::V1::AddTagRequest
+    AddTagResponse = Google::Tagger::V1::AddTagResponse
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes add_tag without error' do
+      # Create request parameters and expected request
+      formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      tag = ''
+      expected_request = AddTagRequest.new
+      expected_request.resource = formatted_resource
+      expected_request.tag = tag
+
+      # Create expected grpc response
+      expected_response = AddTagResponse.new
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@add_tag",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.add_tag(formatted_resource, tag)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes add_tag with error' do
+      # Create request parameters and expected request
+      formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      tag = ''
+      expected_request = AddTagRequest.new
+      expected_request.resource = formatted_resource
+      expected_request.tag = tag
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@add_tag",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.add_tag(formatted_resource, tag)
+      end
+    end
+  end
+
+  describe 'add_label' do
+
+    AddLabelRequest = Google::Tagger::V1::AddLabelRequest
+    AddLabelResponse = Google::Tagger::V1::AddLabelResponse
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes add_label without error' do
+      # Create request parameters and expected request
+      formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      label = ''
+      expected_request = AddLabelRequest.new
+      expected_request.resource = formatted_resource
+      expected_request.label = label
+
+      # Create expected grpc response
+      expected_response = AddLabelResponse.new
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@add_label",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.add_label(formatted_resource, label)
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes add_label with error' do
+      # Create request parameters and expected request
+      formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      label = ''
+      expected_request = AddLabelRequest.new
+      expected_request.resource = formatted_resource
+      expected_request.label = label
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@add_label",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.add_label(formatted_resource, label)
+      end
+    end
+  end
+
+  describe 'test_optional_required_flattening_params' do
+
+    InnerEnum = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum
+    InnerMessage = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    TestOptionalRequiredFlatteningParamsRequest = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest
+    TestOptionalRequiredFlatteningParamsResponse = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsResponse
+
+    it 'invokes test_optional_required_flattening_params without error' do
+      # Create request parameters and expected request
+      required_singular_int32 = 0
+      required_singular_int64 = 0
+      required_singular_float = 0.0
+      required_singular_double = 0.0
+      required_singular_bool = false
+      required_singular_enum = InnerEnum::ZERO
+      required_singular_string = ''
+      required_singular_bytes = ''
+      required_singular_message = InnerMessage.new
+      required_singular_resource_name = ''
+      required_singular_resource_name_oneof = ''
+      required_repeated_int32 = []
+      required_repeated_int64 = []
+      required_repeated_float = []
+      required_repeated_double = []
+      required_repeated_bool = []
+      required_repeated_enum = []
+      required_repeated_string = []
+      required_repeated_bytes = []
+      required_repeated_message = []
+      formatted_required_repeated_resource_name = []
+      formatted_required_repeated_resource_name_oneof = []
+      required_map = {}
+      expected_request = TestOptionalRequiredFlatteningParamsRequest.new
+      expected_request.required_singular_int32 = required_singular_int32
+      expected_request.required_singular_int64 = required_singular_int64
+      expected_request.required_singular_float = required_singular_float
+      expected_request.required_singular_double = required_singular_double
+      expected_request.required_singular_bool = required_singular_bool
+      expected_request.required_singular_enum = required_singular_enum
+      expected_request.required_singular_string = required_singular_string
+      expected_request.required_singular_bytes = required_singular_bytes
+      expected_request.required_singular_message = required_singular_message
+      expected_request.required_singular_resource_name = required_singular_resource_name
+      expected_request.required_singular_resource_name_oneof = required_singular_resource_name_oneof
+      expected_request.required_repeated_int32 += required_repeated_int32 unless required_repeated_int32.empty?
+      expected_request.required_repeated_int64 += required_repeated_int64 unless required_repeated_int64.empty?
+      expected_request.required_repeated_float += required_repeated_float unless required_repeated_float.empty?
+      expected_request.required_repeated_double += required_repeated_double unless required_repeated_double.empty?
+      expected_request.required_repeated_bool += required_repeated_bool unless required_repeated_bool.empty?
+      expected_request.required_repeated_enum += required_repeated_enum unless required_repeated_enum.empty?
+      expected_request.required_repeated_string += required_repeated_string unless required_repeated_string.empty?
+      expected_request.required_repeated_bytes += required_repeated_bytes unless required_repeated_bytes.empty?
+      expected_request.required_repeated_message += required_repeated_message unless required_repeated_message.empty?
+      expected_request.required_repeated_resource_name += formatted_required_repeated_resource_name unless formatted_required_repeated_resource_name.empty?
+      expected_request.required_repeated_resource_name_oneof += formatted_required_repeated_resource_name_oneof unless formatted_required_repeated_resource_name_oneof.empty?
+      expected_request.required_map = required_map
+
+      # Create expected grpc response
+      expected_response = TestOptionalRequiredFlatteningParamsResponse.new
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@test_optional_required_flattening_params",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      # Call method
+      response = client.test_optional_required_flattening_params(
+        required_singular_int32,
+        required_singular_int64,
+        required_singular_float,
+        required_singular_double,
+        required_singular_bool,
+        required_singular_enum,
+        required_singular_string,
+        required_singular_bytes,
+        required_singular_message,
+        required_singular_resource_name,
+        required_singular_resource_name_oneof,
+        required_repeated_int32,
+        required_repeated_int64,
+        required_repeated_float,
+        required_repeated_double,
+        required_repeated_bool,
+        required_repeated_enum,
+        required_repeated_string,
+        required_repeated_bytes,
+        required_repeated_message,
+        formatted_required_repeated_resource_name,
+        formatted_required_repeated_resource_name_oneof,
+        required_map
+      )
+
+      assert_equal(expected_response, response)
+    end
+
+    it 'invokes test_optional_required_flattening_params with error' do
+      # Create request parameters and expected request
+      required_singular_int32 = 0
+      required_singular_int64 = 0
+      required_singular_float = 0.0
+      required_singular_double = 0.0
+      required_singular_bool = false
+      required_singular_enum = InnerEnum::ZERO
+      required_singular_string = ''
+      required_singular_bytes = ''
+      required_singular_message = InnerMessage.new
+      required_singular_resource_name = ''
+      required_singular_resource_name_oneof = ''
+      required_repeated_int32 = []
+      required_repeated_int64 = []
+      required_repeated_float = []
+      required_repeated_double = []
+      required_repeated_bool = []
+      required_repeated_enum = []
+      required_repeated_string = []
+      required_repeated_bytes = []
+      required_repeated_message = []
+      formatted_required_repeated_resource_name = []
+      formatted_required_repeated_resource_name_oneof = []
+      required_map = {}
+      expected_request = TestOptionalRequiredFlatteningParamsRequest.new
+      expected_request.required_singular_int32 = required_singular_int32
+      expected_request.required_singular_int64 = required_singular_int64
+      expected_request.required_singular_float = required_singular_float
+      expected_request.required_singular_double = required_singular_double
+      expected_request.required_singular_bool = required_singular_bool
+      expected_request.required_singular_enum = required_singular_enum
+      expected_request.required_singular_string = required_singular_string
+      expected_request.required_singular_bytes = required_singular_bytes
+      expected_request.required_singular_message = required_singular_message
+      expected_request.required_singular_resource_name = required_singular_resource_name
+      expected_request.required_singular_resource_name_oneof = required_singular_resource_name_oneof
+      expected_request.required_repeated_int32 += required_repeated_int32 unless required_repeated_int32.empty?
+      expected_request.required_repeated_int64 += required_repeated_int64 unless required_repeated_int64.empty?
+      expected_request.required_repeated_float += required_repeated_float unless required_repeated_float.empty?
+      expected_request.required_repeated_double += required_repeated_double unless required_repeated_double.empty?
+      expected_request.required_repeated_bool += required_repeated_bool unless required_repeated_bool.empty?
+      expected_request.required_repeated_enum += required_repeated_enum unless required_repeated_enum.empty?
+      expected_request.required_repeated_string += required_repeated_string unless required_repeated_string.empty?
+      expected_request.required_repeated_bytes += required_repeated_bytes unless required_repeated_bytes.empty?
+      expected_request.required_repeated_message += required_repeated_message unless required_repeated_message.empty?
+      expected_request.required_repeated_resource_name += formatted_required_repeated_resource_name unless formatted_required_repeated_resource_name.empty?
+      expected_request.required_repeated_resource_name_oneof += formatted_required_repeated_resource_name_oneof unless formatted_required_repeated_resource_name_oneof.empty?
+      expected_request.required_map = required_map
+
+      # Mock Grpc layer
+      client = LibraryServiceClient.new
+      client.instance_variable_set(
+        "@test_optional_required_flattening_params",
+        simple_grpc_mock(
+          expected_request,
+          error: error
+        )
+      )
+
+      # Call method
+      assert_raises Google::Gax::GaxError do
+        client.test_optional_required_flattening_params(
+          required_singular_int32,
+          required_singular_int64,
+          required_singular_float,
+          required_singular_double,
+          required_singular_bool,
+          required_singular_enum,
+          required_singular_string,
+          required_singular_bytes,
+          required_singular_message,
+          required_singular_resource_name,
+          required_singular_resource_name_oneof,
+          required_repeated_int32,
+          required_repeated_int64,
+          required_repeated_float,
+          required_repeated_double,
+          required_repeated_bool,
+          required_repeated_enum,
+          required_repeated_string,
+          required_repeated_bytes,
+          required_repeated_message,
+          formatted_required_repeated_resource_name,
+          formatted_required_repeated_resource_name_oneof,
+          required_map
+        )
+      end
+    end
+  end
+end

@@ -1,0 +1,149 @@
+@extends "ruby/method_sample.snip"
+@extends "ruby/common.snip"
+@extends "ruby/initcode.snip"
+
+@snippet generate(apiTest)
+  {@header(apiTest.fileHeader)}
+
+  {@helpers()}
+
+  @join testClass : apiTest.testClasses
+    describe {@testClass.fullyQualifiedApiClassName} do
+      error = Google::Gax::GaxError.new "Test error"
+      @join test : testClass.testCases
+        @if testCase(test, testClass.apiClassName)
+
+          {@testCase(test, testClass.apiClassName)}
+        @end
+      @end
+    end
+  @end
+@end
+
+@private header(fileHeader)
+  {@license(fileHeader)}
+
+  {@importList(fileHeader.importSection.standardImports)}
+
+  {@importList(fileHeader.importSection.externalImports)}
+@end
+
+@private helpers()
+  def simple_grpc_mock(expected_request, response: nil, error: nil)
+    proc do |actual_request|
+      assert_equal(expected_request, actual_request)
+      raise error if error
+      response
+    end
+  end
+@end
+
+@private testCase(test, apiClassName)
+  @switch test.grpcStreamingType
+  @case "NonStreaming"
+    @switch test.clientMethodType
+    @case "RequestObjectMethod"
+      {@requestObjectTestCase(test, apiClassName)}
+    @case "PagedRequestObjectMethod"
+    @case "OperationCallableMethod"
+    @default
+      $unhandled case: {@test.clientMethodType.toString}$
+    @end
+  @case "ServerStreaming"
+  @case "BidiStreaming"
+  @default
+    $unhandled case: {@test.grpcStreamingType.toString}$
+  @end
+@end
+
+@private requestObjectTestCase(test, apiClassName)
+  describe '{@test.clientMethodName}' do
+
+    @if {@aliasSection(test.initCode.importSection)}
+      {@aliasSection(test.initCode.importSection)}
+
+    @end
+    it 'invokes {@test.clientMethodName} without error' do
+      @# Create request parameters and expected request
+      {@initCode(test.initCode)}
+
+      @# Create expected grpc response
+      {@initCode(test.mockResponse.initCode)}
+
+      @# Mock Grpc layer
+      client = {@test.serviceConstructorName}.new
+      client.instance_variable_set(
+        "@@{@test.clientMethodName}",
+        simple_grpc_mock(
+          expected_request,
+          response: expected_response
+        )
+      )
+
+      @# Call method
+      {@methodCallWithResponse(test)}
+
+      @if test.hasReturnValue
+        assert_equal(expected_response, response)
+      @else
+        assert_nil(response)
+      @end
+    end
+
+    {@simpleTestWithError(test, apiClassName)}
+  end
+@end
+
+@private simpleTestWithError(test, apiClassName)
+  it 'invokes {@test.clientMethodName} with error' do
+    @# Create request parameters and expected request
+    {@initCode(test.initCode)}
+
+    @# Mock Grpc layer
+    client = {@test.serviceConstructorName}.new
+    client.instance_variable_set(
+      "@@{@test.clientMethodName}",
+      simple_grpc_mock(
+        expected_request,
+        error: error
+      )
+    )
+
+    @# Call method
+    assert_raises Google::Gax::GaxError do
+      {@methodCall(test)}
+    end
+  end
+@end
+
+@private methodCallWithResponse(test)
+  @if @test.initCode.hasManyFieldSettings
+    response = client.{@test.clientMethodName}(
+      {@multilineArgList(test.initCode.fieldSettings)}
+    )
+  @else
+    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @end
+@end
+
+@private methodCall(test)
+  @if @test.initCode.hasManyFieldSettings
+    client.{@test.clientMethodName}(
+      {@multilineArgList(test.initCode.fieldSettings)}
+    )
+  @else
+    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @end
+@end
+
+@private argList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
+
+@private multilineArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ",".add(BREAK)
+    {@fieldSetting.identifier}
+  @end
+@end

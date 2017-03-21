@@ -18,7 +18,12 @@
 @private initLineStructure(line)
   {@line.identifier} = {@line.typeName}.new
   @join fieldSetting : line.fieldSettings
-    {@line.identifier}.{@fieldSetting.fieldSetFunction} = {@fieldSetting.identifier}
+    @if fieldSetting.isArray
+      # If the array is empty, the protobuf will not allow for this operation.
+      {@line.identifier}.{@fieldSetting.fieldSetFunction} += {@fieldSetting.identifier} unless {@fieldSetting.identifier}.empty?
+    @else
+      {@line.identifier}.{@fieldSetting.fieldSetFunction} = {@fieldSetting.identifier}
+    @end
   @end
 @end
 

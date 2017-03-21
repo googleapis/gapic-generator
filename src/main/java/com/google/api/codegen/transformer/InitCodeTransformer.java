@@ -71,10 +71,18 @@ public class InitCodeTransformer {
   public InitCodeView generateInitCode(
       MethodTransformerContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
-    if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
-      return buildInitCodeViewFlattened(methodContext, rootNode);
-    } else {
-      return buildInitCodeViewRequestObject(methodContext, rootNode);
+    switch (initCodeContext.outputType()) {
+      case FieldList:
+        return buildInitCodeViewFlattened(methodContext, rootNode);
+      case SingleObject:
+        return buildInitCodeViewRequestObject(methodContext, rootNode);
+      case FieldListAndRequestObject:
+        // This is used in grpc testing for when a method accepts a field list but the grpc request
+        // object is needed. This helps to compare the the request object that was constructed by
+        // the method against the request object that is initialized.
+        return buildInitCodeViewFlattenedWithRequestObject(methodContext, rootNode);
+      default:
+        throw new IllegalArgumentException();
     }
   }
 
@@ -175,6 +183,16 @@ public class InitCodeTransformer {
       MethodTransformerContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     List<InitCodeNode> argItems = Lists.newArrayList(root);
+    return buildInitCodeView(context, orderedItems, argItems);
+  }
+
+  private InitCodeView buildInitCodeViewFlattenedWithRequestObject(
+      MethodTransformerContext context, InitCodeNode root) {
+    // Initialize the the fields as well as the request object.
+    List<InitCodeNode> orderedItems = root.listInInitializationOrder();
+
+    // Only have the fields be the arguments to the method.
+    List<InitCodeNode> argItems = new ArrayList<>(root.getChildren().values());
     return buildInitCodeView(context, orderedItems, argItems);
   }
 

@@ -31,6 +31,10 @@ public abstract class InitCodeContext {
   public enum InitCodeOutputType {
     SingleObject,
     FieldList,
+    // This is used in grpc testing for when a method accepts a field list but the grpc request
+    // object is needed. This helps to compare the the request object that was constructed by the
+    // method against the request object that is initialized.
+    FieldListAndRequestObject
   }
 
   /** The type of the output object. */
