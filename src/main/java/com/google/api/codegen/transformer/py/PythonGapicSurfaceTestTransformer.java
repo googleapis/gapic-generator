@@ -50,7 +50,10 @@ import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
-/** Responsible for producing testing related views for Python */
+/**
+ * Transforms the model into API tests for Python. Responsible for producing a list of
+ * ClientTestFileViews for unit tests.
+ */
 public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String TEST_TEMPLATE_FILE = "py/test.snip";
 

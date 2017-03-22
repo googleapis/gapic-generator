@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-/** A utility class used by the Go test generator which populates values for primitive fields. */
-public class GoValueProducer implements ValueProducer {
+/** A utility class used by a test generator to populate values for primitive fields. */
+public class StandardValueProducer implements ValueProducer {
   @Override
   public String produce(TypeRef typeRef, Name identifier) {
     Type type = typeRef.getKind();
@@ -37,7 +37,7 @@ public class GoValueProducer implements ValueProducer {
         || typeRef.getPrimitiveTypeName().contains("fixed")) {
       return Double.toString(identifier.hashCode() / 10);
     } else {
-      throw new RuntimeException("Unknown type in ValueProducer.");
+      throw new RuntimeException("Unknown type in ValueProducer: " + type);
     }
   }
 }

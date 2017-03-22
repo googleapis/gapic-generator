@@ -28,7 +28,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
-import com.google.api.codegen.util.testing.RubyValueProducer;
+import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.InitCodeView;
@@ -50,7 +50,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
-  private final ValueProducer valueProducer = new RubyValueProducer();
+  private final ValueProducer valueProducer = new StandardValueProducer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
 
   public RubyGapicSurfaceTestTransformer(GapicCodePathMapper rubyPathMapper) {

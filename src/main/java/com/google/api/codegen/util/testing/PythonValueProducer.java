@@ -16,30 +16,22 @@ package com.google.api.codegen.util.testing;
 
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 /**
  * A utility class used by the Python test generator which populates values for primitive fields.
  */
-public class PythonValueProducer implements ValueProducer {
+public class PythonValueProducer extends StandardValueProducer {
   @Override
   public String produce(TypeRef typeRef, Name identifier) {
-    Type type = typeRef.getKind();
-    if (type == Type.TYPE_STRING) {
-      return identifier.toLowerCamel() + Integer.toString(identifier.hashCode());
-    } else if (type == Type.TYPE_BOOL) {
-      return identifier.hashCode() % 2 == 0 ? "True" : "False";
-    } else if (type == Type.TYPE_BYTES) {
-      byte lowByte = (byte) (identifier.hashCode());
-      return Byte.toString(lowByte);
-    } else if (typeRef.getPrimitiveTypeName().contains("int")) {
-      return Integer.toString(identifier.hashCode());
-    } else if (type == Type.TYPE_DOUBLE
-        || type == Type.TYPE_FLOAT
-        || typeRef.getPrimitiveTypeName().contains("fixed")) {
-      return Double.toString(identifier.hashCode() / 10);
-    } else {
-      throw new RuntimeException("Unknown type in ValueProducer.");
+    String value = super.produce(typeRef, identifier);
+    if (value.equals("true")) {
+      return "True";
     }
+
+    if (value.equals("false")) {
+      return "False";
+    }
+
+    return value;
   }
 }
