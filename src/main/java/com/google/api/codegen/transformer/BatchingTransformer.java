@@ -139,6 +139,7 @@ public class BatchingTransformer {
       Name selectedTypeName = Name.from(fieldSelector.getLastField().getSimpleName());
       BatchingPartitionKeyView key =
           BatchingPartitionKeyView.newBuilder()
+              .separatorLiteral("\"|\"")
               .fieldGetFunction(
                   context.getNamer().getFieldGetFunctionName(selectedType, selectedTypeName))
               .build();
