@@ -16,8 +16,8 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.core.ApiStreamObserver;
 import com.google.api.gax.core.PagedListResponse;
-import com.google.api.gax.core.RpcStreamObserver;
 import com.google.api.gax.grpc.ApiException;
 import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.testing.MockGrpcService;
@@ -1194,7 +1194,7 @@ public class LibraryClientTest {
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
-    RpcStreamObserver<DiscussBookRequest> requestObserver =
+    ApiStreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
 
     requestObserver.onNext(request);
@@ -1219,7 +1219,7 @@ public class LibraryClientTest {
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
-    RpcStreamObserver<DiscussBookRequest> requestObserver =
+    ApiStreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
 
     requestObserver.onNext(request);
