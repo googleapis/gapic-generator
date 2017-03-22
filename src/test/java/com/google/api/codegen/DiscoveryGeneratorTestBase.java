@@ -33,33 +33,32 @@ import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.regex.Pattern;
+import org.apache.commons.io.FilenameUtils;
 
 /** Base class for code generator baseline tests. */
 public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase {
-
-  private static final Pattern BASELINE_PATTERN = Pattern.compile("(\\w+)\\[(\\w+)\\]");
 
   // Wiring
   // ======
 
   private final String name;
-  private final String discoveryDocFileName;
-  private final String[] gapicConfigFileNames;
+  private final String discoveryDocFilename;
+  private final String[] gapicConfigFilenames;
   private final JsonNode overridesJson;
   protected ConfigProto config;
   protected DiscoveryImporter discoveryImporter;
 
   public DiscoveryGeneratorTestBase(
-      String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
+      String name, String discoveryDocFilename, String[] gapicConfigFilenames) {
     this.name = name;
-    this.discoveryDocFileName = discoveryDocFileName;
-    this.gapicConfigFileNames = gapicConfigFileNames;
+    this.discoveryDocFilename = discoveryDocFilename;
+    this.gapicConfigFilenames = gapicConfigFilenames;
 
     // Look for a overrides json based on the filename of the discovery doc.
-    // For example, for "logging.v1.json" we look for "logging.v1.json.overrides"
+    // For example, for "logging.v1.json" we look for "logging.v1.overrides.json"
     JsonNode tree = null;
-    String overridesFilename = discoveryDocFileName + ".overrides";
+    String overridesFilename =
+        FilenameUtils.removeExtension(discoveryDocFilename) + ".overrides.json";
     try {
       URL url = getTestDataLocator().findTestData(overridesFilename);
       if (url != null) {
@@ -79,14 +78,14 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
           DiscoveryImporter.parse(
               new StringReader(
                   getTestDataLocator()
-                      .readTestData(getTestDataLocator().findTestData(discoveryDocFileName))));
+                      .readTestData(getTestDataLocator().findTestData(discoveryDocFilename))));
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating Generator", e);
     }
 
     config =
         CodegenTestUtil.readConfig(
-            new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
+            new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFilenames);
     if (config == null) {
       return;
     }
@@ -154,7 +153,9 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   static final class DiscoveryFile implements FileFilter {
     @Override
     public boolean accept(File file) {
-      return file.isFile() && file.getName().endsWith(".json");
+      return file.isFile()
+          && file.getName().endsWith(".json")
+          && !file.getName().endsWith(".overrides.json");
     }
   }
 }
