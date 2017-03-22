@@ -19,6 +19,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class BatchingPartitionKeyView {
 
+  public abstract String separatorLiteral();
+
   public abstract String fieldGetFunction();
 
   public static Builder newBuilder() {
@@ -27,6 +29,8 @@ public abstract class BatchingPartitionKeyView {
 
   @AutoValue.Builder
   public abstract static class Builder {
+
+    public abstract Builder separatorLiteral(String val);
 
     public abstract Builder fieldGetFunction(String val);
 
