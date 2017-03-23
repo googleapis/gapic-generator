@@ -98,7 +98,7 @@
           {@sampleMethodCallArgList(test.initCode.fieldSettings)});
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 @end
@@ -131,7 +131,7 @@
     } catch (ExecutionException e) {
       Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
       StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+      Assert.assertEquals(Status.INVALID_ARGUMENT, statusException.getStatus());
     }
   }
 @end
@@ -170,7 +170,7 @@
     } catch (ExecutionException e) {
       Assert.assertEquals(ApiException.class, e.getCause().getClass());
       ApiException apiException = (ApiException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL.getCode(), apiException.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), apiException.getStatusCode());
     }
   }
 
@@ -224,7 +224,7 @@
 @end
 
 @private addException(test)
-  StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+  StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
   {@test.mockServiceVarName}.addException(exception);
 @end
 
