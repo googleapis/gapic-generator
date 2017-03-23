@@ -1,0 +1,138 @@
+@snippet generate(metadata)
+  buildscript {
+    repositories {
+      mavenCentral()
+    }
+    dependencies { classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7' }
+  }
+
+  apply plugin: 'java'
+  apply plugin: 'maven'
+  apply plugin: 'signing'
+  apply plugin: 'com.google.protobuf'
+
+  description = 'GRPC library for {@metadata.identifier}'
+  group = "com.google.api.grpc"
+  version = "{@metadata.packageVersionBound.lower}"
+  sourceCompatibility = 1.6
+  targetCompatibility = 1.6
+
+  repositories {
+    mavenCentral()
+    mavenLocal()
+  }
+
+  dependencies {
+    compile "com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}"
+    compile "com.google.api:api-common:0.0.2"
+  }
+
+  ext.locateGapicPluginMethod = { ->
+    def outstream = new ByteArrayOutputStream()
+    exec {
+      commandLine 'which', 'gapic_plugin.py'
+      standardOutput = outstream
+    }
+    return outstream.toString().trim()
+  }
+
+  protobuf {
+    protoc {
+      // The version of protoc must match protobuf-java. If you don't depend on
+      // protobuf-java directly, you will be transitively depending on the
+      // protobuf-java version that grpc depends on.
+      artifact = "com.google.protobuf:protoc:{@metadata.protoVersionBound.lower}"
+    }
+    plugins {
+      grpc {
+        artifact = 'io.grpc:protoc-gen-grpc-java:1.0.1'
+      }
+    }
+    generateProtoTasks {
+      all()*.plugins {
+        grpc {
+          outputSubDir = 'java'
+        }
+      }
+    }
+  }
+
+  sourceSets {
+    main {
+      java {
+        srcDir 'build/generated/source/proto/main/java'
+      }
+    }
+  }
+
+  task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+  }
+
+  task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+  }
+
+  artifacts {
+    archives javadocJar, sourcesJar
+  }
+
+  signing {
+    required false
+    sign configurations.archives
+  }
+
+  if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+    uploadArchives {
+      repositories {
+        mavenDeployer {
+          beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+          repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            authentication(userName: ossrhUsername, password: ossrhPassword)
+          }
+
+          snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+            authentication(userName: ossrhUsername, password: ossrhPassword)
+          }
+
+          pom.project {
+            name "com.google.api.grpc:{@metadata.identifier}"
+            description project.description
+            url '{@metadata.homepage}'
+            scm {
+              url '{@metadata.homepage}'
+              connection 'scm:git:{@metadata.homepage}'
+            }
+
+            licenses {
+              license {
+                name '{@metadata.licenseName}'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              }
+            }
+
+            developers {
+              developer {
+                id '{@metadata.author}'
+                name '{@metadata.author}'
+                email '{@metadata.email}'
+                url '{@metadata.homepage}'
+                organization 'Google, Inc.'
+                organizationUrl 'https://www.google.com'
+              }
+            }
+          }
+        }
+      }
+    }
+  } else {
+    task failUploadArchives << {
+      throw new GradleException("uploadArchives needs ossrhUsername and ossrhPassword "
+        + "to be set. They can be set inside your ~/.gradle/gradle.properties file.")
+    }
+    tasks.uploadArchives.dependsOn(failUploadArchives)
+  }
+@end

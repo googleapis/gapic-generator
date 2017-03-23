@@ -16,9 +16,11 @@ package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.grpcmetadatagen.java.JavaGrpcPackageMetadataTransformer;
+import com.google.api.codegen.grpcmetadatagen.py.PythonGrpcMetadataTransformer;
 import com.google.api.codegen.grpcmetadatagen.py.PythonPackageCopier;
+import com.google.api.codegen.grpcmetadatagen.py.PythonPackageCopierResult;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
-import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
@@ -29,42 +31,17 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * ToolDriver for PackageMetadataGenerator; creates and sets the ToolOptions and builds the Model
  */
 public class GrpcMetadataGenerator extends ToolDriverBase {
-  private static final Map<TargetLanguage, List<String>> SNIPPETS =
-      new ImmutableMap.Builder<TargetLanguage, List<String>>()
-          .put(
-              TargetLanguage.PYTHON,
-              Lists.newArrayList(
-                  "metadatagen/LICENSE.snip",
-                  "metadatagen/py/setup.py.snip",
-                  "metadatagen/py/README.rst.snip",
-                  "metadatagen/py/PUBLISHING.rst.snip",
-                  "metadatagen/py/MANIFEST.in.snip"))
-          .build();
-
-  private static final Map<TargetLanguage, GrpcPackageCopier> COPIERS =
-      new ImmutableMap.Builder<TargetLanguage, GrpcPackageCopier>()
-          .put(TargetLanguage.PYTHON, new PythonPackageCopier())
-          .build();
-
-  private static final Map<TargetLanguage, Set<String>> PROTO_PACKAGE_DEPENDENCY_WHITELIST =
-      new ImmutableMap.Builder<TargetLanguage, Set<String>>()
-          .put(TargetLanguage.PYTHON, Sets.newHashSet("googleapis-common-protos"))
-          .build();
-
   public static final Option<String> OUTPUT_DIR =
       ToolOptions.createOption(
           String.class, "output_file", "The name of the output folder to put generated code.", "");
@@ -87,35 +64,35 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
     super(options);
   }
 
-  @SuppressWarnings("unchecked")
-  protected Map<String, Doc> generateDocs(Model model) throws IOException {
+  protected Map<String, Doc> generate(Model model) throws IOException {
+    TargetLanguage language = TargetLanguage.fromString(options.get(LANGUAGE));
     String configContent =
         new String(
             Files.readAllBytes(Paths.get(options.get(METADATA_CONFIG_FILE))),
             StandardCharsets.UTF_8);
     PackageMetadataConfig config = PackageMetadataConfig.createFromString(configContent);
-    TargetLanguage language = TargetLanguage.fromString(options.get(LANGUAGE));
-
-    // Copy gRPC package and create non-top-level files
-    GrpcPackageCopierResult copierResults = getCopier(language).run(options, config);
-
     ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
-    docs.putAll(copierResults.docs());
-    PackageMetadataTransformer transformer = new PackageMetadataTransformer();
+    ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
+    switch (language) {
+      case PYTHON:
+        PythonPackageCopier copier = new PythonPackageCopier();
+        PythonPackageCopierResult copierResult = copier.run(options, config);
+        docs.putAll(copierResult.docs());
+        PythonGrpcMetadataTransformer pythonTransformer =
+            new PythonGrpcMetadataTransformer(copierResult);
+        metadataViews.addAll(pythonTransformer.transform(model, config));
+        break;
+      case JAVA:
+        JavaGrpcPackageMetadataTransformer javaTransformer =
+            new JavaGrpcPackageMetadataTransformer();
+        metadataViews.addAll(javaTransformer.transform(model, config));
+        break;
+      default:
+        throw new IllegalArgumentException(
+            "The target language \"" + language + "\" is not supported");
+    }
 
-    for (String snippetFilename : getSnippets(language)) {
-      PackageMetadataView view =
-          transformer
-              .generateMetadataView(
-                  config,
-                  model,
-                  snippetFilename,
-                  outputPath(snippetFilename),
-                  language,
-                  PROTO_PACKAGE_DEPENDENCY_WHITELIST.get(language))
-              // Set language-specific GrpcCopierResults here.
-              .namespacePackages(copierResults.namespacePackages())
-              .build();
+    for (PackageMetadataView view : metadataViews) {
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view);
       Doc result = runner.generate(view);
       if (!result.isWhitespace()) {
@@ -135,34 +112,6 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
       }
       return;
     }
-
-    writeToFile(generateDocs(model));
-  }
-
-  private void writeToFile(Map<String, Doc> docs) throws Exception {
-    ToolUtil.writeFiles(docs, options.get(OUTPUT_DIR));
-  }
-
-  private static String outputPath(String templateFileName) {
-    String baseName = Paths.get(templateFileName).getFileName().toString();
-    int extensionIndex = baseName.lastIndexOf(".");
-    return baseName.substring(0, extensionIndex);
-  }
-
-  private static List<String> getSnippets(TargetLanguage language) {
-    return getForLanguage(SNIPPETS, language);
-  }
-
-  private static GrpcPackageCopier getCopier(TargetLanguage language) {
-    return getForLanguage(COPIERS, language);
-  }
-
-  private static <T> T getForLanguage(Map<TargetLanguage, T> map, TargetLanguage language) {
-    T value = map.get(language);
-    if (value == null) {
-      throw new IllegalArgumentException(
-          "The target language \"" + language + "\" is not supported");
-    }
-    return value;
+    ToolUtil.writeFiles(generate(model), options.get(OUTPUT_DIR));
   }
 }
