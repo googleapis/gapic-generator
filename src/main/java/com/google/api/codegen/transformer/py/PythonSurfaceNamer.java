@@ -101,6 +101,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getExceptionTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName =
+        symbolTable.getNewSymbol(Name.upperCamel("Test", method.getSimpleName(), "Exception"));
+    return publicMethodName(testCaseName);
+  }
+
+  @Override
   public String quoted(String text) {
     return "'" + text + "'";
   }
