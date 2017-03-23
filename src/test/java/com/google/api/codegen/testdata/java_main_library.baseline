@@ -518,7 +518,7 @@ public class LibraryClient implements AutoCloseable {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *
-   *   for (Shelf element : libraryClient.listShelves().iterateAllElements()) {
+   *   for (Shelf element : libraryClient.listShelves().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -541,7 +541,7 @@ public class LibraryClient implements AutoCloseable {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *   for (Shelf element : libraryClient.listShelves(request).iterateAllElements()) {
+   *   for (Shelf element : libraryClient.listShelves(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -565,7 +565,7 @@ public class LibraryClient implements AutoCloseable {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
    *   ApiFuture&lt;ListShelvesPagedResponse&gt; future = libraryClient.listShelvesPagedCallable().futureCall(request);
    *   // Do something
-   *   for (Shelf element : future.get().iterateAllElements()) {
+   *   for (Shelf element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -992,7 +992,7 @@ public class LibraryClient implements AutoCloseable {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   String filter = "";
-   *   for (Book element : libraryClient.listBooks(name, filter).iterateAllElements()) {
+   *   for (Book element : libraryClient.listBooks(name, filter).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1022,7 +1022,7 @@ public class LibraryClient implements AutoCloseable {
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
    *     .build();
-   *   for (Book element : libraryClient.listBooks(request).iterateAllElements()) {
+   *   for (Book element : libraryClient.listBooks(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1049,7 +1049,7 @@ public class LibraryClient implements AutoCloseable {
    *     .build();
    *   ApiFuture&lt;ListBooksPagedResponse&gt; future = libraryClient.listBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (Book element : future.get().iterateAllElements()) {
+   *   for (Book element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }

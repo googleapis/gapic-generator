@@ -326,7 +326,7 @@ public class LibraryClientTest {
 
     ListShelvesPagedResponse pagedListResponse = client.listShelves();
 
-    List<Shelf> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
+    List<Shelf> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getShelvesList().get(0), resources.get(0));
 
@@ -592,7 +592,7 @@ public class LibraryClientTest {
 
     ListBooksPagedResponse pagedListResponse = client.listBooks(name, filter);
 
-    List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
+    List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getBooksList().get(0), resources.get(0));
 
@@ -817,7 +817,7 @@ public class LibraryClientTest {
 
     ListStringsPagedResponse pagedListResponse = client.listStrings();
 
-    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
     List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
@@ -862,7 +862,7 @@ public class LibraryClientTest {
 
     ListStringsPagedResponse pagedListResponse = client.listStrings(name);
 
-    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
     List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
@@ -1252,7 +1252,7 @@ public class LibraryClientTest {
 
     FindRelatedBooksPagedResponse pagedListResponse = client.findRelatedBooks(names, shelves);
 
-    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAllElements());
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
     List<BookName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsBookName());
