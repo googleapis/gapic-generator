@@ -349,14 +349,16 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       SurfaceTransformerContext context, StaticLangApiMethodView exampleApiMethod) {
     addSettingsImports(context);
 
+    SurfaceNamer namer = context.getNamer();
     StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
-    String name = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
+    String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
     xsettingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
     xsettingsClass.servicePort(serviceConfig.getServicePort());
     xsettingsClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
+    xsettingsClass.artifactId(namer.getArtifactId(context.getModel()));
 
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
@@ -445,7 +447,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("io.grpc.Status");
     typeTable.saveNicknameFor("org.joda.time.Duration");
     typeTable.saveNicknameFor("java.io.IOException");
+    typeTable.saveNicknameFor("java.io.InputStream");
     typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.Properties");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 

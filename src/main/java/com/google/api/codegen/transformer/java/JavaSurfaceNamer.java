@@ -34,8 +34,10 @@ import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -195,5 +197,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getBatchingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("batching_desc"));
+  }
+
+  @Override
+  public String getArtifactId(Model model) {
+    List<String> nameTokens = Splitter.on(".").splitToList(model.getServiceConfig().getName());
+    return "google-cloud-" + nameTokens.get(0);
   }
 }

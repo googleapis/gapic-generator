@@ -79,6 +79,10 @@
 
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
+  private static final String ARTIFACT_ID = "{@xsettingsClass.artifactId}";
+  private static final String GROUP_ID = "com.google.cloud";
+  private static final String META_FILE_ROOT = "/META-INF/maven/";
+  private static final String META_VERSION_KEY = "version";
   {@""}
 @end
 
@@ -140,8 +144,21 @@
   }
 
   private static String getGapicVersion() {
-    String packageVersion = {@xsettingsClass.name}.class.getPackage().getImplementationVersion();
-    return packageVersion != null ? packageVersion : DEFAULT_GAPIC_VERSION;
+    try {
+      Properties properties = new Properties();
+      String mavenPropertiesPath = META_FILE_ROOT
+          + GROUP_ID + "/"
+          + ARTIFACT_ID + "/pom.properties";
+      InputStream inputStream =
+          ImageAnnotatorSettings.class.getResourceAsStream(mavenPropertiesPath);
+      if (inputStream != null) {
+        properties.load(inputStream);
+        return properties.getProperty(META_VERSION_KEY, "");
+      }
+    } catch (Exception e) {
+      // ignore
+    }
+    return DEFAULT_GAPIC_VERSION;
   }
 
   /**

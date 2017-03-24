@@ -98,9 +98,11 @@ import com.google.tagger.v1.LabelerGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
 import org.joda.time.Duration;
@@ -156,6 +158,10 @@ public class LibrarySettings extends ClientSettings {
 
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
+  private static final String ARTIFACT_ID = "google-cloud-library-example";
+  private static final String GROUP_ID = "com.google.cloud";
+  private static final String META_FILE_ROOT = "/META-INF/maven/";
+  private static final String META_VERSION_KEY = "version";
 
   private final SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings;
@@ -423,8 +429,21 @@ public class LibrarySettings extends ClientSettings {
   }
 
   private static String getGapicVersion() {
-    String packageVersion = LibrarySettings.class.getPackage().getImplementationVersion();
-    return packageVersion != null ? packageVersion : DEFAULT_GAPIC_VERSION;
+    try {
+      Properties properties = new Properties();
+      String mavenPropertiesPath = META_FILE_ROOT
+          + GROUP_ID + "/"
+          + ARTIFACT_ID + "/pom.properties";
+      InputStream inputStream =
+          ImageAnnotatorSettings.class.getResourceAsStream(mavenPropertiesPath);
+      if (inputStream != null) {
+        properties.load(inputStream);
+        return properties.getProperty(META_VERSION_KEY, "");
+      }
+    } catch (Exception e) {
+      // ignore
+    }
+    return DEFAULT_GAPIC_VERSION;
   }
 
   /**
