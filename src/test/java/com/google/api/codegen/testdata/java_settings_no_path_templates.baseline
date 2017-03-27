@@ -62,10 +62,9 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
 
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
-  private static final String ARTIFACT_ID = "google-cloud-no-path-templates";
-  private static final String GROUP_ID = "com.google.cloud";
-  private static final String META_FILE_ROOT = "/META-INF/maven/";
-  private static final String META_VERSION_KEY = "version";
+
+  private static final String PROPERTIES_FILE = "/project.properties";
+  private static final String META_VERSION_KEY = "beta.version";
 
   private static String gapicVersion;
 
@@ -113,18 +112,20 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
 
   private static String getGapicVersion() {
     if (gapicVersion == null) {
-      try {
-        Properties properties = new Properties();
-        String mavenPropertiesPath =
-            META_FILE_ROOT + GROUP_ID + "/" + ARTIFACT_ID + "/pom.properties";
-        InputStream inputStream =
-            ImageAnnotatorSettings.class.getResourceAsStream(mavenPropertiesPath);
-        if (inputStream != null) {
-          properties.load(inputStream);
-          gapicVersion = properties.getProperty(META_VERSION_KEY, DEFAULT_GAPIC_VERSION);
-        }
-      } catch (Exception ignore) {
+      gapicVersion = NoTemplatesApiServiceSettings.class.getPackage().getImplementationVersion();
+      if (gapicVersion == null) {
         gapicVersion = DEFAULT_GAPIC_VERSION;
+        try {
+          Properties properties = new Properties();
+          InputStream inputStream =
+              NoTemplatesApiServiceSettings.class.getResourceAsStream(PROPERTIES_FILE);
+          if (inputStream != null) {
+            properties.load(inputStream);
+            gapicVersion = properties.getProperty(META_VERSION_KEY, DEFAULT_GAPIC_VERSION);
+          }
+        } catch (Exception ignore) {
+          // Ignore
+        }
       }
     }
     return gapicVersion;
