@@ -18,6 +18,7 @@ package com.google.gcloud.example;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.PropertiesProvider;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.gax.grpc.ChannelProvider;
 import com.google.api.gax.grpc.ClientSettings;
@@ -39,9 +40,7 @@ import com.google.protobuf.ExperimentalApi;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
 import org.joda.time.Duration;
@@ -112,21 +111,9 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
 
   private static String getGapicVersion() {
     if (gapicVersion == null) {
-      gapicVersion = NoTemplatesApiServiceSettings.class.getPackage().getImplementationVersion();
-      if (gapicVersion == null) {
-        gapicVersion = DEFAULT_GAPIC_VERSION;
-        try {
-          Properties properties = new Properties();
-          InputStream inputStream =
-              NoTemplatesApiServiceSettings.class.getResourceAsStream(PROPERTIES_FILE);
-          if (inputStream != null) {
-            properties.load(inputStream);
-            gapicVersion = properties.getProperty(META_VERSION_KEY, DEFAULT_GAPIC_VERSION);
-          }
-        } catch (Exception ignore) {
-          // Ignore
-        }
-      }
+      gapicVersion = PropertiesProvider.loadProperty(
+          NoTemplatesApiServiceSettings.class, PROPERTIES_FILE, META_VERSION_KEY);
+      gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
     }
     return gapicVersion;
   }

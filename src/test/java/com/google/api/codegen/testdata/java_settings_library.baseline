@@ -23,6 +23,7 @@ import com.google.api.gax.core.FlowControlSettings;
 import com.google.api.gax.core.FlowController;
 import com.google.api.gax.core.FlowController.LimitExceededBehavior;
 import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.PropertiesProvider;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.gax.grpc.BatchedRequestIssuer;
 import com.google.api.gax.grpc.BatchingCallSettings;
@@ -98,11 +99,9 @@ import com.google.tagger.v1.LabelerGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
 import org.joda.time.Duration;
@@ -431,21 +430,9 @@ public class LibrarySettings extends ClientSettings {
 
   private static String getGapicVersion() {
     if (gapicVersion == null) {
-      gapicVersion = LibrarySettings.class.getPackage().getImplementationVersion();
-      if (gapicVersion == null) {
-        gapicVersion = DEFAULT_GAPIC_VERSION;
-        try {
-          Properties properties = new Properties();
-          InputStream inputStream =
-              LibrarySettings.class.getResourceAsStream(PROPERTIES_FILE);
-          if (inputStream != null) {
-            properties.load(inputStream);
-            gapicVersion = properties.getProperty(META_VERSION_KEY, DEFAULT_GAPIC_VERSION);
-          }
-        } catch (Exception ignore) {
-          // Ignore
-        }
-      }
+      gapicVersion = PropertiesProvider.loadProperty(
+          LibrarySettings.class, PROPERTIES_FILE, META_VERSION_KEY);
+      gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
     }
     return gapicVersion;
   }

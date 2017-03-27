@@ -146,21 +146,9 @@
 
   private static String getGapicVersion() {
     if (gapicVersion == null) {
-      gapicVersion = {@xsettingsClass.name}.class.getPackage().getImplementationVersion();
-      if (gapicVersion == null) {
-        gapicVersion = DEFAULT_GAPIC_VERSION;
-        try {
-          Properties properties = new Properties();
-          InputStream inputStream =
-              {@xsettingsClass.name}.class.getResourceAsStream(PROPERTIES_FILE);
-          if (inputStream != null) {
-            properties.load(inputStream);
-            gapicVersion = properties.getProperty(META_VERSION_KEY, DEFAULT_GAPIC_VERSION);
-          }
-        } catch (Exception ignore) {
-          // Ignore
-        }
-      }
+      gapicVersion = PropertiesProvider.loadProperty(
+          {@xsettingsClass.name}.class, PROPERTIES_FILE, META_VERSION_KEY);
+      gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
     }
     return gapicVersion;
   }
