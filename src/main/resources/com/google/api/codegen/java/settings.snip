@@ -83,6 +83,8 @@
   private static final String GROUP_ID = "com.google.cloud";
   private static final String META_FILE_ROOT = "/META-INF/maven/";
   private static final String META_VERSION_KEY = "version";
+
+  private static String gapicVersion;
   {@""}
 @end
 
@@ -144,21 +146,22 @@
   }
 
   private static String getGapicVersion() {
-    try {
-      Properties properties = new Properties();
-      String mavenPropertiesPath = META_FILE_ROOT
-          + GROUP_ID + "/"
-          + ARTIFACT_ID + "/pom.properties";
-      InputStream inputStream =
-          ImageAnnotatorSettings.class.getResourceAsStream(mavenPropertiesPath);
-      if (inputStream != null) {
-        properties.load(inputStream);
-        return properties.getProperty(META_VERSION_KEY, "");
+    if (gapicVersion == null) {
+      try {
+        Properties properties = new Properties();
+        String mavenPropertiesPath =
+            META_FILE_ROOT + GROUP_ID + "/" + ARTIFACT_ID + "/pom.properties";
+        InputStream inputStream =
+            ImageAnnotatorSettings.class.getResourceAsStream(mavenPropertiesPath);
+        if (inputStream != null) {
+          properties.load(inputStream);
+          gapicVersion = properties.getProperty(META_VERSION_KEY, DEFAULT_GAPIC_VERSION);
+        }
+      } catch (Exception ignore) {
+        gapicVersion = DEFAULT_GAPIC_VERSION;
       }
-    } catch (Exception e) {
-      // ignore
     }
-    return DEFAULT_GAPIC_VERSION;
+    return gapicVersion;
   }
 
   /**

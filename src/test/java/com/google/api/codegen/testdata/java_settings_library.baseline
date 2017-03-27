@@ -163,6 +163,8 @@ public class LibrarySettings extends ClientSettings {
   private static final String META_FILE_ROOT = "/META-INF/maven/";
   private static final String META_VERSION_KEY = "version";
 
+  private static String gapicVersion;
+
   private final SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings;
   private final PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
@@ -429,21 +431,22 @@ public class LibrarySettings extends ClientSettings {
   }
 
   private static String getGapicVersion() {
-    try {
-      Properties properties = new Properties();
-      String mavenPropertiesPath = META_FILE_ROOT
-          + GROUP_ID + "/"
-          + ARTIFACT_ID + "/pom.properties";
-      InputStream inputStream =
-          ImageAnnotatorSettings.class.getResourceAsStream(mavenPropertiesPath);
-      if (inputStream != null) {
-        properties.load(inputStream);
-        return properties.getProperty(META_VERSION_KEY, "");
+    if (gapicVersion == null) {
+      try {
+        Properties properties = new Properties();
+        String mavenPropertiesPath =
+            META_FILE_ROOT + GROUP_ID + "/" + ARTIFACT_ID + "/pom.properties";
+        InputStream inputStream =
+            ImageAnnotatorSettings.class.getResourceAsStream(mavenPropertiesPath);
+        if (inputStream != null) {
+          properties.load(inputStream);
+          gapicVersion = properties.getProperty(META_VERSION_KEY, DEFAULT_GAPIC_VERSION);
+        }
+      } catch (Exception ignore) {
+        gapicVersion = DEFAULT_GAPIC_VERSION;
       }
-    } catch (Exception e) {
-      // ignore
     }
-    return DEFAULT_GAPIC_VERSION;
+    return gapicVersion;
   }
 
   /**
