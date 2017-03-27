@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A PackageCopier specialized to calculate Python namespace packages and generate __init__.py
+ * A copier specialized to calculate Python namespace packages and generate __init__.py
  * files.
  */
 public class PythonPackageCopier {
