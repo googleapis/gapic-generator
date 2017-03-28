@@ -16,16 +16,16 @@
     @join pagedResponseClass : pagedResponseClasses.pagedResponseWrapperList
       public static class {@pagedResponseClass.name} implements PagedListResponse<{@pagedResponseClass.resourceTypeName}> {
 
-        private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+        private final PagedListResponseContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context;
         private final {@pagedResponseClass.pageName} page;
 
         public {@pagedResponseClass.name}(
             UnaryCallable<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}> callable,
             PagedListDescriptor<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> pageDescriptor,
             {@pagedResponseClass.requestTypeName} request,
-            CallContext context) {
-          this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
-          this.page = new {@pagedResponseClass.pageName}(context);
+            CallContext callContext) {
+          this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, callContext);
+          this.page = new {@pagedResponseClass.pageName}(this.context);
         }
 
         public Iterator<{@pagedResponseClass.resourceTypeName}> iterateAll() {
@@ -38,12 +38,13 @@
 
         public Iterator<{@pagedResponseClass.pageName}> iteratePages() {
           return new PageContext.PageIterator<{@pagedResponseClass.pageName}>(
-            new PageContext.PageFetcher<>() {
+            new PageContext.PageFetcher<{@pagedResponseClass.pageName}>() {
               @@Override
               public {@pagedResponseClass.pageName} getNextPage({@pagedResponseClass.pageName} currentPage) {
                 return currentPage.getNextPage();
               }
-          }
+            },
+            page);
         }
 
         public Object getNextPageToken() {
@@ -61,10 +62,15 @@
       }
 
       public static class {@pagedResponseClass.pageName} implements Page<{@pagedResponseClass.resourceTypeName}> {
-        private final PageContext<RequestT, ResponseT, ResourceT> context;
+        private final PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context;
 
-        public {@pagedResponseClass.pageName}(PageContext<RequestT, ResponseT, ResourceT> context) {
+        public {@pagedResponseClass.pageName}(PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context) {
           this.context = context;
+        }
+
+        @@Override
+        public Iterator<{@pagedResponseClass.resourceTypeName}> iterator() {
+          return context.getResourceIterator();
         }
 
         @@Override
@@ -78,17 +84,16 @@
         }
 
         @@Override
-        public Page<ResourceT> getNextPage() {
+        public {@pagedResponseClass.pageName} getNextPage() {
           return new {@pagedResponseClass.pageName}(context.getNextPageContext());
         }
 
-        @@Override
         public {@pagedResponseClass.pageName} getNextPage(int pageSize) {
           return new {@pagedResponseClass.pageName}(context.getNextPageContext(pageSize));
         }
 
         @@Override
-        public Iterator<ResourceT> iterateAll() {
+        public Iterator<{@pagedResponseClass.resourceTypeName}> iterateAll() {
           return context.iterateAll();
         }
 

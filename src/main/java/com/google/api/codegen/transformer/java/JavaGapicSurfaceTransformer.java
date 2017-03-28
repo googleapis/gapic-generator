@@ -481,14 +481,19 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private void addPagedResponseWrapperImports(ModelTypeTable typeTable) {
+    typeTable.saveNicknameFor("com.google.api.gax.core.FixedSizeCollection");
+    typeTable.saveNicknameFor("com.google.api.gax.core.Page");
+    typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseContext");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.common.base.Function");
     typeTable.saveNicknameFor("com.google.common.collect.Iterators");
     typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("javax.annotation.Generated");
+    typeTable.saveNicknameFor("java.util.Iterator");
   }
 
   public SettingsDocView generateSettingsDoc(
