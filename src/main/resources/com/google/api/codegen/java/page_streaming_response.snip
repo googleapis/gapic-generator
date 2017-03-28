@@ -14,22 +14,6 @@
   public class {@pagedResponseClasses.name} {
 
     @join pagedResponseClass : pagedResponseClasses.pagedResponseWrapperList
-      public static class {@pagedResponseClass.name} extends \
-          PagedListResponseImpl<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> {
-
-        public {@pagedResponseClass.name}(
-            UnaryCallable<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}> callable,
-            PagedListDescriptor<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> pageDescriptor,
-            {@pagedResponseClass.requestTypeName} request,
-            CallContext context) {
-          super(callable, pageDescriptor, request, context);
-        }
-        {@iterateMethods(pagedResponseClass)}
-      }
-
-    @end
-
-    @join pagedResponseClass : pagedResponseClasses.pagedResponseWrapperList
       public static class {@pagedResponseClass.name} implements PagedListResponse<{@pagedResponseClass.resourceTypeName}> {
 
         private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
