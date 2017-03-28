@@ -34,44 +34,17 @@ public class GoModelTypeNameConverterTest {
     boolean isPointerTrue = true;
     boolean isPointerFalse = false;
 
-    // Not in curated proto. Don't guess anything.
+    // Specified import path, use the path.
     Truth.assertThat(
             converter
-                .getTypeName("github.com/someone/repo", "foo.bar", "Baz", isPointerFalse)
-                .getNickname())
-        .isEqualTo("foo_bar.Baz");
-
-    // Pointer.
-    Truth.assertThat(
-            converter
-                .getTypeName("github.com/someone/repo", "foo.bar", "Baz", isPointerTrue)
-                .getNickname())
-        .isEqualTo("*foo_bar.Baz");
-
-    // Curated but no specified import path, guess the import.
-    Truth.assertThat(converter.getTypeName("", "foo.bar", "Baz", isPointerFalse).getNickname())
-        .isEqualTo("barpb.Baz");
-
-    // Pointer.
-    Truth.assertThat(converter.getTypeName("", "foo.bar", "Baz", isPointerTrue).getNickname())
-        .isEqualTo("*barpb.Baz");
-
-    // Skip the version.
-    Truth.assertThat(converter.getTypeName("", "foo.bar.v1", "Baz", isPointerFalse).getNickname())
-        .isEqualTo("barpb.Baz");
-
-    // Curated but specified import path, use the path, ignore proto package.
-    Truth.assertThat(
-            converter
-                .getTypeName("google.golang.org/genproto/zip/zap", "foo.bar", "Baz", isPointerFalse)
+                .getTypeName("google.golang.org/genproto/zip/zap", "Baz", isPointerFalse)
                 .getNickname())
         .isEqualTo("zappb.Baz");
 
     // Also specified the import name, use it.
     Truth.assertThat(
             converter
-                .getTypeName(
-                    "google.golang.org/genproto/zip/zap;smack", "foo.bar", "Baz", isPointerFalse)
+                .getTypeName("google.golang.org/genproto/zip/zap;smack", "Baz", isPointerFalse)
                 .getNickname())
         .isEqualTo("smackpb.Baz");
   }
