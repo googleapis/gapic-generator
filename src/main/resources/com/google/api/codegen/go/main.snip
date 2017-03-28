@@ -116,7 +116,7 @@
     // use by Google-written clients.
     func (c *{@view.clientTypeName}) SetGoogleClientInfo(keyval ...string) {
         kv := append([]string{"gl-go", version.Go()}, keyval...)
-        kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", "")
+        kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
         c.xGoogHeader = gax.XGoogHeader(kv...)
     }
 
@@ -185,9 +185,9 @@
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) ({@method.responseTypeName}, error) {
         {@mergeMetadata()}
         var resp {@method.serviceResponseTypeName}
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
+            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
             return err
         }, c.CallOptions.{@method.settingsGetterName}...)
         if err != nil {
@@ -201,11 +201,11 @@
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) (*{@method.operationMethod.clientReturnTypeName}, error) {
         {@mergeMetadata()}
         var resp {@method.serviceResponseTypeName}
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
+            resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
             return err
-        }, c.CallOptions.{@method.name}...)
+        }, c.CallOptions.{@method.settingsGetterName}...)
         if err != nil {
             return nil, err
         }
@@ -222,9 +222,9 @@
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context) ({@method.responseTypeName}, error) {
         {@mergeMetadata()}
         var resp {@method.serviceResponseTypeName}
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.{@method.stubName}.{@method.name}(ctx)
+            resp, err = c.{@method.stubName}.{@method.name}(ctx, settings.GRPC...)
             return err
         }, c.CallOptions.{@method.settingsGetterName}...)
         if err != nil {
@@ -237,9 +237,9 @@
 @private emptyReturnMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) error {
         {@mergeMetadata()}
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            _, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
+            _, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
             return err
         }, c.CallOptions.{@method.settingsGetterName}...)
         return err
@@ -258,9 +258,9 @@
             } else {
                 req.PageSize = int32(pageSize)
             }
-            err := gax.Invoke(ctx, func(ctx context.Context) error {
+            err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
                 var err error
-                resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req)
+                resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
                 return err
             }, c.CallOptions.{@method.settingsGetterName}...)
             if err != nil {

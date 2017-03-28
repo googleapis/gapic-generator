@@ -193,7 +193,7 @@ func (c *Client) Close() error {
 // use by Google-written clients.
 func (c *Client) SetGoogleClientInfo(keyval ...string) {
     kv := append([]string{"gl-go", version.Go()}, keyval...)
-    kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", "")
+    kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
     c.xGoogHeader = gax.XGoogHeader(kv...)
 }
 
@@ -244,9 +244,9 @@ func (c *Client) BookIAM(book *librarypb.Book) *iam.Handle {
 func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.Shelf
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.CreateShelf(ctx, req)
+        resp, err = c.client.CreateShelf(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.CreateShelf...)
     if err != nil {
@@ -259,9 +259,9 @@ func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequ
 func (c *Client) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest) (*librarypb.Shelf, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.Shelf
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.GetShelf(ctx, req)
+        resp, err = c.client.GetShelf(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.GetShelf...)
     if err != nil {
@@ -282,9 +282,9 @@ func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequ
         } else {
             req.PageSize = int32(pageSize)
         }
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.client.ListShelves(ctx, req)
+            resp, err = c.client.ListShelves(ctx, req, settings.GRPC...)
             return err
         }, c.CallOptions.ListShelves...)
         if err != nil {
@@ -307,9 +307,9 @@ func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequ
 // DeleteShelf deletes a shelf.
 func (c *Client) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest) error {
     ctx = insertXGoog(ctx, c.xGoogHeader)
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        _, err = c.client.DeleteShelf(ctx, req)
+        _, err = c.client.DeleteShelf(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.DeleteShelf...)
     return err
@@ -321,9 +321,9 @@ func (c *Client) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequ
 func (c *Client) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest) (*librarypb.Shelf, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.Shelf
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.MergeShelves(ctx, req)
+        resp, err = c.client.MergeShelves(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.MergeShelves...)
     if err != nil {
@@ -336,9 +336,9 @@ func (c *Client) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRe
 func (c *Client) CreateBook(ctx context.Context, req *librarypb.CreateBookRequest) (*librarypb.Book, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.Book
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.CreateBook(ctx, req)
+        resp, err = c.client.CreateBook(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.CreateBook...)
     if err != nil {
@@ -351,9 +351,9 @@ func (c *Client) CreateBook(ctx context.Context, req *librarypb.CreateBookReques
 func (c *Client) PublishSeries(ctx context.Context, req *librarypb.PublishSeriesRequest) (*librarypb.PublishSeriesResponse, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.PublishSeriesResponse
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.PublishSeries(ctx, req)
+        resp, err = c.client.PublishSeries(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.PublishSeries...)
     if err != nil {
@@ -366,9 +366,9 @@ func (c *Client) PublishSeries(ctx context.Context, req *librarypb.PublishSeries
 func (c *Client) GetBook(ctx context.Context, req *librarypb.GetBookRequest) (*librarypb.Book, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.Book
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.GetBook(ctx, req)
+        resp, err = c.client.GetBook(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.GetBook...)
     if err != nil {
@@ -389,9 +389,9 @@ func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest)
         } else {
             req.PageSize = int32(pageSize)
         }
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.client.ListBooks(ctx, req)
+            resp, err = c.client.ListBooks(ctx, req, settings.GRPC...)
             return err
         }, c.CallOptions.ListBooks...)
         if err != nil {
@@ -414,9 +414,9 @@ func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest)
 // DeleteBook deletes a book.
 func (c *Client) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest) error {
     ctx = insertXGoog(ctx, c.xGoogHeader)
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        _, err = c.client.DeleteBook(ctx, req)
+        _, err = c.client.DeleteBook(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.DeleteBook...)
     return err
@@ -426,9 +426,9 @@ func (c *Client) DeleteBook(ctx context.Context, req *librarypb.DeleteBookReques
 func (c *Client) UpdateBook(ctx context.Context, req *librarypb.UpdateBookRequest) (*librarypb.Book, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.Book
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.UpdateBook(ctx, req)
+        resp, err = c.client.UpdateBook(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.UpdateBook...)
     if err != nil {
@@ -441,9 +441,9 @@ func (c *Client) UpdateBook(ctx context.Context, req *librarypb.UpdateBookReques
 func (c *Client) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest) (*librarypb.Book, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.Book
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.MoveBook(ctx, req)
+        resp, err = c.client.MoveBook(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.MoveBook...)
     if err != nil {
@@ -464,9 +464,9 @@ func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequ
         } else {
             req.PageSize = int32(pageSize)
         }
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.client.ListStrings(ctx, req)
+            resp, err = c.client.ListStrings(ctx, req, settings.GRPC...)
             return err
         }, c.CallOptions.ListStrings...)
         if err != nil {
@@ -489,9 +489,9 @@ func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequ
 // AddComments adds comments to a book
 func (c *Client) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest) error {
     ctx = insertXGoog(ctx, c.xGoogHeader)
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        _, err = c.client.AddComments(ctx, req)
+        _, err = c.client.AddComments(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.AddComments...)
     return err
@@ -501,9 +501,9 @@ func (c *Client) AddComments(ctx context.Context, req *librarypb.AddCommentsRequ
 func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.BookFromArchive
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.GetBookFromArchive(ctx, req)
+        resp, err = c.client.GetBookFromArchive(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.GetBookFromArchive...)
     if err != nil {
@@ -516,9 +516,9 @@ func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookF
 func (c *Client) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.BookFromAnywhere
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.GetBookFromAnywhere(ctx, req)
+        resp, err = c.client.GetBookFromAnywhere(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.GetBookFromAnywhere...)
     if err != nil {
@@ -530,9 +530,9 @@ func (c *Client) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBook
 // UpdateBookIndex updates the index of a book.
 func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest) error {
     ctx = insertXGoog(ctx, c.xGoogHeader)
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        _, err = c.client.UpdateBookIndex(ctx, req)
+        _, err = c.client.UpdateBookIndex(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.UpdateBookIndex...)
     return err
@@ -543,9 +543,9 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookI
 func (c *Client) StreamShelves(ctx context.Context, req *librarypb.StreamShelvesRequest) (librarypb.LibraryService_StreamShelvesClient, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp librarypb.LibraryService_StreamShelvesClient
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.StreamShelves(ctx, req)
+        resp, err = c.client.StreamShelves(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.StreamShelves...)
     if err != nil {
@@ -559,9 +559,9 @@ func (c *Client) StreamShelves(ctx context.Context, req *librarypb.StreamShelves
 func (c *Client) StreamBooks(ctx context.Context, req *librarypb.StreamBooksRequest) (librarypb.LibraryService_StreamBooksClient, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp librarypb.LibraryService_StreamBooksClient
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.StreamBooks(ctx, req)
+        resp, err = c.client.StreamBooks(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.StreamBooks...)
     if err != nil {
@@ -575,9 +575,9 @@ func (c *Client) StreamBooks(ctx context.Context, req *librarypb.StreamBooksRequ
 func (c *Client) DiscussBook(ctx context.Context) (librarypb.LibraryService_DiscussBookClient, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp librarypb.LibraryService_DiscussBookClient
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.DiscussBook(ctx)
+        resp, err = c.client.DiscussBook(ctx, settings.GRPC...)
         return err
     }, c.CallOptions.DiscussBook...)
     if err != nil {
@@ -591,9 +591,9 @@ func (c *Client) DiscussBook(ctx context.Context) (librarypb.LibraryService_Disc
 func (c *Client) MonologAboutBook(ctx context.Context) (librarypb.LibraryService_MonologAboutBookClient, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp librarypb.LibraryService_MonologAboutBookClient
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.MonologAboutBook(ctx)
+        resp, err = c.client.MonologAboutBook(ctx, settings.GRPC...)
         return err
     }, c.CallOptions.MonologAboutBook...)
     if err != nil {
@@ -614,9 +614,9 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
         } else {
             req.PageSize = int32(pageSize)
         }
-        err := gax.Invoke(ctx, func(ctx context.Context) error {
+        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
-            resp, err = c.client.FindRelatedBooks(ctx, req)
+            resp, err = c.client.FindRelatedBooks(ctx, req, settings.GRPC...)
             return err
         }, c.CallOptions.FindRelatedBooks...)
         if err != nil {
@@ -640,9 +640,9 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
 func (c *Client) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*taggerpb.AddLabelResponse, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *taggerpb.AddLabelResponse
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.labelerClient.AddLabel(ctx, req)
+        resp, err = c.labelerClient.AddLabel(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.AddLabel...)
     if err != nil {
@@ -655,9 +655,9 @@ func (c *Client) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*
 func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*GetBigBookOperation, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *longrunningpb.Operation
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.GetBigBook(ctx, req)
+        resp, err = c.client.GetBigBook(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.GetBigBook...)
     if err != nil {
@@ -673,9 +673,9 @@ func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) 
 func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookRequest) (*GetBigNothingOperation, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *longrunningpb.Operation
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.GetBigNothing(ctx, req)
+        resp, err = c.client.GetBigNothing(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.GetBigNothing...)
     if err != nil {
@@ -691,9 +691,9 @@ func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookReques
 func (c *Client) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     var resp *librarypb.TestOptionalRequiredFlatteningParamsResponse
-    err := gax.Invoke(ctx, func(ctx context.Context) error {
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
-        resp, err = c.client.TestOptionalRequiredFlatteningParams(ctx, req)
+        resp, err = c.client.TestOptionalRequiredFlatteningParams(ctx, req, settings.GRPC...)
         return err
     }, c.CallOptions.TestOptionalRequiredFlatteningParams...)
     if err != nil {

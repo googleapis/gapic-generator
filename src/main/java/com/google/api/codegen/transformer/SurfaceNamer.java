@@ -35,8 +35,10 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
+import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -835,6 +837,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getRequestTypeName");
   }
 
+  public String getMessageTypeName(ModelTypeTable typeTable, MessageType message) {
+    return typeTable.getNicknameFor(TypeRef.of(message));
+  }
+
+  public String getEnumTypeName(ModelTypeTable typeTable, EnumType enumType) {
+    return typeTable.getNicknameFor(TypeRef.of(enumType));
+  }
+
   public String getStreamTypeName(GrpcStreamingConfig.GrpcStreamingType type) {
     return getNotImplementedString("SurfaceNamer.getStreamTypeName");
   }
@@ -1051,6 +1061,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getDocLines(DocumentationUtil.getScopedDescription(element));
   }
 
+  /** Provides the doc lines for the given field in the current language. */
+  public List<String> getDocLines(Field field) {
+    return getDocLines(DocumentationUtil.getScopedDescription(field));
+  }
+
   /** Provides the doc lines for the given method element in the current language. */
   public List<String> getDocLines(Method method, MethodConfig methodConfig) {
     return getDocLines(method);
@@ -1074,6 +1089,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of a type with with qualifying articles and descriptions. */
   public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef type) {
     return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
+  }
+
+  /** Get the url to the protobuf file located in github. */
+  public String getFileUrl(ProtoFile file) {
+    String filePath = file.getSimpleName();
+    if (filePath.startsWith("google/protobuf")) {
+      return "https://github.com/google/protobuf/blob/master/src/" + filePath;
+    } else {
+      return "https://github.com/googleapis/googleapis/blob/master/" + filePath;
+    }
   }
 
   //////////////////////////////////////// File names ////////////////////////////////////////////

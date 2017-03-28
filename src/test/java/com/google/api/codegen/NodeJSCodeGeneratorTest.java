@@ -34,8 +34,7 @@ public class NodeJSCodeGeneratorTest {
         String packageConfigFileName,
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
-      getTestDataLocator()
-          .addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
+      getTestDataLocator().addTestDataSource(getClass(), "nodejs");
     }
 
     /**
@@ -69,8 +68,7 @@ public class NodeJSCodeGeneratorTest {
         String packageConfigFileName,
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
-      getTestDataLocator()
-          .addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
+      getTestDataLocator().addTestDataSource(getClass(), "nodejs");
     }
 
     /**
@@ -104,8 +102,7 @@ public class NodeJSCodeGeneratorTest {
         String packageConfigFileName,
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
-      getTestDataLocator()
-          .addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
+      getTestDataLocator().addTestDataSource(getClass(), "nodejs");
     }
 
     /**

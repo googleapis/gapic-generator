@@ -70,7 +70,7 @@ public class JSCommentReformatter implements CommentReformatter {
     }
   }
 
-  private boolean isExternalFile(ProtoFile file) {
+  public boolean isExternalFile(ProtoFile file) {
     String filePath = file.getSimpleName();
     for (String commonPath : COMMON_PROTO_PATHS) {
       if (filePath.startsWith(commonPath)) {
