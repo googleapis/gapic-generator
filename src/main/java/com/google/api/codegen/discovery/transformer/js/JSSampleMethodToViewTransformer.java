@@ -72,10 +72,6 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
     builder.handleSignOutClickFuncName(symbolTable.getNewSymbol("handleSignOutClick"));
     builder.paramsVarName(symbolTable.getNewSymbol("params"));
 
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
-
     List<SampleFieldView> requiredFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       // The distinction between required and optional fields doesn't matter as
@@ -96,6 +92,10 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
       for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
         requestBodyFields.add(createSampleFieldView(fieldInfo, typeTable));
       }
+    }
+
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
     boolean hasResponse = methodInfo.responseType() != null;

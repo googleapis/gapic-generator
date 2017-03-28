@@ -63,10 +63,6 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
     String serviceTypeName = typeTable.getServiceTypeName(config.apiTypeName()).getNickname();
 
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
-
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
@@ -98,6 +94,10 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
       for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
         requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable, true));
       }
+    }
+
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
     boolean hasResponse = methodInfo.responseType() != null;

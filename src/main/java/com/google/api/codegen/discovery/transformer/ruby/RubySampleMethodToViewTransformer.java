@@ -65,10 +65,6 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     String serviceTypeNamespace =
         RubySampleNamer.getServiceTypeNamespace(config.apiName(), config.apiVersion());
 
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
-
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
@@ -104,6 +100,10 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
 
     // Ensure that optional method parameters appear last.
     methodCallFieldVarNames.addAll(optionalMethodCallFieldVarNames);
+
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
+    }
 
     boolean hasResponse = methodInfo.responseType() != null;
     if (hasResponse) {
