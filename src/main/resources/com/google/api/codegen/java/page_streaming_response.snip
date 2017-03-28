@@ -28,13 +28,104 @@
       }
 
     @end
+
+    @join pagedResponseClass : pagedResponseClasses.pagedResponseWrapperList
+      public static class {@pagedResponseClass.name} implements PagedListResponse<{@pagedResponseClass.resourceTypeName}> {
+
+        private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+        private final {@pagedResponseClass.pageName} page;
+
+        public {@pagedResponseClass.name}(
+            UnaryCallable<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}> callable,
+            PagedListDescriptor<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> pageDescriptor,
+            {@pagedResponseClass.requestTypeName} request,
+            CallContext context) {
+          this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
+          this.page = new {@pagedResponseClass.pageName}(context);
+        }
+
+        public Iterator<{@pagedResponseClass.resourceTypeName}> iterateAll() {
+          return context.iterateAll();
+        }
+
+        public Page<{@pagedResponseClass.resourceTypeName}> getPage() {
+          return page;
+        }
+
+        public Iterator<{@pagedResponseClass.pageName}> iteratePages() {
+          return new PageContext.PageIterator<{@pagedResponseClass.pageName}>(
+            new PageContext.PageFetcher<>() {
+              @@Override
+              public {@pagedResponseClass.pageName} getNextPage({@pagedResponseClass.pageName} currentPage) {
+                return currentPage.getNextPage();
+              }
+          }
+        }
+
+        public Object getNextPageToken() {
+          return context.getNextPageToken();
+        }
+
+        public FixedSizeCollection<{@pagedResponseClass.resourceTypeName}> expandToFixedSizeCollection(int collectionSize) {
+          return context.expandToFixedSizeCollection(collectionSize);
+        }
+
+        public Iterator<FixedSizeCollection<{@pagedResponseClass.resourceTypeName}>> iterateFixedSizeCollections(int collectionSize) {
+          return context.iterateFixedSizeCollections(collectionSize);
+        }
+        {@iterateMethods(pagedResponseClass)}
+      }
+
+      public static class {@pagedResponseClass.pageName} implements Page<{@pagedResponseClass.resourceTypeName}> {
+        private final PageContext<RequestT, ResponseT, ResourceT> context;
+
+        public {@pagedResponseClass.pageName}(PageContext<RequestT, ResponseT, ResourceT> context) {
+          this.context = context;
+        }
+
+        @@Override
+        public boolean hasNextPage() {
+          return context.hasNextPage();
+        }
+
+        @@Override
+        public Object getNextPageToken() {
+          return context.getNextPageToken();
+        }
+
+        @@Override
+        public Page<ResourceT> getNextPage() {
+          return new {@pagedResponseClass.pageName}(context.getNextPageContext());
+        }
+
+        @@Override
+        public {@pagedResponseClass.pageName} getNextPage(int pageSize) {
+          return new {@pagedResponseClass.pageName}(context.getNextPageContext(pageSize));
+        }
+
+        @@Override
+        public Iterator<ResourceT> iterateAll() {
+          return context.iterateAll();
+        }
+
+        public {@pagedResponseClass.responseTypeName} getResponse() {
+          return context.getResponse();
+        }
+
+        public {@pagedResponseClass.requestTypeName} getRequest() {
+          return context.getRequest();
+        }
+        {@iterateMethods(pagedResponseClass)}
+      }
+
+    @end
   }
 @end
 
 @private iterateMethods(pagedResponseClass)
   @join iterateMethod : pagedResponseClass.iterateMethods
-    public Iterable<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeIterateMethodName}() {
-      return Iterables.transform({@iterateMethod.iterateMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
+    public Iterator<{@iterateMethod.overloadResourceTypeName}> {@iterateMethod.overloadResourceTypeIterateMethodName}() {
+      return Iterators.transform({@iterateMethod.iterateMethodName}(), new Function<{@pagedResponseClass.resourceTypeName}, {@iterateMethod.overloadResourceTypeName}>() {
           @@Override
           public {@iterateMethod.overloadResourceTypeName} apply({@pagedResponseClass.resourceTypeName} arg0) {
             return {@iterateMethod.overloadResourceTypeParseFunctionName}(arg0);

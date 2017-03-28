@@ -263,6 +263,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String pagedResponseTypeName =
         context.getNamer().getPagedResponseTypeInnerName(method, typeTable, resourceField);
     pagedResponseWrapper.name(pagedResponseTypeName);
+    pagedResponseWrapper.pageName(
+        context.getNamer().getPageTypeInnerName(method, typeTable, resourceField));
     pagedResponseWrapper.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     pagedResponseWrapper.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     pagedResponseWrapper.resourceTypeName(
@@ -476,7 +478,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationCallSettings");
     }
-  }
+  } /**/
 
   private void addPagedResponseWrapperImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
@@ -484,7 +486,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.common.base.Function");
-    typeTable.saveNicknameFor("com.google.common.collect.Iterables");
+    typeTable.saveNicknameFor("com.google.common.collect.Iterators");
     typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("javax.annotation.Generated");
   }

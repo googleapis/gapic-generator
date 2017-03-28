@@ -767,6 +767,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeInnerName");
   }
 
+  /** The inner type name of the page type for the given method and resources field. */
+  public String getPageTypeInnerName(Method method, ModelTypeTable typeTable, Field resourceField) {
+    return getNotImplementedString("SurfaceNamer.getPageTypeInnerName");
+  }
+
   /**
    * Computes the nickname of the async response type name for the given resource type, saves it in
    * the given type table, and returns it.

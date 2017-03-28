@@ -22,6 +22,8 @@ public abstract class StaticLangPagedResponseView {
 
   public abstract String name();
 
+  public abstract String pageName();
+
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
@@ -38,6 +40,8 @@ public abstract class StaticLangPagedResponseView {
   public abstract static class Builder {
 
     public abstract Builder name(String val);
+
+    public abstract Builder pageName(String val);
 
     public abstract Builder requestTypeName(String val);
 

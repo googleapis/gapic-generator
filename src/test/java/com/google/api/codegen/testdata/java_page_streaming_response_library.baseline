@@ -22,7 +22,7 @@ import com.google.api.gax.grpc.PagedListResponseImpl;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.FindRelatedBooksRequest;
@@ -82,8 +82,8 @@ public class PagedResponseWrappers {
         CallContext context) {
       super(callable, pageDescriptor, request, context);
     }
-    public Iterable<ResourceName> iterateAllAsResourceName() {
-      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
+    public Iterator<ResourceName> iterateAllAsResourceName() {
+      return Iterators.transform(iterateAll(), new Function<String, ResourceName>() {
           @Override
           public ResourceName apply(String arg0) {
             return UntypedResourceName.parse(arg0);
@@ -103,8 +103,401 @@ public class PagedResponseWrappers {
         CallContext context) {
       super(callable, pageDescriptor, request, context);
     }
-    public Iterable<BookName> iterateAllAsBookName() {
-      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
+    public Iterator<BookName> iterateAllAsBookName() {
+      return Iterators.transform(iterateAll(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
+
+  }
+
+
+  public static class ListShelvesPagedResponse implements PagedListResponse<Shelf> {
+
+    private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+    private final ListShelvesPage page;
+
+    public ListShelvesPagedResponse(
+        UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
+        PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> pageDescriptor,
+        ListShelvesRequest request,
+        CallContext context) {
+      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
+      this.page = new ListShelvesPage(context);
+    }
+
+    public Iterator<Shelf> iterateAll() {
+      return context.iterateAll();
+    }
+
+    public Page<Shelf> getPage() {
+      return page;
+    }
+
+    public Iterator<ListShelvesPage> iteratePages() {
+      return new PageContext.PageIterator<ListShelvesPage>(
+        new PageContext.PageFetcher<>() {
+          @Override
+          public ListShelvesPage getNextPage(ListShelvesPage currentPage) {
+            return currentPage.getNextPage();
+          }
+      }
+    }
+
+    public Object getNextPageToken() {
+      return context.getNextPageToken();
+    }
+
+    public FixedSizeCollection<Shelf> expandToFixedSizeCollection(int collectionSize) {
+      return context.expandToFixedSizeCollection(collectionSize);
+    }
+
+    public Iterator<FixedSizeCollection<Shelf>> iterateFixedSizeCollections(int collectionSize) {
+      return context.iterateFixedSizeCollections(collectionSize);
+    }
+
+
+  }
+
+  public static class ListShelvesPage implements Page<Shelf> {
+    private final PageContext<RequestT, ResponseT, ResourceT> context;
+
+    public ListShelvesPage(PageContext<RequestT, ResponseT, ResourceT> context) {
+      this.context = context;
+    }
+
+    @Override
+    public boolean hasNextPage() {
+      return context.hasNextPage();
+    }
+
+    @Override
+    public Object getNextPageToken() {
+      return context.getNextPageToken();
+    }
+
+    @Override
+    public Page<ResourceT> getNextPage() {
+      return new ListShelvesPage(context.getNextPageContext());
+    }
+
+    @Override
+    public ListShelvesPage getNextPage(int pageSize) {
+      return new ListShelvesPage(context.getNextPageContext(pageSize));
+    }
+
+    @Override
+    public Iterator<ResourceT> iterateAll() {
+      return context.iterateAll();
+    }
+
+    public ListShelvesResponse getResponse() {
+      return context.getResponse();
+    }
+
+    public ListShelvesRequest getRequest() {
+      return context.getRequest();
+    }
+
+
+  }
+
+  public static class ListBooksPagedResponse implements PagedListResponse<Book> {
+
+    private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+    private final ListBooksPage page;
+
+    public ListBooksPagedResponse(
+        UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
+        PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> pageDescriptor,
+        ListBooksRequest request,
+        CallContext context) {
+      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
+      this.page = new ListBooksPage(context);
+    }
+
+    public Iterator<Book> iterateAll() {
+      return context.iterateAll();
+    }
+
+    public Page<Book> getPage() {
+      return page;
+    }
+
+    public Iterator<ListBooksPage> iteratePages() {
+      return new PageContext.PageIterator<ListBooksPage>(
+        new PageContext.PageFetcher<>() {
+          @Override
+          public ListBooksPage getNextPage(ListBooksPage currentPage) {
+            return currentPage.getNextPage();
+          }
+      }
+    }
+
+    public Object getNextPageToken() {
+      return context.getNextPageToken();
+    }
+
+    public FixedSizeCollection<Book> expandToFixedSizeCollection(int collectionSize) {
+      return context.expandToFixedSizeCollection(collectionSize);
+    }
+
+    public Iterator<FixedSizeCollection<Book>> iterateFixedSizeCollections(int collectionSize) {
+      return context.iterateFixedSizeCollections(collectionSize);
+    }
+
+
+  }
+
+  public static class ListBooksPage implements Page<Book> {
+    private final PageContext<RequestT, ResponseT, ResourceT> context;
+
+    public ListBooksPage(PageContext<RequestT, ResponseT, ResourceT> context) {
+      this.context = context;
+    }
+
+    @Override
+    public boolean hasNextPage() {
+      return context.hasNextPage();
+    }
+
+    @Override
+    public Object getNextPageToken() {
+      return context.getNextPageToken();
+    }
+
+    @Override
+    public Page<ResourceT> getNextPage() {
+      return new ListBooksPage(context.getNextPageContext());
+    }
+
+    @Override
+    public ListBooksPage getNextPage(int pageSize) {
+      return new ListBooksPage(context.getNextPageContext(pageSize));
+    }
+
+    @Override
+    public Iterator<ResourceT> iterateAll() {
+      return context.iterateAll();
+    }
+
+    public ListBooksResponse getResponse() {
+      return context.getResponse();
+    }
+
+    public ListBooksRequest getRequest() {
+      return context.getRequest();
+    }
+
+
+  }
+
+  public static class ListStringsPagedResponse implements PagedListResponse<String> {
+
+    private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+    private final ListStringsPage page;
+
+    public ListStringsPagedResponse(
+        UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
+        PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> pageDescriptor,
+        ListStringsRequest request,
+        CallContext context) {
+      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
+      this.page = new ListStringsPage(context);
+    }
+
+    public Iterator<String> iterateAll() {
+      return context.iterateAll();
+    }
+
+    public Page<String> getPage() {
+      return page;
+    }
+
+    public Iterator<ListStringsPage> iteratePages() {
+      return new PageContext.PageIterator<ListStringsPage>(
+        new PageContext.PageFetcher<>() {
+          @Override
+          public ListStringsPage getNextPage(ListStringsPage currentPage) {
+            return currentPage.getNextPage();
+          }
+      }
+    }
+
+    public Object getNextPageToken() {
+      return context.getNextPageToken();
+    }
+
+    public FixedSizeCollection<String> expandToFixedSizeCollection(int collectionSize) {
+      return context.expandToFixedSizeCollection(collectionSize);
+    }
+
+    public Iterator<FixedSizeCollection<String>> iterateFixedSizeCollections(int collectionSize) {
+      return context.iterateFixedSizeCollections(collectionSize);
+    }
+    public Iterator<ResourceName> iterateAllAsResourceName() {
+      return Iterators.transform(iterateAll(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
+
+  }
+
+  public static class ListStringsPage implements Page<String> {
+    private final PageContext<RequestT, ResponseT, ResourceT> context;
+
+    public ListStringsPage(PageContext<RequestT, ResponseT, ResourceT> context) {
+      this.context = context;
+    }
+
+    @Override
+    public boolean hasNextPage() {
+      return context.hasNextPage();
+    }
+
+    @Override
+    public Object getNextPageToken() {
+      return context.getNextPageToken();
+    }
+
+    @Override
+    public Page<ResourceT> getNextPage() {
+      return new ListStringsPage(context.getNextPageContext());
+    }
+
+    @Override
+    public ListStringsPage getNextPage(int pageSize) {
+      return new ListStringsPage(context.getNextPageContext(pageSize));
+    }
+
+    @Override
+    public Iterator<ResourceT> iterateAll() {
+      return context.iterateAll();
+    }
+
+    public ListStringsResponse getResponse() {
+      return context.getResponse();
+    }
+
+    public ListStringsRequest getRequest() {
+      return context.getRequest();
+    }
+    public Iterator<ResourceName> iterateAllAsResourceName() {
+      return Iterators.transform(iterateAll(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
+
+  }
+
+  public static class FindRelatedBooksPagedResponse implements PagedListResponse<String> {
+
+    private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+    private final FindRelatedBooksPage page;
+
+    public FindRelatedBooksPagedResponse(
+        UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
+        PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageDescriptor,
+        FindRelatedBooksRequest request,
+        CallContext context) {
+      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
+      this.page = new FindRelatedBooksPage(context);
+    }
+
+    public Iterator<String> iterateAll() {
+      return context.iterateAll();
+    }
+
+    public Page<String> getPage() {
+      return page;
+    }
+
+    public Iterator<FindRelatedBooksPage> iteratePages() {
+      return new PageContext.PageIterator<FindRelatedBooksPage>(
+        new PageContext.PageFetcher<>() {
+          @Override
+          public FindRelatedBooksPage getNextPage(FindRelatedBooksPage currentPage) {
+            return currentPage.getNextPage();
+          }
+      }
+    }
+
+    public Object getNextPageToken() {
+      return context.getNextPageToken();
+    }
+
+    public FixedSizeCollection<String> expandToFixedSizeCollection(int collectionSize) {
+      return context.expandToFixedSizeCollection(collectionSize);
+    }
+
+    public Iterator<FixedSizeCollection<String>> iterateFixedSizeCollections(int collectionSize) {
+      return context.iterateFixedSizeCollections(collectionSize);
+    }
+    public Iterator<BookName> iterateAllAsBookName() {
+      return Iterators.transform(iterateAll(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
+
+  }
+
+  public static class FindRelatedBooksPage implements Page<String> {
+    private final PageContext<RequestT, ResponseT, ResourceT> context;
+
+    public FindRelatedBooksPage(PageContext<RequestT, ResponseT, ResourceT> context) {
+      this.context = context;
+    }
+
+    @Override
+    public boolean hasNextPage() {
+      return context.hasNextPage();
+    }
+
+    @Override
+    public Object getNextPageToken() {
+      return context.getNextPageToken();
+    }
+
+    @Override
+    public Page<ResourceT> getNextPage() {
+      return new FindRelatedBooksPage(context.getNextPageContext());
+    }
+
+    @Override
+    public FindRelatedBooksPage getNextPage(int pageSize) {
+      return new FindRelatedBooksPage(context.getNextPageContext(pageSize));
+    }
+
+    @Override
+    public Iterator<ResourceT> iterateAll() {
+      return context.iterateAll();
+    }
+
+    public FindRelatedBooksResponse getResponse() {
+      return context.getResponse();
+    }
+
+    public FindRelatedBooksRequest getRequest() {
+      return context.getRequest();
+    }
+    public Iterator<BookName> iterateAllAsBookName() {
+      return Iterators.transform(iterateAll(), new Function<String, BookName>() {
           @Override
           public BookName apply(String arg0) {
             return BookName.parse(arg0);
