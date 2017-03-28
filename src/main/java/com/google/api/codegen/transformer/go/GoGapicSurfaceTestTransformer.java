@@ -30,8 +30,9 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.testing.GoValueProducer;
+import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
+import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -51,7 +52,7 @@ import java.util.List;
 public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "go/mock.snip";
 
-  private final GoValueProducer valueProducer = new GoValueProducer();
+  private final ValueProducer valueProducer = new StandardValueProducer();
   private final GoImportSectionTransformer importSectionTransformer =
       new GoImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =

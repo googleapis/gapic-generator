@@ -7,3 +7,25 @@
 @snippet formatResourceFunctionName(collectionConfig)
   {@entityName(collectionConfig)}_path
 @end
+
+@snippet importList(fileImports)
+  @join fileImport : fileImports
+    @let attributeName = typeImports(fileImport.types)
+      @if attributeName
+        from {@fileImport.moduleName} import {@attributeName}
+      @else
+        import {@fileImport.moduleName}
+      @end
+    @end
+  @end
+@end
+
+@private typeImports(imports)
+  @join import : imports on ", "
+    @if import.nickname
+      {@import.fullName} as {@import.nickname}
+    @else
+      {@import.fullName}
+    @end
+  @end
+@end

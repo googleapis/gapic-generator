@@ -19,6 +19,7 @@ import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
@@ -27,6 +28,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -43,6 +45,13 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return ImportSectionView.newBuilder()
         .appImports(generateInitCodeAppImports(context, specItemNodes))
         .build();
+  }
+
+  public ImportSectionView generateTestImportSection(SurfaceTransformerContext context) {
+    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
+    importSection.standardImports(generateTestStandardImports());
+    importSection.appImports(generateTestAppImports(context));
+    return importSection.build();
   }
 
   private List<ImportFileView> generateInitCodeAppImports(
@@ -94,6 +103,23 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       pageStreamingImports.add(fileImport);
     }
     return pageStreamingImports.build();
+  }
+
+  private List<ImportFileView> generateTestStandardImports() {
+    return ImmutableList.of(createImport("mock"), createImport("unittest2"));
+  }
+
+  private List<ImportFileView> generateTestAppImports(SurfaceTransformerContext context) {
+    Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
+    for (Map.Entry<String, TypeAlias> entry : context.getTypeTable().getImports().entrySet()) {
+      String fullName = entry.getKey();
+      if (fullName.startsWith(context.getNamer().getTestPackageName() + ".enums")) {
+        appImports.add(createImport(context.getApiConfig().getPackageName(), "enums"));
+      } else {
+        appImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+      }
+    }
+    return new ArrayList<>(appImports);
   }
 
   /**

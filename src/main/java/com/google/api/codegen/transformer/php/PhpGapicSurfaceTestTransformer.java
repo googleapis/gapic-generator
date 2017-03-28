@@ -33,8 +33,9 @@ import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.php.PhpTypeTable;
-import com.google.api.codegen.util.testing.PhpValueProducer;
+import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
+import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -58,7 +59,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String TEST_TEMPLATE_FILE = "php/test.snip";
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "php/mock_service.snip";
 
-  private final PhpValueProducer valueProducer = new PhpValueProducer();
+  private final ValueProducer valueProducer = new StandardValueProducer();
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
