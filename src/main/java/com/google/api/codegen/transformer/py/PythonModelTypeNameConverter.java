@@ -199,8 +199,9 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
       case TYPE_BOOL:
         return Name.from(value.toLowerCase()).toUpperCamel();
       case TYPE_STRING:
-      case TYPE_BYTES:
         return "'" + value + "'";
+      case TYPE_BYTES:
+        return "b'" + value + "'";
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled
         // here

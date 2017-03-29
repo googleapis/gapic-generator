@@ -35,8 +35,9 @@ import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.js.JSTypeTable;
-import com.google.api.codegen.util.testing.NodeJSValueProducer;
+import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
+import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -57,7 +58,7 @@ import java.util.List;
 public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String TEST_TEMPLATE_FILE = "nodejs/test.snip";
 
-  private final NodeJSValueProducer valueProducer = new NodeJSValueProducer();
+  private final ValueProducer valueProducer = new StandardValueProducer();
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =

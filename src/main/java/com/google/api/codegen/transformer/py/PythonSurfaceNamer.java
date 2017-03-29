@@ -19,11 +19,14 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Joiner;
+import java.io.File;
 
 /** The SurfaceNamer for Python. */
 public class PythonSurfaceNamer extends SurfaceNamer {
@@ -37,14 +40,22 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperClassConstructorName(Interface service) {
+    return getApiWrapperClassName(service.getSimpleName());
+  }
+
+  @Override
   public String getFormattedVariableName(Name identifier) {
     return localVarName(identifier);
   }
 
   @Override
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
-    return publicClassName(
-        Name.upperCamelKeepUpperAcronyms(getInterfaceName(interfaceConfig), "Client"));
+    return getApiWrapperClassName(getInterfaceName(interfaceConfig));
+  }
+
+  private String getApiWrapperClassName(String interfaceName) {
+    return publicClassName(Name.upperCamelKeepUpperAcronyms(interfaceName, "Client"));
   }
 
   @Override
@@ -60,6 +71,40 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   public String getFormatFunctionName(
       Interface service, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
+  }
+
+  @Override
+  public String getSourceFilePath(String path, String publicClassName) {
+    return path + File.separator + classFileNameBase(Name.upperCamel(publicClassName)) + ".py";
+  }
+
+  @Override
+  public String getGrpcStubCallString(Interface service, Method method) {
+    return getGrpcMethodName(method);
+  }
+
+  @Override
+  public String getUnitTestClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(
+        Name.upperCamelKeepUpperAcronyms("Test", getInterfaceName(interfaceConfig), "Client"));
+  }
+
+  @Override
+  public String getTestPackageName() {
+    return "test." + getPackageName();
+  }
+
+  @Override
+  public String getTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName = symbolTable.getNewSymbol(Name.upperCamel("Test", method.getSimpleName()));
+    return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String getExceptionTestCaseName(SymbolTable symbolTable, Method method) {
+    Name testCaseName =
+        symbolTable.getNewSymbol(Name.upperCamel("Test", method.getSimpleName(), "Exception"));
+    return publicMethodName(testCaseName);
   }
 
   @Override
