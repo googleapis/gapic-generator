@@ -70,6 +70,8 @@
         {@simpleTestCase(test, moduleName)}
     @case "PagedOptionalArrayMethod"
         {@pagedStreamingTestCase(test, moduleName)}
+    @case "OperationOptionalArrayMethod"
+        {@operationTestCase(test, moduleName)}
     @default
         {@unhandledCase()}
     @end
@@ -126,6 +128,35 @@
             errors.GaxError, \
             client.{@test.clientMethodName}\
             {@fieldSettingArgListAfterComma(test.initCode.fieldSettings)})
+@end
+
+@private operationTestCase(test, moduleName)
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.name}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        @# Mock response
+        {@initCode(test.mockResponse.initCode)}
+        operation = operations_pb2.Operation('operations/{@test.name}', True)
+        operation.response.Pack(expected_response)
+        grpc_stub.{@test.grpcStubCallString}.return_value = operation
+
+        response = {@unaryTestMethodCall(test)}
+        self.assertEqual(expected_response, response.result())
+
+        {@unaryTestSuccessAsserts(test)}
+
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.nameWithException}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        @# Mock exception response
+        error = status_pb2.Status()
+        operation = operations_pb2.Operation(\
+            'operations/{@test.nameWithException}', True)
+        operation.error.CopyFrom(error)
+        grpc_stub.{@test.grpcStubCallString}.return_value = operation
+
+        response = {@unaryTestMethodCall(test)}
+        self.assertEqual(error, response.exception())
 @end
 
 @private unaryTestSetup(test, moduleName)

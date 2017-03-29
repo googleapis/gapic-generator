@@ -141,8 +141,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
       if (methodContext.getMethodConfig().isLongRunningOperation()) {
         clientMethodType = ClientMethodType.OperationOptionalArrayMethod;
-        // TODO(eoogbe): Remove this check once LRO is supported by test
-        continue;
       } else if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
       }
