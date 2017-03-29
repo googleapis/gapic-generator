@@ -255,14 +255,14 @@
     private static final PagedListDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}> {@desc.name} =
         new PagedListDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}>() {
           @@Override
-          public Object emptyToken() {
+          public String emptyToken() {
             return {@desc.defaultTokenValue};
           }
           @@Override
-          public {@desc.requestTypeName} injectToken({@desc.requestTypeName} payload, Object token) {
+          public {@desc.requestTypeName} injectToken({@desc.requestTypeName} payload, String token) {
             return {@desc.requestTypeName}
               .newBuilder(payload)
-              .{@desc.requestTokenSetFunction}(({@desc.tokenTypeName}) token)
+              .{@desc.requestTokenSetFunction}(token)
               .build();
           }
           @@Override
@@ -285,7 +285,7 @@
             @end
           }
           @@Override
-          public Object extractNextToken({@desc.responseTypeName} payload) {
+          public String extractNextToken({@desc.responseTypeName} payload) {
             return payload.{@desc.responseTokenGetFunction}();
           }
           @@Override

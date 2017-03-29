@@ -16,9 +16,13 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.core.FixedSizeCollection;
+import com.google.api.gax.core.Page;
+import com.google.api.gax.core.PagedListResponse;
 import com.google.api.gax.grpc.CallContext;
+import com.google.api.gax.grpc.PageContext;
 import com.google.api.gax.grpc.PagedListDescriptor;
-import com.google.api.gax.grpc.PagedListResponseImpl;
+import com.google.api.gax.grpc.PagedListResponseContext;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
@@ -35,6 +39,7 @@ import com.google.example.library.v1.ListStringsRequest;
 import com.google.example.library.v1.ListStringsResponse;
 import com.google.example.library.v1.Shelf;
 import com.google.protobuf.ExperimentalApi;
+import java.util.Iterator;
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -49,16 +54,16 @@ public class PagedResponseWrappers {
 
   public static class ListShelvesPagedResponse implements PagedListResponse<Shelf> {
 
-    private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+    private final PagedListResponseContext<ListShelvesRequest, ListShelvesResponse, Shelf> context;
     private final ListShelvesPage page;
 
     public ListShelvesPagedResponse(
         UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
         PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> pageDescriptor,
         ListShelvesRequest request,
-        CallContext context) {
-      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
-      this.page = new ListShelvesPage(context);
+        CallContext callContext) {
+      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, callContext);
+      this.page = new ListShelvesPage(this.context);
     }
 
     public Iterator<Shelf> iterateAll() {
@@ -71,15 +76,16 @@ public class PagedResponseWrappers {
 
     public Iterator<ListShelvesPage> iteratePages() {
       return new PageContext.PageIterator<ListShelvesPage>(
-        new PageContext.PageFetcher<>() {
+        new PageContext.PageFetcher<ListShelvesPage>() {
           @Override
           public ListShelvesPage getNextPage(ListShelvesPage currentPage) {
             return currentPage.getNextPage();
           }
-      }
+        },
+        page);
     }
 
-    public Object getNextPageToken() {
+    public String getNextPageToken() {
       return context.getNextPageToken();
     }
 
@@ -95,10 +101,15 @@ public class PagedResponseWrappers {
   }
 
   public static class ListShelvesPage implements Page<Shelf> {
-    private final PageContext<RequestT, ResponseT, ResourceT> context;
+    private final PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context;
 
-    public ListShelvesPage(PageContext<RequestT, ResponseT, ResourceT> context) {
+    public ListShelvesPage(PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context) {
       this.context = context;
+    }
+
+    @Override
+    public Iterator<Shelf> iterator() {
+      return context.getResourceIterator();
     }
 
     @Override
@@ -107,22 +118,21 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    public Object getNextPageToken() {
+    public String getNextPageToken() {
       return context.getNextPageToken();
     }
 
     @Override
-    public Page<ResourceT> getNextPage() {
+    public ListShelvesPage getNextPage() {
       return new ListShelvesPage(context.getNextPageContext());
     }
 
-    @Override
     public ListShelvesPage getNextPage(int pageSize) {
       return new ListShelvesPage(context.getNextPageContext(pageSize));
     }
 
     @Override
-    public Iterator<ResourceT> iterateAll() {
+    public Iterator<Shelf> iterateAll() {
       return context.iterateAll();
     }
 
@@ -139,16 +149,16 @@ public class PagedResponseWrappers {
 
   public static class ListBooksPagedResponse implements PagedListResponse<Book> {
 
-    private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+    private final PagedListResponseContext<ListBooksRequest, ListBooksResponse, Book> context;
     private final ListBooksPage page;
 
     public ListBooksPagedResponse(
         UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
         PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> pageDescriptor,
         ListBooksRequest request,
-        CallContext context) {
-      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
-      this.page = new ListBooksPage(context);
+        CallContext callContext) {
+      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, callContext);
+      this.page = new ListBooksPage(this.context);
     }
 
     public Iterator<Book> iterateAll() {
@@ -161,15 +171,16 @@ public class PagedResponseWrappers {
 
     public Iterator<ListBooksPage> iteratePages() {
       return new PageContext.PageIterator<ListBooksPage>(
-        new PageContext.PageFetcher<>() {
+        new PageContext.PageFetcher<ListBooksPage>() {
           @Override
           public ListBooksPage getNextPage(ListBooksPage currentPage) {
             return currentPage.getNextPage();
           }
-      }
+        },
+        page);
     }
 
-    public Object getNextPageToken() {
+    public String getNextPageToken() {
       return context.getNextPageToken();
     }
 
@@ -185,10 +196,15 @@ public class PagedResponseWrappers {
   }
 
   public static class ListBooksPage implements Page<Book> {
-    private final PageContext<RequestT, ResponseT, ResourceT> context;
+    private final PageContext<ListBooksRequest, ListBooksResponse, Book> context;
 
-    public ListBooksPage(PageContext<RequestT, ResponseT, ResourceT> context) {
+    public ListBooksPage(PageContext<ListBooksRequest, ListBooksResponse, Book> context) {
       this.context = context;
+    }
+
+    @Override
+    public Iterator<Book> iterator() {
+      return context.getResourceIterator();
     }
 
     @Override
@@ -197,22 +213,21 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    public Object getNextPageToken() {
+    public String getNextPageToken() {
       return context.getNextPageToken();
     }
 
     @Override
-    public Page<ResourceT> getNextPage() {
+    public ListBooksPage getNextPage() {
       return new ListBooksPage(context.getNextPageContext());
     }
 
-    @Override
     public ListBooksPage getNextPage(int pageSize) {
       return new ListBooksPage(context.getNextPageContext(pageSize));
     }
 
     @Override
-    public Iterator<ResourceT> iterateAll() {
+    public Iterator<Book> iterateAll() {
       return context.iterateAll();
     }
 
@@ -229,16 +244,16 @@ public class PagedResponseWrappers {
 
   public static class ListStringsPagedResponse implements PagedListResponse<String> {
 
-    private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+    private final PagedListResponseContext<ListStringsRequest, ListStringsResponse, String> context;
     private final ListStringsPage page;
 
     public ListStringsPagedResponse(
         UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
         PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> pageDescriptor,
         ListStringsRequest request,
-        CallContext context) {
-      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
-      this.page = new ListStringsPage(context);
+        CallContext callContext) {
+      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, callContext);
+      this.page = new ListStringsPage(this.context);
     }
 
     public Iterator<String> iterateAll() {
@@ -251,15 +266,16 @@ public class PagedResponseWrappers {
 
     public Iterator<ListStringsPage> iteratePages() {
       return new PageContext.PageIterator<ListStringsPage>(
-        new PageContext.PageFetcher<>() {
+        new PageContext.PageFetcher<ListStringsPage>() {
           @Override
           public ListStringsPage getNextPage(ListStringsPage currentPage) {
             return currentPage.getNextPage();
           }
-      }
+        },
+        page);
     }
 
-    public Object getNextPageToken() {
+    public String getNextPageToken() {
       return context.getNextPageToken();
     }
 
@@ -283,10 +299,15 @@ public class PagedResponseWrappers {
   }
 
   public static class ListStringsPage implements Page<String> {
-    private final PageContext<RequestT, ResponseT, ResourceT> context;
+    private final PageContext<ListStringsRequest, ListStringsResponse, String> context;
 
-    public ListStringsPage(PageContext<RequestT, ResponseT, ResourceT> context) {
+    public ListStringsPage(PageContext<ListStringsRequest, ListStringsResponse, String> context) {
       this.context = context;
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+      return context.getResourceIterator();
     }
 
     @Override
@@ -295,22 +316,21 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    public Object getNextPageToken() {
+    public String getNextPageToken() {
       return context.getNextPageToken();
     }
 
     @Override
-    public Page<ResourceT> getNextPage() {
+    public ListStringsPage getNextPage() {
       return new ListStringsPage(context.getNextPageContext());
     }
 
-    @Override
     public ListStringsPage getNextPage(int pageSize) {
       return new ListStringsPage(context.getNextPageContext(pageSize));
     }
 
     @Override
-    public Iterator<ResourceT> iterateAll() {
+    public Iterator<String> iterateAll() {
       return context.iterateAll();
     }
 
@@ -335,16 +355,16 @@ public class PagedResponseWrappers {
 
   public static class FindRelatedBooksPagedResponse implements PagedListResponse<String> {
 
-    private final PagedListResponseContext<RequestT, ResponseT, ResourceT> context;
+    private final PagedListResponseContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context;
     private final FindRelatedBooksPage page;
 
     public FindRelatedBooksPagedResponse(
         UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
         PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageDescriptor,
         FindRelatedBooksRequest request,
-        CallContext context) {
-      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, context);
-      this.page = new FindRelatedBooksPage(context);
+        CallContext callContext) {
+      this.context = new PagedListResponseContext<>(callable, pageDescriptor, request, callContext);
+      this.page = new FindRelatedBooksPage(this.context);
     }
 
     public Iterator<String> iterateAll() {
@@ -357,15 +377,16 @@ public class PagedResponseWrappers {
 
     public Iterator<FindRelatedBooksPage> iteratePages() {
       return new PageContext.PageIterator<FindRelatedBooksPage>(
-        new PageContext.PageFetcher<>() {
+        new PageContext.PageFetcher<FindRelatedBooksPage>() {
           @Override
           public FindRelatedBooksPage getNextPage(FindRelatedBooksPage currentPage) {
             return currentPage.getNextPage();
           }
-      }
+        },
+        page);
     }
 
-    public Object getNextPageToken() {
+    public String getNextPageToken() {
       return context.getNextPageToken();
     }
 
@@ -389,10 +410,15 @@ public class PagedResponseWrappers {
   }
 
   public static class FindRelatedBooksPage implements Page<String> {
-    private final PageContext<RequestT, ResponseT, ResourceT> context;
+    private final PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context;
 
-    public FindRelatedBooksPage(PageContext<RequestT, ResponseT, ResourceT> context) {
+    public FindRelatedBooksPage(PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context) {
       this.context = context;
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+      return context.getResourceIterator();
     }
 
     @Override
@@ -401,22 +427,21 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    public Object getNextPageToken() {
+    public String getNextPageToken() {
       return context.getNextPageToken();
     }
 
     @Override
-    public Page<ResourceT> getNextPage() {
+    public FindRelatedBooksPage getNextPage() {
       return new FindRelatedBooksPage(context.getNextPageContext());
     }
 
-    @Override
     public FindRelatedBooksPage getNextPage(int pageSize) {
       return new FindRelatedBooksPage(context.getNextPageContext(pageSize));
     }
 
     @Override
-    public Iterator<ResourceT> iterateAll() {
+    public Iterator<String> iterateAll() {
       return context.iterateAll();
     }
 
