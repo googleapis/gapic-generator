@@ -27,6 +27,10 @@
     compile "com.google.api:api-common:{@metadata.apiCommonVersionBound.lower}"
   }
 
+  ext {
+    packageName = '{@metadata.identifier}'
+  }
+
   ext.locateGapicPluginMethod = { ->
     def outstream = new ByteArrayOutputStream()
     exec {
@@ -134,5 +138,44 @@
         + "to be set. They can be set inside your ~/.gradle/gradle.properties file.")
     }
     tasks.uploadArchives.dependsOn(failUploadArchives)
+  }
+
+  task copyFilesToGhPages {
+    dependsOn 'checkOutGhPages'
+    dependsOn 'javadoc'
+    doLast {
+      def newSiteDirPath = "tmp_gh-pages/java/${packageName}/${project.version}/apidocs/"
+      new File(newSiteDirPath).mkdirs()
+      copy {
+        from 'build/docs/javadoc'
+        into newSiteDirPath
+      }
+    }
+  }
+
+  task createApiDocsRedirect {
+    dependsOn 'copyFilesToGhPages'
+    doLast {
+      def outputContent = new File('templates/apidocs_index.html.template').text
+      outputContent = outputContent.replace('{{siteVersion}}', project.version)
+      outputContent = outputContent.replace('{{packageName}}', packageName)
+      new File("tmp_gh-pages/java/${packageName}/apidocs").mkdirs()
+      new File("tmp_gh-pages/java/${packageName}/apidocs/index.html").write(outputContent)
+      exec {
+        workingDir 'tmp_gh-pages/'
+        commandLine 'git', 'add', '.'
+      }
+      exec {
+        workingDir 'tmp_gh-pages/'
+        commandLine 'git', 'commit', '-m', "Regenerating docs for ${packageName} ${project.version}"
+      }
+      println 'New docs have been generated under tmp_gh-pages and have been committed;'
+      println 'Next they just need to be pushed with "git push".'
+    }
+  }
+
+  // Regenerates the gh-pages branch under tmp_gh-pages, which must be committed separately
+  task updateDocsWithCurrentVersion {
+    dependsOn 'createApiDocsRedirect'
   }
 @end

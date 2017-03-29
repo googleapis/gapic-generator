@@ -28,7 +28,7 @@ import java.util.Map;
 public class JavaGrpcPackageMetadataTransformer {
   private static final Map<String, String> SNIPPETS_OUTPUT =
       ImmutableMap.of(
-          "metadatagen/LICENSE.snip", "LICENSE",
+          "LICENSE.snip", "LICENSE",
           "metadatagen/java/grpc/grpc_package.snip", "build.gradle");
 
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
