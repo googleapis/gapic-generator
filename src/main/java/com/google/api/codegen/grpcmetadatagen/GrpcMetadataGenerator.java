@@ -64,7 +64,8 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
       }
       return;
     }
-    ToolUtil.writeFiles(generate(model), options.get(OUTPUT_DIR));
+    Map<String, Doc> docs = generate(model);
+    ToolUtil.writeFiles(docs, options.get(OUTPUT_DIR));
   }
 
   protected Map<String, Doc> generate(Model model) throws IOException {

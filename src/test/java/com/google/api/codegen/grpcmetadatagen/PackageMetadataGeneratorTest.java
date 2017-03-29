@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen;
 
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -81,7 +82,7 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     options.set(GrpcMetadataGenerator.LANGUAGE, language);
     Map<String, Doc> generatedDocs = new GrpcMetadataGenerator(options).generate(model);
 
-    if (language == "python") {
+    if (TargetLanguage.fromString(language) == TargetLanguage.PYTHON) {
       OutputCollector collector = new OutputCollector(Paths.get(outFile));
       Files.walkFileTree(Paths.get(outFile), collector);
       return new ImmutableMap.Builder<String, Doc>()

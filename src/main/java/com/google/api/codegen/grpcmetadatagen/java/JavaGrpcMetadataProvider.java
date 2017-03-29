@@ -20,6 +20,7 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
+import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,10 +29,16 @@ import java.util.Map;
 /** Performs gRPC meta-data generation for Java */
 public class JavaGrpcMetadataProvider implements GrpcMetadataProvider {
 
+  private final JavaStaticGrpcMetadataCopier copier;
+
+  public JavaGrpcMetadataProvider(ToolOptions options) {
+    this.copier = new JavaStaticGrpcMetadataCopier(options);
+  }
+
   @Override
   public Map<String, Doc> generate(Model model, PackageMetadataConfig config) throws IOException {
     ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
-    docs.putAll(JavaStaticGrpcMetadataCopier.run());
+    docs.putAll(copier.run());
 
     ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
     JavaGrpcPackageMetadataTransformer javaTransformer = new JavaGrpcPackageMetadataTransformer();

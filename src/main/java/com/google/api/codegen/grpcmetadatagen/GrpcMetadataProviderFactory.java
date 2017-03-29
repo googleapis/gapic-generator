@@ -28,7 +28,7 @@ public class GrpcMetadataProviderFactory {
       case PYTHON:
         return new PythonGrpcMetadataProvider(options);
       case JAVA:
-        return new JavaGrpcMetadataProvider();
+        return new JavaGrpcMetadataProvider(options);
       default:
         throw new IllegalArgumentException(
             "The target language \"" + language + "\" is not supported");

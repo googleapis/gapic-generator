@@ -14,44 +14,57 @@
  */
 package com.google.api.codegen.grpcmetadatagen.java;
 
+import com.google.api.codegen.grpcmetadatagen.GrpcMetadataGenerator;
 import com.google.api.tools.framework.snippet.Doc;
+import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 /** Responsible for copying static grpc meta-data files for Java */
 public class JavaStaticGrpcMetadataCopier {
-  private static final String RESOURCE_DIR = "/com/google/api/codegen/java/";
-
+  private static final String RESOURCE_DIR = "/com/google/api/codegen/metadatagen/java/grpc/";
   private static final ImmutableList<String> GRPC_STATIC_FILES =
       ImmutableList.of(
           "gradlew",
           "gradle/wrapper/gradle-wrapper.jar",
           "gradle/wrapper/gradle-wrapper.properties",
           "gradlew.bat",
-          "LICENSE",
-          "PUBLISHING.md",
-          "settings.gradle");
+          "PUBLISHING.md");
 
-  public static ImmutableMap<String, Doc> run() throws IOException {
+  private final String outputDir;
+
+  public JavaStaticGrpcMetadataCopier(ToolOptions options) {
+    this.outputDir = options.get(GrpcMetadataGenerator.OUTPUT_DIR);
+  }
+
+  public ImmutableMap<String, Doc> run() throws IOException {
     ImmutableMap.Builder<String, Doc> docBuilder = new ImmutableMap.Builder<String, Doc>();
-    for (String staticFilePath : GRPC_STATIC_FILES) {
-      Path inputPath = Paths.get(RESOURCE_DIR, staticFilePath);
-      InputStream stream =
-          JavaStaticGrpcMetadataCopier.class.getResourceAsStream(inputPath.toString());
-      BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-      StringBuilder output = new StringBuilder();
-      String line;
-      while ((line = reader.readLine()) != null) {
-        output.append(line);
-      }
-      docBuilder.put(staticFilePath, Doc.text(output.toString()));
+    for (String staticFile : GRPC_STATIC_FILES) {
+      Path staticFilePath = Paths.get(staticFile);
+      InputStream input =
+          JavaStaticGrpcMetadataCopier.class
+              .getResourceAsStream(Paths.get(RESOURCE_DIR, staticFile).toString());
+      createDirectoryIfNecessary(staticFilePath, outputDir);
+      Files.copy(input, Paths.get(outputDir, staticFile), StandardCopyOption.REPLACE_EXISTING);
     }
     return docBuilder.build();
+  }
+
+  private void createDirectoryIfNecessary(Path staticFilePath, String outputDir)
+      throws IOException {
+    Path destination = Paths.get(outputDir);
+    if (staticFilePath.getParent() != null) {
+      destination = Paths.get(outputDir, staticFilePath.getParent().toString());
+    }
+    if (!Files.exists(destination)) {
+      System.out.println(destination.toString());
+      Files.createDirectories(destination);
+    }
   }
 }
