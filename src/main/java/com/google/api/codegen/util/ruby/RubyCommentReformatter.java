@@ -17,17 +17,44 @@ package com.google.api.codegen.util.ruby;
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import java.util.regex.Matcher;
 
 public class RubyCommentReformatter implements CommentReformatter {
   @Override
   public String reformat(String comment) {
-    comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("+");
-    comment = reformatProtoMarkdownLinks(comment);
-    comment = reformatCloudMarkdownLinks(comment);
-    comment = reformatAbsoluteMarkdownLinks(comment);
-    comment = reformatHeadline(comment);
-    return comment.trim();
+    StringBuffer sb = new StringBuffer();
+    boolean inList = false;
+    for (String line : Splitter.on("\n").split(comment)) {
+      Matcher listMatcher = CommentPatterns.UNORDERED_LIST_PATTERN.matcher(line);
+      boolean matchesList = listMatcher.lookingAt();
+      if (line.isEmpty()) {
+        inList = false;
+      } else if (matchesList) {
+        inList = true;
+      }
+      if (inList) {
+        Matcher indentMatcher = CommentPatterns.INDENT_PATTERN.matcher(line);
+        if (matchesList) {
+          line = listMatcher.replaceFirst("* ");
+        } else if (indentMatcher.lookingAt()) {
+          int leadingWhitespaceCount = indentMatcher.group().length();
+          sb.append(Strings.repeat(" ", leadingWhitespaceCount - 2));
+          line = line.trim();
+        }
+      }
+      sb.append(applyTransformations(line)).append("\n");
+    }
+    return sb.toString().trim();
+  }
+
+  private String applyTransformations(String line) {
+    line = CommentPatterns.BACK_QUOTE_PATTERN.matcher(line).replaceAll("+");
+    line = reformatProtoMarkdownLinks(line);
+    line = reformatCloudMarkdownLinks(line);
+    line = reformatAbsoluteMarkdownLinks(line);
+    line = reformatHeadline(line);
+    return line;
   }
 
   /** Returns a string with all proto markdown links formatted to RDoc style. */
