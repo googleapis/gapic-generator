@@ -48,10 +48,11 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   public ImportSectionView generateTestImportSection(SurfaceTransformerContext context) {
-    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
-    importSection.standardImports(generateTestStandardImports());
-    importSection.appImports(generateTestAppImports(context));
-    return importSection.build();
+    return ImportSectionView.newBuilder()
+        .standardImports(generateTestStandardImports())
+        .externalImports(generateTestExternalImports())
+        .appImports(generateTestAppImports(context))
+        .build();
   }
 
   private List<ImportFileView> generateInitCodeAppImports(
@@ -107,6 +108,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   private List<ImportFileView> generateTestStandardImports() {
     return ImmutableList.of(createImport("mock"), createImport("unittest2"));
+  }
+
+  private List<ImportFileView> generateTestExternalImports() {
+    return ImmutableList.of(createImport("google.gax", "errors"));
   }
 
   private List<ImportFileView> generateTestAppImports(SurfaceTransformerContext context) {

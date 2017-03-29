@@ -2,10 +2,7 @@
 @extends "py/method_sample.snip"
 
 @snippet generate(apiTest)
-    {@licenseSection(apiTest.fileHeader)}
-
-    {@moduleDocstring()}
-    {@renderImportSection(apiTest.fileHeader.importSection)}
+    {@header(apiTest.fileHeader)}
 
     class {@apiTest.testClass.name}(unittest2.TestCase):
 
@@ -13,6 +10,17 @@
             {@testCase(test, apiTest.testClass.apiVariableName)}
 
         @end
+@end
+
+@private header(fileHeader)
+    {@licenseSection(fileHeader)}
+
+    {@moduleDocstring()}
+    {@renderImportSection(fileHeader.importSection)}
+
+    class CustomException(Exception):
+        pass
+
 @end
 
 @private licenseSection(fileHeader)
@@ -57,40 +65,68 @@
 @end
 
 @private nonStreamingOptionalArrayTestCase(test, moduleName)
-    @@mock.patch('google.gax.config.create_stub')
-    def {@test.name}(self, mock_create_stub):
-        @switch test.clientMethodType
-        @case "OptionalArrayMethod"
-            {@simpleTestCase(test, moduleName)}
-        @default
-            {@unhandledCase()}
-        @end
+    @switch test.clientMethodType
+    @case "OptionalArrayMethod"
+        {@simpleTestCase(test, moduleName)}
+    @default
+        {@unhandledCase()}
+    @end
 @end
 
 @private simpleTestCase(test, moduleName)
-    @# Mock gRPC layer
-    grpc_stub = mock.Mock()
-    mock_create_stub.return_value = grpc_stub
+    @@mock.patch('google.gax.config.create_stub')
+    def {@test.name}(self, mock_create_stub):
+        @# Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
 
-    client = {@moduleName}.{@test.serviceConstructorName}()
+        client = {@moduleName}.{@test.serviceConstructorName}()
 
-    @if test.hasRequestParameters
-        @# Mock request
-        {@initCode(test.initCode)}
+        @if test.hasRequestParameters
+            @# Mock request
+            {@initCode(test.initCode)}
 
-    @end
-    @if test.hasReturnValue
-        @# Mock response
-        {@initCode(test.mockResponse.initCode)}
-        grpc_stub.{@test.grpcStubCallString}.return_value = expected_response
+        @end
+        @if test.hasReturnValue
+            @# Mock response
+            {@initCode(test.mockResponse.initCode)}
+            grpc_stub.{@test.grpcStubCallString}.return_value = expected_response
 
-        response = client.{@test.clientMethodName}(\
-            {@fieldSettingArgList(test.initCode.fieldSettings)})
-        self.assertEqual(expected_response, response)
-    @else
-        client.{@test.clientMethodName}(\
-            {@fieldSettingArgList(test.initCode.fieldSettings)})
-    @end
+            response = client.{@test.clientMethodName}(\
+                {@fieldSettingArgList(test.initCode.fieldSettings)})
+            self.assertEqual(expected_response, response)
+        @else
+            client.{@test.clientMethodName}(\
+                {@fieldSettingArgList(test.initCode.fieldSettings)})
+        @end
 
-    grpc_stub.{@test.grpcStubCallString}.assert_called_once()
+        grpc_stub.{@test.grpcStubCallString}.assert_called_once()
+
+    @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @@mock.patch('google.gax.config.create_stub')
+    def {@test.nameWithException}(self, mock_create_stub):
+        @# Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = {@moduleName}.{@test.serviceConstructorName}()
+
+        @if test.hasRequestParameters
+            @# Mock request
+            {@initCode(test.initCode)}
+
+        @end
+        @# Mock exception response
+        grpc_stub.{@test.grpcStubCallString}.side_effect = CustomException()
+
+        self.assertRaises(\
+            errors.GaxError, \
+            client.{@test.clientMethodName}\
+            {@fieldSettingArgListAfterComma(test.initCode.fieldSettings)})
+@end
+
+@private fieldSettingArgListAfterComma(fieldSettings)
+  @if fieldSettings
+    , {@fieldSettingArgList(fieldSettings)}
+  @end
 @end
