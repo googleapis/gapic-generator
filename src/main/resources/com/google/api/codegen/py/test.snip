@@ -76,7 +76,7 @@
 @end
 
 @private simpleTestCase(test, moduleName)
-    @@mock.patch('google.gax.config.create_stub')
+    @@mock.patch('google.gax.config.create_stub', spec=True)
     def {@test.name}(self, mock_create_stub):
         {@unaryTestSetup(test, moduleName)}
         @if test.hasReturnValue
@@ -93,7 +93,7 @@
 @end
 
 @private pagedStreamingTestCase(test, moduleName)
-    @@mock.patch('google.gax.config.create_stub')
+    @@mock.patch('google.gax.config.create_stub', spec=True)
     def {@test.name}(self, mock_create_stub):
         {@unaryTestSetup(test, moduleName)}
         {@unaryTestResponse(test)}
@@ -116,7 +116,7 @@
 
 @private simpleTestWithException(test, moduleName)
     @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @@mock.patch('google.gax.config.create_stub')
+    @@mock.patch('google.gax.config.create_stub', spec=True)
     def {@test.nameWithException}(self, mock_create_stub):
         {@unaryTestSetup(test, moduleName)}
         @# Mock exception response
@@ -130,7 +130,7 @@
 
 @private unaryTestSetup(test, moduleName)
     @# Mock gRPC layer
-    grpc_stub = mock.Mock()
+    grpc_stub = mock.Mock(spec={@test.createStubFunctionName})
     mock_create_stub.return_value = grpc_stub
 
     client = {@moduleName}.{@test.serviceConstructorName}()

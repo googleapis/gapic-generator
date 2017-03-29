@@ -34,10 +34,10 @@ class CustomException(Exception):
 
 class TestLibraryServiceClient(unittest2.TestCase):
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_create_shelf(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -61,10 +61,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(shelf, request.shelf)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_create_shelf_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -77,10 +77,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.create_shelf, shelf)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_shelf(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -106,10 +106,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(options_, request.options)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_shelf_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -123,10 +123,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.get_shelf, name, options_)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_list_shelves(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -146,10 +146,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         grpc_stub.ListShelves.assert_called_once()
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_list_shelves_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -159,10 +159,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.list_shelves)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_delete_shelf(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -178,10 +178,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(name, request.name)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_delete_shelf_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -194,10 +194,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.delete_shelf, name)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_merge_shelves(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -223,10 +223,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(other_shelf_name, request.other_shelf_name)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_merge_shelves_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -240,10 +240,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.merge_shelves, name, other_shelf_name)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_create_book(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -270,10 +270,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(book, request.book)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_create_book_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -287,10 +287,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.create_book, name, book)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_publish_series(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -318,10 +318,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(series_uuid, request.series_uuid)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_publish_series_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -337,10 +337,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.publish_series, shelf, books, series_uuid)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_book(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -365,10 +365,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(name, request.name)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_book_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -381,10 +381,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.get_book, name)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_list_books(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -410,10 +410,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(name, request.name)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_list_books_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -426,10 +426,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.list_books, name)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_delete_book(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -445,10 +445,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(name, request.name)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_delete_book_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -461,10 +461,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.delete_book, name)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_update_book(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -491,10 +491,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(book, request.book)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_update_book_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -508,10 +508,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.update_book, name, book)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_move_book(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -538,10 +538,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(other_shelf_name, request.other_shelf_name)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_move_book_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -555,10 +555,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.move_book, name, other_shelf_name)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_list_strings(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -578,10 +578,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         grpc_stub.ListStrings.assert_called_once()
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_list_strings_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -591,10 +591,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.list_strings)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_comments(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -616,10 +616,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(comments, request.comments)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_comments_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -637,10 +637,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.add_comments, name, comments)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_book_from_archive(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -665,10 +665,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(name, request.name)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_book_from_archive_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -681,10 +681,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.get_book_from_archive, name)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_book_from_anywhere(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -711,10 +711,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(alt_book_name, request.alt_book_name)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_book_from_anywhere_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -728,10 +728,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.get_book_from_anywhere, name, alt_book_name)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_update_book_index(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -752,10 +752,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(index_map, request.index_map)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_update_book_index_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -771,10 +771,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.update_book_index, name, index_name, index_map)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_find_related_books(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -803,10 +803,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(shelves, request.shelves)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_find_related_books_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -821,10 +821,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.find_related_books, names, shelves)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_tag(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -847,10 +847,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(tag, request.tag)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_tag_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -864,10 +864,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.add_tag, resource, tag)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_label(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=tagger_pb2.LabelerStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -890,10 +890,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(label, request.label)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_label_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=tagger_pb2.LabelerStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -907,10 +907,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
 
         self.assertRaises(errors.GaxError, client.add_label, resource, label)
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_test_optional_required_flattening_params(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
@@ -975,10 +975,10 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(required_map, request.required_map)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_test_optional_required_flattening_params_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = library_service_client.LibraryServiceClient()
