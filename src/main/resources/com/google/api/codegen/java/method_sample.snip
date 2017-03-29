@@ -91,7 +91,7 @@
 
 @private bidiStreamingCallableSampleCode(apiMethod)
   {@responseObserver(apiMethod)}
-  RpcStreamObserver<StreamingRecognizeRequest> requestObserver =
+  ApiStreamObserver<StreamingRecognizeRequest> requestObserver =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().bidiStreamingCall(responseObserver)});
 
   {@initCode(apiMethod.initCode)}
@@ -109,7 +109,7 @@
 
 @private clientStreamingCallableSampleCode(apiMethod)
   {@responseObserver(apiMethod)}
-  RpcStreamObserver<StreamingRecognizeRequest> requestObserver =
+  ApiStreamObserver<StreamingRecognizeRequest> requestObserver =
       {@apiMethod.apiVariableName}.{@apiMethod.name}().clientStreamingCall(responseObserver)});
 
   {@initCode(apiMethod.initCode)}
@@ -117,8 +117,8 @@
 @end
 
 @private responseObserver(apiMethod)
-  RpcStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}> responseObserver =
-      new RpcStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}>() {
+  ApiStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}> responseObserver =
+      new ApiStreamObserver<{@apiMethod.callableMethod.genericAwareResponseType}>() {
         @@Override
         public void onNext({@apiMethod.callableMethod.genericAwareResponseType} response) {
           // Do something when receive a response

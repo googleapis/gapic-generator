@@ -18,7 +18,7 @@
 package library
 
 import (
-    google_protobuf "github.com/golang/protobuf/ptypes/empty"
+    emptypb "github.com/golang/protobuf/ptypes/empty"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
     longrunningpb "google.golang.org/genproto/googleapis/longrunning"
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
@@ -84,12 +84,12 @@ func (s *mockLibraryServer) ListShelves(_ context.Context, req *librarypb.ListSh
     return s.resps[0].(*librarypb.ListShelvesResponse), nil
 }
 
-func (s *mockLibraryServer) DeleteShelf(_ context.Context, req *librarypb.DeleteShelfRequest) (*google_protobuf.Empty, error) {
+func (s *mockLibraryServer) DeleteShelf(_ context.Context, req *librarypb.DeleteShelfRequest) (*emptypb.Empty, error) {
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*google_protobuf.Empty), nil
+    return s.resps[0].(*emptypb.Empty), nil
 }
 
 func (s *mockLibraryServer) MergeShelves(_ context.Context, req *librarypb.MergeShelvesRequest) (*librarypb.Shelf, error) {
@@ -132,12 +132,12 @@ func (s *mockLibraryServer) ListBooks(_ context.Context, req *librarypb.ListBook
     return s.resps[0].(*librarypb.ListBooksResponse), nil
 }
 
-func (s *mockLibraryServer) DeleteBook(_ context.Context, req *librarypb.DeleteBookRequest) (*google_protobuf.Empty, error) {
+func (s *mockLibraryServer) DeleteBook(_ context.Context, req *librarypb.DeleteBookRequest) (*emptypb.Empty, error) {
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*google_protobuf.Empty), nil
+    return s.resps[0].(*emptypb.Empty), nil
 }
 
 func (s *mockLibraryServer) UpdateBook(_ context.Context, req *librarypb.UpdateBookRequest) (*librarypb.Book, error) {
@@ -164,12 +164,12 @@ func (s *mockLibraryServer) ListStrings(_ context.Context, req *librarypb.ListSt
     return s.resps[0].(*librarypb.ListStringsResponse), nil
 }
 
-func (s *mockLibraryServer) AddComments(_ context.Context, req *librarypb.AddCommentsRequest) (*google_protobuf.Empty, error) {
+func (s *mockLibraryServer) AddComments(_ context.Context, req *librarypb.AddCommentsRequest) (*emptypb.Empty, error) {
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*google_protobuf.Empty), nil
+    return s.resps[0].(*emptypb.Empty), nil
 }
 
 func (s *mockLibraryServer) GetBookFromArchive(_ context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
@@ -188,12 +188,12 @@ func (s *mockLibraryServer) GetBookFromAnywhere(_ context.Context, req *libraryp
     return s.resps[0].(*librarypb.BookFromAnywhere), nil
 }
 
-func (s *mockLibraryServer) UpdateBookIndex(_ context.Context, req *librarypb.UpdateBookIndexRequest) (*google_protobuf.Empty, error) {
+func (s *mockLibraryServer) UpdateBookIndex(_ context.Context, req *librarypb.UpdateBookIndexRequest) (*emptypb.Empty, error) {
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*google_protobuf.Empty), nil
+    return s.resps[0].(*emptypb.Empty), nil
 }
 
 func (s *mockLibraryServer) StreamShelves(req *librarypb.StreamShelvesRequest, stream librarypb.LibraryService_StreamShelvesServer) error {
@@ -545,7 +545,7 @@ func TestLibraryServiceListShelvesError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceDeleteShelf(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -936,7 +936,7 @@ func TestLibraryServiceListBooksError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceDeleteBook(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -1184,7 +1184,7 @@ func TestLibraryServiceListStringsError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceAddComments(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -1384,7 +1384,7 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceUpdateBookIndex(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -1944,7 +1944,7 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetBigNothing(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil

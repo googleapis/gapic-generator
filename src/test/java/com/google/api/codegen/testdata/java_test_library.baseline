@@ -16,8 +16,8 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.core.ApiStreamObserver;
 import com.google.api.gax.core.PagedListResponse;
-import com.google.api.gax.core.RpcStreamObserver;
 import com.google.api.gax.grpc.ApiException;
 import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.testing.MockGrpcService;
@@ -162,7 +162,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void createShelfExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -171,7 +171,7 @@ public class LibraryClientTest {
       client.createShelf(shelf);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -204,7 +204,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -213,7 +213,7 @@ public class LibraryClientTest {
       client.getShelf(name);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -248,7 +248,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfExceptionTest2() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -258,7 +258,7 @@ public class LibraryClientTest {
       client.getShelf(formattedName, message);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -295,7 +295,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getShelfExceptionTest3() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -306,7 +306,7 @@ public class LibraryClientTest {
       client.getShelf(formattedName, message, stringBuilder);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -339,7 +339,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void listShelvesExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -348,7 +348,7 @@ public class LibraryClientTest {
       client.listShelves();
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -372,7 +372,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void deleteShelfExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -381,7 +381,7 @@ public class LibraryClientTest {
       client.deleteShelf(name);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -416,7 +416,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void mergeShelvesExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -426,7 +426,7 @@ public class LibraryClientTest {
       client.mergeShelves(name, otherShelfName);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -463,7 +463,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void createBookExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -473,7 +473,7 @@ public class LibraryClientTest {
       client.createBook(formattedName, book);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -512,7 +512,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void publishSeriesExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -527,7 +527,7 @@ public class LibraryClientTest {
       client.publishSeries(shelf, books, edition, seriesUuid);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -562,7 +562,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -571,7 +571,7 @@ public class LibraryClientTest {
       client.getBook(name);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -607,7 +607,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void listBooksExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -617,7 +617,7 @@ public class LibraryClientTest {
       client.listBooks(name, filter);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -641,7 +641,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void deleteBookExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -650,7 +650,7 @@ public class LibraryClientTest {
       client.deleteBook(name);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -687,7 +687,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -697,7 +697,7 @@ public class LibraryClientTest {
       client.updateBook(name, book);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -738,7 +738,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookExceptionTest2() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -750,7 +750,7 @@ public class LibraryClientTest {
       client.updateBook(name, book, updateMask, physicalMask);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -787,7 +787,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void moveBookExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -797,7 +797,7 @@ public class LibraryClientTest {
       client.moveBook(name, otherShelfName);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -833,7 +833,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void listStringsExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -842,7 +842,7 @@ public class LibraryClientTest {
       client.listStrings();
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -879,7 +879,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void listStringsExceptionTest2() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -888,7 +888,7 @@ public class LibraryClientTest {
       client.listStrings(name);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -922,7 +922,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void addCommentsExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -940,7 +940,7 @@ public class LibraryClientTest {
       client.addComments(formattedName, comments);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -975,7 +975,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromArchiveExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -984,7 +984,7 @@ public class LibraryClientTest {
       client.getBookFromArchive(name);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -1021,7 +1021,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromAnywhereExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -1031,7 +1031,7 @@ public class LibraryClientTest {
       client.getBookFromAnywhere(name, altBookName);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -1061,7 +1061,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookIndexExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -1074,7 +1074,7 @@ public class LibraryClientTest {
       client.updateBookIndex(name, indexName, indexMap);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -1099,7 +1099,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void streamShelvesExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
     StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 
@@ -1115,7 +1115,7 @@ public class LibraryClientTest {
     } catch (ExecutionException e) {
       Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
       StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+      Assert.assertEquals(Status.INVALID_ARGUMENT, statusException.getStatus());
     }
   }
 
@@ -1152,7 +1152,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void streamBooksExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
     String name = "name3373707";
     StreamBooksRequest request = StreamBooksRequest.newBuilder()
@@ -1171,7 +1171,7 @@ public class LibraryClientTest {
     } catch (ExecutionException e) {
       Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
       StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+      Assert.assertEquals(Status.INVALID_ARGUMENT, statusException.getStatus());
     }
   }
 
@@ -1194,7 +1194,7 @@ public class LibraryClientTest {
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
-    RpcStreamObserver<DiscussBookRequest> requestObserver =
+    ApiStreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
 
     requestObserver.onNext(request);
@@ -1208,7 +1208,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void discussBookExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
     String name = "name3373707";
     DiscussBookRequest request = DiscussBookRequest.newBuilder()
@@ -1219,7 +1219,7 @@ public class LibraryClientTest {
 
     StreamingCallable<DiscussBookRequest, Comment> callable =
         client.discussBookCallable();
-    RpcStreamObserver<DiscussBookRequest> requestObserver =
+    ApiStreamObserver<DiscussBookRequest> requestObserver =
         callable.bidiStreamingCall(responseObserver);
 
     requestObserver.onNext(request);
@@ -1230,7 +1230,7 @@ public class LibraryClientTest {
     } catch (ExecutionException e) {
       Assert.assertTrue(e.getCause() instanceof StatusRuntimeException);
       StatusRuntimeException statusException = (StatusRuntimeException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL, statusException.getStatus());
+      Assert.assertEquals(Status.INVALID_ARGUMENT, statusException.getStatus());
     }
   }
 
@@ -1270,7 +1270,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void findRelatedBooksExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -1281,7 +1281,7 @@ public class LibraryClientTest {
       client.findRelatedBooks(names, shelves);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -1309,7 +1309,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void addTagExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -1319,7 +1319,7 @@ public class LibraryClientTest {
       client.addTag(formattedResource, tag);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -1347,7 +1347,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void addLabelExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLabeler.addException(exception);
 
     try {
@@ -1357,7 +1357,7 @@ public class LibraryClientTest {
       client.addLabel(formattedResource, label);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 
@@ -1398,7 +1398,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBigBookExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -1409,7 +1409,7 @@ public class LibraryClientTest {
     } catch (ExecutionException e) {
       Assert.assertEquals(ApiException.class, e.getCause().getClass());
       ApiException apiException = (ApiException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL.getCode(), apiException.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), apiException.getStatusCode());
     }
   }
 
@@ -1442,7 +1442,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBigNothingExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -1453,7 +1453,7 @@ public class LibraryClientTest {
     } catch (ExecutionException e) {
       Assert.assertEquals(ApiException.class, e.getCause().getClass());
       ApiException apiException = (ApiException) e.getCause();
-      Assert.assertEquals(Status.INTERNAL.getCode(), apiException.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), apiException.getStatusCode());
     }
   }
 
@@ -1570,7 +1570,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void testOptionalRequiredFlatteningParamsExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INTERNAL);
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
@@ -1624,7 +1624,7 @@ public class LibraryClientTest {
       client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalMap);
       Assert.fail("No exception raised");
     } catch (ApiException e) {
-      Assert.assertEquals(Status.INTERNAL.getCode(), e.getStatusCode());
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
     }
   }
 

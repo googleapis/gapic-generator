@@ -106,6 +106,8 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       }
     }
 
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
     boolean isPageStreaming = methodInfo.isPageStreaming();
     if (isPageStreaming) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));

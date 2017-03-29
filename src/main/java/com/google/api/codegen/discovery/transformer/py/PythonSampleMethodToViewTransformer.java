@@ -63,10 +63,6 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
 
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
 
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
-
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
@@ -99,6 +95,12 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
       }
 
       methodParamAssignments.add("body=" + requestBodyVarName);
+    }
+
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
     boolean hasResponse = methodInfo.responseType() != null;

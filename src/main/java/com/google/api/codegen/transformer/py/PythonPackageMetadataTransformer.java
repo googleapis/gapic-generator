@@ -45,6 +45,7 @@ import java.util.Map;
  * from the corresponding transformers/view models without actually rendering the templates.
  */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
+  private static final String TEST_PREFIX = "test.";
 
   private final PackageMetadataConfig packageConfig;
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
@@ -123,14 +124,19 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     for (GapicProvider<? extends Object> provider : gapicProviders) {
       Map<String, Doc> result = provider.generate();
       for (String fileName : result.keySet()) {
-        if (Files.getFileExtension(fileName).equals("py")) {
-          String moduleName =
-              fileName.substring(0, fileName.length() - ".py".length()).replace("/", ".");
-          if (moduleName.endsWith(GapicContext.API_WRAPPER_SUFFIX.toLowerCase())) {
-            apiModules.add(moduleName);
-          } else {
-            typeModules.add(moduleName);
-          }
+        if (!Files.getFileExtension(fileName).equals("py")) {
+          continue;
+        }
+        String moduleName =
+            fileName.substring(0, fileName.length() - ".py".length()).replace("/", ".");
+        if (moduleName.startsWith(TEST_PREFIX)) {
+          continue;
+        }
+
+        if (moduleName.endsWith(GapicContext.API_WRAPPER_SUFFIX.toLowerCase())) {
+          apiModules.add(moduleName);
+        } else {
+          typeModules.add(moduleName);
         }
       }
     }
