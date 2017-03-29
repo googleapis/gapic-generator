@@ -29,7 +29,7 @@ import java.util.List;
 public class PythonGrpcMetadataTransformer {
   private static final List<String> SNIPPETS =
       Lists.newArrayList(
-          "metadatagen/LICENSE.snip",
+          "LICENSE.snip",
           "metadatagen/py/setup.py.snip",
           "metadatagen/py/README.rst.snip",
           "metadatagen/py/PUBLISHING.rst.snip",
