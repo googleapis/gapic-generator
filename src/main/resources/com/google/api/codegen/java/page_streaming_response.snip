@@ -28,7 +28,7 @@
           this.page = new {@pagedResponseClass.pageName}(this.context);
         }
 
-        public Iterator<{@pagedResponseClass.resourceTypeName}> iterateAll() {
+        public Iterable<{@pagedResponseClass.resourceTypeName}> iterateAll() {
           return context.iterateAll();
         }
 
@@ -36,15 +36,20 @@
           return page;
         }
 
-        public Iterator<{@pagedResponseClass.pageName}> iteratePages() {
-          return new PageContext.PageIterator<{@pagedResponseClass.pageName}>(
-            new PageContext.PageFetcher<{@pagedResponseClass.pageName}>() {
-              @@Override
-              public {@pagedResponseClass.pageName} getNextPage({@pagedResponseClass.pageName} currentPage) {
-                return currentPage.getNextPage();
-              }
-            },
-            page);
+        public Iterable<{@pagedResponseClass.pageName}> iteratePages() {
+          return new Iterable<{@pagedResponseClass.pageName}>() {
+            @@Override
+            public Iterator<{@pagedResponseClass.pageName}> iterator() {
+              return new PageContext.PageIterator<{@pagedResponseClass.pageName}>(
+                new PageContext.PageFetcher<{@pagedResponseClass.pageName}>() {
+                  @@Override
+                  public {@pagedResponseClass.pageName} getNextPage({@pagedResponseClass.pageName} currentPage) {
+                    return currentPage.getNextPage();
+                  }
+                },
+                page);
+            }
+          };
         }
 
         public String getNextPageToken() {
@@ -55,7 +60,7 @@
           return context.expandToFixedSizeCollection(collectionSize);
         }
 
-        public Iterator<FixedSizeCollection<{@pagedResponseClass.resourceTypeName}>> iterateFixedSizeCollections(int collectionSize) {
+        public Iterable<FixedSizeCollection<{@pagedResponseClass.resourceTypeName}>> iterateFixedSizeCollections(int collectionSize) {
           return context.iterateFixedSizeCollections(collectionSize);
         }
         {@iterateMethods(pagedResponseClass)}
@@ -70,7 +75,7 @@
 
         @@Override
         public Iterator<{@pagedResponseClass.resourceTypeName}> iterator() {
-          return context.getResourceIterator();
+          return context.getResourceIterable().iterator();
         }
 
         @@Override
@@ -93,7 +98,7 @@
         }
 
         @@Override
-        public Iterator<{@pagedResponseClass.resourceTypeName}> iterateAll() {
+        public Iterable<{@pagedResponseClass.resourceTypeName}> iterateAll() {
           return context.iterateAll();
         }
 

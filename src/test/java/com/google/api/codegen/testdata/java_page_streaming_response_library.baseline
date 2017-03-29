@@ -66,7 +66,7 @@ public class PagedResponseWrappers {
       this.page = new ListShelvesPage(this.context);
     }
 
-    public Iterator<Shelf> iterateAll() {
+    public Iterable<Shelf> iterateAll() {
       return context.iterateAll();
     }
 
@@ -74,15 +74,20 @@ public class PagedResponseWrappers {
       return page;
     }
 
-    public Iterator<ListShelvesPage> iteratePages() {
-      return new PageContext.PageIterator<ListShelvesPage>(
-        new PageContext.PageFetcher<ListShelvesPage>() {
-          @Override
-          public ListShelvesPage getNextPage(ListShelvesPage currentPage) {
-            return currentPage.getNextPage();
-          }
-        },
-        page);
+    public Iterable<ListShelvesPage> iteratePages() {
+      return new Iterable<ListShelvesPage>() {
+        @Override
+        public Iterator<ListShelvesPage> iterator() {
+          return new PageContext.PageIterator<ListShelvesPage>(
+            new PageContext.PageFetcher<ListShelvesPage>() {
+              @Override
+              public ListShelvesPage getNextPage(ListShelvesPage currentPage) {
+                return currentPage.getNextPage();
+              }
+            },
+            page);
+        }
+      };
     }
 
     public String getNextPageToken() {
@@ -93,7 +98,7 @@ public class PagedResponseWrappers {
       return context.expandToFixedSizeCollection(collectionSize);
     }
 
-    public Iterator<FixedSizeCollection<Shelf>> iterateFixedSizeCollections(int collectionSize) {
+    public Iterable<FixedSizeCollection<Shelf>> iterateFixedSizeCollections(int collectionSize) {
       return context.iterateFixedSizeCollections(collectionSize);
     }
 
@@ -109,7 +114,7 @@ public class PagedResponseWrappers {
 
     @Override
     public Iterator<Shelf> iterator() {
-      return context.getResourceIterator();
+      return context.getResourceIterable().iterator();
     }
 
     @Override
@@ -132,7 +137,7 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    public Iterator<Shelf> iterateAll() {
+    public Iterable<Shelf> iterateAll() {
       return context.iterateAll();
     }
 
@@ -161,7 +166,7 @@ public class PagedResponseWrappers {
       this.page = new ListBooksPage(this.context);
     }
 
-    public Iterator<Book> iterateAll() {
+    public Iterable<Book> iterateAll() {
       return context.iterateAll();
     }
 
@@ -169,15 +174,20 @@ public class PagedResponseWrappers {
       return page;
     }
 
-    public Iterator<ListBooksPage> iteratePages() {
-      return new PageContext.PageIterator<ListBooksPage>(
-        new PageContext.PageFetcher<ListBooksPage>() {
-          @Override
-          public ListBooksPage getNextPage(ListBooksPage currentPage) {
-            return currentPage.getNextPage();
-          }
-        },
-        page);
+    public Iterable<ListBooksPage> iteratePages() {
+      return new Iterable<ListBooksPage>() {
+        @Override
+        public Iterator<ListBooksPage> iterator() {
+          return new PageContext.PageIterator<ListBooksPage>(
+            new PageContext.PageFetcher<ListBooksPage>() {
+              @Override
+              public ListBooksPage getNextPage(ListBooksPage currentPage) {
+                return currentPage.getNextPage();
+              }
+            },
+            page);
+        }
+      };
     }
 
     public String getNextPageToken() {
@@ -188,7 +198,7 @@ public class PagedResponseWrappers {
       return context.expandToFixedSizeCollection(collectionSize);
     }
 
-    public Iterator<FixedSizeCollection<Book>> iterateFixedSizeCollections(int collectionSize) {
+    public Iterable<FixedSizeCollection<Book>> iterateFixedSizeCollections(int collectionSize) {
       return context.iterateFixedSizeCollections(collectionSize);
     }
 
@@ -204,7 +214,7 @@ public class PagedResponseWrappers {
 
     @Override
     public Iterator<Book> iterator() {
-      return context.getResourceIterator();
+      return context.getResourceIterable().iterator();
     }
 
     @Override
@@ -227,7 +237,7 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    public Iterator<Book> iterateAll() {
+    public Iterable<Book> iterateAll() {
       return context.iterateAll();
     }
 
@@ -256,7 +266,7 @@ public class PagedResponseWrappers {
       this.page = new ListStringsPage(this.context);
     }
 
-    public Iterator<String> iterateAll() {
+    public Iterable<String> iterateAll() {
       return context.iterateAll();
     }
 
@@ -264,15 +274,20 @@ public class PagedResponseWrappers {
       return page;
     }
 
-    public Iterator<ListStringsPage> iteratePages() {
-      return new PageContext.PageIterator<ListStringsPage>(
-        new PageContext.PageFetcher<ListStringsPage>() {
-          @Override
-          public ListStringsPage getNextPage(ListStringsPage currentPage) {
-            return currentPage.getNextPage();
-          }
-        },
-        page);
+    public Iterable<ListStringsPage> iteratePages() {
+      return new Iterable<ListStringsPage>() {
+        @Override
+        public Iterator<ListStringsPage> iterator() {
+          return new PageContext.PageIterator<ListStringsPage>(
+            new PageContext.PageFetcher<ListStringsPage>() {
+              @Override
+              public ListStringsPage getNextPage(ListStringsPage currentPage) {
+                return currentPage.getNextPage();
+              }
+            },
+            page);
+        }
+      };
     }
 
     public String getNextPageToken() {
@@ -283,7 +298,7 @@ public class PagedResponseWrappers {
       return context.expandToFixedSizeCollection(collectionSize);
     }
 
-    public Iterator<FixedSizeCollection<String>> iterateFixedSizeCollections(int collectionSize) {
+    public Iterable<FixedSizeCollection<String>> iterateFixedSizeCollections(int collectionSize) {
       return context.iterateFixedSizeCollections(collectionSize);
     }
     public Iterator<ResourceName> iterateAllAsResourceName() {
@@ -307,7 +322,7 @@ public class PagedResponseWrappers {
 
     @Override
     public Iterator<String> iterator() {
-      return context.getResourceIterator();
+      return context.getResourceIterable().iterator();
     }
 
     @Override
@@ -330,7 +345,7 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    public Iterator<String> iterateAll() {
+    public Iterable<String> iterateAll() {
       return context.iterateAll();
     }
 
@@ -367,7 +382,7 @@ public class PagedResponseWrappers {
       this.page = new FindRelatedBooksPage(this.context);
     }
 
-    public Iterator<String> iterateAll() {
+    public Iterable<String> iterateAll() {
       return context.iterateAll();
     }
 
@@ -375,15 +390,20 @@ public class PagedResponseWrappers {
       return page;
     }
 
-    public Iterator<FindRelatedBooksPage> iteratePages() {
-      return new PageContext.PageIterator<FindRelatedBooksPage>(
-        new PageContext.PageFetcher<FindRelatedBooksPage>() {
-          @Override
-          public FindRelatedBooksPage getNextPage(FindRelatedBooksPage currentPage) {
-            return currentPage.getNextPage();
-          }
-        },
-        page);
+    public Iterable<FindRelatedBooksPage> iteratePages() {
+      return new Iterable<FindRelatedBooksPage>() {
+        @Override
+        public Iterator<FindRelatedBooksPage> iterator() {
+          return new PageContext.PageIterator<FindRelatedBooksPage>(
+            new PageContext.PageFetcher<FindRelatedBooksPage>() {
+              @Override
+              public FindRelatedBooksPage getNextPage(FindRelatedBooksPage currentPage) {
+                return currentPage.getNextPage();
+              }
+            },
+            page);
+        }
+      };
     }
 
     public String getNextPageToken() {
@@ -394,7 +414,7 @@ public class PagedResponseWrappers {
       return context.expandToFixedSizeCollection(collectionSize);
     }
 
-    public Iterator<FixedSizeCollection<String>> iterateFixedSizeCollections(int collectionSize) {
+    public Iterable<FixedSizeCollection<String>> iterateFixedSizeCollections(int collectionSize) {
       return context.iterateFixedSizeCollections(collectionSize);
     }
     public Iterator<BookName> iterateAllAsBookName() {
@@ -418,7 +438,7 @@ public class PagedResponseWrappers {
 
     @Override
     public Iterator<String> iterator() {
-      return context.getResourceIterator();
+      return context.getResourceIterable().iterator();
     }
 
     @Override
@@ -441,7 +461,7 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    public Iterator<String> iterateAll() {
+    public Iterable<String> iterateAll() {
       return context.iterateAll();
     }
 
