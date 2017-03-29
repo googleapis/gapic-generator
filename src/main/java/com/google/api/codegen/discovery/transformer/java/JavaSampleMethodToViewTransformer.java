@@ -111,6 +111,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
       }
     }
 
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
     if (methodInfo.isPageStreaming()) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }

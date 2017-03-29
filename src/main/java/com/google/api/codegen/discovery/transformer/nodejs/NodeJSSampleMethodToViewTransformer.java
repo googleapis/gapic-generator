@@ -77,10 +77,6 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     String serviceTypeName = typeTable.getAndSaveNicknameForServiceType(config.apiTypeName());
     String requestVarName = symbolTable.getNewSymbol(namer.getRequestVarName());
 
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
-
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context, symbolTable);
 
@@ -101,6 +97,12 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
       for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
         requestBodyFields.add(createSampleFieldView(fieldInfo, typeTable, false));
       }
+    }
+
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
