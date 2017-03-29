@@ -25,6 +25,7 @@ import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import java.io.File;
 
@@ -81,6 +82,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcStubCallString(Interface service, Method method) {
     return getGrpcMethodName(method);
+  }
+
+  @Override
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return publicFieldName(identifier);
   }
 
   @Override

@@ -145,8 +145,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
         continue;
       } else if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
-        // TODO(eoogbe): Remove this check once page streaming is supported by test
-        continue;
       }
 
       Iterable<FieldConfig> fieldConfigs =

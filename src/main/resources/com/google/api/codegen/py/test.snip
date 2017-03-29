@@ -68,6 +68,8 @@
     @switch test.clientMethodType
     @case "OptionalArrayMethod"
         {@simpleTestCase(test, moduleName)}
+    @case "PagedOptionalArrayMethod"
+        {@pagedStreamingTestCase(test, moduleName)}
     @default
         {@unhandledCase()}
     @end
@@ -76,46 +78,47 @@
 @private simpleTestCase(test, moduleName)
     @@mock.patch('google.gax.config.create_stub')
     def {@test.name}(self, mock_create_stub):
-        @# Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = {@moduleName}.{@test.serviceConstructorName}()
-
-        @if test.hasRequestParameters
-            @# Mock request
-            {@initCode(test.initCode)}
-
-        @end
+        {@unaryTestSetup(test, moduleName)}
         @if test.hasReturnValue
-            @# Mock response
-            {@initCode(test.mockResponse.initCode)}
-            grpc_stub.{@test.grpcStubCallString}.return_value = expected_response
-
-            response = client.{@test.clientMethodName}(\
-                {@fieldSettingArgList(test.initCode.fieldSettings)})
+            {@unaryTestResponse(test)}
+            response = {@unaryTestMethodCall(test)}
             self.assertEqual(expected_response, response)
         @else
-            client.{@test.clientMethodName}(\
-                {@fieldSettingArgList(test.initCode.fieldSettings)})
+            {@unaryTestMethodCall(test)}
         @end
 
-        grpc_stub.{@test.grpcStubCallString}.assert_called_once()
+        {@unaryTestSuccessAsserts(test)}
 
+    {@simpleTestWithException(test, moduleName)}
+@end
+
+@private pagedStreamingTestCase(test, moduleName)
+    @@mock.patch('google.gax.config.create_stub')
+    def {@test.name}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        {@unaryTestResponse(test)}
+        paged_list_response = {@unaryTestMethodCall(test)}
+        @join pageStreamingResponseView : test.pageStreamingResponseViews
+            {@pageStreamingResponseView.resourcesVarName} = \
+                list(paged_list_response)
+            self.assertEqual(1, \
+                len({@pageStreamingResponseView.resourcesVarName}))
+            self.assertEqual(\
+                expected_response.\
+                    {@pageStreamingResponseView.resourcesFieldGetterName}[0], \
+                {@pageStreamingResponseView.resourcesVarName}[0])
+        @end
+
+        {@unaryTestSuccessAsserts(test)}
+
+    {@simpleTestWithException(test, moduleName)}
+@end
+
+@private simpleTestWithException(test, moduleName)
     @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @@mock.patch('google.gax.config.create_stub')
     def {@test.nameWithException}(self, mock_create_stub):
-        @# Mock gRPC layer
-        grpc_stub = mock.Mock()
-        mock_create_stub.return_value = grpc_stub
-
-        client = {@moduleName}.{@test.serviceConstructorName}()
-
-        @if test.hasRequestParameters
-            @# Mock request
-            {@initCode(test.initCode)}
-
-        @end
+        {@unaryTestSetup(test, moduleName)}
         @# Mock exception response
         grpc_stub.{@test.grpcStubCallString}.side_effect = CustomException()
 
@@ -123,6 +126,52 @@
             errors.GaxError, \
             client.{@test.clientMethodName}\
             {@fieldSettingArgListAfterComma(test.initCode.fieldSettings)})
+@end
+
+@private unaryTestSetup(test, moduleName)
+    @# Mock gRPC layer
+    grpc_stub = mock.Mock()
+    mock_create_stub.return_value = grpc_stub
+
+    client = {@moduleName}.{@test.serviceConstructorName}()
+
+    @if test.hasRequestParameters
+        @# Mock request
+        {@initCode(test.initCode)}
+
+    @end
+@end
+
+@private unaryTestResponse(test)
+    @# Mock response
+    {@initCode(test.mockResponse.initCode)}
+    grpc_stub.{@test.grpcStubCallString}.return_value = expected_response
+
+@end
+
+@private unaryTestMethodCall(test)
+    client.{@test.clientMethodName}(\
+        {@fieldSettingArgList(test.initCode.fieldSettings)})
+@end
+
+@private unaryTestSuccessAsserts(test)
+    grpc_stub.{@test.grpcStubCallString}.assert_called_once()
+    @if test.asserts
+        request = grpc_stub.{@test.grpcStubCallString}.call_args[0]
+
+    @end
+    @join assert : test.asserts
+        @if assert.hasExpectedValueTransformFunction
+            self.assertEqual(\
+                {@assert.expectedValueTransformFunction}(\
+                    {@assert.expectedValueIdentifier}), \
+                request.{@assert.actualValueGetter})
+        @else
+            self.assertEqual(\
+                {@assert.expectedValueIdentifier}, \
+                request.{@assert.actualValueGetter})
+        @end
+    @end
 @end
 
 @private fieldSettingArgListAfterComma(fieldSettings)
