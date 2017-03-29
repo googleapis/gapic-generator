@@ -16,12 +16,6 @@ package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.grpcmetadatagen.java.JavaGrpcPackageMetadataTransformer;
-import com.google.api.codegen.grpcmetadatagen.py.PythonGrpcMetadataTransformer;
-import com.google.api.codegen.grpcmetadatagen.py.PythonPackageCopier;
-import com.google.api.codegen.grpcmetadatagen.py.PythonPackageCopierResult;
-import com.google.api.codegen.rendering.CommonSnippetSetRunner;
-import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -30,17 +24,13 @@ import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * ToolDriver for PackageMetadataGenerator; creates and sets the ToolOptions and builds the Model
- */
+/** ToolDriver for gRPC meta-data generation. */
 public class GrpcMetadataGenerator extends ToolDriverBase {
   public static final Option<String> OUTPUT_DIR =
       ToolOptions.createOption(
@@ -64,44 +54,6 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
     super(options);
   }
 
-  protected Map<String, Doc> generate(Model model) throws IOException {
-    TargetLanguage language = TargetLanguage.fromString(options.get(LANGUAGE));
-    String configContent =
-        new String(
-            Files.readAllBytes(Paths.get(options.get(METADATA_CONFIG_FILE))),
-            StandardCharsets.UTF_8);
-    PackageMetadataConfig config = PackageMetadataConfig.createFromString(configContent);
-    ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
-    ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
-    switch (language) {
-      case PYTHON:
-        PythonPackageCopier copier = new PythonPackageCopier();
-        PythonPackageCopierResult copierResult = copier.run(options, config);
-        docs.putAll(copierResult.docs());
-        PythonGrpcMetadataTransformer pythonTransformer =
-            new PythonGrpcMetadataTransformer(copierResult);
-        metadataViews.addAll(pythonTransformer.transform(model, config));
-        break;
-      case JAVA:
-        JavaGrpcPackageMetadataTransformer javaTransformer =
-            new JavaGrpcPackageMetadataTransformer();
-        metadataViews.addAll(javaTransformer.transform(model, config));
-        break;
-      default:
-        throw new IllegalArgumentException(
-            "The target language \"" + language + "\" is not supported");
-    }
-
-    for (PackageMetadataView view : metadataViews) {
-      CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view);
-      Doc result = runner.generate(view);
-      if (!result.isWhitespace()) {
-        docs.put(view.outputPath(), result);
-      }
-    }
-    return docs.build();
-  }
-
   @Override
   protected void process() throws Exception {
     model.establishStage(Merged.KEY);
@@ -113,5 +65,16 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
       return;
     }
     ToolUtil.writeFiles(generate(model), options.get(OUTPUT_DIR));
+  }
+
+  protected Map<String, Doc> generate(Model model) throws IOException {
+    TargetLanguage language = TargetLanguage.fromString(options.get(LANGUAGE));
+    String configContent =
+        new String(
+            Files.readAllBytes(Paths.get(options.get(METADATA_CONFIG_FILE))),
+            StandardCharsets.UTF_8);
+    PackageMetadataConfig config = PackageMetadataConfig.createFromString(configContent);
+    GrpcMetadataProvider provider = GrpcMetadataProviderFactory.create(language, options);
+    return provider.generate(model, config);
   }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen.java;
+package com.google.api.codegen.grpcmetadatagen;
 
-/**
- * Responsible for copying static grpc meta-data files for Java
- */
-public class JavaStaticMetadataCopier {
+import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.snippet.Doc;
+import java.io.IOException;
+import java.util.Map;
 
+/** A GrpcMetadataProvider performs gRPC meta-data generation. */
+public interface GrpcMetadataProvider {
+  Map<String, Doc> generate(Model model, PackageMetadataConfig config) throws IOException;
 }

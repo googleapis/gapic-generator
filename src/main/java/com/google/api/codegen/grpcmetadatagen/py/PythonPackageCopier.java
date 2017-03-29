@@ -31,10 +31,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A copier specialized to calculate Python namespace packages and generate __init__.py
- * files.
- */
+/** A copier specialized to calculate Python namespace packages and generate __init__.py files. */
 public class PythonPackageCopier {
 
   /** Copies gRPC source while computing namespace packages and generating __init__.py. */
