@@ -63,7 +63,6 @@ public class JavaStaticGrpcMetadataCopier {
       destination = Paths.get(outputDir, staticFilePath.getParent().toString());
     }
     if (!Files.exists(destination)) {
-      System.out.println(destination.toString());
       Files.createDirectories(destination);
     }
   }
