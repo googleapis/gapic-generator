@@ -575,7 +575,7 @@ public class StaticLangApiMethodTransformer {
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod(), context.getMethodConfig()))
             .paramDocs(getMethodParamDocs(context, fieldConfigs, additionalParams))
-            .throwsDocLines(namer.getThrowsDocLines())
+            .throwsDocLines(namer.getThrowsDocLines(context.getMethodConfig()))
             .returnsDocLines(
                 namer.getReturnDocLines(
                     context.getSurfaceTransformerContext(),
@@ -623,7 +623,7 @@ public class StaticLangApiMethodTransformer {
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(context.getMethod(), context.getMethodConfig()))
             .paramDocs(paramDocs)
-            .throwsDocLines(namer.getThrowsDocLines())
+            .throwsDocLines(namer.getThrowsDocLines(context.getMethodConfig()))
             .returnsDocLines(
                 namer.getReturnDocLines(
                     context.getSurfaceTransformerContext(), context.getMethodConfig(), sync))

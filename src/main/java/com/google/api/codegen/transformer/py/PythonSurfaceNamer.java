@@ -14,11 +14,15 @@
  */
 package com.google.api.codegen.transformer.py;
 
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
@@ -29,7 +33,10 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import java.io.File;
+import java.util.List;
 
 /** The SurfaceNamer for Python. */
 public class PythonSurfaceNamer extends SurfaceNamer {
@@ -127,6 +134,55 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   public String getGrpcClientTypeName(Interface service) {
     String fullName = getModelTypeFormatter().getFullNameFor(service) + "Stub";
     return getTypeNameConverter().getTypeName(fullName).getNickname();
+  }
+
+  @Override
+  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
+    ImmutableList.Builder<String> lines = ImmutableList.builder();
+    lines.add(":exc:`google.gax.errors.GaxError` if the RPC is aborted.");
+    if (hasParams(methodConfig)) {
+      lines.add(":exc:`ValueError` if the parameters are invalid.");
+    }
+    return lines.build();
+  }
+
+  private boolean hasParams(MethodConfig methodConfig) {
+    if (!Iterables.isEmpty(methodConfig.getRequiredFieldConfigs())) {
+      return true;
+    }
+
+    int optionalParamCount = Iterables.size(methodConfig.getOptionalFieldConfigs());
+    return optionalParamCount > (methodConfig.getPageStreaming() == null ? 0 : 1);
+  }
+
+  @Override
+  public List<String> getReturnDocLines(
+      SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+    TypeRef outputType = methodConfig.getMethod().getOutputType();
+    if (ServiceMessages.s_isEmptyType(outputType)) {
+      return ImmutableList.<String>of();
+    }
+
+    String returnTypeName =
+        methodConfig.isLongRunningOperation()
+            ? "google.gax._OperationFuture"
+            : getModelTypeFormatter().getFullNameFor(outputType);
+    String classInfo = ":class:`" + returnTypeName + "`";
+
+    if (methodConfig.getMethod().getResponseStreaming()) {
+      return ImmutableList.of("iterator[" + classInfo + "].");
+    }
+
+    if (methodConfig.isPageStreaming()) {
+      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+      return ImmutableList.of(
+          "A :class:`google.gax.PageIterator` instance. By default, this",
+          "is an iterable of " + getParamTypeNameForElementType(resourceType) + " instances.",
+          "This object can also be configured to iterate over the pages",
+          "of the response through the `CallOptions` parameter.");
+    }
+
+    return ImmutableList.of("A " + classInfo + " instance.");
   }
 
   @Override
