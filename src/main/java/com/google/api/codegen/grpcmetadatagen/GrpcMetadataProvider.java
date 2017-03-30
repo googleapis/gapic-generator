@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,12 @@
 package com.google.api.codegen.grpcmetadatagen;
 
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.snippet.Doc;
 import java.io.IOException;
+import java.util.Map;
 
-/** Interface for the package copying phase of package metadata generation. */
-public interface GrpcPackageCopier {
-
-  /** Returns a map of Docs to be output, as well any package metadata generated in this phase. */
-  public GrpcPackageCopierResult run(ToolOptions options, PackageMetadataConfig config)
-      throws IOException;
+/** A GrpcMetadataProvider performs gRPC meta-data generation. */
+public interface GrpcMetadataProvider {
+  Map<String, Doc> generate(Model model, PackageMetadataConfig config) throws IOException;
 }

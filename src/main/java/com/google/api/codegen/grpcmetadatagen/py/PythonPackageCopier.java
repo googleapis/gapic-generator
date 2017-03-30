@@ -16,8 +16,6 @@ package com.google.api.codegen.grpcmetadatagen.py;
 
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataGenerator;
-import com.google.api.codegen.grpcmetadatagen.GrpcPackageCopier;
-import com.google.api.codegen.grpcmetadatagen.GrpcPackageCopierResult;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.base.Joiner;
@@ -33,11 +31,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A PackageCopier specialized to calculate Python namespace packages and generate __init__.py
- * files.
- */
-public class PythonPackageCopier implements GrpcPackageCopier {
+/** A copier specialized to calculate Python namespace packages and generate __init__.py files. */
+public class PythonPackageCopier {
 
   /** Copies gRPC source while computing namespace packages and generating __init__.py. */
   private class PythonPackageFileVisitor extends SimpleFileVisitor<Path> {
@@ -98,8 +93,7 @@ public class PythonPackageCopier implements GrpcPackageCopier {
   }
 
   @SuppressWarnings("unchecked")
-  @Override
-  public GrpcPackageCopierResult run(ToolOptions options, PackageMetadataConfig config)
+  public PythonPackageCopierResult run(ToolOptions options, PackageMetadataConfig config)
       throws IOException {
     // Copy files from dir into map, and fill in namespace result
     // Run __init__ snippet in each dir that deserves it
@@ -114,6 +108,6 @@ public class PythonPackageCopier implements GrpcPackageCopier {
     List<String> pythonNamespacePackages = visitor.getNamespacePackages();
     ImmutableMap.Builder<String, Doc> docBuilder = visitor.getDocBuilder();
 
-    return GrpcPackageCopierResult.createPython(pythonNamespacePackages, docBuilder.build());
+    return PythonPackageCopierResult.createPython(pythonNamespacePackages, docBuilder.build());
   }
 }

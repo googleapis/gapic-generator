@@ -60,7 +60,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import javax.annotation.Nullable;
 
 /** A GapicContext specialized for Python. */
 public class PythonGapicContext extends GapicContext {
@@ -276,11 +275,11 @@ public class PythonGapicContext extends GapicContext {
    * Return Sphinx-style return type string for the given method, or null if the return type is
    * None.
    */
-  @Nullable
-  private String returnTypeComment(
-      Method method, MethodConfig config, PythonImportHandler importHandler) {
+  public String returnTypeComment(
+      Interface service, Method method, PythonImportHandler importHandler) {
+    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
     if (MethodConfig.isReturnEmptyMessageMethod(method)) {
-      return null;
+      return "";
     }
 
     String path = returnTypeCommentPath(method, config, importHandler);
@@ -333,62 +332,15 @@ public class PythonGapicContext extends GapicContext {
     return splitToLines(getTrimmedDocs(method));
   }
 
-  /**
-   * Generate comments lines for a given method's signature, consisting of proto doc and parameter
-   * type documentation.
-   */
-  public List<String> methodSignatureComments(
-      Interface service, Method method, PythonImportHandler importHandler) {
+  public String throwsComment(Interface service, Method method) {
     MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-
     StringBuilder contentBuilder = new StringBuilder();
-
-    // parameter types
-    contentBuilder.append("Args:\n");
-    if (method.getRequestStreaming()) {
-      contentBuilder.append(
-          "  requests (iterator["
-              + typeComment(method.getInputType(), importHandler)
-              + "]): The input objects.\n");
-    } else {
-      for (Field field :
-          removePageTokenFromFields(method.getInputType().getMessageType().getFields(), config)) {
-        String name = pythonCommon.wrapIfKeywordOrBuiltIn(field.getSimpleName());
-        if (config.isPageStreaming()
-            && field.equals((config.getPageStreaming().getPageSizeField()))) {
-          contentBuilder.append(
-              fieldComment(
-                  name,
-                  field,
-                  importHandler,
-                  "The maximum number of resources contained in the\n"
-                      + "underlying API response. If page streaming is performed per-\n"
-                      + "resource, this parameter does not affect the return value. If page\n"
-                      + "streaming is performed per-page, this determines the maximum number\n"
-                      + "of resources in a page."));
-        } else {
-          contentBuilder.append(fieldComment(name, field, importHandler, null));
-        }
-      }
-    }
-    contentBuilder.append(
-        "  options (:class:`google.gax.CallOptions`): "
-            + "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
-
-    // return type
-    String returnType = returnTypeComment(method, config, importHandler);
-    if (returnType != null) {
-      contentBuilder.append("\n\n" + returnType);
-    }
-
-    // exception types
-    contentBuilder.append(
-        "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
+    contentBuilder.append("\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (Iterables.size(config.getRequiredFields()) > 0
         || Iterables.size(removePageTokenFromFields(config.getOptionalFields(), config)) > 0) {
       contentBuilder.append("\n  :exc:`ValueError` if the parameters are invalid.");
     }
-    return splitToLines(contentBuilder.toString());
+    return contentBuilder.toString();
   }
 
   public List<String> enumValueComment(EnumValue value) {
