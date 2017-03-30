@@ -31,10 +31,10 @@ class CustomException(Exception):
 
 class TestNoTemplatesAPIServiceClient(unittest2.TestCase):
 
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_increment(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=no_path_templates_pb2.NoTemplatesAPIServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = no_templates_api_service_client.NoTemplatesAPIServiceClient()
@@ -44,10 +44,10 @@ class TestNoTemplatesAPIServiceClient(unittest2.TestCase):
         grpc_stub.Increment.assert_called_once()
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
-    @mock.patch('google.gax.config.create_stub')
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_increment_exception(self, mock_create_stub):
         # Mock gRPC layer
-        grpc_stub = mock.Mock()
+        grpc_stub = mock.Mock(spec=no_path_templates_pb2.NoTemplatesAPIServiceStub)
         mock_create_stub.return_value = grpc_stub
 
         client = no_templates_api_service_client.NoTemplatesAPIServiceClient()

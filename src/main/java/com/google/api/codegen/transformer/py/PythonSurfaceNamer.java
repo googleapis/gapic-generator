@@ -119,6 +119,17 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getCreateStubFunctionName(Interface service) {
+    return getGrpcClientTypeName(service);
+  }
+
+  @Override
+  public String getGrpcClientTypeName(Interface service) {
+    String fullName = getModelTypeFormatter().getFullNameFor(service) + "Stub";
+    return getTypeNameConverter().getTypeName(fullName).getNickname();
+  }
+
+  @Override
   public String getSourceFilePath(String path, String publicClassName) {
     return path + File.separator + classFileNameBase(Name.upperCamel(publicClassName)) + ".py";
   }
@@ -126,6 +137,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcStubCallString(Interface service, Method method) {
     return getGrpcMethodName(method);
+  }
+
+  @Override
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return publicFieldName(identifier);
   }
 
   @Override
