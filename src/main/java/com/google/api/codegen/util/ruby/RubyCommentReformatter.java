@@ -21,29 +21,35 @@ import com.google.common.base.Strings;
 import java.util.regex.Matcher;
 
 public class RubyCommentReformatter implements CommentReformatter {
+  private static final String BULLET = "* ";
+
   @Override
   public String reformat(String comment) {
     StringBuffer sb = new StringBuffer();
-    boolean inList = false;
+    int listIndent = 0;
+    boolean followsListItem = false;
+    boolean followsBlankLine = false;
     for (String line : Splitter.on("\n").split(comment)) {
       Matcher listMatcher = CommentPatterns.UNORDERED_LIST_PATTERN.matcher(line);
       boolean matchesList = listMatcher.lookingAt();
-      if (line.isEmpty()) {
-        inList = false;
-      } else if (matchesList) {
-        inList = true;
+      Matcher indentMatcher = CommentPatterns.INDENT_PATTERN.matcher(line);
+      indentMatcher.lookingAt();
+      int indent = indentMatcher.group().length();
+      if (matchesList) {
+        line = listMatcher.replaceFirst(BULLET);
       }
-      if (inList) {
-        Matcher indentMatcher = CommentPatterns.INDENT_PATTERN.matcher(line);
-        if (matchesList) {
-          line = listMatcher.replaceFirst("* ");
-        } else if (indentMatcher.lookingAt()) {
-          int leadingWhitespaceCount = indentMatcher.group().length();
-          sb.append(Strings.repeat(" ", leadingWhitespaceCount - 2));
-          line = line.trim();
-        }
+      if (indent < listIndent && (matchesList || followsBlankLine)) {
+        listIndent -= BULLET.length();
+      } else if (followsListItem && (!matchesList || indent > listIndent)) {
+        listIndent += BULLET.length();
+      }
+      if (listIndent > 0) {
+        line = line.trim();
+        sb.append(Strings.repeat(" ", listIndent));
       }
       sb.append(applyTransformations(line)).append("\n");
+      followsListItem = matchesList;
+      followsBlankLine = line.isEmpty();
     }
     return sb.toString().trim();
   }
