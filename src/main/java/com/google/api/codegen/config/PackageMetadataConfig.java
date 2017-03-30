@@ -44,6 +44,8 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> protoVersionBound();
 
+  protected abstract Map<TargetLanguage, VersionBound> apiCommonVersionBound();
+
   protected abstract Map<TargetLanguage, VersionBound> authVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> generatedPackageVersionBound();
@@ -55,6 +57,11 @@ public abstract class PackageMetadataConfig {
   /** The version of GAX that this package depends on. Configured per language. */
   public VersionBound gaxVersionBound(TargetLanguage language) {
     return gaxVersionBound().get(language);
+  }
+
+  /** The version of api-common that this package depends on. Only used by Java */
+  public VersionBound apiCommonVersionBound(TargetLanguage language) {
+    return apiCommonVersionBound().get(language);
   }
 
   /** The version of gRPC that this package depends on. Configured per language. */
@@ -126,6 +133,8 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder protoVersionBound(Map<TargetLanguage, VersionBound> val);
 
+    abstract Builder apiCommonVersionBound(Map<TargetLanguage, VersionBound> val);
+
     abstract Builder authVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder packageName(Map<TargetLanguage, String> val);
@@ -160,6 +169,7 @@ public abstract class PackageMetadataConfig {
         .protoVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .packageName(ImmutableMap.<TargetLanguage, String>of())
         .authVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .apiCommonVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .generatedPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
         .shortName("")
@@ -189,6 +199,9 @@ public abstract class PackageMetadataConfig {
         .generatedPackageVersionBound(
             createVersionMap(
                 (Map<String, Map<String, String>>) configMap.get("generated_package_version")))
+        .apiCommonVersionBound(
+            createVersionMap(
+                (Map<String, Map<String, String>>) configMap.get("api_common_version")))
         .protoPackageDependencies(createProtoPackageDependencies(configMap))
         .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))

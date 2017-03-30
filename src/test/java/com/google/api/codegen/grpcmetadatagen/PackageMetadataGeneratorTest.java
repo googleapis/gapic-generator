@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen;
 
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -79,17 +80,26 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
         getTestDataLocator().findTestData("fakeprotodir").getPath());
     options.set(GrpcMetadataGenerator.METADATA_CONFIG_FILE, metadataConfigPath);
     options.set(GrpcMetadataGenerator.LANGUAGE, language);
-    Map<String, Doc> generatedDocs = new GrpcMetadataGenerator(options).generateDocs(model);
-    OutputCollector collector = new OutputCollector(Paths.get(outFile));
-    Files.walkFileTree(Paths.get(outFile), collector);
-    return new ImmutableMap.Builder<String, Doc>()
-        .putAll(generatedDocs)
-        .putAll(collector.getResults())
-        .build();
+    Map<String, Doc> generatedDocs = new GrpcMetadataGenerator(options).generate(model);
+
+    if (TargetLanguage.fromString(language) == TargetLanguage.PYTHON) {
+      OutputCollector collector = new OutputCollector(Paths.get(outFile));
+      Files.walkFileTree(Paths.get(outFile), collector);
+      return new ImmutableMap.Builder<String, Doc>()
+          .putAll(generatedDocs)
+          .putAll(collector.getResults())
+          .build();
+    } else {
+      return new ImmutableMap.Builder<String, Doc>().putAll(generatedDocs).build();
+    }
   }
 
   // Tests
   // =====
+  @Test
+  public void java_library() throws Exception {
+    test("library", "java");
+  }
 
   @Test
   public void python_library() throws Exception {
