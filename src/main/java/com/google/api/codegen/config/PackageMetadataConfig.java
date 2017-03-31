@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.grpcmetadatagen.PackageType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -100,6 +101,10 @@ public abstract class PackageMetadataConfig {
     return packageName().get(language);
   }
 
+  /** Returns the type of the package */
+  @Nullable
+  public abstract PackageType packageType();
+
   /** A single-word short name of the API. E.g., "logging". */
   public abstract String shortName();
 
@@ -145,6 +150,8 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder shortName(String val);
 
+    abstract Builder packageType(PackageType val);
+
     abstract Builder apiVersion(String val);
 
     abstract Builder protoPath(String val);
@@ -173,6 +180,7 @@ public abstract class PackageMetadataConfig {
         .generatedPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
         .shortName("")
+        .packageType(PackageType.GRPC_CLIENT)
         .apiVersion("")
         .protoPath("")
         .author("")
@@ -205,6 +213,7 @@ public abstract class PackageMetadataConfig {
         .protoPackageDependencies(createProtoPackageDependencies(configMap))
         .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))
+        .packageType(PackageType.of((String) configMap.get("package_type")))
         .apiVersion((String) configMap.get("major_version"))
         .protoPath((String) configMap.get("proto_path"))
         .author((String) configMap.get("author"))
