@@ -185,6 +185,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       case UNSET_RELEASE_LEVEL:
       case ALPHA:
         return "@ExperimentalApi";
+      case BETA:
+        return "@ExperimentalApi";
       case DEPRECATED:
         return "@Deprecated";
       default:
