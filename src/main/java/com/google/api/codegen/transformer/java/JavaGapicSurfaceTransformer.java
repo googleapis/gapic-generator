@@ -460,6 +460,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     if (interfaceConfig.hasBatchingMethods()) {
       typeTable.saveNicknameFor("com.google.api.gax.batching.BatchingSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.batching.PartitionKey");
       typeTable.saveNicknameFor("com.google.api.gax.batching.RequestBuilder");
       typeTable.saveNicknameFor("com.google.api.gax.core.FlowController");
       typeTable.saveNicknameFor("com.google.api.gax.core.FlowController.LimitExceededBehavior");

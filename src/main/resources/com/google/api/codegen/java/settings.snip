@@ -329,8 +329,8 @@
     private static final BatchingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}> {@desc.name} =
         new BatchingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}>() {
           @@Override
-          public String getBatchPartitionKey({@desc.requestTypeName} request) {
-            return {@partitionKeyCode(desc)};
+          public PartitionKey getBatchPartitionKey({@desc.requestTypeName} request) {
+            return new PartitionKey({@partitionKeyCode(desc)});
           }
 
           @@Override
@@ -399,8 +399,8 @@
 @end
 
 @private partitionKeyCode(batchingDesc)
-  @join partitionKey : batchingDesc.partitionKeys on " + "
-    request.{@partitionKey.fieldGetFunction}() + {@partitionKey.separatorLiteral}
+  @join partitionKey : batchingDesc.partitionKeys on ", "
+    request.{@partitionKey.fieldGetFunction}()
   @end
 @end
 
