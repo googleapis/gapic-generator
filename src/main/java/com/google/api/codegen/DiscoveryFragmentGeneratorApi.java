@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.DiscoveryProviderFactory;
 import com.google.api.codegen.util.ClassInstantiator;
@@ -80,6 +81,13 @@ public class DiscoveryFragmentGeneratorApi {
           "An @-delimited map of language to auth instructions URL: lang:URL@lang:URL@...",
           "");
 
+  public static final Option<Boolean> NO_AUTH =
+      ToolOptions.createOption(
+          Boolean.class,
+          "no_auth",
+          "Force samples to be generated with no auth boilerplate.",
+          false);
+
   private final ToolOptions options;
   private final String dataPath;
 
@@ -116,6 +124,11 @@ public class DiscoveryFragmentGeneratorApi {
                 new File(overridesFilename), Charset.forName("UTF8"));
         ObjectMapper mapper = new ObjectMapper();
         overridesJson = mapper.readTree(reader);
+
+        // TODO(saicheems): Find a cleaner way of passing flags around this tool...
+        if (options.get(NO_AUTH)) {
+          ((ObjectNode) overridesJson).put("authType", "NONE");
+        }
       } catch (FileNotFoundException e) {
         // Do nothing if the overrides file doesn't exist. Avoiding crashes for
         // this scenario makes parts of the automation around samplegen simpler.

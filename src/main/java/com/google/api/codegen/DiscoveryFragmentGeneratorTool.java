@@ -69,6 +69,12 @@ public class DiscoveryFragmentGeneratorTool {
             .hasArg()
             .argName("AUTH-INSTRUCTIONS")
             .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("no_auth")
+            .desc("Force samples to be generated with no auth boilerplate.")
+            .argName("NO-AUTH")
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -81,7 +87,8 @@ public class DiscoveryFragmentGeneratorTool {
         cl.getOptionValues("gapic_yaml"),
         cl.getOptionValue("overrides", ""),
         cl.getOptionValue("output", ""),
-        cl.getOptionValue("auth_instructions", ""));
+        cl.getOptionValue("auth_instructions", ""),
+        cl.hasOption("no_auth"));
   }
 
   private static void generate(
@@ -89,7 +96,8 @@ public class DiscoveryFragmentGeneratorTool {
       String[] generatorConfigs,
       String overridesFile,
       String outputDirectory,
-      String authInstructions)
+      String authInstructions,
+      boolean noAuth)
       throws Exception {
 
     ToolOptions options = ToolOptions.create();
@@ -99,6 +107,7 @@ public class DiscoveryFragmentGeneratorTool {
     options.set(DiscoveryFragmentGeneratorApi.OVERRIDES_FILE, overridesFile);
     options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(DiscoveryFragmentGeneratorApi.AUTH_INSTRUCTIONS_URL, authInstructions);
+    options.set(DiscoveryFragmentGeneratorApi.NO_AUTH, noAuth);
     DiscoveryFragmentGeneratorApi generator = new DiscoveryFragmentGeneratorApi(options);
     generator.run();
   }
