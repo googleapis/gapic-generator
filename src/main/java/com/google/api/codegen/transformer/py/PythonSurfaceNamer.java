@@ -152,6 +152,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     int optionalParamCount = Iterables.size(methodConfig.getOptionalFieldConfigs());
+    // Must have at least one parameter that is not the page token parameter.
     return optionalParamCount > (methodConfig.getPageStreaming() == null ? 0 : 1);
   }
 
