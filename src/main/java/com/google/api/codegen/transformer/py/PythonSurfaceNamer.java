@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -132,6 +133,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getSourceFilePath(String path, String publicClassName) {
     return path + File.separator + classFileNameBase(Name.upperCamel(publicClassName)) + ".py";
+  }
+
+  @Override
+  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+    return getApiMethodName(method, visibility);
   }
 
   @Override
