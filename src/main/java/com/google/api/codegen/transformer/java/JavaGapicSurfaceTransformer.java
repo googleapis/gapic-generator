@@ -180,7 +180,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod));
 
     String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
-    xapiClass.releaseAnnotation(
+    xapiClass.releaseLevelAnnotation(
         context.getNamer().getReleaseAnnotation(context.getApiConfig().getReleaseLevel()));
     xapiClass.name(name);
     xapiClass.settingsClassName(
@@ -209,6 +209,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     StaticLangPagedResponseWrappersView.Builder pagedResponseWrappers =
         StaticLangPagedResponseWrappersView.newBuilder();
 
+    pagedResponseWrappers.releaseLevelAnnotation(
+        namer.getReleaseAnnotation(apiConfig.getReleaseLevel()));
     pagedResponseWrappers.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
 
     String name = namer.getPagedResponseWrappersClassName();
@@ -350,6 +352,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     addSettingsImports(context);
 
     StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
+    xsettingsClass.releaseLevelAnnotation(
+        context.getNamer().getReleaseAnnotation(context.getApiConfig().getReleaseLevel()));
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
     String name = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
