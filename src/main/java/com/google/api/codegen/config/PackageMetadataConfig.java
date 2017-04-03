@@ -262,7 +262,10 @@ public abstract class PackageMetadataConfig {
   }
 
   private static String getDefaultProtoPackageName(TargetLanguage language, String packageName) {
-    return DEFAULT_PROTO_PACKAGE_PREFIX.getOrDefault(language, "") + packageName;
+    if (DEFAULT_PROTO_PACKAGE_PREFIX.containsKey(language)) {
+      return DEFAULT_PROTO_PACKAGE_PREFIX.get(language) + packageName;
+    }
+    return packageName;
   }
 
   private static Map<TargetLanguage, VersionBound> createVersionMap(
