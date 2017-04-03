@@ -16,9 +16,9 @@ package com.google.api.codegen;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.DiscoveryProviderFactory;
+import com.google.api.codegen.discovery.config.SampleOptions;
 import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
@@ -124,16 +124,13 @@ public class DiscoveryFragmentGeneratorApi {
                 new File(overridesFilename), Charset.forName("UTF8"));
         ObjectMapper mapper = new ObjectMapper();
         overridesJson = mapper.readTree(reader);
-
-        // TODO(saicheems): Find a cleaner way of passing flags around this tool...
-        if (options.get(NO_AUTH)) {
-          ((ObjectNode) overridesJson).put("authType", "NONE");
-        }
       } catch (FileNotFoundException e) {
         // Do nothing if the overrides file doesn't exist. Avoiding crashes for
         // this scenario makes parts of the automation around samplegen simpler.
       }
     }
+
+    SampleOptions sampleOptions = SampleOptions.newBuilder().noAuth(options.get(NO_AUTH)).build();
 
     GeneratorProto generator = configProto.getGenerator();
 
@@ -146,7 +143,8 @@ public class DiscoveryFragmentGeneratorApi {
 
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
     DiscoveryProvider provider =
-        providerFactory.create(discovery.getService(), apiaryConfig, overridesJson, id);
+        providerFactory.create(
+            discovery.getService(), apiaryConfig, overridesJson, sampleOptions, id);
 
     for (Api api : discovery.getService().getApisList()) {
       for (Method method : api.getMethodsList()) {

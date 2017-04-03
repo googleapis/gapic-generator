@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery;
+package com.google.api.codegen.discovery.config;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.api.Service;
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.config.SampleOptions;
+import com.google.auto.value.AutoValue;
 
-/** A factory for DiscoveryProviders which perform code generation. */
-public interface DiscoveryProviderFactory {
-  DiscoveryProvider create(
-      Service service,
-      ApiaryConfig apiaryConfig,
-      JsonNode sampleConfigOverrides,
-      SampleOptions sampleOptions,
-      String id);
+@AutoValue
+public abstract class SampleOptions {
+
+  public abstract boolean noAuth();
+
+  public static Builder newBuilder() {
+    return new AutoValue_SampleOptions.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+
+    public abstract Builder noAuth(boolean val);
+
+    public abstract SampleOptions build();
+  }
 }

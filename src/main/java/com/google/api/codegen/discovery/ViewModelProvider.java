@@ -21,6 +21,7 @@ import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.discovery.config.ApiaryConfigToSampleConfigConverter;
 import com.google.api.codegen.discovery.config.SampleConfig;
+import com.google.api.codegen.discovery.config.SampleOptions;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
@@ -52,6 +53,8 @@ public abstract class ViewModelProvider implements DiscoveryProvider {
 
   public abstract List<JsonNode> sampleConfigOverrides();
 
+  public abstract SampleOptions sampleOptions();
+
   public abstract TypeNameGenerator typeNameGenerator();
 
   public abstract String outputRoot();
@@ -65,7 +68,19 @@ public abstract class ViewModelProvider implements DiscoveryProvider {
     SampleConfig sampleConfig =
         new ApiaryConfigToSampleConfigConverter(methods(), apiaryConfig(), typeNameGenerator())
             .convert();
-    sampleConfig = override(sampleConfig, sampleConfigOverrides());
+    ObjectMapper mapper = new ObjectMapper().registerModule(new GuavaModule());
+    JsonNode tree = mapper.valueToTree(sampleConfig);
+    tree = override(tree, sampleConfigOverrides());
+
+    if (sampleOptions().noAuth()) {
+      ((ObjectNode) tree).put("authType", "NONE");
+    }
+
+    try {
+      sampleConfig = mapper.treeToValue(tree, SampleConfig.class);
+    } catch (Exception e) {
+      throw new RuntimeException("failed to parse config to node: " + e.getMessage());
+    }
     ViewModel surfaceDoc = methodToViewTransformer().transform(method, sampleConfig);
     Doc doc = snippetSetRunner().generate(surfaceDoc);
     Map<String, Doc> docs = new TreeMap<>();
@@ -81,26 +96,17 @@ public abstract class ViewModelProvider implements DiscoveryProvider {
    *
    * <p>If sampleConfigOverrides is null, sampleConfig is returned as is.
    */
-  private static SampleConfig override(
-      SampleConfig sampleConfig, List<JsonNode> sampleConfigOverrides) {
+  private static JsonNode override(JsonNode sampleConfig, List<JsonNode> sampleConfigOverrides) {
     if (sampleConfigOverrides.isEmpty()) {
       return sampleConfig;
     }
     // We use JSON merging to facilitate this override mechanism:
-    // 1. Convert the SampleConfig into a JSON tree.
-    // 2. Convert the overrides into JSON trees with arbitrary schema.
-    // 3. Overwrite object fields of the SampleConfig tree where field names match.
-    // 4. Convert the modified SampleConfig tree back into a SampleConfig.
-    ObjectMapper mapper = new ObjectMapper().registerModule(new GuavaModule());
-    JsonNode tree = mapper.valueToTree(sampleConfig);
+    // 1. Overwrite object fields of the SampleConfig tree where field names match.
+    // 2. Convert the modified SampleConfig tree back into a SampleConfig.
     for (JsonNode override : sampleConfigOverrides) {
-      merge((ObjectNode) tree, (ObjectNode) override);
+      merge((ObjectNode) sampleConfig, (ObjectNode) override);
     }
-    try {
-      return mapper.treeToValue(tree, SampleConfig.class);
-    } catch (Exception e) {
-      throw new RuntimeException("failed to parse config to node: " + e.getMessage());
-    }
+    return sampleConfig;
   }
 
   /**
@@ -147,20 +153,21 @@ public abstract class ViewModelProvider implements DiscoveryProvider {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder methods(List<Method> methods);
+    public abstract Builder methods(List<Method> val);
 
-    public abstract Builder apiaryConfig(ApiaryConfig apiaryConfig);
+    public abstract Builder apiaryConfig(ApiaryConfig val);
 
-    public abstract Builder snippetSetRunner(CommonSnippetSetRunner snippetSetRunner);
+    public abstract Builder snippetSetRunner(CommonSnippetSetRunner val);
 
-    public abstract Builder methodToViewTransformer(
-        SampleMethodToViewTransformer methodToViewTransformer);
+    public abstract Builder methodToViewTransformer(SampleMethodToViewTransformer val);
 
-    public abstract Builder sampleConfigOverrides(List<JsonNode> overrides);
+    public abstract Builder sampleConfigOverrides(List<JsonNode> val);
 
-    public abstract Builder typeNameGenerator(TypeNameGenerator typeNameGenerator);
+    public abstract Builder sampleOptions(SampleOptions val);
 
-    public abstract Builder outputRoot(String outputRoot);
+    public abstract Builder typeNameGenerator(TypeNameGenerator val);
+
+    public abstract Builder outputRoot(String val);
 
     public abstract ViewModelProvider build();
   }

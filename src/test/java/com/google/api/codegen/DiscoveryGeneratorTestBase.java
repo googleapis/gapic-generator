@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.MainDiscoveryProviderFactory;
+import com.google.api.codegen.discovery.config.SampleOptions;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
@@ -98,12 +99,18 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
 
     String id = generator.getId();
 
+    SampleOptions sampleOptions = SampleOptions.newBuilder().noAuth(false).build();
+
     // This field is manually populated to test the end-to-end behavior of the
     // "auth_instructions" flag.
     discoveryImporter.getConfig().setAuthInstructionsUrl("https://foo.com/bar");
     DiscoveryProvider provider =
         MainDiscoveryProviderFactory.defaultCreate(
-            discoveryImporter.getService(), discoveryImporter.getConfig(), overridesJson, id);
+            discoveryImporter.getService(),
+            discoveryImporter.getConfig(),
+            overridesJson,
+            sampleOptions,
+            id);
 
     Doc output = Doc.EMPTY;
     for (Api api : discoveryImporter.getService().getApisList()) {
