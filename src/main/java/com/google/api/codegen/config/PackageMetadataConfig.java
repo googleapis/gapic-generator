@@ -38,6 +38,8 @@ import org.yaml.snakeyaml.Yaml;
 public abstract class PackageMetadataConfig {
 
   private static final String CONFIG_KEY_DEFAULT = "default";
+  private static final ImmutableMap<TargetLanguage, String> DEFAULT_PROTO_PACKAGE_PREFIX =
+      ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "grpc-").build();
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
@@ -246,17 +248,21 @@ public abstract class PackageMetadataConfig {
           packageDependencies.put(entry.getKey(), new HashMap<String, VersionBound>());
         }
 
-        String languageName = entry.getValue().get("name_override");
-        if (languageName == null) {
-          languageName = packageName;
+        String packageNameForLanguage = entry.getValue().get("name_override");
+        if (packageNameForLanguage == null) {
+          packageNameForLanguage = getDefaultProtoPackageName(entry.getKey(), packageName);
         }
         VersionBound version =
             VersionBound.create(entry.getValue().get("lower"), entry.getValue().get("upper"));
-        packageDependencies.get(entry.getKey()).put(languageName, version);
+        packageDependencies.get(entry.getKey()).put(packageNameForLanguage, version);
       }
     }
 
     return packageDependencies;
+  }
+
+  private static String getDefaultProtoPackageName(TargetLanguage language, String packageName) {
+    return DEFAULT_PROTO_PACKAGE_PREFIX.getOrDefault(language, "") + packageName;
   }
 
   private static Map<TargetLanguage, VersionBound> createVersionMap(
