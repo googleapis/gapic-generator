@@ -99,7 +99,7 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
 
     String id = generator.getId();
 
-    SampleOptions sampleOptions = SampleOptions.newBuilder().noAuth(false).build();
+    SampleOptions sampleOptions = SampleOptions.newBuilder().targetMockService(false).build();
 
     // This field is manually populated to test the end-to-end behavior of the
     // "auth_instructions" flag.

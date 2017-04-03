@@ -74,8 +74,9 @@ public abstract class ViewModelProvider implements DiscoveryProvider {
 
     // Apply options using the same override mechanism.
     ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
-    if (sampleOptions().noAuth()) {
+    if (sampleOptions().targetMockService()) {
       objectNode.put("authType", "NONE");
+      objectNode.put("targetMockService", true);
     }
     sampleConfig = override(sampleConfig, Arrays.asList((JsonNode) objectNode));
 

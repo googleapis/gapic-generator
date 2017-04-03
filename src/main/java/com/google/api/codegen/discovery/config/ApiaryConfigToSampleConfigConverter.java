@@ -82,6 +82,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
         .authInstructionsUrl(apiaryConfig.getAuthInstructionsUrl())
+        .targetMockService(false)
         .build();
   }
 

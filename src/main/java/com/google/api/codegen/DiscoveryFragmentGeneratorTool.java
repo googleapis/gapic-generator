@@ -71,9 +71,10 @@ public class DiscoveryFragmentGeneratorTool {
             .build());
     options.addOption(
         Option.builder()
-            .longOpt("no_auth")
-            .desc("Force samples to be generated with no auth boilerplate.")
-            .argName("NO-AUTH")
+            .longOpt("target_mock_service")
+            .desc(
+                "Force samples to generate no auth boilerplate and direct requests to localhost:5000.")
+            .argName("TARGET-MOCK-SERVICE")
             .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
@@ -88,7 +89,7 @@ public class DiscoveryFragmentGeneratorTool {
         cl.getOptionValue("overrides", ""),
         cl.getOptionValue("output", ""),
         cl.getOptionValue("auth_instructions", ""),
-        cl.hasOption("no_auth"));
+        cl.hasOption("target_mock_service"));
   }
 
   private static void generate(
@@ -97,7 +98,7 @@ public class DiscoveryFragmentGeneratorTool {
       String overridesFile,
       String outputDirectory,
       String authInstructions,
-      boolean noAuth)
+      boolean targetMockService)
       throws Exception {
 
     ToolOptions options = ToolOptions.create();
@@ -107,7 +108,7 @@ public class DiscoveryFragmentGeneratorTool {
     options.set(DiscoveryFragmentGeneratorApi.OVERRIDES_FILE, overridesFile);
     options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(DiscoveryFragmentGeneratorApi.AUTH_INSTRUCTIONS_URL, authInstructions);
-    options.set(DiscoveryFragmentGeneratorApi.NO_AUTH, noAuth);
+    options.set(DiscoveryFragmentGeneratorApi.TARGET_MOCK_SERVICE, targetMockService);
     DiscoveryFragmentGeneratorApi generator = new DiscoveryFragmentGeneratorApi(options);
     generator.run();
   }

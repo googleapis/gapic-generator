@@ -80,12 +80,11 @@ public class DiscoveryFragmentGeneratorApi {
           "auth_instructions",
           "An @-delimited map of language to auth instructions URL: lang:URL@lang:URL@...",
           "");
-
-  public static final Option<Boolean> NO_AUTH =
+  public static final Option<Boolean> TARGET_MOCK_SERVICE =
       ToolOptions.createOption(
           Boolean.class,
-          "no_auth",
-          "Force samples to be generated with no auth boilerplate.",
+          "target_mock_service",
+          "Force samples to generate no auth boilerplate and to direct requests to localhost:5000.",
           false);
 
   private final ToolOptions options;
@@ -130,7 +129,8 @@ public class DiscoveryFragmentGeneratorApi {
       }
     }
 
-    SampleOptions sampleOptions = SampleOptions.newBuilder().noAuth(options.get(NO_AUTH)).build();
+    SampleOptions sampleOptions =
+        SampleOptions.newBuilder().targetMockService(options.get(TARGET_MOCK_SERVICE)).build();
 
     GeneratorProto generator = configProto.getGenerator();
 

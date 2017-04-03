@@ -19,7 +19,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class SampleOptions {
 
-  public abstract boolean noAuth();
+  public abstract boolean targetMockService();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleOptions.Builder();
@@ -28,7 +28,7 @@ public abstract class SampleOptions {
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder noAuth(boolean val);
+    public abstract Builder targetMockService(boolean val);
 
     public abstract SampleOptions build();
   }
