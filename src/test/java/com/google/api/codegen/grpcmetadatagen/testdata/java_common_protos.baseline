@@ -214,7 +214,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'com.google.protobuf'
 
-description = 'GRPC library for google-cloud-library-v1'
+description = 'GRPC library for google-common-protos'
 group = "com.google.api.grpc"
 version = "0.1.7"
 sourceCompatibility = 1.6
@@ -228,22 +228,12 @@ repositories {
 dependencies {
   compile "com.google.protobuf:protobuf-java:3.0.0"
   compile "com.google.api:api-common:0.0.2"
-  compile "com.google.api.grpc:grpc-google-common-protos:0.1.6"
-  compile "com.google.api.grpc:grpc-google-some-other-package-v1:0.0.0"
 }
 
 ext {
-  packageName = 'google-cloud-library-v1'
+  packageName = 'google-common-protos'
 }
 
-ext.locateGapicPluginMethod = { ->
-  def outstream = new ByteArrayOutputStream()
-  exec {
-    commandLine 'which', 'gapic_plugin.py'
-    standardOutput = outstream
-  }
-  return outstream.toString().trim()
-}
 
 protobuf {
   protoc {
@@ -256,18 +246,11 @@ protobuf {
     grpc {
       artifact = 'io.grpc:protoc-gen-grpc-java:1.0.1'
     }
-    gapic {
-      path = locateGapicPluginMethod()
-    }
   }
   generateProtoTasks {
     all()*.plugins {
       grpc {
         outputSubDir = 'java'
-      }
-      gapic {
-        outputSubDir = 'java'
-        option 'library_gapic.yaml'
       }
     }
   }
@@ -315,7 +298,7 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
         }
 
         pom.project {
-          name "com.google.api.grpc:google-cloud-library-v1"
+          name "com.google.api.grpc:google-common-protos"
           description project.description
           url 'https://github.com/googleapis/googleapis'
           scm {
