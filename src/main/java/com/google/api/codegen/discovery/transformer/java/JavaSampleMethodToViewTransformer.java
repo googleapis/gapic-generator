@@ -213,7 +213,9 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   private void addStaticImports(SampleTransformerContext context) {
     SampleConfig sampleConfig = context.getSampleConfig();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    typeTable.saveNicknameFor("com.google.api.client.googleapis.auth.oauth2.GoogleCredential");
+    if (sampleConfig.authType() != AuthType.NONE) {
+      typeTable.saveNicknameFor("com.google.api.client.googleapis.auth.oauth2.GoogleCredential");
+    }
     typeTable.saveNicknameFor("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport");
     typeTable.saveNicknameFor("com.google.api.client.http.HttpTransport");
     typeTable.saveNicknameFor("com.google.api.client.json.jackson2.JacksonFactory");

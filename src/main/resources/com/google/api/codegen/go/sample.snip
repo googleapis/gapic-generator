@@ -28,7 +28,10 @@
   )
 
   {@mainFunc(class)}
-  @if class.auth.type != "APPLICATION_DEFAULT_CREDENTIALS"
+  @switch class.auth.type
+  @case "NONE"
+  @case "APPLICATION_DEFAULT_CREDENTIALS"
+  @default
 
     {@getClientFunc(class)}
   @end
@@ -39,6 +42,8 @@
     {@class.contextVarName} := context.Background()
 
     @switch class.auth.type
+    @case "NONE"
+      {@class.clientVarName} := &http.Client{}
     @case "APPLICATION_DEFAULT_CREDENTIALS"
       {@class.clientVarName}, err := google.DefaultClient({@class.contextVarName}, {@class.servicePackageName}.CloudPlatformScope)
     @default
