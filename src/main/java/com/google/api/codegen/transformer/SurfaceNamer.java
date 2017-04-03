@@ -773,6 +773,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The inner type name of the fixed size collection type for the given method and resources field.
+   */
+  public String getFixedSizeCollectionTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    return getNotImplementedString("SurfaceNamer.getPageTypeInnerName");
+  }
+
+  /**
    * Computes the nickname of the async response type name for the given resource type, saves it in
    * the given type table, and returns it.
    */

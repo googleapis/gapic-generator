@@ -150,6 +150,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFixedSizeCollectionTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    return publicClassName(Name.upperCamel(method.getSimpleName(), "FixedSizeCollection"));
+  }
+
+  @Override
   public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
   }
