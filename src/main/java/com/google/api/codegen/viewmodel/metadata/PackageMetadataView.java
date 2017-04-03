@@ -40,6 +40,8 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract PackageType packageType();
 
+  public abstract String gapicConfigName();
+
   @Nullable
   public abstract String identifier();
 
@@ -115,6 +117,8 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder identifier(String val);
+
+    public abstract Builder gapicConfigName(String val);
 
     public abstract Builder packageType(PackageType val);
 

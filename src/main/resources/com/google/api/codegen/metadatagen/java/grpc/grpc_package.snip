@@ -25,11 +25,8 @@
   dependencies {
     compile "com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}"
     compile "com.google.api:api-common:{@metadata.apiCommonVersionBound.lower}"
-    @switch metadata.packageType
-    @case "GRPC_CLIENT"
-      @join dependency : metadata.protoPackageDependencies
-        compile "com.google.api.grpc:{@dependency.name}:{@dependency.versionBound.lower}"
-      @end
+    @join dependency : metadata.protoPackageDependencies
+      compile "com.google.api.grpc:{@dependency.name}:{@dependency.versionBound.lower}"
     @end
   }
 
@@ -47,6 +44,7 @@
       }
       return outstream.toString().trim()
     }
+  @default
   @end
 
   protobuf {
@@ -65,6 +63,7 @@
           gapic {
             path = locateGapicPluginMethod()
           }
+      @default
       @end
     }
     generateProtoTasks {
@@ -76,8 +75,9 @@
         @case "GRPC_CLIENT"
           gapic {
             outputSubDir = 'java'
-            option '{@metadata.shortName}_gapic.yaml'
+            option '{@metadata.gapicConfigName}'
           }
+        @default
         @end
       }
     }

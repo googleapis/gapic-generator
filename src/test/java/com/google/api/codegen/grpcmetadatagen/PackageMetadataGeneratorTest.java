@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import org.junit.Test;
 
 public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
+  String packageConfig = null;
 
   private class OutputCollector extends SimpleFileVisitor<Path> {
     Map<String, Doc> collectedFiles = new TreeMap<>();
@@ -62,8 +63,9 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
     return true;
   }
 
-  private void test(String name, String language) throws Exception {
+  private void test(String name, String packageConfig, String language) throws Exception {
     this.language = language;
+    this.packageConfig = packageConfig;
     test(name);
   }
 
@@ -71,7 +73,7 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
   @Nullable
   protected Object run() throws Exception {
     String outFile = tempDir.getRoot().getPath() + File.separator + baselineFileName();
-    String metadataConfigPath = getTestDataLocator().findTestData("library_pkg.yaml").getPath();
+    String metadataConfigPath = getTestDataLocator().findTestData(packageConfig).getPath();
 
     ToolOptions options = ToolOptions.create();
     options.set(GrpcMetadataGenerator.OUTPUT_DIR, outFile);
@@ -98,11 +100,16 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
   // =====
   @Test
   public void java_library() throws Exception {
-    test("library", "java");
+    test("library", "library_pkg.yaml", "java");
+  }
+
+  @Test
+  public void java_common_protos() throws Exception {
+    test("library", "common_protos_pkg.yaml", "java");
   }
 
   @Test
   public void python_library() throws Exception {
-    test("library", "python");
+    test("library", "library_pkg.yaml", "python");
   }
 }
