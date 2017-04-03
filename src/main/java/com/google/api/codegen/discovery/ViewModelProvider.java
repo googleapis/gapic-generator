@@ -16,6 +16,7 @@ package com.google.api.codegen.discovery;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.api.codegen.ApiaryConfig;
@@ -29,6 +30,7 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.auto.value.AutoValue;
 import com.google.protobuf.Method;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,19 +70,15 @@ public abstract class ViewModelProvider implements DiscoveryProvider {
     SampleConfig sampleConfig =
         new ApiaryConfigToSampleConfigConverter(methods(), apiaryConfig(), typeNameGenerator())
             .convert();
-    ObjectMapper mapper = new ObjectMapper().registerModule(new GuavaModule());
-    JsonNode tree = mapper.valueToTree(sampleConfig);
-    tree = override(tree, sampleConfigOverrides());
+    sampleConfig = override(sampleConfig, sampleConfigOverrides());
 
+    // Apply options using the same override mechanism.
+    ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
     if (sampleOptions().noAuth()) {
-      ((ObjectNode) tree).put("authType", "NONE");
+      objectNode.put("authType", "NONE");
     }
+    sampleConfig = override(sampleConfig, Arrays.asList((JsonNode) objectNode));
 
-    try {
-      sampleConfig = mapper.treeToValue(tree, SampleConfig.class);
-    } catch (Exception e) {
-      throw new RuntimeException("failed to parse config to node: " + e.getMessage());
-    }
     ViewModel surfaceDoc = methodToViewTransformer().transform(method, sampleConfig);
     Doc doc = snippetSetRunner().generate(surfaceDoc);
     Map<String, Doc> docs = new TreeMap<>();
@@ -96,17 +94,26 @@ public abstract class ViewModelProvider implements DiscoveryProvider {
    *
    * <p>If sampleConfigOverrides is null, sampleConfig is returned as is.
    */
-  private static JsonNode override(JsonNode sampleConfig, List<JsonNode> sampleConfigOverrides) {
+  private static SampleConfig override(
+      SampleConfig sampleConfig, List<JsonNode> sampleConfigOverrides) {
     if (sampleConfigOverrides.isEmpty()) {
       return sampleConfig;
     }
     // We use JSON merging to facilitate this override mechanism:
-    // 1. Overwrite object fields of the SampleConfig tree where field names match.
-    // 2. Convert the modified SampleConfig tree back into a SampleConfig.
+    // 1. Convert the SampleConfig into a JSON tree.
+    // 2. Convert the overrides into JSON trees with arbitrary schema.
+    // 3. Overwrite object fields of the SampleConfig tree where field names match.
+    // 4. Convert the modified SampleConfig tree back into a SampleConfig.
+    ObjectMapper mapper = new ObjectMapper().registerModule(new GuavaModule());
+    JsonNode tree = mapper.valueToTree(sampleConfig);
     for (JsonNode override : sampleConfigOverrides) {
-      merge((ObjectNode) sampleConfig, (ObjectNode) override);
+      merge((ObjectNode) tree, (ObjectNode) override);
     }
-    return sampleConfig;
+    try {
+      return mapper.treeToValue(tree, SampleConfig.class);
+    } catch (Exception e) {
+      throw new RuntimeException("failed to parse config to node: " + e.getMessage());
+    }
   }
 
   /**
