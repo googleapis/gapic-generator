@@ -40,6 +40,7 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract PackageType packageType();
 
+  @Nullable
   public abstract String gapicConfigName();
 
   @Nullable
