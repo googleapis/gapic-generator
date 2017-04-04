@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,22 @@
  */
 package com.google.api.codegen.discovery.config;
 
-/** Contains the set of supported authentication formats. */
-public enum AuthType {
-  NONE,
-  APPLICATION_DEFAULT_CREDENTIALS,
-  OAUTH_3L,
-  API_KEY
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class SampleOptions {
+
+  public abstract boolean targetMockService();
+
+  public static Builder newBuilder() {
+    return new AutoValue_SampleOptions.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+
+    public abstract Builder targetMockService(boolean val);
+
+    public abstract SampleOptions build();
+  }
 }

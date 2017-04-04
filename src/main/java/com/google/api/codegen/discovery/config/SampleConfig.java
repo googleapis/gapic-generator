@@ -111,6 +111,10 @@ public abstract class SampleConfig {
   @JsonProperty("authInstructionsUrl")
   public abstract String authInstructionsUrl();
 
+  /** Whether or not to point URLs in the sample to localhost:5000. */
+  @JsonProperty("targetMockService")
+  public abstract boolean targetMockService();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleConfig.Builder();
   }
@@ -147,6 +151,9 @@ public abstract class SampleConfig {
 
     @JsonProperty("authInstructionsUrl")
     public abstract Builder authInstructionsUrl(String val);
+
+    @JsonProperty("targetMockService")
+    public abstract Builder targetMockService(boolean val);
 
     public abstract SampleConfig build();
   }

@@ -16,17 +16,21 @@ package com.google.api.codegen.discovery;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.discovery.config.ApiaryConfigToSampleConfigConverter;
 import com.google.api.codegen.discovery.config.SampleConfig;
+import com.google.api.codegen.discovery.config.SampleOptions;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.discovery.transformer.SampleMethodToViewTransformer;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
+import com.google.auto.value.AutoValue;
 import com.google.protobuf.Method;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,32 +42,24 @@ import java.util.TreeMap;
  * Responsible for generating the SampleConfig, merging with optional overrides,
  * and calling the MethodToViewTransformer.
  */
-public class ViewModelProvider implements DiscoveryProvider {
+@AutoValue
+public abstract class ViewModelProvider implements DiscoveryProvider {
 
-  private final List<Method> methods;
-  private final ApiaryConfig apiaryConfig;
-  private final CommonSnippetSetRunner snippetSetRunner;
-  private final SampleMethodToViewTransformer methodToViewTransformer;
-  private final List<JsonNode> sampleConfigOverrides;
-  private final TypeNameGenerator typeNameGenerator;
-  private final String outputRoot;
+  public abstract List<Method> methods();
 
-  private ViewModelProvider(
-      List<Method> methods,
-      ApiaryConfig apiaryConfig,
-      CommonSnippetSetRunner snippetSetRunner,
-      SampleMethodToViewTransformer methodToViewTransformer,
-      List<JsonNode> sampleConfigOverrides,
-      TypeNameGenerator typeNameGenerator,
-      String outputRoot) {
-    this.methods = methods;
-    this.apiaryConfig = apiaryConfig;
-    this.snippetSetRunner = snippetSetRunner;
-    this.methodToViewTransformer = methodToViewTransformer;
-    this.sampleConfigOverrides = sampleConfigOverrides;
-    this.typeNameGenerator = typeNameGenerator;
-    this.outputRoot = outputRoot;
-  }
+  public abstract ApiaryConfig apiaryConfig();
+
+  public abstract CommonSnippetSetRunner snippetSetRunner();
+
+  public abstract SampleMethodToViewTransformer methodToViewTransformer();
+
+  public abstract List<JsonNode> sampleConfigOverrides();
+
+  public abstract SampleOptions sampleOptions();
+
+  public abstract TypeNameGenerator typeNameGenerator();
+
+  public abstract String outputRoot();
 
   @Override
   public Map<String, Doc> generate(Method method) {
@@ -72,15 +68,25 @@ public class ViewModelProvider implements DiscoveryProvider {
     // DiscoveryProvider to generate a single SampleConfig and provide one
     // method at a time.
     SampleConfig sampleConfig =
-        new ApiaryConfigToSampleConfigConverter(methods, apiaryConfig, typeNameGenerator).convert();
-    sampleConfig = override(sampleConfig, sampleConfigOverrides);
-    ViewModel surfaceDoc = methodToViewTransformer.transform(method, sampleConfig);
-    Doc doc = snippetSetRunner.generate(surfaceDoc);
+        new ApiaryConfigToSampleConfigConverter(methods(), apiaryConfig(), typeNameGenerator())
+            .convert();
+    sampleConfig = override(sampleConfig, sampleConfigOverrides());
+
+    // Apply options using the same override mechanism.
+    ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
+    if (sampleOptions().targetMockService()) {
+      objectNode.put("authType", "NONE");
+      objectNode.put("targetMockService", true);
+    }
+    sampleConfig = override(sampleConfig, Arrays.asList((JsonNode) objectNode));
+
+    ViewModel surfaceDoc = methodToViewTransformer().transform(method, sampleConfig);
+    Doc doc = snippetSetRunner().generate(surfaceDoc);
     Map<String, Doc> docs = new TreeMap<>();
     if (doc == null) {
       return docs;
     }
-    docs.put(outputRoot + "/" + surfaceDoc.outputPath(), doc);
+    docs.put(outputRoot() + "/" + surfaceDoc.outputPath(), doc);
     return docs;
   }
 
@@ -150,65 +156,27 @@ public class ViewModelProvider implements DiscoveryProvider {
   }
 
   public static Builder newBuilder() {
-    return new Builder();
+    return new AutoValue_ViewModelProvider.Builder();
   }
 
-  public static class Builder {
-    private List<Method> methods;
-    private ApiaryConfig apiaryConfig;
-    private CommonSnippetSetRunner snippetSetRunner;
-    private SampleMethodToViewTransformer methodToViewTransformer;
-    private List<JsonNode> sampleConfigOverrides;
-    private TypeNameGenerator typeNameGenerator;
-    private String outputRoot;
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder methods(List<Method> val);
 
-    private Builder() {}
+    public abstract Builder apiaryConfig(ApiaryConfig val);
 
-    public Builder setMethods(List<Method> methods) {
-      this.methods = methods;
-      return this;
-    }
+    public abstract Builder snippetSetRunner(CommonSnippetSetRunner val);
 
-    public Builder setApiaryConfig(ApiaryConfig apiaryConfig) {
-      this.apiaryConfig = apiaryConfig;
-      return this;
-    }
+    public abstract Builder methodToViewTransformer(SampleMethodToViewTransformer val);
 
-    public Builder setSnippetSetRunner(CommonSnippetSetRunner snippetSetRunner) {
-      this.snippetSetRunner = snippetSetRunner;
-      return this;
-    }
+    public abstract Builder sampleConfigOverrides(List<JsonNode> val);
 
-    public Builder setMethodToViewTransformer(
-        SampleMethodToViewTransformer methodToViewTransformer) {
-      this.methodToViewTransformer = methodToViewTransformer;
-      return this;
-    }
+    public abstract Builder sampleOptions(SampleOptions val);
 
-    public Builder setOverrides(List<JsonNode> overrides) {
-      this.sampleConfigOverrides = overrides;
-      return this;
-    }
+    public abstract Builder typeNameGenerator(TypeNameGenerator val);
 
-    public Builder setTypeNameGenerator(TypeNameGenerator typeNameGenerator) {
-      this.typeNameGenerator = typeNameGenerator;
-      return this;
-    }
+    public abstract Builder outputRoot(String val);
 
-    public Builder setOutputRoot(String outputRoot) {
-      this.outputRoot = outputRoot;
-      return this;
-    }
-
-    public ViewModelProvider build() {
-      return new ViewModelProvider(
-          methods,
-          apiaryConfig,
-          snippetSetRunner,
-          methodToViewTransformer,
-          sampleConfigOverrides,
-          typeNameGenerator,
-          outputRoot);
-    }
+    public abstract ViewModelProvider build();
   }
 }

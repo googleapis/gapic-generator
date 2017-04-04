@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.DiscoveryProviderFactory;
+import com.google.api.codegen.discovery.config.SampleOptions;
 import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
@@ -79,6 +80,12 @@ public class DiscoveryFragmentGeneratorApi {
           "auth_instructions",
           "An @-delimited map of language to auth instructions URL: lang:URL@lang:URL@...",
           "");
+  public static final Option<Boolean> TARGET_MOCK_SERVICE =
+      ToolOptions.createOption(
+          Boolean.class,
+          "target_mock_service",
+          "Force samples to generate no auth boilerplate and to direct requests to localhost:5000.",
+          false);
 
   private final ToolOptions options;
   private final String dataPath;
@@ -122,6 +129,9 @@ public class DiscoveryFragmentGeneratorApi {
       }
     }
 
+    SampleOptions sampleOptions =
+        SampleOptions.newBuilder().targetMockService(options.get(TARGET_MOCK_SERVICE)).build();
+
     GeneratorProto generator = configProto.getGenerator();
 
     String factory = generator.getFactory();
@@ -133,7 +143,8 @@ public class DiscoveryFragmentGeneratorApi {
 
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
     DiscoveryProvider provider =
-        providerFactory.create(discovery.getService(), apiaryConfig, overridesJson, id);
+        providerFactory.create(
+            discovery.getService(), apiaryConfig, overridesJson, sampleOptions, id);
 
     for (Api api : discovery.getService().getApisList()) {
       for (Method method : api.getMethodsList()) {
