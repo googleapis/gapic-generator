@@ -32,7 +32,7 @@ authorize(function(authClient) {
   cloudTrace.projects.patchTraces(request, function(err) {
     if (err) {
       console.log(err);
-      return;
+      process.exit(1);
     }
   });
 });
@@ -41,7 +41,7 @@ function authorize(callback) {
   google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
-      return;
+      process.exit(1);
     }
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
       var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
@@ -81,7 +81,7 @@ authorize(function(authClient) {
   cloudTrace.projects.traces.get(request, function(err, response) {
     if (err) {
       console.log(err);
-      return;
+      process.exit(1);
     }
 
     // TODO: Change code below to process the `response` object:
@@ -93,7 +93,7 @@ function authorize(callback) {
   google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
-      return;
+      process.exit(1);
     }
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
       var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
@@ -130,7 +130,7 @@ authorize(function(authClient) {
   var handlePage = function(err, response) {
     if (err) {
       console.log(err);
-      return;
+      process.exit(1);
     }
 
     var tracesPage = response['traces'];
@@ -155,7 +155,7 @@ function authorize(callback) {
   google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
       console.log('authentication failed: ', err);
-      return;
+      process.exit(1);
     }
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
       var scopes = ['https://www.googleapis.com/auth/cloud-platform'];

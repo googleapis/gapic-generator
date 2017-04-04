@@ -98,7 +98,7 @@
     var {@class.pageStreaming.handlePageVarName} = function(err, {@class.responseVarName}) {
       if (err) {
         console.log(err);
-        return;
+        process.exit(1);
       }
 
       var {@class.pageStreaming.pageVarName} = {@class.responseVarName}['{@class.pageStreaming.resourceFieldName}'];
@@ -134,7 +134,7 @@
       {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, function(err, {@class.responseVarName}) {
         if (err) {
           console.log(err);
-          return;
+          process.exit(1);
         }
 
         // TODO: Change code below to process the `{@class.responseVarName}` object:
@@ -144,7 +144,7 @@
       {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, function(err) {
         if (err) {
           console.log(err);
-          return;
+          process.exit(1);
         }
       });
     @end
@@ -164,7 +164,7 @@
     google.auth.getApplicationDefault(function(err, authClient)) {
       if (err) {
         console.log('authentication failed: ', err);
-        return;
+        process.exit(1);
       }
       if ({@class.auth.authVarName}.createScopedRequired && authClient.createScopedRequired()) {
         var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
