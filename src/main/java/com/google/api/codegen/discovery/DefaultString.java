@@ -16,10 +16,13 @@ package com.google.api.codegen.discovery;
 
 import com.google.api.codegen.Inflector;
 import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.protobuf.Field.Kind;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -94,16 +97,15 @@ public class DefaultString {
     return "";
   }
 
-  public static String getPlaceholder(String fieldName, String pattern) {
-    if (pattern != null) {
-      // If the pattern has a specially-recognized default, use the default. No sample.
-      String def = forPattern(pattern, "{MY-%s}", true);
-      if (def != null) {
-        return def;
-      }
-    }
+  /** Returns true if field is a string and a path parameter. */
+  public static boolean shouldReplace(FieldInfo field) {
+    return field.type().kind() == Kind.TYPE_STRING
+        && Strings.nullToEmpty(field.location()).equals("path");
+  }
+
+  public static String getPlaceholder(String fieldName) {
     return String.format(
-        "{MY-%s}", LanguageUtil.lowerCamelToUpperUnderscore(fieldName).replace('_', '-'));
+        "my-%s", LanguageUtil.lowerCamelToLowerUnderscore(fieldName).replace('_', '-'));
   }
 
   private static final String WILDCARD_PATTERN = "[^/]*";

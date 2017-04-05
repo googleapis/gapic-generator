@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer.py;
 
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -192,9 +193,13 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     if (disambiguateName) {
       name = symbolTable.getNewSymbol(name);
     }
+    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    if (DefaultString.shouldReplace(field)) {
+      defaultValue = String.format("'%s'", DefaultString.getPlaceholder(field.name()));
+    }
     return SampleFieldView.newBuilder()
         .name(name)
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .required(field.required())

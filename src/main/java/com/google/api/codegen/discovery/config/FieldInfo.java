@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 import com.google.protobuf.Field.Cardinality;
+import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_FieldInfo.Builder.class)
@@ -51,6 +52,11 @@ public abstract class FieldInfo {
   @JsonProperty("required")
   public abstract Boolean required();
 
+  /** Returns the location of the field, or null if none. */
+  @JsonProperty("location")
+  @Nullable
+  public abstract String location();
+
   public static Builder newBuilder() {
     return new AutoValue_FieldInfo.Builder();
   }
@@ -75,6 +81,9 @@ public abstract class FieldInfo {
 
     @JsonProperty("required")
     public abstract Builder required(Boolean val);
+
+    @JsonProperty("location")
+    public abstract Builder location(String val);
 
     public abstract FieldInfo build();
   }

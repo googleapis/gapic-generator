@@ -22,24 +22,24 @@ import org.junit.Test;
 public class DefaultStringTest {
   @Test
   public void testOf() {
-    String def = DefaultString.getPlaceholder("zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
+    String def = DefaultString.getPlaceholder("zone");
     String def2 = DefaultString.getNonTrivialPlaceholder("[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
     String sample = DefaultString.getSample("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
-    Truth.assertThat(def).isEqualTo("{MY-ZONE}");
+    Truth.assertThat(def).isEqualTo("my-zone");
     Truth.assertThat(def2).isEqualTo("");
     Truth.assertThat(sample).isEqualTo("us-central1-f");
 
-    def = DefaultString.getPlaceholder("project", "^projects/[^/]*$");
+    def = DefaultString.getPlaceholder("project");
     def2 = DefaultString.getNonTrivialPlaceholder("^projects/[^/]*$");
     sample = DefaultString.getSample("pubsub", "project", "^projects/[^/]*$");
-    Truth.assertThat(def).isEqualTo("projects/{MY-PROJECT}");
+    Truth.assertThat(def).isEqualTo("my-project");
     Truth.assertThat(def2).isEqualTo("projects/my-project");
     Truth.assertThat(sample).isEqualTo("");
 
-    def = DefaultString.getPlaceholder("bar", null);
+    def = DefaultString.getPlaceholder("bar");
     def2 = DefaultString.getNonTrivialPlaceholder(null);
     sample = DefaultString.getSample("foo", "bar", null);
-    Truth.assertThat(def).isEqualTo("{MY-BAR}");
+    Truth.assertThat(def).isEqualTo("my-bar");
     Truth.assertThat(def2).isEqualTo("");
     Truth.assertThat(sample).isEqualTo("");
   }

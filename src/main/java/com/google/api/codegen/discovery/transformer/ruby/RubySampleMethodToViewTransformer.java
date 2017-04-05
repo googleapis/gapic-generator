@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer.ruby;
 
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -192,9 +193,13 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
     String name = namer.getFieldVarName(field.name());
+    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    if (DefaultString.shouldReplace(field)) {
+      defaultValue = String.format("'%s'", DefaultString.getPlaceholder(field.name()));
+    }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(name))
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .setterFuncName(name)

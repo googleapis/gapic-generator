@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer.js;
 
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -170,9 +171,13 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
   }
 
   private SampleFieldView createSampleFieldView(FieldInfo field, SampleTypeTable typeTable) {
+    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    if (DefaultString.shouldReplace(field)) {
+      defaultValue = String.format("'%s'", DefaultString.getPlaceholder(field.name()));
+    }
     return SampleFieldView.newBuilder()
         .name(field.name())
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .build();

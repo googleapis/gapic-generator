@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer.go;
 
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -214,9 +215,14 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       FieldInfo field, SampleTransformerContext context, SymbolTable symbolTable) {
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
+
+    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    if (DefaultString.shouldReplace(field)) {
+      defaultValue = String.format("\"%s\"", DefaultString.getPlaceholder(field.name()));
+    }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))

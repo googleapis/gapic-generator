@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer.java;
 
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -199,6 +200,9 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
     TypeInfo typeInfo = field.type();
     String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    if (DefaultString.shouldReplace(field)) {
+      defaultValue = String.format("\"%s\"", DefaultString.getPlaceholder(field.name()));
+    }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
         .typeName(typeTable.getAndSaveNicknameFor(typeInfo))

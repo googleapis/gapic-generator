@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery.transformer.nodejs;
 
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
 import com.google.api.codegen.discovery.config.SampleConfig;
@@ -192,9 +193,13 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     if (escapeReservedParamNames && RESERVED_PARAM_NAMES.contains(name)) {
       name = name + "_";
     }
+    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    if (DefaultString.shouldReplace(field)) {
+      defaultValue = String.format("'%s'", DefaultString.getPlaceholder(field.name()));
+    }
     return SampleFieldView.newBuilder()
         .name(name)
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .required(field.required())
