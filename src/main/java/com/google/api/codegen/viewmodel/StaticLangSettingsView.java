@@ -33,6 +33,9 @@ public abstract class StaticLangSettingsView {
 
   public abstract Integer servicePort();
 
+  @Nullable
+  public abstract String artifactId();
+
   public abstract Iterable<String> authScopes();
 
   public abstract List<ApiCallSettingsView> callSettings();
@@ -89,6 +92,8 @@ public abstract class StaticLangSettingsView {
     public abstract Builder serviceAddress(String val);
 
     public abstract Builder servicePort(Integer val);
+
+    public abstract Builder artifactId(String val);
 
     public abstract Builder authScopes(Iterable<String> val);
 
