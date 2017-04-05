@@ -17,6 +17,7 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.batching.BatchingSettings;
+import com.google.api.gax.batching.PartitionKey;
 import com.google.api.gax.batching.RequestBuilder;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.FlowControlSettings;
@@ -134,7 +135,6 @@ import org.joda.time.Duration;
  * </pre>
  */
 @Generated("by GAPIC v0.0.5")
-@ExperimentalApi
 public class LibrarySettings extends ClientSettings {
   /**
    * The default address of the service.
@@ -671,8 +671,8 @@ public class LibrarySettings extends ClientSettings {
   private static final BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse> PUBLISH_SERIES_BATCHING_DESC =
       new BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
         @Override
-        public String getBatchPartitionKey(PublishSeriesRequest request) {
-          return request.getEdition() + "|" + request.getName() + "|";
+        public PartitionKey getBatchPartitionKey(PublishSeriesRequest request) {
+          return new PartitionKey(request.getEdition(), request.getName());
         }
 
         @Override
@@ -735,8 +735,8 @@ public class LibrarySettings extends ClientSettings {
   private static final BatchingDescriptor<AddCommentsRequest, Empty> ADD_COMMENTS_BATCHING_DESC =
       new BatchingDescriptor<AddCommentsRequest, Empty>() {
         @Override
-        public String getBatchPartitionKey(AddCommentsRequest request) {
-          return request.getName() + "|";
+        public PartitionKey getBatchPartitionKey(AddCommentsRequest request) {
+          return new PartitionKey(request.getName());
         }
 
         @Override

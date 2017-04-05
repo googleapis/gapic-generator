@@ -23,7 +23,7 @@ public abstract class StaticLangApiView {
   public abstract ServiceDocView doc();
 
   @Nullable
-  public abstract String releaseAnnotation();
+  public abstract String releaseLevelAnnotation();
 
   public abstract String name();
 
@@ -70,7 +70,7 @@ public abstract class StaticLangApiView {
 
     public abstract Builder doc(ServiceDocView val);
 
-    public abstract Builder releaseAnnotation(String val);
+    public abstract Builder releaseLevelAnnotation(String val);
 
     public abstract Builder name(String val);
 

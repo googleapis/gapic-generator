@@ -228,6 +228,8 @@ repositories {
 dependencies {
   compile "com.google.protobuf:protobuf-java:3.0.0"
   compile "com.google.api:api-common:0.0.2"
+  compile "com.google.api.grpc:grpc-google-common-protos:0.1.6"
+  compile "com.google.api.grpc:grpc-google-some-other-package-v1:0.0.0"
 }
 
 ext {
@@ -254,11 +256,18 @@ protobuf {
     grpc {
       artifact = 'io.grpc:protoc-gen-grpc-java:1.0.1'
     }
+    gapic {
+      path = locateGapicPluginMethod()
+    }
   }
   generateProtoTasks {
     all()*.plugins {
       grpc {
         outputSubDir = 'java'
+      }
+      gapic {
+        outputSubDir = 'java'
+        option 'library_gapic.yaml'
       }
     }
   }

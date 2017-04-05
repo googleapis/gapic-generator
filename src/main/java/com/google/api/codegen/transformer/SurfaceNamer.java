@@ -1072,7 +1072,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The doc lines that declare what exception(s) are thrown for an API method. */
-  public List<String> getThrowsDocLines() {
+  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     return new ArrayList<>();
   }
 

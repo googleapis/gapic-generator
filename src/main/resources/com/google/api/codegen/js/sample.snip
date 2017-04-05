@@ -67,11 +67,11 @@
               // TODO: Change code below to process the `{@class.responseVarName}` object:
               console.log({@class.responseVarName}.result);
             }, function(reason) {
-              console.log('error: ' + reason.result.error.message);
+              console.error('error: ' + reason.result.error.message);
             });
           @else
             {@class.requestVarName}.then(function() {}, function(reason) {
-              console.log('error: ' + reason.result.error.message');
+              console.error('error: ' + reason.result.error.message');
             });
           @end
         @end
@@ -108,37 +108,51 @@
               {@class.pageStreaming.executeRequestFuncName}({@argList(class, @FALSE)});
             }
           }, function(reason) {
-            console.log('error: ' + reason.result.error.message);
+            console.error('error: ' + reason.result.error.message);
           });
         }
 
       @end
       function {@class.initClientFuncName}() {
         gapi.client.init({
-          'apiKey': '',  // TODO: Update placeholder with desired API key.
-          @if class.auth.type != "API_KEY"
+          @if class.auth.type != "NONE"
+            'apiKey': '',  // TODO: Update placeholder with desired API key.
+          @end
+          @switch class.auth.type
+          @case "NONE"
+          @case "API_KEY"
+          @default
             'clientId': '',  // TODO: Update placeholder with desired client ID.
             'scope': '{@scopeString(class.auth.scopes)}',
           @end
-          'discoveryDocs': ['https://content.googleapis.com/discovery/v1/apis/{@class.apiName}/{@class.apiVersion}/rest'],
+          'discoveryDocs': ['{@class.discoveryDocUrl}'],
         }).then(function() {
-          @if class.auth.type != "API_KEY"
+          @switch class.auth.type
+          @case "NONE"
+            {@class.makeApiCallFuncName}();
+          @case "API_KEY"
+            {@class.makeApiCallFuncName}();
+          @default
             gapi.auth2.getAuthInstance().isSignedIn.listen({@class.updateSignInStatusFuncName});
             {@class.updateSignInStatusFuncName}(gapi.auth2.getAuthInstance().isSignedIn.get());
-          @else
-            {@class.makeApiCallFuncName}();
           @end
         });
       }
 
       function {@class.handleClientLoadFuncName}() {
-        @if class.auth.type != "API_KEY"
-          gapi.load('client:auth2', {@class.initClientFuncName});
-        @else
+        @switch class.auth.type
+        @case "NONE"
           gapi.load('client', {@class.initClientFuncName});
+        @case "API_KEY"
+          gapi.load('client', {@class.initClientFuncName});
+        @default
+          gapi.load('client:auth2', {@class.initClientFuncName});
         @end
       }
-      @if class.auth.type != "API_KEY"
+      @switch class.auth.type
+      @case "NONE"
+      @case "API_KEY"
+      @default
 
         function {@class.updateSignInStatusFuncName}(isSignedIn) {
           if (isSignedIn) {
@@ -159,7 +173,10 @@
         onload="this.onload=function(){};{@class.handleClientLoadFuncName}()"
         onreadystatechange="if (this.readyState === 'complete') this.onload()">
       </script>
-      @if class.auth.type != "API_KEY"
+      @switch class.auth.type
+      @case "NONE"
+      @case "API_KEY"
+      @default
         <button id="signin-button" onclick="{@class.handleSignInClickFuncName}()">Sign in</button>
         <button id="signout-button" onclick="{@class.handleSignOutClickFuncName}()">Sign out</button>
       @end

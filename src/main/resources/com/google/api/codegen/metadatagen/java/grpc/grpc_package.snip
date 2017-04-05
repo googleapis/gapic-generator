@@ -25,20 +25,27 @@
   dependencies {
     compile "com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}"
     compile "com.google.api:api-common:{@metadata.apiCommonVersionBound.lower}"
+    @join dependency : metadata.protoPackageDependencies
+      compile "com.google.api.grpc:{@dependency.name}:{@dependency.versionBound.lower}"
+    @end
   }
 
   ext {
     packageName = '{@metadata.identifier}'
   }
 
-  ext.locateGapicPluginMethod = { ->
-    def outstream = new ByteArrayOutputStream()
-    exec {
-      commandLine 'which', 'gapic_plugin.py'
-      standardOutput = outstream
+  @switch metadata.packageType
+  @case "GRPC_CLIENT"
+    ext.locateGapicPluginMethod = { ->
+      def outstream = new ByteArrayOutputStream()
+      exec {
+        commandLine 'which', 'gapic_plugin.py'
+        standardOutput = outstream
+      }
+      return outstream.toString().trim()
     }
-    return outstream.toString().trim()
-  }
+  @default
+  @end
 
   protobuf {
     protoc {
@@ -51,12 +58,27 @@
       grpc {
         artifact = 'io.grpc:protoc-gen-grpc-java:{@metadata.grpcVersionBound.lower}'
       }
+      @switch metadata.packageType
+        @case "GRPC_CLIENT"
+          gapic {
+            path = locateGapicPluginMethod()
+          }
+      @default
+      @end
     }
     generateProtoTasks {
       all()*.plugins {
         grpc {
           outputSubDir = 'java'
         }
+        @switch metadata.packageType
+        @case "GRPC_CLIENT"
+          gapic {
+            outputSubDir = 'java'
+            option '{@metadata.gapicConfigName}'
+          }
+        @default
+        @end
       }
     }
   }

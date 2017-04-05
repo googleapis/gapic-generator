@@ -240,6 +240,9 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     saveNicknameAndSymbolFor("log;;;", "log", typeTable, symbolTable);
     saveNicknameAndSymbolFor("golang.org/x/net/context;;;", "context", typeTable, symbolTable);
     switch (config.authType()) {
+      case NONE:
+        saveNicknameAndSymbolFor("net/http;;;", "http", typeTable, symbolTable);
+        break;
       case APPLICATION_DEFAULT_CREDENTIALS:
         saveNicknameAndSymbolFor("golang.org/x/oauth2/google;;;", "google", typeTable, symbolTable);
         break;

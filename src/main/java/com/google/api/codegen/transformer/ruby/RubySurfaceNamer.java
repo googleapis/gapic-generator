@@ -167,7 +167,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getThrowsDocLines() {
+  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
   }
 
