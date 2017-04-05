@@ -184,6 +184,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .outputPath(pathMapper.getOutputPath(interfaces.iterator().next(), apiConfig) + ".rb")
         .requireViews(requireViews.build())
         .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
+        .packageVersion(packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
                 apiConfig, ImportSectionView.newBuilder().build(), namer))

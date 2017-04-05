@@ -276,6 +276,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
             .outputPath(indexOutputPath)
             .requireViews(requireViews)
             .primaryService(requireViews.get(0))
+            .packageVersion(
+                packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
             .fileHeader(
                 fileHeaderTransformer.generateFileHeader(
                     apiConfig, ImportSectionView.newBuilder().build(), namer));
@@ -292,6 +294,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .outputPath(versionIndexOutputPath)
               .requireViews(new ArrayList<VersionIndexRequireView>())
               .apiVersion(version)
+              .packageVersion(
+                  packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
                       apiConfig, ImportSectionView.newBuilder().build(), namer));
