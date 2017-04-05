@@ -101,7 +101,7 @@
   @if class.isPageStreaming
     var {@class.pageStreaming.handlePageVarName} = function(err, {@class.responseVarName}) {
       if (err) {
-        console.log(err);
+        console.error(err);
         return;
       }
 
@@ -137,7 +137,7 @@
     @if class.hasResponse
       {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, function(err, {@class.responseVarName}) {
         if (err) {
-          console.log(err);
+          console.error(err);
           return;
         }
 
@@ -147,7 +147,7 @@
     @else
       {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, function(err) {
         if (err) {
-          console.log(err);
+          console.error(err);
           return;
         }
       });
@@ -167,7 +167,7 @@
   function {@class.auth.authFuncName}(callback) {
     google.auth.getApplicationDefault(function(err, authClient)) {
       if (err) {
-        console.log('authentication failed: ', err);
+        console.error('authentication failed: ', err);
         return;
       }
       if ({@class.auth.authVarName}.createScopedRequired && authClient.createScopedRequired()) {
