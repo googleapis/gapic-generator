@@ -28,6 +28,7 @@
   {@class.serviceVarName} = {@class.serviceTypeNamespace}::{@class.serviceTypeName}.new
 
   @switch class.auth.type
+  @case "NONE"
   @case "APPLICATION_DEFAULT_CREDENTIALS"
     {@class.serviceVarName}.authorization = {@"\"}
         Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
@@ -49,7 +50,6 @@
   @case "API_KEY"
     {@class.serviceVarName}.key = ''  @# TODO: Update placeholder with desired API key.
 
-  @default
   @end
   @join field : class.requiredFields if class.requiredFields
     {@field(field)}

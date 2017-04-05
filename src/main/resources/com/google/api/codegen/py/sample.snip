@@ -31,6 +31,9 @@
 
     @switch class.auth.type
     @case "NONE"
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+        {@class.credentialsVarName} = GoogleCredentials.get_application_default()
+
     @case "OAUTH_3L"
         @# TODO: Change placeholder below to generate authentication credentials. See
         @# {@class.auth.instructionsUrl}
@@ -47,9 +50,6 @@
 
     @case "API_KEY"
         {@class.credentialsVarName} = ''  @# TODO: Update placeholder with desired API key.
-
-    @default
-        {@class.credentialsVarName} = GoogleCredentials.get_application_default()
 
     @end
     {@class.serviceVarName} = discovery.build({@paramList(class.discoveryBuildParams)})

@@ -136,6 +136,7 @@
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     @switch class.auth.type
+    @case "NONE"
     @case "APPLICATION_DEFAULT_CREDENTIALS"
       GoogleCredential credential = GoogleCredential.getApplicationDefault();
       if (credential.createScopedRequired()) {
@@ -162,7 +163,6 @@
       // {@class.auth.instructionsUrl}
       GoogleCredential credential = null;
 
-    @default
     @end
     @if class.auth.type == "NONE"
       return new {@class.serviceTypeName}.Builder(httpTransport, jsonFactory, null)

@@ -23,6 +23,8 @@
   var {@class.serviceVarName} = {@class.googleImportVarName}.{@class.serviceTypeName}('{@class.apiVersion}');
 
   @switch class.auth.type
+  @case "NONE"
+    {@mainFuncBody(class)}
   @case "APPLICATION_DEFAULT_CREDENTIALS"
     {@mainFunc(class)}
 
@@ -34,8 +36,6 @@
   @case "API_KEY"
     var {@class.auth.authVarName} = '';  // TODO: Update placeholder with desired API key.
 
-    {@mainFuncBody(class)}
-  @default
     {@mainFuncBody(class)}
   @end
 @end

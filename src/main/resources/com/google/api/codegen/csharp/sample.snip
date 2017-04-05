@@ -55,10 +55,9 @@
         @if class.auth.type != "NONE"
             {@class.serviceTypeName} {@class.serviceVarName} = new {@class.serviceTypeName}(new BaseClientService.Initializer
             {
-                @switch class.auth.type
-                @case "API_KEY"
+                @if class.auth.type == "API_KEY"
                     ApiKey = "",  // TODO: Update placeholder with desired API key.
-                @default
+                @else
                     HttpClientInitializer = GetCredential(),
                 @end
                 ApplicationName = "{@class.appName}",
