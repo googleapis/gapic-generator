@@ -132,18 +132,18 @@
                         foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
                         {
                             // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` element:
-                            Console.WriteLine("[" + {@class.pageStreaming.resourceVarName}.Key + "] = " + {@class.pageStreaming.resourceVarName}.Value);
+                            Console.WriteLine("[" + {@class.pageStreaming.resourceVarName}.Key + "] = " + JsonConvert.SerializeObject({@class.pageStreaming.resourceVarName}.Value));
                         }
                     @else
                         foreach ({@class.pageStreaming.resourceElementTypeName} {@class.pageStreaming.resourceVarName} in response.{@class.pageStreaming.resourceFieldName})
                         {
                             // TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
-                            Console.WriteLine({@class.pageStreaming.resourceVarName});
+                            Console.WriteLine(JsonConvert.SerializeObject({@class.pageStreaming.resourceVarName}));
                         }
                     @end
                 @else
                     // TODO: Change code below to process each `response.{@class.pageStreaming.resourceFieldName}` resource:
-                    Console.WriteLine(response.{@class.pageStreaming.resourceFieldName});
+                    Console.WriteLine(JsonConvert.SerializeObject(response.{@class.pageStreaming.resourceFieldName}));
 
                 @end
                 @if class.pageStreaming.isResourceSetterInRequestBody
@@ -159,7 +159,7 @@
                 // {@class.responseTypeName} {@class.responseVarName} = await {@class.requestVarName}.ExecuteAsync();
 
                 // TODO: Change code below to process the `response` object:
-                Console.WriteLine({@class.responseVarName});
+                Console.WriteLine(JsonConvert.SerializeObject({@class.responseVarName}));
             @else
                 // To execute asynchronously in an async method, replace `{@class.requestVarName}.Execute()` as shown:
                 {@class.requestVarName}.Execute();
