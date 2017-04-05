@@ -19,12 +19,14 @@ import mock
 import unittest2
 
 from google.gax import errors
+from google.rpc import status_pb2
 
 from google.cloud.gapic.example.library.v1 import enums
 from google.cloud.gapic.example.library.v1 import library_service_client
 from google.cloud.proto.example.library.v1 import book_from_anywhere_pb2
 from google.cloud.proto.example.library.v1 import library_pb2
 from google.cloud.proto.tagger.v1 import tagger_pb2
+from google.longrunning import operations_pb2
 from google.protobuf import empty_pb2
 
 
@@ -906,6 +908,100 @@ class TestLibraryServiceClient(unittest2.TestCase):
         grpc_stub.AddLabel.side_effect = CustomException()
 
         self.assertRaises(errors.GaxError, client.add_label, resource, label)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_big_book(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_service_client.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = library_pb2.Book(name_2, author, title, read)
+        operation = operations_pb2.Operation('operations/test_get_big_book', True)
+        operation.response.Pack(expected_response)
+        grpc_stub.GetBigBook.return_value = operation
+
+        response = client.get_big_book(name)
+        self.assertEqual(expected_response, response.result())
+
+        grpc_stub.GetBigBook.assert_called_once()
+        request = grpc_stub.GetBigBook.call_args[0]
+
+        self.assertEqual(name, request.name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_big_book_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_service_client.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        error = status_pb2.Status()
+        operation = operations_pb2.Operation('operations/test_get_big_book_exception', True)
+        operation.error.CopyFrom(error)
+        grpc_stub.GetBigBook.return_value = operation
+
+        response = client.get_big_book(name)
+        self.assertEqual(error, response.exception())
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_big_nothing(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_service_client.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock response
+        expected_response = empty_pb2.Empty()
+        operation = operations_pb2.Operation('operations/test_get_big_nothing', True)
+        operation.response.Pack(expected_response)
+        grpc_stub.GetBigNothing.return_value = operation
+
+        response = client.get_big_nothing(name)
+        self.assertEqual(expected_response, response.result())
+
+        grpc_stub.GetBigNothing.assert_called_once()
+        request = grpc_stub.GetBigNothing.call_args[0]
+
+        self.assertEqual(name, request.name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_big_nothing_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock(spec=library_pb2.LibraryServiceStub)
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_service_client.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        error = status_pb2.Status()
+        operation = operations_pb2.Operation('operations/test_get_big_nothing_exception', True)
+        operation.error.CopyFrom(error)
+        grpc_stub.GetBigNothing.return_value = operation
+
+        response = client.get_big_nothing(name)
+        self.assertEqual(error, response.exception())
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_test_optional_required_flattening_params(self, mock_create_stub):

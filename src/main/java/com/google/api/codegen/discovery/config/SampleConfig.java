@@ -111,6 +111,10 @@ public abstract class SampleConfig {
   @JsonProperty("authInstructionsUrl")
   public abstract String authInstructionsUrl();
 
+  /** Returns the URL of the discovery doc. */
+  @JsonProperty("discoveryDocUrl")
+  public abstract String discoveryDocUrl();
+
   public static Builder newBuilder() {
     return new AutoValue_SampleConfig.Builder();
   }
@@ -147,6 +151,9 @@ public abstract class SampleConfig {
 
     @JsonProperty("authInstructionsUrl")
     public abstract Builder authInstructionsUrl(String val);
+
+    @JsonProperty("discoveryDocUrl")
+    public abstract Builder discoveryDocUrl(String val);
 
     public abstract SampleConfig build();
   }

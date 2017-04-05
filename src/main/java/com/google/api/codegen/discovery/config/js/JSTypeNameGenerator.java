@@ -35,4 +35,10 @@ public class JSTypeNameGenerator extends TypeNameGenerator {
   public String getStringFormatExample(String format) {
     return getStringFormatExample(format, "Date.toISOString()", "Date.toISOString()");
   }
+
+  @Override
+  public String getDiscoveryDocUrl(String apiName, String apiVersion) {
+    return String.format(
+        "https://content.googleapis.com/discovery/v1/apis/%s/%s/rest", apiName, apiVersion);
+  }
 }

@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.grpcmetadatagen.PackageType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -37,6 +38,8 @@ import org.yaml.snakeyaml.Yaml;
 public abstract class PackageMetadataConfig {
 
   private static final String CONFIG_KEY_DEFAULT = "default";
+  private static final ImmutableMap<TargetLanguage, String> DEFAULT_PROTO_PACKAGE_PREFIX =
+      ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "grpc-").build();
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
@@ -100,6 +103,10 @@ public abstract class PackageMetadataConfig {
     return packageName().get(language);
   }
 
+  /** Returns the type of the package */
+  @Nullable
+  public abstract PackageType packageType();
+
   /** A single-word short name of the API. E.g., "logging". */
   public abstract String shortName();
 
@@ -120,6 +127,10 @@ public abstract class PackageMetadataConfig {
 
   /** The name of the license of the client library. */
   public abstract String licenseName();
+
+  /** The file name of the GAPIC API config yaml. */
+  @Nullable
+  public abstract String gapicConfigName();
 
   private static Builder newBuilder() {
     return new AutoValue_PackageMetadataConfig.Builder();
@@ -145,6 +156,8 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder shortName(String val);
 
+    abstract Builder packageType(PackageType val);
+
     abstract Builder apiVersion(String val);
 
     abstract Builder protoPath(String val);
@@ -156,6 +169,8 @@ public abstract class PackageMetadataConfig {
     abstract Builder homepage(String val);
 
     abstract Builder licenseName(String val);
+
+    abstract Builder gapicConfigName(String val);
 
     abstract PackageMetadataConfig build();
   }
@@ -173,12 +188,14 @@ public abstract class PackageMetadataConfig {
         .generatedPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
         .shortName("")
+        .packageType(PackageType.GRPC_CLIENT)
         .apiVersion("")
         .protoPath("")
         .author("")
         .email("")
         .homepage("")
         .licenseName("")
+        .gapicConfigName("")
         .build();
   }
 
@@ -205,12 +222,14 @@ public abstract class PackageMetadataConfig {
         .protoPackageDependencies(createProtoPackageDependencies(configMap))
         .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))
+        .packageType(PackageType.of((String) configMap.get("package_type")))
         .apiVersion((String) configMap.get("major_version"))
         .protoPath((String) configMap.get("proto_path"))
         .author((String) configMap.get("author"))
         .email((String) configMap.get("email"))
         .homepage((String) configMap.get("homepage"))
         .licenseName((String) configMap.get("license"))
+        .gapicConfigName((String) configMap.get("gapic_config_name"))
         .build();
   }
 
@@ -237,17 +256,24 @@ public abstract class PackageMetadataConfig {
           packageDependencies.put(entry.getKey(), new HashMap<String, VersionBound>());
         }
 
-        String languageName = entry.getValue().get("name_override");
-        if (languageName == null) {
-          languageName = packageName;
+        String packageNameForLanguage = entry.getValue().get("name_override");
+        if (packageNameForLanguage == null) {
+          packageNameForLanguage = getDefaultProtoPackageName(entry.getKey(), packageName);
         }
         VersionBound version =
             VersionBound.create(entry.getValue().get("lower"), entry.getValue().get("upper"));
-        packageDependencies.get(entry.getKey()).put(languageName, version);
+        packageDependencies.get(entry.getKey()).put(packageNameForLanguage, version);
       }
     }
 
     return packageDependencies;
+  }
+
+  private static String getDefaultProtoPackageName(TargetLanguage language, String packageName) {
+    if (DEFAULT_PROTO_PACKAGE_PREFIX.containsKey(language)) {
+      return DEFAULT_PROTO_PACKAGE_PREFIX.get(language) + packageName;
+    }
+    return packageName;
   }
 
   private static Map<TargetLanguage, VersionBound> createVersionMap(

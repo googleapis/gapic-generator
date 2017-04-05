@@ -137,7 +137,7 @@ public class DynamicLangApiMethodTransformer {
               context.getTypeTable(),
               methodConfig.getPageStreaming().getResourcesField().getType()));
     }
-    docBuilder.throwsDocLines(surfaceNamer.getThrowsDocLines());
+    docBuilder.throwsDocLines(surfaceNamer.getThrowsDocLines(methodConfig));
 
     return docBuilder.build();
   }
