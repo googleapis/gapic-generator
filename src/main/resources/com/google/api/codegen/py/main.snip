@@ -255,69 +255,55 @@
     @end
 @end
 
-@private pathTemplateName(collectionConfig)
-    _{@context.lowerUnderscoreToUpperUnderscore(entityName(collectionConfig))}_PATH_TEMPLATE
-@end
-
 @private pathTemplateSection(service)
-    @if context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-            {@pathTemplateName(collectionConfig)} = path_template.PathTemplate(
-                '{@collectionConfig.getNamePattern}')
-        @end
+    @join pathTemplate : context.getPathTemplates(service)
+        {@pathTemplate.name} = path_template.PathTemplate(
+            '{@pathTemplate.pattern}')
+    @end
 
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+    @join function : context.getFormatResourceFunctions(service)
 
-            {@createResourceFunction(collectionConfig)}
-        @end
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+        {@createResourceFunction(function)}
+    @end
+    @join function : context.getParseResourceFunctions(service)
 
-            {@createMatchFunctions(collectionConfig)}
-        @end
+        {@createMatchFunctions(function)}
     @end
 @end
 
-@private createResourceFunction(collectionConfig)
+@private createResourceFunction(function)
     @@classmethod
-    def {@formatResourceFunctionName(collectionConfig)}(cls, {@createResourceFunctionParams(collectionConfig)}):
-        """Returns a fully-qualified {@entityName(collectionConfig)} resource name string."""
-        return cls.{@pathTemplateName(collectionConfig)}.render({
-            {@createRenderDictionary(collectionConfig)}
+    def {@function.name}(cls, {@createResourceFunctionParams(function.resourceIdParams)}):
+        """Returns a fully-qualified {@function.entityName} resource name string."""
+        return cls.{@function.pathTemplateName}.render({
+            {@createRenderDictionary(function.resourceIdParams)}
         })
 @end
 
-@private createMatchFunctions(collectionConfig)
-  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
-    @let fieldPath = resourceName(collectionConfig)
-      @@classmethod
-      def match_{@subField}_from_{@fieldPath}(cls, {@fieldPath}):
-          """Parses the {@subField} from a {@entityName(collectionConfig)} resource.
+@private createMatchFunctions(function)
+    @@classmethod
+    def {@function.name}(cls, {@function.entityNameParamName}):
+        """Parses the {@function.outputResourceId} from a {@function.entityName} resource.
 
-          Args:
-            {@fieldPath} (string): A fully-qualified path representing a {@entityName(collectionConfig)}
-              resource.
+        Args:
+          {@function.entityNameParamName} (string): A fully-qualified path representing a {@function.entityName}
+            resource.
 
-          Returns:
-            A string representing the {@subField}.
-          """
-          return cls.{@pathTemplateName(collectionConfig)}.match({@fieldPath}).get('{@subField}')
-    @end
-  @end
+        Returns:
+          A string representing the {@function.outputResourceId}.
+        """
+        return cls.{@function.pathTemplateName}.match({@function.entityNameParamName}).get('{@function.outputResourceId}')
 @end
 
-@private resourceName(collectionConfig)
-  {@entityName(collectionConfig)}_name
-@end
-
-@private createResourceFunctionParams(collectionConfig)
-    @join param : collectionConfig.getNameTemplate.vars() on ", "
-        {@context.python.wrapIfKeywordOrBuiltIn(param)}
+@private createResourceFunctionParams(params)
+    @join param : params on ", "
+        {@param.name}
     @end
 @end
 
-@private createRenderDictionary(collectionConfig)
-    @join param: collectionConfig.getNameTemplate.vars() on BREAK
-        '{@param}': {@context.python.wrapIfKeywordOrBuiltIn(param)},
+@private createRenderDictionary(params)
+    @join param: params on BREAK
+        '{@param.templateKey}': {@param.name},
     @end
 @end
 

@@ -25,6 +25,7 @@ import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.py.PythonApiMethodParamTransformer;
 import com.google.api.codegen.transformer.py.PythonImportSectionTransformer;
@@ -33,6 +34,9 @@ import com.google.api.codegen.transformer.py.PythonSurfaceNamer;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
+import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
+import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.EnumType;
@@ -108,6 +112,8 @@ public class PythonGapicContext extends GapicContext {
 
   private PackageMetadataConfig packageConfig;
 
+  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+
   public PythonGapicContext(Model model, ApiConfig apiConfig, PackageMetadataConfig packageConfig) {
     super(model, apiConfig);
     this.packageConfig = packageConfig;
@@ -141,6 +147,21 @@ public class PythonGapicContext extends GapicContext {
             new InitCodeTransformer(new PythonImportSectionTransformer()));
 
     return apiMethodTransformer.generateMethod(methodContext);
+  }
+
+  public List<PathTemplateView> getPathTemplates(Interface service) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return pathTemplateTransformer.generatePathTemplates(context);
+  }
+
+  public List<FormatResourceFunctionView> getFormatResourceFunctions(Interface service) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return pathTemplateTransformer.generateFormatResourceFunctions(context);
+  }
+
+  public List<ParseResourceFunctionView> getParseResourceFunctions(Interface service) {
+    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
+    return pathTemplateTransformer.generateParseResourceFunctions(context);
   }
 
   private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
