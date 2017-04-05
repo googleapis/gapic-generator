@@ -82,8 +82,8 @@ public class DefaultString {
   }
 
   /**
-   * Does the same thing as {@link #getPlaceholder(String, String)}, but uses a no-brace and
-   * lower-case format and returns an empty string for unrecognized patterns.
+   * Returns a placeholder for pattern with a no-brace and lower-case format style. An empty string
+   * is returned for unrecognized patterns.
    *
    * <p>For example: "projects/my-project/logs/my-log"
    */
