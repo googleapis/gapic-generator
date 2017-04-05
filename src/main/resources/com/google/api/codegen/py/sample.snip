@@ -30,6 +30,10 @@
     @end
 
     @switch class.auth.type
+    @case "NONE"
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+        {@class.credentialsVarName} = GoogleCredentials.get_application_default()
+
     @case "OAUTH_3L"
         @# TODO: Change placeholder below to generate authentication credentials. See
         @# {@class.auth.instructionsUrl}
@@ -43,17 +47,12 @@
             @#     '{@scope}'
         @end
         {@class.credentialsVarName} = None
+
     @case "API_KEY"
         {@class.credentialsVarName} = ''  @# TODO: Update placeholder with desired API key.
-    @default
-        {@class.credentialsVarName} = GoogleCredentials.get_application_default()
-    @end
 
-    @if class.auth.type == "API_KEY"
-        {@class.serviceVarName} = discovery.build('{@class.apiName}', '{@class.apiVersion}', developerKey={@class.credentialsVarName})
-    @else
-        {@class.serviceVarName} = discovery.build('{@class.apiName}', '{@class.apiVersion}', credentials={@class.credentialsVarName})
     @end
+    {@class.serviceVarName} = discovery.build({@paramList(class.discoveryBuildParams)})
 
     @join field : class.requiredFields if class.requiredFields
         {@field(field, FALSE)}
@@ -96,7 +95,7 @@
         @# https://google.github.io/google-api-python-client/docs/epy/googleapiclient.http.MediaIoBaseDownload-class.html
 
     @end
-    {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramAssignmentsList(class.methodParamAssigments)})
+    {@class.requestVarName} = {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@paramList(class.methodParamAssigments)})
     @if class.isPageStreaming
         while {@class.requestVarName} is not None:
             {@class.responseVarName} = {@class.requestVarName}.execute()
@@ -158,8 +157,8 @@
   @end
 @end
 
-@private paramAssignmentsList(methodParamAssignments)
-  @join methodParamAssignment : methodParamAssignments on ", "
-    {@methodParamAssignment}
+@private paramList(params)
+  @join param : params on ", "
+    {@param}
   @end
 @end
